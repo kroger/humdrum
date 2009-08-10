@@ -1,0 +1,344 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH rend 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +10
+.ti -10
+\fBrend\fR  --  split data tokens from specified Humdrum spines into component sub-tokens
+.in -10
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +8
+.ti -8
+\fBrend\fR  [\fB-s\fR]  \fB-i  '\fItarget_interp\fB'  -f  \fIreassign-file\fR  [\fIinputfile ...\fR]
+.in -8
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "rend"
+command breaks apart data tokens from selected input spines into 
+one or more sub-tokens distributed across one or more newly created
+output spines.
+The user specifies which input spine or spines are to be split.
+The manner in which the signifiers are to be distributed is specified
+in a separate
+.I "reassignment"
+file.
+.sp 1
+.sp 1
+Humdrum data tokens often contain more than one type of information
+or type of signfier.
+For example, the
+**pitch
+representation consists of three parts:\(dg
+.FS \(dg
+Not including cents deviation.
+.FE
+the pitch letter name, the accidental, and the octave number (e.g. A#4).
+In some tasks it may be useful to split such information into separate spines.
+For example, a user may wish to reformat the following spine:
+.in +2
+.sp 1
+.TS
+l.
+**pitch
+Ab3
+Eb4
+F#4
+C5
+*-
+.TE
+.sp 1
+.in -2
+as three independent spines:
+.in +2
+.sp 1
+.TS
+l l l.
+**octave	**note	**accidental
+3	Ab	b
+4	Eb	b
+4	F#	#
+5	C	.
+*-	*-	*-
+.TE
+.sp 1
+.in -2
+The
+.B "rend"
+command allows each occurrence of a target exclusive interpretation to be
+replaced by specified output spines.
+The user selects how the signfiers (characters) in the
+input spines are to be distributed to the replacement output spines.
+Signifiers (ASCII characters) are identified using \s-1UNIX\s+1
+regular expression syntax (see \fBregexp (6)\fR).
+.sp 1
+.sp 1
+The above transformation may be achieved by invoking the following command:
+.sp 1
+.sp 1
+.in +2
+rend -i '**pitch' -f reassign
+.in -2
+.sp 1
+.sp 1
+The \fB-i\fR option specifies the target input interpretation, i.e.,
+the input spine(s) to be processed.
+The \fB-f\fR option specifies a reassignment-file
+(named \f(CRreassign\fR) containing the following records:
+.in +2
+.sp 1
+.TS
+l l.
+**octave	[0-9]
+**note	[A-Gb#x]+
+**accidental	[b#x]+
+.TE
+.sp 1
+.in -2
+Reassignment files consist of one or more records, each containing two
+strings separated by a tab.
+The left-most string identifies the name of the new spine to be generated.
+The right-most string defines an associated regular expression.
+Any input signifiers matching the regular expression will be echoed as output
+in the associated spine.
+In the above case, all numbers are echoed in the first spine
+(\f(CR**octave\fR),
+all letters plus the sharp (#) and flat (b) signs are echoed in the
+second spine (\f(CR**note\fR), whereas only sharp and flat signs are
+echoed in the third spine (\f(CR**accidental\fR).
+The order of the output spines preserves the order of the assignments
+in the reassignment file.
+In the above case, for example, the order of the output spines will be
+**octave, **note, **accidental
+for each input spine labelled
+**pitch.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "rend"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-f \fIreassign\fR	maps input tokens to output tokens according
+	  to definitions given in the file \fIreassign\fR
+\fB-h\fR	displays a help screen summarizing the
+	  command syntax
+\fB-i \fItarget_interp\fR	process all input spines whose exclusive
+	  interpretations are labelled \fItarget_interp\fR
+\fB-s\fR	matches a single instance of the given pattern
+	  rather than all instances
+.TE
+.sp 1
+Options are specified in the command line.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+.sp 1
+.sp 1
+Consider the following example:
+.sp 1
+.sp 1
+.in +2
+rend -i '**kern' -f noterest song01
+.in -2
+.sp 1
+.sp 1
+and the associate reassignment file named \f(CRnoterest\fR:
+.sp 1
+.sp 1
+.in +2
+**notes	[]A-Ga-g[#-]+|^=+[0-9]*
+.br
+**rests	[\\.0-9r]+|^=+[0-9]*
+.in -2
+.sp 1
+.sp 1
+This command specifies that each
+**kern
+spine in the file
+song01
+is to be split into two new spines dubbed
+**notes
+and
+**rests.
+The first regular expression -- \f(CR'[]A-Ga-g[#-]+|^=+[0-9]*'\fR --
+indicates that the following strings should be echoed in the
+data records for \f(CR**notes\fR:
+the upper-case letters \f(CRA\fR to \f(CRG\fR
+and the lower-case letters \f(CRa\fR to \f(CRg\fR,
+plus the characters \f(CR[, ], #\fR, and \f(CR-\fR.
+Alternatively,
+.B "rend"
+will echo any data token beginning with one or more equals-signs,
+followed by zero or more numbers.
+.sp 1
+.sp 1
+Similarly, the second
+**rests
+spine will contain characters that match the regular
+expression '[\\.0-9r]+|^+=[0-9]*'.
+This includes the period (.), all numbers (0-9), plus the letter
+.I "r."
+Alternatively,
+.B "rend"
+will echo any data token beginning with one or more equals-signs,
+followed by zero or more numbers.
+.sp 1
+.sp 1
+Given this command, the following input:
+.in +2
+.sp 1
+.TS
+l l l
+l s s
+l l l.
+**kern	**lyrics	**kern
+!! Commented input.
+8.G	Hi-	4r
+16G#	de-	.
+\(eq23	\(eq23	\(eq23
+8A	ho-	2r
+[8c	.	.
+8c]	.	.
+16r	.	.
+16A	.	.
+\(eq24	\(eq24	\(eq24
+2C 2E	hum.	2r
+===	===	===
+*-	*-	*-
+.TE
+.sp 1
+.in -2
+will produce the following output:
+.in +2
+.sp 1
+.TS
+l l l l l
+l s s s s
+l l l l l.
+**notes	**rests	**lyrics	**notes	**rests
+!! Commented input.
+G	8.	Hi-	.	4r
+G#	16	de-	.	.
+\(eq23	\(eq23	\(eq23	\(eq23	\(eq23
+A	8	ho-	.	2r
+[c	8	.	.	.
+c]	8	.	.	.
+\.	16r	.	.	.
+A	16	.	.	.
+\(eq24	\(eq24	\(eq24	\(eq24	\(eq24
+C E	2 2	hum.	.	2r
+===	===	===	===	===
+*-	*-	*-	*-	*-
+.TE
+.sp 1
+.in -2
+Notice that
+.B "rend"
+correctly handles Humdrum multiple-stops (such as \f(CR2C 2E\fR).
+Notice also that if no match is made, a null token (.) is output.
+.in -2
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBcleave\fR (1), \fBextract\fR (1),
+\fBhumsed\fR (1), \fBrecode\fR (1), \fBregexp\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+Note that, apart from spine-path terminators, no other spine-path
+indicators are permitted in spines containing
+the target interpretation.
+.in -2
+.sp 1
+.sp 1
+.SH "BUGS"
+.sp 1
+.sp 1
+.in +2
+If the interpretation targetted for processing appears in a
+spine starting with a different interpretation, the output will
+fail to generate the proper spine terminator and add-spine
+path indicators.
+The result is a non-Humdrum file.
+Consider the following command:
+.sp 1
+.sp 1
+.in +2
+rend -i '**ex1' -f reassign input
+.in -2
+.sp 1
+.sp 1
+and the associate reassignment file (\f(CRreassign\fR):
+.sp 1
+.sp 1
+.in +2
+**let	[a-z]
+.br
+**num	[0-9]
+.in -2
+.sp 1
+.sp 1
+Given the following input:
+.in +2
+.sp 1
+.TS
+l l.
+**ex1	**ex2
+a1	b2
+*tand1	*tand2
+c3	d4
+*	**ex1
+e5	f6
+*-	*-
+.TE
+.sp 1
+.in -2
+the corresponding output is given below.
+Note the absence of appropriate spine-path indicators
+between lines 4 and 5 (hence the output is non-Humdrum).
+.in +2
+.sp 1
+.TS
+l l l l.
+**let	**num	**ex2
+a	1	b2
+*tand1	*tand1	*tand2
+c	3	d4
+*	*	**let	**num
+e	5	f	6
+*-	*-	*-	*-
+.TE
+.sp 1
+.in -2
+.in -2

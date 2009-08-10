@@ -1,0 +1,29 @@
+# Conversion run command file that contains information about
+# Source directories, target directories, and filenames.
+# This is read in by the "mkern" program when invoked with
+# the "-r <filename>" option, and can be extended very easily.
+# Created by Kyle Dawkins, July 28th, 1994.
+
+# This is where the original stage 2 MuseData files are,
+# each numbered sequentially from 01 upwards:
+
+SOURCE /dos/huron/beet/bandh/sym5/stage2/1
+
+# This is where the converted files will be placed. The filenames
+# will be the same as the MuseData files with ".krn" extensions:
+
+DEST	data
+
+# This is the name of the script file that will be created.
+# This script file can then be executed, and it will timebase
+# the kern files, assemble them, and remove the null tokens.
+# It will be placed in the destination directory along with the
+# converted datafiles.
+# If this is not specified, no script will be created.
+
+SCRIPT beet51.sh
+
+# This is the target name of the final assembled file.
+# If this is not specified, the default name, "output.krn" will be used.
+
+TARGET beet51.krn

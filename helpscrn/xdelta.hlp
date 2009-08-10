@@ -1,0 +1,24 @@
+
+XDELTA    : Calculate sequential differences between successive data tokens.
+
+     This command calculates the numeric differences between successive data
+     tokens within individual spines.  The XDELTA command might be used, for
+     example, to determine melodic interval distances in a musical line.
+
+     The output interpretation is automatically assigned a new name by pre-
+     pending the letter `X' to the given input interpretation, e.g. **Xsemits.
+
+Syntax:
+
+     xdelta [-ae] [-b regexp] [-s regexp] [inputfile ...]
+
+Options:
+
+     -a        : output absolute difference values
+     -b regexp : break; do not calculate difference for tokens matching regexp
+     -e        : echo non-numeric data for input tokens that contain numbers
+     -s regexp : skip; completely ignore tokens matching regexp;
+                 (echo in output only)
+
+  Refer to reference manual for further details.
+

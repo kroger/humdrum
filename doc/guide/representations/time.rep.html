@@ -1,0 +1,187 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Elapsed Time</TITLE>
+<!-- Documentation for the **time Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **time Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,elapsed time,software,theory,analysis,systematic musicology,computer representation,**time">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Elapsed Time</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**time</b>  --  relative elapsed time (in seconds)
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**time</b>
+representation is used to represent cumulative time
+(from some arbitrary moment deemed "time zero")
+to the onset of the current moment.
+A typical use for
+<b>**time</b>
+is to represent the elapsed time from the beginning of a work (in seconds).
+Data tokens in
+<b>**time</b>
+consist simply of numbers of seconds, with an optional decimal value.
+The
+<b>**time</b>
+representation has no provision for representing
+"hours" or "minutes".
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**time</big></code>
+data should be given names with the distinguishing `.tim' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**time</b>
+mappings of signifiers and signifieds.
+</P>
+<P>
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>.</TD><TD>fractional second delimiter; null token</TD></TR>
+<TR><TD>=</TD><TD>barlines</TD></TR>
+<TR><TD>==</TD><TD>double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**time</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**kern</TD><TD>**metpos</TD><TD>**takt</TD><TD>**time</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>*MM60</TD><TD>*MM60</TD><TD>*MM60</TD><TD>*MM60</TD></TR>
+<TR><TD>*c:</TD><TD>*</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>8r</TD><TD>1</TD><TD>1</TD><TD>0</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD><TD>1.5</TD><TD>0.5</TD></TR>
+<TR><TD>16bn</TD><TD>5</TD><TD>1.75</TD><TD>0.75</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD><TD>2</TD><TD>1</TD></TR>
+<TR><TD>8g</TD><TD>4</TD><TD>2.5</TD><TD>1.5</TD></TR>
+<TR><TD>8a-</TD><TD>2</TD><TD>3</TD><TD>2</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD><TD>3.5</TD><TD>2.5</TD></TR>
+<TR><TD>16b</TD><TD>5</TD><TD>3.75</TD><TD>2.75</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD><TD>4</TD><TD>3</TD></TR>
+<TR><TD>8dd</TD><TD>4</TD><TD>4.5</TD><TD>3.5</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>8g</TD><TD>1</TD><TD>1</TD><TD>4</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD><TD>1.5</TD><TD>4.5</TD></TR>
+<TR><TD>16bn</TD><TD>5</TD><TD>1.75</TD><TD>4.75</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD><TD>2</TD><TD>5</TD></TR>
+<TR><TD>8dd</TD><TD>4</TD><TD>2.5</TD><TD>5.5</TD></TR>
+<TR><TD>16f</TD><TD>2</TD><TD>3</TD><TD>6</TD></TR>
+<TR><TD>16g</TD><TD>5</TD><TD>3.25</TD><TD>6.25</TD></TR>
+<TR><TD>4a-</TD><TD>4</TD><TD>3.5</TD><TD>6.5</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+Currently, no special-purpose Humdrum commands produce
+<b>**time</b>
+as output, or process
+<b>**time</b>
+encoded data as input.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**time</b>:
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**time</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="date.rep.html"><b>**date</b></A>,
+<A HREF="dur.rep.html"><b>**dur</b></A>,
+<A HREF="metpos.rep.html"><b>**metpos</b></A>,
+<A HREF="ordo.rep.html"><b>**ordo</b></A>,
+<A HREF="recip.rep.html"><b>**recip</b></A>,
+<A HREF="takt.rep.html"><b>**takt</b></A>,
+<A HREF="Zeit.rep.html"><b>**Zeit</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

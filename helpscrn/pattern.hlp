@@ -1,0 +1,22 @@
+
+PATTERN   : Locate and count user-defined patterns in a Humdrum input.
+
+     This command is used to search for occurrences of a specified pattern
+     in a given humdrum input.  Patterns consist of one or more regular
+     expressions stored on separate lines in a specified template file.
+
+Syntax:
+
+     pattern [-ciy] [-s regexp] -f template [inputfile ...]
+
+Options:
+
+     -c              : make PATTERN sensitive to comments
+     -f <template>   : use patterns defined in file <template>
+     -i              : make PATTERN sensitive to interpretations
+     -s <reg_exp>    : ignore (skip) lines matching given regular expression
+     -y              : output 'yank' commands needed to extract any found
+                       patterns
+
+  Refer to reference manual for further details.
+

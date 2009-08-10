@@ -1,0 +1,24 @@
+
+METPOS    : Assign metric position indicators to sonorities.
+
+     The METPOS command appends a **metpos spine to an input stream previously
+     processed by TIMEBASE.  The *metpos spine encodes numerical values indi-
+     cating the position in the metric hierarchy for each data record (given
+     a certain meter signature).
+
+     The highest metric position (i.e. beginning of the measure) is assigned
+     the value 1; the next highest metric position (e.g. beat 3 in 4/4) is
+     assigned the value 2.  Values continue to increase for beat and sub-beat
+     positions that are successively lower in the metric hierarchy.
+
+Syntax:
+
+     metpos [-m n/p] [-t n] [inputfile ...]
+
+Options:
+
+     -m n/p  : set the initial meter signature to n/p
+     -t n    : set the initial timebase duration to n
+
+  Refer to reference manual for further details.
+

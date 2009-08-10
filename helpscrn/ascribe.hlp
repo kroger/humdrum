@@ -1,0 +1,34 @@
+
+ASCRIBE  : Format and output thematic reference information
+
+     The "ascribe" command accepts thematic accession numbers provided by
+     the "thema" command to look-up the corresponding reference information.
+     The output includes composer, title, instrumentation, etc.  The
+     output data can be formatted according to the options given below.
+
+     In the default operation, "ascribe" outputs (1) a line indicating the
+     total number of themes specified in the input, followed by (2) reference
+     information for the first FOUR input themes.
+
+Syntax:
+
+     ascribe [-acdgikrt] [-N limit] [-s suppress] [-z file] [reference-list ...]
+
+Options:
+
+   -a	    : output all data (long format) for each theme
+   -c	    : output composer's name
+   -d	    : output date of composition
+   -g	    : output genre
+   -i	    : output instrumentation
+   -k	    : output key
+   -n	    : output the number of matches only
+   -N n	    : limit reference output to first n themes
+   -r	    : output accession numbers
+   -s n	    : suppress reference output unless n or fewer themes
+	      (continue to report number of matches if greater than n)
+   -t	    : output title
+   -z file  : search "file" for reference information rather than default file
+
+  Refer to reference manual for further details.
+

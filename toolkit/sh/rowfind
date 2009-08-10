@@ -1,0 +1,117 @@
+###################################################################
+#                              ROWFIND
+# Programmed by: David Huron        Date: 1994 August 1
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# 						
+# This script carries a preliminary tone-row search in a specified
+# score.  It is assumed that a complete set of set-variant files
+# exists in the current directory, named P0-PB, I0-IB, R0-RB, and RI0-RIB.
+#
+# This scriptputs a file named "analysis" which may be assembled
+# with the original input file.
+#
+# Invoke:
+#
+#       rowfind scorefile
+#
+# Check that the specified input file exists:
+if [ ! -f $1 ]
+then
+	echo "rowfind: ERROR: Input score file $1 not found."
+	exit
+fi
+#
+# Also check that the set-variant files exist:
+if [ ! -f P0 ] || [ ! -f P1 ] || [ ! -f P2 ] || [ ! -f P3 ] || [ ! -f P4 ] || [ ! -f P5 ] || [ ! -f P6 ] || [ ! -f P7 ] || [ ! -f P8 ] || [ ! -f P9 ] || [ ! -f PA ] || [ ! -f PB ]
+then
+	echo "rowfind: ERROR: Prime-row files P0, P1, P2, ... P9, PA, PB not found."
+	exit
+fi
+if [ ! -f I0 ] || [ ! -f I1 ] || [ ! -f I2 ] || [ ! -f I3 ] || [ ! -f I4 ] || [ ! -f I5 ] || [ ! -f I6 ] || [ ! -f I7 ] || [ ! -f I8 ] || [ ! -f I9 ] || [ ! -f IA ] || [ ! -f IB ]
+then
+	echo "rowfind: ERROR: Inversion-row files I0, I1, I2, ... I9, IA, IB not found."
+	exit
+fi
+if [ ! -f R0 ] || [ ! -f R1 ] || [ ! -f R2 ] || [ ! -f R3 ] || [ ! -f R4 ] || [ ! -f R5 ] || [ ! -f R6 ] || [ ! -f R7 ] || [ ! -f R8 ] || [ ! -f R9 ] || [ ! -f RA ] || [ ! -f RB ]
+then
+	echo "rowfind: ERROR: Retrograde-row files R0, R1, R2, ... R9, RA, RB not found."
+	exit
+fi
+if [ ! -f RI0 ] || [ ! -f RI1 ] || [ ! -f RI2 ] || [ ! -f RI3 ] || [ ! -f RI4 ] || [ ! -f RI5 ] || [ ! -f RI6 ] || [ ! -f RI7 ] || [ ! -f RI8 ] || [ ! -f RI9 ] || [ ! -f RIA ] || [ ! -f RIB ]
+then
+	echo "rowfind: ERROR: Retrograde-inversion row files RI0, RI1, RI2, ... RI9, RIA, RIB not found."
+	exit
+fi
+# Also check to ensure that the temporary directory shell variable is defined.
+if [ ! -d $TMPDIR ]
+then
+	echo "Shell temporary directory (\$TMPDIR) undefined."
+	exit
+fi
+#
+pc -atx $1 > $TMPDIR/temp.pc
+humsed 's/r/./g' $TMPDIR/temp.pc > $TMPDIR/score.tmp
+
+# Search for instances of each tone-row variant.
+patt -s '=|^\.(	\.)*$' -f P0 -m $TMPDIR/score.tmp -t P0 | extract -i '**patt' > $TMPDIR/temp0.pat
+patt -s '=|^\.(	\.)*$' -f P1 -m $TMPDIR/score.tmp -t P1 | extract -i '**patt' > $TMPDIR/temp1.pat
+patt -s '=|^\.(	\.)*$' -f P2 -m $TMPDIR/score.tmp -t P2 | extract -i '**patt' > $TMPDIR/temp2.pat
+patt -s '=|^\.(	\.)*$' -f P3 -m $TMPDIR/score.tmp -t P3 | extract -i '**patt' > $TMPDIR/temp3.pat
+patt -s '=|^\.(	\.)*$' -f P4 -m $TMPDIR/score.tmp -t P4 | extract -i '**patt' > $TMPDIR/temp4.pat
+patt -s '=|^\.(	\.)*$' -f P5 -m $TMPDIR/score.tmp -t P5 | extract -i '**patt' > $TMPDIR/temp5.pat
+patt -s '=|^\.(	\.)*$' -f P6 -m $TMPDIR/score.tmp -t P6 | extract -i '**patt' > $TMPDIR/temp6.pat
+patt -s '=|^\.(	\.)*$' -f P7 -m $TMPDIR/score.tmp -t P7 | extract -i '**patt' > $TMPDIR/temp7.pat
+patt -s '=|^\.(	\.)*$' -f P8 -m $TMPDIR/score.tmp -t P8 | extract -i '**patt' > $TMPDIR/temp8.pat
+patt -s '=|^\.(	\.)*$' -f P9 -m $TMPDIR/score.tmp -t P9 | extract -i '**patt' > $TMPDIR/temp9.pat
+patt -s '=|^\.(	\.)*$' -f PA -m $TMPDIR/score.tmp -t P10 | extract -i '**patt' > $TMPDIR/temp10.pat
+patt -s '=|^\.(	\.)*$' -f PB -m $TMPDIR/score.tmp -t P11 | extract -i '**patt' > $TMPDIR/temp11.pat
+assemble $TMPDIR/temp0.pat $TMPDIR/temp1.pat $TMPDIR/temp2.pat $TMPDIR/temp3.pat $TMPDIR/temp4.pat $TMPDIR/temp5.pat $TMPDIR/temp6.pat $TMPDIR/temp7.pat $TMPDIR/temp8.pat $TMPDIR/temp9.pat $TMPDIR/temp10.pat $TMPDIR/temp11.pat > $TMPDIR/temp.pat
+cleave -d ' ' -i '**patt' -o '**rows' $TMPDIR/temp.pat > $TMPDIR/analysis.1
+patt -s '=|^\.(	\.)*$' -f I0 -m $TMPDIR/score.tmp -t I0 | extract -i '**patt' > $TMPDIR/temp0.pat
+patt -s '=|^\.(	\.)*$' -f I1 -m $TMPDIR/score.tmp -t I1 | extract -i '**patt' > $TMPDIR/temp1.pat
+patt -s '=|^\.(	\.)*$' -f I2 -m $TMPDIR/score.tmp -t I2 | extract -i '**patt' > $TMPDIR/temp2.pat
+patt -s '=|^\.(	\.)*$' -f I3 -m $TMPDIR/score.tmp -t I3 | extract -i '**patt' > $TMPDIR/temp3.pat
+patt -s '=|^\.(	\.)*$' -f I4 -m $TMPDIR/score.tmp -t I4 | extract -i '**patt' > $TMPDIR/temp4.pat
+patt -s '=|^\.(	\.)*$' -f I5 -m $TMPDIR/score.tmp -t I5 | extract -i '**patt' > $TMPDIR/temp5.pat
+patt -s '=|^\.(	\.)*$' -f I6 -m $TMPDIR/score.tmp -t I6 | extract -i '**patt' > $TMPDIR/temp6.pat
+patt -s '=|^\.(	\.)*$' -f I7 -m $TMPDIR/score.tmp -t I7 | extract -i '**patt' > $TMPDIR/temp7.pat
+patt -s '=|^\.(	\.)*$' -f I8 -m $TMPDIR/score.tmp -t I8 | extract -i '**patt' > $TMPDIR/temp8.pat
+patt -s '=|^\.(	\.)*$' -f I9 -m $TMPDIR/score.tmp -t I9 | extract -i '**patt' > $TMPDIR/temp9.pat
+patt -s '=|^\.(	\.)*$' -f IA -m $TMPDIR/score.tmp -t I10 | extract -i '**patt' > $TMPDIR/temp10.pat
+patt -s '=|^\.(	\.)*$' -f IB -m $TMPDIR/score.tmp -t I11 | extract -i '**patt' > $TMPDIR/temp11.pat
+assemble $TMPDIR/temp0.pat $TMPDIR/temp1.pat $TMPDIR/temp2.pat $TMPDIR/temp3.pat $TMPDIR/temp4.pat $TMPDIR/temp5.pat $TMPDIR/temp6.pat $TMPDIR/temp7.pat $TMPDIR/temp8.pat $TMPDIR/temp9.pat $TMPDIR/temp10.pat $TMPDIR/temp11.pat > $TMPDIR/temp.pat
+cleave -d ' ' -i '**patt' -o '**rows' $TMPDIR/temp.pat > $TMPDIR/analysis.2
+patt -s '=|^\.(	\.)*$' -f R0 -m $TMPDIR/score.tmp -t R0 | extract -i '**patt' > $TMPDIR/temp0.pat
+patt -s '=|^\.(	\.)*$' -f R1 -m $TMPDIR/score.tmp -t R1 | extract -i '**patt' > $TMPDIR/temp1.pat
+patt -s '=|^\.(	\.)*$' -f R2 -m $TMPDIR/score.tmp -t R2 | extract -i '**patt' > $TMPDIR/temp2.pat
+patt -s '=|^\.(	\.)*$' -f R3 -m $TMPDIR/score.tmp -t R3 | extract -i '**patt' > $TMPDIR/temp3.pat
+patt -s '=|^\.(	\.)*$' -f R4 -m $TMPDIR/score.tmp -t R4 | extract -i '**patt' > $TMPDIR/temp4.pat
+patt -s '=|^\.(	\.)*$' -f R5 -m $TMPDIR/score.tmp -t R5 | extract -i '**patt' > $TMPDIR/temp5.pat
+patt -s '=|^\.(	\.)*$' -f R6 -m $TMPDIR/score.tmp -t R6 | extract -i '**patt' > $TMPDIR/temp6.pat
+patt -s '=|^\.(	\.)*$' -f R7 -m $TMPDIR/score.tmp -t R7 | extract -i '**patt' > $TMPDIR/temp7.pat
+patt -s '=|^\.(	\.)*$' -f R8 -m $TMPDIR/score.tmp -t R8 | extract -i '**patt' > $TMPDIR/temp8.pat
+patt -s '=|^\.(	\.)*$' -f R9 -m $TMPDIR/score.tmp -t R9 | extract -i '**patt' > $TMPDIR/temp9.pat
+patt -s '=|^\.(	\.)*$' -f RA -m $TMPDIR/score.tmp -t R10 | extract -i '**patt' > $TMPDIR/temp10.pat
+patt -s '=|^\.(	\.)*$' -f RB -m $TMPDIR/score.tmp -t R11 | extract -i '**patt' > $TMPDIR/temp11.pat
+assemble $TMPDIR/temp0.pat $TMPDIR/temp1.pat $TMPDIR/temp2.pat $TMPDIR/temp3.pat $TMPDIR/temp4.pat $TMPDIR/temp5.pat $TMPDIR/temp6.pat $TMPDIR/temp7.pat $TMPDIR/temp8.pat $TMPDIR/temp9.pat $TMPDIR/temp10.pat $TMPDIR/temp11.pat > $TMPDIR/temp.pat
+cleave -d ' ' -i '**patt' -o '**rows' $TMPDIR/temp.pat > $TMPDIR/analysis.3
+patt -s '=|^\.(	\.)*$' -f RI0 -m $TMPDIR/score.tmp -t RI0 | extract -i '**patt' > $TMPDIR/temp0.pat
+patt -s '=|^\.(	\.)*$' -f RI1 -m $TMPDIR/score.tmp -t RI1 | extract -i '**patt' > $TMPDIR/temp1.pat
+patt -s '=|^\.(	\.)*$' -f RI2 -m $TMPDIR/score.tmp -t RI2 | extract -i '**patt' > $TMPDIR/temp2.pat
+patt -s '=|^\.(	\.)*$' -f RI3 -m $TMPDIR/score.tmp -t RI3 | extract -i '**patt' > $TMPDIR/temp3.pat
+patt -s '=|^\.(	\.)*$' -f RI4 -m $TMPDIR/score.tmp -t RI4 | extract -i '**patt' > $TMPDIR/temp4.pat
+patt -s '=|^\.(	\.)*$' -f RI5 -m $TMPDIR/score.tmp -t RI5 | extract -i '**patt' > $TMPDIR/temp5.pat
+patt -s '=|^\.(	\.)*$' -f RI6 -m $TMPDIR/score.tmp -t RI6 | extract -i '**patt' > $TMPDIR/temp6.pat
+patt -s '=|^\.(	\.)*$' -f RI7 -m $TMPDIR/score.tmp -t RI7 | extract -i '**patt' > $TMPDIR/temp7.pat
+patt -s '=|^\.(	\.)*$' -f RI8 -m $TMPDIR/score.tmp -t RI8 | extract -i '**patt' > $TMPDIR/temp8.pat
+patt -s '=|^\.(	\.)*$' -f RI9 -m $TMPDIR/score.tmp -t RI9 | extract -i '**patt' > $TMPDIR/temp9.pat
+patt -s '=|^\.(	\.)*$' -f RIA -m $TMPDIR/score.tmp -t RI10 | extract -i '**patt' > $TMPDIR/temp10.pat
+patt -s '=|^\.(	\.)*$' -f RIB -m $TMPDIR/score.tmp -t RI11 | extract -i '**patt' > $TMPDIR/temp11.pat
+assemble $TMPDIR/temp0.pat $TMPDIR/temp1.pat $TMPDIR/temp2.pat $TMPDIR/temp3.pat $TMPDIR/temp4.pat $TMPDIR/temp5.pat $TMPDIR/temp6.pat $TMPDIR/temp7.pat $TMPDIR/temp8.pat $TMPDIR/temp9.pat $TMPDIR/temp10.pat $TMPDIR/temp11.pat > $TMPDIR/temp.pat
+cleave -d ' ' -i '**patt' -o '**rows' $TMPDIR/temp.pat > $TMPDIR/analysis.4
+assemble $TMPDIR/analysis.1 $TMPDIR/analysis.2 $TMPDIR/analysis.3 $TMPDIR/analysis.4 > $TMPDIR/temp
+cleave -d ' ' -i '**rows' -o '**rows' $TMPDIR/temp > analysis.out
+rm $TMPDIR/temp[0-9].pat $TMPDIR/temp1[01].pat $TMPDIR/temp.pat
+rm $TMPDIR/analysis.[1-4] $TMPDIR/temp $TMPDIR/temp.pc $TMPDIR/score.tmp

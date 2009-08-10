@@ -1,0 +1,83 @@
+!! midi Test #31
+!! Test of spine-path splits (*^) and spine-path joins (*v).
+**kern
+*M2/4
+*C:
+=1
+4CC
+4DD
+=2
+!! A split.
+*^
+4EE	4r
+4FF	4r
+=3	=3
+4r	4GG
+*v	*v
+!! A join.
+4AA
+=4
+4BB
+*^
+!! A split.
+4r	4C
+=5	=5
+*	*^
+4r	4D	4r
+!! Split.
+4r	4r	4E
+=6	=6	=6
+4F	4r	4r
+*	*v	*v
+!! Join.
+4r	4G
+=7	=7
+*^	*
+!! Split.
+4r	4r	4A
+4r	4B	4r
+=8	=8	=8
+*	*v	*v
+*v	*v
+4c
+!! Two joins.
+4d
+*^
+=9	=9
+!! Split.
+4r	4e
+*^	*^
+4r	4r	4r	4f
+!! Split again.
+=10	=10	=10	=10
+4r	4g	4r	4r
+*v	*v	*	*
+!! Joins.
+*	*v	*v
+4r	4a
+!! Add non-kern spine.
+*	*+
+*	*	**foo
+=11	=11	not=11
+4b	4r	not4C#
+4r	4cc	not4b-
+=12	=12	.
+!! Terminate.
+*-	*	*
+4dd	not4d#
+!! Add and terminate.
+*-	*+
+*	**kern
+not4c#	4ee
+.	=13
+.	4ff
+*	*+
+*	*	**bar
+.	4gg	not11e-
+not12e	=14	not a barline
+not4d#	4aa	not13a-
+.	4bb	not14gg-
+.	=15	not15dd#
+.	2ccc	not16cc#
+====	====	====
+*-	*-	*-

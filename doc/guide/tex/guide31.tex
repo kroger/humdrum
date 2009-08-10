@@ -1,0 +1,724 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter31}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Repertories and Links}
+
+
+
+In initiating a research project, we often begin by
+selecting a suitable repertory for study.
+A common approach is to focus on a particular composer,
+period, style, or culture.
+For example, a researcher might focus on 17th century canons, or on
+Beethoven's compositions prior to Opus 20, or on Ojibway songs transcribed
+in the 1900s.
+Depending on the research task, the user may wish to locate works
+that conform to highly complex criteria -$\,$-
+such as solo Baroque flute works written in compound
+meters, or slow Russian symphonic movements that don't include any
+wind instruments and are written in minor keys.
+
+\par 
+In this chapter, we discuss how to search entire file-systems
+for Humdrum scores that conform to user-specified criteria.
+With large musical databases,
+automated methods for locating specific
+repertories become important.
+As we will see, in most cases, one or two commands are all
+that is necessary to assemble
+a repertory list of works conforming to complex selection criteria.
+
+
+\subsection*{The \textit{find} Command}
+
+\par 
+The UNIX
+\textbf{find}
+command traverses through a file hierarchy,
+and finds all files that match certain conditions.
+The
+\textbf{find}
+command takes the following syntax:
+
+\par 
+
+\texttt{find} \textit{  }
+
+
+\par 
+The \textit{PATH} is a directory from which the search
+\textit{commences.}
+All files in the specified directory are examined including all files in the
+subdirectories, sub-subdirectories, and so on.
+
+\par 
+The path
+
+\par 
+
+\texttt{/}
+
+
+\par 
+means the "root" directory containing all files on a computer system.
+Even single-user systems are apt to have several thousand files subsumed
+under the root directory.
+
+\par 
+The path
+
+\par 
+
+\texttt{/scores}
+
+
+\par 
+means all files under the \texttt{scores} directory, whereas
+
+\par 
+
+\texttt{/scores/bach}
+
+
+\par 
+means all files under the \texttt{scores/bach} directory.
+The period character:
+
+\par 
+
+\texttt{ .}
+
+
+\par 
+tells
+\textbf{find}
+to commence searching from the current directory.
+
+\par 
+Since
+\textbf{find}
+searches all files under the given path, its operation
+may be quite slow when there are thousands of files to search.
+It's wise to restrict the search by choosing a reasonable starting point.
+For example, specifying the path \texttt{/scores/bach/chorales}
+may save a great deal of time compared with the path \texttt{/scores}.
+Although we won't discuss them in this book, the
+\textbf{find}
+command provides
+a number of options that help to restrict the depth of searches or
+otherwise "prune" the search.
+When first trying
+\textbf{find}
+it's a good idea to limit the searches to small segments of the file system.
+
+
+\par 
+When searching through the specific \textit{PATH},
+\textbf{find}
+is able to carry out a wide variety of possible tests on each file.
+One simple action is to test whether the file-name conforms to a
+given regular expression.
+Consider, for example, the goal of identifying all files representing
+pitch-class
+(\texttt{**pc})
+information.
+The Humdrum convention is to identify these files by adding the \texttt{.pc}
+extension to the filename -$\,$- such as \texttt{opus24.pc}.
+The following
+\textbf{find}
+command will traverse through the \texttt{/scores}
+directory (and all sub-directories) searching for files that contain
+the \texttt{pc} file extension:
+
+\par 
+
+\texttt{find /scores -name *.pc}
+
+
+\par 
+The above command uses the
+\textbf{-name}
+option followed by the appropriate regular expression.
+This command is unusual in that it has no
+explicit \textit{action}.
+In such cases, the implied action is to print or display
+the name of all files whose names match the regular expression.
+
+\par 
+Note that regular expressions may be literal strings.
+This means we can locate a specific named file.
+For example, the following command will locate
+all files named \texttt{findme}:
+
+\par 
+
+\texttt{find / -name findme}
+
+
+\par 
+An example of an explicit \textit{ACTION} might be to delete files conforming
+to a particular criterion.
+For example, the following command
+searches the \texttt{/scores} path for files whose names contain
+the \texttt{.tmp} extension.
+Any matching file is then deleted using the UNIX
+\textbf{rm}
+command:
+
+\par 
+
+\texttt{find /scores -name *.tmp -exec rm "\{\}" ";"}
+
+
+\par 
+This command illustrates a number of features of the
+\textbf{find}
+command.
+The search begins from the
+\textit{path}
+\texttt{/scores}.
+The
+\textit{option}
+\texttt{-name *.tmp} identifies the search condition.
+The \texttt{-exec}
+flag identifies the \textit{action} as that of executing a command.
+The arguments between \texttt{-exec} and the semi-colon are treated as the
+command to be executed.
+Each time a file is found with the \texttt{.tmp}
+extension, the \texttt{-exec} action is executed.
+The paired curly braces \{\}
+have a special significance to
+\textbf{find.}
+The braces are replaced by the filename found to match the regular expression.
+For example, if the first file found is named \texttt{xyz.tmp} the
+braces will be replaced by the string \texttt{xyz.tmp}.
+The quotation marks around the braces and around the semi-colon are
+necessary in order to prevent the UNIX shell interpreter
+from substituting inappropriate information before passing the command
+line to \textbf{rm}.
+
+\par 
+Note that the
+\textbf{-name}
+option defaults to filenames only; it does not apply to directory names.
+The above command is equivalent to the more explicit form:
+
+\par 
+
+\texttt{find /scores -type f -name *.tmp -exec rm "\{\}" ";"}
+
+
+\par 
+The
+\textbf{-type}
+option can be used to match 
+regular files (\textbf{f}), directories (\textbf{d}), or network files (\textbf{n}).
+By way of example, the following command deletes all directories
+whose names have the \texttt{.tmp} extension.
+
+\par 
+
+\texttt{find /scores -type d -name *.tmp -exec rmdir "\{\}" ";"}
+
+
+
+\subsection*{Content Searching}
+
+\par 
+For most music research applications,
+we are interested in identifying files on the basis of their contents.
+That is, we'd like to know what's inside the file before we take any action.
+
+
+\par 
+The
+\textbf{grep}
+command is especially useful in determining whether certain
+items of information are present in a file.
+For example, the following
+command identifies all files in the path \texttt{/scores}
+that contain passages in 7/8 meter:
+
+\par 
+
+\texttt{find /scores -type f -exec grep -l '$\backslash$*M7/8' "\{\}" ";"}
+
+
+\par 
+Recall that the
+\textbf{-l}
+option for
+\textbf{grep}
+causes the output to consist only
+of names of files that contain the sought regular expression.
+Note that the
+\textbf{-type f} option has been specified in order to ensure that the
+\textbf{grep}
+command is only executed for files.
+
+
+\par 
+The structure of the above command can be used to search for all
+sorts of pertinent musical information.
+For example, recall that the \texttt{*IC} tandem interpretation is used to encode
+instrument classes such as strings, voice, percussion, etc.
+The following command
+searches all files in the path \texttt{scores} and generates a list of
+those files that encode scores containing one or more brass instruments:
+
+\par 
+
+\texttt{find scores -type f -exec grep -l '$\backslash$*ICbras' "\{\}" ";"}
+
+
+
+\par 
+The following command identifies all files in the path \texttt{/scores},
+that contain passages in the key of C major:
+
+\par 
+
+\texttt{find /scores -type f -exec grep -l '$\backslash$*C:' "\{\}" ";"}
+
+
+
+\par 
+The following command identifies all files in the path \texttt{/scores},
+that contain passages in any minor key:
+
+\par 
+
+\texttt{find /scores -type f -exec grep -l '$\backslash$*[a-g][\#-]*:' "\{\}" ";"}
+
+
+
+\par 
+Humdrum reference records are ideal targets for such searches
+since reference records encode information such as the composer's name,
+composer's dates, title of work, date of composition, movement number,
+instrumentation, meter classification, and so on.
+For example, the following command identifies all files in the
+path \texttt{/scores} that are composed by Franck:
+
+\par 
+
+\texttt{find /scores -type f -exec grep -l '!!!COM.*Franck' "\{\}" ";"}
+
+
+
+\par 
+The following command identifies all files in the path \texttt{/scores}
+that are written in compound meters:
+
+\par 
+
+\texttt{find /scores -type f -exec grep -l '!!!AMT.*compound' "\{\}" ";"}
+
+
+
+\par 
+The following command identifies all files beginning from the current directory
+that are rondos:
+
+\par 
+
+\texttt{find . -exec grep -il '!!!AFR.*rondo' "\{\}" ";"}
+
+
+\par 
+Recall that the
+\textbf{-i}
+option for
+\textbf{grep}
+makes the pattern-match insensitive to upper- or lower-case.
+
+
+\par 
+The following command identifies all files in the path \texttt{non-western}
+that have been designated as having heterophonic textures:
+
+\par 
+
+\texttt{find non-western -exec grep -il '!!!AST.*heterophony' "\{\}" ";"}
+
+
+
+\par 
+In the path \texttt{/scores/jazz},
+we might want to identify all files
+that contain the style-designation "bebop:"
+
+\par 
+
+\texttt{find /scores/jazz -exec grep -il '!!!AST.*bebop' "\{\}" ";"}
+
+
+
+\par 
+The following command identifies all files in the path \texttt{18th-century},
+that include French horns and oboes:
+
+\par 
+
+\texttt{find 18th-century -exec grep -il '!!!AIN.*cor.*oboe' "\{\}" ";"}
+
+
+
+\par 
+Of course, more complex regular expressions can be also be defined.
+For example, the following command identifies all works composed
+between 1805 and 1809:
+
+\par 
+
+\texttt{find / -exec grep -l '!!!ODT.*180[5-9]' "\{\}" ";"}
+
+
+\par 
+There is no restriction on the complexity of the regular expression.
+The following command identifies all works composed between 1812
+and 1840:
+
+\par 
+
+\texttt{find / -exec egrep -l '!!!ODT.*18(1[2-9])|([23][0-9])|(40)' $\backslash$
+
+"\{\}" ";"}
+
+
+
+\par 
+Often the
+\textbf{find}
+command can be used to answer research questions more directly.
+Suppose we wanted to determine whether
+German drinking songs more likely to be in triple meter.
+There are over four thousand German folksongs encoded in Helmut Schaffrath's
+\textit{Essen Folksong Collection}.
+These works contain genre-related tags encoded as "\texttt{AGN}"
+reference records.
+One of the genres distinguished is "Trinklied" (drinking song).
+
+\par 
+In order to answer our question, we need to search the file system
+for all works that have the "Trinklied" designation, and then generate
+an inventory of meter classifications (available in "AMT" records).
+
+\par 
+
+\texttt{find /scores -type f -exec grep -l '!!AGN.*Trinklied' "\{\}" $\backslash$
+
+";" | grep '!!!AMT.*' | sort | uniq -c}
+
+
+
+\par 
+For the entire database, the output is as follows:
+
+\par 
+
+\texttt{ 1 !!!AMT: compound duple
+\\
+ 4 !!!AMT: irregular
+\\
+14 !!!AMT: simple quadruple
+\\
+ 5 !!!AMT: simple triple}
+
+
+\par 
+There are just 24 drinking songs in the Essen collection and only
+five are in triple meters.
+The proportion of drinking songs in triple meters turns out to be no different
+than the distribution of triple meters in general for German folksongs.
+In other words, according to the
+\textit{Essen Folksong Collection},
+it is not the case that German drinking songs are
+more likely to be in triple meters.
+
+
+\subsection*{Using \textit{find} with the \textit{xargs} Command}
+
+
+\par 
+As we saw in
+Chapter 10,
+the
+\textbf{xargs}
+command can be used to propagate file names from command to command within
+a pipeline.
+Using
+\textbf{xargs}
+in conjunction with
+\textbf{find}
+provides a powerful means for finding works that conform to highly
+complex criteria.
+For example, the following command identifies all files in the path
+\texttt{/corelli} that contain a change of meter signature:
+
+\par 
+
+\texttt{find /corelli -type f -name '*' | xargs grep -c '\^{}$\backslash$*M[0-9]' $\backslash$
+
+| grep -v ':[01]\$'}
+
+
+
+\par 
+The output specifies each filename followed by a colon, followed by
+the number of meter signatures in the corresponding file.
+For example,
+in the following output, the third movement from Opus 1, No. 5 by
+Corelli is identified as containing 6 meter signatures at different
+points in the score:
+
+\par 
+
+\texttt{/corelli/opus1n5c.krn:6
+\\
+/corelli/opus1n9a.krn:3
+\\
+/corelli/opus1n9b.krn:2
+\\
+/corelli/opus1n9d.krn:2}
+
+
+
+\par 
+Similarly, the following command identifies all works that contain
+a change of key signature:
+
+\par 
+
+\texttt{find /scores -type f -name '*' | xargs grep -c '\^{}$\backslash$*k$\backslash$[' $\backslash$
+
+| grep -v ':[01]\$'}
+
+
+
+
+\par 
+As a further example of the use of \textbf{xargs},
+consider the following extension of the above pipeline.
+The
+\textbf{grep -v}
+command causes only those files containing more than one key signature to be passed.
+The
+\textbf{sed}
+command eliminates the colon and the number appended to the filenames.
+The ensuing
+\textbf{grep -c}
+counts the number of meter signatures in each file.
+The final
+\textbf{grep -v}
+passes only those filenames containing 2 or more meter signatures.
+
+\par 
+
+\texttt{find / -type f -name '*' | xargs grep -c '\^{}$\backslash$*k$\backslash$[' | $\backslash$
+
+grep -v ':[01]\$' | sed 's/:.*\$//' | $\backslash$
+\\
+xargs grep -c '\^{}$\backslash$*M[0-9]' | grep -v ':[01]\$'}
+
+
+
+\par 
+In summary, the above pipeline identifies all scores that contain both a
+change of key signature as well as a change of meter signature.
+
+
+\par 
+The
+\textbf{xargs}
+command can also be used to process a list of files -$\,$- where the list
+has been stored in a file.
+For example, suppose we used the
+\textbf{find}
+command to locate all scores in compound meters written for woodwind quintet:
+
+\par 
+
+\texttt{find . -name '*' | xargs grep -l '!!!AMT:.*compound' $\backslash$
+
+
+| xargs grep -l '!!!AIN: clars cor fagot flt oboe' > scorelist}
+
+
+\par 
+The resulting list of files can be used for further processing.
+For example, we might search these files for any scores containing changes
+of key:
+
+\par 
+
+\texttt{cat scorelist | xargs grep -c '\^{}$\backslash$*[A-Ga-g][\#-]*:' | grep -v ':[01]\$'}
+
+
+\par 
+The output identifies all scores in compound meters written for woodwind quintet
+that contain changes of key.
+
+
+\subsection*{Repertories As File Links}
+
+\par 
+Rather than applying commands to files stored in a list,
+it is often helpful to have all of the files accessible in one location.
+That is, we might create a directory containing only those
+score-files that meet our selection criteria.
+it is often helpful to have all of the files accessible in one location.
+We might simply make copies of the files in a special directory.
+However, UNIX systems make it possible to create "links"
+to files in other directories without having to make duplicate copies
+of already existing files.
+
+\par 
+Suppose you wanted to make a directory of all scores containing
+vocal parts.
+The following command creates a file
+(\texttt{vocalfiles}) listing all files
+in the path \texttt{/scores} that contain one or more vocal parts:
+
+\par 
+
+\texttt{find /scores -exec grep -l '!!!AIN.*vox' "\{\}" ";" > vocalfiles}
+
+
+\par 
+The contents of \texttt{vocalfiles} might look like the following:
+
+\par 
+
+\texttt{/scores/bach/cantatas/cant140.krn
+\\
+/scores/bach/chorales/chor217.krn
+\\
+/scores/bach/chorales/midi/chor368.hmd}
+\\
+etc.
+
+
+\par 
+We can create an appropriate new directory using the
+\textbf{mkdir}
+command.
+
+\par 
+
+\texttt{mkdir vocal}
+
+
+\par 
+Next, edit the file containing the list of filenames as follows.
+Insert
+\textbf{ln -s}
+prior to each filename, and append the directory
+name \texttt{vocal} at the end of each line.
+
+\par 
+
+\texttt{ln -s /scores/bach/cantatas/cant140.krn vocal
+\\
+ln -s /scores/bach/chorales/chor217.krn vocal
+\\
+ln -s /scores/bach/chorales/midi/chor368.hmd vocal}
+\\
+etc.
+
+
+\par 
+(The \textbf{-s} option for
+\textbf{ln}
+is used to create a so-called "symbolic" link.)
+
+\par 
+Using the
+\textbf{chmod}
+command, we can make this file executable, and then we can execute it:
+
+\par 
+
+\texttt{chmod +x vocalfiles
+\\
+./vocalfiles}
+
+
+\par 
+We now have a new directory whose files contain scores with vocal parts.
+
+
+
+\subsection*{Reprise}
+
+\par 
+The
+\textbf{find}
+command provides a convenient way to traverse through
+an entire file-system looking for files that conform to specific
+criteria.
+In musicological tasks, the
+\textbf{find}
+command is especially well suited to assembling a repertory of scores
+that exhibit some characteristic(s) of interest.
+Multiple selection criteria can be accommodated by using one or more
+pipes in conjunction with the
+\textbf{grep}
+command.
+
+\par 
+For convenience, it is often helpful to create a new directory
+that holds all of works selected for a study repertory.
+On UNIX systems, file "links" can be created,
+so that there is no need to make multiple copies of the same score.
+This means that several concurrent directory structures can be created
+without duplicating files.
+For example, a given score may be accessed in one directory
+structure via \textit{composer}, in another directory via \textit{instrumentation},
+in a third directory via \textit{genre}, and so on.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

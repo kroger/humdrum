@@ -1,0 +1,8 @@
+!! "humdrum: ERROR 6: Missing initial asterisk in interpretation"
+!! "keyword in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 6
+**ex	**ex	**ex
+*good	bad	*good
+**good	**good	bad
+*-	*-	*-

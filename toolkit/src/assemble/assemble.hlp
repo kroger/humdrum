@@ -1,0 +1,24 @@
+
+ASSEMBLE  : Amalgamate two or more Humdrum files.
+
+     This command allows two or more structurally similar Humdrum files to
+     be aligned together -- such as where a full score is assembled from
+     files containing individual parts.
+
+     The ASSEMBLE command vertically combines two or more files in a manner
+     similar to the UNIX "paste" command.
+
+Syntax:
+
+     assemble file1 [file2] [file3 ...]
+
+Options:
+
+     None.
+
+See Also:
+
+     TIMEBASE
+
+  Refer to reference manual for further details.
+

@@ -1,0 +1,26 @@
+!! MIDI Test 34
+!! Tests case when rests immediately precede barlines
+!!
+**kern
+*MM108
+*M4/4
+=1
+4c
+4d
+4e
+4r
+=2
+4e
+4f
+4g
+4r
+=3
+4g
+4a
+4b
+4r
+=4
+4cc
+2.r
+==
+*-

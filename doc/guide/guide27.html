@@ -1,0 +1,1509 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 27</TITLE>
+<!-- Chapter 27 (Text and Lyrics) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:16:03 EST 2000">
+<meta name="description" content="Chapter 27 (Text and Lyrics) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<body>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<br>
+
+<H1>Chapter27</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide26.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide28.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Text and Lyrics</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+Musical texts include lyrics, librettos, stage directions, recitativo
+and other collections of words.
+It goes without saying that words provide important information
+related to semantics, imagery, similes, allusion, irony, parody, word painting,
+and emotion.
+In addition, words can add to the sonorous dimension of music,
+including rhyme schemes, word-rhythms, and phonetic and syllabic effects
+such as alliteration, vowel-coloration.
+</P>
+<P>
+Humdrum provides three pre-defined representations pertinent
+to text or lyrics.
+The
+<A HREF="representations/text.rep.html"><code><big>**text</code></big></A>
+representation can be used to represent <i>words</i>;
+the
+<A HREF="representations/silbe.rep.html"><code><big>**silbe</code></big></A>
+representation can be used to represent <i>syllables</i>;
+and the
+<A HREF="representations/IPA.rep.html"><code><big>**IPA</code></big></A>
+representation can be used to represent <i>phonemes</i>
+(via the International Phonetic Alphabet).
+Discussion of the <code><big>**IPA</big></code> representation will be delayed
+until
+<A HREF="guide34.html">Chapter 34.</A>
+In this chapter we will look at various representational and processing
+issues related to the manipulation of words and syllables.
+</P>
+<A NAME="The_**text_and_**silbe_Representations">
+<H2>The <i>**text</i> and <i>**silbe</i> Representations</H2>
+</P>
+<A NAME="Byrd">
+<P>
+Syllable- and word-oriented representations are
+illustrated in the following excerpt from a motet by Byrd (Example 27.1).
+The encoded Humdrum data includes three spines:
+<code><big>**text</big></code>, <code><big>**silbe</big></code> and <code><big>**kern</big></code>.
+Normally, only the <code><big>**silbe</big></code> and <code><big>**kern</big></code> data would be
+encoded -- since the <code><big>**text</big></code> spine can be generated
+from the <code><big>**silbe</big></code> representation.
+<br><br>
+<b>Example 27.1.</b>  From William Byrd, <i>Why Do I use my paper ink and pen.</i>
+<blockquote>
+<img src="guide.figures/guide27.1.gif">
+<blockquote><TABLE>
+<TR><TD><code><big>!!!COM: Byrd, William</TD></TR>
+<TR><TD>!!!OTL: Why do I use my paper ink and pen.</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD>**text</TD><TD>**silbe</TD><TD>**kern</TD></TR>
+<TR><TD>*LEnglish</TD><TD>*LEnglish</TD><TD>*</TD></TR>
+<TR><TD>=11</TD><TD>=11</TD><TD>=11</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>2r</TD></TR>
+<TR><TD>Why</TD><TD>Why</TD><TD>2g</TD></TR>
+<TR><TD>=12</TD><TD>=12</TD><TD>=12</TD></TR>
+<TR><TD>do</TD><TD>do</TD><TD>2b-</TD></TR>
+<TR><TD>I</TD><TD>I</TD><TD>2a</TD></TR>
+<TR><TD>=13</TD><TD>=13</TD><TD>=13</TD></TR>
+<TR><TD>use</TD><TD>use</TD><TD>4g</TD></TR>
+<TR><TD>my</TD><TD>my</TD><TD>4g</TD></TR>
+<TR><TD>paper</TD><TD>pa-</TD><TD>[2dd</TD></TR>
+<TR><TD>=14</TD><TD>=14</TD><TD>=14</TD></TR>
+<TR><TD><code><big>.</TD><TD>|</TD><TD>2dd]</TD></TR>
+<TR><TD><code><big>.</TD><TD>-per</TD><TD>2cc</TD></TR>
+<TR><TD>=15</TD><TD>=15</TD><TD>=15</TD></TR>
+<TR><TD>ink</TD><TD>ink</TD><TD>2.ff</TD></TR>
+<TR><TD>and</TD><TD>and</TD><TD>(4ee</TD></TR>
+<TR><TD>=16</TD><TD>=16</TD><TD>=16</TD></TR>
+<TR><TD><code><big>.</TD><TD>|</TD><TD>4dd</TD></TR>
+<TR><TD><code><big>.</TD><TD>|</TD><TD>4cc</TD></TR>
+<TR><TD><code><big>.</TD><TD>|</TD><TD>4b-</TD></TR>
+<TR><TD><code><big>.</TD><TD>|</TD><TD>4cc</TD></TR>
+<TR><TD>=17</TD><TD>=17</TD><TD>=17</TD></TR>
+<TR><TD>pen,</TD><TD>pen,</TD><TD>1dd</TD></TR>
+<TR><TD>=18</TD><TD>=18</TD><TD>=18</TD></TR>
+<TR><TD>and</TD><TD>and</TD><TD>1dd</TD></TR>
+<TR><TD>=19</TD><TD>=19</TD><TD>=19</TD></TR>
+<TR><TD>pen,</TD><TD>pen,</TD><TD>1dd</TD></TR>
+<TR><TD>=20</TD><TD>=20</TD><TD>=20</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>2r</TD></TR>
+<TR><TD>and</TD><TD>and</TD><TD>2ff</TD></TR>
+<TR><TD>=21</TD><TD>=21</TD><TD>=21</TD></TR>
+<TR><TD>call</TD><TD>call</TD><TD>2.ee</TD></TR>
+<TR><TD>my</TD><TD>my</TD><TD>4dd</TD></TR>
+<TR><TD>=22</TD><TD>=22</TD><TD>=22</TD></TR>
+<TR><TD>wits</TD><TD>wits</TD><TD>1cc#</TD></TR>
+<TR><TD>=23</TD><TD>=23</TD><TD>=23</TD></TR>
+<TR><TD>to</TD><TD>to</TD><TD>2ee</TD></TR>
+<TR><TD>counsel</TD><TD>coun-</TD><TD>[2aa</TD></TR>
+<TR><TD>=24</TD><TD>=24</TD><TD>=24</TD></TR>
+<TR><TD><code><big>.</TD><TD>-sel</TD><TD>4aa]</TD></TR>
+<TR><TD>what</TD><TD>what</TD><TD>4ff</TD></TR>
+<TR><TD>to</TD><TD>to</TD><TD>(8ee</TD></TR>
+<TR><TD><code><big>.</TD><TD>|</TD><TD>8dd</TD></TR>
+<TR><TD>=25</TD><TD>=25</TD><TD>=25</TD></TR>
+<TR><TD><code><big>.</TD><TD>|</TD><TD>4cc</TD></TR>
+<TR><TD><code><big>.</TD><TD>|</TD><TD>4dd</TD></TR>
+<TR><TD><code><big>.</TD><TD>|</TD><TD>4.ee</TD></TR>
+<TR><TD><code><big>.</TD><TD>|</TD><TD>8dd</TD></TR>
+<TR><TD>=26</TD><TD>=26</TD><TD>=26</TD></TR>
+<TR><TD><code><big>.</TD><TD>|</TD><TD>4ee</TD></TR>
+<TR><TD><code><big>.</TD><TD>|</TD><TD>4ee</TD></TR>
+<TR><TD><code><big>.</TD><TD>|</TD><TD>2dd)</TD></TR>
+<TR><TD>=27</TD><TD>=27</TD><TD>=27</TD></TR>
+<TR><TD>say,</TD><TD>say,</TD><TD>1cc#</TD></TR>
+<TR><TD>=28</TD><TD>=28</TD><TD>=28</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</blockquote>
+Note that all three representations in Example 27.1 make use of
+the common system for representing barlines.
+In the
+<A HREF="representations/text.rep.html"><code><big>**text</big></code></A>
+representation tokens represent individual words.
+In some scores, several words will be associated with a single moment
+(or pitch), as in the case of
+<i>recitativo</i>
+passages.
+Multi-word tokens are encoded as Humdrum multiple-stops with a space
+separating each word on a record.
+</P>
+<P>
+In the
+<A HREF="representations/silbe.rep.html"><code><big>**silbe</big></code></A>
+representation tokens represent individual syllables.
+In <code><big>**silbe</big></code> the hyphen (-) is used explicitly to signify syllable
+boundaries and the tilde (~) is used to signify boundaries
+between hyphenated words (necessarily also a syllable boundary).
+In other words, four types of syllables are distinguished by <code><big>**silbe</big></code>:
+(1) a single-syllable word,
+(2) a word-initiating syllable,
+(3) a word-completing syllable, and
+(4) a mid-word syllable.
+The following table illustrates how these signifiers are used:
+<br><br>
+<b>Table 26.1.</b>
+<blockquote><TABLE>
+<TR><TD><i>text</TD><TD></i>a single-syllable word</TD></TR>
+<TR><TD><i>text-</TD><TD></i>a word-initiating syllable</TD></TR>
+<TR><TD><i>-text</TD><TD></i>a word-completing syllable</TD></TR>
+<TR><TD><i>-text-</TD><TD></i>a mid-word syllable</TD></TR>
+<TR><TD><i>text~</TD><TD></i>a single-syllable word beginning a hyphenated multi-word</TD></TR>
+<TR><TD><i>~text</TD><TD></i>a single-syllable word completing a hyphenated multi-word</TD></TR>
+<TR><TD><i>~text~</TD><TD></i>a single-syllabe word continuing a hyphenated multi-word</TD></TR>
+<TR><TD><i>~text-</TD><TD></i>a word-initating syllable continuing a hyphenated multi-word</TD></TR>
+<TR><TD><i>-text~</TD><TD></i>a word-completing syllable -- part of a hyphenated multi-word</TD></TR>
+</TABLE></blockquote>
+Both the <code><big>**text</big></code> and <code><big>**silbe</big></code> representations are able to
+distinguish different tones of voice such as spoken voice, whispered voice,
+laughing voice, emotional voice,
+<i>Sprechstimme</i>
+and humming.
+In addition, there are signifiers for indicating untexted laughter
+and untexted sobs or crys.
+Some sample signifiers are shown in Table 26.2
+<br><br>
+<b>Table 26.2.</b>
+<blockquote><TABLE>
+<TR><TD><code><big>A-Z</TD><TD></big></code>upper-case letters A to Z</TD></TR>
+<TR><TD><code><big>a-z</TD><TD></big></code>lower-case letters a-z</TD></TR>
+<TR><TD><code><big>(</TD><TD></big></code>open parenthesis</TD></TR>
+<TR><TD><code><big>)</TD><TD></big></code>closed parenthesis</TD></TR>
+<TR><TD><code><big>{</TD><TD></big></code>beginning of phrase</TD></TR>
+<TR><TD><code><big>}</TD><TD></big></code>end of phrase</TD></TR>
+<TR><TD><code><big>%</TD><TD></big></code>silence (rest) token (character by itself)</TD></TR>
+<TR><TD><code><big>M</TD><TD></big></code>humming voice (character by itself)</TD></TR>
+<TR><TD><code><big>[</TD><TD></big></code>beginning of spoken voice</TD></TR>
+<TR><TD><code><big>[[</TD><TD></big></code>beginning of whisper</TD></TR>
+<TR><TD><code><big>]</TD><TD></big></code>end of spoken voice</TD></TR>
+<TR><TD><code><big>]]</TD><TD></big></code>end of whisper</TD></TR>
+<TR><TD><code><big><</TD><TD></i>beginning of <i>Sprechstimme</i></TD></TR>
+<TR><TD><code><big>></TD><TD></i><i>end of Sprechstimme</i></TD></TR>
+<TR><TD><code><big>#</TD><TD></big></code>beginning of laughing voice</TD></TR>
+<TR><TD><code><big>##</TD><TD></big></code>end of laughing voice</TD></TR>
+<TR><TD><code><big>@</TD><TD></big></code>laughter (no text)</TD></TR>
+<TR><TD><code><big>&</TD><TD></big></code>sob or cry (no text)</TD></TR>
+<TR><TD><code><big>$</TD><TD></big></code>beginning of emotional voice</TD></TR>
+<TR><TD><code><big>$$</TD><TD></big></code>end of emotional voice</TD></TR>
+<TR><TD><code><big>*</TD><TD></big></code>follows stressed word (<code><big>**test</big></code>) or stressed syllable (<code><big>**silbe</big></code>)</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Signifiers common to <b>**text</b> and <b>**silbe</b></i>
+</CENTER>
+</P>
+<P>
+<A NAME="The_text_Command">
+<H2>The <i>text</i> Command</H2>
+</P>
+<P>
+In most notated music, lyrics are written using a syllabic representation
+rather than a word-oriented representation.
+The <code><big>**silbe</big></code> representation is typically a better representation
+of the score than <code><big>**text</big></code>.
+However, for many analytic applications, words often prove
+to be more convenient.
+The Humdrum
+<b>text</b>
+command can be used to translate <code><big>**silbe</big></code> data to <code><big>**text</big></code> data.
+In general, syllabic information is useful for addressing questions related to
+rhythm and rhyme, whereas text information is more useful for addressing
+questions related to semantics, metaphor, word-painting, etc.
+</P>
+<P>
+Invoking the
+<b>text</b>
+command is straightforward:
+</P>
+<P>
+<blockquote>
+<code><big>text inputfile > outputfile</big></code>
+</blockquote>
+</P>
+<A NAME="Find_Liebe">
+<P>
+A simple text-related task might be looking for occurrences of a particular
+word, such as the German "Liebe" (love).
+If the lyrics are encoded in the
+<A HREF="representations/text.rep.html"><code><big>**text</big></code></A>
+representation, then a simple
+<b>grep</b>
+will suffice:
+</P>
+<P>
+<blockquote>
+<code><big>grep -n 'Liebe' schubert</big></code>
+</blockquote>
+</P>
+<P>
+Recall that the
+<b>-n</b>
+option gives the line number of any occurrences found.
+If the input is encoded in the
+<A HREF="representations/silbe.rep.html"><code><big>**silbe</big></code></A>
+representation,
+then the output of
+<b>text</b>
+can be piped to <b>grep</b>:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**silbe' schubert | text | grep -n 'Liebe'</big></code>
+</blockquote>
+</P>
+<A NAME="word_inventory">
+<P>
+Given a <code><big>**silbe</big></code> input, a inventory of words can be generated using
+<b>sort</b>
+and
+<b>uniq</b>
+in the usual way:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**silbe' song | text | rid -GLId | sort | uniq</big></code>
+</blockquote>
+</P>
+<P>
+Frequently, it is useful to search for a group of words
+rather than individual words.
+Suppose we are looking for the phrase "white Pangur."
+The
+<A HREF="commands/context.html"><b>context</b></A>
+command can be used to amalgamate words as multiple stops.
+If we are looking for a phrase consisting of just two words,
+we might use the
+<b>-n 2</b>
+option for <b>context</b>:
+</P>
+<P>
+<blockquote>
+<code><big>text barber | context -n 2 | grep -i 'white Pangur'</big></code>
+</blockquote>
+</P>
+<A NAME="Punctuation">
+<P>
+Alternatively, we might amalgamate words so they form sentences,
+or at least phrases.
+Puntuation marks provide a convenient marker for
+ending the amalgamation process carried out by <b>context</b>.
+In the following command, we have defined a regular expression
+with a character-class containing all of the puntuation marks.
+The output from this command will display all punctuated phrases
+(one per line) that contain the phrase "white Pangur."
+</P>
+<P>
+<blockquote>
+<code><big>text | context -e '[.,;?!]' | grep -i 'white Pangur'</big></code>
+</blockquote>
+</P>
+<A NAME="The_fmt_Command">
+<H2>The <i>fmt</i> Command</H2>
+</P>
+<P>
+Another common task is simply to provide a readable text of the
+text or lyrics of a work.
+Given a <code><big>**text</big></code> representation, we can use the
+<A HREF="commands/rid.html"><b>rid</b></A>
+command to eliminate all records except non-null data records.
+This will result in a list of words -- one word per line.
+UNIX provides a simple text formatter called
+<b>fmt</b>
+that will assemble words or lines into a block text where
+all output lines are roughly the same width.
+<A NAME="A_Solis_Ortus">
+<A NAME="Gregorian_Chant">
+<A NAME="Liber_Usualis">
+Consider the Gregorian chant
+<i>A Solis Ortus</i>
+from the
+<i>Liber Usualis</i>
+(shown in Example 27.2.)
+<br><br>
+<b>Example 27.2.</b>  Beginning of chant <i>A Solis Ortus</i>.
+<blockquote>
+<img src="guide.figures/guide27.2.gif">
+</blockquote>
+The Latin text for this chant can be formatted as follows:
+<blockquote>
+<code><big>extract -i '**silbe' chant12 | text | rid -GLId | fmt -50</big></code>
+</blockquote>
+</P>
+<P>
+The
+<b>-50</b>
+option tells
+<b>fmt</b>
+to place no more than 50 characters per line.
+The default line-length is 72 characters.
+The above pipeline produces the following output:
+</P>
+<P>
+<blockquote>
+<br>
+<code><big>A solis ortus cardine ad usque terrae limitem,
+<br>
+Christum canamus principem, natum Maria Virgine.
+<br>
+Beatus auctor saeculi servile corpus induit: ut
+<br>
+carne carnem liberans, ne perderet quos condidit.
+<br>
+Castae parentis viscera cae lestis intratgratia:
+<br>
+venter puellae bajulat secreta, quae non noverat.
+<br>
+Domus pudici pectoris tem plum repente fit Dei:
+<br>
+intacta nesciens virum, concepit alvo filium.</big></code>
+</blockquote>
+</P>
+<P>
+Another useful output would have the text arranged with one sentence
+or phrase on each line.
+As before we can use the
+<A HREF="commands/context.html"><b>context</b></A>
+command with the
+<b>-e</b>
+option to amalgamate words, where each amalgamated line ends with
+a punctuation mark:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**silbe' chant12 | text | context -e '[.,;:?!]' \
+<blockquote>
+| rid -GLId</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+The corresponding output is:
+</P>
+<P>
+<blockquote>
+<br>
+<code><big>A solis ortus cardine ad usque terrae limitem,
+<br>
+Christum canamus principem,
+<br>
+natum Maria Virgine.
+<br>
+Beatus auctor saeculi servile corpus induit:
+<br>
+ut carne carnem liberans,
+<br>
+ne perderet quos condidit.
+<br>
+Castae parentis viscera cae lestis intratgratia:
+<br>
+venter puellae bajulat secreta,
+<br>
+quae non noverat.
+<br>
+Domus pudici pectoris tem plum repente fit Dei:
+<br>
+intacta nesciens virum,
+<br>
+concepit alvo filium.</big></code>
+</blockquote>
+</P>
+<P>
+Yet another way of arranging the text output would be to parse
+the text according to explicit phrase marks in the
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+data.
+This will require a little more work, but it's worth going through the steps
+since the same process can be applied to any representation.
+First, we will need to transfer the end-of-phrase signifier (`<code><big>}</big></code>') from
+the <code><big>**kern</big></code> spine to the <code><big>**silbe</big></code> spine.
+This transfer entails four steps.
+(1) Extract the monophonic <code><big>**kern</big></code> spine and eliminate all data
+signifiers except closing curly braces (`<code><big>}</big></code>').
+Store the result in a temporary file:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**kern' chant12 | humsed 's/[^}]*//; s/^$/./' \
+<blockquote>
+> temp1</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Notice that
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+has been given two substitution commands.
+The first eliminates all data signifiers except the close curly brace.
+The second substitution transforms empty output lines to null data records
+by adding a single period.
+</P>
+<P>
+(2) Extract the <code><big>**silbe</big></code> spine, translate it to <code><big>**text</big></code>
+and store the result in another temporary file:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**silbe' chant12 | text > temp2</big></code>
+</blockquote>
+</P>
+<P>
+(3) Assemble the two temporary files together and use the
+<A HREF="commands/cleave.html"><b>cleave</b></A>
+command to join the end-of-phrase marker to the syllable representation.
+</P>
+<P>
+<blockquote>
+<code><big>assemble temp1 temp2 | cleave -i '**kern,**text' \
+<blockquote>
+-o '**text' > temp3</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+With this cleaved data we can now use the
+<b>context</b>
+command to amalgamate phrase-related text.
+Finally,
+<b>rid</b>
+is used to eliminate everything but non-null data records.
+</P>
+<P>
+<blockquote>
+<code><big>context -o = -e } temp3 | rid -GLId</big></code>
+</blockquote>
+</P>
+<P>
+The result is as follows:
+<blockquote>
+<code><big>A solis ortus cardine }
+<br>
+ad usque terrae limitem, }
+<br>
+Christum canamus principem, }
+<br>
+natum Maria Virgine. }
+<br>
+Beatus auctor saeculi }
+<br>
+servile corpus induit: }
+<br>
+ut carne carnem liberans, }
+<br>
+ne perderet quos condidit. }
+<br>
+Castae parentis viscera }
+<br>
+cae lestis intratgratia: }
+<br>
+venter puellae bajulat }
+<br>
+secreta, quae non noverat. }
+<br>
+Domus pudici pectoris }
+<br>
+tem plum repente fit Dei: }
+<br>
+intacta nesciens virum, }
+<br>
+concepit alvo filium. }</big></code>
+</blockquote>
+</P>
+<P>
+We could clean up the output by using the
+<b>sed</b>
+command to remove the trailing closed curly brace.
+We simple add the following to the pipeline:
+</P>
+<P>
+<blockquote>
+<code><big> . . . | sed 's/}//'</big></code>
+</blockquote>
+</P>
+<P>
+You might have noticed that each of the above phrases seems to consist
+of eight syllables.
+We can confirm this by returning to the syllabic rather than
+word-oriented output.
+For the above command sequence, simply omit the
+<b>text</b>
+command and replace <code><big>**text</big></code> with <code><big>**silbe</big></code>.
+The revised script becomes:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**kern' chant12 | humsed 's/[^}]*//; s/^$/./' \
+<blockquote>
+> temp1</big></code>
+</blockquote>
+<br>
+<code><big>extract -i '**silbe' chant12 > temp2</big></code>
+<br>
+<code><big>assemble temp1 temp2 | cleave -i '**kern,**silbe' \
+<blockquote>
+-o '**silbe' > temp3</big></code>
+</blockquote>
+<code><big>context -o = -e } temp3 | rid -GLId | sed 's/}//'</big></code>
+</blockquote>
+</P>
+<P>
+The corresponding output is:
+<blockquote>
+<code><big>A so/- -lis or/- -tus car/- -di- -ne
+<br>
+ad us- -que ter/- -rae li/- -mi- -tem,
+<br>
+Chri/- -stum ca- -na/- -mus prin/- -ci- -pem, 
+<br>
+na/- -tum Ma- -ri/- -a Vir/- -gi- -ne.
+<br>
+Be- -a/- -tus au/- -ctor sae/- -cu- -li
+<br>
+ser- -vi/- -le cor/- -pus in/- -du- -it:
+<br>
+ut car/- -ne car/- -nem li/- -be- -rans, 
+<br>
+ne per/- -de- -ret quos con/- -di- -dit.
+<br>
+Ca/- -stae pa- -ren/- -tis vis/- -ce- -ra
+<br>
+cae/ le/- -stis in/- -trat- -gra/- -ti- -a:
+<br>
+ven/- -ter pu- -el/- -lae ba/- -ju- -lat 
+<br>
+se- -cre/- -ta, quae non no/- -ve- -rat.
+<br>
+Do/- -mus pu- -di- -ci pe/- -cto- -ris
+<br>
+tem/ plum re- -pen/- -te fit De/- -i:
+<br>
+in- -ta/- -cta ne/- -sci- -ens vi/- -rum, 
+<br>
+con- -ce/- -pit al/- -vo fi/- -li- -um.</big></code>
+</blockquote>
+</P>
+<A NAME="syllables_per_phrase">
+<P>
+If we are looking for vocal texts that exhibit a recurring rhythm,
+we might make a simple addition to the above script.
+Instead of outputting the actual syllables in each phrase,
+we would output a count of the number of syllables in each phrase.
+The standard
+<b>awk</b>
+utility allows us to write simple in-line programs.
+The following
+<b>awk</b>
+script simply outputs the number of fields (white-space separated text)
+in each input line:
+</P>
+<P>
+<blockquote>
+<code><big>awk '{print NF}'</big></code>
+</blockquote>
+</P>
+<P>
+If we add this to the end of our command sequence, then
+the output would simply be a sequence of numbers -- where each
+number indicates the number of syllables in successive phrases.
+In the case of
+<i>O Solis Ortus</i>
+our output would consist of a series of 8s indicating that
+each phrase contains precisely eighth syllables.
+</P>
+<P>
+By way of summary, we can generalize the above process so that
+syllable/phrase schemes can be generated for any syllable-related input.
+The following script counts the number of
+syllables in successive phrases for a single input file.
+</P>
+<P>
+<blockquote>
+<br>
+<code><big># SYLLABLE - count the number of syllables in each phrase
+<br>
+#
+<br>
+# Usage: syllable filename [ > outputfile]
+<br>
+#
+<br>
+extract -i '**kern' $1 | humsed 's/[^}]*//; s/^$/./' > temp1
+<br>
+extract -i '**silbe' $1 > temp2
+<br>
+assemble temp1 temp2 | cleave -i '**kern,**silbe' -o '**silbe' \
+<br>
+<blockquote>
+<br>
+| context -o = -e } | rid -GLId | sed 's/}//' | awk '{print NF}'
+<br>
+</blockquote>
+<br>
+rm temp[12]</big></code>
+</blockquote>
+</P>
+<P>
+Variations on this theme abound.
+For example, if we wish to determine the number
+of syllables between successive punctuation marks,
+the following pipeline could be used:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**silbe' | context -o = -e '[.,;:?!]' \
+<blockquote>
+| rid -GLId | awk '{print NF}'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Rhythmic_Feet_in_Text">
+<H2>Rhythmic Feet in Text</H2>
+</P>
+<P>
+Another question related to rhythm is to identify rhythmic patterns.
+Once again, we might look at the chant
+<i>O Solis Ortus.</i>
+Below we have recoded the syllables in each phrase,
+where the value <code><big>0</big></code> indicates an unstressed syllable and <code><big>1</big></code>
+indicates a stressed syllable:
+</P>
+<P>
+<blockquote>
+<br>
+<code><big>0 1 0 1 0 1 0 0
+<br>
+0 0 0 1 0 1 0 0
+<br>
+1 0 0 1 0 1 0 0 
+<br>
+1 0 0 1 0 1 0 0
+<br>
+0 1 0 1 0 1 0 0
+<br>
+0 1 0 1 0 1 0 0
+<br>
+0 1 0 1 0 1 0 0 
+<br>
+0 1 0 0 0 1 0 0
+<br>
+1 0 0 1 0 1 0 0
+<br>
+1 1 0 1 0 1 0 0
+<br>
+1 0 0 1 0 1 0 0 
+<br>
+0 1 0 0 0 1 0 0
+<br>
+1 0 0 0 0 1 0 0
+<br>
+1 0 0 1 0 0 1 0
+<br>
+0 1 0 1 0 0 1 0 
+<br>
+0 1 0 1 0 1 0 0</big></code>
+</blockquote>
+</P>
+<P>
+The above output was generated using the
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+command.
+Any syllable containing a trailing asterisk (<code><big>*</big></code>) is re-written
+as a `1', otherwise as a `0'.
+</P>
+<P>
+<blockquote>
+<code><big> . . . | humsed 's/[^ ][^ ]*\*/1/g; s/[^1][^1]*$/0/g'</big></code>
+</blockquote>
+</P>
+<P>
+With the above output, we can generate an inventory of phrase-related
+text-rhythms.
+</P>
+<P>
+<blockquote>
+<code><big> . . . | sort | uniq -c | sort</big></code>
+</blockquote>
+</P>
+<P>
+With the following results:
+</P>
+<P>
+<blockquote>
+<br>
+<code><big>5	0 1 0 1 0 1 0 0
+<br>
+4	1 0 0 1 0 1 0 0
+<br>
+2	0 1 0 0 0 1 0 0
+<br>
+1	0 1 0 1 0 0 1 0
+<br>
+1	1 1 0 1 0 1 0 0
+<br>
+1	1 0 0 0 0 1 0 0
+<br>
+1	1 0 0 1 0 0 1 0
+<br>
+1	0 0 0 1 0 1 0 0</big></code>
+</blockquote>
+</P>
+<P>
+We can create a summary rhythmic pattern by adding together the
+values in each column -- that is, counting the number of accented
+syllables that occur in each syllable position within the phrase.
+We can isolate each column using the UNIX
+<b>cut</b>
+command;
+<b>cut</b>
+is analogous to the Humdrum
+<A HREF="commands/extract.html"><b>extract</b></A>
+command.
+Fields are delineated by white space (tabs or spaces).
+For example,
+<b>cut -f 1</b>
+will isolate the first column of numbers.
+We can then pipe the results to the
+<b>stats</b>
+utility in order to calculate the numerical total.
+For example,
+</P>
+<P>
+<blockquote>
+<code><big> . . . | cut -f 1 | stats | grep 'total'</big></code>
+<br>
+<code><big> . . . | cut -f 2 | stats | grep 'total'</big></code>
+<br>
+<code><big> . . . | cut -f 3 | stats | grep 'total'</big></code>
+<br>
+etc
+</blockquote>
+</P>
+<P>
+For the chant
+<i>O Solis Ortus</i>
+the results are as follows:
+</P>
+<P>
+<blockquote>
+<code><big>7 9 0 13 0 14 2 0</big></code>
+</blockquote>
+</P>
+<P>
+This means that there are seven stressed syllables in the first
+syllable position of the phrase,
+nine stressed syllables in the second syllable position, and so on.
+These results suggest the following
+rhythmic structure: medium-strong-weak-strong-weak-strong-weak-weak.
+By way of conclusion, it appears that this work has a strongly
+rhythmic text structure -- implying that this `chant' might have
+been sung rhythmically.
+</P>
+<A NAME="Concordance">
+<H2>Concordance</H2>
+</P>
+<P>
+A traditional text-related reference tool is the
+<i>concordance.</i>
+Concordances allow users to look up a word, to see the word
+in the context of several preceding and following words,
+and provide detailed information about the location of the
+word in some repertory or corpus.
+</P>
+<A NAME="Samuel_Barber"
+<P>
+Suppose, for example, that we wanted to create a concordance for
+the lyrics in Samuel Barber's songs.
+We would like to create a file that has a structure such as shown in
+Table 26.3 below.
+The first column identifies the filename.
+The second column identifies the bar number in which the keyword
+occurs.
+The third column gives a five-word context where the middle
+word (in bold) identifies the keyword.
+<blockquote>
+<b>Table 26.3.</b>
+<P>
+<blockquote><TABLE>
+<TR><TD><code><big>chant29</TD><TD>4</TD><TD><code><big>ut possim <b>cantare</b><code><big>, Alleluia: gaudebunt</code></big></TD></TR>
+<TR><TD><code><big>chant29</TD><TD>7</TD><TD><code><big>mea, dum <b>cantavero</b><code><big> tibi: Alleluia,</code></big></TD></TR>
+<TR><TD><code><big>chant27</TD><TD>1</TD><TD><code><big>Cantate Domino <b>canticum</b><code><big> novum Alleluia:</code></big></TD></TR>
+<TR><TD><code><big>chant54</TD><TD>4</TD><TD><code><big>Cantate Domino <b>canticum</b><code><big> novum, quia</code></big></TD></TR>
+<TR><TD><code><big>chant24</TD><TD>10</TD><TD><code><big>Cantate Domino <b>canticum</b><code><big> novum: quia</code></big></TD></TR>
+<TR><TD><code><big>chant42</TD><TD>14</TD><TD><code><big>totus non <b>capit</b><code><big> orbis, in</code></big></TD></TR>
+<TR><TD><code><big>chant47</TD><TD>5</TD><TD><code><big>et exaltavit <b>caput</b><code><big> ejus; et</code></big></TD></TR>
+<TR><TD><code><big>chant12</TD><TD>1</TD><TD><code><big>solis ortus <b>cardine</b><code><big> ad usque</code></big></TD></TR>
+<TR><TD><code><big>chant14</TD><TD>4</TD><TD><code><big>arrisit orto <b>caritas</b><code><big>: Maria, dives</code></big></TD></TR>
+<TR><TD><code><big>chant12</TD><TD>7</TD><TD><code><big>induit: ut <b>carne</b><code><big> carnem liberans,</code></big></TD></TR>
+<TR><TD><code><big>chant58</TD><TD>5</TD><TD><code><big>et in <b>carne</b><code><big> mea videbo</code></big></TD></TR>
+<TR><TD><code><big>chant12</TD><TD>7</TD><TD><code><big>ut carne <b>carnem</b><code><big> liberans, ne</code></big></TD></TR>
+<TR><TD><code><big>chant14</TD><TD>6</TD><TD><code><big>sola quae <b>casto</b><code><big> potes fovere</code></big></TD></TR>
+<TR><TD><code><big>chant17</TD><TD>3</TD><TD><code><big>et discerne <b>causam</b><code><big> meam de</code></big></TD></TR>
+<TR><TD><code><big>chant21</TD><TD>2</TD><TD><code><big>Dominus a <b>cena</b><code><big>, misit aquam</big></code></TD></TR>
+<TR><TD>etc.</TD></TR>
+</TABLE></blockquote>
+</blockquote>
+We would also like to provide a <b>grep</b>-like search tool so
+users can search for particular keywords.
+</P>
+<P>
+The following script will generate our concordance file.
+For each file specified in the input, we extract the <code><big>**silbe</big></code>
+spine and store it.
+We then process this spine no less than three times.
+In the first pass, we translate from the <code><big>**silbe</big></code>
+to the <code><big>**text</big></code> representation,
+and generate a context of 5 words (<b>-n 5</b>) making sure to omit
+barlines (<b>-o =</b>).
+We also pad the amalgamated line with three null tokens (<b>-p 3</b>)
+so the context is centered near the third word in the sequence.
+In the second pass, we generate a new spine
+(<code><big>**nums</big></code>)
+that contains only bar numbers.
+The
+<A HREF="commands/ditto.html"><b>ditto</b></A>
+command is used to ensure that every data record contains a bar number.
+To ensure that pick-up bars are numbered with the value 0, we've
+used
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+to replace any leading null-tokens with the number 0.
+In the third pass, we replace every data token with the name of the file.
+Finally, we assemble all three of these spines, eliminate everything
+but data records, and also eliminate lines that don't contain any text.
+All of this processing is carried out in a while-loop that cycles
+through all of the files provided when the command is invoked.
+</P>
+<P>
+<blockquote>
+<br>
+<code><big>while [ $# -ne 0 ]
+<br>
+do
+<br>
+<blockquote>
+<br>
+extract -i '**silbe' $1 > temp1
+<br>
+text temp1 | context -o = -n 5 -p 3 > temp2
+<br>
+num -n = -a '**nums' temp1 | extract -i '**nums' \
+<br>
+<blockquote>
+<br>
+| ditto | humsed 's/\./0/' > temp3
+<br>
+</blockquote>
+<br>
+humsed "s/.*/$1/" temp1 > temp4
+<br>
+assemble temp4 temp3 temp2 | rid -GLId | sed '/.*	\.$/d'
+<br>
+shift;
+<br>
+</blockquote>
+<br>
+done
+<br>
+rm temp[1-4]</big></code>
+</blockquote>
+</P>
+<P>
+Having generated our concordance file, we can now create a simple tool
+that allows us to search for keywords.
+Suppose we kept our concordance information in a file
+called <code><big>~/home/concord/master</big></code>.
+In essence, we'd like to create a command akin to
+<b>grep</b>
+--  but one that searches this file solely according to the third word in the
+in the context.
+We cannot use
+<b>grep</b>
+directly since it will find all occurrences of a word no matter where
+it occurs in the context.
+We need to tell
+<b>grep</b>
+to ignore all other data.
+The filename, bar number, and context fields are separated by tabs.
+We can ignore the first two fields by eliminating everything up to
+the last tab in the line.
+Since words are separated by blank space, the expression <code><big>[^ ]+</big></code>
+will match a word not containing spaces.
+In short, the regular expression "<code><big>^.*<i>tab</i>[^ ]+ [^ ]+ </code></big>"
+will match everything up to the first tab, followed by two additional words.
+All we need to do is paste our keyword to the end of this expression.
+</P>
+<P>
+Below is a simple one-line script for a command called
+<b>keyword.</b>
+The user simply types the command
+<b>keyword</b>
+followed by a regular expression that will allow him/her to search
+for a given word in context.
+Note that since we've used the extended regular expression character `+' --
+we must invoke
+<b>egrep</b>
+rather than
+<b>grep</b>
+in our script:
+</P>
+<P>
+<blockquote>
+<br>
+<code><big># KEYWORD - A script for searching a master concordance file
+<br>
+#
+<br>
+# Usage:  keyword <regular expression>
+<br>
+#
+<br>
+egrep "^.*	[^ ]+ [^ ]+ $1" ~/home/concord/master</big></code>
+</blockquote>
+</P>
+<P>
+Concordances can be used for a number of applications.
+One might use a concordance to help identify metaphor or image
+related words (such as "light," "darkness," etc.)
+</P>
+<A NAME="Simile">
+<H2>Simile</H2>
+</P>
+<P>
+One of the most important poetic devices is the
+<i>simile</i>
+--  where an analogy or metaphorical link is created between
+two things ("My love is like a red red rose.")
+In English, similes are often (though not always) signalled
+by the presence of the words "like" or "as."
+</P>
+<P>
+A simple task involves searching for `like' or `as' in the
+lyrics of some input.
+For each occurrence of these words, suppose that we would like
+to output a line that places the word in
+context -- specifically the preceding and following four words.
+</P>
+<P>
+First we transform and isolate the text data using the
+<b>text</b>
+and
+<A HREF="commands/extract.html"><b>extract</b></A>
+commands:
+</P>
+<P>
+<blockquote>
+<code><big>text inputfile | extract -i '**text' </big></code>
+</blockquote>
+</P>
+<P>
+Since the input may contain multiple-stops, we might consider
+the precaution of ensuring no more than one word per data record.
+For this we can use <b>humsed</b>.
+Specifically, we can replace any spaces by a carriage return.
+Since the carriage return is interpreted by the shell as
+the instruction to begin executing a command,
+we need to escape it.
+Depending on the shell, the carriage return can be escaped in
+various ways.
+One way is to precede the carriage return by control-V
+(meaning "verbatim").
+Another way is to type control-M rather than a carriage return.
+In the following command we have used the backslash to escape
+a control-M character:
+</P>
+<P>
+<blockquote>
+<code><big>text inputfile | extract -i '**text' | humsed 's/  */\^M/g' \
+<blockquote>
+| egrep -4 '^|(like)|(as)$'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Having ensured that there is no more than one word per line we
+can now search for a line contain
+<i>just</i>
+"like" or "as."
+The
+<b>-4</b>
+option for
+<b>egrep</b>
+causes any matched lines to be output with four preceding and
+four following lines of context.
+In addition, an extra line is added consisting of two dashes (<code><big>--</big></code>)
+to segregate each pattern output.
+That is, for each match, ten lines of output are typically given.
+In order to generate our final output, we need to transform
+the linear list of words into a horizontal list where each
+line represents a single match for "like" or "as."
+</P>
+<P>
+The
+<A HREF="commands/context.html"><b>context</b></A>
+command would enable us to do this.
+Unfortunately, however, the output from
+<b>egrep</b>
+fails to conform to the Humdrum syntax.
+In particular, adding <code><big>^\*</big></code> to the regular expression
+will fail to ensure a proper Humdrum output since preceding and
+following contextual lines will also be output.
+</P>
+<P>
+The
+<b>hum</b>
+command is a special command that takes non-Humdrum input and
+adds sufficient interpretation records so as to make the
+input conform to the Humdrum syntax.
+Typically, this means simply adding a generic initial exclusive interpretation
+(<code><big>**A</big></code>) and a spine-path terminator (<code><big>*-</big></code>).
+If the input contains tabs, then appropriate spines will be added.
+If the input contains empty lines, then they will be changed to null data records.
+</P>
+<P>
+<blockquote>
+<code><big>text inputfile | extract -i '**text' | humsed 's/  */\^M/g' \
+<blockquote>
+| egrep -4 '^|(like)|(as)$' | hum</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Now we can make use of the
+<b>context</b>
+command.
+Each context ends with the double-dash delimiters generated by <b>egrep</b>.
+The
+<A HREF="commands/rid.html"><b>rid</b></A>
+command can be used to eliminate the interpretations added by <b>hum</b>.
+</P>
+<P>
+<blockquote>
+<code><big>text inputfile | extract -i '**text' | humsed 's/  */\^M/g' \
+<blockquote>
+| egrep -4 '^|(like)|(as)$' | hum | context -e '--' \
+<br>
+| rid -Id</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Word_Painting">
+<H2>Word Painting</H2>
+</P>
+<P>
+Word painting has a long history in music.
+There are innumerable examples where the music has somehow
+reflected the meaning of the vocal text.
+Suppose we wanted to determine whether words designating height
+(e.g., English "high," German "hoch,"
+French "haute/haut") tend to coincide with high pitches.
+</P>
+<P>
+A simple approach would be to extract those sonorities that
+coincide with any of the words high/hoch/haut and determine
+the average pitch.
+We can then contrast this average pitch with the average pitch
+for the repertory as a whole.
+Any significant difference might alert us to possible word painting.
+</P>
+<P>
+First we translate any pitch data to
+<A HREF="representations/semits.rep.html"><code><big>**semits</big></code></A>
+and any
+<code><big>**silbe</big></code> data to <code><big>**text</big></code>.
+We will also filter the outputs to ensure that
+only <code><big>**semits</big></code> and <code><big>**text</big></code> are present.
+</P>
+<P>
+<blockquote>
+<code><big>semits * | text | extract -i '**semits,**text'</big></code>
+</blockquote>
+</P>
+<P>
+Since a word may be sustained through more than one pitch,
+and a pitch may be intoned for more than one word, we should use the
+<A HREF="commands/ditto.html"><b>ditto</b></A>
+command to ensure that null tokens are filled-in.
+</P>
+<P>
+<blockquote>
+<code><big>semits * | text | extract -i '**semits,**text' | ditto -s =</big></code>
+</blockquote>
+</P>
+<P>
+Next, we can use
+<b>egrep</b>
+to search for the words of interest:
+</P>
+<P>
+<blockquote>
+<code><big>semits * | text | extract -i '**semits,**text' | ditto -s = \
+<blockquote>
+| egrep -i '^\*|high|hoch|haut'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Notice the addition of the expression <code><big>^\*</big></code> in the search
+pattern.
+This expression will match any Humdrum interpretation records and so
+ensures that the output conforms to the Humdrum syntax.
+We can now isolate the <code><big>**semits</big></code> data and pass the output to
+<b>stats</b>
+in order to determine the average pitch for the words coinciding
+with the words high/hoch/haut:
+</P>
+<P>
+<blockquote>
+<code><big>semits * | text | extract -i '**semits,**text' | ditto -s = \
+<blockquote>
+| egrep -i '^\*|high|hoch|haut' | extract -i '**semits' | stats</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+The average pitch for the entire work can be determined as follows:
+</P>
+<P>
+<blockquote>
+<code><big>semits * | extract -i '**semits' | ditto -s = | rid -GLI \
+<blockquote>
+| stats</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Emotionality">
+<H2>Emotionality</H2>
+</P>
+<P>
+Musical texts often convey or portray a wide range of emotions.
+Some texts celebrate the ecstacy of love or lament the sorrow of loss.
+Yet other texts exhibit little emotional content.
+Suppose that we wanted to create a tool that would allow us
+to estimate the degree of emotional "charge" in the lyrics
+of any given vocal work.
+A simple approach might be to look for words that are commonly
+associated with high emotional content.
+</P>
+<P>
+Table 26.4 shows a sample of six words from a study
+where 10 people were asked to rate the degree of emotionality
+associated with 100 English words.
+Participants rated each word on a scale from -10 to +10
+where -10 indicates a maximum negative emotional rating
+and +10 indicates a maximum positive emotional rating.
+The values shown identify the average rating for all 10 participants.
+<br><br>
+<b>Table 26.4.  Average Emotionality Ratings for English Words.</b>
+</P>
+<P>
+<blockquote><TABLE>
+<TR><TD>begin</TD><TD>+3.8</TD></TR>
+<TR><TD>river</TD><TD>+4.2</TD></TR>
+<TR><TD>friend</TD><TD>+5.2</TD></TR>
+<TR><TD>love</TD><TD>+8.6</TD></TR>
+<TR><TD>hate</TD><TD>-9.7</TD></TR>
+<TR><TD>detest</TD><TD>-9.8</TD></TR>
+</TABLE></blockquote>
+Clearly, such a rating system might allow us to create a tool
+that would automatically search a large database and identify
+those vocal works whose lyrics are most emotionally charged.
+One way to generate a crude index of emotionality is to
+measure the average ratings for the ten most emotion-laden
+words in a given input.
+</P>
+<P>
+The
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+command provides an appropriate place to start.
+In effect, we would take a table (such as Table 26.4) and
+use it to create a series of substitutions.
+Emotionally-charged words would be replaced by a numerical rating.
+Our
+<b>humsed</b>
+script would have the following form.
+Notice that the first substitution is used to eliminate
+punctuation marks.
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big></TD></TR>
+<TR><TD>s/[.,;:'`"!?]//g</TD></TR>
+<TR><TD>s/begin/+3.8/</TD></TR>
+<TR><TD>s/river/+4.2/</TD></TR>
+<TR><TD>s/friend/+5.2/</TD></TR>
+<TR><TD>s/love/+8.6/</TD></TR>
+<TR><TD>s/hate/-9.7/</TD></TR>
+<TR><TD>s/detest/-9.8/</TD></TR>
+<TR><TD>/[^0-9+-]/s/.*/./</big></code></TD></TR>
+</TABLE></blockquote>
+Also notice that the final command transforms any data records
+that contains anything other than a number to a null data token.
+In other words, words that are not present in the emotionality list
+are not rated.
+</P>
+<P>
+In order to process our input,
+any syllabic text would first be translated to the <code><big>**text</big></code>
+representation, and all other spines discarded using <b>extract -i</b>.
+</P>
+<P>
+<blockquote>
+<code><big>text</code></big> <i>inputfile</i><code><big> | extract -i '**text' ...</code></big>
+</blockquote>
+</P>
+<P>
+Then we would translate the words using our "emotionality" script,
+eliminate everything other than data records, and calculate
+the numerical statistics:
+</P>
+<P>
+<blockquote>
+<code><big>text</code></big> <i>inputfile</i><code><big> | extract -i '**text' | humsed -f emotion \
+<blockquote>
+| rid -GLId | stats</code></big>
+</blockquote>
+</blockquote>
+</P>
+<P>
+In general, works whose lyrics express predominantly positive emotions
+ought to exhibit positive emotionality estimates.
+Similarly, works expressing predominantly negative emotions ought
+to exhibit negative emotionality estimates.
+Of course the process of averaging may be deceptive.
+Two sorts of problems may arise.
+First, a large number of fairly neutral words will tend to
+dilute an otherwise large positive or negative score.
+It may be preferable to observe the maximum positive and negative values.
+Alternatively, it may be appropriate to limit the average to (say)
+the ten most emotionally charged words.
+We can do this by sorting the numerical values and using the
+<b>head</b>
+and
+<b>tail</b>
+commands to select the highest or lowest values.
+In our revised processing, we use
+<b>sort -n</b>
+to sort the values in numerical order -- placing the
+output in a temporary file.
+The UNIX
+<b>head</b>
+command allows us to access a specified number of lines at the
+beginning of a file:
+the option
+<b>-5</b>
+specifies the first five lines.
+Similarly, the UNIX
+<b>tail</b>
+command allows us to access a specified number of lines at the
+end of a file.
+The ten highest and lowest values are then concatenated together
+and piped to the
+<b>stats</b>
+command:
+</P>
+<P>
+<blockquote>
+<code><big>text</code></big> <i>inputfile</i><code><big> | extract -i '**text' | humsed -f emotion \
+<blockquote>
+| rid -GLId | sort -n > temp
+</blockquote>
+head -5 temp > lowest
+<br>
+tail -5 temp > highest
+<br>
+cat highest lowest | stats</code></big>
+</blockquote>
+</P>
+<P>
+A second problem with averaging together emotion rating values is
+that an emotionally-charged work might include a rough balance of passionate
+words expressing both positive and negative emotions.
+This might result in an average near zero and be mistaken for
+lyrics that exhibit little emotionality.
+The
+<b>stats</b>
+command outputs a variance measure that can be used to gauge
+the spread of the data.
+However, another way to address this problem is by ignoring the
+plus and minus signs in the input.
+That is, a rough index of emotionality -- independent of
+whether the emotion is predominantly negative or positive
+would simply focus on the most emotionally charged words.
+</P>
+<P>
+The plus and minus signs can be eliminated using a simple
+<b>humsed</b>
+substitution prior to numerical sorting:
+</P>
+<P>
+<blockquote>
+<code><big>humsed 's/[+-]//g'</big></code>
+</blockquote>
+</P>
+<P>
+Once again, we could use the
+<b>head</b>
+command to isolate the 10 or 20 most emotionally charged words.
+</P>
+<P>
+Another variant of this approach might be to identify those
+words in a text which are most emotionally charged.
+Suppose we wanted to determine the location of the most
+emotionally charged word.
+A combination of
+<b>sort</b>
+and
+<b>grep</b>
+can be applied to this task.
+First we generate a spine containing the emotional-charge values
+taking care to eliminate the signs:
+</P>
+<P>
+<blockquote>
+<code><big>text</code></big> <i>inputfile</i><code><big> | extract -i '**text' | humsed -f emotion \
+<blockquote>
+| humsed 's/[+-]//g' > charges</code></big>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Next we assemble this new spine with the original input:
+</P>
+<P>
+<blockquote>
+<code><big>assemble charges</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+We can isolate data records using
+<b>rid</b>
+and then use
+<b>sort -n</b>
+to sort according to the numbers present in the first column.
+The most emotional charged word will be at the end of the file
+(largest number) so we can use
+<b>tail -1</b>
+to identify the word:
+</P>
+<P>
+<blockquote>
+<code><big>assemble charges</code></big> <i>inputfile</i><code><big> | rid -GLId | sort -n | tail -1</code></big>
+</blockquote>
+</P>
+<P>
+Having established what word has been estimated as having the
+highest emotional-charge, we can then use
+<b>grep -n</b>
+to establish the location(s) of this word in the original input file.
+</P>
+<A NAME="Other_Types_of_Language_Use">
+<H2>Other Types of Language Use</H2>
+</P>
+<P>
+Apart from emotionality,
+language tends to be used differently in different musical genres.
+The contrast between
+<i>aria</i>
+and
+<i>recitative</i>
+provides a classic example.
+The aria is intended to be a poetic reflection of a certain emotional
+state or reaction whereas the recitative moves the action along by
+focusing on concrete circumstances.
+Any number of variants on our "emotionality" processing can be
+conceived.
+<A NAME="abstraction-concreteness">
+For example, we might create another language index related to
+the degree of abstraction/concreteness for words.
+Words such as Verona, knife and Montague are comparatively concrete,
+whereas words such as feud, love and tragedy are more conceptual
+or abstract.
+We might expect to be able to observe such differences in
+recitative versus aria texts.
+</P>
+<P>
+Similarly, differences in language use can be found in
+folk and popular music.
+In the case of the folk <i>ballad</i>, a detailed story unfolds.
+Differences in language use may be correlated with
+the <code><big>!!!AGN</big></code> reference record used to identify genres.
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+In this chapter we have introduced two text-related representations:
+<A HREF="representations/text.rep.html"><code><big>**text</big></code></A>
+and
+<A HREF="representations/silbe.rep.html"><code><big>**silbe</big></code></A>.
+We have examined the
+<b>text</b>
+command (which translates from <code><big>**silbe</big></code> to <code><big>**text</big></code>).
+We have also been exposed to the UNIX
+<b>fmt</b>
+command (a simple text formatter), the
+<b>cut</b>
+command (similar to <b>extract -f</b>), and the
+<b>head</b>
+and
+<b>tail</b>
+commands.
+</P>
+<P>
+In
+<A HREF="guide34.html">Chapter 34</A>
+we will examine further representations
+and processes related to phonetic data.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide28.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide26.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

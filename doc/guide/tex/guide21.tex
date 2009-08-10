@@ -1,0 +1,946 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter21}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Searching for Patterns}
+
+
+
+The
+\textbf{grep}
+and
+\textbf{egrep}
+commands are useful for identifying patterns that occur on
+single lines.
+As we saw in
+Chapter 19,
+the
+\textbf{context}
+command can be used to amalgamate groups of successive data tokens on a
+single line -$\,$- and so facilitate searching for sequential patterns using
+\textbf{grep}
+or \textbf{egrep}.
+For many tasks, the combination of
+\textbf{context}
+and
+\textbf{grep}
+provides the most convenient way to search for user-specified patterns.
+However, not all patterns can be conveniently identified
+using this approach.
+In this chapter we will introduce two additional tools that are intended
+to search directly for sequential patterns without having to use
+\textbf{context}
+to create pseudo-simultaneous collections.
+
+
+\subsection*{The \textit{patt} Command}
+
+\par 
+The
+\textbf{patt}
+command may be regarded as a two-dimensional version of \textbf{grep}.
+Like \textbf{grep}, \textbf{patt} searches for lines that match user-specified
+regular expressions.
+However, unlike \textbf{grep}, \textbf{patt} can search for a sequence of records
+that match a sequence of user-specified regular expressions.
+Specifically, \textbf{patt} will look for an input line that matches the
+first (of potential many) user-specified regular expression.
+Then \textbf{patt} will determine whether the following input line matches
+the second user-specified regular expression ... and so on,
+until the entire sequence of the user-specified regular expressions are exhausted.
+A pattern match is deemed to occur only if all of the successive
+regular expressions match a contiguous sequence of input lines.
+
+
+\par 
+The operation of
+\textbf{patt}
+is easier to describe through an example.
+Consider the following input using the German
+\textit{Tonhöhe} pitch designations described in
+Chapter 4.
+Recall that the
+\texttt{**Tonh}
+system of pitch names allows Bach to spell his name
+(B=B-flat; H=B-natural).
+Less well-known is the fact that Dmitri Shostakovich also used the
+German pitch system to create motives based on his name:
+D-S-C-H (S=Es=E-flat).
+(The German transliteration of the cyrillic is Schostakowitsch.)
+
+\texttt{**Tonh
+\texttt{D4
+\texttt{Es4
+\texttt{C4
+\texttt{H3
+\texttt{*-}
+
+Suppose we were looking for possible instances of D-S-C-H.
+The
+\textbf{patt}
+command requires a template file that contains one or more
+successive regular expressions.
+A suitable template file (named \texttt{dmitri}) would be as follows:
+
+\texttt{D
+\texttt{Es
+\texttt{C
+\texttt{H}
+
+
+\par 
+We would invoke the search as follows:
+
+\par 
+
+\texttt{patt -f dmitri} \textit{inputfile}
+
+
+\par 
+The
+\textbf{-f}
+option is mandatory:
+it conveys to
+\textbf{patt}
+the name of the template file used in the search.
+
+\par 
+In the default operation,
+\textbf{patt}
+simply outputs a global comment identifying the location of any
+matching segments.
+One global comment is output for each matching pattern.
+In the above case, the output would be as follows:
+
+\par 
+
+\texttt{!! Pattern found at line 2 of file Tonh}
+
+
+\par 
+The
+\textbf{patt}
+command will also identify any overlapping patterns.
+For example, suppose we had an input containing an
+ostinato figure in minor thirds:
+
+\par 
+\textbf{Example 21.1.}  `DSCH' Ostinato.
+
+
+
+\texttt{**Tonh**Tonh
+\texttt{*k[b-e-]*K[b-e-]
+\texttt{*M9/8*M9/8
+\texttt{=1-=1-
+\texttt{C4Es4
+\texttt{C4Es4
+\texttt{H3D4
+\texttt{C4Es4
+\texttt{C4Es4
+\texttt{H3D4
+\texttt{C4Es4
+\texttt{C4Es4
+\texttt{H3D4
+\texttt{==}
+
+
+
+\par 
+If we applied the above
+\textbf{patt}
+command to this \texttt{ostinato} file, we would get the following output:
+
+\par 
+
+\texttt{!! Pattern found at line 8 of file ostinato}
+\\
+\texttt{!! Pattern found at line 11 of file ostinato}
+
+
+\par 
+We can instruct
+\textbf{patt}
+to output specific instances of the pattern using the
+\textbf{-e}
+(echo) option.
+Consider the following command:
+
+\par 
+
+\texttt{patt -f dmitri -e ostinato}
+
+
+\par 
+The resulting output would be:
+
+\texttt{!! Pattern found at line 4 of file ostinato
+
+
+\texttt{**Tonh\texttt{**Tonh
+\texttt{H3\texttt{D4
+\texttt{C4\texttt{Es4
+\texttt{C4\texttt{Es4
+\texttt{H3\texttt{D4
+\texttt{*-\texttt{*-
+
+
+\texttt{!! Pattern found at line 7 of file ostinato
+
+
+\texttt{**Tonh\texttt{**Tonh
+\texttt{H3\texttt{D4
+\texttt{C4\texttt{Es4
+\texttt{C4\texttt{Es4
+\texttt{H3\texttt{D4
+\texttt{*-\texttt{*-}
+
+
+\par 
+Notice that each instance of the found pattern is output as a stand-alone
+humdrum "mini-encoding," complete with initial exclusive interpretations
+and terminating spine-path terminators.
+\\\\
+\textbf{Example 21.2.}  J.S. Bach, \textit{Well-Tempered Clavier}, Vol. 1, Fugue 2.
+
+
+
+
+
+\par 
+Most Baroque composers were fond of ending works written in minor keys
+on the tonic major chord -$\,$- the so-called \textit{tierce de picardie}
+or Picardy Third.
+Example 21.2 shows a typical example from the final measures of Bach's
+second fugue from the \textit{Well-Tempered Clavier}, vol. 1.
+Suppose that we wanted to identify all works in some repertory
+that end with a \textit{tierce de picardie}.
+We need to search for a raised third scale degree in close
+proximity to the end of a work for those works in a minor key.
+First we might identify those works in minor keys.
+The following
+\textbf{grep}
+command will search all files in the current directory
+for a tandem interpretation indicating a minor key.
+Recall that minor keys are identified by an asterisk followed by
+a lower-case pitch-letter name, followed by an optional
+accidental, followed by the colon character.
+The
+\textbf{-l}
+option will list all files that containing a matching record:
+
+\par 
+
+\texttt{grep -l '\^{}$\backslash$*[a-g][-\#]*:' *}
+
+
+\par 
+Recall that the
+\textbf{deg}
+command is mode sensitive, whereas the
+\textbf{solfa}
+command is mode insensitive.
+That is, in the key of C major,
+\textbf{deg}
+will represent the pitch E as \texttt{3} and in C minor
+\textbf{deg}
+will represent the pitch E (natural) as \texttt{3+}.
+By contrast, the
+\textbf{solfa}
+command will represent E as `\texttt{mi}' whether
+the mode is major or minor.
+
+\par 
+In order to locate picardy thirds, we can look
+for raised mediants in the
+\texttt{**deg}
+representation.
+Specifically, we can look for a raised mediant pitch
+immediately prior to a double barline.
+Our template file (dubbed "\texttt{picardy}") might look as follows:
+
+\par 
+
+\texttt{3[+]
+\\
+==}
+
+
+\par 
+Notice that the plus sign has been placed in square brackets.
+The
+\textbf{patt}
+command accepts only
+\textit{extended}
+regular expressions.
+The plus sign is a metacharacter that normally indicates
+"one or more instances."
+So placing it in square brackets causes the special meaning
+to be escaped.
+
+\par 
+In order to search for such picardy thirds, we should translate each input file
+to the \texttt{**deg} representation, and then search for
+raised mediants immediately prior to a double bar:
+
+\par 
+
+\texttt{deg \textit{inputfile.krn} | patt -f picardy}
+
+
+\par 
+A problem with this search strategy is that it assumes that the raised
+third will occur in the final sonority prior to the double barline.
+One possible confound might be the presence of one or more
+rests following the final chord.
+This situation is evident in Fugue No. 4 from the second volume of Bach's
+\textit{Well-Tempered Clavier}:
+
+\par 
+\textbf{Example 21.3.}  J.S. Bach, \textit{Well-Tempered Clavier}, Vol. 2, Fugue 4.
+
+
+
+\texttt{!!!COM: Bach, Johann Sebastian
+\texttt{!!!XEN: The Well-Tempered Clavier, Volume 2, Fugue 4.
+
+
+\texttt{**kern**kern**kern
+\texttt{*clefF4*clefG2*clefG2
+\texttt{*M12/16*M12/16*M12/16
+\texttt{*k[f\#c\#g\#d\#]*k[f\#c\#g\#d\#]*k[f\#c\#g\#d\#]
+\texttt{*c\#:*c\#:*c\#:
+\texttt{=70=70=70
+\texttt{16E8.f\#]8b\#
+\texttt{16D\#..
+\texttt{16E.16g\#
+\texttt{16FF\#\#8e4.cc\#
+\texttt{16GG\#..
+\texttt{16AAn16d\#.
+\texttt{4.GG\#16e.
+\texttt{.16a.
+\texttt{.16g\#.
+\texttt{.16f\#8.b\#
+\texttt{.16e.
+\texttt{.16d\#.
+\texttt{=71=71=71
+\texttt{8.CC\#8.e\#8.cc\#
+\texttt{8.r8.r8.r
+\texttt{4.r4.r4.r
+\texttt{======
+\texttt{*-*-*-}
+
+
+
+\par 
+The
+\textbf{patt}
+command provides a
+\textbf{-s}
+option that allows the user to skip or ignore certain records in the input.
+Any regular expression can be given as a parameter for the
+\textbf{-s}
+option.
+In the following pipeline, we have instruction
+\textbf{patt}
+to skip over any records matching the lower-case letter `\texttt{r}'
+(the \texttt{**kern} rest signifier):
+
+\par 
+
+\texttt{deg }\textit{inputfile.krn}\texttt{ | patt -s r -f picardy}
+
+
+\par 
+Even ignoring rests may not be sufficient to identify the
+raised third near the double barline.
+For example, if any other note from the tonic chord follows
+after the raised third, then the third will appear several
+records prior to the double barline.
+We can solve this problem by using the
+\textbf{ditto}
+command discussed in
+Chapter 15;
+\textbf{ditto}
+can be used to propagate the raised third through the
+sustained final chord.
+Our revised pipeline is:
+
+\par 
+
+\texttt{deg bach.krn | ditto -s = | patt -s r -f picardy}
+
+
+
+\par 
+A similar approach can be used to identify consecutive fifths or
+octaves between two voices.
+A template file (dubbed \texttt{5ths}) might consist of the following pattern:
+
+\par 
+
+\texttt{P5
+\\
+P5}
+
+
+\par 
+In order to identify consecutive fifths, we might extract two
+parts of interest, and then translate to the
+\texttt{**hint}
+harmonic-interval representation.
+The
+\textbf{-c}
+option for
+\textbf{hint}
+collapses compound intervals to their non-compound equivalents so
+consecutive twelfths, nineteenths, etc. will also be identified.
+In the following command pipeline, notice the use of the
+\textbf{-s}
+option for
+\textbf{patt}
+in order to skip barlines.
+This ensures that crossing a barline does not result in a failure to
+identify a consecutive fifth.
+
+\par 
+
+\texttt{extract -i '*Ibass,*Itenor' Fux | hint -c | patt -s = -f 5ths}
+
+
+
+\par 
+Sometimes patterns will tend to be obscured by the presence of other information.
+For example, suppose we want to identify possible Landini cadences
+such as the cadence shown in Example 21.4.
+Landini cadences are common in much 14th century polyphony including
+works by Machaut, Caserta, Dufay, Ciconia, as well as Landini.
+One characteristic of the Landini cadence is the distinctive three-note
+\textit{ti -> la -> do} in the upper-most part.
+The submediant pitch is interposed between the leading-tone and the tonic.
+A second characteristic of the Landini cadence is the harmonic relationship
+between the highest and lowest voices.
+Three intervals are formed: \textit{sixth -> fifth -> octave}.
+Either one or both of these characteristics might be used to help
+identify this distinctive cadential formula.
+\\\\
+\textbf{Example 21.4.}  Francesco Landini, Excerpt from \textit{Non avrà ma' pietà}.
+
+
+
+Below is a
+\texttt{**kern}
+encoding of the final two measures along with corresponding
+\texttt{**hint}
+and
+\texttt{**deg}
+spines.
+The **hint spine was generated using
+\textbf{hint}
+\textbf{-l}
+in order to generate intervals with respect to the lowest pitch.
+
+\texttt{!!!COM: Landini, Francesco
+
+
+\texttt{**kern\texttt{**kern\texttt{**kern\texttt{**hint\texttt{**deg**deg**deg
+\texttt{*clefF4\texttt{*clefG2\texttt{*clefG2\texttt{*\texttt{*\texttt{*\texttt{*
+\texttt{*M3/4\texttt{*M3/4\texttt{*M3/4\texttt{*M3/4\texttt{*M3/4\texttt{*M3/4\texttt{*M3/4
+\texttt{=\texttt{=\texttt{=\texttt{=\texttt{=\texttt{=\texttt{=
+\texttt{4A\texttt{4e\texttt{8e\texttt{P5 P5\texttt{v2\texttt{v6\texttt{\^{}6
+\texttt{.\texttt{.\texttt{8f\texttt{-..\texttt{\^{}7-
+\texttt{4B-\texttt{4d\texttt{8g\texttt{M3 M6\texttt{\^{}3-\texttt{v5\^{}1
+\texttt{.\texttt{.\texttt{4f\#\texttt{-..\texttt{v7
+\texttt{4A\texttt{4c\#\texttt{.\texttt{M3\texttt{v2\texttt{v4+.
+\texttt{.\texttt{.\texttt{8e\texttt{-..\texttt{v6
+\texttt{=\texttt{=\texttt{=\texttt{=\texttt{=\texttt{=\texttt{=
+\texttt{2.G\texttt{2.d\texttt{2.g\texttt{P5 P8\texttt{v1\texttt{\^{}5\texttt{\^{}1
+\texttt{==\texttt{==\texttt{==\texttt{========
+\texttt{*-\texttt{*-\texttt{*-\texttt{*-*-*-*-}
+
+
+\par 
+Notice that
+\textbf{hint}
+has failed to generate the passing interval forming the perfect fifth between
+the E and the A.
+This can be remedied by using
+\textbf{ditto}
+to duplicate all of the pitches.
+This will cause
+\textbf{hint}
+to generate all of the passing harmonic intervals.
+The revised  **hint spine is given below.
+
+\texttt{!!!COM: Landini, Francesco
+
+
+\texttt{**kern**kern**kern**hint**deg**deg**deg
+\texttt{*clefF4*clefG2*clefG2****
+\texttt{*M3/4*M3/4*M3/4*M3/4*M3/4*M3/4*M3/4
+\texttt{=======
+\texttt{4A4e8eP5 P5v2v6\^{}6
+\texttt{..8fP5 m6..\^{}7-
+\texttt{4B-4d8gM3 M6\^{}3-v5\^{}1
+\texttt{..4f\#M3 A5..v7
+\texttt{4A4c\#.M3 M6v2v4+.
+\texttt{..8eM3 P5..v6
+\texttt{=======
+\texttt{2.G2.d2.gP5 P8v1\^{}5\^{}1
+\texttt{==============
+\texttt{*-*-*-*-*-*-*-}
+
+
+\par 
+One way to identify Landini cadences is to use the following harmonic-interval template
+file (dubbed \texttt{LandCadence}):
+
+\texttt{6
+\texttt{5
+\texttt{8}
+
+
+\par 
+Using this template, we can identify Landini cadences as follows.
+(Notice the use of \textbf{-s \^{}=} to skip barlines.)
+
+\par 
+
+\texttt{ditto -s \^{}= input | hint -l | patt -s \^{}= -f LandCadence}
+
+
+\par 
+It is possible that the 6-5-8 figured bass might arise in non-cadential
+situations, so a more circumspect template might also include some
+scale-degree movements as well.
+The following template file (dubbed \texttt{Landini-Cadence}) combines both the
+harmonic-interval and scale-degree data:
+
+\par 
+
+\texttt{[Mm]6
+\\
+P5.*v6
+\\
+P8.*$\backslash$\^{}1}
+
+
+\par 
+Using this more sophisticated pattern template,
+a suitable sequence of commands would be the following:
+
+\par 
+
+\texttt{ditto -s \^{}= inputfile | hint -l > temp1
+\\
+deg inputfile > temp2
+\\
+assemble temp1 temp2 | patt -s \^{}= -f Landini-Cadence}
+
+
+\par 
+In general,
+\textbf{patt}
+templates can be used to specify both concurrent conditions
+as well as dynamic or temporal conditions.
+This allows users to define patterns involving a multitude of conditions
+involving many different types of data.
+
+
+\subsection*{Using \textit{patt}'s Tag Option}
+
+\par 
+So far, we have seen that
+\textbf{patt}
+provides two kinds of output.
+In the default operation,
+\textbf{patt}
+outputs a simple global comment each time it finds a matching
+segment in the input.
+With the
+\textbf{-e}
+option,
+\textbf{patt}
+will also echo the specific passage(s) found.
+In addition,
+\textbf{patt}
+provides a third type of output using the
+\textbf{-t}
+option.
+
+\par 
+When the
+\textbf{-t}
+option is invoked,
+\textbf{patt}
+will output the original input, plus an addition \texttt{**patt} spine.
+The \texttt{**patt} spine typically consists of mostly null tokens.
+However, each time the input matches the sought pattern, a user-defined
+"tag" will appear in the \texttt{**patt} spine.
+Consider the following example.
+
+
+\par 
+Suppose we are interested in identifying deceptive cadences in
+Bach's chorale harmonizations.
+Imagine that we already have a
+\texttt{**harm}
+spine containing
+a Roman numeral harmonic analysis.
+There are different ways of defining a deceptive cadence,
+but a frequent definition is that it involves a dominant
+chord followed by a submediant chord in a cadential context.
+In the case of Bach's chorale harmonizations, cadences
+are readily identified by the pause symbol.
+Our search template might look as follows:
+
+\par 
+
+\texttt{\^{}V([\^{}I]|\$)
+\\
+(vi)|(VI);}
+
+
+\par 
+This template means: "look for an upper-case letter \texttt{V}
+appearing at the beginning of a line that is followed
+by either the end of the line (\texttt{\$}) or by a character
+other than the upper-case letter \texttt{I}.
+This record will be followed by a record containing
+either \texttt{vi} or \texttt{VI} followed by a semicolon."
+
+\par 
+When invoking the
+\textbf{patt}
+command, we can specify our preferred output tag along with the
+\textbf{-t}
+option as follows:
+
+\par 
+
+\texttt{extract -i '**harm' bwv269.krn | patt -f template -t deceptive}
+
+
+\texttt{**harm**patt
+\texttt{I.
+\texttt{I.
+\texttt{ii7.
+\texttt{Vdeceptive
+\texttt{vi;.
+\texttt{V.
+\texttt{I.
+\texttt{IV.
+\texttt{IV.
+\texttt{I.
+\texttt{V;.}
+etc.
+
+
+\par 
+
+In
+Chapter 26
+we will learn how to collapse several
+spines into a single spine.
+This will allow us to assemble the results from several "passes" using
+\textbf{patt}
+-$\,$-  one pass for each type of cadence.
+For example, we could collapse several tagged outputs to produce a single
+spine that identifies all of the various types of cadences:
+
+\texttt{**harm**cadences
+I.
+I.
+ii7.
+Vdeceptive
+vi;.
+V.
+I.
+IV.
+IV.
+Ihalf
+V;.}
+etc.
+
+
+\par 
+There are no restrictions as to the types of tags that can be generated by
+\textbf{patt}.
+A user might tag the beginning of motivic or thematic statements,
+various harmonic progressions, variation techniques,
+fingering patterns, quotations or allusions, stylistic clichés,
+etc.
+In
+Chapter 35
+we will use the
+\textbf{-t}
+option to label different set forms for statements of a twelve-tone row,
+such as primes, inversions, retrogrades, and retrograde inversions.
+We will use suitable tags to identify the specific transpositions:
+P0, I7, R11, RI8, etc.
+
+
+\subsection*{Matching Multiple Records Using the \textit{patt} Command}
+
+\par 
+Twelve-tone music raises several special issues for sequential pattern matching.
+For example, it is common in serial music to collapse segments of a tone-row in order
+to create vertical chords.
+Consider the following excerpt from Ernst Krenek's suite for solo 'cello.
+The tone row consists of the ordered pitches:
+D, G-flat, F, D-flat, C, B, E-flat, A, B-flat, A-flat, E, G.
+\\\\
+\textbf{Example 21.5.}  Ernst Krenek, Opus 84 \textit{Suite for Violoncello}; mov. 1, measures 28-30.
+
+
+
+Using a pitch-class representation we would search for the sequence:
+
+\texttt{2
+6
+5
+1
+0
+11
+3
+9
+10
+8
+4
+7}
+
+
+\par 
+Due to the diads, however, the corresponding pitch-class representation
+for the above Krenek passage would be:
+
+\texttt{**pc
+2
+6
+5 1
+0
+=
+3 11
+9
+10
+10 8
+=
+7 4}
+etc.
+\texttt{*-}
+
+
+\par 
+The 
+\textbf{-m}
+option for
+\textbf{patt}
+invokes a "multi-record matching" mode.
+In this mode,
+\textbf{patt}
+attempts to match as many successive regular expressions in the template
+file as possible for a given input record, before continuing with
+the next input and template records.
+In this way, several records in the template file 
+may possibly match a single input record.
+In the above case, the tone-row template will be matched and the `P0' tag
+issued if the following command is issued:
+
+\par 
+
+\texttt{patt -f tonerow -t P0 -m Krenek}
+
+
+
+\subsection*{The \textit{pattern} Command}
+
+\par 
+Not all patterns can be identified using \textbf{patt}.
+The Humdrum
+\textbf{pattern}
+command permits an additional regular expression feature that is
+especially useful in musical applications.
+Specifically,
+\textbf{pattern}
+permits the defining of patterns spanning more than one line or record.
+Record-repetition operators are specified by following the
+regular expression with a tab -$\,$- followed by either \texttt{+}, \texttt{*},
+or \texttt{?}.
+For example, consider the following Humdrum-extension regular expression:
+
+\texttt{X+
+Y*
+Z?}
+
+
+\par 
+When the metacharacters \texttt{+}, \texttt{*}, or \texttt{?} appear at the end
+of a record, preceded by a tab character, they pertain to the number of records,
+rather than the number of repetitions of the expression within a record.
+The first record of the regular expression (\texttt{X}\textit{}\texttt{+}) will
+match one or more successive lines each containing the letter `\texttt{X}'.
+The second record of the regular expression (\texttt{Y}\textit{}\texttt{*})
+will match zero or more subsequent lines containing the letter `\texttt{Y}'.
+The third record of the regular expression (\texttt{Z}\textit{}\texttt{?}) will
+match zero or one line containing the letter `\texttt{Z}'.
+Hence, the above multi-record regular expression would match an
+input such as the following:
+three successive lines containing the letter `\texttt{X}', followed by eight
+successive lines containing the letter `\texttt{Y}', followed by a single line
+containing the letter `\texttt{Z}'.
+Similarly, the above regular expression would match an input containing
+one line containing the letter `\texttt{X}'.
+
+\par 
+Record-repetition operators can be used in conjunction with all
+of the other regular expression features.
+For example, the following regular expression matches one or more
+successive
+\texttt{**kern}
+data records containing the pitch `\texttt{G}'
+(naturals only) followed optionally by a single `\texttt{G\#}' followed by
+one or more records containing one or more pitches from an A major
+triad -$\,$- the last of which must end a phrase:
+
+\par 
+\texttt{
+
+[Gg]+[\^{}\#-]	+
+\\
+[Gg]+\#[\^{}\#]	?
+\\
+([Aa]+|([Cc]+\#)|[Ee]+)[\^{}\#-]	*
+\\
+(\}.*([Aa]+|([Cc]+\#)|[Ee]+)[\^{}\#-]))|(([Aa]+|([Cc]+\#)|[Ee]+)[\^{}\#-].*\})
+
+}
+
+
+\subsection*{Patterns of Patterns}
+
+\par 
+Music often exhibits hierarchical structures where particular types of
+patterns may be embedded in other patterns, or where low-level patterns
+join together to form higher-level patterns.
+As we have seen, the
+\textbf{-t}
+(tag) option for the
+\textbf{patt}
+command allows a new output spine to be generated.
+This spine contains user-defined labels marking the beginning of each found pattern.
+The labels can contain any user-defined text string such as
+\texttt{authentic cadence},
+\texttt{episode},
+\texttt{Motive 3b},
+\texttt{augmentation},
+\texttt{triplet figuration},
+or
+\texttt{prolongation}.
+
+\par 
+As we will see in
+Chapter 26,
+the contents of several spines can be amalgamated
+to form a single spine.
+This means that the results for several independent pattern searches can be
+assembled into a single "pattern" spine.
+Several pattern spines may be created that related to patterns found at
+different hierarchical levels, or patterns found using different search methods.
+Of course, these pattern-spines themselves can be used as input to further
+pattern searches thus providing unbounded possibilities for searching for
+patterns of patterns.
+
+\par 
+Consider, for example, the following template for the
+\textbf{pattern}
+command:
+
+\texttt{Theme 1 (tonic)+
+Bridge*
+Theme 2 (tonic)+
+Coda?}
+
+
+
+
+\par 
+The template reads "one or more instances of \texttt{Theme 1 (tonic)},
+followed by zero or more instances of \texttt{Bridge}, followed by
+one or more instances of \texttt{Theme 2 (tonic)}, followed by zero or one
+instance of \texttt{Coda}."
+This template might be used by
+\textbf{pattern}
+to identify a Recapitulation.
+Together with outputs from parallel searches for `Exposition' and `Development'
+the results of a `Recapitulation' search might similarly be amalgamated and used
+as an input for a higher level search for works exhibiting a sonata-allegro structure.
+
+
+
+\subsection*{Reprise}
+
+\par 
+In this chapter and previous chapters we have identified several search-related
+tools, including the UNIX \textbf{grep} and \textbf{egrep} commands as well
+as the Humdrum
+\textbf{patt}
+and
+\textbf{pattern}
+commands.
+Each of these tools has different strengths and weaknesses and it is not always
+clear which tool is best for a given task.
+When searching, don't forget to consider how
+\textbf{context},
+\textbf{humsed},
+\textbf{rid}
+and other tools might facilitate the searching task.
+In future chapters will will consider how "similarity" tools such as
+\textbf{correl}
+and
+\textbf{simil}
+can contribute to more sophisticated pattern searches.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

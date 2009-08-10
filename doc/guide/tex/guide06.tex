@@ -1,0 +1,585 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter6}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Representing Music Using \textit{**kern}(II)}
+
+
+\par 
+In this chapter we return to consider several more advanced topics
+related to the \texttt{**kern} representation.
+
+\section*{Tuplets}
+\par 
+As we saw in
+Chapter 2,
+\texttt{**kern} durations are represented
+using a reciprocal number notation.
+With the exception of the value zero, durations are represented by
+reciprocal numerical values corresponding to the American duration names:
+"1" for whole note, "8" for eighth, "32"
+for thirty-second, etc.
+The number zero (0) is reserved for the breve duration
+(a duration of twice the length of a whole note).
+
+\par 
+Dotted durations are indicated by adding the period character (.)
+immediately following the numerical value, hence "\texttt{8.}"
+signifies a dotted eighth-note and "\texttt{2..}" signifies
+a doubly dotted half-note.
+Any number of augmentation dots may follow the duration integer.
+
+\par 
+Triplet and other irregular durations are represented using the same
+reciprocal logic.  
+Consider, for example, the quarter-note triplet duration.
+Three quarter triplets occur in the time of four quarters
+or one whole duration.
+If we divide a whole duration ("\texttt{1}") into three equal parts,
+each part has a duration of one-third.
+The corresponding reciprocal integer for 1/3 is 3,
+hence \texttt{**kern} represents a quarter-note triplet as
+a "third-note", \texttt{3}.
+Similarly, eighth-note triplets are represented by the integer 6
+and sixteenth-note triplets are represented by the integer 12.
+Eighth-note quintuplets (5 in the time of 4) will be represented by the
+value 10 (a half duration divided by 5).
+
+\par 
+In general, the way to determine the \texttt{**kern} equivalent of an
+arbitrary "tuplet" duration is to multiply the number of tuplets
+by the total duration which they occupy.
+If 7 notes of equal duration occupy the duration of a whole-note ("\texttt{1}"),
+then each septuplet is represented by the value 7 (i.e. 1 x 7).
+A more extreme example is 23 notes in the time of
+a doubly dotted quarter.
+The appropriate \texttt{**kern} duration can be found by multiplying
+4 by 23 (equals 92) and adding the appropriate augmentation dots.
+Thus "92.." is the correct \texttt{**kern} encoding for a note
+whose duration is 23 notes in the time of a doubly-dotted quarter.
+
+\par 
+By way of illustration, example 6.1 shows an excerpt from
+Sigfrid Karg-Elert's
+\textit{Caprices}
+Op. 107, No. 23 for solo flute.
+The work is in 3/4 meter.
+The last beat of the first measure has 9 notes in the time of a
+quarter duration.
+The reciprocal encoding is 9 x 4 or 36th notes.
+\\\\
+\textbf{Example 6.1.}  Karg-Elert, \textit{Caprices} Op. 107, No. 23.
+
+
+
+
+\texttt{**kern
+*clefG2
+*k[f\#c\#g\#d\#]
+*M3/4
+=
+(8f\#
+8e\#
+4en)
+(36d\#
+36e\#
+36c\#
+36a
+36f\#\#
+36g\#
+36dd\#
+36aa
+36cc\#
+=
+8b~
+8a\#~
+4an)
+(20gg\#
+20ff\#
+20dd\#
+20cc\#
+20a
+=
+8g\#)
+(40b
+40a\#
+40an
+40e
+40dd\#
+8g\#)
+(40b
+40a\#
+40an
+40e
+40dd\#
+20g\#)
+*-}
+
+
+
+\par 
+Another set of tuplets appears in the last beat of the second measure.
+In this case, five notes are played in the time of a quarter,
+hence the reciprocal durations are 5 x 4 or 20th notes.
+
+\par 
+In the last measure of the example, five notes are played in the
+time of an eighth-note: 5 x 8 or 40th notes.
+Note that the 40th notes are half the duration of the 20th notes
+in the previous measure.
+
+\par 
+Other noteworthy observations regarding example 6.1:
+notice the tenuto markings (\texttt{~}) on the first two notes
+of the second measure.
+Also notice that the duration of the last note in the example is
+indeterminate.
+It could be a sixteenth note, a quintuplet sixteenth, or
+some other duration.
+
+
+\subsection*{Grace Notes, Gruppettos and Appoggiaturas}
+
+\par 
+The \texttt{**kern} representation also allows for the encoding
+of grace notes (acciaccaturas, non-canonical gruppettos,
+and appoggiaturas.
+
+\par 
+Depending on the expected analytic application, one way to handle these
+notational devices is to encode the notes according to the manner in which
+they are typically performed.
+Alternatively, since the component notes of an expanded ornament are
+viewed as embellishments that hold potentially less analytic status,
+a special designation for these notes can be useful
+for certain types of studies.
+
+\par 
+\textit{Grace notes}
+(acciaccaturas) are visually rendered as miniature notes
+with a slash drawn through the stem.
+In the \texttt{**kern} representation these notes are treated
+as "durationless" notes and
+are designated by the lower-case letter "\texttt{q}".
+Hence, the token "\texttt{G\#q}" denotes a G\#3 grace note
+with an indeterminate duration.
+
+\par 
+Non-canonical
+\textit{gruppettos}
+are miniature (non-cue) notes (typically appearing in groups)
+whose stems do not contain a slash, and whose notated durations
+cause the total notated duration for the measure
+to exceed the prevailing meter.
+These gruppetto notes are encoded as notes retaining their notated
+durations, but all such notes are also designated by
+the upper-case letter "\texttt{Q}".
+Hence, a miniature sixteenth-note middle C would be encoded
+as "\texttt{16cQ}".
+
+\par 
+When processed by various tools in the Humdrum Toolkit, these notes
+may be treated as equivalent to their notated durations.
+Alternatively, in some types of processing these notes may be discarded.
+For example, the Humdrum
+\textbf{timebase}
+command (described in
+Chapter 13)
+eliminates acciaccaturas and gruppetto notes.
+Note that data records containing acciaccaturas or gruppetto
+notes must
+\textit{not}
+also include normal notes.
+
+\par 
+In the case of
+\textit{appoggiaturas,}
+\texttt{**kern} requires that they be encoded as performed.
+An appropriate duration is assigned to the appoggiatura
+according to common performance practice.
+The duration of the subsequent note is reduced by a corresponding amount.
+The status of the two notes forming the appoggiatura is nevertheless marked.
+The appoggiatura note itself is designated by the upper-case
+letter "\texttt{P}",
+whereas the subsequent note (whose notated duration has been shortened)
+is designated by the lower-case letter "\texttt{p}".
+
+
+\subsection*{Multiple Stops}
+
+\par 
+In the \texttt{**kern} representation, spines typically represent
+individual musical parts or voices.
+Occasionally, a nominally single "part" contains more
+than one concurrent note.
+A good example of such a situation occurs
+when a violin plays a double stop.
+
+\par 
+The \texttt{**kern} representation provides three different ways of representing
+such situations: (1) multiple stops, (2) spine splitting and rejoining,
+and (3) introduction and retiring of a momentary "part".
+Each of these representation methods captures a different way
+of interpreting the music.
+The best representation will depend on the editorial or processing goal.
+
+\par 
+First we will consider the generic Humdrum
+\textit{subtoken.}
+A data token becomes a multiple stop when two or more subtokens
+are present, separated by single spaces.
+By way of illustration, the following \texttt{**kern} data represents a
+scale played in ascending thirds:
+\\\\
+
+\texttt{**kern
+4c 4e
+8d 8f
+8e 8g
+8f 8a
+8g 8b
+8a 8cc
+8b 8dd
+4cc 4ee
+*-}
+
+An important restriction for multiple stops in the \texttt{**kern}
+representation is that they must encode notes of the same duration.
+In the above example, the left and right components of the multiple
+stop always share the same duration.
+(Note that this is a restriction of multiple stops in the \texttt{**kern}
+representation only, and does not necessarily apply to other
+Humdrum representations.)
+
+\par 
+Notice that multiple stops are represented with a single spine (that is,
+there are no tabs present).
+
+\par 
+Multiple stops may occur at any point in a \texttt{**kern} spine.
+For example, the following \texttt{**kern} data represents a scale
+that begins and ends with chords:
+\\\\
+
+\texttt{**kern
+4c 4e 4g
+8d
+8e
+8f
+8g
+8a
+8b
+4cc 4ee 4gg 4ccc
+*-}
+
+The first chord has been encoded as a triple stop, whereas the
+last chord has been encoded as a quadruple stop.
+Notice once again that all of the notes within a multiple stop
+must have the same duration.
+If the durations of the concurrent notes differ,
+then one must use Humdrum spine path indicators (see below).
+
+\par 
+Example 6.2 illustrates a musical context where multiple stops may
+be appropriate.
+The sample passage is from a keyboard work by Telemann.
+The work is almost entirely in two parts with only occasional chords.
+Since the chords always contain notes of equal duration,
+they can be encoded as double stops within a single part.
+
+\par 
+\textbf{Example 6.2.}  Telemann, \textit{Kleine Fantasien für Klavier} No. 7.
+
+
+
+\texttt{**kern**kern
+*clefF4*clefG2
+*k[f\#c\#g\#]*k[f\#c\#g\#]
+*M4/4*M4/4
+!! Allegro
+=2=2
+2r12b
+\texttt{.12e
+\texttt{.12b
+\texttt{.12b
+\texttt{.12e
+\texttt{.12b
+4E 4G\#4b
+4AA 4A4cc\#
+=3=3
+12C\#12ee
+12E12cc\#
+12A12a
+12D12ff\#
+12F\#12dd
+12A12a
+12C\#12ee
+12E12cc\#
+12A12a
+12D12ff\#
+12F\#12dd
+12A12a
+=4=4
+6C\#12ee
+\texttt{.12dd
+12A12cc\#
+6BB12dd
+\texttt{.12cc\#
+12G\#12b
+4AA12cc\#
+\texttt{.12b
+\texttt{.12cc\#
+6C\#12a
+\texttt{.12cc\#
+12E12b
+=5=5
+*-*-}
+
+
+
+\par 
+When encoding multiple stops in the \texttt{**kern} representation,
+some note attributes should be encoded for each note
+in the multiple stop, whereas other markings should be encoded
+only once for the entire multiple stop.
+Note-related attributes such as articulation marks,
+stem directions, and ties should be encoded for each note in the multiple stop.
+By contrast, phrase marks, slurs, and beamings should be encoded
+once for the entire multiple stop.
+Example 6.3 provides a contrived example that illustrates these
+conventions.
+Notice that the first double stop encodes a single open phrase (i.e. `\texttt{\{}')
+and the last double stop encodes a single close phrase (`\texttt{\}}').
+Similarly, the slur in the middle of the phrase has been encoded
+once.
+However, the staccato markings have been encoded for both notes
+in each of the double stops.
+Similarly, separate ties have been encoded for both notes in
+the double stop.
+\\\\
+\textbf{Example 6.3.}  Attribute encoding for \texttt{**kern} multiple stops.
+
+\texttt{**kern
+\{4c 4e
+8dL 8f
+8eJ 8g
+(8f' 8a'
+8g' 8b')
+8.a 8.ccL
+16b 16ddk
+[4cc [4ee
+4cc] 4ee]\}
+*-}
+
+
+\subsection*{Further Examples}
+
+\par 
+Example 6.4 shows an excerpt from a Chopin \textit{Etude}
+that illustrates a number of subtle features
+in the \texttt{**kern} representation.
+
+\par 
+The opening measure consists solely of gruppetto notes;
+each has been designated by the upper-case letter `Q'.
+The double-barline has been indicated with two thin lines.
+Two tandem interpretations encode the meter signature (\texttt{*M3/4})
+and the tempo (\texttt{*MM66}).
+Note that metronome markings using the \texttt{*MM} interpretation
+are always given in quarter-durations per minute.
+If the metronome marking had been given as half-note equals 48,
+then the tempo interpretation would be given as \texttt{*MM96} -$\,$-
+i.e. quarter-note equals 96 beats per minute.
+
+\par 
+Two grace-notes are evident in the passage.
+The first occurs just after the double-bar,
+and the second occurs three measures later.
+These notes have been encoded with duration values,
+but are designated by the lower-case letter `\texttt{q}'.
+Notice that grace-notes are always treated as "durationless"
+notes.
+Grace notes must always be encoded on a separate data record.
+Concurrent grace notes can be encoded on the same data record,
+but grace notes must never share the same data record with a
+regular note.
+Another peculiarity of grace notes is that they are always
+assumed to be slurred to the ensuing note (if there is a subsequent note).
+Thus slurs should not be encoded as part of the grace note.
+
+\par 
+The grace-note E-natural coincides with the end of the first phrase
+and the beginning of the second phrase.
+The phrases are said to be "elided" (overlapping).
+Since \texttt{**kern} phrases are represented by open and close braces,
+the ampersand character is used to indicate elisions.
+
+\par 
+Notice that the `inner' accompaniment chords have been encoded as
+double stops.
+This is possible because the notes in these double stops are all
+the same duration.
+
+\par 
+Finally, notice how the triplet eighth-notes (encoded as duration `12')
+have been interleaved with the concurrent eighth-note figures
+so that the onsets are ordered in the correct temporal sequence.
+\\\\
+\textbf{Example 6.4.}  Chopin, \textit{Etude} Op. 27, No. 7.
+
+
+
+\texttt{!! Lento
+**kern**kern**kern
+*staff2*staff1*staff1
+*clefF4*clefG2*clefG2
+\{4GG\#Q..
+4.D\#Q..
+8C\#Q..
+8C\#Q..
+8BB\#Q..
+4.AQ..
+8G\#Q..
+16F\#\#Q..
+16G\#Q..
+16AQ..
+16G\#Q..
+16BnQ..
+16AQ..
+16EQ..
+16E\#Q..
+16F\#Q..
+16E\#Q..
+16G\#Q..
+16F\#Q..
+16AQ..
+16G\#Q..
+16C\#Q..
+16D\#Q..
+=||=||=||
+*MM66*MM66*MM66
+*M3/4*M3/4*M3/4
+\&\{(Enq\}..
+2e)8r2.r
+\texttt{.8g\# 8cc\#.
+\texttt{.8g\# 8cc\#.
+\texttt{.8g\# 8cc\#.
+8.d\#8g\# 8cc\#.
+\texttt{.8g\# 8cc\#.
+16c\#..
+=3=3=3
+4..cc\#8e 8a\{2ee
+\texttt{.8e 8a.
+\texttt{.8e 8a.
+\texttt{.8e 8a.
+32d\#..
+32c\#..
+\texttt{.8e 8a8.dd\#
+\texttt{.8e 8a.
+\texttt{..16cc\#
+=4=4=4
+[4A8d\# 8f\#4cc\#
+\texttt{.8d\# 8f\#.
+16A]8d\# 8f\#4b\#
+16G\#..
+16F\#\#8d\# 8f\#.
+16G\#..
+16Bn8d\# 8f\#4cc\#
+16A..
+16F\#8d\# 8f\#.
+16D\#..
+=5=5=5
+4BB\#\}8d\# 8f\#4dd\#
+\texttt{.8d\# 8f\#.
+8r8d\# 8f\#4..g\#\}
+\{16FF\#\#\^{}8d\# 8f\#.
+16GG\#..
+BBnq..
+16AA8B\# 8f\#.
+16GG\#..
+16C\#8B\# 8f\#.
+16D\#.\{16g\#
+=6=6=6
+4E8r4g\#
+\texttt{.8c\#.
+4CC\#\}8c\# 8e4cc\#
+\texttt{.8c\# 8e.
+(8.G\#8c\# 8e4bn
+\texttt{.8c\# 8e.
+16.G\#
+=7=7=7
+4G\#)8c\# 8e4b
+\texttt{.8c\# 8e.
+(12FF\#8c\# 8e4a
+12C\#..
+\texttt{.8c\# 8e.
+12F\#..
+12G\#8c\# 8e4g\#
+12B..
+\texttt{.8c\# 8e.
+12A..
+=8=8=8
+*-*-*-}
+
+
+
+
+\subsection*{Reprise}
+
+\par 
+This chapter completes our survey of the \texttt{**kern}
+representation.
+We have noted an number of subtleties related to encoding
+tuplets, multiple stops, gruppettos, acciaccaturas,
+elided phrases, and spine path changes.
+
+\par 
+A more complete description of the
+\texttt{**kern}
+representation may be found in the
+\textit{Humdrum Reference Manual.}
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

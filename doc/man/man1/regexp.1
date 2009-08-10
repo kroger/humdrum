@@ -1,0 +1,178 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH regexp 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBregexp\fR  --  interactive regular-expression tester
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBregexp\fR  [\fIinputfile\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "regexp"
+command invokes an interactive pattern-matcher
+that is useful for formulating and refining regular expressions.
+.I "Regular expressions"
+provide a generic means for defining patterns of characters
+(see tutorial in Section 6).
+Innumerable \s-1UNIX\s+1 and Humdrum commands make use of
+regular expressions.
+The
+.B "regexp"
+command allows the user to test interactively various
+expressions using a sample text.
+If no sample text is supplied by the user
+.I "(inputfile)"
+then a short default text is used.
+.sp 1
+.sp 1
+Once invoked, the user may interactively input a regular expression
+followed by a carriage return.
+The sample text is scanned for occurrences of the defined
+regular expression.
+Any text lines containing the matched expression are displayed on
+the screen;
+.B "regexp"
+differs from the \s-1UNIX\s+1
+.B "grep"
+command in that the precise locations of the matched pattern
+are explicitly marked.
+(See EXAMPLES below.)
+Note that only the first occurrence of a matching pattern is identified
+in each line of text.
+(This is how most software tools make use of regular expressions.)
+.sp 1
+.sp 1
+The entire sample text file may be viewed by typing the regular
+expression \f(CR.*\fR  or by simply typing a carriage return.
+Viewing the sample text is helpful in identifying character-strings that are
+not identified by a given regular expression.
+.sp 1
+.sp 1
+The
+.B "regexp"
+command is terminated by typing an end-of-file marker
+(control-D on \s-1UNIX\s+1; control-Z on \s-1DOS\s+1 or \s-1OS/2\s+1).
+.sp 1
+.sp 1
+The
+.B "regexp"
+command implements the same regular expression features found in
+the \s-1UNIX\s+1
+.B "awk"
+command.
+This includes all so-called \(odextended\(cd regular expression
+features with the exception of \\> and \\<.
+.in -2
+.SH "OPTIONS"
+.in +2
+The
+.B "regexp"
+command provides only a help option:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+.TE
+.sp 1
+Options are specified in the command line.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+Imagine the case where the sample text file specified in the command line
+contains the following three records:
+.sp 1
+.in +2
+The quick brown fox jumped over the lazy dogs.
+.br
+Once upon a time, long, long ago ...
+.br
+It was the best of times, it was the worst of times.
+.sp 1
+.in -2
+The following regular expression defines any character string
+beginning with the lower-case letter `b', followed by zero or
+one instance of any single character, followed by a lower-case vowel.
+.sp 1
+.sp 1
+.in +2
+b.?[aeiou]
+.in -2
+.sp 1
+.sp 1
+Given this regular expression,
+the corresponding output would appear as follows:
+.sp 1
+.sp 1
+.in +2
+The quick brown fox jumped over the lazy dogs.
+.br
+          ^ ^
+.br
+It was the best of times, it was the worst of times.
+.br
+           ^^
+.in -2
+Notice that only those text lines matching the defined regular
+expression are displayed in the output.
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+The regular-expression features provided by
+.B "regexp"
+depend on the local \s-1UNIX\s+1
+.B "awk"
+utility -- as accessed via the \f(CRAWK_VER\fR shell variable.
+Available features may change depending on the version of
+.B "awk"
+used.
+.in -2
+.sp 1
+.sp 1
+.SH "FILES"
+.in +2
+The default text file is
+$HUMDRUM/regexp.txt.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBawk\fR (\s-1UNIX\s+1), \fBexpr\fR (\s-1UNIX\s+1),
+\fBgrep\fR (\s-1UNIX\s+1), \fBgres\fR (\s-1UNIX\s+1),
+\fBpatt\fR (1), \fBpattern\fR (1),
+.br
+\fBsed\fR (\s-1UNIX\s+1)
+.in -2

@@ -1,0 +1,763 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter2}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Representing Music Using \textbf{\textit{**kern}} (I)}
+
+
+
+The \texttt{**kern} representation can be used to represent basic
+or core information for common Western music.
+The \texttt{**kern} scheme can be used to encode pitch and duration,
+plus other common score-related information.
+In this chapter, we will introduce \texttt{**kern}
+through a series of tutorial examples.
+A more comprehensive description
+of \texttt{**kern} will be given in
+Chapter 6.
+Our intention here is to provide a quick introduction.
+
+\par 
+Consider the opening motive from J.S. Bach's \textit{Art of Fugue}
+shown in Example 2.1.
+A corresponding \texttt{**kern} representation is given below
+the notation.
+\\
+\\
+\textbf{Example 2.1.}  J.S. Bach \textit{Die Kunst der Fuge}
+
+
+
+\texttt{**kern
+\texttt{*clefG2
+\texttt{*k[b-]
+\texttt{*M2/2
+\texttt{=-
+\texttt{2d/
+\texttt{2a/
+\texttt{=
+\texttt{2f/
+\texttt{2d/
+\texttt{=
+\texttt{2c\#/
+\texttt{4d/
+\texttt{4e/
+\texttt{=
+\texttt{2f/
+\texttt{2r
+\texttt{*-}
+
+
+
+In general, \texttt{**kern} is intended to represent the underlying
+\textit{functional}
+information conveyed by a musical score rather than the visual or
+\textit{orthographic}
+information found in a given printed rendition.
+The \texttt{**kern} representation is designed to
+facilitate analytic applications rather than music printing or sound
+generation.
+Nevertheless, both visual output and sound output can be generated from the
+\texttt{**kern} representation.
+
+\par 
+Notice that whereas the notation is laid out horizontally across
+the page, the Humdrum representation procedes vertically down the page.
+The representation begins with the keyword \texttt{**kern} which indicates
+that the ensuing encoded material conforms to the kern representation.
+The encoded passage ends with a special
+\textit{terminator}
+token (\texttt{*-}).
+
+\par 
+The clef is identified as a G-clef positioned on the second
+line of the staff (i.e., a treble clef).
+The key signature is encoded as a single flat, B-flat:
+the minus sign here indicates a flat.
+The meter signature (2/2) is encoded next.
+
+\par 
+Lines that begin with an equals-sign indicate
+\textit{logical}
+barlines.
+Musical works may begin with either a complete measure or
+a partial measure.
+In the \texttt{**kern} representation, the beginning of the
+first measure is explicitly indicated.
+In Example 2.1, the encoding for the first barline (\texttt{=-})
+is a functional encoding that doesn't correspond to anything
+in the printed score.
+The minus sign following the equals-sign indicates that the barline
+is "invisible."
+The presence of this logical barline allows various Humdrum tools
+to recognize that the initial notes start at the beginning of
+the first measure, and are not "pick-up" notes prior to the
+first measure.
+
+\par 
+The durations of the notes are indicated by reciprocal numbers:
+1 for whole-note, 2 for half-note, 4 for quarter-note, etc.
+The
+\textit{breve}
+or double whole-note is a special case and is
+represented by the number zero.
+
+\par 
+Stem directions are encoded using the slash (/) for up-stems
+and the back-slash ($\backslash$) for down-stems.
+
+\par 
+Pitches are represented through a scheme of upper- and lower-case letters.
+Middle C (C4) is represented using the single lower-case letter "\texttt{c}".
+Successive octaves are designated by letter repetition, thus C5 is
+represented by "\texttt{cc}", C6 by "\texttt{ccc}" and so on.
+The higher the octave, the more repeated letters.
+
+\par 
+For pitches below C4, upper-case letters are used: "\texttt{C}" designates C3,
+"\texttt{CC}" designates C2, and so on.
+Changes of octave occur between B and C.
+Thus the B below middle C is represented as "\texttt{B}";
+the B below "\texttt{CC}" is represented as "\texttt{BBB}", and so on.
+The lower the octave, the greater the number of repeated letters.
+
+\par 
+Accidentals are encoded using the octothorpe (\texttt{\#}) for sharps, the minus
+sign (\texttt{-}) for flats, and the lower-case letter "\texttt{n}" for naturals.
+Accidentals are encoded immediately following the pitch letter name.
+Double-sharps and double-flats have no special representations in \texttt{**kern}
+and are simply denoted by repetition:
+(\texttt{\#\#}) and (\texttt{-$\,$-}) respectively.
+Triple and quadruple accidentals are similarly encoded by repetition.
+Sharps, flats, and naturals are mutually exclusive in \texttt{**kern},
+so tokens such as "\texttt{cc\#n}" and "\texttt{GG-\#}" are illegal.
+
+\par 
+In Example 2.2, two musical parts are encoded.
+In the corresponding \texttt{**kern} encoding, each musical part or
+voice has been assigned to a different musical staff -$\,$-
+labelled \texttt{*staff1} and \texttt{*staff2}.
+Notice that the upper part has been encoded in the right-most column.
+The layout is exactly as though the musical score were turned sideways.
+\\
+\\
+\textbf{Example 2.2.}  J.S. Bach, \textit{Praeambulum} BWV 390.
+
+
+
+\texttt{**kern**kern
+\texttt{*staff2*staff1
+\texttt{*clefF4*clefG2
+\texttt{*k[b-]*k[b-]
+\texttt{*M3/4*M3/4
+\texttt{=1-=1-
+\texttt{2.rr8r
+\texttt{.8d/L
+\texttt{.8g/
+\texttt{.8b-/
+\texttt{.8g/
+\texttt{.8d/J
+\texttt{=2=2
+\texttt{8r4dd$\backslash$ 
+\texttt{8GG/L.
+\texttt{8BB-/4r
+\texttt{8D/.
+\texttt{8BB-/4r
+\texttt{8GG/J.
+\texttt{=3=3
+\texttt{4GWw$\backslash$8r
+\texttt{.8dd$\backslash$L 
+\texttt{8GG/L8b-$\backslash$ 
+\texttt{8BB-/8g$\backslash$ 
+\texttt{8D/8gg$\backslash$ 
+\texttt{8G/J8b-$\backslash$J
+\texttt{=4=4
+\texttt{4D$\backslash$8a/L
+\texttt{.8gg/
+\texttt{4d$\backslash$8ff/
+\texttt{.8ee/
+\texttt{4D$\backslash$8ff/
+\texttt{.8a-/J
+\texttt{=5=5
+\texttt{*-*-}
+
+
+Each column contains its own separate information.
+Both columns have been labelled \texttt{**kern} and are terminated (\texttt{*-}).
+The columns are separated by a single tab.
+Barline information is also encoded in each column.
+Notice that measure numbers have been added following the barline
+indicator (=).
+Although measure numbers may not be present in the printed score,
+it is normal to include them in \texttt{**kern} encodings.
+
+\par 
+A notable feature when representing multi-part music is the presence
+of place holders called
+\textit{null tokens}.
+A null token is represented by a single isolated period character (.).
+Not all musical parts will have a new note with each successive sonority.
+A null token maintains the grid structure for a sustained pitch
+while another part is moving.
+
+\par 
+Rests are encoded by the lower-case letter `\texttt{r}'.
+Notice that the first rest in the lower part has not been encoded
+as a whole rest.
+Instead, it has been rendered as a dotted half rest.
+This is a good illustration of how \texttt{**kern} is intended
+to be a
+\textit{functional}
+rather than
+\textit{orthographic}
+(visual) representation.
+Nevertheless, users can explicitly indicate that the rest is
+visually rendered as a whole rest by adding a second lower-case letter
+\texttt{r}.
+
+\par 
+Another important difference between functional and orthographic
+representations is evident in the treatment of accidentals.
+In the \texttt{**kern} representation, all pitches are encoded
+without regard for what is going on around them.
+For example, in \texttt{**kern}, pitches are encoded
+with the appropriate accidental,
+even if the accidental is specified in a key-signature or is present earlier
+in the same measure.
+Hence the explicit encoding of all occurrences of B-flats in Example 2.2.
+
+\par 
+All pitches are encoded as absolute pitches.
+In \texttt{**kern}, even transposing instruments are always represented
+at (sounding) concert pitch.
+A special
+\textit{transposition interpretation}
+is provided to indicate the nature of any transposing instrument
+-$\,$-  but the encoded pitches -$\,$- selves appear only at concert pitch.
+
+\par 
+Finally, pitches in \texttt{**kern} are encoded as "nominally"
+equally-tempered values.
+A special
+\textit{temperament interpretation}
+is provided to indicate if the tuning
+system is other than equal temperament.
+
+\par 
+Two other aspects of Example 2.2 are noteworthy.
+In measure 3 an inverted mordent appears on the first note in the
+bass part.
+Mordents are encoded via the letter `\texttt{M}' -$\,$- upper-case `\texttt{M}' for
+whole-tone mordents and lower-case `\texttt{m}' for semitone mordents.
+Inverted mordents are similarly encoded using the letter `\texttt{W}'.
+In Example 2.2, it is not clear whether the mordent should be
+a semitone (consistent with a G harmonic minor figure) or
+a whole-tone mordent (consistent with a G melodic minor figure).
+The signifier `\texttt{Ww}' is a special representation indicating that
+the ornament may be either one.
+
+\par 
+Also evident in Example 2.2 are the upper-case letters `\texttt{L}' and `\texttt{J}'.
+These encode beaming information.
+Each beam is opened by the letter `\texttt{L}' and closed by the letter `\texttt{J}'
+(think of left and right angles).
+Multiple beams and partial beams are discussed in Example 2.4.
+
+\par 
+Example 2.3 shows a four-part chorale harmonization by Bach.
+In this example, two musical parts share each of the two staves.
+Notice how the corresponding \texttt{**kern} encoding
+assigns each part to a separate column, but links the
+appropriate parts using the \texttt{*staff} indicators.
+\\
+\\
+\textbf{Example 2.3.}  \textit{Nun danket alle Gott}, arr. J.S. Bach.
+
+
+
+\texttt{**kern**kern**kern**kern
+\texttt{*staff2*staff2*staff1*staff1
+\texttt{*clefF4*clefF4*clefG2*clefG2
+\texttt{*k[f\#c\#g\#]*k[f\#c\#g\#]*k[f\#c\#g\#]*k[f\#c\#g\#]
+\texttt{*M4/4*M4/4*M4/4*M4/4
+\texttt{4AA4c\#4a4ee
+\texttt{=1=1=1=1
+\texttt{8A4c\#4a4ee
+\texttt{8B...
+\texttt{8c\#4c\#4a4ee
+\texttt{8A...
+\texttt{8D4d4a4ff\#
+\texttt{8E...
+\texttt{8F\#4d4a4ff\#
+\texttt{8D...
+\texttt{=2=2=2=2
+\texttt{2A;2c\#;2a;2ee;
+\texttt{4r4r4r4r
+\texttt{4A4e4a4cc\#
+\texttt{=3=3=3=3
+\texttt{4G\#4e4b4dd
+\texttt{4A4e4a4cc\#
+\texttt{8E4e4g\#4b
+\texttt{8D...
+\texttt{8C\#4e[4a8.cc\#
+\texttt{8AA...
+\texttt{...16dd
+\texttt{=4=4=4=4
+\texttt{2E8e8a]2b
+\texttt{.16d8f\#.
+\texttt{.16c\#..
+\texttt{.4d4g\#.
+\texttt{4AA;4c\#;4e;4a;
+\texttt{=:|!=:|!=:|!=:|!
+\texttt{*-*-*-*-}
+
+
+Once again, clefs, key signatures and meter signatures are
+encoded separately for each part.
+Notice how the meter signature has been encoded as 4/4 rather
+than `common time'.
+This again reflects \texttt{**kern}'s preoccupation with
+functional information rather than orthographic information.
+(Later we will see how to encode the fact that the meter signature
+is visually rendered as `C' rather than 4/4.)
+
+\par 
+In measure 2, pauses (\texttt{;}) have been encoded for all four voices
+even though only two pause symbols appear in the printed notation.
+
+\par 
+In the third measure, the last note of the alto part has been
+tied into the fourth measure.
+The \texttt{**kern} representation provides no generic means for representing
+"curved lines" found in printed scores.
+Since \texttt{**kern} is a "functional" rather
+than an "orthographic" representation, all lines are explicitly
+interpreted as either
+\textit{ties, slurs}
+or
+\textit{phrases.}
+
+\par 
+The open brace \texttt{\{} denotes the beginning of a phrase.
+The closed brace \texttt{\}} denotes the end of a phrase.
+
+\par 
+The open parenthesis \texttt{(} and closed parenthesis \texttt{)} signify
+the beginning and end of a slur respectively.
+
+\par 
+The open square bracket \texttt{[} denotes the first note of a tie.
+The closed square bracket \texttt{]} denotes the last note of a tie.
+The underscore character \texttt{\_} denotes middle notes (if any) of a tie.
+
+\par 
+Slurs and phrase markings can be
+\textit{nested}
+(e.g. slurs within slurs)
+and may also be
+\textit{elided}
+(e.g. overlapping phrases) to a single depth.
+\textit{Nested markings}
+mean that one slur or phrase is entirely subsumed under
+another slur or phrase.
+For example: \texttt{(  (  )  )}  means that a short
+slur has occurred within a longer slur.
+\textit{Elisions}
+are overlaps, for example, where an existing phrase fails to
+end while a new phrase begins.
+In \texttt{**kern} the ampersand character (\texttt{\&}) is used
+to mark elided slurs or phrases.
+For example: \texttt{\{  \&\{  \}  \&\}}  means
+that two phrases overlap -$\,$- the first phrase ending after
+the second phrase has begun.
+
+\par 
+Example 2.3 ends with a repeat sign.
+The \texttt{**kern} representation makes a distinction between
+repeat signs that appear in the score and repeat signs
+that are obeyed in performance.
+In this example, only the visual or orthographic rendering of the
+barline has been encoded.
+Later, in
+Chapter 20,
+we will see how sectional repeats are
+functionally represented.
+The visual appearance of the final barline is encoded as follows: \texttt{=:|!}.
+The equals-sign indicates the logical presence of a barline.
+The colon indicates the repeat sign, followed by a thin line (\texttt{|}),
+followed by a thick line (\texttt{!}).
+
+\par 
+Example 2.4 shows a keyboard work by Franz Joseph Haydn.
+In this example, the lower staff appears to have two concurrent voices.
+The excerpt has been encoded using three spines, two of which encode
+material appearing on the same staff.
+Notice that key signatures are provided that explicitly indicate
+that there are no sharps or flats in the key signature.
+
+\par 
+The upper-most part in the first measure shows the use of
+partial beams.
+Partial beams that extend to the left are encoded by the lower-case
+letter `\texttt{k}'.
+Partial beams that extend to the right are encoded by the upper-case `\texttt{K}'.
+Letters are repeated for each partial beam present.
+In this case, only a single partial beam is used, so only a single `\texttt{k}'
+is encoded.
+Notice that the signifiers `\texttt{L}' and `\texttt{J}' are used only
+to encode complete beams.
+
+\par 
+In the second-last measure, double beams are used to join the
+sixteenth-note pairs.
+As a result, the beams are started with `\texttt{LL}' and end with `\texttt{JJ}'.
+\\
+\\
+\textbf{Example 2.4.}  Franz Joseph Haydn, \textit{Sonata in C major, Hob. XVI: 35}.
+
+
+
+\texttt{**kern**kern**kern
+\texttt{*staff2*staff2*staff1
+\texttt{*clefG2*clefG2*clefG2
+\texttt{*k[]*k[]*k[]
+\texttt{*M3/4*M3/4*M3/4
+\texttt{=1-=1-=1-
+\texttt{4r4r[4ee$\backslash$ 
+\texttt{4c/4g/8.ee]$\backslash$L
+\texttt{..16ff$\backslash$Jk
+\texttt{4f/4g8.dd$\backslash$L
+\texttt{..16ee$\backslash$Jk
+\texttt{=2=2=2
+\texttt{4e/4g/4cc$\backslash$ 
+\texttt{4r4r4gg/
+\texttt{4r4r4gg/
+\texttt{=3=3=3
+\texttt{(2B$\backslash$([2.g/(8gg$\backslash$L
+\texttt{..8ff)$\backslash$J
+\texttt{..(8ff$\backslash$L
+\texttt{..8ee)$\backslash$J
+\texttt{4c$\backslash$.(8ee$\backslash$L
+\texttt{..8dd)$\backslash$J
+\texttt{=4=4=4
+\texttt{4G$\backslash$)4g])/4dd$\backslash$ 
+\texttt{4r4r4b$\backslash$ 
+\texttt{4r4r4g/
+\texttt{=5=5=5
+\texttt{4r4r[4ee$\backslash$ 
+\texttt{4c/4g/8.ee]$\backslash$L
+\texttt{..16ff$\backslash$Jk
+\texttt{4f/4g/8.dd$\backslash$L
+\texttt{..16ee$\backslash$Jk
+\texttt{=6=6=6
+\texttt{4e/4g/4cc$\backslash$ 
+\texttt{4r4r4ccc$\backslash$ 
+\texttt{4E$\backslash$4c$\backslash$4ccc$\backslash$ 
+\texttt{=7=7=7
+\texttt{4f$\backslash$4c$\backslash$16gg\#$\backslash$LL
+\texttt{..16aa$\backslash$JJ
+\texttt{..8r
+\texttt{4r4r16ee$\backslash$LL
+\texttt{..16ff$\backslash$JJ
+\texttt{..8r
+\texttt{4Gn$\backslash$4f$\backslash$16dd$\backslash$LL
+\texttt{..16b$\backslash$JJ
+\texttt{..8r
+\texttt{=8=8=8
+\texttt{4c$\backslash$4e$\backslash$4cc$\backslash$ 
+\texttt{4r4r4r
+\texttt{4r4r4r
+\texttt{=:|!=:|!=:|!
+\texttt{*-*-*-}
+
+
+Slurs are evident in the third measure.
+Open and closed slurs are represented by open (\texttt{(})
+and closed (\texttt{)}) parentheses respectively.
+Notice that the middle part in the third measure
+contains a tied note.
+Considering the presence of concurrent slurs in the other parts
+it is possible that an appropriate interpretation of the score
+would regard the middle voice as also slurred.
+Notice that in the \texttt{**kern} representation,
+notes can be tied, slurred, and phrased concurrently.
+
+
+\subsection*{Comment Records}
+
+\par 
+In any representation, some information may best be conveyed as
+an appended commentary, rather than as part of the encoded data.
+Humdrum comments are records (lines) that begin with an exclamation mark.
+
+\par 
+Humdrum distinguishes two basic types of comments.
+Comments that pertain to all spines in a file are referred to as
+\textit{global comments}
+and begin with two exclamation marks (\texttt{!!}).
+Comments that pertain to a single spine are called
+\textit{local comments}
+and begin with a single exclamation mark in each spine.
+Both types of comments are evident in Example 2.5.
+
+\par 
+The first three records are global comments identifying the source
+and title of the piece.
+The fifth record encodes a local comment in each column.
+One local comment identifies that the lyrics are in the Ojibway
+language.
+On the same line, notice that the other spine also encodes
+single exclamation mark, but contain no text.
+Such isolated exclamation marks are referred to as
+\textit{null local comments.}
+
+\par 
+Notice that
+\textit{local comments}
+conform to the prevailing spine structure.
+Each spine begins with an exclamation mark and tabs
+continue to demarcate each spine.
+\textit{Global comments}
+by contrast completely ignore the spines.
+\\
+\\
+\textbf{Example 2.5.}  Ojibway Song.
+
+\par 
+\texttt{
+
+\texttt{!! Ojibway Indian Song
+\texttt{!! Transcribed by Frances Densmore
+\texttt{!! No. 84 "The Sioux Follow Me"
+
+
+\texttt{**kern**lyrics
+\texttt{!! In Ojibway
+\texttt{*clefF4*
+\texttt{*M3/4*
+\texttt{*k[b-e-a-d-g-]*
+\texttt{8.d-Ma-
+\texttt{16d--gi-
+\texttt{=1=1
+\texttt{8d--ja-
+\texttt{16A--go
+\texttt{16A-ic-
+\texttt{4d--kew-
+\texttt{4d--yan
+\texttt{=2=2
+\texttt{etc.etc.
+\texttt{*-*-}
+
+}
+
+\par 
+
+\subsection*{Reference Records}
+
+\par 
+A particularly important type of global comment is the
+\textit{reference record.}
+Reference records are formal ways of encoding "library-type"
+information pertaining to a Humdrum document.
+Reference records provide standardized ways of
+encoding bibliographic information
+-$\,$-  suitable for computer-based access.
+
+\par 
+Humdrum reference records are designated by three exclamation marks at
+the beginning of a line, followed by a letter code,
+followed by an optional number, followed by a colon, followed by some text.
+The following example provides a set of reference records
+related to the "Augurs of Spring" section from Stravinsky's
+\textit{Rite of Spring.}
+Example 2.6.
+
+\par 
+
+\texttt{!!!COM: Stravinsky, Igor Fyodorovich
+\texttt{!!!CDT: 1882/6/17/-1971/4/6
+\texttt{!!!ODT: 1911//-1913//; 1947//
+\texttt{!!!OPT@@RUS: Vesna svyashchennaya
+\texttt{!!!OPT@FRE: Le sacre du printemps
+\texttt{!!!OPT@ENG: Rite of Spring
+\texttt{!!!OTL@FRE: Les augures printaniers
+\texttt{!!!PUB: Boosey \& Hawkes
+\texttt{!!!YEC: 1945 Boosey \& Hawkes
+\texttt{!!!AGN: ballet
+\texttt{!!!AST: neo-classical
+\texttt{!!!AMT: irregular
+\texttt{!!!AIN: clars corno fagot flt oboe}
+
+Reference records need not be in any particular order.
+The most important reference records (composer, title, etc.)
+are typically placed at the very beginning of a file since
+this makes inspecting the file easier.
+Less important reference records are typically placed at the
+end of the file.
+
+\par 
+Reference codes that begin with the letter `\texttt{C}' pertain to
+the composer.
+The `\texttt{COM}' code identifies the composer (surname first followed by given
+names).
+The `\texttt{CDT}' code identifies the composer's birth and death dates.
+A special format is used in defining such dates,
+and so there are accurate ways to represent uncertainty,
+approximation, ranges of dates, and alternative dates.
+The \textit{Humdrum Reference Manual} describes date formats in great detail.
+
+\par 
+Reference codes that begin with the letter `\texttt{O}' pertain to
+the work or opus.
+The `\texttt{OTL}' code identifies the title of the encoded material -$\,$-
+in this case the `\textit{Les augures printaniers}'.
+The `\texttt{OPT}' code identifies the `parent' work from which the encoded
+music belongs.
+The `\texttt{ODE}' code identifies the name of a person or organization
+to which the work was dedicated.
+All three of these records (\texttt{OTL}, \texttt{OPT} and \texttt{ODE})
+are encoded using the original language.
+
+\par 
+Language designations are explicitly indicated by following a reference code
+with one or two "at" signs (@) followed by a three letter language code.
+The `\texttt{OPT@ENG}' code is used to provide an English translation.
+In this case, the Russian title (\textit{Vesna svyashchennaya}) is translated
+as \textit{Rite of Spring}.
+The double "at" sign (@@) is used to designate the original, primary,
+or preferred language.
+
+\par 
+Reference codes beginning with `\texttt{P}' pertain to publishing and
+imprint information.
+(Codes beginning with `\texttt{S}' can be used to identify manuscript
+sources, library or archive locations, and other source-related
+data.)
+
+\par 
+Codes beginning with `\texttt{Y}' identify copyright information.
+Humdrum defines separate codes for publisher of the electronic edition,
+publisher of the original source document, date of copyright,
+date of data release, country of copyright, copyright message,
+original copyright owner, original year of publication, and other
+information.
+The `\texttt{YEC}' reference record shown in Example 2.6 simply encodes
+the date and copyright owner of the electronic document.
+
+\par 
+Codes that begin with `\texttt{A}' identify analytic information concerning
+the document.
+The code `\texttt{AMT}' provides a metric classification.
+Meters may be classified using combinations of the following keywords:
+\texttt{simple, compound, duple, triple, quadruple, irregular}.
+The `\texttt{AGN}' code is used to provide a free-form text that helps to
+identify the genre of the work.
+In this case the genre is identified as \texttt{ballet}.
+Other suitable characterizations may include opera,
+string quartet, concerto, barbershop quartet, folksong, and so on.
+The `\texttt{AST}' code can be used to identify the style or period of work.
+Once again, this is a free-form text record.
+Suitable keywords might include terms such as baroque, bebop, bossa nova,
+Ecole Notre Dame, minimalist, high-life, hip-hop, reggae, etc.
+Such analytic information is obviously interpretive and often open
+to disagreement.
+Nevertheless, explicit analytic information often proves useful
+in electronic documents.
+
+\par 
+An especially useful analytic reference record is the `\texttt{AIN}' record
+for encoding instrumentation.
+This reference record follows a strict syntax.
+Each instrument has an official Humdrum abbrevation.
+\textbf{Appendix II}
+ identifies a number of the more common instrument codes.
+Instrumentation reference records always specify the instrumentation
+in alphabetical order by instrument abbrevation separated by a single
+space.
+For example, the instrumentation for a woodwind quintet is given as:
+
+\par 
+
+\texttt{!!!AIN: clars corno fagot flt oboe}
+
+
+\par 
+In our discussion here we have only identified some of the more
+common types of reference records.
+A complete description of reference records is given in Appendix II.
+
+
+
+\subsection*{Reprise}
+
+\par 
+In this chapter we have introduced the Humdrum \texttt{**kern}
+representation and a few of the more important reference records.
+As we have seen, \texttt{**kern} can be used to encode core
+information for common musical scores;
+\texttt{**kern} is used to represent
+\textit{functional}
+information rather than
+\textit{orthographic}
+(visual) information.
+In
+Chapter 6
+an expanded description of \texttt{**kern} will be given
+that includes a much wider variety of concepts and situations
+than we have encountered in this chapter.
+\textbf{Appendices I}
+and
+\textbf{II}
+provide expanded information
+pertaining to Reference Records.
+
+\par 
+Although we have only demonstrated the encoding of fairly
+simple information,
+we can already begin processing such data in musically useful ways.
+In the next chapter we will examine some simple processes.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

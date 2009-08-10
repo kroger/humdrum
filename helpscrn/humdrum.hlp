@@ -1,0 +1,24 @@
+
+HUMDRUM   : Syntax checker for Humdrum files.
+
+     This command identifies whether an input stream conforms to the
+     Humdrum syntax.  No output means the input is Humdrum conformant.
+
+     With the -v (verbose) option, HUMDRUM outputs the following statistics:
+     inventory of interpretations used, inventory of data signifiers used,
+     number of global comments, local comments, data records, null tokens,
+     minimum and maximum number of concurrent spines, number of spine-path
+     changes.
+
+Syntax:
+
+     humdrum [-v] [inputfile ...]
+
+Options:
+
+     -v      : produces a verbose listing of the files contents
+
+See also:  CENSUS,  PROOF
+
+  Refer to reference manual for further details.
+

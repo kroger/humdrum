@@ -1,0 +1,503 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- patt</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>patt</b>  --  locate and output user-defined patterns in a Humdrum input
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>patt</b>  [<b>-m</b>]  <b>-f</b> <i>templatefile</i>  [<b>-s</b> <i>regexp</i>]  [<b>-t</b> <i>output_tag</i>]  [<i>inputfile</i> ...]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>patt</b>
+command is used to locate occurrences of
+a user-defined pattern in some Humdrum input.
+The patterns sought may span innumerable data records.
+Occurrences of the pattern may be identified by line number,
+echoed intact in the output stream, or tagged by a user-defined marker
+in a <code><big>**patt</big></code> output spine.
+</P>
+<P>
+The pattern sought must be defined as a separate "template" file.
+The template file is identified using the
+<b>-f</b>
+command option.
+</P>
+<P>
+Pattern templates consist of one or more records.
+Each record specifies a regular expression pattern.
+The input is scanned from beginning to end, in order to
+find passages that match the defined template.
+In order for a match to take place, successive records in
+the input stream must match the regular expressions given in each of
+the corresponding records of the template.
+For example, if the template is 9 lines in length,
+then the input stream must contain 9 successive lines of matching
+data in order for a pattern match to be successful.
+</P>
+<P>
+The
+<b>patt</b>
+command implements a full UNIX regular expression syntax.
+Each line in the template file represents an independent regular
+expression.
+For example, the template:
+</P>
+<P>
+<blockquote>
+<TABLE>
+<TR><TD>1</TD></TR>
+<TR><TD>2</TD></TR>
+<TR><TD>3</TD></TR>
+</TABLE>
+</blockquote>
+</P>
+<P>
+will match inputs such as the following:
+</P>
+<P>
+<blockquote>
+<TABLE>
+<TR><TD>1</TD></TR>
+<TR><TD>112</TD></TR>
+<TR><TD>43.9</TD></TR>
+</TABLE>
+</blockquote>
+</P>
+<P>
+or even
+<blockquote>
+<TABLE>
+<code><big>
+<TR><TD>0x.=%&1*</TD></TR>
+<TR><TD>Figure 32</TD></TR>
+<TR><TD>abc(...32...)</TD></TR>
+</code></big>
+</TABLE>
+</blockquote>
+A more circumspect regular expression template might look like this:
+</P>
+<P>
+<blockquote>
+<TABLE>
+<code><big>
+<TR><TD>^1$</TD></TR>
+<TR><TD>^2$</TD></TR>
+<TR><TD>^3$</TD></TR>
+</code></big>
+</TABLE>
+</blockquote>
+</P>
+<P>
+(The caret (^) and dollar sign ($) are regular expression
+<i>anchors</i>
+that indicate the beginning of the record and end of the record
+respectively.)
+Refer to
+<i>regexp (6)</i>
+for further information regarding regular expressions.
+Note that the related
+<A HREF="pattern.html"><b>pattern</b></A>
+command implements a more powerful regular expression syntax
+for defining multi-record patterns.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>patt</b>
+command supports the following options:
+<blockquote><TABLE>
+<TR><TD><b>-c</b></TD><TD>makes pattern-matching sensitive to comments</TD></TR>
+<TR><TD><b>-e</b></TD><TD>echoes matched patterns in the output</TD></TR>
+<TR><TD><b>-f <i>templatefile</i></TD><TD>use pattern specified in <i>templatefile</i></TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-m</b></TD><TD>invokes collapsed multiple-record matching mode</TD></TR>
+<TR><TD><b>-s <i>regexp</i></TD><TD>skip (ignore) data records containing the defined regular expression</TD></TR>
+<TR><TD><b>-t <i>output_tag</i></TD><TD>generate <code><big>**patt</code></big> output spine; tag each occurrence of the pattern</TD></TR>
+<TR><TD></TD><TD>with the string <i>output_tag</i></TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+By default, the
+<b>patt</b>
+command is insensitive to the presence or absence of Humdrum comments.
+Pattern searches may be made sensitive to occurrences of comments by
+specifying the
+<b>-c</b>
+option.
+</P>
+<P>
+In the default operation,
+<b>patt</b>
+outputs a Humdrum global comment for each pattern matched in the input.
+Each comment identifies the line number in the input where the
+found pattern begins.
+</P>
+<P>
+With the
+<b>-e</b>
+option, each instance of the found pattern is echoed in the output.
+Each output pattern is preceded by the appropriate exclusive interpretation(s)
+and followed by appropriate spine-path terminator(s).
+</P>
+<P>
+Certain types of data records may be ignored in the pattern-search
+by invoking the
+<b>-s</b>
+(skip) option.
+This option must be accompanied by a user-define regular expression.
+All input data records matching the regular expression are ignored.
+This option is useful, for example, in skipping null data tokens,
+barlines, marked embellishment tones, or other types of data.
+</P>
+<P>
+The
+<b>-m</b>
+option invokes a multiple record matching mode.
+In this mode,
+<b>patt</b>
+attempts to match as many successive regular expressions in the template file
+as possible for a given input record, before continuing with the next
+input and template records.
+In this way, a template file consisting of several records,
+may possibly match a single input record.
+(See <A HREF="#EXAMPLES">EXAMPLES</A> below.)
+</P>
+<P>
+The
+<b>-t</b>
+option causes
+<b>patt</b>
+to output a single spine of <code><big>**patt</big></code> output.
+The user specifies an <i>output tag</i> (character string) on the command line.
+Each instance of the found pattern causes the tag to be
+output in the <code><big>**patt</big></code> spine at the position corresponding to
+the onset of each found pattern.
+(See <A HREF="#EXAMPLES">EXAMPLES</A> below.)
+Note that the
+<b>-t</b>
+and
+<b>-e</b>
+options are mutually exclusive.
+</P>
+<P>
+Whatever options are invoked,
+<b>patt</b>
+always produces output that conforms to the Humdrum syntax.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<A NAME="EXAMPLES">
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following examples illustrate the operation of the
+<b>patt</b>
+command.
+Consider the following target file and pattern template file:
+<blockquote>
+</P>
+<P>
+<b>template file:</b>
+<blockquote><TABLE>
+<TR><TD>1</TD></TR>
+<TR><TD>2</TD></TR>
+<TR><TD>3</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</blockquote>
+<blockquote>
+</P>
+<P>
+<b>target file:</b>
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**foo</TD></TR>
+<TR><TD>1</TD></TR>
+<TR><TD>2</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>1 3</TD></TR>
+<TR><TD>2 1</TD></TR>
+<TR><TD>3 2</TD></TR>
+<TR><TD>3</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>1</TD></TR>
+<TR><TD>2 3</TD></TR>
+<TR><TD>4</TD></TR>
+<TR><TD>2 3 1</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+</blockquote>
+A simple search for the pattern template might use the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+patt -f template target
+</code></big>
+</blockquote>
+</P>
+<P>
+Pattern matches are announced by outputting Humdrum global comments.
+Given the above command, the following output would result:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! Pattern found at line 5 of file input</TD></TR>
+<TR><TD>!! Pattern found at line 6 of file input</TD></TR>
+</TABLE></blockquote>
+</code></big>
+In the first instance, notice that
+<b>patt</b>
+is able to identify overlapping patterns.
+Two instances of the 1-2-3 pattern are identified
+beginning on the fifth and sixth lines respectively.
+</P>
+<P>
+Note however, that the first instance of the pattern (beginning at line 2)
+was not identified due to the interruption of the common system barline in
+the fourth line.
+The barlines can be ignored by invoking the
+<b>-s</b>
+option, followed by a regular expression that uniquely identifies the
+records to be skipped -- in this case the equals sign.
+The command:
+</P>
+<P>
+<blockquote>
+<code><big>
+patt -s = -f template target
+</code></big>
+</blockquote>
+</P>
+<P>
+would produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! Pattern found at line 2 of file input</TD></TR>
+<TR><TD>!! Pattern found at line 5 of file input</TD></TR>
+<TR><TD>!! Pattern found at line 6 of file input</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+Actual instances of the pattern can be output by invoking the
+<b>-e</b>
+(echo) option:
+</P>
+<P>
+<blockquote>
+<code><big>
+patt -e -s = -f template target
+</code></big>
+</blockquote>
+</P>
+<P>
+The following output would result:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! Pattern found at line 2 of file input</TD></TR>
+<TR><TD>**foo</TD></TR>
+<TR><TD>1</TD></TR>
+<TR><TD>2</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>1 3</TD></TR>
+<TR><TD>*-</TD></TR>
+<TR><TD>!! Pattern found at line 5 of file input</TD></TR>
+<TR><TD>**foo</TD></TR>
+<TR><TD>1 3</TD></TR>
+<TR><TD>2 1</TD></TR>
+<TR><TD>3 2</TD></TR>
+<TR><TD>*-</TD></TR>
+<TR><TD>!! Pattern found at line 6 of file input</TD></TR>
+<TR><TD>**foo</TD></TR>
+<TR><TD>2 1</TD></TR>
+<TR><TD>3 2</TD></TR>
+<TR><TD>3</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice that each pattern found is output as a self-contained Humdrum
+output with initial exclusive interpretations and concluding
+spine-path terminators.
+If a single continuous output is desired, the
+<b>rid -u</b>
+command may be used to eliminate the duplicate interpretations.
+</P>
+<P>
+Instead of outputting the individual patterns, the
+<b>-t</b>
+option may be used to output a spine that marks each instance
+of the found pattern.
+In the following command, the beginning of each occurrence of the pattern
+is labelled in the <code><big>**patt</big></code> spine by the tag "one-two-three."
+</P>
+<P>
+<blockquote>
+<code><big>
+patt -t one-two-three -s = -f template target
+</code></big>
+</blockquote>
+</P>
+<P>
+The follow output would result:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**foo</TD><TD>**patt</TD></TR>
+<TR><TD>1</TD><TD>one-two-three</TD></TR>
+<TR><TD>2</TD><TD>.</TD></TR>
+<TR><TD>=1</TD><TD>.</TD></TR>
+<TR><TD>1 3</TD><TD>one-two-three</TD></TR>
+<TR><TD>2 1</TD><TD>one-two-three</TD></TR>
+<TR><TD>3 2</TD><TD>.</TD></TR>
+<TR><TD>3</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>.</TD></TR>
+<TR><TD>1</TD><TD>.</TD></TR>
+<TR><TD>2 3</TD><TD>.</TD></TR>
+<TR><TD>4</TD><TD>.</TD></TR>
+<TR><TD>2 3 1</TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+For some tasks (such as the identification of tone-rows in 12-tone music),
+nominally "successive" elements of the pattern may be collapsed within
+a single sonority or record.
+The
+<b>-m</b>
+option invokes a
+<i>multiple record matching</i>
+mode.
+By way of example, the following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+patt -m -t theme123 -s = -f template target
+</code></big>
+</blockquote>
+</P>
+<P>
+will produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**foo</TD><TD>**patt</TD></TR>
+<TR><TD>1</TD><TD>theme123</TD></TR>
+<TR><TD>2</TD><TD>.</TD></TR>
+<TR><TD>=1</TD><TD>.</TD></TR>
+<TR><TD>1 3</TD><TD>theme123</TD></TR>
+<TR><TD>2 1</TD><TD>theme123</TD></TR>
+<TR><TD>3 2</TD><TD>.</TD></TR>
+<TR><TD>3</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>.</TD></TR>
+<TR><TD>1</TD><TD>theme123</TD></TR>
+<TR><TD>2 3</TD><TD>.</TD></TR>
+<TR><TD>4</TD><TD>.</TD></TR>
+<TR><TD>2 3 1</TD><TD>theme123</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+</P>
+<P>
+Note that in the above examples, the extensive capabilities
+provided by <b>patt</b> for defining complex
+<i>regular expressions</i> have not been illustrated.
+Refer to <b>regexp (6)</b> for further pertinent information.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<b>grep</b> (UNIX), <b>egrep</b> (UNIX),
+<A HREF="pattern.html">
+<b>pattern</b></A> (4),
+<A HREF="regexp.html">
+<b>regexp</b></A> (4),
+<b>regexp</b> (6),
+<A HREF="simil.html">
+<b>simil</b></A> (4)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+If a comment is present in the template pattern,
+failing to specify the
+<b>-c</b>
+option will make pattern matching a logically impossibility.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>NOTE</H3></FONT>
+The
+<b>patt</b>
+command differs from the related
+<b>pattern</b>
+command in the following ways:
+(1)
+<b>patt</b>
+always produces output conforming to the Humdrum syntax whereas
+<b>pattern</b>
+never produces Humdrum output.
+(2)
+<b>pattern</b>
+allows multi-record `wild cards' in the template file,
+and so permits the creation of more sophisticated regular expressions.
+(3) The
+<b>pattern</b>
+command does not directly provide an "echo" option.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide21.html#The_patt_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

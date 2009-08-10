@@ -1,0 +1,8 @@
+!! "humdrum: ERROR 13: Data record appears before first exclusive"
+!! "interpretation record in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 13
+a	b	c
+**ex	**ex	**ex
+d	e	f
+*-	*-	*-

@@ -1,0 +1,962 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 14</TITLE>
+<!-- Chapter 14 (Stream Editing) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:14:43 EST 2000">
+<meta name="description" content="Chapter 14 (Stream Editing) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<body>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<br>
+
+<H1>Chapter14</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide13.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide15.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Stream Editing</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+Most computer users are familiar with editing an electronic document using an
+interactive word-processor or text editor.
+<i>Stream editors</i>
+are non-interactive editors that automatically process
+a given input according to a user-specified set of editing instructions.
+A stream editor can be used, for example, to automatically transform a
+document from British spelling to American spelling.
+Stream editors are especially useful when processing large numbers of
+documents -- such as a series of files encoding some musical repertory.
+In this chapter we will introduce two stream editors:
+<b>sed</b>
+and
+<A HREF="commands/humsed.html"><b>humsed</b></A>.
+</P>
+<A NAME="The_sed_and_humsed_Commands">
+<H2>The <i>sed</i> and <i>humsed</i> Commands</H2>
+</P>
+<P>
+The
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+command is simply a Humdrum version of the UNIX
+<b>sed</b>
+stream editor.
+The syntax and operation of
+<b>sed</b>
+and
+<b>humsed</b>
+are virtually identical.
+However,
+<b>humsed</b>
+will modify only Humdrum data records,
+whereas
+<b>sed</b>
+will modify any type of record, including Humdrum comments and
+interpretations.
+Both stream editors provide operations for
+<i>substitution</i>,
+<i>insertion</i>,
+<i>deletion</i>,
+<i>transliteration</i>,
+<i>file-read</i> and
+<i>file-write</i>.
+When used in combination, these operations can completely
+transform an input stream or document.
+</P>
+<A NAME="Simple_Substitutions">
+<H2>Simple Substitutions</H2>
+</P>
+<P>
+The most frequently used stream-editing operation is substitution.
+Both
+<b>humsed</b>
+and
+<b>sed</b>
+designate substitutions by the lower-case letter <code><big>s</big></code>.
+Substitutions require two strings: the
+<i>target string</i>
+to be replaced, and the
+<i>replacement string</i>
+to be introduced.
+The syntax for substitutions is as follows:
+</P>
+<P>
+<blockquote>
+<b>s</b><i><delimiter><target string><delimiter><replacement string><delimiter><options></i>
+</blockquote>
+</P>
+<P>
+No spaces are permitted between these elements.
+The delimiter can be any character;
+however, the same delimiter character
+must be used throughout the operation.
+The following substitution command causes occurrences of the letter `A'
+to be replaced by the letter `B':
+</P>
+<P>
+<blockquote>
+<code><big>s/A/B/</big></code>
+</blockquote>
+</P>
+<P>
+Since the slash character (/) appears immediately following the <code><big>s</big></code>,
+it becomes the delimiter for the rest of the operation.
+In this case no option has been given at the end of the substitution.
+Since the delimiter can be any character, the above command is functionally
+identical to the following:
+</P>
+<P>
+<blockquote>
+<code><big>sxAxBx</big></code>
+</blockquote>
+</P>
+<P>
+If it is necessary to use the delimiter character (as a literal)
+within either the target string or the replacement string it can be
+escaped using the backslash character.
+</P>
+<P>
+There are two ways to execute a substition operation such as given above.
+One way is to give the substitution as a command-line argument to
+<b>sed</b> or <b>humsed</b>:
+</P>
+<P>
+<blockquote>
+<code><big>humsed s%A%B% filename</big></code>
+</blockquote>
+</P>
+<P>
+Alternatively, the operation can be placed in a file
+(for example, named <code><big>revise</big></code>):
+</P>
+<P>
+<blockquote>
+<code><big>s%A%B%</big></code>
+</blockquote>
+</P>
+<P>
+Then the stream editor can be invoked to execute the operations
+contained in this file using the
+<b>-f</b>
+option:
+</P>
+<P>
+<blockquote>
+<code><big>humsed -f revise </code></big><i>inputfile</i>
+</blockquote>
+</P>
+<P>
+By default the output will be displayed on the screen.
+Using file-redirection (>) the output can be placed in
+some other file.
+Note that you should never redirect the output to the same file
+as the input -- this will destroy the original input file.
+If necessary, send the output to a temporary file, and then use
+the UNIX
+<b>mv</b>
+command to rename the output.
+</P>
+<A NAME="Pizzicato_to_Spiccato">
+<P>
+Suppose that you had encoded a musical work in the <code><big>**kern</big></code>
+representation.
+Having finished the encoding, you realize that what you thought were
+<i>pizzicato</i>
+marks are really
+<i>spiccato</i>
+marks.
+In the
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+representation, pizzicatos are indicated by
+the double quote (<code><big>"</big></code>) whereas spiccatos are represented by
+the lower-case letter <code><big>s</big></code>.
+We can change all pizzicato marks to spiccato marks using the following
+command:
+</P>
+<P>
+<blockquote>
+<code><big>humsed 's/"/s/g'</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+Since the double quote is interpreted as a special character
+by the UNIX shell, we have escaped the entire substitution
+operation by placing it in single quotes.
+(Alternatively, we could place a backslash immediately before the
+double-quote character.)
+Note also the presence of the <code><big>g</big></code> option at the end of
+the string.
+Permissible options include any positive integer or the letter <code><big>g</big></code>.
+Without any option, the
+<b>sed</b>
+and
+<b>humsed</b>
+substitute (s) operation will replace only the
+<i>first</i>
+occurrence of the string in each data record.
+The <code><big>g</big></code> option specifies a "global" substitution,
+in that all occurrences on a given data record are replaced.
+If the option consisted of the number `3', then only the
+third instance of the target string would be replaced on each line.
+</P>
+<A NAME="Selective_Elimination_of_Data">
+<H2>Selective Elimination of Data</H2>
+</P>
+<P>
+The
+<i>target string</i>
+in substitution operations is actually a regular expression.
+This means that we can specify patterns using the full power
+of regular expression syntax.
+Frequently, it is useful to eliminate certain kinds of information
+from a file.
+For example, we can eliminate all sharps and flats from
+a <code><big>**kern</big></code>-format file as follows:
+</P>
+<P>
+<blockquote>
+<code><big>humsed s/[#-]//g</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+</P>
+<P>
+Suppose we wanted to eliminate all beaming information in a score.
+In the <code><big>**kern</big></code> representation, open and closed beams
+are represented by <code><big>L</big></code> and <code><big>J</big></code> respectively;
+partial beams are represented by <code><big>K</big></code> and <code><big>k</big></code>.
+</P>
+<P>
+<blockquote>
+<code><big>humsed s/[JLkK]//g</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<A NAME="Eliminate_all_but_beaming">
+<P>
+Alternatively, we might want to eliminate all data except
+for the beaming information:
+</P>
+<P>
+<blockquote>
+<code><big>humsed s/[^JLkK]//g</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<A NAME="Eliminate_measure_numbers">
+<P>
+Sometimes we need to restrict the circumstances where the
+data are eliminated.
+For example, we might want to eliminate all measure numbers.
+Eliminating all numbers from a <code><big>**kern</big></code> file will have
+the undesirable consequence of eliminating all note durations as well.
+Most
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+operations can be
+<i>preceded</i>
+by a regular expression delineated by slashes.
+This tells
+<b>humsed</b>
+to execute this substitution only if the data record matches
+the leading regular expression.
+For example, the following command eliminates measure numbers
+but not note durations:
+</P>
+<P>
+<blockquote>
+<code><big>humsed /^=/sX[0-9]*XXg</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+The operation may be interpreted as follows:
+look for lines that match a pattern where the first character
+in the line is an equals sign;
+if you find this pattern look for zero or more instances of
+any number between zero and nine, and replace that by an
+empty string; do this substitution for all numbers on the
+current data record.
+</P>
+<A NAME="Renumber_barlines">
+<P>
+Incidentally, Humdrum provides a
+<A HREF="commands/num.html"><b>num</b></A>
+command that can be used to insert numbers in data records.
+The
+<A HREF="commands/num.html"><b>num</b></A>
+command supports an elaborate set of options, but is not
+used often, so we won't describe it here.
+The following command renumbers all of the barlines in an input so
+that the first measure begins with the number 72.
+(Refer to the
+<i>Humdrum Reference Manual</i>
+for details regarding <b>num</b>.)
+</P>
+<P>
+<blockquote>
+<code><big>humsed /^=/sX=[0-9]*X=Xg</code></big> <i>inputfile</i><code><big> | num -n ^= -x == -p = -o 72</code></big>
+</blockquote>
+</P>
+<P>
+Suppose we wanted to eliminate all octave numbers from a
+<A HREF="representations/pitch.rep.html"><code><big>**pitch</big></code></A>
+representation.
+In this case we want to delete all numbers except when they
+occur in conjunction with a barline.
+Our substitution should occur only when the current
+record does not match a leading equals sign:
+</P>
+<P>
+<blockquote>
+<code><big>humsed /^[^=]/s%[0-9]%%g</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<A NAME="More_Dynamic_Range">
+<P>
+Suppose we wanted to determine which of two MIDI performances
+exhibits more dynamic range -- that is, which performance has a
+greater variability in key-down velocities.
+Recall from
+<A HREF="guide07.html">Chapter 7</A>
+that MIDI data tokens consist of three
+elements separated by slashes (/).
+The third element is the key velocity.
+First, we want to eliminate key-up data tokens.
+These tokens can be distinguished by the minus sign associated with
+the second data element.
+An appropriate substutition is:
+</P>
+<P>
+<blockquote>
+<code><big>s%[0-9][0-9]*/-[0-9][0-9]*/[0-9]* *%%g</big></code>
+</blockquote>
+</P>
+<P>
+(That is, replace by nothing any data that matches the following:
+a numerical digit followed by zero or more digits, followed by
+a slash, followed by a minus sign, followed by a digit, followed by
+zero or more digits, followed by a slash, followed by zero or
+more digits, followed by zero or more spaces.)
+</P>
+<P>
+Having isolated only the key-down data tokens, we now need to
+eliminate everything but the third data element,
+the MIDI key-down velocities:
+</P>
+<P>
+<blockquote>
+<code><big>s%[0-9][0-9]*/[0-9][0-9]*/%%g</big></code>
+</blockquote>
+</P>
+<A NAME="The_stats_Command">
+<H2>The <i>stats</i> Command</H2>
+</P>
+<P>
+We can determine the range or variance of these velocity values by
+piping the output to the
+<b>stats</b>
+command.
+The
+<b>stats</b>
+command calculates basic statistical information for any input
+consisting of a column of numbers.
+A sample output from
+<b>stats</b>
+might appear as follows:
+<blockquote><TABLE>
+<TR><TD><code><big>n:</TD><TD>124</TD></TR>
+<TR><TD>total:</TD><TD>5700</TD></TR>
+<TR><TD>mean:</TD><TD>45.9677</TD></TR>
+<TR><TD>min:</TD><TD>9</TD></TR>
+<TR><TD>max:</TD><TD>102</TD></TR>
+<TR><TD>S.D.:</TD><TD>232.37</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The value <code><big>n</big></code> indicates the total number of numerical values
+found in the input;
+the <code><big>total</big></code> specifies the sum of these numbers;
+the <code><big>mean</big></code> identifies the average;
+the <code><big>min</big></code> and <code><big>max</big></code> report the minimum and maximum
+values encountered, and the <code><big>S.D.</big></code> represents the standard deviation.
+The standard deviation provides a useful way of characterizing
+which performance has greater variability in key-down velocities.
+</P>
+<P>
+Assuming that the above two stream-editing substitutions are kept in a file
+called <code><big>revise</big></code> we can compare the dynamic range for the
+two performances as follows:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**MIDI' perform1 | grep -v ^= | humsed -r revise \
+<blockquote>
+| rid -GLId | stats</big></code>
+</blockquote>
+<br>
+<code><big>extract -i '**MIDI' perform2 | grep -v ^= | humsed -r revise \
+<blockquote>
+| rid -GLId | stats</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+The
+<b>extract</b>
+command has been added to ensure that we only process
+<A HREF="representations/MIDI.rep.html"><code><big>**MIDI</big></code></A>
+data;
+the
+<b>grep</b>
+command ensures that possible barlines are eliminated,
+and the
+<b>rid</b>
+command eliminates comments and interpretations prior to passing
+the data to the
+<b>stats</b>
+command.
+</P>
+<A NAME="Eliminate_Everything_But...">
+<H2>Eliminate Everything But ...</H2>
+</P>
+<P>
+A common use for
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+is to eliminate signifiers that are not of interest.
+Stream editors like
+<b>sed</b>
+and
+<b>humsed</b>
+can be used to dramatically simplify a representation.
+</P>
+<P>
+Did Monteverdi use equivalent numbers of sharps and flats?
+Or did he favor one accidental over the other?
+A simple way to determine this is to throw away everything
+but the sharps and flats.
+We can generate an inventory of just sharps and flats:
+</P>
+<P>
+<blockquote>
+<code><big>humsed 's/[^#-]//g' montev* | rid -GLId | sort | uniq -c</big></code>
+</blockquote>
+</P>
+<P>
+In some tasks, we might wish to transform a <code><big>**kern</big></code>-format file so that
+only pitch-related information is preserved:
+</P>
+<P>
+<blockquote>
+<code><big>humsed 's/[^a-gA-G#-]//g'</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+In extreme cases, we may wish to eliminate all Humdrum data from an input.
+The following command replaces all data tokens by null tokens:
+</P>
+<P>
+<blockquote>
+<code><big>humsed 's/[^     ][^     ]*/./g'</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+(That is, globally substitute all instances of the string
+not-a-tab followed by zero or more instances of not-a-tab
+characters, by a single period character.)
+This sort of command can be useful in generating a file that
+maintains the
+<i>structure</i>
+but not the
+<i>content</i>
+of some document.
+Incidentally, neither the
+<b>sed</b>
+nor the
+<b>humsed</b>
+commands support extended regular expressions, so we are not able
+to use the <code><big>+</big></code> metacharacter in the above substitution.
+</P>
+<A NAME="Deleting_Data_Records">
+<H2>Deleting Data Records</H2>
+</P>
+<P>
+Sometimes it is useful to delete entire data records rather than
+simply eliminating certain kinds of information.
+The <code><big>d</big></code> operation causes lines to be deleted.
+Normally, it is preceded by a regular expression that
+identifies which records should be eliminated.
+Deleting barlines can be done using the following command:
+</P>
+<P>
+<blockquote>
+<code><big>humsed /^=/d</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+Note that this is functionally equivalent to:
+</P>
+<P>
+<blockquote>
+<code><big>grep -v ^=</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+In the general case,
+<b>humsed /.../d</b>
+is preferable to <b>grep -v</b>.
+Remember that
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+only manipulates Humdrum data records;
+it never touches comments or interpretations.
+The
+<b>grep</b>
+command has no such restriction.
+Consider, for example, the following command to eliminate
+grace notes (acciaccaturas) from a <code><big>**kern</big></code>-format file.
+</P>
+<P>
+<blockquote>
+<code><big>humsed '/q/d'</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+By contrast, the command:
+</P>
+<P>
+<blockquote>
+<code><big>grep -v q</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+would also eliminate any comments or interpretation records
+containing the letter `q'.
+</P>
+<A NAME="Play_without_tonic">
+<P>
+Suppose that we wanted to know whether a melody still evokes
+a certain key perception even if we eliminate all the tonic pitches.
+First we translate the representation to scale degree
+and assemble this file with the original <code><big>**kern</big></code>
+representation for the melody.
+</P>
+<P>
+<blockquote>
+<code><big>deg</code></big> <i>input</i><code><big> > temp</code></big>
+<br>
+<code><big>assemble</code></big> <i>input</i><code><big> temp | humsed '/1$/d' | midi | perform</code></big>
+</blockquote>
+</P>
+<A NAME="Play_tonic_as_rests">
+<P>
+Of course deleting all of the tonic notes will disrupt the
+original rhythm.
+An alternative is to replace all tonic pitches by rests:
+</P>
+<P>
+<blockquote>
+<code><big>deg </code></big><i>input</i><code><big> > temp</code></big>
+<br>
+<code><big>assemble</code></big> <i>input</i><code><big> temp | humsed '/1$/s%[A-Ga-g#-]*%r%' | midi \
+<blockquote>
+| perform</code></big>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Listen_to_rhythm">
+<P>
+Perhaps we might want to eliminate all the pitch information,
+and simply listen to the rhythmic structure of a work.
+That is, we might change all of the pitches in a work to
+a single pitch -- in the following case, middle C:
+</P>
+<P>
+<blockquote>
+<code><big>humsed 's/[A-Ga-g#-]*/c/' | midi | perform</big></code>
+</blockquote>
+</P>
+<A NAME="Adding_Information">
+<H2>Adding Information</H2>
+</P>
+<P>
+The substitute command can also be used to add information
+to points in a Humdrum input.
+For example, we might wish to add an explicit breath-mark (<code><big>,</big></code>)
+to the end of each phrase in a <code><big>**kern</big></code>-format input:
+</P>
+<P>
+<blockquote>
+<code><big>humsed s/}/},/g</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+Any occurrence of the ampersand (<code><big>&</big></code>) in the replacement string
+of a substitution is a standard stream-editing convention which means
+"the matched string."
+Suppose we want to add a tenuto mark to every quarter-note in a work.
+The following substitution seeks the number `4' followed by
+any character that is not a digit or period.
+This pattern is replaced by itself (&) followed by a tilde (~),
+the
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+signifier for a tenuto mark:
+</P>
+<P>
+<blockquote>
+<code><big>humsed s/4[^0-9.]/&~/g</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<A NAME="Multiple_Substitutions">
+<H2>Multiple Substitutions</H2>
+</P>
+<P>
+Some tasks may require more than one substitution command.
+Multiple operations can be invoked by separating each
+operation by a semicolon.
+In the following example, we change all <code><big>**kern</big></code> quarter-notes
+to eighth-note durations:
+</P>
+<P>
+<blockquote>
+<code><big>humsed 's/4[A-Ga-g]/8&/g; s/84/8/g'</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+The first substitution finds strings that match the number `4'
+followed by an upper- or lower-case letter from A to G.
+The matched string is then output preceded by the number `8'.
+This operation will change all quarter notes and rests
+to eighty-fourth durations.
+The ensuing substitution operation changes `84' to `8'
+and so completes the transformation.
+</P>
+<A NAME="Switching_Signifiers">
+<H2>Switching Signifiers</H2>
+</P>
+<P>
+In some situations, we will want to switch two or more
+signifiers -- make all A's B's and all B's A's.
+These sorts of tasks require three substitutions and
+involve creating a unique temporary string.
+For example, the following command
+changes all
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+up-bows to down-bows and vice versa.
+</P>
+<P>
+<blockquote>
+<code><big>humsed 's/u/ABC/g; s/v/u/g; s/ABC/v/g'</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+The first substitution changes down-bows (`<code><big>u</big></code>') to the
+unique temporary string <code><big>ABC</big></code>.
+(In the <code><big>**kern</big></code> representation <code><big>ABC</big></code> is an illegal
+pitch representation, so it is bound to be a unique character string.)
+The second substitution changes up-bows (<code><big>v</big></code>) to down-bows.
+The third substitution changes occurrences of the temporary
+string <code><big>ABC</big></code> to up-bows.
+</P>
+<A NAME="Executing_from_a_File">
+<H2>Executing from a File</H2>
+</P>
+<P>
+When several instructions are involved in stream editing,
+it can be inconvenient to type multiple operations on the command line.
+It is easier to place the editing instructions in a file,
+and use the
+<b>-f</b>
+option (with either <b>sed</b> or
+<A HREF="commands/humsed.html"><b>humsed</b></A>)
+to execute
+from the file.
+Consider, for example, the task of rhythmic diminution,
+where the durations of notes are halved.
+We might create a file called <code><big>diminute</big></code> containing the
+following operations:
+</P>
+<P>
+<blockquote>
+<code><big>s/[0-9][0-9]\*/&XXX/g
+<br>
+s/64XXX/128/g
+<br>
+s/32XXX/64/g
+<br>
+s/16XXX/32/g
+<br>
+s/8XXX/16/g
+<br>
+s/4XXX/8/g
+<br>
+s/2XXX/4/g
+<br>
+s/1XXX/2/g
+<br>
+s/0XXX/1/g</big></code>
+</blockquote>
+</P>
+<P>
+Each substitution command is applied (in order) to every line or
+data record in the file.
+The first substitution adds the unique string <code><big>XXX</big></code> to
+every number.
+The ensuing substitutions transform these numbers to appropriate
+diminution values.
+We can execute these commands as follows:
+</P>
+<P>
+<blockquote>
+<code><big>humsed -f diminute</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<A NAME="Writing_to_a_File">
+<H2>Writing to a File</H2>
+</P>
+<P>
+A useful feature of
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+is the "write" or <code><big>w</big></code> operation.
+This operation causes a line to be written to the end of a specified file.
+Suppose, for example, we wanted to collect all seventh chords
+into a separate file called <code><big>sevenths</big></code>.
+With a
+<A HREF="representations/harm.rep.html"><code><big>**harm</big></code></A>-format
+input, the appropriate command would be:
+</P>
+<P>
+<blockquote>
+<code><big>humsed '/7/w sevenths'</code></big> <i>inputfile.hrm</i>
+</blockquote>
+</P>
+<P>
+Each line containing the number 7 wll be written to a file named
+<code><big>sevenths</big></code>.
+</P>
+<P>
+Similarly, we could copy all sonorities containing pauses to
+the file <code><big>pauses</big></code>.
+</P>
+<P>
+<blockquote>
+<code><big>humsed '/;/w pauses'</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+Of course there are other ways of achieving the same goal:
+</P>
+<P>
+<blockquote>
+<code><big>yank -m ';' 0</code></big> <i>inputfile</i><code><big> > pauses</code></big>
+</blockquote>
+</P>
+<P>
+Or even:
+</P>
+<P>
+<blockquote>
+<code><big>grep ';'</code></big> <i>inputfile</i><code><big> | grep -v '^[!*]' > pauses</code></big>
+</blockquote>
+</P>
+<A NAME="Subdominant_beginning_phrases">
+<A NAME="Subdominant_ending_phrases">
+<P>
+In some cases, a stream editor can be used to eliminate or modify data
+that will confound subsequent processing.
+For example, suppose we wanted to count the number of phrases that
+begin on the subdominant and the number of phrases that end on the subdominant.
+The
+<A HREF="commands/deg.html"><b>deg</b></A>
+command will allow us to identify subdominant pitches (via the number `4').
+Since we would like to maintain the phrase indicators, we will
+avoid the
+<b>-x</b>
+option for <b>deg</b>.
+However, the
+<b>-x</b>
+option will pass
+<i>all</i>
+of the non-pitch related signifiers,
+including the duration data which encodes numbers.
+Hence, we will not be able to distinguish the subdominant (`4') pitch
+from a <code><big>**kern</big></code> quarter-note (`4').
+The problem is resolved by first eliminating all of the duration
+information (numbers) from the original input:
+</P>
+<P>
+<blockquote>
+<code><big>humsed 's/[0-9.]//g' input.krn | deg | egrep -c '({.*4)|4.*{)'</big></code>
+<br>
+<code><big>humsed 's/[0-9.]//g' input.krn | deg | egrep -c '(}.*4)|4.*})'</big></code>
+</blockquote>
+</P>
+<A NAME="Notes_per_Syllable">
+<P>
+In texts for vocal works, identify the number of notes per syllable.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**kern'</code></big> <i>input</i><code><big> | humsed 's/X//g' > tune</code></big>
+<br>
+<code><big>extract -i '<A HREF="representations/silbe.rep.html">**silbe</A>'</code></big> <i>input</i><code><big> | humsed 's/[a-zA-Z]*/X/' > lyrics</code></big>
+<br>
+<code><big>assemble tune lyrics | cleave -i '**kern,**silbe' -o '**new' \
+<blockquote>
+> combined</big></code>
+</blockquote>
+<code><big>context -b X -o '[r=]' combined | rid -GLId | awk '{print NF}'</big></code>
+</blockquote>
+</P>
+<A NAME="Notes_per_Word">
+<P>
+Identify the number of notes per word rather than per syllable.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**kern'</code></big> <i>input</i><code><big> > tune</code></big>
+<br>
+<code><big>extract -i '**silbe'</code></big> <i>input</i><code><big> | humsed 's/^[^-].*[^-]$/BEGIN_END/; s/-.*[^-]$/END/; s/^[^-].*-/BEGIN/' > lyrics</code></big>
+<br>
+<code><big>assemble tune lyrics | cleave -i '**kern,**silbe' -o '**new' \
+<blockquote>
+> combined</big></code>
+</blockquote>
+<code><big>context -b BEGIN -e END -o '[r=]' combined | rid -GLId \
+<blockquote>
+| awk '{print NF}'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Reading_a_File_as_Input">
+<H2>Reading a File as Input</H2>
+</P>
+<P>
+Another useful feature is the
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+"read" or <code><big>r</big></code> operation.
+Whenever a leading regular expression is matched,
+a file is read in at that point.
+Suppose, for example, that we want to annotate a file with Humdrum
+comments identifying the presence of cadential 6-4 chords.
+First, we might create a file -- <code><big>comment.6-4</big></code> --
+containing the following Humdrum comment:
+</P>
+<P>
+<blockquote>
+<code><big>!! A likely cadential 6-4 progression.</big></code>
+</blockquote>
+</P>
+<P>
+We can use the Humdrum
+<A HREF="commands/pattern.html"><b>pattern</b></A>
+command (to be described in
+<A HREF="guide21.html">Chapter 21</A>),
+as follows:
+</P>
+<P>
+File <code><big>template</big></code>:
+<blockquote>
+<code><big>
+ .*</big></code>
+<br>
+<code><big>Ic</big></code>
+<br>
+<code><big>^\.	*</big></code>
+<br>
+<code><big>=	*</big></code>
+<br>
+<code><big>V[^I]</big></code>
+</blockquote>
+</P>
+<P>
+Command:
+</P>
+<P>
+<blockquote>
+<code><big>pattern -f template</code></big> <i>inputfile</i><code><big> > output</code></big>
+<br>
+<code><big>humsed 'cadential-64/r comment.6-4' output > commented.output</big></code>
+</blockquote>
+</P>
+<P>
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+The
+<b>sed</b>
+and
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+commands provide stream editors that can automatically edit
+a data stream.
+We've seen that multiple operations can be carried out,
+either from the command line or from a file containing
+editing instructions.
+It should be noted that the
+<b>sed</b>
+and
+<b>humsed</b>
+commands provide many more editing facilities than those
+discussed in this chapter.
+Some 25 operations are provided by
+<b>sed</b>
+and <b>humsed</b>.
+For example, segments of text can be stored in various buffers,
+the contents of these buffers modified, and the results placed anywhere
+in the output text.
+Markers can be set at particular points and conditional branch
+statements executed.
+Stream-editing scripts have been written to execute programs
+of considerable complexity.
+However, for most tasks, the simple substitute (<b>s</b>) and delete (<b>d</b>)
+operations are the most useful.
+For further information about stream editing using
+<b>sed</b>, refer to the book on
+<b>sed</b>
+and
+<b>awk</b>
+written by Dale Dougherty
+(listed in the bibliography).
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide15.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide13.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

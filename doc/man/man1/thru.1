@@ -1,0 +1,349 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH thru 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +10
+.ti -10
+\fBthru\fR  --  expand Humdrum abbreviated format representation to through-composed format
+.in -10
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBthru\fR   [\fB-v  \fIversion\fR]   [\fIinputfile\fR ...]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "thru"
+command expands
+.I "abbreviated format"
+Humdrum representations to
+.I "through-composed formats"
+in which input passages are rearranged and output according to some specified
+.I "expansion list."
+.sp 1
+.sp 1
+Musical scores frequently contain notational devices such as repeat signs
+and Da Capos which permit more succinct renderings of a given document.
+Humdrum
+.I "section labels"
+and
+.I "expansion-lists"
+provide parallel mechanisms for encoding
+.I "abbreviated format"
+files.
+The
+.B "thru"
+command is normally used to expand various repetition devices.
+However, depending on the input, one of several expansions
+(dubbed \fIversions\fR) may be possible.
+Hence,
+.B "thru"
+is also useful for selecting a particular edition, performance,
+or interpretation from a composite input.
+.sp 1
+.sp 1
+The input to
+.B "thru"
+must contain one or more sections identified by section labels.
+A
+.I "section"
+is a set of contiguous records.
+A
+.I "section label"
+is a tandem interpretation that consists of a single
+asterisk, followed by a greater-than sign, followed by a keyword
+that labels the section, e.g.
+.sp 1
+.sp 1
+.in +2
+*>Exposition
+.br
+*>Trio
+.br
+*>Refrain
+.br
+*>2nd ending
+.br
+*>Coda
+.in -2
+.sp 1
+.sp 1
+The section label
+.I "keywords"
+may contain any sequence of the following ASCII characters:
+the upper- or lower-case letters \f(CRA-Z\fR, the numbers \f(CR0\fR to \f(CR9\fR,
+the underscore (\f(CR_\fR), dash (\f(CR-\fR), period (\f(CR.\fR),
+plus sign (\f(CR+\fR), octothorpe (\f(CR#\fR), tilde (\f(CR~\fR),
+at-sign (\f(CR@\fR), or space.
+All other characters are forbidden.
+A section label interpretation may occur anywhere in a Humdrum input,
+however, if more than one spine is present in a passage,
+identical section labels must appear concurrently in all spines.
+.sp 1
+.sp 1
+Sections begin with a section label and end when either another
+section label is encountered, all spines are assigned new
+exclusive interpretations, or all spines terminate.
+If there is more than one spine present in a passage,
+identical section labels must appear concurrently in all spines.
+.sp 1
+.sp 1
+An
+.I "expansion-list"
+is a tandem interpretation that
+takes the form of a single asterisk followed
+by a greater-than sign, followed by an optional label, followed by a list of
+section-labels enclosed in square brackets and separated by commas.
+Examples are given below.
+The first and second expansion-lists identify
+two section-labels in their lists.
+The last three expansion-lists have been labelled `long,' `1955'
+and `Czerny_edition' respectively.
+.sp 1
+.sp 1
+.in +2
+*>[section1,2nd ending]
+.br
+*>long[Exposition,Exposition]
+.br
+*>1955[Aria]
+.br
+*>Czerny_edition[refrain]
+.in -2
+.sp 1
+.sp 1
+The
+.B "thru"
+command outputs each section in the order specified in the
+expansion list.
+If more than one expansion list is present in a file,
+then the desired
+.I "version"
+is indicated on the command line via the
+.B "-v"
+option.
+(See EXAMPLES.)
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "thru"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the
+	  command syntax
+\fB-v \fIversion\fR	expand the encoding according to expansion-
+	  list label \fIversion\fR
+.TE
+.sp 1
+Options are specified in the command line.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following examples illustrate the operation of the
+.B "thru"
+command.
+Consider the following simple file:
+.in +2
+.sp 1
+.TS
+l l.
+**example	**example
+*>[A,B,A,C]	*>[A,B,A,C]
+*>A	*>A
+data-A	data-A
+*>B	*>B
+data-B	data-B
+*>C	*>C
+data-C	data-C
+*-	*-
+.TE
+.sp 1
+.in -2
+This example contains just three data records -- each of
+which has been labelled with its own section label.
+The file contains a single unlabelled expansion list which
+indicates that `A' section should be repeated between the `B' and `C' sections.
+The following command:
+.sp 1
+.sp 1
+.in +2
+thru inputfile
+.in -2
+.sp 1
+.sp 1
+would produce the following \(odthrough-composed\(cd output:
+.in +2
+.sp 1
+.TS
+l l.
+**example	**example
+*thru	*thru
+*>A	*>A
+data-A	data-A
+*>B	*>B
+data-B	data-B
+*>A	*>A
+data-A	data-A
+*>C	*>C
+data-C	data-C
+*-	*-
+.TE
+.sp 1
+.in -2
+Notice that the expansion-list record has been eliminated from the
+output.
+A \f(CR*thru\fR tandem interpretation is added to all output spines
+immediately following each instance of an exclusive interpretation in the input.
+If \f(CR*thru\fR tandem interpretations are already present in the input,
+they are discarded
+(thus, running a file through
+.B "thru"
+twice will not change the file in any way).
+Also notice that there are now two sections in the output sharing the
+same label (\f(CR*>A\fR).
+This duplication of section-labels is not permitted in
+abbreviated-format encodings.
+.sp 1
+.sp 1
+Consider the following more complex example.
+Imagine a
+.I "Da Capo"
+work in which a conventional performance procedes as follows:
+a first section (`A') is performed twice, followed by
+first and second endings -- labelled `B' and `C' respectively.
+A subsequent section ensues (`D'), followed by a return to the
+first section (`A').
+This first section is played just once, immediately followed by
+a final coda section (`E').
+.sp 1
+.sp 1
+Imagine also a hypothetical performance of this work in which
+Murray Perahia makes three changes:
+Perahia repeats the `D' section,
+he repeats the `A' section when returning to the Da Capo
+-- re-using the first ending before continuing
+to the coda following the repetition.
+Finally, Perahia has improvised an introduction to the work.
+Both the conventional interpretation and the hypothetical
+Perahia interpretation can be represented in the same encoded file
+as follows.
+.in +2
+.sp 1
+.TS
+l.
+**example
+*>Perahia[X,A,B,A,C,D,D,A,B,A,E]
+*>Conventional[A,B,A,C,D,A,E]
+*>X
+data-X
+*>A
+data-A
+*>B
+!! 1st ending
+data-B
+*>C
+!! 2nd ending
+data-C
+*>D
+data-D
+*>E
+!! Coda
+data-E
+*-
+.TE
+.sp 1
+.in -2
+The hypothetical Perahia version can be recreated by invoking the command:
+.sp 1
+.sp 1
+.in +2
+thru -v Perahia inputfile
+.in -2
+.sp 1
+.sp 1
+Alternatively, the \(odconventional\(cd interpretation of the Da Capo
+structure could be produced by the command:
+.sp 1
+.sp 1
+.in +2
+thru -v Conventional inputfile
+.in -2
+.sp 1
+.sp 1
+In each case, the
+.B "thru"
+command will expand the input file according to the designated
+label for the expansion-lists.
+Note that there is no limit to the number of expansion-lists
+that may appear in a Humdrum file.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBstrophe\fR (1),
+\fByank\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+Humdrum ouput is not guaranteed with the
+.B "thru"
+command.
+In order to assure Humdrum output, it is necessary to have the
+same number of active spines at each point where sections are joined
+together in the expanded output.
+In addition, the exclusive interpretations must match where
+sections are joined.
+.sp 1
+.sp 1
+Note that if an expansion list appears after some initial data records, then
+.B "thru"
+causes the initial material to be output before expanding the
+document according to the expansion list.
+.sp 1
+.sp 1
+No two expansion lists can be identified using the same version label.
+.sp 1
+.sp 1
+If two sections contain the same section label in the abbreviated
+document, then subsequent sections having the same label are ignored
+when expanded by
+.B "thru."
+.sp 1
+.sp 1
+Inputs that contain different section labels or expansion-lists
+in concurrent spines are illegal and will produce an error.
+.in -2

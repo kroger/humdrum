@@ -1,0 +1,81 @@
+###########################################################################
+# 						XDELTA
+# Programmed by: Tim Racinsky        Date: July, 1993
+# Copyright (c) 1993 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# June 7/94	Tim Racinsky	Modified to use with getopts
+#
+#
+#	This shell program receives input from the command line and after 
+# checking it, passes it to the program xdelta.awk.
+#
+OPTIONS=""
+FILENAME=""
+BREG_EXP=""
+SREG_EXP=""
+HELP=""
+FLAG=""
+STNDIN=""
+USAGE1="USAGE: xdelta -h                    (Help Screen)"
+USAGE2="       xdelta [-ae] [-b reg_exp] [-s reg_exp] [file ...]"
+# 
+while getopts ab:ehs: arg
+do
+	case "$arg" in
+	b) 	BREG_EXP="${OPTARG}";;
+	s) 	SREG_EXP="${OPTARG}";;
+	h) 	HELP="ON";;
+     [ae])
+		OPTIONS="$OPTIONS${arg}";;
+	[?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit ;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If the help variable has been specified, print the help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/xdelta.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/xdelta.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' is allowed
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "xdelta: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+# Invoke xdelta.awk with the specified options.
+$AWK_VER -f ${HUMDRUM}/bin/xdelta.awk "DUMMY" "${OPTIONS:-null}" "${BREG_EXP:-null}" "${SREG_EXP:-null}" $FILENAME

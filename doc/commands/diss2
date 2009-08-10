@@ -1,0 +1,242 @@
+.OH "''\(dm    \fIHumdrum Command Reference\fR    \(dm'\s+2\fBdiss\fR\s-2  (4)'"
+.EH "'\s+2\fBdiss\fR\s-2  (4)'\(dm    \fIHumdrum Command Reference\fR    \(dm''"
+.bp
+.tm .ix \fBdiss\fR command	\n[%]	BEGIN
+.tm .ix command, \fBdiss\fR	\n[%]	BEGIN
+.tm .ix dissonance, sensory (\fBdiss\fR)	\n[%]	BEGIN
+.tm .ix consonance, sensory (\fBdiss\fR)	\n[%]	BEGIN
+.hl
+\D[l 5.5i 0]
+.sp 2
+.HU "NAME"
+.in +2
+.in +11
+.ti -11
+\fBdiss\fR  \(em  calculate the degree of sensory dissonance for successive spectra
+.tm .tc \fBdiss\fR	\n[%]
+.tm .ix spectra (\fBdiss\fR)	\n[%]
+.in -11
+.in -2
+.sp 1
+.HU "SYNOPSIS"
+.in +2
+.ft CR
+.in +7
+.ti -7
+.cs CR 19
+\fBdiss\fR  [\fIinputfile.spt ...\fR]  [> \fIoutputfile.dis\fR]
+.cs TR
+.ft TR
+.in -7
+.in -2
+.sp 1
+.HU "DESCRIPTION"
+.in +2
+The
+.B "diss"
+command measures the degree of sensory dissonance for successive
+acoustic moments.
+It outputs a single
+.ft CR
+.cs CR 20
+**diss
+.cs TR
+.ft TR
+spine containing numerical values \(em where higher
+values indicate greater amounts of sensory dissonance.
+The input must consist of one or more
+.ft CR
+.cs CR 20
+**spect
+.cs TR
+.ft TR
+spines.
+Each data record in the
+.ft CR
+.cs CR 20
+**spect
+.cs TR
+.ft TR
+input represents a concurrent set of discrete
+frequencies (spectrum).
+Spectral data consist of sets of paired frequency/amplitude
+.tm .ix frequency/amplitude values (\fBdiss\fR)	\n[%]
+values for each pure tone component present.
+Typical musical sonorities contain dozens of spectral components.
+.tm .ix sonority (\fBdiss\fR)	\n[%]
+.sp 1
+The
+.B "diss"
+command implements an algorithm arising from the work of
+Kameoka and Kuriyagawa (see \s-1REFERENCES\s+1.)
+.tm .ix Kameoka, A.	\n[%]
+.tm .ix Kuriyagawa, M.	\n[%]
+.I "Sensory dissonance"
+is a low-level auditory phenomenon that is considered distinct from
+culturally-mediated and contextual experiences of consonance or
+.tm .ix culture, effect on dissonance	\n[%]
+dissonance (Greenwood, 1961; Plomp and Levelt, 1965).
+.tm .ix Greenwood, D.D.	\n[%]
+.tm .ix Plomp, R.	\n[%]
+.tm .ix Levelt, W.J.M.	\n[%]
+It is therefore inappropriate to equate sensory dissonance with
+\(lqmusical dissonance\(rq broadly construed.
+Sensory dissonance values are known to be influenced by the loudness,
+.tm .ix loudness, effect on sensory dissonance	\n[%]
+.tm .ix sound pressure level, effect on sensory dissonance	\n[%]
+overall pitch-height, interval-relationship,
+.tm .ix pitch height, effect on sensory dissonance	\n[%]
+.tm .ix pitch interval, effect on sensory dissonance	\n[%]
+and timbre of any participating tones.
+.tm .ix timbre, effect on sensory dissonance	\n[%]
+.sp 1
+For a description of the input
+.ft CR
+.cs CR 20
+**spect
+.cs TR
+.ft TR
+representation, refer to Section 2
+.I "(Representation Reference)"
+of this reference manual.
+.sp 1
+The output file format is dubbed `.dis'
+.tm .ix \f(CR.dis\fR file extension	\n[%]
+.tm .ix file extension \f(CR.dis\fR	\n[%]
+.in -2
+.sp 1
+.HU "OPTIONS"
+.in +2
+The
+.B "diss"
+command provides only a help option:
+.DS
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+.TE
+.DE
+Options are specified in the command line.
+.in -2
+.sp 1
+.HU "EXAMPLES"
+.in +2
+The following example illustrates an input and a corresponding output from the
+.B "diss"
+command.
+The first and second spines
+.ft CR
+.cs CR 20
+(**spect)
+.cs TR
+.ft TR
+encode a simple input spectrum consisting of six pure tone components.
+.tm .ix pure tones (\fBdiss\fR)	\n[%]
+The first component has a frequency of 261 Hz at a sound pressure
+level of 47 decibels.
+The six components represent the pitches C4 and E4 played with 3 harmonics each.
+.tm .ix harmonics (\fBdiss\fR)	\n[%]
+The third spine
+.ft CR
+.cs CR 20
+(**diss)
+.cs TR
+.ft TR
+displays the corresponding sensory dissonance value as calculated by
+.B "diss."
+An output value of about 65 is typical for a single pure tone
+at about 60 dB SPL.
+.tm .ix 60 dB SPL (\fBdiss\fR)	\n[%]
+.tm .ix SPL \(em see sound pressure level
+An output value near zero results for silence.
+.DS
+.in +2
+.ft CR
+.cs CR 20
+.TS
+l l l.
+**spect	**spect	**diss
+261;47 523;57 785;35	330;57 659;35 989;27	173
+*-	*-	*-
+.TE
+.in -2
+.cs TR
+.ft TR
+.DE
+.in -2
+.HU "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.HU "SEE ALSO"
+.in +2
+.ft CR
+.cs CR 20
+\fBhint\fR (4), \fB**spect\fR (2), \fBspect\fR (4)
+.cs TR
+.ft TR
+.in -2
+.sp 1
+.HU "WARNINGS"
+.in +2
+The output dissonance measures reflect known phenomena in the
+peripheral auditory system, but do not take into account contextual,
+.tm .ix peripheral auditory system	\n[%]
+cultural, and learned aspects that are also likely to affect
+.tm .ix learning, effect on dissonance	\n[%]
+the experience of dissonance.
+.in -2
+.sp 1
+.HU "REFERENCES"
+.in +2
+Greenwood, D. D.
+.tm .ix Greenwood, D.D.	\n[%]
+\(lqCritical bandwidth and the frequency coordinates of the
+.tm .ix critical bandwidth	\n[%]
+basilar membrane,\(rq
+.tm .ix basilar membrane	\n[%]
+.I "Journal of the Acoustical Society of America,"
+Vol. 33, No. 4 (1961) pp.1344-1356.
+.sp 1
+Kameoka, A. & Kuriyagawa, M.
+.tm .ix Kameoka, A.	\n[%]
+.tm .ix Kuriyagawa, M.	\n[%]
+\(lqConsonance theory, part I: Consonance of dyads,\(rq
+.I "Journal of the Acoustical Society of America,"
+Vol. 45, No. 6 (1969) pp.1451-1459.
+.sp 1
+Kameoka, A. & Kuriyagawa, M.
+.tm .ix Kameoka, A.	\n[%]
+.tm .ix Kuriyagaw, M.	\n[%]
+\(lqConsonance theory, part II: Consonance of complex tones and its
+calculation method,\(rq
+.I "Journal of the Acoustical Society of America,"
+Vol. 45, No. 6 (1969) pp.1460-1469.
+.sp 1
+Plomp, R. & Levelt, W. J. M.
+.tm .ix Plomp, R.	\n[%]
+.tm .ix Levelt, W.J.M.	\n[%]
+\(lqTonal consonance and critical bandwidth,\(rq
+.tm .ix tonal consonance	\n[%]
+.I "Journal of the Acoustical Society of America,"
+Vol. 37 (1965) pp.548-560.
+.in -2
+.sp 1
+.HU "AUTHOR"
+.in +2
+Written by Keith Mashinter, University of Waterloo, 1994.
+.tm .ix Mashinter, K.	\n[%]
+.in -2
+.tm .ix \fBdiss\fR command	\n[%]	END
+.tm .ix command, \fBdiss\fR	\n[%]	END
+.tm .ix dissonance, sensory (\fBdiss\fR)	\n[%]	END
+.tm .ix consonance, sensory (\fBdiss\fR)	\n[%]	END

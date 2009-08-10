@@ -1,0 +1,373 @@
+##
+## Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
+## Creation Date: Sun Apr  3 00:51:10 PST 2005
+## Last Modified: Thu Jun 18 13:14:14 PDT 2009
+## Filename:      ...humextra/Makefile.library
+##
+## Description:   This Makefile creates the Humdrum Extras library 
+##                lib/libhumextra.a for linux, using gcc 2.7.2.1 or higher
+##                Also, gives basic guidelines of how to compile for Windows 
+##                using MinGW.
+##
+## To run this makefile, type (without quotes) "make -f Makefile.library",
+## Although it is intended to be used the file "Makefile" which runs this
+## makefile with the command "make library".  After the library file is 
+## created, you can compile specific programs with the Makefile.programs
+## file.
+##
+
+###########################################################################
+#                                                                         #
+#  Operating System OSTYPEs available in the humextra library             #
+#  compilation: but probably not used in humextra:                        #
+#                                                                         #
+#      HPUX   = Hewlett-Packard Unix Workstations.                        #
+#      IRIX   = SGI computers with IRIX OS.                               #
+#      LINUX  = Linux running on intel computers                          #
+#      NEXTI  = NeXT OS on Intel Hardware                                 #
+#      NEXTM  = NeXT OS on Motorola Hardware                              #
+#      SUN    = Sun SPARCstations                                         #
+#      VISUAL = Windows 95/NT using Microsoft Visual C++ 6.0              #
+#      OSXPC  = Apple Macintosh OS 10.x, Intel CPU                        #
+#      OSXOLD = Apple Macintosh OS 10.x, PowerPC CPU                      #
+#                                                                         #
+# Look at the sigConfiguration.h file for various things which need       #
+# to be defined specifically for each OS.  Only one of these defines      #
+# can be defined at a time.                                               #
+#                                                                         #
+###########################################################################
+#
+# You can set the OSTYPE variable by uncommenting one of the lines below;
+# otherwise, it will be set automatically in the next section of the
+# Makefile if the configuration should be OSXPC or LINUX.  For example,
+# if you need to compile for OSXOLD (OS X on a PowerPC), then you would
+# need to uncomment out the OSTYPE = OSXOLD line below.
+
+#OSTYPE = LINUX
+#OSTYPE = OSXPC
+#OSTYPE = OSXOLD
+
+# if OSTYPE is not defined, then this if statement will be run:
+ifeq ($(origin OSTYPE), undefined)
+   ifeq ($(shell uname),Darwin)
+      OSTYPE = OSXPC
+   else 
+      OSTYPE = LINUX
+   endif
+endif
+# Next if statement needed for some versions of make which already set OSTYPE:
+ifeq ($(OSTYPE),linux)
+   OSTYPE = LINUX
+endif
+
+
+###########################################################################
+#                                                                         #
+# Beginning of user-modifiable configuration variables                    #
+#                                                                         #
+
+OBJDIR    = obj
+SRCDIR    = src-library
+INCDIR    = include
+LIBDIR    = lib
+LIBFILE   = libhumextra.a
+# LANG=C: Nuts to the GCC error beautification committee.
+COMPILER  = LANG=C g++
+AR        = ar
+RANLIB    = ranlib
+
+# MinGW compiling setup (used to compile for Microsoft Windows but actual
+# compiling can be done in Linux). You have to install MinGW and these
+# variables will probably have to be changed to the correct paths:
+#COMPILER = /opt/xmingw/bin/i386-mingw32msvc-g++
+#AR      = /opt/xmingw/bin/i386-mingw32msvc-ar
+#RANLIB  = /opt/xmingw/bin/i386-mingw32msvc-ranlib
+#OBJDIR  = obj-win
+#LIBDIR  = lib-win
+
+DEFINES   = $(addprefix -D,$(OSTYPE))
+# If using an old C++ compiler, uncomment out the following line:
+#DEFINES += -DOLDCPP
+
+PREFLAGS  = -c -g -Wall -O3 $(DEFINES) -I$(INCDIR)
+
+# Needed for compiling XML-based library code (for MusicXML class):
+ifneq ($(wildcard external/centerpoint),)
+   PREFLAGS    += -Iexternal/centerpoint/include
+   CENTERPOINT := yes
+endif
+
+# Needed for compiling PerlRegularExpression class:
+ifneq ($(wildcard external/pcre-*.*),)
+   PREFLAGS    += -I$(wildcard external/pcre-*.*)
+   PCRE        := yes
+endif
+
+#                                                                         #
+# End of user-modifiable variables.                                       #
+#                                                                         #
+###########################################################################
+
+
+# setting up the directory paths to search for dependency files
+vpath %.h   $(INCDIR):$(SRCDIR)
+vpath %.cpp $(SRCDIR):$(INCDIR)
+vpath %.o   $(OBJDIR)
+
+# generating a list of the object files
+OBJS = $(notdir $(patsubst %.cpp,%.o,$(wildcard $(SRCDIR)/*.cpp)))
+
+# targets which don't actually refer to files
+.PHONY : all clean makedirs external
+
+
+###########################################################################
+#                                                                         #
+# Hardware Configurations:                                                #
+#                                                                         #
+
+all: makedirs external $(OBJS)
+
+   ifeq ($(OSTYPE),LINUX)
+	@echo "Creating humextra library file for linux ..."
+	-rm -f $(LIBDIR)/$(LIBFILE)
+	$(AR) r $(LIBDIR)/$(LIBFILE) $(OBJDIR)/*.o 
+	$(RANLIB) $(LIBDIR)/$(LIBFILE)
+   endif
+
+   ifeq ($(OSTYPE),OSXOLD)
+	@echo "Creating humextra library file for OSX (PowerPC)..."
+	-rm -f $(LIBDIR)/$(LIBFILE)
+	$(AR) r $(LIBDIR)/$(LIBFILE) $(OBJDIR)/*.o 
+	$(RANLIB) $(LIBDIR)/$(LIBFILE)
+   endif
+
+   ifeq ($(OSTYPE),OSXPC)
+	@echo "Creating humextra library file for OSX (Intel)..."
+	-rm -f $(LIBDIR)/$(LIBFILE)
+	$(AR) r $(LIBDIR)/$(LIBFILE) $(OBJDIR)/*.o 
+	$(RANLIB) $(LIBDIR)/$(LIBFILE)
+   endif
+
+   ifeq ($(OSTYPE),VISUAL)
+	echo "This makefile doesn\'t work with Visual C++."
+   endif
+
+clean:
+	@echo Erasing object files:
+	-rm -f $(OBJDIR)/*.o
+	@echo Erasing obj directory:
+	-rmdir $(OBJDIR)
+
+makedirs: 
+	-mkdir $(OBJDIR)
+	-mkdir $(LIBDIR)
+
+external: 
+	(cd external; make)
+
+
+###########################################################################
+#                                                                         #
+# Supress compilation of files if other libraries are not present.        #
+#                                                                         #
+
+ifeq ($(origin CENTERPOINT),undefined)
+MusicXmlFile.o:
+	@echo No XML parsing library so not compiling MusicXmlFile.cpp
+endif
+
+ifeq ($(origin PCRE),undefined)
+PerlRegularExpression.o:
+	@echo No PCRE library so not compiling PerlRegularExpression.cpp
+endif
+
+
+
+###########################################################################
+#                                                                         #
+# defining an explicit rule for object file dependencies                  #
+#                                                                         #
+
+
+%.o : %.cpp
+	$(COMPILER) $(PREFLAGS) -o $(OBJDIR)/$(notdir $@) $<
+
+#                                                                         #
+###########################################################################
+
+
+
+###########################################################################
+#                                                                         #
+# Dependencies -- generated with the following command in                 #
+#      the src directory (in bash shell):                                 #
+#                                                                         #
+#   for i in *.cpp                                                        #
+#   do                                                                    #
+#      cc -I../include -MM $i | sed 's/\.\.\/include\///g'                #
+#      echo ""                                                            #
+#   done                                                                  #
+#                                                                         #
+# Or in a csh-type shell (such as tcsh):                                  #
+#                                                                         #
+#   foreach i (*.cpp)                                                     #
+#      cc -I../include -MM $i | sed 's/\.\.\/include\///g'                #
+#      echo ""                                                            #
+#   end                                                                   #
+
+ChordQuality.o: ChordQuality.cpp Convert.h HumdrumEnumerations.h \
+  EnumerationCQI.h Enumeration.h EnumerationData.h Enum_basic.h \
+  SigCollection.h SigCollection.cpp Enum_chordQuality.h EnumerationCQR.h \
+  EnumerationCQT.h EnumerationEI.h Enum_exInterp.h EnumerationInterval.h \
+  Enum_base40.h EnumerationMPC.h Enum_musepitch.h EnumerationEmbellish.h \
+  Enum_embel.h Enum_humdrumRecord.h Enum_mode.h ChordQuality.h Array.h \
+  Array.cpp
+
+Convert.o: Convert.cpp Convert.h HumdrumEnumerations.h EnumerationCQI.h \
+  Enumeration.h EnumerationData.h Enum_basic.h SigCollection.h \
+  SigCollection.cpp Enum_chordQuality.h EnumerationCQR.h EnumerationCQT.h \
+  EnumerationEI.h Enum_exInterp.h EnumerationInterval.h Enum_base40.h \
+  EnumerationMPC.h Enum_musepitch.h EnumerationEmbellish.h Enum_embel.h \
+  Enum_humdrumRecord.h Enum_mode.h ChordQuality.h Array.h Array.cpp
+
+Enumeration.o: Enumeration.cpp Enumeration.h EnumerationData.h \
+  Enum_basic.h SigCollection.h SigCollection.cpp
+
+EnumerationData.o: EnumerationData.cpp EnumerationData.h Enum_basic.h
+
+EnumerationEI.o: EnumerationEI.cpp EnumerationEI.h Enumeration.h \
+  EnumerationData.h Enum_basic.h SigCollection.h SigCollection.cpp \
+  Enum_exInterp.h
+
+EnvelopeString.o: EnvelopeString.cpp EnvelopeString.h Array.h \
+  SigCollection.h SigCollection.cpp Array.cpp
+
+FileIO.o: FileIO.cpp sigConfiguration.h FileIO.h
+
+HumdrumFile-chord.o: HumdrumFile-chord.cpp HumdrumFile.h \
+  HumdrumFileBasic.h HumdrumRecord.h SigCollection.h SigCollection.cpp \
+  EnumerationEI.h Enumeration.h EnumerationData.h Enum_basic.h \
+  Enum_exInterp.h Enum_humdrumRecord.h Array.h Array.cpp NoteList.h \
+  ChordQuality.h humdrumfileextras.h Convert.h HumdrumEnumerations.h \
+  EnumerationCQI.h Enum_chordQuality.h EnumerationCQR.h EnumerationCQT.h \
+  EnumerationInterval.h Enum_base40.h EnumerationMPC.h Enum_musepitch.h \
+  EnumerationEmbellish.h Enum_embel.h Enum_mode.h
+
+HumdrumFile.o: HumdrumFile.cpp HumdrumFile.h HumdrumFileBasic.h \
+  HumdrumRecord.h SigCollection.h SigCollection.cpp \
+  EnumerationEI.h Enumeration.h EnumerationData.h Enum_basic.h \
+  Enum_exInterp.h Enum_humdrumRecord.h Array.h Array.cpp NoteList.h \
+  ChordQuality.h humdrumfileextras.h Convert.h HumdrumEnumerations.h \
+  EnumerationCQI.h Enum_chordQuality.h EnumerationCQR.h EnumerationCQT.h \
+  EnumerationInterval.h Enum_base40.h EnumerationMPC.h Enum_musepitch.h \
+  EnumerationEmbellish.h Enum_embel.h Enum_mode.h
+
+HumdrumFileBasic.o: HumdrumFileBasic.cpp Convert.h HumdrumEnumerations.h \
+  EnumerationCQI.h Enumeration.h EnumerationData.h Enum_basic.h \
+  SigCollection.h SigCollection.cpp Enum_chordQuality.h EnumerationCQR.h \
+  EnumerationCQT.h EnumerationEI.h Enum_exInterp.h EnumerationInterval.h \
+  Enum_base40.h EnumerationMPC.h Enum_musepitch.h EnumerationEmbellish.h \
+  Enum_embel.h Enum_humdrumRecord.h Enum_mode.h ChordQuality.h Array.h \
+  Array.cpp HumdrumFileBasic.h HumdrumRecord.h
+
+HumdrumInstrument.o: HumdrumInstrument.cpp gminstruments.h \
+HumdrumInstrument.h SigCollection.h SigCollection.cpp
+
+HumdrumRecord.o: HumdrumRecord.cpp Convert.h HumdrumEnumerations.h \
+  EnumerationCQI.h Enumeration.h EnumerationData.h Enum_basic.h \
+  SigCollection.h SigCollection.cpp Enum_chordQuality.h EnumerationCQR.h \
+  EnumerationCQT.h EnumerationEI.h Enum_exInterp.h EnumerationInterval.h \
+  Enum_base40.h EnumerationMPC.h Enum_musepitch.h EnumerationEmbellish.h \
+  Enum_embel.h Enum_humdrumRecord.h Enum_mode.h ChordQuality.h Array.h \
+  Array.cpp HumdrumRecord.h
+
+Identify.o: Identify.cpp Identify.h
+
+IntervalWeight.o: IntervalWeight.cpp IntervalWeight.h Array.h \
+  SigCollection.h SigCollection.cpp Array.cpp HumdrumFile.h \
+  HumdrumFileBasic.h HumdrumRecord.h EnumerationEI.h Enumeration.h \
+  EnumerationData.h Enum_basic.h Enum_exInterp.h Enum_humdrumRecord.h \
+  NoteList.h ChordQuality.h Convert.h HumdrumEnumerations.h \
+  EnumerationCQI.h Enum_chordQuality.h EnumerationCQR.h EnumerationCQT.h \
+  EnumerationInterval.h Enum_base40.h EnumerationMPC.h Enum_musepitch.h \
+  EnumerationEmbellish.h Enum_embel.h Enum_mode.h
+
+Maxwell.o: Maxwell.cpp Maxwell.h HumdrumFile.h HumdrumFileBasic.h \
+  HumdrumRecord.h SigCollection.h SigCollection.cpp EnumerationEI.h \
+  Enumeration.h EnumerationData.h Enum_basic.h Enum_exInterp.h \
+  Enum_humdrumRecord.h Array.h Array.cpp NoteList.h ChordQuality.h \
+  EnumerationInterval.h Enum_chordQuality.h Enum_base40.h
+
+MidiFile.o: MidiFile.cpp MidiFile.h FileIO.h Array.h SigCollection.h \
+  SigCollection.cpp Array.cpp
+
+MidiFile2.o: MidiFile2.cpp MidiFile2.h MidiMessage.h sigTypes.h
+
+MidiMessage.o: MidiMessage.cpp MidiMessage.h
+
+MuseRecord.o: MuseRecord.cpp Convert.h HumdrumEnumerations.h \
+  EnumerationCQI.h Enumeration.h EnumerationData.h Enum_basic.h \
+  SigCollection.h SigCollection.cpp Enum_chordQuality.h EnumerationCQR.h \
+  EnumerationCQT.h EnumerationEI.h Enum_exInterp.h EnumerationInterval.h \
+  Enum_base40.h EnumerationMPC.h Enum_musepitch.h EnumerationEmbellish.h \
+  Enum_embel.h Enum_humdrumRecord.h Enum_mode.h ChordQuality.h Array.h \
+  Array.cpp MuseRecord.h MuseRecordBasic.h Enum_muserec.h
+
+
+NoteList.o: NoteList.cpp Convert.h HumdrumEnumerations.h EnumerationCQI.h \
+  Enumeration.h EnumerationData.h Enum_basic.h SigCollection.h \
+  SigCollection.cpp Enum_chordQuality.h EnumerationCQR.h EnumerationCQT.h \
+  EnumerationEI.h Enum_exInterp.h EnumerationInterval.h Enum_base40.h \
+  EnumerationMPC.h Enum_musepitch.h EnumerationEmbellish.h Enum_embel.h \
+  Enum_humdrumRecord.h Enum_mode.h ChordQuality.h Array.h Array.cpp \
+  NoteList.h
+
+Options.o: Options.cpp Options.h Array.h SigCollection.h SigCollection.cpp \
+  Array.cpp Options_private.h
+
+Options_private.o: Options_private.cpp Options_private.h
+
+PerformData.o: PerformData.cpp PerformData.h PerformDataRecord.h Array.h \
+  SigCollection.h SigCollection.cpp Array.cpp
+
+PerformDataRecord.o: PerformDataRecord.cpp PerformDataRecord.h Array.h \
+  SigCollection.h SigCollection.cpp Array.cpp
+
+PixelColor.o: PixelColor.cpp PixelColor.h
+
+PlotData.o: PlotData.cpp PlotData.h Array.h SigCollection.h \
+  SigCollection.cpp Array.cpp PlotFigure.h
+
+PlotFigure.o: PlotFigure.cpp PlotFigure.h Array.h SigCollection.h \
+  SigCollection.cpp Array.cpp PlotData.h
+
+RootSpectrum.o: RootSpectrum.cpp RootSpectrum.h Array.h SigCollection.h \
+  SigCollection.cpp Array.cpp IntervalWeight.h HumdrumFile.h \
+  HumdrumFileBasic.h HumdrumRecord.h EnumerationEI.h Enumeration.h \
+  EnumerationData.h Enum_basic.h Enum_exInterp.h Enum_humdrumRecord.h \
+  NoteList.h ChordQuality.h PlotFigure.h PlotData.h Convert.h \
+  HumdrumEnumerations.h EnumerationCQI.h Enum_chordQuality.h \
+  EnumerationCQR.h EnumerationCQT.h EnumerationInterval.h Enum_base40.h \
+  EnumerationMPC.h Enum_musepitch.h EnumerationEmbellish.h Enum_embel.h \
+  Enum_mode.h
+
+ScorePage.o: ScorePage.cpp ScorePage.h ScorePageBase.h ScoreRecord.h \
+  ScoreParameters.h Array.h SigCollection.h SigCollection.cpp Array.cpp
+
+ScorePageBase.o: ScorePageBase.cpp ScorePageBase.h ScoreRecord.h \
+  ScoreParameters.h Array.h SigCollection.h SigCollection.cpp Array.cpp
+
+ScoreParameters.o: ScoreParameters.cpp ScoreParameters.h Array.h \
+  SigCollection.h SigCollection.cpp Array.cpp
+
+ScoreRecord.o: ScoreRecord.cpp ScoreRecord.h ScoreParameters.h Array.h \
+  SigCollection.h SigCollection.cpp Array.cpp Convert.h \
+  HumdrumEnumerations.h EnumerationCQI.h Enumeration.h EnumerationData.h \
+  Enum_basic.h Enum_chordQuality.h EnumerationCQR.h EnumerationCQT.h \
+  EnumerationEI.h Enum_exInterp.h EnumerationInterval.h Enum_base40.h \
+  EnumerationMPC.h Enum_musepitch.h EnumerationEmbellish.h Enum_embel.h \
+  Enum_humdrumRecord.h Enum_mode.h ChordQuality.h
+
+humdrumfileextras.o: humdrumfileextras.cpp
+

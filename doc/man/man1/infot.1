@@ -1,0 +1,492 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH infot 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBinfot\fR  --  calculate information theory measures for Humdrum inputs
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+\fBinfot\fR  \fB-b\fR  [\fB-H\fR]  [\fB-x \fIregexp\fR]  [\fIinputfile\fR ...]
+.br
+\fBinfot\fR  \fB-n\fR  [\fB-H\fR]  [\fB-x \fIregexp\fR]  [\fIinputfile\fR ...]
+.br
+\fBinfot\fR  \fB-p\fR  [\fB-H\fR]  [\fB-x \fIregexp\fR]  [\fIinputfile\fR ...]
+.br
+\fBinfot\fR  \fB-s\fR  [\fB-x \fIregexp\fR]  [\fIinputfile\fR ...]
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "infot"
+command provides a general-purpose tool for measuring
+the probability relationships between user-selected data tokens.
+Given a specified input stream,
+.B "infot"
+can calculate one of several pertinent information-theoretic values.
+The values may be calculated with reference to an independent
+repertoire, or may be calculated as so-called \(odself-information.\(cd
+.sp 1
+.sp 1
+In conjunction with other Humdrum tools (notably the
+.B "context"
+and
+.B "humsed"
+commands),
+.B "infot"
+permits sophisticated information-theoretic analyses to be
+carried out, including calculations of information flow,
+short-term conditional probabilities, and longer-term
+.I "m-dependency"
+analyses.
+Alternatively, a simple set of summary statistics can be requested.
+In most cases, users will want to use
+.B "infot"
+to generate outputs that are suitable for further processing.
+.sp 1
+.sp 1
+Input to
+.B "infot"
+is restricted to a single spine.
+However, the input data tokens may contain multiple-stops
+representing complex contextual information (such as produced by the
+.B "context"
+command).
+.sp 1
+.sp 1
+For the entire input,
+.B "infot"
+tabulates the total number of occurrences of each unique data record
+(hereafter referred to as `states').
+For the
+.B "-n, -p"
+and
+.B "-b"
+options,
+.B "infot"
+outputs a two-column list where the left column indentifies
+each unique state and the right column provides one of several corresponding
+calculated measures.
+With the
+.B "-n"
+option, this measure is merely an integer count of the number of
+occurrences of each corresponding state.
+With the
+.B "-p"
+option, this measure is a probability of occurrence for each state.
+With the
+.B "-b"
+option, this measure identifies the information content for the
+corresponding state in bits.
+.sp 1
+.sp 1
+Information content (\fIH\fR) in bits is calculated according to
+the classic equation devised by Shannon and Weaver (see \s-1REFERENCES\s+1):
+.sp 1
+Note that the outputs produced by
+.B "infot"
+do not conform to the Humdrum syntax.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "infot"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-b\fR	output information (in bits) for each unique data
+	  token
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-H\fR	format output as \fBhumsed\fR commands
+\fB-n\fR	output frequency count for each unique data token
+\fB-p\fR	output probability value for each unique data token
+\fB-s\fR	output information-related summary statistics
+\fB-x \fIregexp\fR	exclude tokens matching \fIregexp\fR from calculations
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+With the
+.B "-n"
+option,
+.B "infot"
+outputs a two-column list where the left column indentifies
+each unique state present in the input, and the right column provides an integer
+.I "count"
+indicating the number of occurrences for the corresponding state.
+.sp 1
+.sp 1
+With the
+.B "-p"
+option,
+.B "infot"
+outputs a two-column list where
+.I "probabilities"
+of occurrence are output in the right-hand column, rather than counts.
+.sp 1
+.sp 1
+With the
+.B "-b"
+option,
+.B "infot"
+outputs the information (in bits) as calculated according to the
+Shannon-Weaver equation.
+.sp 1
+.sp 1
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The use of
+.B "infot"
+is illustrated in the following examples.
+Consider the following input:
+.in +2
+.sp 1
+.TS
+l.
+**foo
+A
+B2
+C-c
+A
+B2
+A
+A
+B2
+C-c
+A
+A
+X Y
+*-
+.TE
+.sp 1
+.in -2
+A simple command invocation would use the \fB-n\fR option to count
+the number of occurrences of each unique data token (or state):
+.sp 1
+.sp 1
+.in +2
+infot -n input
+.in -2
+.sp 1
+.sp 1
+The corresponding output is:
+.in +2
+.sp 1
+.TS
+l l.
+A	6
+B2	3
+C-c	2
+X Y	1
+.TE
+.sp 1
+.in -2
+The tallies indicate that state `A' occurs 6 times,
+and that the least common state (`X Y') occurs just once.
+If we had invoked the \fB-p\fR option, the counts would
+be replaced by probabilities.
+The command:
+.sp 1
+.sp 1
+.in +2
+infot -p input
+.in -2
+.sp 1
+.sp 1
+produces the following output:
+.in +2
+.sp 1
+.TS
+l l.
+A	0.500
+B2	0.250
+C-c	0.167
+X Y	0.083
+.TE
+.sp 1
+.in -2
+Alternatively, the \fB-b\fR option:
+.sp 1
+.sp 1
+.in +2
+infot -b input
+.in -2
+.sp 1
+.sp 1
+would output information measures for each state, in bits:
+.in +2
+.sp 1
+.TS
+l l.
+A	1.000
+B2	2.000
+C-c	2.585
+X Y	3.585
+.TE
+.sp 1
+.in -2
+In the case of the \fB-s\fR option, summary statistics would be output,
+rather than a two-column list.
+For the above input, the following summary statistics would be generated:
+.in +2
+.sp 1
+.TS
+l l.
+Total number of input states in message:	4
+.br
+Total information of message  (in bits):	20.7549
+.br
+Total possible  information for message:	24
+.br
+Info  per state  for equi-prob  distrib:	2
+.br
+Average information conveyed  per state:	1.72957
+.br
+Percent redundancy  evident  in message:	13.5213
+.TE
+.sp 1
+.in -2
+The first line of output merely indicates the number of unique states
+found in the input (in this case just 4).
+The fifth output line indicates the average information conveyed
+per state (in bits).
+The fourth output line indicates the theoretical maximum average information
+per state that could be communicated by a system having four states.
+The third line indicates the maximum possible information that
+could be communicated in a message of the same length as the input
+-- given the theoretical maximum average information.
+(Since there are 12 data records, this value is simply 12 \(mu 2 bits,
+or 24 bits.)
+The second output line gives the actual total information for the
+given input message.
+(This is always less-than, or equal-to the maximum theoretical value.)
+The final line indicates the amount of redundancy -- as a percentage.
+That is, this value contrasts the actual information conveyed with
+the theoretical maximum.
+.sp 1
+.sp 1
+In general, note that as the probabilities of the input states approach
+equivalence, the redundancy approaches zero and the average information
+content approaches the theoretical maximum.
+.sp 1
+.sp 1
+Consider now an example where a large number of messages from a repertoire
+(dubbed \f(CRrepertoire\fR) is passed to \fBinfot\fR:
+.sp 1
+.sp 1
+.in +2
+infot -b repertoire
+.in -2
+.sp 1
+.sp 1
+Suppose that the following output is produced:
+.in +2
+.sp 1
+.TS
+l l.
+ABC	3.124
+BAC	1.306
+C C D	1.950
+X	5.075
+XYZ	19.334
+.TE
+.sp 1
+.in -2
+This result indicates that, although there might have been hundreds
+of data tokens processed in the repertoire, only five different
+unique states were present.
+The greatest information content (lowest probability)
+is associated with the state \f(CRXYZ\fR (19.334 bits),
+whereas the lowest information content (highest probability)
+is associated with the state \f(CRBAC\fR (1.306 bits).
+Notice that the multiple-stop \f(CRC C D\fR is treated as a single state.
+.sp 1
+.sp 1
+Now imagine we had another message presumed to belong to the same
+repertoire as our input.
+We would like to trace how the information increases and decreases
+over the course of this new `message'.
+This goal involves a two-part operation.
+First, we re-invoke
+.B "infot"
+adding the
+.B "-H"
+option, and redirect the output to a file \f(CRreplace\fR:
+.sp 1
+.sp 1
+.in +2
+infot -bH repertoire > replace
+.in -2
+.sp 1
+.sp 1
+This causes
+.B "infot"
+to produce as output a set of
+.B "humsed"
+commands.
+Given the identical \f(CRrepertoire\fR input, the following
+output is sent to the file \f(CRreplace\fR:
+.sp 1
+.sp 1
+s/^ABC$/3.124/g; s/^ABC	/3.124/g; s/	ABC$/3.124/g; s/	ABC	/3.124/g
+s/^BAC$/1.306/g; s/^BAC	/1.306/g; s/	BAC$/1.306/g; s/	BAC	/1.306/g
+s/^C C D$/1.95/g; s/^C C D	/1.95/g; s/	C C D$/1.95/g; s/	C C D	/1.95/g
+s/^X$/5.075/g; s/^X	/5.075/g; s/	X$/5.075/g; s/	X	/5.075/g
+s/^XYZ$/19.334/g; s/^XYZ	/19.334/g; s/	XYZ$/19.334/g; s/	XYZ	/19.334/g
+.sp 1
+.sp 1
+Although these commands may appear somewhat cryptic, they merely
+instruct the Humdrum stream editor (\fBhumsed\fR) to replace
+all occurrences of the five data tokens (in any input file)
+by the corresponding numerical values -- in
+this case, values that represent the number of bits of information.
+.sp 1
+.sp 1
+The following file (called \f(CRinput\fR) contains the
+message of interest:
+.in +2
+.sp 1
+.TS
+l l l.
+**bar
+BAC
+BAC
+C C D
+\.
+\(eq
+*
+C C D
+XYZ
+X
+ABC
+BAC
+*-
+.TE
+.sp 1
+.in -2
+This file can be transformed so that the data tokens are replaced
+by corresponding information values as determined from the
+original repertoire.
+This is done by invoking the
+.B "humsed"
+command, and providing it with the substitution commands held in the
+file \f(CRreplace\fR:
+.sp 1
+.sp 1
+.in +2
+humsed -f replace input > output
+.in -2
+.sp 1
+.sp 1
+The resulting output file
+would be as follows:
+.in +2
+.sp 1
+.TS
+l l l.
+**bar
+1.306
+1.306
+1.950
+\.
+\(eq
+*
+1.950
+19.334
+5.075
+3.124
+1.306
+*-
+.TE
+.sp 1
+.in -2
+Note that data tokens in message that do
+not appear in the probability list (such as the equals-signs)
+remain unmodified.
+.sp 1
+.sp 1
+Several interpretations may be made about this message.
+For example, the above passage appears to show a pattern of initially
+low information that increases and then decreases toward the
+end of the passage.
+This suggests that the beginning and ending of this passage
+are more highly constrained or stereotypic than the middle
+part of the passage.
+.sp 1
+.sp 1
+Summing together the individual information values for this passage,
+the total message conveys 35.35 bits.
+For five states, the maximum average information is 2.322 bits per state,
+and so the expected maximum for a message consisting of 8 items
+would be 8 \(mu 2.322 or 18.58 bits.
+This suggests that this message is considerably less banal,
+(less redundant or more unique)
+than a typical message from the original repertoire.
+In particular, the occurrence of the state `XYZ' has a low
+probability of occurrence -- and is likely to be a distinctive
+feature of this passage.
+.sp 1
+.sp 1
+In the above examples, only simple (zeroth-order)
+probabilities have been examined.
+Higher-order and \fIm\fR-dependency probabilities may be measured
+by reformulating the input using the
+.B "context"
+command.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBcontext\fR (1), \fBhumsed\fR (1),
+\fBpatt\fR (1), \fBpattern\fR (1),
+\fBsimil\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "REFERENCES"
+.in +2
+Abraham Moles,
+.I "Information Theory and Esthetic Perception,"
+Urbana: University of Illinois Press, 1968.
+.sp 1
+.sp 1
+Shannon, C. E., & Weaver, W.
+.I "The Mathematical Theory of Communication."
+Urbana: University of Illinois Press, 1949.
+.sp 1
+.sp 1
+Wong, A. K. C., & Ghahraman, D.
+A statistical analysis of interdependence in character sequences.
+.I "Information Sciences,"
+Vol. 8 (1975) pp. 173-188.
+.in -2

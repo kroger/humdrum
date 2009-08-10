@@ -1,0 +1,75 @@
+###########################################################################
+# 							HUMDRUM
+#	This shell program receives input from the command line and after 
+# checking it, passes it to the program humdrum_.exe.
+#
+# OPTIONS allowed from command line:
+#	-v allows verbose option
+#
+OPTIONS=""
+FILENAME=""
+HELP=""
+FLAG=""
+STNDIN=""
+DOUBLE_DASH=""
+USAGE1="USAGE: humdrum -h|-?              (Help Screen)"
+USAGE2="       humdrum [-v] [file ...]"
+while [ "$#" -ne 0 ]
+do
+	case $1 in
+	--)	shift
+		DOUBLE_DASH="--"
+		break ;;
+		# If a dash is specified by itself, it should signify standard
+		# input as an input file.
+	- )
+		break ;;
+	-*[h?]*)
+		HELP="ON"
+		shift
+		break ;;
+		# For any other option, add it to the list of options.
+     -*)	
+	 	OPTIONS="$OPTIONS$1"
+		shift ;;
+		# For any other parameter, stop processing them.
+	 *)	break ;;
+	esac
+done
+# If -h parameter specified, print the help screen
+if [ -n "${HELP}" ]
+then
+	humdrum_ -h
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	if [ x"$1" = x- ]
+	then
+		if [ -z "${STNDIN}" ]
+		then
+			# Invoke humdrum_ with the specified options.
+			humdrum_ ${OPTIONS} ${DOUBLE_DASH} -
+			STNDIN="ON"
+			PROCESSED="YES"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		# Invoke humdrum_ with the specified options.
+		humdrum_ ${OPTIONS} ${DOUBLE_DASH} $1
+		PROCESSED="YES"
+		shift
+	else
+		echo "humdrum: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+if [ -z "${PROCESSED}" -a -z "${FLAG}" ]
+then
+	humdrum_ ${OPTIONS}
+fi

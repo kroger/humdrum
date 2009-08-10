@@ -1,0 +1,62 @@
+Humdrum Toolkit -- UNIX-based software tools for music research
+assemble -- amalgamate two or more Humdrum files
+census -- determine general properties of a Humdrum input
+cents -- translate selected Humdrum pitch-related representations to cents
+cleave -- join tokens from two or more Humdrum spines into a single output spine
+context -- congeal Humdrum data records to form a contextual frame
+correl -- measure the numerical similarity between two Humdrum spines
+deg -- translate selected Humdrum pitch-related representations to relative scale degree (f(CR**deg)
+degree -- translate selected Humdrum pitch-related representations to absolute scale degree (f(CR**degree)
+encode -- interactive Humdrum encoding from MIDI input
+extract -- get specified spines from a Humdrum input
+fields -- list spine/field structure of a Humdrum file
+fill -- replace Humdrum null tokens with previous data token
+freq -- translate selected Humdrum pitch-related representations to frequency
+hint -- determine harmonic intervals between concurrent pitches for Humdrum inputs
+humdrum -- general syntax checker for Humdrum files
+humsed -- stream editor for Humdrum inputs
+humver -- display Humdrum toolkit version and copyright information
+infot -- calculate information theory measures for Humdrum inputs
+iv -- determine interval-class vectors for successive vertical sonorities for Humdrum inputs
+kern -- translate selected Humdrum pitch-related representations to f(CR**kern
+key -- estimate the key for a Humdrum passage
+melac -- calculate melodic accent values for successive pitches in a Humdrum input
+metpos -- assign metric position indicators to Humdrum sonorities
+midi -- convert from f(CR**kern to Humdrum f(CR**MIDI format
+midreset -- reset MIDI controller card
+mint -- determine melodic intervals between successive pitches for Humdrum inputs
+nf -- determine normal form for successive vertical sonorities in Humdrum inputs
+num -- number selected Humdrum records according to user-defined criteria
+patt -- locate and output user-defined patterns in a Humdrum input
+pattern -- exhaustively locate and count user-defined patterns in a Humdrum input
+pc -- translate Humdrum semitone representation or pc to pitch-class
+pcset -- convert Humdrum pitch and pitch-class information to set-theoretic representations
+perform -- play Humdrum f(CR**MIDI files
+pf -- determine prime form for successive Humdrum vertical sonorities
+pitch -- translate selected Humdrum pitch (1) - related representations to American standard pitch notation
+proof -- check syntax of Humdrum f(CR**kern file
+recode -- recode numeric tokens in selected Humdrum spines
+record -- record live MIDI input in Humdrum f(CR**MIDI data format
+regexp -- interactive regular-expression tester
+reihe -- output specified row variant for a given prime row
+rend -- split data tokens from specified Humdrum spines into component sub-tokens
+rid -- eliminate specified Humdrum record types
+scramble -- randomize order of either Humdrum data records or data tokens
+semits -- translate selected Humdrum pitch-related representations to numerical semitones
+simil -- measure the non-numeric similarity between two single-spine Humdrum inputs
+smf -- generate standard MIDI file from Humdrum f(CR**MIDI input
+solfa -- translate selected Humdrum pitch-related representations to tonic solfa syllables (f(CR**solfa)
+solfg -- translate selected Humdrum pitch-related representations to French solfo'e(ga'ge notation
+strophe -- selectively extract strophic data for Humdrum inputs
+synco -- measure degree of metric syncopation for Humdrum input
+tacet -- reset MIDI channels to ensure silence
+thru -- expand Humdrum abbreviated format representation to through-composed format
+timebase -- reformat Humdrum f(CR**kern or f(CR**recip score with constant time-base
+tonh -- translate selected Humdrum pitch-related representations to German pitch notation
+trans -- transpose selected Humdrum pitch representations
+urrhythm -- characterize Johnson-Laird rhythmic prototypes in a Humdrum passage
+veritas -- validate that a Humdrum document has not been modified
+vox -- determine number of simultaneously active pitches in a Humdrum input
+xdelta -- calculate sequential numeric differences between successive Humdrum data tokens
+yank -- extract passages from a Humdrum input
+ydelta -- calculate numeric differences for concurrent Humdrum data

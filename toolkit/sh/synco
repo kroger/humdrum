@@ -1,0 +1,74 @@
+#########################################################################
+# 						SYNCO
+# Programmed by: Tim Racinsky        Date: August, 1994
+# Copyright (c) 1994 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+#
+# This shell program is used to invoke the awk program synco.awk with
+# the appropriate options that were specified on the command line.
+#
+OPTIONS=""
+FILENAME=""
+HELP=""
+FLAG=""
+STNDIN=""
+USAGE1="USAGE: synco -h                 (Help Screen)"
+USAGE2="       synco [-e] [file ...]"
+# 
+while getopts eh arg
+do
+	case "$arg" in
+     e)	OPTIONS="$OPTIONS${arg}" ;;
+	h) 	HELP="ON" ;;
+	[?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit ;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/synco.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/synco.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' is allowed
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "synco: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+# Invoke synco.awk with the specified options.
+$AWK_VER -f ${HUMDRUM}/bin/synco.awk "DUMMY" "${OPTIONS:-null}" $FILENAME

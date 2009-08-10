@@ -1,0 +1,196 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- nf</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>nf</b>  --  determine normal form for successive vertical sonorities in Humdrum inputs
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>nf</b>  [<i>inputfile</i> ...]  [> <i>outputfile.nf</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>nf</b>
+command is used to determine the
+<i>normal form</i>
+for any of five set-theory related inputs:
+pitch (<code><big>**semits</big></code>), pitch-class (<code><big>**pc</big></code>),
+prime form (<code><big>**pf</big></code>), interval-class vector (<code><big>**iv</big></code>),
+or Fortean set name (<code><big>**pcset</big></code>).
+</P>
+<P>
+"Normal form" is a standardized way of representing the pitch material
+for any arbitrary set of pitches.
+Normal form provides the most intervallically compact spelling of the
+pitch-classes evident in a given sonority.
+It is analogous to rearranging notes in a chord so that the
+spelling is in root position,
+close position, with duplicate pitch-classes eliminated.
+By way of example, a D major chord (in any inversion,
+with any spelling) will have the normal form: 2,6,9 -- namely,
+the pitch-classes D, F#, A (as opposed to 6,9,2 or 2,9,6).
+See <A HREF="#REFERENCES">REFERENCES</A> below.
+</P>
+<P>
+When provided with <code><big>**semits</big></code> or <code><big>**pc</big></code> inputs,
+<b>nf</b>
+treats each input record as a set of pitches.
+Unisons and other pitch-class duplications have no effect on the output.
+Rests within a set of pitches are ignored;
+where an input record consists solely of one or more
+rests, a null-token is output.
+</P>
+<P>
+The
+<b>nf</b>
+command is able to translate any of the representations listed below.
+For descriptions of the various input representations
+(including <code><big>**nf</big></code>) refer to Section 2
+<i>(Representation Reference)</i>
+of this reference manual.
+</P>
+<P>
+It is recommended that output files produced using the
+<b>nf</b>
+command should be given names with the distinguishing `.nf' extension.
+<blockquote><TABLE>
+<TR><TD><code><big>**iv</big></code></TD><TD>interval-class vector representation</TD></TR>
+<TR><TD><code><big>**nf</big></code></TD><TD>normal form representation</TD></TR>
+<TR><TD><code><big>**pc</big></code></TD><TD>pitch-class representation</TD></TR>
+<TR><TD><code><big>**pcset</big></code></TD><TD>Fortean pitch-class set name</TD></TR>
+<TR><TD><code><big>**pf</big></code></TD><TD>prime form representation</TD></TR>
+<TR><TD><code><big>**semits</big></code></TD><TD>equal-tempered semitones with respect to middle C=0 (e.g. 12 = C5)</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Input representations processed by <b>nf</b>.</i>
+</CENTER>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>nf</b>
+command provides only a help option:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following command outputs the normal form for the sets
+formed by successive sonorities in the input file <code><big>opus24</big></code>.
+The input may be pitches, pitch-classes, Fortean set names, etc.
+</P>
+<P>
+<blockquote>
+<code><big>
+nf opus24 > opus24.nf
+</code></big>
+</blockquote>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<A HREF="context.html">
+<b>context</b></A> (4),
+<b>**iv</b> (2),
+<A HREF="iv.html">
+<b>iv</b></A> (4),
+<b>**nf</b> (2),
+<b>**pc</b> (2),
+<A HREF="pc.html">
+<b>pc</b></A> (4),
+<b>**pcset</b> (2),
+<A HREF="pcset.html">
+<b>pcset</b></A> (4),
+<b>**pf</b> (2),
+<A HREF="pf.html">
+<b>pf</b></A> (4),
+<b>**semits</b> (2),
+<A HREF="semits.html">
+<b>semits</b></A> (4)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>NOTE</H3></FONT>
+The
+<b>nf</b>
+command is a shell script that invokes
+<code><big>pcset -n</big></code>.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<A NAME="REFERENCES">
+<FONT color="0000FF"><H3>REFERENCES</H3></FONT>
+Allen Forte,
+<i>The Structure of Atonal Music.</i>
+New Haven: Yale University Press, 1973.
+</P>
+<P>
+John Rahn,
+<i>Basic Atonal Theory.</i>
+New York: Longman Inc., 1980.
+</P>
+<P>
+Straus, J.
+<i>Introduction to Post-Tonal Theory.</i>
+Englewood Cliffs, N.J.: Prentice Hall, 1990.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide34.html#Normal_Form">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

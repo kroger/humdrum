@@ -1,0 +1,316 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Time Period</TITLE>
+<!-- Documentation for the **Zeit Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **Zeit Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,absolute time period,software,theory,analysis,systematic musicology,computer representation,**Zeit">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Absolute Time Period</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**Zeit</b>  --  absolute period of time
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**Zeit</b>
+representation is used to represent spans of time,
+such as the life-span of a composer, or the chronology of a rehearsal.
+The syntax for
+<b>**Zeit</b>
+is nearly identical to the
+<A HREF="date.rep.html"><b>**date</b></A>
+representation.
+Since
+<b>**Zeit</b>
+represents a span of time, two date tokens
+must be specified and separated by a dash (<code><big>-</big></code>).
+For example, the
+<b>**Zeit</b>
+data token <code><big>1770/-1827/</big></code> represents the period from 1770 to 1827.
+</P>
+<P>
+The
+<b>**Zeit</b>
+representation includes all of the features of
+<A HREF="date.rep.html"><b>**date</b></A>
+for signifying approximation (~), uncertainty (?), approximate value (x),
+uncertain value (z), as well as between-range (^), either-or (|),
+prior (<) and after (>) boundaries.
+Either one or both of the dates specified in a
+<b>**Zeit</b>
+data token may encode complex degrees of approximation or uncertainty.
+</P>
+<P>
+Conceptually,
+<b>**Zeit</b>
+data tokens consist of two
+<A HREF="date.rep.html"><b>**date</b></A>
+"sub-tokens."
+Zeit tokens are encoded according to the following basic syntax:
+</P>
+<P>
+<CENTER>
+<i>year<b>/</b>month<b>/</b>day<b>/</b>hour<b>:</b>minute<b>:</b>second<b>.</b>decimal<b>-</b>year<b>/</b>month<b>/</b>day<b>/</b>hour<b>:</b>minute<b>:</b>second<b>.</b>decimal</i>
+</CENTER>
+</P>
+<P>
+The data tokens making-up the
+<b>**Zeit</b>
+information may be encoded in full, or may consist of isolated elements
+or parts.
+The following table shows the most succinct ways of encoding single date values
+within sub-tokens in <b>**Zeit</b>:
+<blockquote>
+<TABLE>
+<TR><TD><code><big>.11</big></code></TD><TD>eleven one-hundredths of a second</TD></TR>
+<TR><TD><code><big>11</big></code></TD><TD>11th second</TD></TR>
+<TR><TD><code><big>11:</big></code></TD><TD>11th minute</TD></TR>
+<TR><TD><code><big>11::</big></code></TD><TD>11 o'clock</TD></TR>
+<TR><TD><code><big>11/</big></code></TD><TD>A.D. 11</TD></TR>
+<TR><TD><code><big>/11</big></code></TD><TD>November</TD></TR>
+<TR><TD><code><big>//11</big></code></TD><TD>11th day of the month</TD></TR>
+</TABLE>
+<CENTER>
+<i>Examples of <b>date</b> sub-components</i>
+</CENTER>
+</blockquote>
+Notice that if a single numerical value appears, it is interpreted as
+<i>seconds</i>;
+if a single value appears followed by a slash, it is interpreted as a
+<i>year</i>;
+if a single value appears followed by a colon, it is interpreted as a
+<i>minutes</i>.
+Days and hours require two leading or two trailing delimiters
+respectively.
+In general, abbreviated forms of date sub-tokens
+tend to favor the two extremes of time: seconds and years.
+These are the time frames that are typically of greatest interest
+to music scholars.
+</P>
+<P>
+The
+<b>**Zeit</b>
+representation makes use of the Gregorian calendar and the 24-hour clock.
+Dates prior to the year 1 A.D. can be specified by prepending a minus
+sign to the year.
+</P>
+<P>
+The
+<b>**Zeit</b>
+representation provides three distinct means for representing
+approximate moments.
+It also provides two independent means for representing
+uncertainty, as well as mechanisms for representing time boundaries
+(prior to ...; after ...).
+For the appropriate representation syntax refer to
+<A HREF="date.rep.html"><b>**date</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**Zeit</big></code>
+data should be given names with the distinguishing `.zt' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**Zeit</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>-</TD><TD>sub-token separator (from-to); (must appear</TD></TR>
+<TR><TD></TD><TD>in each <b>**Zeit</b> data token)</TD></TR>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>@</TD><TD>year B.C. rather than A.D.</TD></TR>
+<TR><TD>/</TD><TD>year-month, month-day and day-hour delimiter</TD></TR>
+<TR><TD>:</TD><TD>hour-minute and minute-second delimiter</TD></TR>
+<TR><TD>.</TD><TD>fractional second delimiter; null token</TD></TR>
+<TR><TD>?</TD><TD>date uncertain</TD></TR>
+<TR><TD>z</TD><TD>value uncertain</TD></TR>
+<TR><TD>~</TD><TD>date approximate</TD></TR>
+<TR><TD>x</TD><TD>value approximate</TD></TR>
+<TR><TD><</TD><TD>sometime prior to</TD></TR>
+<TR><TD>></TD><TD>sometime after</TD></TR>
+<TR><TD>^</TD><TD>"between" conjunction</TD></TR>
+<TR><TD>|</TD><TD>"or" conjunction</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**Zeit</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+Several examples of
+<b>**Zeit</b>
+data tokens are identified below:
+<blockquote>
+<TABLE>
+<TR><TD>**Zeit tokens</TD><TD>meaning</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>1939/-1945/</TD><TD></big></code>From 1939 to 1945.</TD></TR>
+<TR><TD><code><big>1817/06/02/-1817/6/15</TD><TD></big></code>From June 2nd to 15th, 1817.</TD></TR>
+<TR><TD><code><big>1817/6/02/-1817/06/15</TD><TD></big></code>From June 2nd to 15th, 1817.</TD></TR>
+<TR><TD><code><big>///10::-///11::</TD><TD></big></code>From 10 AM to 11 AM.</TD></TR>
+<TR><TD><code><big>10::-11::</TD><TD></big></code>From 10 AM to 11 AM.</TD></TR>
+<TR><TD><code><big>~10::-~11::</TD><TD></big></code>From approximately 10 AM to approximately</TD></TR>
+<TR><TD></TD><TD>11 AM.</TD></TR>
+<TR><TD><code><big>>22::-<23::</TD><TD></big></code>From sometime after 10 PM to sometime</TD></TR>
+<TR><TD></TD><TD>before 11 PM.</TD></TR>
+<TR><TD><code><big>:11:51-:12:35</TD><TD></big></code>From 11 minutes 51 seconds to 12 minutes</TD></TR>
+<TR><TD></TD><TD>35 seconds.</TD></TR>
+<TR><TD><code><big>.001-.008</TD><TD></big></code>From 1 millisecond to 8 milliseconds.</TD></TR>
+<TR><TD><code><big>23.8-41.3</TD><TD></big></code>From 23.8 seconds to 41.3 seconds.</TD></TR>
+<TR><TD><code><big>//12/31-//1/1</TD><TD></big></code>From December 31st to New Years' Day.</TD></TR>
+<TR><TD><code><big><?1231///-1283/3/9</TD><TD></big></code>From before perhaps 1231 to March 9th 1283.</TD></TR>
+<TR><TD><code><big><1724/2//-1724/4z/2</TD><TD></big></code>From before Feb. 1724 to April (?) 2nd 1724.</TD></TR>
+<TR><TD><code><big>1848/|1849/-1851/</TD><TD></big></code>From 1848 or 1849 to 1851.</TD></TR>
+<TR><TD><code><big>/5/9/^/5/11/-//8/23</TD><TD></big></code>Starting sometime between May 9th and 11th</TD></TR>
+<TR><TD></TD><TD>ending August 23rd.</TD></TR>
+</TABLE>
+<CENTER>
+<i>Examples of <b>**Zeit</b> Tokens</i>
+</CENTER>
+</blockquote>
+The following examples illustrate the use of the <code><big>**Zeit</big></code> representation:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**Zeit</TD><TD>**maker</TD></TR>
+<TR><TD>?1644/-1737/12/18</TD><TD>Stradivari, Antonio</TD></TR>
+<TR><TD>1794/4/9-1881/11/25</TD><TD>Boehm, Theobald</TD></TR>
+<TR><TD>1797/2/15-1871/2/7</TD><TD>Steinweg, Heinrich</TD></TR>
+<TR><TD>1814/11/6-1894/2/4</TD><TD>Sax, Adolphe</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**Zeit</TD><TD>**recording log</TD></TR>
+<TR><TD>/4/9:20:18-/4/9:20:20</TD><TD>Aria - Take #1</TD></TR>
+<TR><TD>/4/9:20:20-/4/9:20:22</TD><TD>Aria - Take #2</TD></TR>
+<TR><TD>/4/9:20:23-/4/9:20:25</TD><TD>Aria - Take #3</TD></TR>
+<TR><TD>/4/9:20:25-/4/9:20:27</TD><TD>Var.1 - Take #1</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**Zeit</TD><TD>**section</TD></TR>
+<TR><TD>0:0-0:23</TD><TD>Introduction</TD></TR>
+<TR><TD>0:23-1:58</TD><TD>Exposition</TD></TR>
+<TR><TD>1:58.3-3:22</TD><TD>Development</TD></TR>
+<TR><TD>3:22-4:51</TD><TD>Recapitulation</TD></TR>
+<TR><TD>4:52-5:04</TD><TD>Coda</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**Zeit</TD><TD>**style</TD></TR>
+<TR><TD>~1450/-~1600/</TD><TD>Renaissance</TD></TR>
+<TR><TD>~1600/-~1750/</TD><TD>Baroque</TD></TR>
+<TR><TD>~1775/-~1825/</TD><TD>Classicism</TD></TR>
+<TR><TD>~1800/-~1900/</TD><TD>Romanticism</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+Currently, no special-purpose Humdrum commands produce
+<b>**Zeit</b>
+as output, or process
+<b>**Zeit</b>
+encoded data as input.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**Zeit</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**Zeit</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="date.rep.html"><b>**date</b></A>,
+<A HREF="dur.rep.html"><b>**dur</b></A>,
+<A HREF="metpos.rep.html"><b>**metpos</b></A>,
+<A HREF="ordo.rep.html"><b>**ordo</b></A>,
+<A HREF="recip.rep.html"><b>**recip</b></A>,
+<A HREF="takt.rep.html"><b>**takt</b></A>,
+<A HREF="time.rep.html"><b>**time</b></A>
+</code></big>
+</blockquote>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

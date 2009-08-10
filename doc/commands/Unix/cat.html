@@ -1,0 +1,153 @@
+<HTML>
+<HEAD>
+<TITLE>Unix Command Reference -- cat</TITLE>
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+</img src="logo.gif"><br>
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>cat</b>  --  concatenate files
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+</P>
+<P>
+<code><big>
+<b>cat</b>   [<b>-entv</b>]   [<i>inputfile1 inputfile2 ...</i>] 
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>cat</b>
+command concatenates files into a single output stream.
+Each file in the list of input files is joined end to end
+in the order specified on the command line.
+The output is sent to the standard output or to
+an output file if file-redirection (`>') is indicated.
+For example, the command
+<blockquote>
+<code><big><b>cat file1 file2</b></big></code>
+</blockquote>
+cause a copy of <i>file1</i> to be displayed on the screen
+followed by <i>file2</i>
+</P>
+<P>
+If `-' is given as one of the filenames, then
+<b>cat</b> will read the standard input.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>cat</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-e</b></TD><TD>output `$' at the end of each line</TD></TR>
+<TR><TD><b>-n</b></TD><TD>numbers all output lines</TD></TR>
+<TR><TD><b>-t</b></TD><TD>output tabs as <i>^I</i></TD></TR>
+<TR><TD><b>-v</b></TD><TD>verbose: display all unprintable characters</TD></TR>
+<TR><TD><b>--help</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLE</H3></FONT>
+Suppose that a file named <i>file1</i> contains the
+following two lines:
+<blockquote>
+<code><big>
+1
+<br>
+2
+</code></big>
+</blockquote>
+and a second file, <i>file2</i> contains the following
+three lines:
+<blockquote>
+<code><big>
+A
+<br>
+B
+<br>
+C
+</code></big>
+</blockquote>
+The command
+<blockquote>
+<code><big><b>cat file1 file2</b></big></code>
+</blockquote>
+produces:
+<blockquote>
+<code><big>
+1
+<br>
+2
+<br>
+A
+<br>
+B
+<br>
+C
+</code></big>
+</blockquote>
+The command
+<blockquote>
+<code><big><b>cat -n file2 file1</b></big></code>
+</blockquote>
+produces:
+<blockquote>
+<code><big>
+1	A
+<br>
+2	B
+<br>
+3	C
+<br>
+4	1
+<br>
+5	2
+</code></big>
+</blockquote>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+All UNIX systems supporting the
+DOS 2.0 and up, with UWIN or MKS Toolkit.
+Apple OSX.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="more.html">
+<b>more</b></A> (UNIX),
+<A HREF="less.html">
+<b>less</b></A> (UNIX),
+<A HREF="cp.html">
+<b>cp</b></A> (UNIX)
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../../guide13.html#The_cat_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

@@ -1,0 +1,254 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH cents 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBcents\fR  --  translate selected Humdrum pitch-related representations to cents
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBcents\fR  [\fB-p \fIn\fR]  [\fB-tx\fR]  [\fIinputfile\fR ...]  [> \fIoutputfile.cnt\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "cents"
+command transforms various pitch-related inputs to corresponding
+numerical values in hundredths of semitones.
+It outputs one or more Humdrum \f(CR**cents\fR
+spines containing values corresponding to the cents distance
+from middle C for pitch-related input tokens.
+Pitches above middle C produce positive output values,
+whereas pitches below middle C produce negative output values.
+For example, the \f(CR**pitch\fR
+token \(odC3\(cd is transformed to -1200 (cents).
+.sp 1
+.sp 1
+The
+.B "cents"
+command is able to translate any of the pitch-related
+representations listed below.
+In each case, a tuning standard of A4 equals 440 hertz is assumed.
+For descriptions of the various input representations
+(including \f(CR**cents\fR) refer to Section 2
+.I "(Representation Reference)"
+of this reference manual.
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "cent"
+command should be given names with the distinguishing `.cnt' extension.
+.sp 1
+.TS
+l l.
+\f(CR**cents\fR	hundredths of a semitone with respect to middle C=0
+\f(CR**freq\fR	fundamental frequency (in hertz)
+\f(CR**fret\fR	fretted-instrument pitch tablature
+\f(CR**kern\fR	core pitch/duration representation
+\f(CR**MIDI\fR	Music Instrument Digital Interface tablature
+\f(CR**pitch\fR	American National Standards Institute pitch notation
+	(e.g. \(odA#4\(cd)
+\f(CR**semits\fR	equal-tempered semitones with respect to middle C=0
+	(e.g. 12 equals C5)
+\f(CR**solfg\fR	French solf\o'e\(ga'ge system (fixed `doh')
+\f(CR**specC\fR	spectral centroid (in hertz)
+\f(CR**Tonh\fR	German pitch system
+.TE
+.sp 1
+.ce
+.I "Input representations processed by \fBcents\fR."
+.in -2
+.SH "OPTIONS"
+.in +2
+The
+.B "cents"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-p \fIn\fR	output precision of \fIn\fR decimal places
+\fB-t\fR	suppresses printing of all but the first note of a group
+	of tied \f(CR**kern\fR notes
+\fB-x\fR	suppresses printing of non-cents signifiers
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The
+.B "-p"
+option can be used to set the precision of the output values to \fIn\fR
+decimal places.
+The default precision is integer values only (\fIn\fR=0).
+Note that
+.B "cents"
+is able to process \f(CR**cents\fR
+as input; this feature allows the user to round-off existing \f(CR**cents\fR
+data to a specified precision.
+.sp 1
+.sp 1
+The
+.B "-t"
+ensures that only a single output value is given for tied \f(CR**kern\fR notes;
+the output coincides with the first note of the tie.
+.sp 1
+.sp 1
+In the default operation,
+.B "cents"
+outputs non-pitch-related signifiers in addition to the cents value.
+For example, the \f(CR**pitch\fR token \(odA5zzz\(cd will result in the output
+\(od2100zzz\(cd -- that is, after translating A5 to 2100 cents,
+the \(odzzz\(cd signifiers are retained in the output.
+For some applications, echoing non-pitch-related signifiers in the output
+is useful.
+However, in other situations, the result can prove confusing --
+especially, when the non-pitch-related signifiers are numbers.
+Consider the case of the \f(CR**kern\fR token \(od8aa\(cd;
+after translating `aa' to 2100 cents, the non-pitch-related signifier `8'
+will also be output, hence the value 82100 -- which will undoubtedly cause
+confusion.
+The
+.B "-x"
+option is useful for eliminating non-pitch-related signifiers from the output.
+For most \f(CR**kern\fR inputs, the
+.B "-x"
+option is recommended.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following example illustrates the use of
+.B "cents."
+The input contains six pitch-related spines -- two of which
+(\f(CR**deg\fR and \f(CR**cocho\fR) cannot be processed by
+.B "cents."
+In addition, there is one non-pitch-related spine
+(\f(CR**metpos\fR).
+.sp 1
+.TS
+l s s l l l l
+l l l l l l l.
+!! `cents' example.
+**kern	**pitch	**MIDI	**deg	**metpos	**cocho	**Tonh
+*M2/4	*M2/4	*M2/4	*M2/4	*M2/4	*M2/4	*M2/4
+*	*	*	*	*tb8	*	*
+\(eq1	\(eq1	\(eq1	\(eq1	\(eq1	\(eq1	\(eq1
+8ee-	G#4foo	/60/bar	1foo	1	r	Gis2
+\.	.	/-60/	.	.	.	.
+8ff	A3	/62/	2	3	9.89	H2
+\.	.	/-62/	.	.	.	.
+8dd-	Ab3	/70/	1	2	7.07	B2
+\.	.	/-70/	.	.	.	.
+8d-	C#4	/61/	6	3	7.135	Cis4
+\.	.	/-61/	.	.	.	.
+\(eq2	\(eq2	\(eq2	\(eq2	\(eq2	\(eq2	\(eq2
+[4a-	r	.	5	1	r	r
+\.	.	.	7	3	5.5	Heses2
+4a-]	D4	/48/ /52/	1	2	8.11
+\.	.	/-48/	.	.	.	.
+\.	D4 F4	/-52/	2	3	7.33 6.4	C3 Es3
+\(eq3	\(eq3	\(eq3	\(eq3	\(eq3	\(eq3	\(eq3
+r	G4	.	r	1	r	H2 D3
+===	===	===	===	===	===	===
+*-	*-	*-	*-	*-	*-	*-
+.TE
+.sp 1
+Executing the command
+.sp 1
+.sp 1
+.in +2
+cents -tx input > output.cnt
+.in -2
+.sp 1
+.sp 1
+produces the following result:
+.sp 1
+.TS
+l s s l l l l
+l l l l l l l.
+!! `cents' example.
+**cents	**cents	**cents	**deg	**metpos	**cocho	**cents
+*M2/4	*M2/4	*M2/4	*M2/4	*M2/4	*M2/4	*M2/4
+*	*	*	*	*tb8	*	*
+\(eq1	\(eq1	\(eq1	\(eq1	\(eq1	\(eq1	\(eq1
+1500	800	0	1foo	1	r	-1600
+\.	.	.	.	.	.	.
+1700	-300	200	2	3	9.89	-1300
+\.	.	.	.	.	.	.
+1300	-400	1000	1	2	7.07	-1400
+\.	.	.	.	.	.	.
+100	100	100	6	3	7.135	100
+\.	.	.	.	.	.	.
+\(eq2	\(eq2	\(eq2	\(eq2	\(eq2	\(eq2	\(eq2
+800	r	.	5	1	r	r
+\.	.	.	7	3	5.5	-1500
+\.	200	-1200 -800	1	2	8.11	-1200
+\.	.	.	.	.	.	.
+\.	200 500	.	2	3	7.33 6.4	-1200 -900
+\(eq3	\(eq3	\(eq3	\(eq3	\(eq3	\(eq3	\(eq3
+r	700	.	r	1	r	-1300 -1000
+===	===	===	===	===	===	===
+*-	*-	*-	*-	*-	*-	*-
+.TE
+.sp 1
+Both processed and unprocessed spines are output.
+Notice that the tied note at the beginning of measure 2 in the \f(CR**kern\fR
+spine has been rendered as a single note rather than as two notes
+(due to the
+.B "-t"
+option).
+Also notice that the non-pitch-related signifiers (e.g. foo)
+in the first notes of the \f(CR**pitch, **MIDI\fR, and \f(CR**cocho\fR
+spines have been stripped away (due to the
+.B "-x"
+option).
+.in -2
+.sp 1
+.sp 1
+.SH "FILES"
+.in +2
+The file \f(CRx_option.awk\fR
+is used by this program when the
+.B "-x"
+option is invoked.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fB**cents\fR (2),
+\fB**freq\fR (2), \fBfreq\fR (1),
+\fB**fret\fR (2), \fB**kern\fR (2), \fBkern\fR (1),\fR \fB**MIDI\fR (2),
+\fBmidi\fR (1),
+\fB**pitch\fR (2), \fBpitch\fR (1),
+\fB**semits\fR (2), \fBsemits\fR (1),
+\fB**solfg\fR (2), \fBsolfg\fR (1), \fB**specC\fR (2) \fBspecC\fR (1),
+\fB**Tonh\fR (2), \fBtonh\fR (1)
+.in -2

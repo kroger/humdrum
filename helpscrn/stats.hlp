@@ -1,0 +1,20 @@
+
+STATS   : Calculate basic statistics for numerical input
+
+     For a numerical input, this command calculates the number
+     of numbers present ("n"), the total, the mean (or average)
+     value, the minimum and maximum values, and the standard
+     deviation.
+
+Syntax:
+
+     stats [-m] [-o regexp] [-w] [inputfile ...]
+
+Options:
+
+  -m        : accept multi-column input
+  -o regexp : omit records matching regexp
+  -w        : suppress warnings of presence of non-numerical data
+
+  Refer to reference manual for further details.
+

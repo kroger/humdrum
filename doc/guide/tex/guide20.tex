@@ -1,0 +1,877 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter20}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Strophes, Verses and Repeats}
+
+
+
+We often tend to think of musical information as a linear stream of
+successive events.
+However, there are many circumstances where musical
+information exhibits more complex structures.
+These include such structural devices as repeats, da capos,
+first and second ending, multiple verses, alternative or
+\textit{ossia}
+passages, different performance renditions,
+divergent sources, and competing editions or versions.
+
+\par 
+This chapter describes the basic Humdrum mechanisms
+for representing non-linear musical structures.
+The two critical mechanisms are the Humdrum
+\textit{section}
+and \textit{strophe}.
+We will encounter examples using the
+\textbf{yank},
+\textbf{thru},
+and
+\textbf{strophe}
+commands.
+
+\par 
+
+\subsection*{Section Labels}
+
+\par 
+Musical scores are often notated to take advantage of
+repetitions in the music.
+Devices such as repeat marks, \textit{Da Capo}, \textit{Dal Segno}, \textit{Codas},
+and other mechanisms make it possible to represent a musical
+work in an abbreviated format.
+Humdrum provides corresponding mechanisms that allow works to
+be represented in succinct ways.
+
+\par 
+Humdrum files may be logically divided into segments or passages
+by encoding Humdrum
+\textit{section labels.}
+A section label is a type of tandem interpretation that consists
+of a single asterisk, followed by a greater-than sign,
+followed by a keyword that labels the section.
+The following are examples of section labels.
+
+\par 
+
+\texttt{
+*>Coda
+\\
+*>1st Ending
+\\
+*>Refrain
+\\
+*>Exposition>2nd Theme
+}
+
+
+\par 
+Notice that spaces can appear in section labels -$\,$- as in \texttt{1st Ending}.
+Sections begin with a section label and generally end when another
+section label is encountered.
+Sections also end whenever all spines are assigned new
+exclusive interpretations, or all spines terminate.
+If there is more than one spine present in a passage,
+identical section labels must appear concurrently in all spines.
+
+
+\subsection*{Expansion Lists}
+
+\par 
+Rather than encode multiple copies of a passage,
+a single instance may be encoded and labelled as a section.
+The complete version of the work can be reconstructed by referring to an
+\textit{expansion list.}
+An expansion list is another tandem interpretation that contains
+an ordered list of section labels.
+The list is specified in square brackets.
+Like section labels, expansion lists begin with an
+asterisk followed by a greater-than sign.
+In effect, the expansion list indicates how the abbreviated
+file should be expanded to a full-length encoding.
+Consider the following expansion list:
+
+\par 
+
+\texttt{
+*>[verse1,refrain,verse2,refrain]
+}
+
+
+\par 
+This list indicates that the abbreviated file contains
+(at least) three sections, labelled "\texttt{verse1},"
+"\texttt{verse2}" and "\texttt{refrain}."
+When the file is expanded, the "\texttt{refrain}" section should
+be repeated following each verse.
+
+
+\subsection*{Using \textit{yank} to Extract Sections}
+
+
+\par 
+We encountered the
+\textbf{yank}
+command earlier in
+Chapter 12.
+Recall that
+\textbf{yank}
+can be used to extract material by
+\textit{section}
+using the
+\textbf{-s}
+option.
+For example, if the appropriate section is labelled, we might
+extract the coda of a work as follows:
+
+\par 
+
+\texttt{yank -s Coda -r 1} \textit{file}
+
+
+\par 
+Recall that the
+\textbf{-r}
+option is mandatory with \textbf{yank};
+in this case, it identifies the
+\textit{first}
+occurrence of a section labelled \texttt{Coda}.
+
+
+\subsection*{Using the \textit{thru} Command to Expand Encodings}
+
+\par 
+The Humdrum
+\textbf{thru}
+command expands
+\textit{abbreviated format}
+representations to a so-called
+\textit{through-composed format}
+in which repeated passages are expanded according to an expansion list.
+When the
+\textbf{thru}
+command is invoked, it eliminates any expansion lists present in
+the input;
+in addition,
+\textbf{thru}
+places a \texttt{*thru} tandem interpretation in all spines
+immediately following each instance of an exclusive interpretation in the input.
+This marks the file as being in a through-composed format.
+Any other \texttt{*thru} tandem interpretations encountered in the input
+are subsequently discarded.
+As a result, running a file through
+\textbf{thru}
+twice will not result in further changes to the file.
+
+
+\subsection*{Alternative Versions}
+
+\par 
+For works encoded in an abbreviated format, it is not always useful
+to expand it according to a single fixed recipe.
+Depending on the performance practice, individual performer, or edition,
+certain repeats may be avoided, passages may be added, or
+material eliminated altogether.
+In short, several different versions or interpretations of
+the overall organization of a work may exist.
+
+
+\par 
+Humdrum provides a mechanism by which several alternative versions
+of the overall organization of a work may co-exist in the same file.
+This is achieved simply by encoding more than one expansion list.
+In order to distinguish different versions,
+each expansion list is given a unique \textit{version label}.
+
+Consider the following expansion lists:
+
+\par 
+
+\texttt{
+*>Gould1982[A,A,B]
+\\
+*>Landowska[A,A,B,B]
+}
+
+
+
+\par 
+Here we see two expansion lists, one carries the version label \texttt{Gould1982}
+and the other is labelled version \texttt{Landowska}.
+These expansion lists might encode different interpretations
+of the repeats in a rounded binary form -$\,$- Landowska performed the
+second repeat whereas Gould (1982) did not.
+When the
+\textbf{thru}
+command is invoked, the user can specify which
+\textit{version}
+is intended using the
+\textbf{-v}
+option.
+The appropriate through-composed expansion will be output.
+
+\par 
+The following example illustrates the use of the
+\textbf{thru}
+command in selecting particular versions of data in a file.
+Three sections are encoded in the file -$\,$- labelled A, B and C.
+Each section in this example contains just a single data record.
+Three expansion lists are encoded:
+one is unlabelled, a second is labelled \texttt{long} and a third is
+labelled \texttt{weird}.
+\\\\
+
+\texttt{**example\texttt{**example
+\texttt{*>[A,B,A,C]\texttt{*>[A,B,A,C]
+\texttt{*>long[A,A,B,A,C]\texttt{*>long[A,A,B,A,C]
+\texttt{*>weird[C,A,C]\texttt{*>weird[C,A,C]
+\texttt{*>A\texttt{*>A
+\texttt{data-A\texttt{data-A
+\texttt{*>B\texttt{*>B
+\texttt{data-B\texttt{data-B
+\texttt{*>C\texttt{*>C
+\texttt{data-C\texttt{data-C
+\texttt{*-\texttt{*-}
+
+Consider the following command:
+
+\par 
+
+\texttt{thru -v weird file}
+
+
+\par 
+The corresponding "through-composed" output would be as follows:
+\\\\
+
+\texttt{**example\texttt{**example
+\texttt{*thru\texttt{*thru
+\texttt{*>C\texttt{*>C
+\texttt{data-C\texttt{data-C
+\texttt{*>A\texttt{*>A
+\texttt{data-A\texttt{data-A
+\texttt{*>C\texttt{*>C
+\texttt{data-C\texttt{data-C
+\texttt{*-\texttt{*-}
+
+Notice that all expansion-list records have been eliminated from
+the output.
+A \texttt{*thru} tandem interpretation has been added to all output spines
+immediately following the exclusive interpretation.
+Also notice that there are now two sections in the output sharing
+the same label (\texttt{*>C}).
+This duplication of section-labels is not permitted in abbreviated-format
+encodings and can only occur in through-composed documents.
+
+\par 
+Without the
+\textbf{-v}
+option,
+\textbf{thru}
+expands the abbreviated file according to the
+\textit{unlabelled}
+(default) expansion list.
+So the following command would result in an output consisting
+of section A, followed by section B, followed by section A (again),
+followed by section C:
+
+\par 
+
+\texttt{thru file}
+
+
+
+\subsection*{Section Types}
+
+\par 
+Suppose we had two different theorists -$\,$- Smith and Jones -$\,$-
+who had analyzed the same work differently.
+Smith thinks there are basically two sections in the work,
+whereas Jones argues that there are essentially three sections.
+Humdrum permits alternative schemes of section labels
+to coexist in a file by allowing the user to designate section
+\textit{types}.
+A section label is considered to have a "type" when more
+than one greater-than sign (\texttt{>}) is present in the label.
+Consider the following example of sections defined by Smith and Jones:
+\\\\
+
+\texttt{**Example
+\texttt{*>Smith>A
+\texttt{*>Jones>A
+\texttt{data1
+\texttt{*>Jones>B
+\texttt{data2
+\texttt{*>Smith>B
+\texttt{data3
+\texttt{*>Jones>C
+\texttt{data4}
+\texttt{*-
+
+Both Smith and Jones label the work as beginning with section `A'.
+Later Jones's `B' section begins; then Smith's `B' section;
+then Jones's `C' section.
+Note that Smith's `B' section also contains the material Jones
+has identified as section `C'.
+
+\par 
+Normally, the
+\textbf{yank}
+command extracts a labelled section up to the next occurrence
+of a section label.
+However, the
+\textbf{-t}
+option causes
+\textbf{yank}
+to ignore all section labels except for a specified type.
+We could extract Smith's `B' section by using the
+\textbf{-t}
+option to limit extraction to "Smith"-type section labels:
+
+\par 
+
+\texttt{yank -t Smith -s B}
+
+
+\par 
+This command would produce the following output:
+\\\\
+
+\texttt{**Example
+\texttt{*>Smith>B
+\texttt{data3
+\texttt{*>Jones>C
+\texttt{data4}
+\texttt{*-
+
+Without the
+\textbf{-t}
+option,
+\textbf{yank}
+will simply extract material up to the occurrence of the next
+section label.
+Note that section types can be used to define innumerable
+alternative organizations for a single document.
+
+
+\subsection*{Hierarchical Sections}
+
+\par 
+For many applications, it is useful to define "nested" structures
+where two or more sections form part of a larger section.
+Humdrum section labels allow users to distinguish hierarchical \textit{levels}.
+Levels are indicated by the number of greater-than signs
+following the section type.
+Consider the following:
+\\\\
+
+\texttt{**Example
+\texttt{*>Form>Exposition
+\texttt{data1
+\texttt{*>Form>>1st Theme
+\texttt{data2
+\texttt{*>Form>>2nd Theme
+\texttt{data3
+\texttt{*>Form>Development
+\texttt{data4
+\texttt{*>Form>Recapitulation
+\texttt{*>Form>>1st Theme
+\texttt{data5
+\texttt{*>Form>>2nd Theme
+\texttt{data6
+\texttt{*>Form>Coda
+\texttt{data7
+\texttt{*-
+
+All of the above section labels are identified as type \texttt{Form}.
+However, two levels are distinguished (denoted by \texttt{>} and \texttt{>>}).
+Subsections are specified by increasing the number of greater-than signs,
+hence \texttt{2nd Theme} is a subsection.
+When
+\textbf{yank}
+is invoked, it will extract the identified section up to the
+next section of comparable level.
+The operation is illustrated in the following sample commands:
+indicating the first and second themes.
+
+\texttt{yank -t Form -s '1st Theme' -r 1(}extracts up to \texttt{>Form>>2nd Theme})
+\texttt{yank -t Form -s '2nd Theme' -r 1(}extracts up to \texttt{>Form>Development})
+\texttt{yank -t Form -s 'Exposition' -r 1(}extracts up to \texttt{>Form>Development})
+
+
+
+\par 
+For example, the second theme from the recapitulation can be extracted
+as follows:
+
+\par 
+
+\texttt{yank -t Form -s '2nd Theme' -r 2}
+
+
+\par 
+Alternatively:
+
+\par 
+
+\texttt{yank -t Form -s Recapitulation} \textit{file}\texttt{ | yank -t Form -s '2nd Theme' -r 1}
+
+
+
+\subsection*{Using the \textit{yank} and \textit{thru} Commands}
+
+\par 
+Section labels can be used in a wide number of applications.
+By way of illustration, here are a few pipeline processes
+involving section labels.
+First, we might ask the question -$\,$- how does the user
+know what sections labels are present in a document?
+This is a task for \textbf{grep}:
+
+\par 
+
+\texttt{grep '\^{}$\backslash$*>'} \textit{file}
+
+
+\par 
+This command will also output any expansion-lists.
+If we want to restrict our output to identifying which
+\textit{versions}
+are available for a document we would look for the presence
+of square brackets:
+
+\par 
+
+\texttt{grep '\^{}$\backslash$*>.*$\backslash$[.*$\backslash$]'} \textit{file}
+
+
+
+\par 
+How many notes are there in the exposition?
+
+\par 
+
+\texttt{yank -t Form -s Exposition -r 1} \textit{file}\texttt{ | census}}
+
+
+
+\par 
+How many phrases are there in the development?
+
+\par 
+
+\texttt{yank -t Form -s Development -r 1} \textit{file}\texttt{ | grep -c '\{'}
+
+
+
+\par 
+Extract the figured bass for the third recitative:
+
+\par 
+
+\texttt{yank -s Recitativo -r 3} \textit{file}\texttt{ | extract -i '**B-num'}
+
+
+
+\par 
+Compare the estimated key for the second theme in the exposition
+versus the estimated key for the second theme in the recapitulation:
+
+\par 
+
+\texttt{yank -t Form -s '2nd Theme' -r 1} \textit{file}\texttt{ | key}
+\\
+\texttt{yank -t Form -s '2nd Theme' -r 2} \textit{file}\texttt{ | key}
+
+
+
+\par 
+Determine the nominal (non-rubato) duration of Gould's performance
+of the work:
+
+\par 
+
+\texttt{thru -v Gould1982} \textit{file}\texttt{ | extract -i '**kern' | extract -f 1 $\backslash$
+
+| dur -d | rid -GLId | grep -v '\^{}=' | stats | grep -i total}
+
+
+
+\par 
+Perform the first three measures from the second section of a binary form:
+
+\par 
+
+\texttt{yank -s B} \textit{file}\texttt{ | yank -o = -r 1-3 | midi | perform}
+
+
+
+\subsection*{Strophic Representations}
+
+\par 
+Section labels and versions allow Humdrum users to select
+alternative groups of (horizontal) records within a Humdrum file or document.
+In other circumstances it is useful to be able to select
+alternative (vertical) paths within a file.
+Strophic representations may be conceived as
+"alternative concurrent paths" through a Humdrum document.
+Examples of alternative concurrent representation paths might
+include (1) texts for different verses of a song,
+(2) alternative renditions of the same passage (such as
+\textit{ossia}
+passages),
+or (3) differing editorial interpretations of a given note or sequence of notes.
+
+\par 
+Structurally, strophic data must begin from a single common spine,
+split apart into two or more alternative spines, and then rejoin
+to form a single spine.
+Since the strophes split from a common spine, they all necessarily
+begin by sharing the same exclusive interpretation.
+Different exclusive interpretations may be introduced in the strophic
+passage -$\,$- provided all strophic spines end up sharing the
+same data type just prior to being rejoined.
+
+\par 
+The beginning of a strophic passage is signalled by the presence of a
+\textit{strophic passage initiator}
+-$\,$-  a single asterisk followed by the keyword "strophe"
+(\texttt{*strophe}).
+The end of a strophic passage is signalled by the
+\textit{strophic passage terminator}
+-$\,$-  a single asterisk followed by the upper-case letter `S' followed
+by a minus sign (\texttt{*S-}).
+Each spine within the strophic passage begins with a
+\textit{strophe label}
+and ends with a
+\textit{strophe end indicator}
+(\texttt{*S/fin}).
+Strophe labels may consist of either alphanumeric names, or numbers.
+Numerical labels should be used when the strophic data imply some
+sort of order, such as verses in a song.
+Alphanumeric labels are convenient for distinguishing different editions or
+\textit{ossia}
+passages.
+The following example encodes a melodic phrase containing four numbered verses
+from "Das Wandern" from
+\textit{Die Schoene Muellerin}
+by Schubert:
+\\\\
+
+\texttt{
+
+\texttt{!! Franz\texttt{Schubert,\texttt{`Das Wandern' from "Die Schoene Muellerin"
+
+
+\texttt{**kern\texttt{**silbe
+\texttt{*k[b-e-]\texttt{*Deutsch
+\texttt{*\texttt{*solo
+\texttt{*>[1,1,1,1]\texttt{*>[1,1,1,1]
+\texttt{*>1\texttt{*>1
+\texttt{*\texttt{*strophe
+\texttt{*\texttt{*\^{}
+\texttt{*\texttt{*\^{}\texttt{*\^{}
+\texttt{*\texttt{*S/1\texttt{*S/2\texttt{*S/3\texttt{*S/4
+\texttt{8f\texttt{Das\texttt{Vom\texttt{Das\texttt{Die
+\texttt{=5\texttt{=5\texttt{=5\texttt{=5\texttt{=5
+\texttt{8f\texttt{Wan-\texttt{Was-\texttt{sehn\texttt{Stei-
+\texttt{8b-\texttt{-dern\texttt{-ser\texttt{wir\texttt{-ne
+\texttt{8a\texttt{ist\texttt{ha-\texttt{auch\texttt{selbst,
+\texttt{8ee-\texttt{des\texttt{-ben\texttt{den\texttt{so
+\texttt{=6\texttt{=6\texttt{=6\texttt{=6\texttt{=6
+\texttt{(16dd\texttt{Mül-\texttt{wir's\texttt{Rä-
+\texttt{16ff)\texttt{|\texttt{|\texttt{|\texttt{|
+\texttt{(16dd\texttt{-lers\texttt{ge-\texttt{-dern\texttt{sie
+\texttt{16b-)\texttt{|\texttt{|\texttt{|\texttt{|
+\texttt{8f\texttt{Lust,\texttt{-lernt,\texttt{ab,\texttt{sind,
+\texttt{8dd\texttt{das\texttt{vom\texttt{den\texttt{die
+\texttt{=7\texttt{=7\texttt{=7\texttt{=7\texttt{=7
+\texttt{(8.cc\texttt{Wan-\texttt{Was-\texttt{Rä-\texttt{Stei-
+\texttt{16a)\texttt{|\texttt{|\texttt{|\texttt{|
+\texttt{8b-\texttt{-dern!\texttt{-ser!\texttt{-dern!\texttt{-ne!
+\texttt{8r\texttt{\%\texttt{\%\texttt{\%\texttt{\%
+\texttt{*\texttt{*S/fin\texttt{*S/fin\texttt{*S/fin\texttt{*S/fin
+\texttt{*\texttt{*v\texttt{*v\texttt{*v\texttt{*v
+\texttt{*\texttt{*S-
+\texttt{*-\texttt{*-
+
+}
+Notice that this file contains a single section labelled `1'
+and that an expansion list occurs near the beginning of the file
+that indicates section 1 is to be repeated 4 times in total.
+
+\par 
+The strophic passage pertains only to the spine marked
+\texttt{**silbe}.
+The
+\texttt{**silbe}
+representation pertains to syllabic text
+encoding and is a pre-defined representation in Humdrum.
+The \texttt{**silbe} representation is discussed in
+Chapter 27.
+Following the strophic passage indicator (\texttt{*strophe}),
+the spine is split apart until the required number of verses
+are generated.
+Then each spine is labelled with its own strophe label.
+Since the verses have an order, it is appropriate to label them
+with numbers: \texttt{*S/1, *S/2,} and so on.
+The individual verses are terminated with strophe end indicators
+(\texttt{*S/fin}), the spines rejoin, and then a strophic passage
+terminator (\texttt{*S-}) marks the end of the strophic passage.
+
+
+\subsection*{The \textit{strophe} Command}
+
+\par 
+The Humdrum
+\textbf{strophe}
+command can be used to isolate or extract selective strophic data.
+The
+\textbf{-x}
+option for
+\textbf{strophe}
+allows the user to extract a particular labelled strophe.
+Consider, for example the effect of the following command:
+
+\par 
+
+\texttt{strophe -x 3 schubert}
+
+
+\par 
+Using the above data, the result is:
+\\\\
+
+\texttt{!! Franz Schubert, `Das Wandern' from "Die Schoene Muellerin"
+
+
+**kern**silbe
+*k[b-e-]*Deutsch
+*>[1,1,1,1]*>[1,1,1,1]
+**solo
+*>1*>1
+8fDas
+=5=5
+8fsehn
+8b-wir
+8aauch
+8ee-den
+=6=6
+(16ddRä-
+16ff)|
+(16dd-dern
+16b-)|
+8fab,
+8ddden
+=7=7
+(8.ccRä-
+16a)|
+8b--dern!
+8r\%
+*-*-}
+
+Notice that all of the tandem interpretations related to the
+strophe organization are eliminated from the output.
+
+
+\par 
+Suppose that we wanted to create a through-composed version
+of the entire work.
+We would expect as output, just two spines -$\,$- the
+\texttt{**kern}
+spine and the \texttt{**silbe} spine.
+First, we need to create the full length version using the
+\textbf{thru}
+command.
+This will take the default expansion list, and repeat the
+appropriate section for each successive verse.
+
+\par 
+
+\texttt{thru schubert}
+
+
+\par 
+The effect of this will be to simply repeat section 1 four times.
+However, each repetition will contain all four verses.
+We can use the
+\textbf{strophe}
+command to eliminate the unwanted verse texts at each verse.
+When no option is given,
+\textbf{strophe}
+operates by preserving strophes in numerical order.
+That is, when it encounters the first strophic section it will
+preserve strophe \#1 (\texttt{*S/1});
+then when it encounters the next strophic section it will
+preserve strophe \#2 (\texttt{*S/2}).
+And so on.
+In summary, the follow command will create a proper through-composed
+rendition of the Schubert lieder illustrated above.
+
+\par 
+
+\texttt{thru schubert | strophe}
+
+
+\par 
+Incidentally, the input passage need not necessary begin with strophe \#1.
+The
+\textbf{strophe}
+command will adapt to the input, and use the lowest previously unencountered
+strophe number.
+
+
+\subsection*{Using the \textit{strophe} and \textit{thru} Commands}
+
+
+\par 
+As noted, the strophe technique can be used to encode
+different editorial interpretations of a single work.
+Suppose for example that we had two editions of the Bach
+chorale harmonizations: Erk and Reimenschneider.
+We could select the Erk edition as follows:
+
+\par 
+
+\texttt{strophe -x Erk chorale166}
+
+
+
+\par 
+In a strophic song, suppose we would like to
+compare the number of syllables in the first and second verses.
+We begin by selecting the appropriate verse,
+extract the syllable spine, eliminate all non-data records,
+eliminate any other special signifiers (like barlines),
+and finally count the number of remaining records.
+We repeat this procedure for both verses:
+
+\par 
+
+\texttt{strophe -x 1} \textit{file}\texttt{ | extract -i '**silbe' | rid -GLId $\backslash$
+
+| grep -v [=$\backslash$|\%] | wc -l}
+
+\texttt{strophe -x 2} \textit{file}\texttt{ | extract -i '**silbe' | rid -GLId $\backslash$
+
+| grep -v [=$\backslash$|\%] | wc -l}
+
+
+
+\par 
+(In the \texttt{**silbe} representation, the vertical bar (|) and
+the percent sign (\%) have special meanings so the
+\textbf{grep -v}
+is used to eliminate them along with barlines.)
+
+
+
+\subsection*{Reprise}
+
+\par 
+Between stophes and sections, highly non-linear musical documents
+can be constructed.
+We have seen how section labels can be defined,
+how lists of sections ("expansion lists")
+can be constructed and expanded to through-composed formats using the
+\textbf{thru}
+command.
+An unlabelled expansion list is the default version.
+Other versions have labelled expansion lists.
+
+\par 
+Several different
+\textit{types}
+of section labels can coexist in the same document and the
+\textbf{yank}
+command can be instructed to ignore all sections other than
+a certain type via the
+\textbf{-t}
+option.
+
+\par 
+The basic ideas introduced in this chapter are summarized in the
+following table.
+\\\\
+
+sectionpassage defined by a section label, ends with occurrence of
+section label of identical or higher level
+section labeltandem interpretation beginning: \texttt{*>} and not containing
+square brackets
+section typefirst part of section label: \texttt{*>\textit{type\texttt{>}
+expansion listtandem interpretation beginning \texttt{*>} and containing a list of
+section labels in square brackets, e.g. \texttt{*>[A,B,A]}
+versiona labelled expansion list, e.g. \texttt{*>ternary[A,B,A]}
+levelhierarchical level of a section, designed by the number of `>'
+following the section type, e.g. \texttt{*>type>>>name} is lower
+than \texttt{*>type>name}
+abbreviated formatHumdrum document encoded using expansion lists
+through-composedHumdrum document encoded without expansion lists
+\texttt{thru}command to create a through-composed document from an
+abbrevatiated format
+\texttt{thru -v}command to create a particular version of a through-composed
+document
+\texttt{yank -s}command to extract sections
+\texttt{yank -t -s}command to extract sections limited to sections of a particular type
+strophe1. alternative spine path, 2. command for extracting a particular
+strophe
+strophic passage initiatortandem interpretation indicating the beginning of a strophe (\texttt{*strophe})
+strophic passage terminatortandem interpretation indicating the end of a strophe (\texttt{*S-})
+strophe labeltandem interpretation labelling one of several alternative spine-
+paths, begins \texttt{*S/}
+strophe end indicatortandem interpretation indicating the end of some spine path,
+e.g. \texttt{*S/fin}
+
+
+\textit{Summary of terms related to sections and strophes}
+
+
+\par 
+In
+Chapter 37
+we will see further examples of how sections and
+strophes are especially useful when producing electronic editions.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

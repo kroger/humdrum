@@ -1,0 +1,24 @@
+
+REND    : Split data tokens from specified spines into component sub-tokens.
+
+     This command breaks apart data tokens from selected input spines and
+     distributes the resulting sub-tokens across one or more output spines.
+
+     The manner of splitting is defined in a reassignment file, where each
+     split is specified by identifying the resulting output interpretation,
+     followed by a tab, followed by a regular expression identifying the
+     sub-token strings to be output (e.g. `**accidental       [#bx]').
+
+Syntax:
+
+     rend -f reassign -i 'target_interp' [-s] [inputfile ...]
+
+Options:
+
+     -s               : matches a single instance of the given pattern
+                        rather than all instances
+     -f reassign      : file containing reassignment definitions
+     -i target_interp : interpretation in input file to modify
+
+  Refer to reference manual for further details.
+

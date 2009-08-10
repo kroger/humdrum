@@ -1,0 +1,457 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 36</TITLE>
+<!-- Chapter 36 (Sound and Spectra) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:16:54 EST 2000">
+<meta name="description" content="Chapter 36 (Sound and Spectra) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<H1>Chapter36</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide35.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide37.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Sound and Spectra</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+Music is a sonic art and no analytic toolkit would be
+complete without considering the representation and manipulation of
+sound-related information.
+In this chapter we introduce some special-purpose tools
+related to sound analysis, sound synthesis,
+and auditory perception.
+We have already encountered the
+<A HREF="representations/freq.rep.html"><code><big>**freq</big></code></A>
+and
+<A HREF="representations/cents.rep.html"><code><big>**cents</big></code></A>
+representations in
+<A HREF="guide04.html">Chapter 4.</A>
+Much of this chapter will center on the
+<A HREF="representations/spect.rep.html"><code><big>**spect</big></code></A>
+representation.
+Three tools will be discussed in connection with <code><big>**spect</big></code>:
+the
+<b>spect</b>,
+<b>mask</b>
+and
+<b>sdiss</b>
+commands.
+<b>Spect</b>
+accesses a database of analyzed instrument
+tones to generate harmonic spectra for all notes for various
+orchestral instruments over their complete ranges;
+<b>mask</b>
+can be used to modify a spectrum so that
+masked frequencies are attenuated in a manner that simulates human hearing;
+<b>sdiss</b>
+characterizes the degree of sensory dissonance for
+arbitrary sonorities.
+</P>
+<P>
+In addition, we will consider how Humdrum data can be
+used in conjunction with non-Humdrum tools -- such
+as digital sound editors, spectral analysis tools,
+and general signal processing software,
+In particular, we will discuss the
+<b>kern2cs</b>
+command which generates score data for the popular
+<i>Csound</i> digital sound synthesis language.
+</P>
+<A NAME="The_**spect_Representation">
+<H2>The <i>**spect</i> Representation</H2>
+</P>
+<P>
+A useful predefined sound-related representations that
+in Humdrum is the <code><big>**spect</big></code> scheme.
+The
+<A HREF="representations/spect.rep.html"><code><big>**spect</big></code></A>
+representation is used to represent successive
+acoustic spectra.
+Each data record represents a complete spectrum specified as a set
+of concurrent discrete frequency components.
+Each frequency component in the spectrum is represented
+by a pair of numerical values separated by a semicolon (;).
+These paired values encode the frequency and amplitude for a single
+spectral component.
+Frequency values are positive values representing <i>hertz</i>.
+Amplitude values are positive values representing the sound pressure level
+in decibels (dB SPL).
+Most sonorities consist of more than one pure tone component,
+so <code><big>**spect</big></code> data records typically encode a number of multiple stops.
+</P>
+<P>
+Example 36.1 shows a sample document containing five spectra and a barline.
+The first data record encodes an ambient spectrum ("silence")
+represented by the upper-case letter `<code><big>A</big></code>'.
+Following this are two spectra, each consisting of three spectral
+components:
+the first spectrum consists of a 261 Hz tone at 47 dB SPL,
+as well as frequencies at 523 Hz and 785 Hz at 57 dB SPL
+and 35 dB SPL, respectively.
+Following the barline are two data records that represent two different
+amalgamations of the preceding two three-component spectra.
+Notice that these two spectra are identical;
+only the order of the components differs.
+In the <code>**spect</code> representation there is no special
+requirement that the spectral components be encoded in any particular order.
+However, it is often convenient to have the components assembled
+from left to right in ascending frequency order.
+This can be achieved by passing an input through the
+<b>spect</b>
+command.
+</P>
+<P>
+<b>Example 36.1</b>
+<blockquote><TABLE>
+<TR><TD><code><big>**spect</TD></TR>
+<TR><TD><code><big>A</TD></TR>
+<TR><TD><code><big>261;47 523;57 785;35</TD></TR>
+<TR><TD><code><big>330;57 659;35 989;27</TD></TR>
+<TR><TD><code><big>=1</TD></TR>
+<TR><TD><code><big>261;47 523;57 785;35 330;57 659;35 989;27</TD></TR>
+<TR><TD><code><big>261;47 330;57 523;57 659;35 785;35 989;27</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<A NAME="The_SHARC_Database_and_spect_Command">
+<H2>The SHARC Database and <i>spect</i> Command</H2>
+</P>
+<P>
+More commonly,
+the
+<b>spect</b>
+command is used to generate a
+<A HREF="representations/spect.rep.html"><code><big>**spect</big></code></A>
+(acoustic spectral data) output from a
+<A HREF="representations/semits.rep.html"><code><big>**semits</big></code></A>
+score input.
+The
+<b>spect</b>
+command recognizes instrument tandem interpretations (e.g., *Iclarinet)
+and fetches a corresponding spectral data file (<code><big>clarinet.spe</code></big>).
+These files are derived from the SHARC database of music instrument
+spectra created by Gregory Sandell (1991).
+The file contains precise spectral measurements for recordings
+of the instrument playing each note throughout the instrument's range.
+Suppose that the input to
+<b>spect</b>
+contains the note F#5 for oboe (i.e., semits value 18).
+Then
+<b>spect</b>
+will retrieve the spectral information for a recording of an oboe playing
+F#5 and add it to the composite spectrum for the particular sonority.
+</P>
+<P>
+If more than one instrument is playing concurrently, then
+<b>spect</b>
+will generate an output record representing the aggregate of all
+the spectral components generated by all of the sounding instruments.
+</P>
+<P>
+The SHARC database includes most orchestral instruments
+including piccolo, E-flat clarinet, contrabassoon, etc.
+The database also includes selected Medieval instruments
+such as the soprano crumhorn and alto shawm.
+Timbres for string instruments are distinguished according to
+different playing methods including arco, vibrato, non-vibrato,
+pizzicato, mute, and martello.
+</P>
+<A NAME="The_mask_Command">
+<H2>The <i>mask</i> Command</H2>
+</P>
+<P>
+Masking is the tendency for sounds to obscure one another.
+In many cases, masking may cause a sound to become completely inaudible.
+This means that the physical presence of a frequency component
+in a spectrum does not necessarily mean that the component
+is audible to the listener.
+Especially in the case of complex orchestral sonorities,
+many of the acoustically present components are irrelevant
+for human listeners.
+A clear demonstration of this effect is evident in digital sound
+recordings that have been processed using the
+JPEG compression scheme.
+JPEG-encoded audio is indistinguishable from the
+original uncompressed audio, yet the scheme eliminates
+those aspects of the sound which are masked.
+</P>
+<P>
+The Humdrum
+<b>mask</b>
+command implements a common masking algorithm.
+It accepts as input any <code><big>**spect</big></code> data,
+and for each sonority modifies the spectrum so that
+masked frequencies are attenuated accordingly.
+So-called "forward" and "backward" masking are not
+taken into account in this utlity.
+No options are provided, and the command is invoked
+as follows:
+</P>
+<P>
+<blockquote>
+<code><big>mask</code></big> <i>inputfile</i><code><big> > </code></big><i>outputfile</i>
+</blockquote>
+</P>
+<P>
+Both the output and input to the
+<b>mask</b>
+command are <code><big>**spect</big></code> representations.
+A tandem interpretation (<code><big>*masked</big></code>) is added to the output
+to indicate that the sonorities already reflect the influence
+of masking.
+Some sound utilities (such as the <b>sdiss</b> command) already
+take into account the effects of masking, and so an input
+containing the <code><big>*masked</big></code> interpretation will cause
+an error to be generated.
+Similarly, the <b>mask</b> command itself will generate an
+error if the input sonorities have already been modified
+using the <b>mask</b> command.
+</P>
+<A NAME="The_sdiss_Command">
+<H2>The <i>sdiss</i> Command</H2>
+</P>
+<P>
+A great deal of research has been carried out over the centuries
+concerning the nature of consonance and dissonance.
+This complex subject remains something of an enigma.
+The perception of consonance or dissonance is known to be
+affected by a number of factors, including past musical
+experience and cultural milieu.
+Perceptions of dissonance are even known to be influenced by the
+personality of the listener.
+</P>
+<A NAME="sdiss">
+<P>
+Research by Donald Greenwood, Reiner Plomp, Wim Levelt, and others
+has established that one aspect of dissonance perception
+is related to the physiology of the ear.
+This aspect of dissonance is referred to as low-level or
+<i>sensory dissonance</i>.
+</P>
+<P>
+The
+<b>sdiss</b>
+command implements a measurement method for sensory
+dissonance described by Kameoka and Kuriyagawa (1969a/b).
+(The Humdrum
+<b>sdiss</b>
+command itself was written by Keith Mashinter.)
+The
+<b>sdiss</b>
+command characterizes the degree of sensory dissonance for
+successive vertical sonorities or acoustical moments.
+The command accepts as input one or more <code><big>**spect</big></code> spines and
+produces a single
+<A HREF="representations/sdiss.rep.html"><code><big>**sdiss</big></code></A>
+spine as output.
+For each <code><big>**spect</big></code> data record,
+<b>sdiss</b>
+produces a single numerical value representing the
+aggregate sensory dissonance.
+The greater the output value, the greater the dissonance.
+</P>
+<P>
+Example 36.2 illustrates some sample inputs and outputs for
+<b>sdiss</b>.
+The left-most spine provides double-stops for
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+data for violin.
+The middle spine provides corresponding <code><big>**spect</big></code> data
+using the
+<b>spect</b>
+command.
+The right-most spine shows the result of passing the <code><big>**spect</big></code>
+data through the
+<b>sdiss</b>
+command.
+</P>
+<P>
+<b>Example 36.2</b>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD>**spect</TD><TD>**sdiss</TD></TR>
+<TR><TD><code><big>*Ivioln</TD><TD>*Ivioln</TD><TD>*Ivioln</TD></TR>
+<TR><TD><code><big>4c 4e</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>4G 4d</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>4f 4g</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>4e 4g</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Note that sensory dissonance is known to be influenced by the
+number of complex tones in the sonority.
+That is, three-note sonorities are virtually always more
+dissonant than three-note sonorities, etc.
+However, it is known that increasing the number of notes in a
+chord can sometimes reduce the perceived dissonance.
+For example, the dyad of a major seventh generally sounds
+more dissonant than the major-major-seventh (four-note) chord.
+Consequently, it is problematic to compare sensory dissonance
+values for sonorities consisting of different numbers of complex tones.
+Further problems with the Kameoka and Kuriyagawa measurement method
+are described in Mashinter (1995).
+</P>
+<A NAME="Connecting_Humdrum_with_Csound--the_kern2cs_Command">
+<H2>Connecting Humdrum with Csound -- the <i>kern2cs</i> Command</H2>
+</P>
+<P>
+Apart from generating and processing acoustic spectra,
+it is often convenient to be able to listen to the data.
+Generating sounds from descriptions of acoustic spectra
+cannot be done using MIDI synthesizers.
+The sounds can be heard only by doing direct computer
+sound synthesis using an audio-rate digital-to-analog converter.
+A number of popular computer sound synthesis languages exist,
+such as <i>Csound</i> developed by Barry Vercoe (1993).
+Most of these languages are inspired by the
+<i>Music 5</i>
+language developed by Max Mathews (1969).
+</P>
+<P>
+Typically, these languages divide the task of sound synthesis
+into two representations called the <i>score</i> and the <i>orchestra</i>.
+The
+<i>orchestra</i>
+is an executable program, whereas the
+<i>score</i>
+is a set of note- or event-related data that is "performed"
+by the orchestra.
+Typically, the
+<i>score</i>
+consists of a series of note-records where each data record defines
+several attributes for a single note.
+Common attributes include the frequency (or pitch), amplitude,
+duration, onset time, attack/decay envelope, spectral content, etc.
+Example 36.3 shows a sample Csound score corresponding
+to the opening measures of a Mozart clarinet trio.
+</P>
+<b>Example 36.3</i>  W.A. Mozart <i>Clarinet Quintet</i>.
+<blockquote>
+<img src="guide.figures/guide36.3.gif">
+</blockquote>
+<blockquote>
+<TABLE>
+<TR><TD><code><big>; W.A. Mozart, Second trio from Clarinet Quintet</TD></TR>
+<TR><TD><code><big>f1 0 512 10 5 3 1 ; three harmonics in waveform table</TD></TR>
+<TR><TD><code><big>t0 96; tempo of 96 beats per minute</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD><code><big>; Instrument #1</TD></TR>
+<TR><TD><code><big>; inst</TD><TD>time</TD><TD>duration</TD><TD>slur</TD><TD> pitch</TD><TD>vol</TD><TD>stac</TD></TR>
+<TR><TD><code><big>i1.01</TD><TD>0.000</TD><TD>0.500</TD><TD>1</TD><TD>9.00</TD><TD>0.2</TD><TD>1.0</TD><TD>; measure 1</TD></TR>
+<TR><TD><code><big>i1.01</TD><TD>0.500</TD><TD>0.500</TD><TD>3</TD><TD>9.04</TD><TD>0.2</TD><TD>1.0</TD></TR>
+<TR><TD><code><big>i1.01</TD><TD>1.000</TD><TD>0.500</TD><TD>3</TD><TD>9.07</TD><TD>0.2</TD><TD>1.0</TD></TR>
+<TR><TD><code><big>i1.01</TD><TD>1.500</TD><TD>0.500</TD><TD>3</TD><TD>9.04</TD><TD>0.2</TD><TD>1.0</TD></TR>
+<TR><TD><code><big>i1.01</TD><TD>2.000</TD><TD>1.000</TD><TD>3</TD><TD>10.00</TD><TD>0.2</TD><TD>1.0</TD></TR>
+<TR><TD><code><big>i1.01</TD><TD>3.000</TD><TD>0.500</TD><TD>3</TD><TD>9.07</TD><TD>0.2</TD><TD>1.0</TD><TD>; measure 2</TD></TR>
+<TR><TD><code><big>i1.01</TD><TD>3.500</TD><TD>0.500</TD><TD>3</TD><TD>9.04</TD><TD>0.2</TD><TD>1.0</TD></TR>
+<TR><TD><code><big>i1.01</TD><TD>4.000</TD><TD>0.500</TD><TD>3</TD><TD>9.02</TD><TD>0.2</TD><TD>1.0</TD></TR>
+<TR><TD><code><big>i1.01</TD><TD>4.500</TD><TD>0.500</TD><TD>3</TD><TD>9.05</TD><TD>0.2</TD><TD>1.0</TD></TR>
+<TR><TD><code><big>i1.01</TD><TD>5.000</TD><TD>1.000</TD><TD>2</TD><TD>9.09</TD><TD>0.2</TD><TD>1.0</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>; Instrument #2</TD></TR>
+<TR><TD><code><big>i2.01</TD><TD>2.000</TD><TD>1.000</TD><TD>0</TD><TD>8.09</TD><TD>0.2</TD><TD>1.0</TD></TR>
+<TR><TD><code><big>i2.01</TD><TD>3.000</TD><TD>1.000</TD><TD>0</TD><TD>8.09</TD><TD>0.2</TD><TD>1.0</TD><TD>; measure 2</TD></TR>
+<TR><TD><code><big>i2.01</TD><TD>5.000</TD><TD>1.000</TD><TD>0</TD><TD>8.09</TD><TD>0.2</TD><TD>1.0</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>; Instrument #3</TD></TR>
+<TR><TD><code><big>i3.01</TD><TD>2.000</TD><TD>1.000</TD><TD>0</TD><TD>8.04</TD><TD>0.2</TD><TD>1.0</TD></TR>
+<TR><TD><code><big>i3.01</TD><TD>3.000</TD><TD>1.000</TD><TD>0</TD><TD>8.04</TD><TD>0.2</TD><TD>1.0</TD><TD>; measure 2</TD></TR>
+<TR><TD><code><big>i3.01</TD><TD>5.000</TD><TD>1.000</TD><TD>0</TD><TD>8.06</TD><TD>0.2</TD><TD>1.0</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>; Instrument #4</TD></TR>
+<TR><TD><code><big>i4.01</TD><TD>2.000</TD><TD>1.000</TD><TD>0</TD><TD>8.01</TD><TD>0.2</TD><TD>1.0</TD></TR>
+<TR><TD><code><big>i4.01</TD><TD>3.000</TD><TD>1.000</TD><TD>0</TD><TD>8.01</TD><TD>0.2</TD><TD>1.0</TD><TD>; measure 2</TD></TR>
+<TR><TD><code><big>i4.01</TD><TD>5.000</TD><TD>1.000</TD><TD>0</TD><TD>7.11</TD><TD>0.2</TD><TD>1.0</big></code>&#167</TD></TR>
+</TABLE>
+</blockquote>
+&#167 Example is modified from David Bainb&#167e (1997).
+</P>
+<P>
+<i>Csound</i>
+is able to generate traditional 16-bit digital audio output.
+It can also be used to generate AIFF files
+(audio information file format) for greater portability.
+<i>Csound</i>
+provides several other utilities for sound analysis,
+including Fourier analysis and linear predictive coding.
+</P>
+<A NAME="Sound_Analysis">
+<H2>Sound Analysis</H2>
+</P>
+<P>
+Humdrum does not provide any sound analysis tools <i>per se</i>.
+As we noted,
+<i>Csound</i>
+provides utilities for Fourier analysis and linear predictive coding.
+A wealth of software exists for sound analysis,
+loudness estimation, mixing, sound card input/output,
+CD audio input/output, and other sound-related applications.
+(See Tranter, 1996 for a sampling of such multimedia applications.)
+Other analysis methods are available through general-purpose 
+signal analysis software such as
+<i>matlab</i>, <i>mathematica</i>, and <i>maple</i>.
+Custom software has also been written by Humdrum users,
+such as Kyle Dawkins Humdrum synchronization of CD audio disks.
+</P>
+<P>
+Sound synthesis and analysis software has a rapid rate of
+development.
+Users should consult recent audio and multi-media resources
+for up-to-date information.
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+In this chapter we have seen that Humdrum score-related data can be
+transformed into spectral information using the <b>spect</b>
+command.
+This allows us to reconstitute a score as a sequence of sonorous
+spectra -- which might be used for studies in timbre or orchestration.
+The <b>mask</b> tool can be used to revise a spectral description
+so that it reflects how listeners hear rather than the actual
+acoustical information present.
+The <b>sdiss</b> command can be used to characterize successive
+spectra in terms of the estimated sensory dissonance.
+</P>
+<P>
+We have also seen that Humdrum data can be connected to other
+sound-related software, such as <i>Csound</i>.
+Since Humdrum data consists of simple ASCII text,
+it is generally easy to write filters that allow the data
+to be imported to a wide variety of existing sound analysis
+and synthesis software.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide37.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide35.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

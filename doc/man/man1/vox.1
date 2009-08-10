@@ -1,0 +1,102 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH vox 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +10
+.ti -10
+\fBvox\fR   --  determine number of simultaneously active pitches in a Humdrum input
+.in -10
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+\fBvox\fR  [\fIinputfile\fR ...]  [ > \fIoutputfile.vox\fR]
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "vox"
+command calculates the number of tones sounding together at
+successive moments in time.
+It outputs a single Humdrum spine (\f(CR**vox#\fR) where successive integers
+indicate the total number of concurrently sounding pitches for each data record.
+Multiple-stops are properly supported.
+.sp 1
+.sp 1
+The
+.B "vox"
+command accepts as input any pitch-encoded Humdrum representations
+listed below.
+For descriptions of the various input representations refer to Section 2
+.I "(Representation Reference)"
+of this reference manual.
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "vox"
+command should be given names with the distinguishing `.vox' extension.
+.sp 1
+.TS
+l l.
+\f(CR**cbr\fR	critical band rate (in equivalent rectangular
+	  bandwidths)
+\f(CR**cents\fR	hundredths of a semitone with respect to middle C=0
+	  (e.g. 1200 equals C5)
+\f(CR**cocho\fR	cochlear coordinates (in millimeters)
+\f(CR**deg\fR	key-related relative scale degree
+\f(CR**degree\fR	key-related absolute scale degree
+\f(CR**freq\fR	fundamental frequency (in hertz)
+\f(CR**kern\fR	core pitch/duration representation
+\f(CR**pc\fR	pitch class representation
+\f(CR**pitch\fR	American National Standards Institute pitch notation
+	  (e.g. \(odA#4\(cd)
+\f(CR**semits\fR	equal-tempered semitones with respect to middle C=0
+\f(CR**solfa\fR	tonic solfa syllables
+\f(CR**solfg\fR	French solf\o'e\(ga'ge system (fixed `doh')
+\f(CR**specC\fR	spectral centroid (in hertz)
+\f(CR**Tonh\fR	German pitch system
+.TE
+.sp 1
+.ce
+.I "Input representations processed by \fBsemits\fR."
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "vox"
+command provides only a help option:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+.TE
+.sp 1
+Options are specified in the command line.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBvox#\fR (2)
+.in -2

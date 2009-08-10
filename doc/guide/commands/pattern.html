@@ -1,0 +1,415 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- pattern</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>pattern</b>  --  exhaustively locate and count user-defined patterns in a Humdrum input
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>pattern</b>  [<b>-ciy</b>]  <b>-f</b> <i>templatefile</i>  [<b>-s</b> <i>regexp</i>]  [<i>inputfile</i> ...]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>pattern</b>
+command is used to locate all occurrences of
+a user-defined pattern in some Humdrum input.
+The patterns sought may span innumerable data records.
+Occurrences of the pattern are identified in the output by line number.
+</P>
+<P>
+The pattern sought must be defined as a separate "template" file.
+The template file is identified using the
+<b>-f</b>
+command option.
+</P>
+<P>
+Pattern templates consist of one or more records.
+Each record specifies a standard UNIX regular expression --
+followed by an optional "record-count metacharacter."
+The input is scanned from beginning to end, in order to
+find passages that match the defined template.
+In the simplest case, a match is deemed to take place when successive records
+in the input stream match the regular expressions given in each of
+the corresponding records of the template.
+However, the number of records in the matching input need not be the
+same as the number of records in the template.
+</P>
+<P>
+Consider, first, a simple example where the template consists of
+the numbers 1, 2, 3 -- each on a separate line:
+</P>
+<P>
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>1</TD></TR>
+<TR><TD>2</TD></TR>
+<TR><TD>3</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</P>
+<P>
+This template will match inputs such as the following:
+</P>
+<P>
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>1</TD></TR>
+<TR><TD>112</TD></TR>
+<TR><TD>43.9</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</P>
+<P>
+or even
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>0x.=%&1*</TD></TR>
+<TR><TD>Figure 32</TD></TR>
+<TR><TD>abc(...32...)</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+A more circumspect regular expression template might look like this:
+</P>
+<P>
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>^1$</TD></TR>
+<TR><TD>^2$</TD></TR>
+<TR><TD>^3$</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</P>
+<P>
+(The caret (^) and dollar sign ($) are regular expression
+<i>anchors</i>
+that indicate the beginning of the record and end of the record
+respectively.)
+</P>
+<P>
+Standard regular expression syntax provides three "counting"
+metacharacters that can be used to specify the number of occurrences
+of a given pattern on a single line.
+The counting metacharacters are +  *  and  ?.
+If
+<i>p</i>
+is a regular expression pattern, then (<i>p</i>)+ will match
+one or more consecutive instances of
+<i>p.</i>
+Similarly, (<i>p</i>)* will match zero or more consecutive instances of
+<i>p,</i>
+whereas (<i>p</i>)? will match zero or one instance of
+<i>p.</i>
+The use of these metacharacters is illustrated below:
+<blockquote><TABLE>
+<TR><TD>X+</TD><TD>matches X, XX, XXX, etc.</TD></TR>
+<TR><TD>X*</TD><TD>matches X, XX, XXX, etc. as well as the null string</TD></TR>
+<TR><TD>X?</TD><TD>matches X or the null string</TD></TR>
+<TR><TD>XX</TD><TD>matches XX</TD></TR>
+<TR><TD>(XX)+</TD><TD>matches XX, XXXX, XXXXXX, etc.</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Regular expression counting metacharacters</i>
+</CENTER>
+</P>
+<P>
+These metacharacters can be used in conjunction with other regular
+expression operators and anchors to specify complex patterns.
+See
+<b>regexp (6)</b>
+for further details.
+</P>
+<P>
+In the
+<b>pattern</b>
+command, the regular expression counting metacharacters may
+<i>also</i>
+be used to specify the
+<i>number of successive records</i>
+that match the regular expression.
+We refer to this use as "record-count metacharacters."
+Record-count metacharacters are specified by following the regular expression
+with a tab -- followed by either +, *, or ?.
+For example, consider the following
+<b>pattern</b>
+template:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>X</TD><TD>+</TD></TR>
+<TR><TD>Y</TD><TD>*</TD></TR>
+<TR><TD>Z</TD><TD>?</TD></TR>
+</TABLE></blockquote>
+</code></big>
+The intervening tab characters are important here.
+They indicate that the metacharacters refer to the number of records
+rather than to the number of patterns in a given record.
+The first template record (X<i><tab></i>+) will match one or more lines
+containing the letter X.
+The second template record (Y<i><tab></i>*) will match zero or more lines
+containing the letter Y.
+The third template record (Z<i><tab></i>?) will match zero or one line
+containing the letter Z.
+The above template would match an input such as the following:
+three successive lines containing the letter X,
+followed by eight successive lines containing the letter Y,
+followed by a single line containing the letter Z.
+Similarly, the above template would also match a one-line input
+containing the letter X.
+</P>
+<P>
+Note that the strings <i><tab></i>+ <i><tab></i>*,
+and <i><tab></i>?, are recognized by
+<b>pattern</b>
+as record-count metacharacters
+<i>only</i>
+if they appear at the end of a regular expression.
+</P>
+<P>
+The
+<b>pattern</b>
+command will identify
+<i>all</i>
+possible matching patterns beginning at each point in the input.
+Consider, by way of example, the following template file
+(named <code><big>template</big></code>):
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>+</TD></TR>
+<TR><TD>2</TD><TD>+</TD></TR>
+<TR><TD>3</TD><TD>+</TD></TR>
+<TR><TD>4</TD><TD>+</TD></TR>
+<TR><TD>5</TD><TD>+</TD></TR>
+</TABLE></blockquote>
+</code></big>
+The following Humdrum input file is named <code><big>example1</big></code>:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**num</TD><TD>**num</TD></TR>
+<TR><TD>1</TD><TD>1</TD></TR>
+<TR><TD>2</TD><TD>2</TD></TR>
+<TR><TD>3</TD><TD>2</TD></TR>
+<TR><TD>4</TD><TD>3</TD></TR>
+<TR><TD>5</TD><TD>4</TD></TR>
+<TR><TD>5</TD><TD>5</TD></TR>
+<TR><TD>6</TD><TD>6</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Given the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+pattern -f template example1
+</code></big>
+</blockquote>
+</P>
+<P>
+the
+<b>pattern</b>
+command will produce the following output:
+</P>
+<P>
+<blockquote>
+<code><big>
+4 patterns found from line 2 to line 7 of file example1
+<br>
+1 pattern found from line 2 to line 6 of file example1
+</code></big>
+</blockquote>
+</P>
+<P>
+The patterns are: 1-2-3-4-5, 1-2-2-3-4-5, 1-2-3-3-4-5, 1-2-3-4-4-5 and
+1-2-3-4-5-5.
+Note that the entire input line is used for matching purposes.
+It doesn't matter, for example, whether the number "2" is matched
+in the left spine or the right spine -- only that the number "2"
+is present on a given line.
+This feature is useful for identifying
+<i>Klangfarbenmelodie</i>
+and other "threaded" or "diagonal" patterns that can be
+traced between spines.
+If the user wishes to avoid such diagonal patterns, individual spines
+should be extracted separately before invoking the
+<b>pattern</b>
+command.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>pattern</b>
+command supports the following options:
+<blockquote><TABLE>
+<TR><TD><b>-c</b></TD><TD>makes pattern-matching sensitive to comments</TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-i</b></TD><TD>makes pattern-matching sensitive to interpretations</TD></TR>
+<TR><TD><b>-s <i>regexp</i></TD><TD>skip (ignore) data records containing the defined regular expression</TD></TR>
+<TR><TD><b>-y</b></TD><TD>outputs appropriate `yank' commands in place of regular output</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+By default, the
+<b>pattern</b>
+command is insensitive to the presence or absence of
+Humdrum comments and interpretations.
+Pattern searches may be made sensitive to occurrences of comments
+(defined in the template) by specifying the
+<b>-c</b>
+option.
+Similarly, pattern searches may be made sensitive to occurrences of
+interpretations by specifying the
+<b>-i</b>
+option.
+</P>
+<P>
+Certain types of data records may be ignored in the pattern-search
+by invoking the
+<b>-s</b>
+(skip) option.
+This option must be accompanied by a user-define regular expression.
+All input data records matching the regular expression are ignored.
+This option is useful, for example, in skipping null data tokens,
+barlines, marked embellishment tones, or other types of data.
+</P>
+<P>
+The
+<b>pattern</b>
+command does not directly implement an "echo" option
+--  such as provided by the related
+<b>patt</b>
+command.
+With the
+<b>-y</b>
+option, however,
+<b>pattern</b>
+will produce an output suitable for use with the Humdrum
+<b>yank</b>
+command.
+This permits the user to extract the appropriate matching passages
+from the input.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+For additional examples pertinent to the
+<b>pattern</b>
+command, refer to the
+<A HREF="patt.html#EXAMPLES"><b>EXAMPLES</b></A>
+section in the documentation for the
+related
+<A HREF="patt.html"><b>patt</b></A>
+command.
+</P>
+<P>
+Note that in the above example, the extensive capabilities
+for defining complex regular expressions have not been used.
+Refer to <b>regexp (6)</b> for further pertinent information.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<b>grep</b> (UNIX), <b>egrep</b> (UNIX),
+<A HREF="patt.html">
+<b>patt</b></A> (4),
+<A HREF="regexp.html">
+<b>regexp</b></A> (4),
+<b>regexp</b> (6),
+<A HREF="simil.html">
+<b>simil</b></A> (4)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+If a comment is present in the template pattern,
+failing to specify the
+<b>-c</b>
+option will make pattern matching a logically impossibility.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>NOTE</H3></FONT>
+The
+<b>pattern</b>
+command differs from the related
+<b>patt</b>
+command in the following ways:
+(1)
+<b>patt</b>
+always produces output conforming to the Humdrum syntax whereas
+<b>pattern</b>
+never produces Humdrum output.
+(2)
+<b>patt</b>
+does not support multi-record `wild cards' in the template file,
+and so limits the sophistication of the regular expressions.
+(3) The
+<b>patt</b>
+command provides "echo" and "tag" options.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide21.html#The_pattern_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

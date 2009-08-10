@@ -1,0 +1,293 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- fields</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>fields</b>  --  list spine/field structure of a Humdrum file
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>fields</b>  [<b>-gils</b>]  [<b>-r</b> <i>regexp</i>]  [<i>inputfile ...</i>]  [ <b> ></b> <i>outputfile.ftf</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>fields</b>
+command works in conjunction with the
+<b>-t</b>
+option of the
+<b>extract</b>
+command to permit highly selective extraction of data from a Humdrum file.
+This command is used only rarely; it is invoked when the more usual options of
+<b>extract</b>
+fail to provide sufficient flexibility in isolating certain Humdrum data.
+</P>
+<P>
+The
+<b>fields</b>
+command outputs a so-called "field-trace file" for a given Humdrum input.
+This file can be edited by the user and then used with the
+<b>extract</b>
+command to select data from the original input file.
+For repetitive tasks, the field-trace file is more convenient than
+manual editing of the input file.
+</P>
+<P>
+When invoking the
+<b>fields</b>
+command, the user specifies the types of records to be used as reference
+points in the editing task.
+The command then produces a listing of record numbers as well as the
+corresponding number of fields for each record of the specified type.
+For example, the user may wish to use spine-path changes as reference
+points for editing an input.
+</P>
+<P>
+Each output record from the
+<b>fields</b>
+command consists of three pieces of information, such as illustrated below:
+</P>
+<P>
+<blockquote>
+<code><big>
+13      1-10      # {(4.g#  4.b  ...
+</code></big>
+</blockquote>
+</P>
+<P>
+The first field consists of a single number identifying the corresponding
+line number of the input file.
+The second field consists of two numbers separated by a dash.
+The second number indicates the number of currently active spines.
+The number prior to the dash is always 1 (see below).
+The third field is a comment beginning with the octothorpe (#) and
+continuing with the first ten characters of the corresponding line
+from the input file.
+The purpose of this comment information is to help orient the user when
+editing a field-trace file.
+</P>
+<P>
+Field-trace information can be requested by record-type:
+<b>-g</b>
+for global comments,
+<b>-l</b>
+for local comments,
+<b>-i</b>
+for exclusive and tandem interpretations, and
+<b>-s</b>
+for spine-path indicators.
+More than one record-type can be requested.
+For example, when the
+<b>-gl</b>
+options are invoked, the
+<b>fields</b>
+command will produce an output line each time a local or global comment
+is encountered in the input.
+The line number and number of fields will be given in the output.
+</P>
+<P>
+For global comments, the number of fields output for the current
+line is equal to the number of fields for the most recent non-global
+comment record.
+For spine-path records, the current record as well as the next
+record are output so that the user knows the changes in the number of spines. 
+</P>
+<P>
+A
+<b>-r</b>
+option permits the user to specify a
+<i>regular expression;</i>
+field-trace data is output for each record matching the specified
+regular expression.
+</P>
+<P>
+Note that when an unedited field-trace file is used in conjunction with
+<b>extract -t,</b>
+the output is identical to the input.
+By modifying the field-range (second column in the output), the
+user can select which specific fields will be output.
+</P>
+<P>
+It is recommended that output files produced using the
+<b>fields</b>
+command should be given names with the distinguishing `.ftf' extension.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>fields</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-g</b></TD><TD>identify lines with global comments</TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-i</b></TD><TD>identify any interpretation record</TD></TR>
+<TR><TD><b>-l</b></TD><TD>identify lines with local commens</TD></TR>
+<TR><TD><b>-r <i>regexp</i></TD><TD>identify all lines matching <i>regexp</i></TD></TR>
+<TR><TD><b>-s</b></TD><TD>identify lines with spine-path indicators</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SAMPLE OUTPUTS</H3></FONT>
+Consider by way of illustration the following input file:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `fields' example</TD></TR>
+<TR><TD>**numbers</TD><TD>**alpha</TD><TD>**symbols</TD></TR>
+<TR><TD>*</TD><TD>*betics</TD><TD>*</TD></TR>
+<TR><TD>14</TD><TD>abc</TD><TD>%@</TD></TR>
+<TR><TD>!some</TD><TD>!local</TD><TD>!comments</TD></TR>
+<TR><TD>3</TD><TD>.</TD><TD>#&</TD></TR>
+<TR><TD>*-</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>jkl</TD><TD>$+</TD></TR>
+<TR><TD>!! a global comment</TD></TR>
+<TR><TD>*^</TD><TD>*</TD></TR>
+<TR><TD>uvw</TD><TD>xyz</TD><TD>&%</TD></TR>
+<TR><TD>*</TD><TD>*+</TD><TD>*</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>**numbers</TD><TD>*</TD></TR>
+<TR><TD>mno</TD><TD>pqr</TD><TD>87</TD><TD>{^}</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+With the
+<b>-g</b>
+option, the fields command will produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>1-1</TD><TD># Line 1 must appear in the file.</TD></TR>
+<TR><TD>9</TD><TD>1-2</TD><TD># !! a globa ....</TD></TR>
+</TABLE></blockquote>
+</code></big>
+With the
+<b>-l</b>
+option, the fields command will produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>1-1</TD><TD># Line 1 must appear in the file.</TD></TR>
+<TR><TD>5</TD><TD>1-3</TD><TD># !some    !loc ....</TD></TR>
+</TABLE></blockquote>
+</code></big>
+With the
+<b>-s</b>
+option, the fields command will produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>1-1</TD><TD># Line 1 must appear in the file.</TD></TR>
+<TR><TD>7</TD><TD>1-3</TD><TD># *-   *    * ....</TD></TR>
+<TR><TD>8</TD><TD>1-2</TD><TD># Line after path indicator record</TD></TR>
+<TR><TD>10</TD><TD>1-2</TD><TD># *^   * ....</TD></TR>
+<TR><TD>11</TD><TD>1-3</TD><TD># Line after path indicator record</TD></TR>
+<TR><TD>12</TD><TD>1-3</TD><TD># *    *+   * ....</TD></TR>
+<TR><TD>13</TD><TD>1-4</TD><TD># Line after path indicator record</TD></TR>
+<TR><TD>15</TD><TD>1-4</TD><TD># *-   *-   *-   * ....</TD></TR>
+</TABLE></blockquote>
+</code></big>
+With the
+<b>-i</b>
+option, the fields command will produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>1-1</TD><TD># Line 1 must appear in the file.</TD></TR>
+<TR><TD>2</TD><TD>1-3</TD><TD># **numbers   ....</TD></TR>
+<TR><TD>3</TD><TD>1-3</TD><TD># *    *betics    ....</TD></TR>
+<TR><TD>7</TD><TD>1-3</TD><TD># *-   *    * ....</TD></TR>
+<TR><TD>8</TD><TD>1-2</TD><TD># Line after path indicator record</TD></TR>
+<TR><TD>10</TD><TD>1-2</TD><TD># *^   * ....</TD></TR>
+<TR><TD>11</TD><TD>1-3</TD><TD># Line after path indicator record</TD></TR>
+<TR><TD>12</TD><TD>1-3</TD><TD># *    *+   * ....</TD></TR>
+<TR><TD>13</TD><TD>1-4</TD><TD># *    *    **numb ....</TD></TR>
+<TR><TD>15</TD><TD>1-4</TD><TD># *-   *-   *-   * ....</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Using the
+<b>-r</b>
+option we can specify a regular expression on which record information
+cues.
+Executing the following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+fields -r '[0-9]' input
+</code></big>
+</blockquote>
+</P>
+<P>
+produces the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>1-1</TD><TD># Line 1 must appear in the file.</TD></TR>
+<TR><TD>4</TD><TD>1-3</TD><TD># 14   abc   %@ ....</TD></TR>
+<TR><TD>6</TD><TD>1-3</TD><TD># 3    .     #& ....</TD></TR>
+<TR><TD>14</TD><TD>1-4</TD><TD># mno  pqr   87 ....</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice that only those records containing numerical data tokens
+have been listed.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="extract.html">
+<b>extract</b></A> (4),
+<A HREF="regexp.html">
+<b>regexp</b></A> (4),
+<b>regexp</b> (6)
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

@@ -1,0 +1,22 @@
+
+DUR       : Calculate note/rest durations in seconds.
+
+     This command translates **kern or **recip duration tokens into the
+     equivalent **dur output -- where data tokens indicate the duration
+     in seconds.  Tempo information may be encoded in the input stream,
+     or may be specified in the command line.
+
+Syntax:
+
+     dur [-t num | -T num | -m num | -M num] [-x] [inputfile ...]
+
+Options:
+
+     -m num : specify tempo as quarter durations per minute
+     -M num : same as -m but over-ride any tempo interpretations in input
+     -t num : specify tempo in seconds per quarter-duration
+     -T num : same as -t but over-ride any tempo interpretations in input
+     -x     : suppress all non-duration output for processed spines
+
+  Refer to reference manual for further details.
+

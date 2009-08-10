@@ -1,0 +1,5 @@
+improv            -- programs dealing with MIDI concepts and basic MIDI I/O.
+batonImprov       -- baton MIDI I/O plus MIDI output to a synth.
+synthImprov       -- programs for MIDI I/O to/from a synthesizer.
+batonSynthImprov  -- MIDI I/O to/from a synthesizer and Radio Baton.
+batonCompImprov   -- MIDI I/O to/from a Radio Baton and another computer.

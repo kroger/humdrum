@@ -1,0 +1,25 @@
+
+MINT      : Determine melodic intervals between successive pitches.
+
+     This command outputs the distance between successive pitches ex-
+     pressed as diatonic interval size plus interval quality (e.g. m7).
+
+Inputs processed:
+
+     **kern,    **pitch,   **solfg,   **Tonh
+
+Syntax:
+
+     mint [-acde] [-b regexp] [-s regexp] [inputfile ...]
+
+Options:
+
+  -a        : output absolute pitch interval (no leading + or -)
+  -c        : output compound intervals as non-compound intervals
+  -d        : output diatonic interval size only, without interval quality
+  -e        : with -s option, output skipped input data rather than null tokens
+  -b regexp : break; do not calculate for records matching regexp
+  -s regexp : skip; ignore records matching regexp; output null tokens
+
+  Refer to reference manual for further details.
+

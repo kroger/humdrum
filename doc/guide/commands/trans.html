@@ -1,0 +1,456 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- trans</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>trans</b>  --  transpose selected Humdrum pitch representations
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>trans  -d</b>  [<i>+-</i>]<i>n</i>  [<b>-c</b>  [<i>+-</i>]<i>n</i>]  [<b>-k</b> <i>keysig</i>]  [<i>inputfile ...</i>]  [ > <i>outputfile</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>trans</b>
+command transposes various Humdrum pitch representations.
+Transposed outputs maintain proper pitch-interval spellings,
+except in modal transposition;
+<b>trans</b>
+might be used to transpose a work up a perfect fourth, or
+down an augmented third, or from major mode to Phrygian.
+A "transposition interpretation" is appended to the output
+to mark the score as having been transposed.
+By default, input key signatures are retained in the output,
+however users can specify any replacement key signature
+using the
+<b>-k</b>
+option.
+</P>
+<P>
+The
+<b>trans</b>
+command is able to process those pitch-related representations listed below.
+All other inputs are simply echoed in the output.
+For descriptions of the various input representations
+refer to Section 2
+<i>(Representation Reference)</i>
+of this reference manual.
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</big></code></TD><TD>core absolute pitch representation</TD></TR>
+<TR><TD><code><big>**pitch</big></code></TD><TD>American National Standards Institute pitch notation (e.g. "A#4")</TD></TR>
+<TR><TD><code><big>**solfg</big></code></TD><TD>French solf&#232ge system (fixed `doh')</TD></TR>
+<TR><TD><code><big>**Tonh</big></code></TD><TD>German pitch system</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Input representations processed by <b>trans</b>.</i>
+</CENTER>
+</P>
+<P>
+Transpositions are transformations that shift all
+pitch-signifier values up or down by some amount.
+Transpositions are specified by defining a
+<i>diatonic offset</i>
+and a
+<i>chromatic offset.</i>
+The diatonic offset affects only the pitch-letter name used to spell a note.
+The chromatic offset affects only the number of semitones shifted from
+the original pitch height.
+</P>
+<P>
+For typical transpositions, both diatonic and chromatic offsets will need
+to be specified.
+For example, in transposing up a minor third (e.g. from C to E-flat),
+the diatonic offset is `up two pitch-letter names,' and the chromatic offset
+is `up three semitones.'
+The appropriate command invocation would be:
+</P>
+<P>
+<blockquote>
+<code><big>
+trans -d +2 -c +3 input > output
+</code></big>
+</blockquote>
+</P>
+<P>
+The plus signs above are optional; in their absence,
+<b>trans</b>
+assumes an upward transposition.
+Note that negative offsets can be mixed with positive offsets.
+For example,
+<code><big>
+trans -d -1 -c +1
+</code></big>
+will transpose the pitch C to B double-sharp, and F flat to E sharp, etc.
+(i.e. down one letter name, yet up one semitone).
+</P>
+<P>
+Modal transpositions are invoked by simply omitting the chromatic
+offset information.
+(See <A HREF="#EXAMPLES">EXAMPLES</A> below.)
+</P>
+<P>
+It is recommended that output files produced using the
+<b>trans</b>
+command should be given names with the distinguishing `.tr' extension.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>trans</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-c </i>[<i>+-</i>]<i>n</i></TD><TD>transpose up(+) or down (-) <i>n</i> semitones</TD></TR>
+<TR><TD><b>-d </i>[<i>+-</i>]<i>n</i></TD><TD>transpose up(+) or down (-) <i>n</i> diatonic letter names</TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-k <i>keysig</i></TD><TD>replace all input key signatures by <i>keysig</i></TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+Note that the <b>-d</b> "option" is manditory rather than optional.
+</P>
+<P>
+By default,
+<b>trans</b>
+maintains any original input key signatures in the transposed output.
+The
+<b>-k</b>
+option allows the user to specify a replacement key signature.
+Either "pitch-class" (*k[...]) or "pitch-height" (*K[...])
+key signatures can be specified.
+(See the
+<i>key signature</i>
+tandem interpretation -- Section 3.)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<A NAME="EXAMPLES">
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following examples illustrate the use of
+<b>trans.</b>
+</P>
+<P>
+Transposition up a minor third differs from transposition up an augmented
+second:
+</P>
+<P>
+<blockquote>
+<code><big>
+trans -d +2 -c +3 milhaud
+<br>
+trans -d +1 -c +3 milhaud
+</code></big>
+</blockquote>
+</P>
+<P>
+Enharmonic transpositions can be accomplished by defining the
+chromatic offset as zero semitones.
+For example, the following command transposes up a diminished second.
+It might be used to transpose from the key of C-sharp to the key of D-flat.
+</P>
+<P>
+<blockquote>
+<code><big>
+trans -d +1 -c 0 moonlight
+</code></big>
+</blockquote>
+</P>
+<P>
+Transposition up or down an octave requires both a diatonic offset
+and a corresponding chromatic offset of plus or minus 12 semitones. e.g.
+</P>
+<P>
+<blockquote>
+<code><big>
+trans -d -7 -c -12 guitar
+</code></big>
+</blockquote>
+</P>
+<P>
+In addition to exact pitch transpositions,
+<b>trans</b>
+can also perform
+<i>modal</i>
+transpositions.
+Modal transpositions arise when the pitch letter names are modified
+without regard for the precise semitone offset.
+To invoke a modal transposition, simply omit the chromatic offset
+specification.
+The following transposition changes diatonic pitch-letter names (down by two
+pitch-letters) so that the pitch C will become A, etc.
+</P>
+<P>
+<blockquote>
+<code><big>
+trans -d -2 major > aeolian
+</code></big>
+</blockquote>
+</P>
+<P>
+For inputs in major keys, the corresponding outputs will be in Aeolian mode.
+</P>
+<P>
+For some applications, two or more successive transpositions may be necessary.
+For example, the following pipeline modifies inputs
+in major keys so that they are in the tonic Dorian mode.
+</P>
+<P>
+<blockquote>
+<code><big>
+trans -d +1 major | trans -d -1 -c -2 > dorian
+</code></big>
+</blockquote>
+</P>
+<P>
+The first
+<b>trans</b>
+carries out a modal transposition -- up the interval of a diatonic second.
+Thus, a work in D major would be placed in E Dorian.
+The second
+<b>trans</b>
+returns the score down the precise interval of a major second.
+Together, both transpositions would cause
+an input in F major to be transformed to F Dorian;
+an input in B-flat major would be transformed to B-flat Dorian, etc.
+</P>
+<P>
+Whenever
+<b>trans</b>
+is invoked, it adds a tandem interpretation to the output indicating
+that the output representation has been transposed and is no longer
+at the original pitch.
+<i>Transposition tandem interpretations</i>
+are similar in syntax to the
+<b>trans</b>
+command itself.
+For example, the following tandem interpretation indicates that
+the score has been transposed up a major second.
+</P>
+<P>
+<blockquote>
+<code><big>
+*Trd1c2
+</code></big>
+</blockquote>
+</P>
+<P>
+The tandem interpretation in effect echoes the operation
+of the original transposition.
+If a score has undergone more than one transposition,
+the associated tandem interpretations will be ordered beginning with the most
+recent transposition.
+For example, a work that was transposed down a perfect
+fourth, followed by up a diminished second:
+</P>
+<P>
+<blockquote>
+<code><big>
+trans -d -3 -c -5
+<br>
+trans -d +1 -c 0
+</code></big>
+</blockquote>
+</P>
+<P>
+would contain the tandem interpretation:
+</P>
+<P>
+<blockquote>
+<code><big>
+*Trd1c0
+<br>
+*Trd-3c-5
+</code></big>
+</blockquote>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SAMPLE OUTPUT</H3></FONT>
+The following example illustrates the operation of
+<b>trans.</b>
+Given the following input:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**kern</TD><TD>**pitch</TD><TD>**Tonh</TD><TD>**solfg</TD><TD>**foo</TD></TR>
+<TR><TD>*k[]</TD><TD>*</TD><TD>*K[]</TD><TD>*k[b-]</TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>.</TD></TR>
+<TR><TD>c</TD><TD>C4</TD><TD>C4</TD><TD>do4</TD><TD>abc</TD></TR>
+<TR><TD>c#</TD><TD>C#4</TD><TD>Cis4</TD><TD>do~d4</TD><TD>.</TD></TR>
+<TR><TD>d-</TD><TD>Db4</TD><TD>Des4</TD><TD>re~b4</TD><TD>xyz</TD></TR>
+<TR><TD>r</TD><TD>r</TD><TD>r</TD><TD>r</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>.</TD></TR>
+<TR><TD>B-</TD><TD>Bb3</TD><TD>B3</TD><TD>si~b3</TD><TD>.</TD></TR>
+<TR><TD>B--</TD><TD>Bbb3</TD><TD>Heses3</TD><TD>si~bb3</TD><TD>.</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+the command
+</P>
+<P>
+<blockquote>
+<code><big>
+trans -d 1 -c 2 -k '*k[f#c#]'
+</code></big>
+</blockquote>
+</P>
+<P>
+would produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**kern</TD><TD>**pitch</TD><TD>**Tonh</TD><TD>**solfg</TD><TD>**foo</TD></TR>
+<TR><TD>*k[f#c#]</TD><TD>*</TD><TD>*k[f#c#]</TD><TD>*k[f#c#]</TD><TD>*</TD></TR>
+<TR><TD>*Trd1c2</TD><TD>*Trd1c2</TD><TD>*Trd1c2</TD><TD>*Trd1c2</TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>.</TD></TR>
+<TR><TD>d</TD><TD>D4</TD><TD>D4</TD><TD>re4</TD><TD>abc</TD></TR>
+<TR><TD>d#</TD><TD>D#4</TD><TD>Dis4</TD><TD>re~d4</TD><TD>.</TD></TR>
+<TR><TD>e-</TD><TD>Eb4</TD><TD>Es4</TD><TD>mi~b4</TD><TD>xyz</TD></TR>
+<TR><TD>r</TD><TD>r</TD><TD>r</TD><TD>r</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>.</TD></TR>
+<TR><TD>c</TD><TD>C4</TD><TD>C4</TD><TD>do4</TD><TD>.</TD></TR>
+<TR><TD>c-</TD><TD>Cb4</TD><TD>Ces4</TD><TD>do~b4</TD><TD>.</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<A HREF="humsed.html">
+<b>humsed</b></A> (4),
+<b>**kern</b> (2),
+<A HREF="kern.html">
+<b>kern</b></A> (4),
+<b>key signature</b> (3),
+<A HREF="pitch.html">
+<b>pitch</b></A> (4),
+<b>**pitch</b> (2),
+<A HREF="recode.html">
+<b>recode</b></A> (4),
+<b>**solfg</b> (2),
+<A HREF="solfg.html">
+<b>solfg</b></A> (4),
+<b>**Tonh</b> (2),
+<A HREF="tonh.html">
+<b>tonh</b></A> (4),
+<b>transposition</b> (3)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+It is important not to confused transposed scores with notations of
+music for transposing instruments
+(such as the horn in F or the clarinet in B-flat).
+The <code><big>**pitch, **kern, **Tonh</big></code>, and <code><big>**solfg</big></code> representations
+are intended to represent absolute or concert pitch;
+transposed scores are considered deviations from this convention.
+The
+<i>transpose tandem interpretation</i>
+should not be used to indicate that an encoding is for a
+transposing instrument.
+A special tandem interpretation -- beginning
+<code><big>
+*ITr
+</i></b></code></big>
+</i></b></code></big>
+--  is reserved for such designations.
+The interpretation
+<code><big>
+*Tr
+</i></b></code></big>
+</i></b></code></big>
+means that the encoding no longer represents absolute or concert pitch.
+By contrast, the interpretation
+<code><big>
+*ITr
+</i></b></code></big>
+</i></b></code></big>
+means that the instrumentalist reads from a score whose pitches are
+notated differently from concert pitch;
+nevertheless, the ensuing data is encoded at concert pitch.
+For example, a trumpet in B-flat plays a B-flat by fingering the pitch C.
+The absolute pitch (B-flat) is the proper <code><big>**kern, **pitch, **solfg</big></code>,
+or <code><big>**Tonh</big></code> encoding.
+Since the instrumentalist's
+<i>notation</i>
+is transposed up 1 diatonic letter-name and 2 chromatic semitones from
+the absolute or concert pitch, the encoded score will contain the instrument's
+transposition tandem interpretation
+</P>
+<P>
+<blockquote>
+<code><big>
+*ITrd1c2
+</code></big>
+</blockquote>
+</P>
+<P>
+(even though the encoded data is at concert pitch).
+Note that it is possible subsequently to transpose such a score using the
+<b>trans</b>
+command.
+</P>
+<P>
+Note that by default, key and key signature tandem interpretations are not modified by
+<b>trans</b>
+since the <code><big>**pitch, **kern, **solfg</big></code>, and <code><big>**Tonh</big></code>
+representations are intended to encode the original key and key
+signature at absolute pitch.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide04.html#Transposition_Using_the_trans_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

@@ -1,0 +1,84 @@
+###################################################################
+# 						PC
+# Programmed by: Tim Racinsky        Date: July, 1993
+# Copyright (c) 1993 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# June 9/94	Tim Racinsky	Modified to work with getopts
+# June 16/94	Tim Racinsky	Added -a option
+#
+#
+# 	This shell program is used to invoke the awk program pc.awk.
+#
+FILENAME=""
+OPTIONS=""
+HELP=""
+FLAG=""
+STNDIN=""
+X_OPTION=""
+USAGE1="USAGE: pc -h                (Help Screen)"
+USAGE2="       pc [-atx] [file ...]"
+# 
+while getopts ahtx arg
+do
+	case "$arg" in
+	h) 	HELP="ON";;
+	x) 	X_OPTION="x"
+		OPTIONS="$OPTIONS${arg}";;
+     [ta])
+		OPTIONS="$OPTIONS${arg}";;
+     [?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit ;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/pc.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/pc.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' may be used
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "pc: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+if [ "X$X_OPTION" = X ]
+then
+	$AWK_VER -f ${HUMDRUM}/bin/pc.awk "DUMMY" "${OPTIONS:-null}" $FILENAME
+else
+	$AWK_VER -f ${HUMDRUM}/bin/x_option.awk "DUMMY" $FILENAME | $AWK_VER -f ${HUMDRUM}/bin/pc.awk "DUMMY" "${OPTIONS:-null}" -
+fi

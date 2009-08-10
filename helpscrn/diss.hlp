@@ -1,0 +1,28 @@
+
+DISS  : Calculate sensory dissonance from spectral input
+
+     The "diss" command measures the degree of sensory dissonance for
+     successive vertical sonorities or acoustical moments.  The command
+     processes one or more "**spect" spines and produces a single "**diss"
+     spine as output.  Each data record in the **spect input represents
+     a concurrent set of discrete frequencies ("spectrum").  Spectral
+     data consist of sets of paired frequency/amplitude values for each
+     pure tone component present.  (N.B.  **spect data are in the form:
+     <freq>;<db SPL> <freq>;<db SPL> etc.)  Numerically increasing output
+     values correspond to increased sensory dissonance.
+
+     The "diss" command implements a measurement method for sensory
+     dissonance described by Kameoka and Kuriyagawa (1969a/b).  This command
+     was written by Keith Mashinter.  Note that problems with the Kameoka
+     and Kuriyagawa measurement method are described in Mashinter (1995).
+
+Syntax:
+
+     diss [inputfile ...] [ > outputfile]
+
+Options:
+
+     -h    : prints this help screen
+
+  Refer to reference manual for further details.
+

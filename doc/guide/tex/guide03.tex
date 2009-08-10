@@ -1,0 +1,1003 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\section*{Chapter3}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Some Initial Processing}
+
+
+
+Now that we have learned some things about Humdrum representations
+(and the \texttt{**kern} representation in particular),
+let's explore some basic processing tasks.
+
+
+\subsection*{The \textit{census} Command}
+
+\par 
+The Humdrum
+\textbf{census}
+command provides basic information about an input stream or file.
+We can invoke the command by typing the command name followed by
+the name of a file.
+The command
+
+\par 
+
+\texttt{census india01.krn}
+
+
+\par 
+might produce the following output:
+
+\texttt{HUMDRUM DATA
+
+Number of data tokens:     91
+Number of null tokens:     0
+Number of multiple-stops:  0
+Number of data records:    91
+Number of comments:        14
+Number of interpretations: 7
+Number of records:         112}
+
+
+
+
+
+
+\par 
+Most commands provide
+\textit{options}
+that will modify the operation of the command in a particular way.
+In UNIX-style commands, options follow after the
+command name and are typically specified by a single letter
+preceded by a hyphen.
+The
+\textbf{-k}
+option with the
+\textbf{census}
+command will give further information pertaining to
+the Humdrum \texttt{**kern} representation.
+With the
+\textbf{-k}
+option, the output includes the number of notes in the file,
+the longest, shortest, highest, and lowest notes, the maximum
+number of concurrent notes or voices, the number of rests,
+and the number of barlines.
+For example, the command:
+
+\par 
+
+\texttt{census -k india01.krn}
+
+
+\par 
+might produce the following
+\textit{additional}
+output:
+
+\texttt{KERN DATA
+
+Number of noteheads:       78
+Number of notes:           78
+Longest note:              1
+Shortest note:             16
+Highest note:              cc
+Lowest note:               c
+Number of rests:           1
+Maximum number of voices:  1
+Number of single barlines: 11
+Number of double barlines: 1}
+
+
+\par 
+Notice that a distinction is made between the number of notes
+and the number of noteheads.
+A tied note is considered to be a single "note,"
+although it may be notated using two or more noteheads.
+
+\par 
+The output from
+\textbf{census}
+can be restricted to a particular item of information by "piping"
+the output to the UNIX
+\textbf{grep}
+command.
+
+
+\subsection*{Simple Searches using the \textit{grep} Command}
+
+\par 
+The UNIX
+\textbf{grep}
+command is a popular tool for searching for lines
+that match some specified pattern.
+Patterns may be simple strings of characters, or may be more complicated
+constructions defined using the UNIX
+\textit{regular expression}
+syntax.
+Regular expressions will be described in detail in
+Chapter 9.
+The command name "\texttt{grep}" is an acronym
+for "get regular expression."
+
+
+\par 
+Useful patterns are often literal character strings, such as keywords.
+For example, the following command identifies whether the
+file \texttt{opus28.krn} contains the word "\texttt{Andante}":
+
+\par 
+
+\texttt{grep 'Andante' opus28.krn}
+
+
+\par 
+Every line containing the specified pattern will be output.
+If no match is found, no output is given.
+
+
+\par 
+Using a single command, all files in the current directory can be
+searched by substituting the asterisk (shell \textit{wildcard}) in place
+of a filename.
+The following command identifies all instances where the
+word "\texttt{Andante}" occurs;
+all files in the current directory are searched:
+
+\par 
+
+\texttt{grep 'Andante' *}
+
+
+\par 
+Once again, every line containing the sought pattern is echoed
+in the output.
+If more than one pattern is found, each instance of the
+pattern will be output on a separate line.
+Whenever an asterisk or "wildcard" is used as part of the filename,
+\textbf{grep}
+causes the \textit{name} of each file to be prepended to the
+output for all patterns that are found:
+
+\par 
+
+\texttt{opus28:!! Andante
+\\
+opus29:!! Andante
+\\
+opus46:!! Andante
+\\
+opus91:!! Andante
+\\
+opus98:!! Andante}
+
+
+\par 
+By default,
+\textbf{grep}
+distinguishes upper- and lower-case characters,
+so the above command will not match strings such
+as "\texttt{ANDANTE}".
+However, the
+\textbf{-i}
+option tells
+\textbf{grep}
+to ignore the case when searching.
+E.g.,
+
+\par 
+
+\texttt{grep -i 'Andante' *}
+
+
+
+\par 
+Sought patterns may occur in any line, including data records
+and comments.
+The following command will identify the presence of any
+double-sharps in the file \texttt{schumann.krn}.
+
+\par 
+
+\texttt{grep '\#\#' schumann.krn}
+
+
+
+\subsection*{Pattern Locations Using grep -n}
+
+\par 
+If a pattern is found, it is sometimes helpful to know the precise
+location of the pattern.
+The
+\textbf{-n}
+option tells
+\textbf{grep}
+to prepend the
+\textit{line number}
+for each matching instance.
+The following command identifies the line numbers for lines
+containing a double sharp for the file \texttt{melody.krn}:
+
+\par 
+
+\texttt{grep -n '\#\#' melody.krn}
+
+
+\par 
+The output might look like this:
+
+\par 
+
+\texttt{1109:\{4g\#\#
+\\
+1731:16g\#\#
+\\
+3002:16f\#\#}
+
+
+\par 
+-$\,$-  meaning that double sharps were found in lines 1109, 1731,
+and 3002 in the file \texttt{melody.krn}.
+
+
+\subsection*{Counting Pattern Occurrences Using grep -c}
+
+
+\par 
+In some cases, the user is interested in counting the total number of
+instances of a found pattern.
+The
+\textbf{-c}
+option causes
+\textbf{grep}
+to output a numerical
+\textit{count}
+of the number of lines containing matching instances.
+For example, in the \texttt{**kern} representation, the beginning of
+each phrase is marked by the presence of an open curly brace (`\texttt{\{}').
+So the following command can be used to count the number of phrases in the
+file \texttt{glazunov.krn}:
+
+\par 
+
+\texttt{grep -c '\{' glazunov.krn}
+
+
+\par 
+As noted, the
+\textbf{grep}
+command will search all lines (including comments)
+for matching instances of the specified pattern.
+If a curly brace were to appear in a comment or other non-data record,
+then our phrase-count would be incorrect.
+More carefully constructed patterns require a better knowledge of 
+\textit{regular expressions.}
+Regular expressions are discussed in
+Chapter 9.
+
+
+\subsection*{Searching for Reference Information}
+
+\par 
+As we saw in
+Chapter 2,
+Humdrum files typically encode
+library-type information using reference records.
+For example, the
+\textbf{composer's name}
+is encoded in a \texttt{!!!COM:}
+record, and the
+\textbf{title}
+is encoded via the \texttt{!!!OTL:} record.
+In conjunction with the
+\textbf{grep}
+command, these three-letter codes provide useful tags to search for
+pertinent information.
+For example, the following command will identify the composer
+for the file \texttt{opus24.krn}:
+
+\par 
+
+\texttt{grep '!!!COM:' opus24.krn}
+
+
+\par 
+The output might look like this:
+
+\par 
+
+\texttt{!!!COM: Boulanger, Nadia}
+
+
+
+\par 
+Once again, a wildcard (i.e., the asterisk) can be used to address
+all of the files in the current directory.
+Hence the command
+
+\par 
+
+\texttt{grep '!!!COM:' *}
+
+
+
+\par 
+will produce a list of all composers of files in the current directory.
+Similarly, the following command will generate a list of all of
+the titles:
+
+\par 
+
+\texttt{grep '!!!OTL:' *}
+
+
+\par 
+The output might look as follows:
+
+\par 
+
+\texttt{foster11:!!!OTL: Oh! Susanna
+\\
+foster12:!!!OTL: Jeanie with the Light Brown Hair
+\\
+foster13:!!!OTL: Beautiful Dreamer
+\\
+foster14:!!!OTL: Gwine to Run All Night (or 'De Camptown Race')
+\\
+foster15:!!!OTL: My Old Kentucky Home, Good-Night
+\\
+foster16:!!!OTL: We are Coming, Father Abraam
+\\
+foster17:!!!OTL: Don't Bet Your Money on De Shanghai
+\\
+foster18:!!!OTL: Gentle Annie
+\\
+foster19:!!!OTL: If You've Only Got a Moustache
+\\
+foster20:!!!OTL: Maggie by my Side
+\\
+foster21:!!!OTL: Old Folks at Home
+\\
+foster22:!!!OTL: Better Times are Coming
+\\
+foster23:!!!OTL: When this Dreadful War is Ended
+\\
+foster24:!!!OTL: Hard Times Comes Again No More}
+
+
+\par 
+Remember that when a wildcard is used in filenames,
+\textbf{grep}
+prepends the filename prior to found patterns.
+These filename `headers' can be eliminated by selecting the
+\textbf{-h}
+option for \textbf{grep}:
+
+\par 
+
+\texttt{grep -h '!!!OTL:' *}
+
+
+\par 
+(N.B. Some older versions of
+\textbf{grep}
+do not support all of the options described here.
+Filename headers can be stripped from the output by using the UNIX
+\textbf{sed}
+command described in
+Chapter 14.)
+
+\par 
+We might place the resulting list of titles in a separate file using the
+UNIX
+\textit{file redirection}
+construction.
+The output of a command can be placed into a file by following the
+command with a greater-than sign (>) followed by a filename.
+For example, the following command places the output from
+\textbf{grep}
+in a file called \texttt{titles}:
+
+\par 
+
+\texttt{grep -h '!!!OTL:' * > titles}
+
+
+\par 
+Beware that if the file \texttt{titles} already exists
+then it will be over written and its previous contents lost.
+With the
+\textbf{-h}
+option the file \texttt{titles} might contain the following lines:
+
+\par 
+
+\texttt{!!!OTL: Oh! Susanna
+\\
+!!!OTL: Jeanie with the Light Brown Hair
+\\
+!!!OTL: Beautiful Dreamer
+\\
+!!!OTL: Gwine to Run All Night (or 'De Camptown Race')
+\\
+!!!OTL: My Old Kentucky Home, Good-Night
+\\
+!!!OTL: We are Coming, Father Abraam
+\\
+!!!OTL: Don't Bet Your Money on De Shanghai
+\\
+!!!OTL: Gentle Annie
+\\
+!!!OTL: If You've Only Got a Moustache
+\\
+!!!OTL: Maggie by my Side
+\\
+!!!OTL: Old Folks at Home
+\\
+!!!OTL: Better Times are Coming
+\\
+!!!OTL: When this Dreadful War is Ended
+\\
+!!!OTL: Hard Times Comes Again No More}
+
+
+\par 
+
+\subsection*{The \textit{sort} Command}
+
+\par 
+The UNIX operating system provides a general sorting utility
+called \textbf{sort}.
+We might use this utility to rearrange the titles in alphabetical order:
+
+\par 
+
+\texttt{sort titles}
+
+
+\par 
+Rather than using an intermediate file, we can directly connect the
+\textbf{grep}
+and
+\textbf{sort}
+commands using a UNIX "pipe."
+The vertical bar (\texttt{|}) creates a connection between the
+output of one command and the input of the next command.
+We can combine the above two commands to create an alphabetical
+listing of all titles in the current directory:
+
+\par 
+
+\texttt{grep '!!!OTL:' * | sort}
+
+
+\par 
+File redirection can be added at the end of a pipe so the final
+output is captured in a file.
+In the following case, the alphabetized titles are placed in the
+file \texttt{titles}:
+
+\par 
+
+\texttt{grep '!!!OTL:' * | sort > titles}
+
+
+
+\subsection*{The \textit{uniq} Command}
+
+\par 
+Bach often harmonized a chorale melody more than once.
+In the 185 chorales in the original 1784 edition,
+several duplicate titles are present.
+Suppose you want to create an alphabetical list of titles,
+but you want to exclude duplicate titles.
+The UNIX
+\textbf{uniq}
+command provides a useful utility for eliminating duplication.
+Without any option,
+\textbf{uniq}
+simply eliminates any successive repeated lines.
+For example, given the input:
+
+\par 
+
+\texttt{1
+\\
+1
+\\
+1
+\\
+2
+\\
+2
+\\
+3}
+
+
+\par 
+the 
+\textbf{uniq}
+command will produce the following output:
+
+\par 
+
+\texttt{1
+\\
+2
+\\
+3}
+
+
+\par 
+Note that
+\textbf{uniq}
+only discards
+\textit{successive}
+repeated records;
+an input such as the following would remain unmodified by the
+\textbf{uniq}
+command:
+
+\par 
+
+\texttt{1
+\\
+2
+\\
+3
+\\
+1
+\\
+3
+\\
+1}
+
+
+\par 
+Another important point about
+\textbf{uniq}
+is that successive lines must be
+\textit{exact repetitions}
+in order to be discarded.
+For example, if one line has a trailing blank that is not present in
+the previous line, then the line is not discarded.
+
+\par 
+Returning to our problem of creating a list of unique titles
+for J.S. Bach's chorale harmonizations, we can use the following
+command pipeline.
+
+\par 
+
+\texttt{grep -h '!!!OTL:' * | sort | uniq}
+
+
+\par 
+Note that our "pipeline" consists of three successive commands
+with the outputs connected to the inputs using the UNIX pipe
+symbol (\texttt{|}).
+The
+\textbf{sort}
+command is essential in order to collect identical titles
+as successive lines before passing the list to
+\textbf{uniq}.
+
+\par 
+Suppose you wanted to ensure that all of the works in the current
+directory are composed by the same composer.
+The same command structure can be used, only we would search for reference
+records encoding the composer's name:
+
+\par 
+
+\texttt{grep -h '!!!COM:' * | sort | uniq}
+
+
+\par 
+Even if the current directory contains hundreds of works by
+one composer (say Beethoven) and just a single work by another composer,
+the presence of the odd score will be obvious without
+having to look through long lists:
+
+\par 
+
+\texttt{!!!COM: Beethoven, Ludwig van}
+\\
+\texttt{!!!COM: Stamitz, Carl Philipp}
+
+
+
+\par 
+Of course we can make similar lists for other types of information
+available in reference records.
+The \texttt{AIN} reference record encodes instrumentation.
+We could make a list of various instrumental combinations
+used for scores in the current directory:
+
+\par 
+
+\texttt{grep -h '!!!AIN:' * | sort | uniq}
+
+
+
+\subsection*{Options for the \textit{uniq} Command}
+
+\par 
+Like \textbf{grep}, the
+\textbf{uniq}
+command provides several options that modify its behavior.
+The
+\textbf{-d}
+option causes only those records to be output which are
+\textit{duplicated}
+(i.e. two or more instances).
+Conversely, the
+\textbf{-u}
+option causes only those records to be output that are truly
+\textit{unique}
+(i.e. only a single instance is present in the input).
+
+
+\par 
+Suppose, for example, that we want to know which of the Bach
+chorales are harmonizations of the same tunes -$\,$- that is,
+have the same titles.
+(Of course the same chorale might be known by two or more titles,
+but let's defer this problem until
+Chapter 25.)
+The
+\textbf{-d}
+option will only output the duplicate records:
+
+\par 
+
+\texttt{grep -h '!!!OTL:' * | sort | uniq -d}
+
+
+\par 
+The output will identify those titles which appear in two or
+more files in the current directory.
+The output might look as follows:
+
+\par 
+
+\texttt{!!!OTL: Befiehl du deine Wege
+\\
+!!!OTL: Christ lag in Todesbanden
+\\
+!!!OTL: Christus, der ist mein Leben
+\\
+!!!OTL: Das alte Jahr vergangen ist
+\\
+!!!OTL: Ein' feste Burg ist unser Gott
+\\
+!!!OTL: Erbarm' dich mein, o Herre Gott
+\\
+!!!OTL: Herr, ich habe missgehandelt
+\\
+!!!OTL: Herr, wie du willst, so schick's mit mir
+\\
+!!!OTL: Ich dank' dir, lieber Herre
+\\
+!!!OTL: Jesu, der du meine Seele
+\\
+!!!OTL: Jesu, meiner Seelen Wonne}
+
+
+\par 
+Having established which titles are duplicates,
+a logical next step might be to identify the specific files involved.
+We can use
+\textbf{grep}
+again to search for a specific title.
+Without the
+\textbf{-h}
+option, the output will identify the appropriate filenames.
+For example:
+
+\par 
+
+\texttt{grep '!!!OTL: Befiehl du deine Wege' *}
+
+
+\par 
+might produce the following output:
+
+
+\par 
+
+\texttt{bwv270.krn:!!!OTL: Befiehl du deine Wege}
+\\
+\texttt{bwv271.krn:!!!OTL: Befiehl du deine Wege}
+\\
+\texttt{bwv272.krn:!!!OTL: Befiehl du deine Wege}
+
+
+\par 
+Sometimes we would like to have an output that
+contains \textit{only} the \textit{filenames} containing the sought pattern.
+The
+\textbf{-l}
+option causes
+\textbf{grep}
+to output only filenames that contain one or more instances
+of the sought pattern:
+
+\par 
+
+\texttt{grep -l '!!!OTL: Befiehl du deine Wege' *}
+
+
+\par 
+The output would appear as follows:
+
+\par 
+
+\texttt{bwv270.krn}
+\\
+\texttt{bwv271.krn}
+\\
+\texttt{bwv272.krn}
+
+
+\par 
+As we've already notes, the
+\textbf{-u}
+option for \textbf{uniq} causes only unique entries in a list to be passed
+to the output.
+This is often useful in identifying works that differ in some way
+from other works in a group or corpus.
+For example, in some repertory, you may remember that a particular work
+had a different instrumentation than the other works.
+But you may not be able to remember what the specific instrumentation was.
+Use the
+\textbf{-u}
+option for
+\textbf{uniq}
+to produce a list consisting of only those works whose
+instrumentation differs from all others:
+
+\par 
+
+\texttt{grep -h '!!!AIN:' * | sort | uniq -u}
+
+
+
+\par 
+As in the case of the
+\textbf{grep}
+command,
+\textbf{uniq}
+also supports a
+\textbf{-c}
+option which counts the number of occurrences of a pattern.
+For example, if we want to count the number of works by each composer
+in the current directory:
+
+\par 
+
+\texttt{grep -h '!!!OTL:' * | sort | uniq -c}
+
+
+\par 
+The output might appear as follows:
+
+
+
+
+
+
+\par 
+
+\texttt{ 9 !!!COM: Berardi, Angelo
+\\
+ 2 !!!COM: Caldara, Antonio
+\\
+12 !!!COM: Zarlino, Gioseffo
+\\
+ 2 !!!COM: Sweelinck, Jan Pieterszoon
+\\
+ 4 !!!COM: Josquin Des Pres}
+\\
+
+
+\par 
+Notice that the number of instances is prepended to the reference
+records.
+
+\par 
+Incidentally, if we wanted to rearrange this list in order of
+the number of works, we could pass the above output to yet another
+\textbf{sort}
+command.
+Since
+\textbf{sort}
+sorts from left to right, it will begin sorting according to
+the numerical values at the extreme left.
+The command
+
+\par 
+
+\texttt{grep -h '!!!COM:' * | sort | uniq -c | sort -n}
+
+
+\par 
+will rearrange the above output as follows:
+
+\par 
+
+\texttt{ 2 !!!COM: Caldara, Antonio
+\\
+ 2 !!!COM: Sweelinck, Jan Pieterszoon
+\\
+ 4 !!!COM: Josquin Des Pres
+\\
+ 9 !!!COM: Berardi, Angelo
+\\
+12 !!!COM: Zarlino, Gioseffo}
+\\
+
+
+\par 
+It is important to understand that the two
+\textbf{sort}
+commands in our pipeline achieve different goals but
+use the same process.
+The first
+\textbf{sort}
+command sorts the composer's names into alphabetical order.
+This is done so that the ensuing
+\textbf{uniq}
+command is able to count successive identical records.
+Since the
+\textbf{uniq -c}
+command prepends numerical counts, the subsequent
+\textbf{sort}
+sorts first according to the numbers to the left of the
+reference records.
+
+\par 
+As a final note, we might mention that, like
+\textbf{grep}
+and \textbf{uniq}, the
+\textbf{sort}
+command has several options.
+One option, the
+\textbf{-r}
+option, causes the output to be arranged in reverse order.
+This can be useful in producing lists that are ordered from
+most common to least common.
+
+
+
+\subsection*{Reprise}
+
+\par 
+In this chapter we have introduced some elementary ways
+of processing Humdrum files.
+We noted that the
+\textbf{census}
+command can be used to identify basic statistics about a file.
+The
+\textbf{-k}
+option for
+\textbf{census}
+provides basic information related to \texttt{**kern} files,
+such as the number of notes and rests, the highest and lowest notes,
+the number of barlines, etc.
+
+\par 
+In this chapter we also introduced simple searching techniques
+using the
+\textbf{grep}
+command;
+\textbf{grep}
+provides a useful way of locating particular patterns of text
+characters in files.
+We used
+\textbf{grep}
+to identify composers, titles, instrumentation and other information.
+Most of our examples were limited to searching for Humdrum reference
+records.
+In later chapters we will use
+\textbf{grep}
+in more sophisticated searches.
+We noted several useful options for \textbf{grep}:
+the
+\textbf{-c}
+option causes a count to be output of the number of instances
+of the pattern in each file.
+The
+\textbf{-i}
+option causes
+\textbf{grep}
+to ignore any distinction between upper- and lower-case characters
+when searching for patterns.
+The
+\textbf{-h}
+option causes
+\textbf{grep}
+to suppress outputting the filenames prior to found patterns
+when more than one file is searched.
+The
+\textbf{-l}
+option results in only the filenames being output.
+In a later chapter we will encounter
+a number of other useful options provided by \textbf{grep}.
+
+\par 
+Also discussed in this chapter was the
+\textbf{uniq}
+command;
+\textbf{uniq}
+provides a useful utility for eliminating
+or isolating duplicate records or lines.
+Once again a number of useful options were introduced.
+The
+\textbf{-c}
+option causes
+\textbf{uniq}
+to prepend a count of the number of duplicate input lines.
+The
+\textbf{-d}
+option results in only duplicate input lines being noted in the
+output.
+The
+\textbf{-u}
+option does the reverse:
+only those input lines that are unique are passed to the output.
+
+\par 
+Finally, we introduced the UNIX
+\textbf{sort}
+utility.
+This command rearranges the order of successive input lines
+so they are in alphabetic/numeric order.
+The
+\textbf{sort}
+command provides a wealth of useful options;
+however, we mentioned only the
+\textbf{-r}
+option -$\,$- which causes the output to be sorted in reverse order.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

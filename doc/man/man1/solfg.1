@@ -1,0 +1,278 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH solfg 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBsolfg\fR  --  translate selected Humdrum pitch-related representations to French solf\o'e\(ga'ge notation
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBsolfg\fR  [\fB-tx\fR]  [\fIinputfile\fR ...]  [ > \fIoutputfile.slg\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "solfg"
+command transforms various pitch-related inputs to the corresponding
+French system for designating pitches.
+It outputs one or more Humdrum \f(CR**solfg\fR spines.
+French pitch designations use the so-called \(odfixed-doh\(cd system,
+where:
+.I "do, r\o'e\(aa', mi, fa, sol, la,"
+and
+.I "si"
+correspond to
+.I "C, D, E, F, G, A,"
+and
+.I "B."
+In \f(CR**solfg\fR, flats
+.I "(b\o'e\(aa'mol)"
+and sharps
+.I "(di\o'e\(ga'se)"
+are abbreviated
+.I "b"
+and
+.I "d"
+respectively.
+Hence, `do di\o'e\(ga'se'
+(do~d)
+for C sharp, `la b\o'e\(aa'mol'
+(la~b)
+for A flat, `sol double-di\o'e\(ga'se'
+(sol~dd)
+for G double-sharp, `si double-b\o'e\(aa'mol'
+(si~bb)
+for B double-flat, and so on.
+.sp 1
+.sp 1
+The
+.B "solfg"
+command is able to translate any of the pitch-related
+representations listed below.
+In each case, a tuning standard of A4 equals 440 hertz is assumed.
+For descriptions of the various input representations
+(including \f(CR**solfg\fR) refer to Section 2
+.I "(Representation Reference)"
+of this reference manual.
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "solfg"
+command should be given names with the distinguishing `.slg' extension.
+.sp 1
+.TS
+l l.
+\f(CR**cents\fR	hundredths of a semitone with respect to middle C=0
+\f(CR**degree\fR	key-related scale degree
+\f(CR**freq\fR	fundamental frequency (in hertz)
+\f(CR**fret\fR	fretted-instrument pitch tablature
+\f(CR**kern\fR	core pitch/duration representation
+\f(CR**MIDI\fR	Music Instrument Digital Interface tablature
+\f(CR**pitch\fR	American National Standards Institute pitch notation
+	  (e.g. \(odA#4\(cd)
+\f(CR**semits\fR	equal-tempered semitones with respect to middle C=0
+	  (e.g. 12 = C5)
+\f(CR**specC\fR	spectral centroid (in hertz)
+\f(CR**Tonh\fR	German pitch system
+.TE
+.sp 1
+.ce
+.I "Input representations processed by \fBsolfg\fR."
+.in -2
+.SH "OPTIONS"
+.in +2
+The
+.B "solfg"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-t\fR	suppresses printing of all but the first note of a
+	  group of tied \f(CR**kern\fR notes
+\fB-x\fR	suppresses printing of non-solfg data
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The
+.B "-t"
+ensures that only a single output value is given for tied \f(CR**kern\fR notes;
+the output coincides with the first note of the tie.
+.sp 1
+.sp 1
+In the default operation,
+.B "solfg"
+outputs non-pitch-related signifiers in addition to the solfg value.
+For example, the \f(CR**pitch\fR
+token \(odGb5zzz\(cd will result in the output
+\(odsol~b5zzz\(cd -- that is, after translating Gb5 to sol~b5,
+the \(odzzz\(cd signifiers are retained in the output.
+For some applications, echoing non-pitch-related signifiers in the output
+is useful.
+However, in other situations, the result can prove confusing --
+especially, when the non-pitch-related signifiers are numbers.
+Consider the case of the \f(CR**kern\fR token \(od8aa#\(cd;
+after translating `aa#' to la~d5, the non-pitch-related signifier `8'
+will also be output, hence the value 8la~d5 -- which may cause
+confusion.
+Commands such as
+.B "pitch"
+and
+.B "solfg"
+treat the first number encountered in an input token
+as the octave designation.
+So further processing of this token may lead to it's interpretation as A#8
+-- or even A#85 -- rather than A#5.
+.sp 1
+.sp 1
+The
+.B "-x"
+option is useful for eliminating non-pitch-related signifiers from the output.
+For most \f(CR**kern\fR inputs, the
+.B "-x"
+option is recommended.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following example illustrates the use of
+.B "solfg."
+The input contains six pitch-related spines --
+two of which (\f(CR**deg\fR and \f(CR**cocho\fR) cannot be processed by
+.B "solfg."
+.sp 1
+.TS
+l s s l l l
+l l l l l l.
+!! `solfg' example.
+**kern	**pitch	**MIDI	**deg	**cocho	**degree
+*M2/4	*M2/4	*M2/4	*M2/4	*M2/4	*M2/4
+*	*	*	*	*	*d:
+\(eq1	\(eq1	\(eq1	\(eq1	\(eq1	\(eq1
+8ee-	G#4foo	/60/bar	1foo	r	1/4
+\.	.	/-60/	.	.	.
+8ff	A3	/62/	2	9.89	2/4
+\.	.	/-62/	.	.	.
+8dd-	Ab3	/70/	1	7.07	3+/4
+\.	.	/-70/	.	.	.
+8d-	C#4	/61/	6	7.135	7/3
+\.	.	/-61/	.	.	.
+\(eq2	\(eq2	\(eq2	\(eq2	\(eq2	\(eq2
+[4a-	r	.	5	r	r
+\.	.	.	7	5.5	1/4
+4a-]	D4	/48/ /52/	1	8.11	6+/4
+\.	.	/-48/	.	.	.
+\.	D4 F4	/-52/	2	7.33 6.4	3/4 5/4
+\(eq3	\(eq3	\(eq3	\(eq3	\(eq3	\(eq3
+r	G4	.	r	r	3/4 1/5
+===	===	===	===	===	===
+*-	*-	*-	*-	*-	*-
+.TE
+.sp 1
+Executing the command
+.sp 1
+.sp 1
+.in +2
+solfg -tx input > output
+.in -2
+.sp 1
+.sp 1
+produces the following result:
+.sp 1
+.TS
+l s s l l l
+l l l l l l.
+!! `solfg' example.
+**solfg	**solfg	**solfg	**deg	**cocho	**solfg
+*M2/4	*M2/4	*M2/4	*M2/4	*M2/4	*M2/4
+*	*	*	*	*	*d:
+\(eq1	\(eq1	\(eq1	\(eq1	\(eq1	\(eq1
+mi~b5	sol~d4	do4	1foo	r	re4
+\.	.	.	.	.	.
+fa5	la3	re4	2	9.89	mi4
+\.	.	.	.	.	.
+re~b5	la~b3	si~b4	1	7.07	fa~d4
+\.	.	.	.	.	.
+re~b4	do~d4	re~b4	6	7.135	do~d3
+\.	.	.	.	.	.
+\(eq2	\(eq2	\(eq2	\(eq2	\(eq2	\(eq2
+la~b4	r	.	5	r	r
+\.	.	.	7	5.5	re4
+\.	re4	do3 mi3	1	8.11	si4
+\.	.	.	.	.	.
+\.	re4 fa4	.	2	7.33 6.4	fa4 la4
+\(eq3	\(eq3	\(eq3	\(eq3	\(eq3	\(eq3
+r	sol4	.	r	r	fa4 re5
+===	===	===	===	===	===
+*-	*-	*-	*-	*-	*-
+.TE
+.sp 1
+Both processed and unprocessed spines are output.
+Notice that the tied note at the beginning of measure 2 in the \f(CR**kern\fR
+spine has been rendered as a single note rather than as two notes
+(due to the
+.B "-t"
+option).
+Also notice that the non-pitch-related signifiers (e.g. foo)
+in the first notes of the \f(CR**pitch, **MIDI\fR, and \f(CR**cocho\fR
+spines have been stripped away (due to the
+.B "-x"
+option).
+In the case of the \f(CR**degree\fR input,
+.B "solfg"
+recognizes the spelling of various pitches in the context of the key of
+D minor.
+Hence, the raised third degree is \f(CRfa~d\fR (F#),
+and the raised sixth degree is \f(CRsi\fR (B natural).
+.in -2
+.sp 1
+.sp 1
+.SH "FILES"
+.in +2
+The file \f(CRx_option.awk\fR
+is used by this program when the
+.B "-x"
+option is invoked.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fB**cents\fR (2), \fBcents\fR (1),
+\fB**degree\fR (2), \fBdegree\fR (1),
+\fB**freq\fR (2), \fBfreq\fR (1),
+\fB**fret\fR (2), \fB**kern\fR (2), \fBkern\fR (1),\fR \fB**MIDI\fR (2),
+\fBmidi\fR (1), \fBmint\fR (1),
+\fB**pitch\fR (2), \fBpitch\fR (1),
+\fB**semits\fR (2), \fBsemits\fR (1),
+\fB**solfg\fR (2), \fB**specC\fR (2), \fBspecc\fR (1),
+\fB**Tonh\fR (2), \fBtonh\fR (1)
+.in -2

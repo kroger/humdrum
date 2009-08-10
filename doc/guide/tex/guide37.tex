@@ -1,0 +1,960 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter37}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Electronic Music Editing}
+
+
+
+The preparation of encoded musical materials for processing
+is an essential part of computer-assisted musicology.
+Without electronic data to process, none of the
+manipulations described in this book would be possible.
+The encoding and editing of musical data has been
+an activity that has occupied various scholars since the
+earliest forays into computer-assisted musicology (e.g., Bronson, 1959).
+
+\par 
+In this chapter we identify and describe some of the tasks
+and issues involved in preparing electronic musical
+documents in the Humdrum format.
+In general, the following discussion pertains to the
+production of electronic documents representing musical
+score information.
+However, the basic procedures are applicable to
+any kind of data -$\,$- from sound recordings to
+historical choreographies of ballets.
+
+
+\subsection*{The Process of Electronic Editing}
+
+\par 
+Electronic editing entails translating one representation
+into another representation.
+In many cases, an electronic edition is prepared from
+existing source documents -$\,$- such as printed scores or
+manuscripts.
+In other cases, an electronic edition may be prepared
+from another electronic form -$\,$- such as MIDI.
+When translating between two formats, it is important to be
+familiar with both representations.
+Descriptions of a number of popular electronic music formats
+may be found in Eleanor Selfridge-Field's encyclopedic
+\textit{Handbook of Musical Codes}
+(1997).
+
+\par 
+The principal processes involved in electronic editing
+include identifying possible sources and alternative versions,
+selecting and encoding the material,
+proofing the material (using both automated and manual methods),
+adding reference and editorial information,
+writing appropriate research notes,
+generating possible analytic information,
+and resolving issues related to copyright, distribution, and data integrity.
+
+
+\subsection*{Establishing the Goal}
+
+\par 
+Encoding and editing music is a time-consuming and
+labor-intensive process.
+Before starting to work on a electronic edition,
+it is appropriate to ask: what is the goal?
+What purpose will be served by the edition?
+Is the objective to provide a performance copy?
+A historically accurate document?
+A document suitable for analysis?
+If so, what sort of analysis?
+
+\par 
+In general, it is wise to avoid trying to cater to all
+needs at once.
+There is nothing wrong with creating a narrowly-defined
+document that serves a modest goal.
+For example, if our intention is to pursue a study
+of rhythm, there is little need to encode data that is
+extraneous to this goal.
+Accordingly we might omit stem-direction, beaming,
+textual underlay, and even pitch information.
+
+\par 
+Note that it is always possible to incorporate additional
+information at a later date.
+Additional information can be inserted into
+a Humdrum encoding by using the
+\textbf{assemble}
+and
+\textbf{cleave}
+commands.
+In general, it is important that the encoding of electronic
+documents not consume all of a researcher's efforts and resources.
+The most common problem that beset early projects in
+computational musicology was that researchers rarely
+got past the stage of inputting data.
+Early researchers typically ran out of time, money or
+enthusiasm before they could turn to
+\textit{using}
+the materials they had input.
+
+
+\subsection*{Documenting Encoded Data}
+
+\par 
+More important than generating a complete and accurate database is
+generating complete and accurate documentation so that future
+users of the information understand the limitations of the materials.
+Whether or not the electronic edition is "complete,"
+the materials are almost useless without proper
+documentation about what information is present,
+what information has been omitted, what sources were used,
+and what interpretations have been made.
+As long as the electronic materials are well documented,
+users can make effective use of whatever you create.
+
+\par 
+An ethnomusicologist may have inaccurately transcribed pitches,
+but even approximate pitch information can be used for a study
+of pitch contour.
+Of course, it is better to have clean data than messay data,
+but even messy data can be highly useful if the nature of the mess
+is well understood by researchers.
+In fact, most historical information is a mess.
+
+\par 
+Concretely, Humdrum provides several reference records that allow
+electronic editors to identify what information has been encoded
+and what information has been omitted or interpreted.
+
+
+\subsection*{Sources}
+
+\par 
+In light of the editorial goal, you can procede to
+select source materials for encoding.
+In many cases, this will involve selecting printed musical scores.
+Begin by spending time with the materials.
+What special problems or challenges are raised?
+What sort of Humdrum representation would be suitable
+for the proposed edition?
+Are there special notational symbols that suggest
+a new representation should be designed?
+Can special representational problems be accommodated
+within an existing Humdrum representation?
+How would users be made aware of extensions or
+modifications to the representation?
+
+\par 
+In the case of musical scores, there is rarely a single
+source or \textit{Urtext}.
+In most cases, multiple sources are available.
+How do you want to approach the problem of variant sources?
+One approach is to select a single source and remain
+true to it.
+A second approach is to identify the principal variant sources
+and encode each independently.
+A third approach is to encode several variants within a
+single document and provide Humdrum "versions"
+that allow users to select particular "readings"
+from a single file.
+A fourth approach is to create your own "critical"
+edition -$\,$- based on a close re-examination of the
+original materials.
+
+\par 
+An important consideration will be the copyright status of
+the materials you examine.
+Some materials are old enough that their copyrights have
+expired.
+Encoding older materials raises two difficulties.
+First, older sources are typically not the best quality
+editions available.
+Second, access to printed versions of older sources may be
+difficult for other scholars using your data.
+Some publishers (such as Dover Publications) specialize
+in reprinting musical scores whose copyrights have lapsed.
+Although these sources may not be the best available,
+they are often  convenient because other scholars can easily
+purchase the modern Dover reprints that correspond
+to your electronic edition.
+
+\par 
+The best materials are usually under copyright.
+If you encode this material without permission,
+you will never be able to distribute the encodings -$\,$-
+even on a non-profit basis.
+Most modern publishers profess an interest in electronic publishing,
+but (at the time of this writing) few publishers have any pertinent
+expertise, and fewer yet are willing to encourage or allow
+the preparation of electronic documents
+from their publication catalogue by third parties.
+It is likely to take decades before the financial and
+legal issues are satisfactorily addressed.
+
+\par 
+In some cases, you will be translating from one electronic
+format to another -$\,$- such as from MIDI to
+\texttt{**kern}.
+Once again, be conscious of any copyright issues
+that are raised.
+Few experiences are more discouraging than discovering
+that your work cannot be distributed because you
+failed to consider seriously the copyright issues involved.
+
+
+\subsection*{Selecting a Sample from Some Repertory}
+
+\par 
+Quite often, there are insufficient resources
+to encode an entire corpus.
+Many repertories are simply too large to consider
+creating an exhaustive electronic edition.
+Nevertheless, you might choose to encode a
+subset or selection of works from the given corpus.
+
+\par 
+A common expectation is that studying a sample subset of works
+will inform us about the corpus as a whole.
+That is, it is commonly expected that studying a number of works
+by, say, Offenbach, the scholar may be able to identify general
+characteristics of Offenbach's writing.
+In order for this assumption to be valid, statisticians tell us
+that the sample of works must be a
+\textit{representative}
+sample -$\,$- free of all sorts of possible selection biases.
+
+\par 
+From a research perspective, the best sample is a
+\textit{random sample.}
+Suppose, for example, that there are 2,000 items in a
+particular repertory, but you are able to encode
+just 100 items.
+You might be tempted to select the first 100 items,
+or to select a subset of items that share some common feature
+that makes the collection seem "coherent."
+
+\par 
+However, picking and choosing what to encode will prevent
+researchers from being able to draw general conclusions
+about the repertory as a whole.
+For example, selecting the first 100 items will typically
+bias the sample to early works in a composer's career.
+Selecting 100 random items provides a very
+good statistical sample of a population of 2,000 items.
+
+\par 
+Unfortunately, since random sampling has little precedence
+in traditional humanities research, many scholars are resistent
+to the idea.
+The value of random sampling has been established beyond
+a doubt by statisticians.
+This is not the place to rehearse the detailed arguments.
+Simply take my word for it:
+if you can't encode a complete corpus,
+the very best solution is to select a random sample.
+
+\par 
+In making such a random sample, it is essential to resist
+the temptation to select a "random" sample "by eye."
+Establish a truly random procedure (such as flipping coins
+or using a random number table) and methodically follow
+the procedure.
+
+\par 
+Incidentally, it is common to run out of resources
+before completely encoding the selected materials.
+As a result, you may end up encoding only half or
+two-thirds of the projected materials.
+If you began encoding the materials in (say)
+chronological order, then the resulting database will
+be biased toward the early works of the repertory.
+In order to avoid introducing an unwanted bias,
+it is also prudent to encode the selected materials in a
+random order.
+
+
+\subsection*{Encoding}
+
+\par 
+Once you have established your materials and
+have decided on the type of encoding,
+you can go ahead and begin encoding the documents in random order.
+Use whatever resources are available to you.
+These might include scanning software,
+MIDI performance capture, or the Humdrum
+\textbf{encode}
+command.
+Begin by encoding a sample section or sections.
+Spend some time determining ways to increase your
+productivity.
+
+\par 
+As you encode the selected materials, editorial problems or questions will inevitably arise.
+As you gain experience, you may realize that earlier
+encoding practices were not the best.
+You may want to return to these problems and encode
+them in a different manner.
+Be sure to keep notes -$\,$- either pencil marks on
+a page, or local comments in a file -$\,$- so that you
+can easily revisit these problem sites later.
+Again, it is valuable to encode works in random order in order to
+avoid possible confounds arising from editorial experience.
+That is, you don't want a scholar's conclusions about differences
+between early works and late works to be merely an artifact
+of the electronic editor's increasing experience.
+
+\par 
+Typically, it is more efficient to encode individual parts
+and then assemble all parts into a single full score.
+
+
+\subsection*{Transposing Instruments}
+
+\par 
+In the case of the \texttt{**kern} representation, all parts are
+represented at concert pitch.
+It is typically easier to encode the parts as written and then
+transpose the result using the Humdrum
+\textbf{trans}
+command.
+For example, material for B-flat trumpet or B-flat clarinet
+can be transposed using the following command:
+
+\par 
+
+\texttt{trans -d -1 -c -2}
+
+
+\par 
+In the case of clarinet in A, a suitable transposition would be:
+
+\par 
+
+\texttt{trans -d -2 -c -3}
+
+
+\par 
+The
+\textbf{trans}
+command adds a transposition interpretation to the output in order
+to identify that the material has been shifted.
+In the \texttt{**kern} representation, transposed instruments must be explicitly
+identified using a special "transposing-instrument interpretation"
+(see \textit{Humdrum Reference Manual} -$\,$- Section 3 for details).
+A suitable interpretation can be created by adding the
+upper-case letter `I' prior to the `T' in the appropriate tandem interpretation.
+In the case of a horn in F for example, the transpostion interpretation
+would be modified from
+
+\par 
+
+\texttt{*Trd-4c-7}
+
+
+\par 
+to:
+
+\par 
+
+\texttt{*ITrd-4c-7}
+
+
+
+\subsection*{Instrument Identification}
+
+\par 
+Humdrum provides standardized instrumentation indicators.
+Three different types of indication are appropriate:
+(1) the instrument name as indicated in the source,
+(2) standardized instrument name, and (3) instrument class.
+Standardized instrument names can be found in
+\textbf{Appendix II}.
+For example, the standard indicator for "harpsichord"
+is
+\texttt{*Icemba}.
+
+\par 
+Standardized instrument class designators include \texttt{*ICklav} for keyboard instruments
+and \texttt{*ICidio} for percussion instruments, etc.,
+and instrument grouping designators -$\,$- such as \texttt{*IGripn} for
+\textit{ripieno}
+instruments and \texttt{*IGacmp} for accompaniment instruments.
+These instrument class designators can also be found in
+Appendix II.
+
+\par 
+In addition, the original instrument name (as found in the score)
+should also be encoded as a Humdrum local comment.
+
+
+\subsection*{Leading Barlines}
+
+\par 
+Humdrum tools prefer to have explicit information indicating
+the beginning of the first measure.
+If a file does not begin with an anacrusis ("pickup")
+then it is appropriate to encode an "invisible" first barline.
+For a hypothetical file containing five spines,
+we would need to insert the following line just before the first
+note(s) in the work:
+
+\texttt{=1-=1-=1-=1-=1-}
+
+
+\par 
+Recall that the common system for representing barlines makes a
+distinction between the logical
+\textit{function}
+of a barline and it's visual or
+\textit{orthographic}
+appearance.
+For example, the common system for barlines distinguishes between double
+barlines whose function is to indicate the end of a work or movement,
+and double barlines that simply delineate sections within the course
+of a work or movement.
+It is possible for a barline at the
+end of the work to be "functionally" a double barline,
+yet appear visually as a single barline.
+
+\par 
+\textit{Functional double barlines}
+are encoded with a double equals sign (==) whether or not they
+are visually rendered as double barlines.
+\textit{Functional single barlines}
+are encoded with a single equals sign (=) whether or not they
+are visually rendered as single barlines.
+
+\par 
+The specific visual appearance may be encoded following the equals
+sign(s).
+The vertical line (|) represents a `thin' line and the exclamation
+mark (!) represents a `thick' line.
+A typical final double bar would be encoded:
+
+\par 
+
+\texttt{==|!}
+
+
+\par 
+Most mid-movement double bars are encoded with two thin lines
+and so would be encoded:
+
+\par 
+
+\texttt{=||}
+
+
+\par 
+A common encoding error is to render mid-movement double
+barlines as
+\textit{functional}
+rather than
+\textit{orthographic}
+double-bars.
+
+
+\subsection*{Ornamentation}
+
+\par 
+The \texttt{**kern} representation makes a distinction between
+whole-tone and semitone trills and mordents.
+Typically, each ornament must be examined manually and the
+correct code selected.
+
+\par 
+In some cases, the size of the trill or mordent will be ambiguous
+and so some sort of editorial decision will be necessary.
+One possibility is to add the kern `x' signifier immediately following the `T' or `t'.
+This indicates that the trill size is an
+"editorial interpretation."
+
+\par 
+The \texttt{**kern} representation treats appoggiaturas in a
+special way.
+In general, \texttt{**kern} is oriented to representing things
+in a manner closer to how they sound.
+Consequently, appoggiaturas are encoded as they would be
+logically performed.
+For example, a quarter-note preceded by an appoggiatura (small note)
+would be performed as two eighth-notes.
+Similarly, a dotted quarter-note preceded by an appoggiatura
+would be performed as a quarter-note followed by an eighth-note.
+
+\par 
+All appoggiaturas must be re-encoded in a
+way that reflects their likely performance.
+At the same time, the two notes forming the appoggiatura
+must be marked in the kern representation:
+the initial note of the appoggiatura is marked by the upper-case
+letter `\texttt{P}' and the final (second) note of the appoggiatura
+is marked by a lower-case letter `\texttt{p}'.
+
+
+\subsection*{Editing Sections}
+
+\par 
+It is helpful to break-up large works/movements into
+smaller sections that can be labelled.
+In a binary work, for example, it may be useful
+to label the `A' and `B' sections.
+In a sonata-allegro work, it may be useful to label the
+introduction, exposition, development, recapitulation, etc.
+Some works include explicitly notated labels.
+These labels may be traditional, e.g. "Coda,"
+or they may reflect programatic descriptions,
+such as the section entitled
+\textit{Il canto degl'uccelli}
+[The song of the birds] in Vivaldi's
+\textit{The Four Seasons.}
+
+\par 
+Where appropriate, suitable section labels should be created
+and encoded using the Humdrum Section Label designator.
+Remember that section labels can include the space character:
+
+\par 
+
+\texttt{*>1st Theme}
+
+
+\par 
+If you include section labels, you must also include a Humdrum
+"Expansion List" to indicate how the sections are
+connected.
+The Humdrum
+\textbf{thru}
+command causes a through-composed version of a file to be
+generated according to the expansion list.
+For example, an expansion list for a simple binary work may be
+encoded as:
+
+\par 
+
+\texttt{*>[A,B]}
+
+
+\par 
+Remember that expansion lists ought to be encoded prior
+to the first section label.
+
+\par 
+Whenever a work/movement includes repeats or Da Capos,
+section labels and expansion lists must be encoded.
+In some cases, there is more than one way of interpreting
+how to realize the repeats.
+The most "conventional" realization should be encoded
+with the
+\textit{unnamed expansion list.}
+This will specify the default expansion using the Humdrum
+\textbf{thru}
+command.
+Suppose for example, that you are encoding a typical
+minuet and trio.
+The conventional performance practice involves repeating
+all sections of both the minuet and trio, but then avoiding
+the repeats in the minuet following the Da Capo.
+A suitable expansion list might be:
+
+\par 
+
+\texttt{*>[Minuet,Minuet,Trio,Trio,,Minuet]}
+
+
+\par 
+An alternative expansion list might be encoded as follows
+(notice the expansion-list-label \textit{ossia}):
+
+\par 
+
+\texttt{*>ossia[Minuet,Minuet,Trio,Trio,,Minuet,Minuet]}
+
+
+
+\subsection*{Editorialisms in the \textit{**kern} Representation}
+
+\par 
+Humdrum provides several ways of encoding editorialisms.
+These include editorial footnotes, local comments,
+global comments, interpretation data,
+\textit{sic}
+and
+\textit{ossia}
+designations, version labels, sectional labels,
+and expansion lists.
+
+\par 
+The
+\texttt{**kern}
+representation provides several
+special-purpose signifiers to help make explicit various
+classes of editorial
+amendments, interpretations, or commentaries.
+Five types of editorial signifiers are available:
+(1) \textit{sic} (information is encoded literally, but is questionable)
+signified by the \texttt{Y} character;
+(2) \textit{invisible symbol} (Unprinted note, rest or barline,
+but logically implied) signified by the \texttt{y} character;
+(3) \textit{editorial interpretation}, (a "modest" editorial act
+of interpretation -$\,$- such as the interpretation of accidentals in
+\textit{musica ficta}) signified by the \texttt{x} character;
+(4) \textit{editorial intervention} (a "significant" editorial
+intervention) signified by the \texttt{X} character;
+(5) \textit{footnote} (accompanying local or global comment provides
+a text commentary pertaining to specified data token)
+signified by \texttt{?}.
+
+\par 
+One of the most onerous impositions of the \texttt{**kern}
+representation is the requirement that the music be
+interpreted into a coherent spine organization.
+Why not avoid interpreting the voicings?
+
+\par 
+The answer to this question is that editorial interventions
+are often essential clarifications that make a document useable.
+Without voicing information, users would be unable to calculate
+melodic intervals, for example.
+Without melodic intervals, it may be impossible to search
+for themes, motives, and other patterns.
+Editorial interpretations are not simply unwarranted obfuscations.
+This does not mean that interpretations are "correct"
+and so it may be necessary to provide several alternative or
+plausible interpretations of an artifact.
+
+\par 
+One of the advantages of computers is that it is possible
+for documents to undergo continuous revision.
+In research, it is common for documents to be reinterpreted, annotated,
+or recast in light of newly found documents.
+
+\par 
+The kern `\texttt{x}' signifies an "editorial interpretation"
+-$\,$-  that the immediately preceding signifier is interpreted.
+The kern `\texttt{xx}' also signifies an editorial interpretation
+where the immediately preceding data token is interpreted.
+The kern `\texttt{X}' signifies an "editorial intervention"
+-$\,$-  that the immediately preceding signifier is an editorial
+addition.
+The kern `\texttt{XX}' also signifies an editorial intervention
+where the immediately preceding data token is an editorial addition.
+The kern `\texttt{y}' designates a invisible symbol -$\,$- such as
+an unprinted note or rest that is logically implied.
+The kern `\texttt{Y}' signifies an editorial
+\textit{sic}
+marking -$\,$- that the information is encoded literally,
+but is questionable.
+The kern `\texttt{?}' signifies an editorial footnote where the
+immediately preceding signifier has an accompanying editorial
+footnote (located in a comment record).
+The kern `\texttt{??}' signifies an editorial footnote where
+the immediately preceding data token has an accompanying
+editorial footnote (located in a comment record).
+
+
+\subsection*{Adding Reference Information}
+
+\par 
+Reference information must be added to each file.
+This information provides "library-type" information
+about the composer, date of composition, place of composition,
+copyright notice, etc.
+
+\par 
+As many reference records should be added as possible since
+these are immensely useful to Humdrum users.
+Essential reference records include the following:
+
+\texttt{!!!COM:}composer's name
+\texttt{!!!CDT:}composer's dates
+\texttt{!!!OTL:}title (in original language)
+\texttt{!!!OMV:}movement number (if appropriate)
+\texttt{!!!OPS:}opus number (if appropriate)
+\texttt{!!!ODT:}date of composition
+\texttt{!!!OPC:}place of composition
+\texttt{!!!YEP:}publisher of electronic edition
+\texttt{!!!YEC:}date \& owner of electronic copyright
+\texttt{!!!YER:}date electronic edition released
+\texttt{!!!YEM:}copyright message
+\texttt{!!!YEN:}country of copyright
+\texttt{!!!EED:}electronic editor
+\texttt{!!!ENC:}encoder of document
+\texttt{!!!EEV:}electronic edition version
+\texttt{!!!EFL:}file number, e.g. 1 or 4 (1/4)
+\texttt{!!!VTS:}checksum validation number (see below)
+\texttt{!!!AMT:}metric classification
+\texttt{!!!AIN:}instrumentation
+
+
+\par 
+Where appropriate, the following reference records should
+also be included:
+
+\texttt{!!!CNT:}composer's nationality
+\texttt{!!!XEN:}title (English translation)
+\texttt{!!!OPR:}title of larger (or parent) work
+\texttt{!!!ODE:}dedication
+\texttt{!!!OCY:}country of composition
+\texttt{!!!PPR:}first publisher
+\texttt{!!!PDT:}date first published
+\texttt{!!!PPP:}place first published
+\texttt{!!!SCT:}scholarly catalogue name \& number
+\texttt{!!!SMA:}manuscript acknowledgement
+\texttt{!!!AFR:}form of work
+\texttt{!!!AGN:}genre of work
+\texttt{!!!AST:}style of period
+
+\par 
+In general, place essential reference records at the beginning
+of a document.
+These will include the composer, title of the work, etc.
+Less important reference records should be placed at the
+end of the file.
+Minimizing the number of reference records at the beginning
+of a file makes it more convenient for users looking at
+the contents of a Humdrum file.
+
+\par 
+Refer to the \textit{Humdrum Reference Manual} for
+further information about the types and format for different
+reference records.
+
+
+\subsection*{Proof-reading Materials}
+
+\par 
+Once you have encoded your document, you should create a
+error-checking strategy.
+The Humdrum
+\textbf{humdrum}
+command can be used to identify whether the final encoded
+output conforms to the Humdrum syntax:
+
+\par 
+
+\texttt{humdrum full.krn}
+
+
+\par 
+Use the Humdrum
+\textbf{proof} \textbf{-k}
+command to identify any syntactical errors in any encoded
+\texttt{**kern} data:
+
+\par 
+
+\texttt{proof -k full.krn}
+
+
+
+\par 
+One of the best ways to ensure that musical data makes sense
+is to listen to it.
+The Humdrum
+\textbf{midi}
+and
+\textbf{perform}
+commands can be used to listen to your data.
+The \textbf{-c} option for \textbf{midi} causes
+the Humdrum data to be displayed while the
+MIDI data is performed.
+This can further help in locating errors.
+
+\par 
+
+\texttt{midi -c full.krn | perform}
+
+
+\par 
+The
+\textbf{perform}
+command allows you to
+\textit{pause}
+(press the space bar), to
+\textit{move}
+to a particular measure
+(type a measure number followed by enter),
+to increase (type <) or decrease (type >) the
+\textit{tempo,}
+and to
+\textit{return}
+to the beginning of the score
+(type enter).
+There are many other functions within the
+\textbf{perform}
+command; refer to the \textit{Humdrum Reference Manual} -$\,$- section 4
+for further details.
+
+\par 
+
+\subsection*{Data Integrity Using the VTS Checksum Record}
+
+\par 
+When using electronic documents, it is often useful to
+modify the document for some purpose.
+After a while, the user will become confused about the
+status of a document.
+Is this the original distribution file?
+Did I make some modification to this file
+that I've forgotten about?
+Has someone tampered with this data?
+
+\par 
+Humdrum provides a means for ensuring that a particular
+file is what it purports to be.
+The
+\textbf{veritas}
+command provides a formal means for verifying that a given
+Humdrum file is identical to the original distribution file
+and has not been modified in some way.
+
+\par 
+The
+\textbf{veritas}
+command works by looking for a VTS reference record
+in the file.
+It then calculates a "checksum" for the file
+(excluding the VTS record itself) and compares this value
+with the encoded VTS value.
+If these values differ, a warning is issued that the file has
+been modified in some way.
+
+\par 
+Once you are certain that an encoded Humdrum file is completely
+finished, you should calculate a "checksum" value to be
+encoded in a Humdrum "VTS" reference record.
+
+\par 
+In order to calculate the checksum value for a given file,
+use the following command:
+
+\par 
+
+
+
+\par 
+Open the original file and move to the bottom of the document.
+Then read in the calculated checksum value.
+Finally, insert the `\texttt{!!!VTS: }' reference record designator.
+
+\par 
+You can check that everything is fine by invoking the
+\textbf{veritas}
+command:
+
+\par 
+
+
+
+\par 
+The command will complain only if the VTS checksum value
+does not correspond to the computed checksum for the file.
+Finally, be sure to include the checksum value in an index
+or README file for the distribution.
+This provides a public venue for users to determine
+whether the VTS record itself has not been modified.
+
+
+\subsection*{Preparing a Distribution}
+
+\par 
+Finally, you may want to prepare the material you have
+encoded for public distribution.
+Rename the score files and collect them into a coherent repertory.
+If your data is encoded in the \texttt{**kern} format,
+be sure to use the \texttt{.krn} file extension.
+Place all resulting Humdrum files in a single directory.
+
+\par 
+Create a \texttt{README} file similar to others in Humdrum data
+distributions.
+The file should contain a repertory title,
+a brief paragraph describing the historical background
+for the works, a paragraph describing
+the personnel involved in the production,
+a copyright and license notice, and a table of contents.
+Avoid tabs in this file, and ensure that no line is greater
+than 80-characters in length.
+
+\par 
+It is wise to also add a \texttt{LICENSE} file that reiterates
+whatever licensing agreement is entailed
+for the distributed data.
+
+
+\subsection*{Electronic Citation}
+
+\par 
+Electronic editions of music might be cited in printed or other
+documents by including the following information.
+The "author" (e.g. \textbf{!!!COM:}), the "title" -$\,$-
+either original title (\textbf{!!!OTL:}) or translated title
+(\textbf{!!!XEN:}).
+The editor (\textbf{!!!EED:}), published (\textbf{!!!YEP:}),
+date of publication and copyright owner (\textbf{!!!YED:}),
+and electronic version (\textbf{EEV:}).
+In addition, a full citation ought to include the
+validation checksum (\textbf{!!!VTS:}).
+The validation number will allow others to verify that
+a particular electronic document is precisely the one cited.
+A sample citation to an electronic document might be:
+
+\par 
+
+Franz Liszt, Hungarian Rhapsody No. 8 in F-sharp minor (solo piano).
+Amsterdam: Rijkaard Software Publishers, 1994; H. Vorisek (Ed.),
+Electronic edition version 2.1, checksum 891678772.
+
+
+
+
+\subsection*{Reprise}
+
+\par 
+In this chapter we have reviewed the principal issues involved
+in preparing electronic music documents in Humdrum.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

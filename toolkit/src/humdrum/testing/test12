@@ -1,0 +1,8 @@
+!! "humdrum: ERROR 12: Data record appears before first exclusive"
+!! "interpretation record in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 12
+a	b	c
+**ex	**ex	**ex
+d	e	f
+*-	*-	*-

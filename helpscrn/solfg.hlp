@@ -1,0 +1,24 @@
+
+SOLFG     : Converts various pitch representations to French solfege.
+
+     This command translates frequency, pitch, semits and other pitch-
+     related units to the **solfg French system of pitch designations
+     (e.g. re = D, mi = E, d = sharp, b = flat, etc.).
+
+Inputs processed:
+
+     **cents,   **degree,  **freq,    **fret,    **kern,
+     **MIDI,    **pitch,   **semits,  **specC,   **Tonh
+
+Syntax:
+
+     solfg [-tx] [inputfile ...]
+
+Options:
+
+     -t     : suppress outputting of all but first note for groups
+              of tied notes
+     -x     : suppress outputting of non-solfg data
+
+  Refer to reference manual for further details.
+

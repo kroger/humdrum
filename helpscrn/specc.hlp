@@ -1,0 +1,21 @@
+
+SPECC     : Converts frequency representation to spectral centroid.
+
+     This command translates frequency inputs to a corresponding spectral
+     centroid (i.e. the amplitude weighted center frequency of a spectrum).
+
+Inputs processed:
+
+     **freq,    **specC
+
+Syntax:
+
+     specc [-p n] [-x] [inputfile ...]
+
+Options:
+
+     -p n   : set output precision to n decimal places
+     -x     : suppress outputting of non-specC data
+
+  Refer to reference manual for further details.
+

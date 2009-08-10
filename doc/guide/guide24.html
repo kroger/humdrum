@@ -1,0 +1,1828 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 24</TITLE>
+<!-- Chapter 24 (The Shell) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:15:43 EST 2000">
+<meta name="description" content="Chapter 24 (The Shell) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<body>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<br>
+
+<H1>Chapter24</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide23.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide25.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>The Shell (III)</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+In
+<A HREF="guide16.html">Chapter 16</A>
+we learned about the
+<b>alias</b>
+feature of the shell.
+The
+<b>alias</b>
+command allowed us to create new commands by assigning a complex
+pipeline to a single-word command.
+In this chapter we will learn how to use the shell to write
+more complex programs.
+Shell programs allow users to reduce lengthy sequences of
+Humdrum commands to a single user-defined command.
+</P>
+<A NAME="Shell_Programs">
+<H2>Shell Programs</H2>
+</P>
+<P>
+A shell program is simply a script consisting of one or more
+shell commands.
+Suppose we had a complex procedure consisting of a number of
+commands and pipelines:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**Ursatz' inputfile | humsed '/X/d' \
+<br>
+<blockquote>
+| context -o Y -b Z > Ursatz</code></big>
+</blockquote>
+<code><big>extract -i '**Urlinie' inputfile | humsed '/X/d' \
+<br>
+<blockquote>
+| context -o Y -b Z > Urlinie
+</blockquote>
+assemble Ursatz Urlinie | rid -GLId | graph</big></code>
+</blockquote>
+</P>
+<P>
+In the above hypothetical script, we have processed an input file
+called <code><big>inputfile</big></code>.
+It may be that this is a procedure we would like to apply to
+several different files.
+Rather than typing the above command sequence for each file,
+an alternative is to place the above commands in a file.
+Let's assume that we put the above commands in a file called
+<code><big>Schenker</big></code>.
+In order to execute this file as a shell script, we need to assign
+<i>execute permissions</i>
+to the file.
+We can do this by invoking the UNIX
+<b>chmod</b>
+command.
+</P>
+<P>
+<blockquote>
+<code><big>chmod +x Schenker</big></code>
+</blockquote>
+</P>
+<P>
+The
+<b>+x</b>
+option causes
+<b>chmod</b>
+to add execute permissions to the file <code><big>Schenker</big></code>.
+Using
+<b>chmod</b>
+we can change modes related to <i>executing</i> a file,
+<i>reading</i> a file, and <i>writing</i> to a file.
+Possible mode changes include the following:
+<blockquote><TABLE>
+<TR><TD>+x</TD><TD>add execute permission</TD></TR>
+<TR><TD>-x</TD><TD>deny execute permission</TD></TR>
+<TR><TD>+r</TD><TD>add read permission</TD></TR>
+<TR><TD>-r</TD><TD>deny read permission</TD></TR>
+<TR><TD>+w</TD><TD>add write permission</TD></TR>
+<TR><TD>-w</TD><TD>deny write permission</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Having added execute permissions to the file, we can now execute
+the shell script or program.
+This is done simply by typing the name of the file;
+in effect, the filename becomes a new command:
+</P>
+<P>
+<blockquote>
+<code><big>Schenker</big></code>
+</blockquote>
+</P>
+<P>
+Each time we type this command, our script will be executed anew.
+Notice that in our script, the final output has not been
+sent to a file.
+As a result, the output from our <b>Schenker</b> command will
+be sent to the screen (standard output).
+It is convenient not to specify an output file in the script
+since this is often something the user would like to specify.
+When typing our new command, we can use file-redirection to place
+the output in a user-specified file:
+</P>
+<P>
+<blockquote>
+<code><big>Schenker > outputfile</big></code>
+</blockquote>
+</P>
+<P>
+As currently written, our program can be applied only to an input
+file whose name is literally <code><big>inputfile</big></code>.
+If we wanted to, we could edit our script and update the name of the
+input filename every time we want to use the command.
+However, it would be more convenient to specify the input filename
+on the command line -- as we can do for other commands.
+For example, it would be convenient to be able to type commands
+such as the following:
+</P>
+<P>
+<blockquote>
+<code><big>Schenker opus118 > opus118.out</big></code>
+</blockquote>
+</P>
+<P>
+In order to allow such a possibility, we can use a predefined
+feature of the shell.
+Whenever the shell receives a command, each item of information
+on the command line is assigned to a shell variable.
+The first item on the command line is assigned to the variable $0
+(normally, this is the command name).
+For example, in the above example, $0 is assigned the string value
+"<code><big>Schenker</big></code>."
+The variables $1, $2, $3, etc. are assigned to each successive
+item of information on the command line.
+So in the above example, $1 is assigned the string value
+"<code><big>opus118</big></code>."
+</P>
+<P>
+These shell variables can be accessed within the shell script itself.
+We need to revise the script so that each occurrence of the input file
+is replaced by the variable $1:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**Ursatz' $1 | humsed '/X/d' \
+<br>
+<blockquote>
+| context -o Y -b Z > Ursatz</code></big>
+</blockquote>
+<code><big>extract -i '**Urlinie' $1 | humsed '/X/d' \
+<br>
+<blockquote>
+| context -o Y -b Z > Urlinie
+</blockquote>
+assemble Ursatz Urlinie | rid -GLId | graph</big></code>
+</blockquote>
+</P>
+<P>
+This change means that our <b>Schenker</b> command can be applied
+to any user-specified input file -- simply by typing the filename
+in the command.
+</P>
+<A NAME="Flow_of_Control:_The_if_Statement">
+<H2>Flow of Control: The <i>if</i> Statement</H2>
+</P>
+<P>
+Suppose we wanted our <b>Schenker</b> command to apply only to tonal works -- more
+specifically, to works with a known key.
+Before processing a work, we might want to have <b>Schenker</b> test for the presence
+of a tandem interpretation specifying the key.
+</P>
+<P>
+Let's begin by using
+<b>grep</b>
+to search for a key tandem interpretation.
+An appropriate
+<b>grep</b>
+command would be:
+</P>
+<P>
+<blockquote>
+<code><big>grep '^\*[A-Ga-g][#-]*:' $1</big></code>
+</blockquote>
+</P>
+<P>
+Recall that we can assign the output of any command to a shell variable
+by placing the command within back-quotes or greves, i.e.   `...`.
+Let's assign the key interpretation to the variable KEY:
+</P>
+<P>
+<blockquote>
+<code><big>KEY=`grep '^\*[A-Ga-g][#-]*:' $1`</big></code>
+</blockquote>
+</P>
+<P>
+If no key indicator is found by <b>grep</b>, then the variable KEY will be empty.
+We can test for this condition using the shell
+<b>if</b>
+statement.
+</P>
+<P>
+<blockquote>
+<code><big>KEY=`grep '^\*[A-Ga-g][#-]*:' $1`
+<br>
+if [ "$KEY" = "" ]
+<br>
+then
+<blockquote>
+echo "Sorry, this input file has no key."
+<br>
+exit
+</blockquote>
+fi</big></code>
+</blockquote>
+</P>
+<P>
+Notice that we use the dollars sign prior to the variable to mean
+<i>the contents of variable KEY</i>.
+The double quotation marks allow a string comparison.
+Our test is whether the variable $KEY is equivalent to the empty or null string "".
+If the test is true, then the commands following the <code><big>then</big></code> statement are
+executed.
+By convention, these commands are indented for clarity.
+In the above case, two commands are executed if the $KEY variable is empty.
+The <b>echo</b> command causes the quoted string to be output.
+The <b>exit</b> command causes the script to terminate.
+Notice the presence of the <b>fi</b> command (<b>if</b> backwards).
+This command simply indicates that the if-block has ended.
+</P>
+<P>
+Of course, if there is a key designation, then it is appropriate to
+execute the rest of our <b>Schenker</b> script.
+The complete script would be as follows:
+</P>
+<P>
+<blockquote>
+<code><big>KEY=`grep '^\*[A-Ga-g][#-]*:' $1`
+<br>
+if [ "$KEY" = "" ]
+<br>
+then
+<blockquote>
+echo "Sorry, this input file has no key."
+exit
+</blockquote>
+else</code></big>
+<blockquote>
+<code><big>extract -i '**Ursatz' $1 | humsed '/X/d' \
+<br>
+<blockquote>
+| context -o Y -b Z > Ursatz</code></big>
+</blockquote>
+<code><big>extract -i '**Urlinie' $1 | humsed '/X/d' \
+<br>
+<blockquote>
+| context -o Y -b Z > Urlinie
+</blockquote>
+assemble Ursatz Urlinie | rid -GLId | graph
+</blockquote>
+fi</big></code>
+</blockquote>
+</P>
+<P>
+Notice the addition of the <b>else</b> statement.
+The <b>else</b> statement delineates the block of commands to be
+executed whenever the <b>if</b> condition fails -- that is,
+when the $KEY variable does <i>not</i> equal the null string.
+Once again, to make the script more readable, we indent the
+commands contained in the else-block.
+</P>
+<P>
+The <b>if</b> command provides many other ways of testing
+some condition.
+For example, the shell provides ways to determine whether a
+file exists, and other features.
+</P>
+<A NAME="Flow_of_Control:_The_for_Statement">
+<H2>Flow of Control: The <i>for</i> Statement</H2>
+</P>
+<P>
+In music research, a common task is to apply a particular
+process or script to a large number of score files.
+By way of illustration,
+suppose we wanted to know the maximum number of notes in
+any single folk melody in a collection of Czech folksongs.
+Suppose further that we are located in a directory
+containing a large number of Czech folksongs named
+<code><big>czech01.krn</big></code>,
+<code><big>czech02.krn</big></code>,
+<code><big>czech03.krn</big></code>,
+and so on.
+</P>
+<P>
+We would like to run the <b>census -k</b> command on each
+file separately, but we'd prefer not to type the
+command for each score.
+The
+<b>for</b>
+statement provides a convenient way to do this.
+The following commands might be typed directly
+at the shell:
+</P>
+<P>
+<blockquote>
+<code><big>for J in czech*.krn
+<br>
+> do
+<br>
+> census -k $J | grep 'Number of notes:'
+<br>
+> done | sort -n</big></code>
+</blockquote>
+</P>
+<P>
+The pattern <code><big>czech*.krn</big></code> will be expanded to all of the
+files in the current directory that it matches.
+The variable <b>J</b> will take on each name in turn.
+The commands between <b>do</b> and <b>done</b> will be executed
+for each value of the variable <b>$J</b>.
+That is, initially <b>$J</b> will have the value <code><big>czech01.krn</code></big>.
+Having completed the do-done block of commands,
+the value of <b>$J</b> will become <code><big>czech02.krn</code></big>, and the
+do-done block will be repeated.
+This will continue until the value of <b>$J</b> has taken on
+all of the possible matches for <code><big>czech*.krn</big></code>.
+</P>
+<P>
+The output might appear as follows:
+<blockquote>
+<code><big>Number of notes:           31
+<br>
+Number of notes:           32
+<br>
+Number of notes:           32
+<br>
+Number of notes:           34
+<br>
+Number of notes:           35
+<br>
+Number of notes:           39
+<br>
+Number of notes:           39
+<br>
+Number of notes:           40
+<br>
+Number of notes:           48
+<br>
+Number of notes:           48
+<br>
+Number of notes:           55
+<br>
+Number of notes:           78</big></code>
+<br>
+etc.
+</blockquote>
+</P>
+<P>
+Incidentally, the output from a <b>for</b> construction such as above
+can be piped to further commands, so we might identify the maximum
+number of notes in a Czech melody by piping the output through <b>sort -n</b>.
+</P>
+<A NAME="A_Script_for_Identifying_Transgressions_of_Voice-Leading">
+<H2>A Script for Identifying Transgressions of Voice-Leading</H2>
+</P>
+<P>
+Shell programs can be of arbitrary complexity.
+Below is a shell program (dubbed <b>leader</b>) whose purpose is to
+identify all instances of betrayals of nine classic rules of voice-leading
+for a two-part input.
+A number of refinements have been added to the program --
+including input file checking, and formatting of the output.
+</P>
+<P>
+The program is invoked as follows:
+</P>
+<P>
+<blockquote>
+<code><big>leader <file></big></code>
+</blockquote>
+</P>
+<P>
+The input is assumed to contain two voices, each in a separate
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+spine.
+The nominally lower voice should be in the first spine.
+For music containing more than two voices, the Humdrum
+<b>extract</b>
+command should be used to select successive pairs of voices
+for processing by <b>leader</b>.
+</P>
+<P>
+<code><big># LEADER
+<br>
+#
+<br>
+# A shell program to check for voice-leading infractions.
+<br>
+# This command is invoked as:
+<br>
+#
+<br>
+#   leader <filename>
+<br>
+#
+<br>
+# where <filename> is assumed to be a file containing two voices, each
+<br>
+# in a separate **kern spine, where the nominally lower voice is in the
+<br>
+# first spine.
+<br>
+
+<br>
+# Before processing, ensure that a proper input file has been specified.
+<br>
+if [ ! -f $1 ]
+<br>
+then   echo "leader: file $1 not found"
+<br>
+       exit
+<br>
+fi
+<br>
+if [ $# -eq 0 ]
+<br>
+then   echo "leader: input file not specified"
+<br>
+       exit
+<br>
+fi
+<br>
+
+<A NAME="Out_of_Range">
+<br>
+# 1. Record the ranges for the two voices.
+<br>
+echo 'Range for Upper voice:'
+<br>
+extract -f 2 $1 | census -k | egrep 'Highest|Lowest' | sed 's/^/      /'
+<br>
+echo 'Range for Lower voice:'
+<br>
+extract -f 1 $1 | census -k | egrep 'Highest|Lowest' | sed 's/^/      /'
+<br>
+
+<A NAME="Augmented-Diminished_Intervals">
+<br>
+# 2. Check for augmented or diminished melodic intervals.
+<br>
+extract -f 1 $1 | mint -b r | sed '/\[[Ad][Ad]*\]/d' | egrep -n '^[^!*].*[Ad][^1]' |\
+<br>
+    sed 's/:/ (/;s/$/)/;s/^/Augmented or diminished melodic interval at line: /'
+<br>
+extract -f 2 $1 | mint -b r | sed '/\[[Ad][Ad]*\]/d' | egrep -n '^[^!*].*[Ad][^1]' |\
+<br>
+    sed 's/:/ (/;s/$/)/;s/^/Augmented or diminished melodic interval at line: /'
+<br>
+
+<br>
+# 3. Check for consecutive fifths and octaves.
+<br>
+echo 'P5'  > $TMPDIR/template;  echo 'P5'  >> $TMPDIR/template
+<br>
+hint -c $1 | patt -f $TMPDIR/template -s = | \
+<br>
+    sed 's/ of file.*/./;s/.*Pattern/Consecutive fifth/'
+<br>
+echo 'P1'  > $TMPDIR/template;  echo 'P1'  >> $TMPDIR/template
+<br>
+hint -c $1 | patt -f $TMPDIR/template -s = | \
+<br>
+    sed 's/ of file.*/./;s/.*Pattern/Consecutive octave/'
+<br>
+
+<A NAME="Doubled_Leading_Tone">
+<br>
+# 4. Check for doubling of the leading-tone.
+<br>
+deg $1 | extract -i '**deg' | ditto -s = | sed 's/^=.*/=/' | \
+<br>
+    egrep -n '^7.*7|^[^!*].*7.*7' | egrep -v '7[-+]' | \
+<br>
+    sed 's/:.*/./;s/^/Leading-tone doubled at line: /'
+<br>
+
+<br>
+# 5. Check for unisons.
+<br>
+semits -x $1 | ditto -s = | \
+<br>
+    awk '{if($0~/[^0-9\t-]/)next}{if($1==$2) print "Unison at line: " NR}'
+<br>
+
+<A NAME="Part_Crossing">
+<br>
+# 6. Check for the crossing of parts.
+<br>
+semits -x $1 | ditto -s = | sed 's/^=.*/=/' | \
+<br>
+    awk '{if($0~/[^0-9\t-]/)next}{if($1>$2) print "Crossed parts at line: " NR}'
+<br>
+
+<A NAME="More_than_Octave">
+<br>
+# 7. Check for more than an octave between the two parts.
+<br>
+semits -x $1 | ditto -s = | awk '{if($0~/[^0-9\t-]/)next} \
+<br>
+    {if($2-$1>12) print "More than an octave between parts at line: " NR}'
+<br>
+
+<A NAME="Part_Overlapping">
+<br>
+# 8. Check for overlapping parts.
+<br>
+extract -f 2 $1 | sed 's/^=.*/./' | context -n 2 -p 1 -d XXX | \
+<br>
+    rid -GL | humsed 's/XXX.*//' > $TMPDIR/upper
+<br>
+extract -f 1 $1 | sed 's/^=.*/./' > $TMPDIR/lower
+<br>
+assemble $TMPDIR/lower $TMPDIR/upper | semits -x | ditto | \
+<br>
+    awk '{if($0~/[^0-9\t-]/)next}{if($1>$2) print "Parts overlap at line: " NR}'
+<br>
+extract -f 1 $1 | sed 's/^=.*/./' | context -n 2 -p 1 -d XXX | \
+<br>
+    rid -GL | humsed 's/XXX.*//' > $TMPDIR/lower
+<br>
+extract -f 2 $1 | sed 's/^=.*/./' > $TMPDIR/upper
+<br>
+assemble $TMPDIR/lower $TMPDIR/upper | semits -x | ditto | \
+<br>
+    awk '{if($0~/[^0-9\t-]/)next}{if($1>$2) print "Parts overlap at line: " NR}'
+<br>
+
+<br>
+<A NAME="Exposed_Octaves">
+# 9. Check for exposed octaves.
+<br>
+hint -c $1 > $TMPDIR/s1
+<br>
+extract -f 1 $1 | deg > $TMPDIR/s2
+<br>
+extract -f 2 $1 | deg > $TMPDIR/s3
+<br>
+extract -f 1 $1 | mint | humsed 's/.*[3-9].*/leap/' > $TMPDIR/s4
+<br>
+extract -f 2 $1 | mint | humsed 's/.*[3-9].*/leap/' > $TMPDIR/s5
+<br>
+assemble $TMPDIR/s1 $TMPDIR/s2 $TMPDIR/s3 $TMPDIR/s4 $TMPDIR/s5 > $TMPDIR/temp
+<br>
+egrep -n 'P1.*\^.*\^.*leap.*leap|P1.*v.*v.*leap.*leap' $TMPDIR/temp | \
+<br>
+    sed 's/:.*/./;s/^/Exposed octave at line: /'
+<br>
+
+<br>
+# Clean-up some temporary files.
+<br>
+rm $TMPDIR/template $TMPDIR/upper $TMPDIR/lower $TMPDIR/s[1-5] $TMPDIR/temp</big></code>
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+In this chapter we have illustrated how to package complex Humdrum command
+scripts into shell programs.
+This allows us to create special-purpose commands.
+We learned that files can be transformed into executable scripts through the
+<b>chmod</b>
+command.
+We also learned how to pass parameters from the command line to
+the script, and how to assign and modify the contents of variables.
+In addition, we learned how to influence the flow of control using the
+<b>if</b>
+and
+<b>for</b>
+statements.
+Finally, we learned that multi-line scripts can be typed directly
+at the command line without creating a script file.
+</P>
+<P>
+Shell scripts can be very brief or very long.
+It is possible to create scripts that carry out highly sophisticated
+processing such as searching for voice-leading transgressions.
+There are innumerable features to shell programming that have
+not been touched-on in this chapter.
+Several books are available that provide comprehensive tutorials
+for shell programming.
+</P>
+</P>
+<A NAME="Locating_Violations_of_the_Rules_of_Voice-Leading">
+<H2>Locating Violations of the Rules of Voice-Leading</H2>
+</P>
+<P>
+The traditional rules of voice-leading have formed a standard
+component of conservatory training for art musicians.
+</P>
+<P>
+For illustration purposes, we'll apply some of the Humdrum tools
+to the problem of identifying betrayals of the classic rules of
+voice-leading in a <code><big>**kern</big></code>-encoded score.
+Note that our purpose here is not to legislate how to
+compose or arrange!
+We're simply using the traditional voice-leading rules as
+a way to introduce various pattern-searching techniques.
+</P>
+<A NAME="Parts_Out_Of_Range">
+<H2>(1) Parts Out Of Range</H2>
+</P>
+<P>
+<H4>RULE:  "Avoid parts that are out of range."</H4>
+</P>
+<P>
+The Humdrum
+<b>census</b>
+command provides a summary of various
+elementary features of any Humdrum input.
+With the
+<b>-k</b>
+option,
+<b>census</b>
+provides a summary of a further ten features
+pertaining to <code><big>**kern</big></code> format inputs.
+This includes the highest
+and lowest notes present.
+</P>
+<P>
+<blockquote>
+<code><big>census -k <inputfile></big></code>
+</blockquote>
+</P>
+<P>
+Since we are interested in the highest and lowest notes for
+each individual part (rather than for the whole piece),
+we should
+<b>extract</b>
+each part before processing it with
+<b>census.</b>
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*soprano' <inputfile>  > soprano.part</big></code>
+<br>
+<code><big>census -k soprano.part</big></code>
+</blockquote>
+</P>
+<P>
+On UNIX, a set of commands that sequentially process a given
+input can be joined together as a "pipeline".  A pipeline feeds
+the output of one process to the input of another process.  This
+means that we can simplify the above sequence of commands into a
+single pipeline:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*soprano' <inputfile> | census -k</big></code>
+</blockquote>
+</P>
+<P>
+We could then repeat the pipeline for each voice present:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*alto'    <inputfile> | census -k
+<br>
+extract -i '*tenor'   <inputfile> | census -k
+<br>
+extract -i '*bass'    <inputfile> | census -k</big></code>
+</blockquote>
+</P>
+<P>
+If we wanted to get a little fancier, we could filter the
+output so that only the highest and lowest pitch information
+is output.
+The UNIX
+<b>grep</b>
+command will let us define a string for searching;
+<b>egrep</b>
+permits compound strings, such as the use of the OR bar (|):
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*soprano' <input>  | census -k | egrep 'Highest|Lowest'</big></code>
+</blockquote>
+</P>
+<A NAME="Augmented-Diminished_Melodic_Intervals">
+<H2>(2) Augmented/Diminished Melodic Intervals</H2>
+</P>
+<P>
+<H4>RULE:  "Avoid parts that move by augmented or diminished intervals.</H4>
+</P>
+<P>
+Implementing this is simple.  We first translate our pitch-
+related data to the melodic interval format --
+<A HREF="representations/mint.rep.html"><code><big>**mint</big></code></A>.
+This can be done using the Humdrum
+<b>mint</b>
+command.
+For example,
+consider the following melodic fragment from the 2nd movement
+of Bach's Brandenburg Concerto No. 5:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD>8r</TD></TR>
+<TR><TD>8f#</TD></TR>
+<TR><TD>8b</TD></TR>
+<TR><TD>16.cc#</TD></TR>
+<TR><TD>32dd</TD></TR>
+<TR><TD>8a#</TD></TR>
+<TR><TD>16.b</TD></TR>
+<TR><TD>32cc#</TD></TR>
+<TR><TD>8dd</TD></TR>
+<TR><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Given this input, the
+<b>mint</b>
+command will produce the following
+output.  Plus signs indicate ascending intervals, while minus
+signs indicate descending intervals; 'P' means perfect, 'M'
+means major, 'm' means minor, 'A' means augmented, and 'd'
+means diminished:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**mint</TD></TR>
+<TR><TD>[f#]</TD></TR>
+<TR><TD>+P4</TD></TR>
+<TR><TD>+M2</TD></TR>
+<TR><TD>+m2</TD></TR>
+<TR><TD>-d4</TD></TR>
+<TR><TD>+m2</TD></TR>
+<TR><TD>+M2</TD></TR>
+<TR><TD>+m2</TD></TR>
+<TR><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Searching for diminished or augmented intervals is as simple
+as using the Unix
+<b>grep</b>
+command, with the appropriate regular
+expression:
+</P>
+<P>
+<blockquote>
+<code><big>grep -n '[Ad]' <inputfile></big></code>
+</blockquote>
+</P>
+<P>
+The
+<b>-n</b>
+option will cause
+<b>grep</b>
+to prepend the line number of
+any matching patterns, so we can refer back to the original
+input file.
+</P>
+<P>
+In order to avoid the letters `A' or `d' found in comments or
+interpretations, we might consider using the Humdrum
+<b>rid</b>
+command:
+</P>
+<P>
+<blockquote>
+<code><big>rid -GLI <inputfile> | grep -n '[Ad]'</big></code>
+</blockquote>
+</P>
+<P>
+However, this will cause the line numbers output by
+<b>grep</b>
+to be wrong.
+The line numbers will correspond to the input file
+with the comments and interpretations removed.
+</P>
+<P>
+A better approach is to send the complete file to <b>grep</b>,
+and use a more circumspect regular expression to eliminate comments
+and interpretations within <b>grep</b>.
+<b>egrep</b>
+allows us to define
+more complex regular expressions:
+</P>
+<P>
+<blockquote>
+<code><big>egrep '^[^!*].*[Ad]'</big></code>
+</blockquote>
+</P>
+<P>
+The expression `^[^!*]' means "not an exclamation mark or asterisk
+at the beginning of a line."  The expression `.*[Ad]' means
+"zero or more instances of any character followed by either an
+upper-case letter `A' or a lower-case letter `d'.
+</P>
+<P>
+In other words, the complete regular expression matches any
+line that contains either an upper-case `A' or lower-case `d'
+as long as the beginning of the line does not start with an
+exclamation mark (i.e. Humdrum comment) or an asterisk (i.e.
+Humdrum interpretation).
+</P>
+<P>
+If we want to look for augmented or diminished intervals in a
+particular part or voice, we would begin by using the
+<b>extract</b>
+command to isolate the voice of interest.
+</P>
+<P>
+Finally, putting all of the elements together in a Unix pipeline,
+we get the following command for identifying augmented or
+diminished melodic intervals:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i 'alto' <file> | mint | egrep -n '^[^!*].*[Ad]'</big></code>
+</blockquote>
+</P>
+<P>
+If there is no output, then there are no augmented or diminished
+intervals present.
+</P>
+<A NAME="Consecutive_Fifths_or_Octaves">
+<H2>(3) Consecutive Fifths or Octaves</H2>
+</P>
+<P>
+<H4>RULE:  "Avoid consecutive fifths and octaves between any two parts.</H4>
+</P>
+<P>
+Let's focus on identifying consecutive fifths -- since the
+process is the same for octaves.
+</P>
+<P>
+Either the Humdrum
+<b>patt</b>
+or
+<b>pattern</b>
+commands can be used to find patterns that span more than
+one line or record.
+For this example, we'll use <b>patt</b>.
+</P>
+<P>
+First, we need to reformat our input so the data represent
+harmonic intervals rather than pitches.  The Humdrum
+<b>hint</b>
+command will change most pitch representations to the harmonic
+interval representation --
+<A HREF="representations/hint.rep.html"><code><big>**hint</big></code></A>.
+Consider, for example, the following input:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern   **kern</TD></TR>
+<TR><TD>=1       =1</TD></TR>
+<TR><TD>4c       4e</TD></TR>
+<TR><TD>4G       4d</TD></TR>
+<TR><TD>=2       =2</TD></TR>
+<TR><TD>2F       2c</TD></TR>
+<TR><TD>*-       *-</big></code></TD></TR>
+</TABLE></blockquote>
+Given the following command:
+</P>
+<P>
+<blockquote>
+<code><big>hint <inputfile></big></code>
+</blockquote>
+</P>
+<P>
+The following output will be produced:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**hint</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>M3</TD></TR>
+<TR><TD>P5</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>P5</TD></TR>
+<TR><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+(Notice that, in this case, the consecutive fifths are
+separated by a barline.)
+</P>
+<P>
+Second, we need to define a pattern template for the
+<b>patt</b>
+command.
+The template is a series of one or more regular
+expressions that are stored in a separate file.  In this case
+the pattern is trivial: just two consecutive perfect fifth
+tokens.  We might store the following pattern in the file
+"template":
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>P5</TD></TR>
+<TR><TD>P5</big></code></TD></TR>
+</TABLE></blockquote>
+(Note that if we were looking for consecutive `fifths' that need
+not necessarily be `perfect,' we could simply eliminate the
+letter "P" in each interval given in the template.)
+</P>
+<P>
+Given the above output from the
+<b>hint</b>
+command, we could search
+for occurrences of the defined pattern using the following
+command:
+</P>
+<P>
+<blockquote>
+</blockquote>
+</P>
+<P>
+The
+<b>-f</b>
+option is used to identify the file (<code><big>template</big></code>) in
+which the pattern-template has been stored.
+The
+<b>-s</b>
+option tells
+<b>patt</b>
+of any input records that should be skipped during
+the search process.
+The
+<b>-s</b>
+option is followed by a regular expression -- in this
+case the equals-sign -- so that any input records containing
+the equals-sign (i.e. <code><big>**hint</big></code> barlines) are ignored.
+</P>
+<P>
+The default output from
+<b>patt</b>
+identifies the location of any
+instances of the pattern it finds in the source document.
+</P>
+<P>
+The appropriate pipeline is:
+</P>
+<P>
+<blockquote>
+<code><big>hint <inputfile> | patt -f template -s =</big></code>
+</blockquote>
+</P>
+<P>
+There are a few refinements we ought to add to this process.
+Currently, we are searching for parallel perfect fifths only.
+The consecutive fifths rule pertains to all intervals that
+are compound-equivalents to perfect fifths (such as perfect
+twelfths, etc.).
+</P>
+<P>
+This additional criteria is easily handled.  The
+<b>hint</b>
+command provides a
+<b>-c</b>
+option that causes all compound intervals
+to be represented by their non-compound equivalents.
+For example, major tenths and major seventheenths, etc. will all
+be represented as "M3", and so on.  Hence we would modify our
+pipeline:
+</P>
+<P>
+<blockquote>
+<code><big>hint -c <inputfile> | patt -f template -s =</big></code>
+</blockquote>
+</P>
+<P>
+(Note that an alternative way of handling the compound-intervals
+question would be to define slightly more complex regular
+expressions in our template file, e.g.
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>P5|P12|P19</TD></TR>
+<TR><TD>P5|P12|P19</big></code></TD></TR>
+</TABLE></blockquote>
+In regular expressions the vertical bar (|) denotes the logical `OR'
+operation.
+So the above pattern says "a perfect fifth OR
+a perfect twelfth OR a perfect nineteenth followed by a ...")
+</P>
+<P>
+Another refinement relates to the selection of voices.
+So far, we have presumed that the input consists of just two Humdrum
+spines containing separate parts.  In a multi-part score, we
+must examine each pair of voices in turn, in order to determine
+whether any pair exhibit consecutive fifths or octaves.
+</P>
+<P>
+The simplest (but more tedious) approach, is simply to execute
+our command pipeline for each pairing of voices.  For example,
+in a traditional four-part harmonization:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*soprano,*alto'  <file> | hint -c | patt -f template -s =
+<br>
+extract -i '*soprano,*tenor' <file> | hint -c | patt -f template -s =
+<br>
+extract -i '*soprano,*bass'  <file> | hint -c | patt -f template -s =
+<br>
+extract -i '*alto,*tenor'    <file> | hint -c | patt -f template -s =
+<br>
+extract -i '*alto,*bass'     <file> | hint -c | patt -f template -s =
+<br>
+extract -i '*tenor,*bass'    <file> | hint -c | patt -f template -s =</big></code>
+</blockquote>
+</P>
+<P>
+(There are shorter ways of doing these permutations that involves
+a little shell programming, but we'll leave that for another time.)
+</P>
+<A NAME="Doubled_Leading_Tone">
+<H2>(4) Doubled Leading Tone</H2>
+</P>
+<P>
+<H4>RULE:  "Avoid doubling the leading-tone."</H4>
+</P>
+<P>
+Pitches can be identified as "leading-tones" only when we have
+some idea of their key-related scale-degree.  The Humdrum
+<b>deg</b>
+command translates pitch representations to a scale-degree 
+representation where the numbers 1 to 7 represent tonic to
+leading-tone designations.
+</P>
+<P>
+Notice that the score input must contain an explicit key
+indication (a special type of Humdrum tandem interpretation).
+For example, the key of G major is indicated through the presence
+of the following interpretation:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>*G:</big></code></TD></TR>
+</TABLE></blockquote>
+Minor keys are indicated using lower-case characters.  For
+example, the following passage is in B minor:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD>*b:</TD></TR>
+<TR><TD>8r</TD></TR>
+<TR><TD>8f#</TD></TR>
+<TR><TD>8b</TD></TR>
+<TR><TD>16.cc#</TD></TR>
+<TR><TD>32dd</TD></TR>
+<TR><TD>8a#</TD></TR>
+<TR><TD>16.b</TD></TR>
+<TR><TD>32cc#</TD></TR>
+<TR><TD>8dd</TD></TR>
+<TR><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+The
+<b>deg</b>
+command can be used to transform this representation to
+scale degree.  The passage begins on the dominant (degree `5'),
+ascends (^) to the tonic (`1'), ascends to the supertonic (^2),
+ascends to the median (^3) and then descends to the leading-
+tone (v7), etc.:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**deg</TD></TR>
+<TR><TD>*b:</TD></TR>
+<TR><TD>5</TD></TR>
+<TR><TD>^1</TD></TR>
+<TR><TD>^2</TD></TR>
+<TR><TD>^3</TD></TR>
+<TR><TD>v7</TD></TR>
+<TR><TD>^1</TD></TR>
+<TR><TD>^2</TD></TR>
+<TR><TD>^3</TD></TR>
+<TR><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+The following command will eliminate durations or other possible
+number representations that might conflict with scale-degree
+designations:
+</P>
+<P>
+<blockquote>
+<code><big>deg <inputfile></big></code>
+</blockquote>
+</P>
+<P>
+Having translated the representation in this way, we need to search
+for any lines which contain two instances of the number `7' --
+that is, two concurrent instances of the leading-tone.
+</P>
+<P>
+Searching for the number `7' is easily done using the standard
+Unix
+<b>grep</b>
+(get regular expression) command:
+</P>
+<P>
+<blockquote>
+<code><big>deg <inputfile> | grep -n '7'</big></code>
+</blockquote>
+</P>
+<P>
+This will find and output all records that contain the number 7;
+the
+<b>-n</b>
+option means that the corresponding line number will
+also be output.
+</P>
+<P>
+However, we want to find instances where two or more 7s occur
+on a single line.  For this, we can use a slightly more
+complex regular expression
+</P>
+<P>
+<blockquote>
+<code><big>deg <inputfile> | grep -n '7.*7'</big></code>
+</blockquote>
+</P>
+<P>
+In the construction ".*" the period (.) means any character, and
+the asterisk means "zero or more instances of ..."  Hence, the
+regular expression means "the number 7 followed by zero or more
+instances of any character, followed by the number 7".  In short,
+this expression will match any record in which the number 7
+occurs at least twice.
+</P>
+<P>
+As in the case of our earlier search for augmented and diminished
+intervals,
+<b>grep</b>
+is insensitive to whether the matching character
+string is found in a data record, or whether it occurs in a Humdrum
+comment or interpretation.  In order to avoid matching comments
+or interpretations, a further refinement to our regular expression
+is appropriate.
+</P>
+<P>
+<blockquote>
+<code><big>deg <inputfile> | egrep -n '^7.*7|^[^!*].*7.*7'</big></code>
+</blockquote>
+</P>
+<P>
+In this case, the regular expression says the following: "find
+any occurrence of the number 7 at the beginning of the line
+followed by zero or more characters followed by the number 7;
+or match any character at the beginning of the line -- other than
+an exclamation mark or an asterisk -- followed by zero or more
+characters, followed by the number 7, followed by zero or more
+characters, followed by another number 7.
+</P>
+<P>
+Depending on the input, it is possible that Humdrum spines will
+be present that do not represent scale degree information.
+It is possible that these other kinds of data may also make
+use of the number 7 -- but
+<i>not</i>
+to represent the leading-tone.
+In other words, it is possible that a matching `7' has nothing
+to do with scale degrees.  We can ensure that this doesn't
+happen by first ensuring that
+<i>only</i>
+scale-degree spines are present in the input to be searched.
+</P>
+<P>
+In order to do this, we can use the Humdrum
+<b>extract</b>
+command as
+a filter, and identify the types of interpretations we want to
+pass.  In the following modification to our pipe, the
+<b>extract</b>
+command has been used to ensure that only
+<A HREF="representations/deg.rep.html"><code><big>**deg</big></code></A>
+spines are present:
+</P>
+<P>
+<blockquote>
+<code><big>deg <inputfile> | extract -i '**deg' | egrep -n '^7.*7|^[^!*].*7.*7'</big></code>
+</blockquote>
+</P>
+<P>
+There are still some refinements that we could add to this
+command sequence, but as it stands it is guaranteed to find all
+doubled leading-tones -- provided the notes begin at the same
+time.  Consider the following hypothetical passage:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern    **kern</TD></TR>
+<TR><TD>*C:       *C:</TD></TR>
+<TR><TD>8c        8g</TD></TR>
+<TR><TD>=1        =1</TD></TR>
+<TR><TD>4B        8g</TD></TR>
+<TR><TD>.         16a</TD></TR>
+<TR><TD>.         16b</TD></TR>
+<TR><TD>4A        4cc</TD></TR>
+<TR><TD>*-        *-</big></code></TD></TR>
+</TABLE></blockquote>
+Given the above command sequence, no doubled leading-tones
+would be identified in this passage.  However, we might wish
+to implement a more stringent criterion that would seek out any
+instances where the leading-tone sounds at the same time in more
+than one voice.  This occurs in the above example with the
+sixteenth-note B concurrent with the held quarter-note B in
+the other part.
+</P>
+<P>
+This criterion can be accommodated by a further refinement to
+our command pipeline.  The Humdrum
+<b>ditto</b>
+command is used to replace null data tokens by the immediately
+preceding data token in the same spine.
+Consider first, the output from the
+<b>deg</b>
+command for the above example:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**deg     **deg</TD></TR>
+<TR><TD>*C:       *C:</TD></TR>
+<TR><TD>1         5</TD></TR>
+<TR><TD>=1        =1</TD></TR>
+<TR><TD>v7        5</TD></TR>
+<TR><TD>.         ^6</TD></TR>
+<TR><TD>.         ^7</TD></TR>
+<TR><TD>v6        ^1</TD></TR>
+<TR><TD>*-        *-</big></code></TD></TR>
+</TABLE></blockquote>
+If we now invoke the
+<b>ditto</b>
+command, the modified output is:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**deg     **deg</TD></TR>
+<TR><TD>*C:       *C:</TD></TR>
+<TR><TD>1         5</TD></TR>
+<TR><TD>=1        =1</TD></TR>
+<TR><TD>v7        5</TD></TR>
+<TR><TD>v7        ^6</TD></TR>
+<TR><TD>v7        ^7</TD></TR>
+<TR><TD>v6        ^1</TD></TR>
+<TR><TD>*-        *-</big></code></TD></TR>
+</TABLE></blockquote>
+Notice that the two null tokens in the left-hand spine have
+been replaced by copies of the most recent data token.
+Now our
+<b>grep</b>
+command will find the two leading tones in the
+second last data record.
+</P>
+<P>
+In summary, the complete command pipeline would be:
+</P>
+<P>
+<blockquote>
+<code><big>deg <file> | extract -i '**deg' | ditto -s = | egrep -n '^7.*7|^[^!*].*7.*7'</big></code>
+</blockquote>
+</P>
+<P>
+This may seem somewhat complicated, but the basic structure of
+this pipeline is suitable for a very wide variety of pattern
+searches.
+</P>
+<A NAME="Avoid_Unisons">
+<H2>(5) Avoid Unisons</H2>
+</P>
+<P>
+<H4>RULE:  "Avoid the sharing of pitches by two parts."</H4>
+</P>
+<P>
+For this rule, let's assume that we also want to identify unisons
+that are spelled enharmonically (such as F-sharp and G-flat).
+</P>
+<P>
+First, we need to translate the two parts into some absolute
+pitch representation -- such as frequency or semitones.  This
+will ensure that enharmonically equivalent pitches have the
+same representation -- and so will facilitate comparison.
+</P>
+<P>
+The Humdrum
+<b>semits</b>
+command translates pitches to semitone
+distances where middle C is denoted as zero.  For example,
+where two voices both play B3 at the same time, both the parts
+will have a
+<A HREF="representations/semits.rep.html"><code><big>**semits</big></code></A>
+value of minus one (-1).
+</P>
+<P>
+Like the
+<b>deg</b>
+command, the
+<b>semits</b>
+command provides a
+<b>"-x</b>
+option
+that eliminates from the output stream any characters that don't
+pertain to semitones.
+Hence the following command will eliminate
+durations or other possible numerical representations that might
+conflict with semitone designations:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*alto,*tenor'</code></big><i> <file></i><code><big> | semits -x</big></code>
+</blockquote>
+</P>
+<P>
+Next we need to compare the two parts at each moment in order to
+determine whether they have the same numerical value.
+The Unix
+<b>awk</b>
+command will allow us to do some arithmetic.  Awk auto-
+matically parses an input, so the value of the first spine is
+referred to as `$1', the value of the second spine is `$2' and
+so on.  The
+<b>awk</b>
+expression <code><big>`$1==$2'</big></code> is a test of whether the
+first and second spines are equivalent.
+The
+<b>awk</b>
+action <code><big>`print NR'</big></code> means to print the current
+line number (record number is <code><big>`NR'</big></code>).
+</P>
+<P>
+So the following command will print the line number for any
+input in which the semitone value is the same for both the
+alto and tenor voices:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*alto,*tenor' <file> | semits -x | awk '{if($1==$2) print NR}'</big></code>
+</blockquote>
+</P>
+<P>
+There is a problem with this pipeline however.  The
+<b>awk</b>
+command will match all sorts of non-numeric inputs -- such as where
+null tokens (.) occur in both parts at the same time.  Consequently,
+we need to be careful to avoid non-numeric inputs and comments.
+</P>
+<P>
+The regular expression `[^0-9]' will match any line that doesn't
+consist solely of numbers.  The expression `[^0-9-]' will match
+any line that doesn't consist solely of numbers or the minus sign.
+Since the tab character will also be present in our data records,
+we should also include the tab in our regular expression.  The
+tab may be denoted in regular expressions by the lower-case
+letter `t' preceded by a backslash.  Hence the expression
+`[^0-9\t-]' will match only those lines consisting solely of
+numbers, the minus sign, and tabs.
+</P>
+<P>
+The following
+<b>awk</b>
+script will output the line numbers for all
+inputs where the first and second spines contain identical
+numbers:
+</P>
+<P>
+<blockquote>
+<code><big>awk '{if($0~/[^0-9\t-]/)next}{if($1==$2) print NR}'</big></code>
+</blockquote>
+</P>
+<P>
+Adding this construction to our pipeline produces the following
+command for identifying unisons:
+</P>
+<P>
+<blockquote>
+<code><big>extract -f 1,2 <file> | semits -x | ditto -s = | awk '{if($0~/[^0-9\t-]/)next}{if($1==$2) print NR}'</big></code>
+</blockquote>
+</P>
+<P>
+</P>
+<A NAME="Crossed_Parts">
+<H2>(6) Crossed Parts</H2>
+</P>
+<P>
+<H4>RULE:  "Avoid the crossing of parts."</H4>
+</P>
+<P>
+Part-crossing occurs when a nominally higher voice uses a pitch
+that is lower than a nominally lower voice.
+</P>
+<P>
+The relations "higher" and "lower" suggest the use of an arithmetic
+operator such as greater-than (>) or less-than (<).  In brief, we
+will approach this question by translating the pitches to a
+numerical scale, and then use the general-purpose Unix
+<b>awk</b>
+command to test whether the nominally lower voice is truly lower.
+</P>
+<P>
+First we need to translate the pitch representation to some sort
+of numerical form.  We have several options.  We could translate
+the pitches to frequency
+(<A HREF="representations/freq.rep.html"><code><big>**freq</big></code></A>),
+or we could translate them to
+semitones (<code><big>**semits</big></code>),
+or we could translate them to cents (**cents).
+Let's use <code><big>**semits</big></code>.
+Once again, in this representation, middle-C
+is represented by the number zero, and all other pitches are
+represented by their semitone distance (positive or negative) with
+respect to this reference.
+</P>
+<P>
+We extract the two parts of interest, and then translate them to
+the semitone numerical representation:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*soprano,*alto' <file> | semits -x</big></code>
+</blockquote>
+</P>
+<P>
+Since part-crossing may occur when one voice is holding a note,
+we should use the Humdrum
+<b>ditto</b>
+command, as we did for the doubled
+leading-tone problem.  Hence:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*alto,*tenor' <file> | semits -x | ditto -s =</big></code>
+</blockquote>
+</P>
+<P>
+Finally, we can use the Unix
+<b>awk</b>
+command to do a little arithmetic.
+Once again, in <b>awk</b>, <code><big>`$1'</code></big> and <code><big>`$2'</code></big>
+refer to the first and second input fields,
+and the built-in variable <code><big>`NR'</big></code> refers to the current
+record (line) number.
+The expression <code><big>`{if($1>$2) print NR}'</big></code> is
+a miniature program that says: "if the first input field is
+numerically greater than the second field for the current line,
+then print the line number":
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*alto,*tenor' <file> | semits -x | ditto -s = | awk '{if($1>$2) print NR}'</big></code>
+</blockquote>
+</P>
+<P>
+In short, if the left-most spine has a lower numerical value than the
+second spine, then tell us where that occurs.
+</P>
+<P>
+Since the <code><big>**semits</big></code> representation uses the
+lower-case letter `r' to represent a rest,
+we should avoid the possibility of comparing a
+number (note) with a rest.
+We can use a variation on the same
+<b>awk</b>
+script as we used when checking for unisons:
+</P>
+<P>
+<blockquote>
+<code><big>awk '{if($0~/[^0-9\t-]/)next}{if($1>$2) print NR}'</big></code>
+</blockquote>
+</P>
+<P>
+Finally, the complete pipeline for identifying crossed parts:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*soprano,*alto' <file> | semits -x | ditto -s = | awk '{if($0~/[^0-9\t-]/)next}{if($1>$2) print NR}'</big></code>
+<br>
+extract -i '*alto,*tenor'   <file> | semits -x | ditto -s = | awk '{if($0~/[^0-9\t-]/)next}{if($1>$2) print NR}'
+<br>
+extract -i '*tenor,*bass'   <file> | semits -x | ditto -s = | awk '{if($0~/[^0-9\t-]/)next}{if($1>$2) print NR}'
+</blockquote>
+</P>
+<P>
+</P>
+<A NAME="Parts_Separated_by_Greater_than_an_Octave">
+<H2>(7) Parts Separated by Greater than an Octave</H2>
+</P>
+<P>
+<H4>RULE:  "Avoid intervals greater than an octave between the
+soprano and alto voices.  Also avoid intervals greater than an
+octave between the alto and tenor voices."</H4>
+</P>
+<P>
+Finding infringements of this voice-leading rule requires just
+a slight modification to our method for identifying the crossing
+of parts.
+</P>
+<P>
+Having transformed the pitch input to a numerical form, we simply
+need to check whether the difference between the two semitone
+values is greater than 12 semitones.
+</P>
+<P>
+The
+<b>awk</b>
+portion of our command is modified so that we are informed
+if the nominally higher voice is more than 12 semitones away
+from the other voice:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*soprano,*alto' <file> | semits -x | ditto -s = | awk '{if($0~/[^0-9\t-]/)next}{if($2-$1>12) print NR}'
+<br>
+extract -i '*alto,*tenor'   <file> | semits -x | ditto -s = | awk '{if($0~/[^0-9\t-]/)next}{if($2-$1>12) print NR}'</big></code>
+</blockquote>
+</P>
+<A NAME="Overlapped_Parts">
+<H2>(8) Overlapped Parts</H2>
+</P>
+<P>
+<H4>RULE:  "Avoid the overlapping of parts, where the pitch in
+an ostensibly lower voice moves to a pitch higher than
+the previous pitch in an ostensibly higher voice; or
+where the pitch in an ostensibly higher voice moves
+to a pitch lower than the previous pitch in an
+ostensibly lower voice."</H4>
+</P>
+<P>
+The following passage illustrates a violation of the part
+overlapping rule:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**pitch   **pitch</TD></TR>
+<TR><TD>C4        E4</TD></TR>
+<TR><TD>F4        A4</TD></TR>
+<TR><TD>E4        G4</TD></TR>
+<TR><TD>*-        *-</big></code></TD></TR>
+</TABLE></blockquote>
+(In the second sonority, the lower voice (F4) moves to a
+pitch higher than the previous pitch in the higher voice (E4).)
+</P>
+<P>
+This rule is similar to the part-crossing rule, only we have
+to compare the current pitch in one part with the previous
+pitch in another part.
+</P>
+<P>
+Rather than making a direct comparison, for the purpose of this
+tutorial, we will make a modification to our earlier part-crossing
+detector.  In brief, we will extract one of the parts, shift the
+data tokens within that part, paste the two parts back together,
+and then check to determine whether the shifted part shows any
+"crossed parts" -- using our earlier command pipeline.
+</P>
+<P>
+The following command pipe will shift the data tokens in a spine
+down one record.  (The last data record will disappear.)
+</P>
+<P>
+<blockquote>
+<code><big>context -n 2 -p 1 -d XXX <file> | humsed 's/XXX.*//'</big></code></A>
+</blockquote>
+</P>
+<P>
+In this tutorial, we won't discuss how this works, since the
+<b>context</b>
+and
+<b>humsed</b>
+commands will be covered in a future
+tutorial.  For now, we can note that shifting (say) the alto
+part can be done by extracting the appropriate voice, and then
+using the shift command sequence shown above:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**alto' <file> | context -n 2 -p 1 -d XXX | humsed 's/XXX.*//' > alto.shf</big></code>
+</blockquote>
+</P>
+<P>
+If we want to compare, say, the soprano and alto voices, we need to
+extract both parts, and shift one of them:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*soprano' <file> > soprano
+<br>
+extract -i '*alto' <file> | context -n 2 -p 1 -d XXX | humsed 's/XXX.*//' > alto.shf</big></code>
+</blockquote>
+</P>
+<P>
+Next, we need to assemble the shifted and unshifted parts back into
+a single score:
+</P>
+<P>
+<blockquote>
+<code><big>assemble alto.shf soprano > tempfile</big></code>
+</blockquote>
+</P>
+<P>
+Then we test this intermediate file for instances of "part-crossing"
+--  using our earlier command pipeline:
+</P>
+<P>
+<blockquote>
+<code><big>semits -x tempfile | ditto -s = | awk '{if($0~/[^0-9\t-]/)next}{if($1>$2) print NR}'</big></code>
+</blockquote>
+</P>
+<P>
+Avoiding the temporary file altogether:
+</P>
+<P>
+<blockquote>
+<code><big>assemble alto.shf soprano | semits -x | ditto -s = | awk '{if($0~/[^0-9\t-]/)next}{if($1>$2) print NR}'</big></code>
+</blockquote>
+</P>
+<P>
+Note that this procedure has determined whether any of the notes
+in the soprano voice are lower than the previous note in the
+alto voice.  We also need to check whether any of the notes in
+the alto voice are higher than the previous note in the soprano
+voice.  To do this, we simply repeat the process, shifting the other
+voice:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*soprano' <file> | context -n 2 -p 1 -d XXX | humsed 's/XXX.*//' > soprano.shf
+<br>
+extract -i '*alto' <file> > alto
+<br>
+assemble alto soprano.shf | semits -x | ditto -s = | awk '{if($0~/[^0-9\t-]/)next}{if($1>$2) print NR}'</big></code>
+</blockquote>
+</P>
+<P>
+This processing needs to be applied for each pair of successive
+voices -- soprano/alto, alto/tenor, tenor/bass.
+</P>
+<A NAME="Exposed_Octaves">
+<H2>(9) Exposed Octaves</H2>
+</P>
+<P>
+<H4>RULE:  "When approaching an octave by similar motion, ensure
+that at least one of the parts moves by step."</H4>
+</P>
+<P>
+Violations of the exposed octaves rules must meet three
+conditions.  First, the two voices must be separated by an
+octave (or two octaves, or a unison, etc.).  (This suggests
+that we use the
+<b>hint</b>
+command with the
+<b>-c</b>
+option in order to reduce compound intervals to their
+non-compound equivalents.)
+Second, the voices must be moving in the same direction.
+(The <code><big>**deg</big></code> representation may be suitable here,
+since it distinguishes
+notes according to whether they are approached from below ("^")
+or above ("v").)  Third, both voices must be moving by leap
+(e.g. more than two semitones).
+</P>
+<P>
+To address this problem, let's plan to create five different
+spines.  The first spine will encode harmonic interval size so
+that all compound equivalents to a unison are represented by
+the string "P1".
+</P>
+<P>
+The second spine will indicate whether the lower voice is
+ascending or descending ("^" or "v").  Similarly, the third
+spine will indicate whether the upper voices is ascending or
+descending.
+</P>
+<P>
+The fourth spine will indicate whether the melodic motion for
+the lower voice is by leap ("leap"), and the fifth spine will
+indicate whether the melodic motion for the upper voice is by
+leap.
+</P>
+<P>
+Examples of violations of the exposed octaves rule will appear
+as one of the following two situations:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>(**hint     **updown    **updown    **size   **size)</TD></TR>
+<TR><TD>P1         ^           ^           leap     leap</TD></TR>
+<TR><TD>P1         v           v           leap     leap</TD></TR>
+</TABLE></blockquote>
+Any other situation means that the exposed octaves rule has not
+been violated.
+</P>
+<P>
+In other words, our final test can be expressed using the
+following
+<b>egrep</b>
+command:
+</P>
+<P>
+<blockquote>
+<code><big>egrep -n 'P1.*^.*^.*leap.*leap|P1.*v.*v.*leap.*leap'</big></code>
+</blockquote>
+</P>
+<P>
+Now all we need to do is generate our five spines and assemble
+them in the proper order.
+</P>
+<P>
+The first spine is easily generated using the
+<b>hint</b>
+command.
+Remember that the
+<b>-c</b>
+option means that all intervals an octave
+or greater will be represented by the within-octave equivalent.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*alto,*tenor' <file> | hint -c > spine1</big></code>
+</blockquote>
+</P>
+<P>
+The second and third spines can be generated using the Humdrum
+<A HREF="commands/deg.html"><b>deg</b></A>
+command:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*alto' <file>  | deg > spine2
+<br>
+extract -i '*tenor' <file> | deg > spine3</big></code>
+</blockquote>
+</P>
+<P>
+The fourth and fifth spines require a little more work.  First,
+we calculate the melodic intervals for each voice using the
+Humdrum
+<A HREF="commands/mint.html"><b>mint</b></A>
+command.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*alto' <file> | mint  ...</big></code>
+</blockquote>
+</P>
+<P>
+Secondly, we need to change all data tokens indicating intervals
+greater than a diatonic second (3 or more semitones) into the
+data token consisting of the (arbitrary) character string "leap".
+This can be done using the
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+stream editor.
+</P>
+<P>
+<blockquote>
+<code><big> ...  humsed 's/.*[3-9].*/leap/' > spine4   [spine5 for the other voice]</big></code>
+</blockquote>
+</P>
+<P>
+Putting it all together, the following command sequence will let
+us identify any instances of exposed octaves between two arbitrary
+voices:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*alto,*tenor' <file> | hint -c > spine1
+<br>
+extract -i '*alto' <file>  | deg > spine2
+<br>
+extract -i '*tenor' <file> | deg > spine3
+<br>
+extract -i '*alto' <file>  | mint | humsed 's/.*[3-9].*/leap/' > spine4
+<br>
+extract -i '*tenor' <file> | mint | humsed 's/.*[3-9].*/leap/' > spine5
+<br>
+assemble spine1 spine2 spine3 spine4 spine5 > tempfile
+<br>
+egrep -n 'P1.*^.*^.*leap.*leap|P1.*v.*v.*leap.*leap' tempfile</big></code>
+</blockquote>
+</P>
+<P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide25.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide23.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

@@ -1,0 +1,23 @@
+
+CORREL    : Measures the numerical similarity between two spines.
+
+     This command calculates the coefficient of correlation for paired
+     numerical data.  The input may consist of either one input containing
+     two equal-length spines, or two inputs containing one spine each.
+     If two inputs are used, the shorter file should be given as
+     "templatefile" using the -f option.
+
+Syntax:
+
+     correl [-f templatefile] [-m] [-p n] [-s reg_exp] [inputfile ...]
+
+Options:
+
+     -f template : specify source pattern as template (file) and invoke
+                   dual input mode
+     -m          : disable matched-pairs criterion
+     -p n        : set output precision to n decimal places
+     -s regexp   : skip data records matching the given regular expression
+
+  Refer to reference manual for further details.
+

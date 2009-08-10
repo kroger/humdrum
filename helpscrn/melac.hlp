@@ -1,0 +1,23 @@
+
+MELAC     : Calculate melodic accent values for successive pitches.
+
+     This command accepts a single **semits input spine and outputs a single
+     **melac spine whose numerical outputs indicate the amount of melodic
+     accent associated with each note.  Melodic accent values range between
+     0 (no accent) and 1 (maximum accent).
+
+     The command implements a model of pitch-related accent developed
+     by Joseph Thomassen.
+
+Inputs processed:
+
+     **semits
+
+Syntax:
+
+     melac [inputfile ...]
+
+Options:   None.
+
+  Refer to reference manual for further details.
+

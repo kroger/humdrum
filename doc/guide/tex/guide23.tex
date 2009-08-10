@@ -1,0 +1,1063 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter23}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Rhythm}
+
+
+
+The subject of rhythm touches on nearly every aspect of music.
+Musical elements such as pitch, harmony, and dynamics
+can all be regarded from the point-of-view of temporal
+patterns of events.
+A number of complex tasks arise from rhythm-related
+In this chapter, two rhythm-related tools are introduced:
+\textbf{dur}
+and
+\textbf{metpos}.
+
+
+\subsection*{The \textit{**recip} Representation}
+
+\par 
+For many types of processing tasks it is helpful to have a
+representation that encodes rhythmic information only.
+The
+\texttt{**recip}
+representation is simply a subset of
+\texttt{**kern}
+that excludes all information apart from the nominal note durations
+and common system barlines.
+In addition, \texttt{**recip} distinguishes rests from notes by
+including the `\texttt{r}' signifier.
+Without an accompanying `\texttt{r}' a duration is assumed to pertain
+to a note.
+
+\par 
+Generating \texttt{**recip} data from \texttt{**kern} is straightforward
+using
+\textbf{humsed}.
+For a single-spine input, the following command will make the
+translation:
+
+\par 
+
+\texttt{humsed '/\^{}[\^{}=]/s/[\^{}0-9.r ]//g; s/\^{}\$/./' input.krn $\backslash$
+
+| sed 's/$\backslash$*$\backslash$*kern/**recip/'}
+
+
+
+\par 
+The first
+\textbf{humsed}
+substitution eliminates all data other than the numbers 0 to 9,
+the period, the lower-case \texttt{r}, and the space (for multiple-stops).
+Barlines remain untouched in the output.
+The second
+\textbf{humsed}
+substitution changes any empty lines to null data tokens;
+this might be necessary in the case of grace notes.
+The ensuing
+\textbf{sed}
+command is used simply to change the exclusive interpretation
+from \texttt{**kern} to \texttt{**recip}.
+
+\par 
+A simple type of processing might entail creating an inventory
+of rhythmic patterns.
+Suppose we wanted to determine the most common rhythmic pattern
+spanning a measure.
+Using a monophonic \texttt{**recip} input, we could use
+\textbf{context}
+to amalgamate the appropriate data tokens:
+
+\par 
+
+\texttt{context -b \^{}= -o \^{}= input.recip | rid -GLId | sort $\backslash$
+
+| uniq -c | sort -nr}
+
+
+
+\par 
+The output for the combined voices of Bach's two-part
+Invention No. 5 shows just seven patterns.
+The most characteristic patterns are the second one:
+\texttt{8r 16 16 8 8 4 4} and the
+fourth one:
+\\
+\texttt{8 16 16 8 8 4 4}.
+
+\texttt{3016 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16
+128r 16 16 8 8 4 4
+118 8 8 8 16 16 16 16 8 8
+88 16 16 8 8 4 4
+18 8 8 8 2
+18 32 32 32 32 4 2
+14 4 16r 16 16 16 16 16 16 16}
+
+
+
+\subsection*{The \textit{dur} Command}
+
+\par 
+The
+\textbf{dur}
+command produces
+\texttt{**dur}
+output from either a \texttt{**kern}
+or \texttt{**recip} input.
+The \texttt{**dur} representation scheme consists simply of
+the elapsed duration of notes and rests, expressed in seconds.
+The following example shows a simple \texttt{**dur} representation
+(right spine) with a corresponding \texttt{**kern} input:
+\\\\
+
+\texttt{**kern**dur
+**MM60
+=1=1
+12g0.3333
+12g0.3333
+12g0.3333
+4g1.0000
+4r1.0000r
+8g0.5000
+8g0.5000
+4g1.0000
+=2=2
+*-*-}
+
+As in the case of \texttt{**recip},
+the \texttt{**dur} representation designates rests via
+the lower-case \texttt{r} and uses the common system for barlines.
+Notice that \texttt{**dur} assumes a metronome indication of
+quarter-note equals 60 beats per minute if no other metronome
+marking is given.
+
+\par 
+Suppose that we wanted to estimate the total duration of some monophonic
+passage (ignoring rubato).
+We can do this by translating the score to \texttt{**dur},
+eliminating everything but notes and rests,
+and sending the output to the
+\textbf{stats}
+command:
+
+\par 
+
+\texttt{dur -d inputfile.krn | rid -GLId | grep -v '\^{}=' | stats}
+
+
+\par 
+The
+\textbf{-d}
+option for
+\textbf{dur}
+suppresses the outputting of duplicate durations arising
+from multiple-stops.
+Note that outputs from
+\textbf{dur}
+will adapt to any changes of metronome marking found in the input,
+so if the work accelerates the durations will be reduced
+proportionally.
+
+
+\par 
+The
+\textbf{-M}
+option will over-ride any metronome markings found in the input
+stream.
+For example, if we wanted to estimate the duration of a monophonic
+passage for a metronome marking of 72 quarter-notes per minute
+we could use the command:
+
+\par 
+
+\texttt{dur -M 72 -d input.krn | rid -GLId | grep -v '\^{}=' | stats}
+
+
+
+\par 
+Of course, the duration of a passage is not the same as
+the length of time a given instrument sounds.
+Suppose, for example, that we wanted to compare the duration
+of trumpet activity in the final movements of Beethoven's symphonies.
+We need to make a distinction between the duration of notes
+and the duration of rests.
+Since the duration values for rests are distinguished by the
+trailing letter `r', we can use
+\textbf{grep -v}
+to eliminate all rest tokens.
+
+\par 
+
+\texttt{extract -i '*Itromp' inputfile.krn | dur -d | rid -GLId $\backslash$
+
+| grep -v '\^{}=' | grep -v r | stats}
+
+
+
+\par 
+The
+\textbf{dur}
+command provides a
+\textbf{-e}
+option that allows the user to echo specified signifiers in the output.
+The
+\textbf{-e}
+option is followed by a regular expression indicating what patterns
+are to be passed to the output.
+This option allows us to "mark" notes of special interest.
+For example, suppose we wanted to determine the longest duration
+note for which Mozart had marked a staccato.
+
+\par 
+
+\texttt{dur -e $\backslash$' inputfile | rid -GLId | grep $\backslash$' | sed 's/$\backslash$'//' $\backslash$
+
+| stats}
+
+
+
+
+\par 
+The
+\textbf{-e}
+option ensures that \texttt{**kern} staccato marks (') are passed along
+to the output.
+The
+\textbf{rid}
+command eliminates everything but Humdrum data records.
+Then
+\textbf{grep}
+is used to isolate only those notes containing a staccato mark.
+The
+\textbf{sed}
+script is used to eliminate the apostrophe, and finally the numbers
+are passed to the
+\textbf{stats}
+command.
+The \texttt{max} value from
+\textbf{stats}
+will identify the duration (in seconds) of the longest note
+marked staccato.
+
+
+\par 
+This same basic pipeline can be used for a variety of similar problems.
+Suppose, for example, that we want to determine whether
+notes at the ends of phrases tend to be longer than notes
+at the beginnings of phrases -$\,$- and if so, how much longer?
+In this case, we want to have
+\textbf{dur}
+echo phrase-related signifiers:
+
+\par 
+
+\texttt{dur -e '\{' inputfile | rid -GLId | grep '\{' | sed 's/\{//' $\backslash$
+
+| stats}
+
+\\
+\texttt{dur -e '\}' inputfile | rid -GLId | grep '\{' | sed 's/\{//' $\backslash$
+
+| stats}
+
+
+
+
+\par 
+Similarly, do semitone trills tend to be shorter than whole-tone trills?
+
+\par 
+
+\texttt{dur -e 't' inputfile | rid -GLId | grep 't' | sed 's/\{//' $\backslash$
+
+| stats}
+
+\\
+\texttt{dur -e 'T' inputfile | rid -GLId | grep 'T' | sed 's/\{//' $\backslash$
+
+| stats}
+
+
+
+
+\par 
+Of course, we can also use
+\textbf{dur}
+in conjunction with
+\textbf{yank}
+in order to investigate particular musical segments or passages.
+How much shorter is the recapitulation compared with the
+original exposition?
+
+\par 
+
+\texttt{yank -s 'Exposition' -r 1 inputfile | dur | rid -GLId $\backslash$
+
+| grep -v '=' | stats}
+
+\\
+\texttt{yank -s 'Recapituation' -r 1 inputfile | dur | rid -GLId $\backslash$
+
+| grep -v '=' | stats}
+
+
+
+\par 
+Do initial phrases in Schubert's vocal works tend to be shorter than final
+phrases?
+
+\par 
+
+\texttt{yank -m \{ -r 1 lied | dur | rid -GLId | grep -v \^{}= | stats}
+\\
+\texttt{yank -m \{ -r \$ lied | dur | rid -GLId | grep -v \^{}= | stats}
+
+
+\par 
+How much longer is a passage if all the repeats are played?
+
+\par 
+
+\texttt{thru inputfile | dur | rid -GLID | stats -o \^{}=}
+
+
+\par 
+Recall that the
+\textbf{xdelta}
+command can be used to calculate numerical differences between
+successive values.
+If the input to
+\textbf{xdelta}
+is \texttt{**dur} duration information, then we can determine
+rates of change of duration.
+Most music exhibits lengthy passages of similar duration notes -$\,$-
+as in a sequence of sixteenth notes.
+In French overtures, successive notes are often of highly contrasting
+durations (longer, very-short, long, etc.).
+Using
+\textbf{xdelta}
+we can identify such large changes of duration.
+For example, the following pipeline can be used to determine
+the magnitude of the
+\textit{differences}
+between successive notes.
+
+\par 
+
+\texttt{dur inputfile | xdelta -s \^{}= | rid -GLId | stats -o \^{}=}
+
+
+\par 
+A small \texttt{mean} from
+\textbf{stats}
+will be indicative of works that tend to have smoother or less
+angular note-to-note rhythms.
+
+
+\subsection*{Classifying Durations}
+
+\par 
+We can use the
+\textbf{recode}
+command to classify durations into a finite set of categories.
+Suppose, for example, we wish to create a inventory of
+long/short rhythmic patterns.
+We might use
+\textbf{recode}
+with reassignments such as the following:
+
+\texttt{>=0.4long
+elseshort}
+
+For a monophonic input,
+we can create an inventory of (say) 3-note long/short
+rhythmic patterns as follows:
+
+\par 
+
+\texttt{dur inputfile | recode -f reassign -i '**dur' -s \^{}= | $\backslash$
+
+context -n 3 -o = | rid -GLId | sort | uniq -c | sort -n}
+
+
+
+\par 
+A typical output might appears as follows:
+
+\texttt{230long long long
+3422short short short
+114long long short
+202short short long
+38long short long
+117short long long
+194long short short
+114short long short}
+
+
+\par 
+Notice that we might do a similar inventory based on durational
+\textit{differences}
+rather than on durations.
+For example, the
+\textbf{xdelta}
+command will allow us to distinguish short\textit{er} note relationships
+from long\textit{er} relationships.
+Our reassignment file would be as follows:
+
+\texttt{==0equal
+>0shorter
+<0longer}
+
+
+\par 
+And our processing would be:
+
+\par 
+
+\texttt{dur inputfile | xdelta -s \^{}= | recode -f reassign $\backslash$
+
+-i '**Xdur' -s \^{}= | context -n 2 -o = $\backslash$
+\\
+| rid -GLId | sort | uniq -c | sort -n}
+
+
+
+
+\subsection*{Using \textit{yank} with the \textit{timebase} Command}
+
+\par 
+Recall that the
+\textbf{timebase}
+command can be used to reformat an input so that each data
+record represents an equivalent elapsed duration.
+For example, in a 4/4 meter, the following command will
+format the output so that each full measure consists of precisely
+16 data records (not including the barline itself):
+
+\par 
+
+\texttt{timebase -t 16 input.krn}
+
+
+\par 
+Suppose we wanted to isolate all sonorities in a 4/4 work that occur
+only on the fourth beat of a measure.
+If we use \textbf{timebase}, we can ensure that the fourth beat
+always occurs a certain number of data records following the barline.
+For example, with the following command, the onset of the fourth beat will
+always occur 4 records follow the barline:
+
+\par 
+
+\texttt{timebase -t 4 input.krn}
+
+
+\par 
+We can now use
+\textbf{yank -m}
+to extract all appropriate sonorities.
+The "marker" is the barline and the "range" is 4 records
+following the marker, hence:
+
+\par 
+
+\texttt{timebase -t 4 input.krn | yank -m \^{}= -r 4}
+
+
+\par 
+Note that this process will extract only those notes that
+begin sounding with the onset of the fourth beat.
+Some notes may have begun prior to the fourth beat and yet are
+sustained into the beat.
+If we want to extract the
+\textit{sounded}
+sonority, we can use the
+\textbf{ditto}
+command.
+Begin by expanding the work with a timebase that ensures all
+notes are present.
+For a work whose shortest note is a 32nd note, we can use
+an appropriately small timebase value.
+Then use the
+\textbf{ditto}
+command to propagate all sustained notes forward through the successive
+sonorities:
+
+\par 
+
+\texttt{timebase -t 32 input.krn | ditto -s \^{}=}
+
+
+\par 
+Now we can yank the data records that are of interest.
+Notice that the
+\textbf{-r}
+(range) option for
+\textbf{yank -m}
+allows us to select more than one record.
+This might allow us, say, to extract only those sonorities that
+occur on off-beats.
+For example, the following command extracts all notes played
+by the horns during beats 2 and 4 in a 4/4 meter work:
+
+\par 
+
+\texttt{extract -i '*Icor' input.krn | timebase -t 16 $\backslash$
+
+| yank -m \^{}= -r 5-8,13-16}
+
+
+
+
+\par 
+In some cases, we would like to yank materials that do not
+themselves contain explicit durational information.
+Suppose, for example, that for a waltz repertory,
+we want to contrast those chord functions that tend to occur on the
+first beat with those that happen on the third beat.
+We will need to have an input that includes both a
+\texttt{**harm}
+spine encoding the Roman numeral harmonic analysis,
+as well as one or more \texttt{**kern} or \texttt{**recip} spines
+that include the durational information.
+We can use the
+\textbf{timebase}
+command to expand the output accordingly -$\,$- cuing on the duration
+information provided by \texttt{**kern} or \texttt{**recip}.
+Having suitable expanded the input, we can dispense with
+everything but the \texttt{**harm} spine.
+For works in 3/4 meter, the following pipeline would provide
+an inventory of chords occurring on the first beat of each bar:
+
+\par 
+
+\texttt{timebase -t 8 input | extract -i '**harm' $\backslash$
+
+| yank -m \^{}= -r 1 | rid -GLId | sort | uniq -c | sort -n}
+
+
+
+\par 
+And the following variation would provide an inventory of chords
+occurring on the third beat of each bar.
+(There are 6 eighth durations in a bar of 3/4, therefore
+the beginning of the third beat will coincide with the 5th eighth -$\,$-
+hence the range \texttt{-r 5}:
+
+\par 
+
+\texttt{timebase -t 8 input | extract -i '**harm' $\backslash$
+
+| yank -m \^{}= -r 5 | rid -GLId | sort | uniq -c | sort -n}
+
+
+
+
+\subsection*{The \textit{metpos} Command}
+
+\par 
+The
+\textbf{metpos}
+command generates a
+\texttt{**metpos}
+output spine containing
+numbers that indicate the metric strength of each sonority.
+By "metric position" we mean the position of importance
+in the metric hierarchy for a measure.
+
+\par 
+The highest position in any given metric hierarchy is given by the
+value `1'.
+This value is assigned to the first event at the beginning of each
+measure.
+In duple and quadruple meters, the second level in the metric hierarchy
+occurs in the middle of the measure and is assigned the output value `2'.
+(In triple meters,
+\textbf{metpos}
+assumes that the second and third beats in the measure are both assigned
+to the second level in the metric hierarchy.)
+All other metric positions in the measure (beats, sub-beats,
+sub-sub-beats, etc.) are assigned successively increasing numerical
+values according to their placement in the metric hierarchy.
+In summary, larger \texttt{**metpos} values signify sonorities of
+\textit{lesser}
+metric significance.
+
+\par 
+By way of illustration, consider the case of successive eighth notes
+in a 2/4 meter.
+The metric hierarchy values for successive eighths are: 1, 3, 2, 3.
+In the case of successive sixteenth notes in 2/4, the
+metric hierarchy values are: 1,4,3,4,2,4,3,4.
+In the case of 6/8 meter, successive sixteenth durations exhibit
+a metric hierarchy of: 1,4,3,4,3,4,2,4,3,4,3,4.
+
+\par 
+For correct operation, the
+\textbf{metpos}
+command must be supplied with an input that has been formatted using the
+\textbf{timebase}
+command.
+That is, each data record (ignoring barlines) must represent an
+equivalent duration of time.
+In addition,
+\textbf{metpos}
+must be informed of both the
+\textit{meter signature}
+and the
+\textit{timebase}
+for the given input passage.
+This information can be specified via the command line,
+however it is usually available in the input stream via appropriate
+tandem interpretations.
+
+\par 
+The following extract from Bartók's "Two-Part Study" No. 121 from
+\textit{Mikrokosmos}
+demonstrates the effect of the
+\textbf{metpos}
+command.
+The two left-most columns show the original input;
+all three columns show the corresponding output from \textbf{metpos}:
+
+\texttt{**kern**kern**metpos
+*tb8*tb8*tb8
+=16=16=16
+*M6/4*M6/4*M6/4
+8Gn8b-1
+8A8ccn4
+8B-8cc\#\}3
+8cn\{8f\#4
+8c\#\}8gn3
+\{8F\#8a4
+8G8b-2
+8A8ccn4
+8B-4b-3
+8cn.4
+8c\#\}8fn\}3
+8r8r4
+=17=17=17
+*M4/4*M4/4*M4/4
+8d2r1
+4.d.4
+..3
+..4
+\{2d\_8dd2
+.4.dd4
+..3
+..4
+=18=18=18
+8d\{1dd\_1
+8A.4
+8F\#.3
+8E.4
+8D.2
+8BB.4
+8D.3
+8E\}.4
+=19=19=19
+*M3/2*M3/2*M3/2
+\{8F\#8dd1
+8A8ffn4
+8c\#8aa3
+8A8ff4
+8F\#8dd2
+8A8ff4
+8F\#8dd3
+8E8ccn4
+8D8b-2
+8BBn8gn4
+8D8b-3
+8E\}8cc4
+=20=20=20
+*-*-*-}
+
+Notice that
+\textbf{metpos}
+adapts to changing meter signatures, and
+correctly distinguishes between metric accent patterns such as 6/4 (measure 16)
+and 3/2 (measure 19).
+
+\par 
+The
+\texttt{**metpos}
+values provide additional ways of
+addressing various rhythmic questions.
+We might use
+\textbf{recode}
+for example, to recode the numerical outputs from
+\textbf{metpos}
+into a smaller set of discrete categories.
+For example, we might classify metric positions using the
+following reassignment file:
+
+\texttt{==1strong
+>=3secondary
+elseweak}
+
+
+\par 
+The words `strong', `secondary', and `weak' can then be sought by
+\textbf{grep}
+or
+\textbf{yank -m},
+allowing us to isolate points of particular metric stress.
+Since
+\textbf{metpos}
+adapts to changing meters, we can confidently process inputs
+that may contain mixtures of meters.
+
+
+\subsection*{Changes of Stress}
+
+
+\par 
+Once again we can make use of
+\textbf{xdelta}
+to identify relationships between successive metric position values.
+Suppose we had a collection of Hungarian melodies and we wanted to
+determine how each degree is approached in terms of metric strength.
+That is, we would like to count the number of tonic pitches that
+are approached by a weak-to-strong context versus the number of
+tonic pitches approached by a strong-to-weak context.
+We also want similar measures for supertonic, mediant,
+subdominant, etc. scale degrees.
+
+\par 
+This task involves creating an inventory where fourteen
+different items are possible:
+(1) tonic strong-to-weak, (2) tonic weak-to-strong,
+(3) supertonic, strong-to-weak, etc.
+A suitable inventory will involve creating two spines of
+information -$\,$- scale-degree and relative metric strength.
+
+\par 
+Assuming that our Hungarian melodies encode key information,
+creating a
+\texttt{**deg}
+spine is straightforward.
+Recall that the
+\textbf{-a}
+option for
+\textbf{deg}
+avoids distinguishing the direction of approach (from above or below):
+
+\par 
+
+\texttt{deg -a magyar*.krn > magyar.deg}
+
+
+\par 
+Creating a spine encoding relative metric strength will be more
+involved.
+First we need to expand our input according to the shortest note.
+We use
+\textbf{census -k}
+to determine the shortest duration, and then expand our input
+using \textbf{timebase}.
+
+\par 
+
+\texttt{census -k magyar*.krn}
+\\
+\texttt{timebase -t 16 magyar*.krn > magyar.tb}
+
+
+\par 
+Using
+\textbf{metpos}
+will allow us to create a spine with the metric position data.
+
+\par 
+
+\texttt{metpos magyar.tb > magyar.mp}
+
+
+\par 
+Note that
+\textbf{metpos}
+automatically echoes the input along with the new \texttt{**metpos} spine.
+At this point, the result might look as follows:
+
+\texttt{!!!OTL: Graf Friedrich In Oesterraaich sin di Gassen sou enge
+
+
+\texttt{**kern\texttt{**metpos
+\texttt{*ICvox\texttt{*
+\texttt{*Ivox\texttt{*
+\texttt{*M3/4\texttt{*M3/4
+\texttt{*k[f\#]\texttt{*
+\texttt{*G:\texttt{*
+\texttt{*tb16\texttt{*tb16
+\texttt{\{8g\texttt{2
+\texttt{.\texttt{4
+\texttt{8b\texttt{3
+\texttt{.\texttt{4
+\texttt{=1\texttt{=1
+\texttt{8dd\texttt{1
+\texttt{.\texttt{4}
+etc.
+
+
+\par 
+We want to be able to say that the relationship between the
+first eighth-note G and the eighth-note B is "strong-to-weak"
+and that the relationship between the eighth-note B and the eighth-note D
+is "weak-to-strong."
+In order to procede we need to eliminate all of the data records that
+contain only a metpos value -$\,$- that is, there is no pitch present in the
+\texttt{**kern}
+spine.
+We can do this using \textbf{humsed};
+we simply delete all lines that begin with a period character:
+
+\par 
+
+\texttt{humsed '/\^{}$\backslash$./d' magyar.mp}
+
+
+\par 
+The result is as follows:
+
+\texttt{!!!OTL: Graf Friedrich In Oesterraaich sin di Gassen sou enge
+
+
+\texttt{**kern\texttt{**metpos
+\texttt{*ICvox\texttt{*
+\texttt{*Ivox\texttt{*
+\texttt{*M3/4\texttt{*M3/4
+\texttt{*k[f\#]\texttt{*
+\texttt{*G:\texttt{*
+\texttt{*tb16\texttt{*tb16
+\texttt{\{8g\texttt{2
+\texttt{8b\texttt{3
+\texttt{=1\texttt{=1
+\texttt{8dd\texttt{1}
+etc.
+
+
+\par 
+Notice that the successive \texttt{**metpos} values will now
+allow us to characterize the changes in stress between successive notes:
+2 followed by 3 indicates a strong-to-weak change of metric position,
+3 followed by 1 indicates a weak-to-strong change of metric position.
+We can use
+\textbf{xdelta}
+to calculate the differences in metric position values:
+positive differences will indicate weak-to-strong changes
+and negative differences will indicate strong-to-weak changes.
+If both values have the same metric position value, then the
+successive notes hold equal positions in the metric hierarchy.
+Before using
+\textbf{xdelta}
+we need to isolate the \texttt{**metpos} spine using \textbf{extract}:
+
+\par 
+
+\texttt{humsed '/\^{}$\backslash$./d' magyar.mp | extract -i '**metpos' $\backslash$
+
+| xdelta -s \^{}=}
+
+
+
+\par 
+The result is:
+
+\texttt{!!!OTL: Graf Friedrich In Oesterraaich sin di Gassen sou enge
+\texttt{**Xmetpos
+\texttt{*
+\texttt{*
+\texttt{*M3/4
+\texttt{*
+\texttt{*
+\texttt{*tb16
+\texttt{.
+\texttt{1
+\texttt{=1
+\texttt{-2}
+etc.
+
+
+\par 
+Now we can use
+\textbf{recode}
+to classify the changes of metric position according.
+Our reassignment file (named \texttt{reassign}):
+
+\texttt{>0strong-to-weak
+<0weak-to-strong
+==0equal}
+
+
+\par 
+Appending the appropriate command:
+
+\par 
+
+\texttt{humsed '/\^{}$\backslash$./d' magyar.mp | extract -i '**metpos' $\backslash$
+
+| xdelta -s \^{}= | recode -f reassign -i '**Xmetpos'  -s \^{}= > magyar.xmp}
+
+
+
+\par 
+Now we can assemble the resulting metric change spine with our original
+\texttt{**deg}
+spine.
+Each data record will contain the scale degree in the first spine and
+the change of metric position data in the second spine.
+The final task is to create an inventory using
+\textbf{rid},
+\textbf{sort} and \textbf{uniq}:
+
+\par 
+
+\texttt{assemble magyar.deg magyar.xmp | rid -GLId | grep -v \^{}= $\backslash$
+
+| sort | uniq -c}
+
+
+
+\par 
+The final result will appear as below.
+The first output line indicates that there were three instances
+of a tonic pitch approached by a note of equivalent position in
+the metric hierarchy.
+The second line indicates that there were twenty-five instances
+of a tonic pitch approached by a note having a stronger metric position:
+
+\texttt{31equal
+251strong-to-weak
+301weak-to-strong
+32equal
+142strong-to-weak
+132weak-to-strong
+13equal
+393strong-to-weak
+343weak-to-strong
+34equal
+264strong-to-weak
+174weak-to-strong
+135equal
+495strong-to-weak
+425weak-to-strong
+16equal
+136strong-to-weak
+146weak-to-strong
+37strong-to-weak
+67weak-to-strong
+17-weak-to-strong
+3requal
+10rstrong-to-weak}
+
+
+\par 
+Instead of scale degree, any other Humdrum spine might be used.
+For example, if the input contained functional harmony data (**harm) then
+the output inventory would identify how particular chord functions tend
+to be approached.
+For example, we could establish whether the submediant chord is more
+likely to be approached in a strong-to-weak or weak-to-strong rhythmic context.
+Similarly, this same technique can be used to determine whether particular
+melodic or harmonic intervals tend to be approached using particular stress relationships.
+
+\par 
+In addition, our input spine might also be transformed via the
+\textbf{context}
+command.
+Given a **harm spine, for example,
+\textbf{context}
+could be used to generate two-chord harmonic progressions.
+This would permit us to determine, for example, whether a specific progression such
+as \textit{ii-V} tends to fall in strong-to-weak or weak-to-strong contexts.
+
+
+
+
+\subsection*{Reprise}
+
+\par 
+There are a vast number of issues raised in rhythm-related processing.
+In this chapter we have touched on a few of the more basic tasks.
+These include identifying the durations of various passages using \textbf{dur};
+classifying and contextualizing durations using
+\textbf{recode}
+and
+\textbf{context};
+isolating particular rhythmic moments using
+\textbf{timebase}
+and
+\textbf{yank}
+\textbf{-m};
+determining relative metric positions using
+\textbf{metpos};
+and characterizing metric syncopation using
+\textbf{synco}.
+
+\par 
+Processing data that does not explicitly contain duration-related
+information (such as \texttt{**harm} or \texttt{**deg}) often requires
+some preparation.
+It is often useful to maintain a coordinated file
+where the spines of interest are linked with duration-related
+spines that assist in processing.
+
+\par 
+One further topic related to rhythm remains to be discussed.
+The
+\textbf{accent}
+command allows the user to distinguish notes according to
+their estimated perceptual importance.
+We will consider
+\textbf{accent}
+in
+Chapter 31.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

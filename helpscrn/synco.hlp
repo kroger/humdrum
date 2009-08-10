@@ -1,0 +1,24 @@
+
+SYNCO     : Measure degree of metric syncopation for successive moments.
+
+     This command outputs a single **synco spine characterizing the degree of
+     metric syncopation for successive moments in a passage.  A minimum of two
+     input spines is needed -- one of which must be **metpos information.  The
+     output value 0 represents no metric syncopation with successively increas-
+     ing values representing greater amounts of syncopation.
+
+Inputs processed (one or more of):
+
+     **barks,   **cbr,     **cents,   **cocho,   **deg,     **degree,
+     **freq,    **fret,    **kern,    **MIDI,    **pc,      **pitch,
+     **semits,  **solfa,   **solfg,   **specC,   **Tonh,
+
+Syntax:
+
+     synco [-e] [file ...]
+
+Options:
+
+     -e   : echo input stream in output
+
+  Refer to reference manual for further details.

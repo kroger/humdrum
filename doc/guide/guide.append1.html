@@ -1,0 +1,1361 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Appendix I</TITLE>
+<!-- Appendix I (Reference Records) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:12:21 EST 2000">
+<meta name="description" content="Appendix I (Reference Records) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+<BODY>
+
+<table id="header" width="100%" border="0" cellspacing="0">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<H1>Appendix I</H1>
+</P>
+<CENTER>
+<center><HR WIDTH=500></center>
+<H1>Reference Records</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+Reference records are formal ways of encoding "library-type"
+information pertaining to a Humdrum document.
+Reference records provide standardized ways of
+encoding bibliographic information
+--  suitable for computer-based access.
+</P>
+<P>
+A perpetual problem with reference information pertains to the
+language in which information is represented.
+Humdrum provides comprehensive methods for dealing with
+multiple languages.
+These methods are described below, and Humdrum
+users are encouraged to become familiar with these
+conventions.
+</P>
+<P>
+Humdrum reference records are designated by three exclamation marks at
+the beginning of a line, followed by a multi-letter code,
+followed by an optional number, followed by a colon, followed by some text.
+</P>
+<P>
+Over 80 reference codes are pre-defined in Humdrum.
+Each of these reference records is described below under nine
+categories:
+(1) <A HREF="#Authorship_Information">authorship information,</A>
+(2) <A HREF="#Performance_Information">performance information,</A>
+(3) <A HREF="#Recording_Information">recording information,</A>
+(4) <A HREF="#Identification_Information">work identification information,</A>
+(5) <A HREF="#Imprint_Information">imprint information,</A>
+(6) <A HREF="#Copyright_Information">copyright information,</A>
+(7) <A HREF="#Analytic_Information">analytic information,</A>
+(8) <A HREF="#Historical_Information">historical information,</A> and
+(9) <A HREF="#Representation_Information">representation information.</A>
+A final section discusses <A HREF="#Electronic_Citation">how to cite electronic documents.</A>
+</P>
+<A NAME="Language">
+<H2>Accommodating Different Languages</H2>
+<P>
+Humdrum attempts to accommodate all languages.
+Reference information can be encoded using the original language
+of the source material or document.
+In addition, reference information can be encoded in
+various translations that help end users.
+Humdrum uses the
+<A HREF="http://lcweb.loc.gov/standards/iso639-2/englangn.html">
+<B>International Standards Organization ISO 639-2</B></A>
+standard for representing languages.
+This standard provides 3-letter codes for more than 4,000
+existing and historical languages.
+For example, the ISO standard codes for English, French and Swahili are
+<code><big>
+eng
+</code></big>
+<code><big>
+fre
+</code></big>
+and
+<code><big>
+swa
+</code></big>
+respectively.
+(A table of 50 common languages is given at the end of this appendix.)
+</P>
+<P>
+</P>
+<P>
+Humdrum allows any type of reference information to be encoded
+in any or all of these languages.
+In general, the <i>primary</i> reference information is encoded using
+the original language of the source material.
+Consider the case of a Friuli folksong
+(Friuli is a dialect of Italian).
+The title of the song should be encoded in the original
+language, but it may also be useful to provide
+translations in Italian and English.
+</P>
+<P>
+The principal reference code indicating title is
+<code><big>
+!!!OTL:
+</code></big>
+(see below).
+Following the OTL reference code, the language of encoding
+can be indicated by appending an "at" sign (@),
+followed by the 3-letter ISO language code.
+Here the title is rendered in three languages:
+<blockquote>
+<code><big>
+!!!OTL@@FUR: Ai preit la biele stele
+<br>
+!!!OTL@ITA: Ho pregato la buona stella
+<br>
+!!!OTL@ENG: The Good Star
+</code></big>
+</blockquote>
+Notice the use of the double "at" sign (i.e., "@@").
+This convention is used to indicate that Friuli is
+the primary reference language.
+The title can also be encoded without any language
+designation:
+<blockquote>
+<code><big>
+!!!OTL: Ai preit la biele stele
+</code></big>
+</blockquote>
+This implies that the title is already rendered in the <i>primary</i>
+reference language.
+</P>
+<P>
+</P>
+<A NAME="Authorship_Information">
+<A NAME="composer">
+<A NAME="COM">
+<H2>Authorship Information</H2>
+</P>
+<P>
+<b>!!!COM:</b>
+<A HREF="guide03.html#Searching_for_Reference_Information">
+<B>Composer's name</B></A>.
+In some cases, opinions differ regarding the best spelling of a composer's name.
+If so, all common spellings should be given -- each alternative
+separated from the previous by a semicolon.
+E.g.
+</P>
+<P>
+<blockquote>
+<code><big>
+!!!COM: Chopin, Fryderyk; Chopin, Frederick
+</code></big>
+</blockquote>
+</P>
+<P>
+With respect to accents, refer to the discussion concerning
+the <b>!!!RLN:</b> reference record (<A HREF="#RLN">see below</A>).
+If a work was composed by more than one composer,
+then each composer's name should appear on a separate <b>!!!COM:</b> record
+with a number designation prior to the colon.
+For example,
+</P>
+<P>
+<blockquote>
+<code><big>
+!!!COM1: Composer, A.
+<br>
+!!!COM2: Composer, B.
+</code></big>
+</blockquote>
+</P>
+<A NAME="attributed composer">
+<A NAME="COA">
+<P>
+<b>!!!COA:</b>
+<i>Attributed composer</i>.
+This may include attributions known to be false.
+Several attributions may be combined on a single record by separating
+each name by a semicolon.
+Note that if a document contains both <b>!!!COA:</b> and <b>!!!COM:</b>
+records, then the attributed composer is explicitly assumed to be false.
+</P>
+<A NAME="suspected composer">
+<A NAME="COS">
+<P>
+<b>!!!COS:</b>
+<i>Suspected composer</i>.
+This reference code indicates the belief of the editor or producer
+of the document as to the true identity of the composer(s).
+If more than one composer is suspected, each name should appear
+on a separate <b>!!!COS:</b> record with a number
+designation prior to the colon.
+</P>
+<A NAME="composer's alias">
+<A NAME="stage name">
+<A NAME="COL">
+<P>
+<b>!!!COL:</b>
+<i>Composer's abbreviated, alias, or stage name</i>.
+e.g. Madonna.
+</P>
+<A NAME="corporate name, composer">
+<A NAME="composer's corporate name">
+<A NAME="COC">
+<P>
+<b>!!!COC:</b>
+<i>Composer(s) corporate name</i>.
+Corporate names may include the names of popular groups
+(especially when the actual composer is not known).
+Corporate names may also include business names,
+e.g. Muzak.
+</P>
+<A NAME="composer's dates">
+<A NAME="birthdate, composer">
+<A NAME="death date, composer">
+<A NAME="CDT">
+<P>
+<b>!!!CDT:</b>
+<i>Composer's dates</i>.
+The birth and death dates should be encoded using the
+<A HREF="representations/Zeit.rep.html">
+<code><big>**Zeit</big></code></A>
+format described in the <i>Humdrum Reference Manual</i>.
+The <code><big>**Zeit</big></code> format provides a highly refined representation,
+including methods for representing uncertainty, approximation,
+and boundary dates (e.g. prior to ..., after ...).
+</P>
+<A NAME="composer nationality">
+<A NAME="CNT">
+<P>
+<b>!!!CNT:</b>
+<i>Nationality of the composer</i>.
+This reference information is encoded using the language of the nationality.
+Thus a German composer is encoded as <code><big>Deutscher</big></code> rather
+than "German", and a French composer is encoded as
+<code><big>Francais</big></code> rather than "French."
+Of course the specific language can be explicitly encoded using
+the 3-letter language codes described above.
+(e.g., <code>!!!CNT@@FRE: Francais</code>).
+Where the composer changed nationality, successive nationalities
+should be listed (in chronological order) separated by semicolons.
+</P>
+<A NAME="lyricist">
+<A NAME="LYR">
+<P>
+<b>!!!LYR:</b>
+<i>Lyricist</i>.
+The name of the lyricist.
+If more than one lyricist was involved in the work,
+then each lyricist's name should appear on a separate <b>!!!LYR:</b> record
+with a number designation prior to the colon.
+If the composer was also the lyricist, this should be explicitly
+encoding using the independent <b>!!!LYR:</b> record --
+rather than implicitly assumed.
+</P>
+<A NAME="librettist">
+<A NAME="LIB">
+<P>
+<b>!!!LIB:</b>
+<i>Librettist</i>.
+The name of the librettist.
+If more than one librettist was involved in the work,
+then each librettist's name should appear on a separate <b>!!!LIB:</b> record
+with a number designation prior to the colon.
+If the composer was also the librettist, this should be explicitly
+encoding using the independent <b>!!!LIB:</b> record --
+rather than implicitly assumed.
+</P>
+<A NAME="arranger">
+<A NAME="LAR">
+<P>
+<b>!!!LAR:</b>
+<i>Arranger</i>.
+The name of the arranger.
+If more than one arranger was involved in the work,
+then each arranger's name should appear on a separate <b>!!!LAR:</b> record
+with a number designation prior to the colon.
+</P>
+<A NAME="orchestrator">
+<A NAME="LOR">
+<P>
+<b>!!!LOR:</b>
+<i>Orchestrator</i>.
+The name of the orchestrator.
+If more than one orchestrator was involved in the work,
+then each orchestrator's name should appear on a separate <b>!!!LOR:</b> record
+with a number designation prior to the colon.
+</P>
+<A NAME="original language">
+<A NAME="TXO">
+<P>
+<b>!!!TXO:</b>
+<i>Original language of vocal/choral text</i>.
+The name of the language should be encoded in that language.
+For example, <code><big>russki</big></code> rather than <code><big>Russian</big></code>.
+</P>
+<A NAME="encoded language">
+<A NAME="TXL">
+<P>
+<b>!!!TXL:</b>
+<i>Language of the
+<b>encoded</b>
+vocal/choral text</i>.
+The name of the language should be encoded in the language
+used for encoding.
+For example, <code><big>Italiano</big></code> rather than <code><big>Italian</big></code>.
+</P>
+<A NAME="translator">
+<A NAME="TRN">
+<P>
+<b>!!!TRN:</b>
+<i>Translator of text</i>.
+The name of the translator of any vocal, choral, or dramatic text.
+If more than one translator was involved in the work,
+then each translator's name should appear on a separate <b>!!!TRN:</b> record
+with a number designation prior to the colon.
+</P>
+<A NAME="Recording_Information">
+<H2>Recording Information</H2>
+</P>
+<P>
+Humdrum representations may encode information pertaining
+to sound recordings (such as sound-based analyses).
+For information derived from sound recordings
+the following reference records may be pertinent.
+</P>
+<A NAME="title">
+<A NAME="RTL">
+<P>
+<b>!!!RTL:</b>
+<i>Title of album</i>.
+</P>
+<A NAME="manufacturer">
+<A NAME="RMM">
+<P>
+<b>!!!RMM:</b>
+<i>Manufacturer or sponsoring company</i>.
+The company or organization responsible for the release,
+distribution, and/or manufacturing of the recording.
+</P>
+<A NAME="manufacturer">
+<A NAME="RC#">
+<P>
+<b>!!!RC#:</b>
+<i>Recording company's catalogue number</i>.
+The album's numerical designation.
+</P>
+<A NAME="date of release">
+<A NAME="RRD">
+<P>
+<b>!!!RRD:</b>
+<i>Date of release</i>.
+The release date should be encoded using the
+<A HREF="representations/date.rep.html">
+<code><big>**date</big></code></A>
+format described in the
+<i>Humdrum Reference Manual</i>.
+</P>
+<A NAME="place of recording">
+<A NAME="RLC">
+<P>
+<b>!!!RLC:</b>
+<i>Place of recording</i>.
+(Local language should be used.)
+</P>
+<A NAME="producer">
+<A NAME="RNP">
+<P>
+<b>!!!RNP:</b>
+<i>Name of the producer</i>.
+</P>
+<A NAME="date of recording">
+<A NAME="RDT">
+<P>
+<b>!!!RDT:</b>
+<i>Date of recording</i>.
+The date of recording should be encoded using the
+<A HREF="representations/date.rep.html">
+<code><big>**date</big></code></A>
+format described in the
+described in the
+<i>Humdrum Reference Manual</i>.
+</P>
+<A NAME="track number">
+<A NAME="RT#">
+<P>
+<b>!!!RT#:</b>
+<i>Track number</i>.
+</P>
+<A NAME="Performance_Information">
+<H2>Performance Information</H2>
+</P>
+<P>
+Humdrum representations may encode performance-activity information
+rather than (or in addition to) score-related information.
+If the representation encodes a given performance
+(such as a MIDI performance),
+then the following reference records may be pertinent.
+</P>
+<A NAME="performer">
+<A NAME="MPN">
+<P>
+<b>!!!MPN:</b>
+<i>Performer's name</i>.
+If more than one performer was involved in the work,
+then each performer's name should appear on a separate <b>!!!MPN:</b> record
+with a number designation prior to the colon.
+</P>
+<A NAME="suspected performer">
+<A NAME="MPS">
+<P>
+<b>!!!MPS:</b>
+<i>Suspected performer</i>.
+If more than one performer is suspected, each name should appear
+on a separate <b>!!!MPS:</b> record with a number designation
+prior to the colon.
+</P>
+<A NAME="date of performer">
+<A NAME="MRD">
+<P>
+<b>!!!MRD:</b>
+<i>Date of performance</i>.
+The performance date should be encoded using the
+<A HREF="representations/date.rep.html">
+<code><big>**date</big></code></A>
+format described in the
+<i>Humdrum Reference Manual</i>.
+</P>
+<A NAME="place of performer">
+<A NAME="MLC">
+<P>
+<b>!!!MLC:</b>
+<i>Place of performance</i>.
+(Local language should be used.)
+</P>
+<A NAME="conductor">
+<A NAME="MCN">
+<P>
+<b>!!!MCN:</b>
+<i>Name of the conductor of the performance</i>.
+</P>
+<A NAME="date of first performance">
+<A NAME="MPD">
+<P>
+<b>!!!MPD:</b>
+<i>Date of first performance</i>.
+The date of first performance should be encoded using the
+<A HREF="representations/date.rep.html">
+<code><big>**date</big></code></A>
+format described in the
+described in the
+<i>Humdrum Reference Manual</i>.
+</P>
+<A NAME="Identification_Information">
+<H2>Work Identification Information</H2>
+</P>
+<A NAME="title">
+<A NAME="OTL">
+<P>
+<b>!!!OTL:</b>
+<A HREF="guide03.html#Searching_for_Reference_Information"><B>Title.</B></A>
+The title of the specific section or segment encoded in the current file.
+Titles must be rendered in the original language,
+e.g.
+<i>Le sacre du printemps.</i>
+(Title translations are encoded using other reference records.)
+</P>
+<A NAME="English translation">
+<A NAME="XEN">
+<P>
+<b>!!!XEN:</b>
+<i>Translated title (in English)</i>.
+(Note that reference codes are also available for translations to
+languages other than English, French, German, or Japanese.)
+</P>
+<A NAME="French translation">
+<A NAME="XFR">
+<P>
+<b>!!!XFR:</b>
+<i>Translated title (in French)</i>.
+(Note that reference codes are also available for translations to
+languages other than English, French, German, or Japanese.)
+</P>
+<A NAME="German translation">
+<A NAME="XDE">
+<P>
+<b>!!!XDE:</b>
+<i>Translated title (in German)</i>.
+(Note that reference codes are also available for translations to
+languages other than English, French, German, or Japanese.)
+</P>
+<A NAME="Japanese translation">
+<A NAME="XNI">
+<P>
+<b>!!!XNI:</b>
+<i>Translated title (in Japanese)</i>.
+(Note that reference codes are also available for translations to
+languages other than English, French, German, or Japanese.)
+</P>
+<A NAME="popular title">
+<A NAME="OTP">
+<P>
+<b>!!!OTP:</b>
+<i>Popular Title</i>.
+This reference record encodes well-known or alias titles
+such as "Pathetique Sonata".
+</P>
+<A NAME="alternative title">
+<A NAME="OTA">
+<P>
+<b>!!!OTA:</b>
+<i>Alternative title</i>.
+This reference record encodes earlier or alternate titles.
+</P>
+<A NAME="parent work">
+<A NAME="OPR">
+<P>
+<b>!!!OPR:</b>
+<i>Title of larger (or parent) work</i> from which the encoded piece is a part.
+For example, "Gute Nacht" (OTL) from
+<i>Winterreise</i>
+(OPR).
+</P>
+<A NAME="act number">
+<A NAME="OAC">
+<P>
+<b>!!!OAC:</b>
+<i>Act number</i>.
+For operas and musicals, this reference record encodes the
+act number as an Arabic (rather than Roman) numeral.
+The number may be preceded by the word "Act" as in <code><big>Act 3</big></code>.
+</P>
+<A NAME="scene number">
+<A NAME="OSC">
+<P>
+<b>!!!OSC:</b>
+<i>Scene number</i>.
+For operas and musicals, this reference record encodes the
+scene number as an Arabic (rather than Roman) numeral.
+The number may be preceded by the word "Scene" as in <code><big>Scene 3</big></code>.
+</P>
+<A NAME="movement number">
+<A NAME="OMV">
+<P>
+<b>!!!OMV:</b>
+<i>Movement number</i>.
+For multi-movement works such as sonatas and symphonies,
+this reference record encodes the movement number as
+an Arabic (rather than Roman) numeral.
+The number may be preceded by the word "Movement" or "mov."
+etc., as in <code><big>mov. 3</big></code>.
+</P>
+<A NAME="movement name">
+<A NAME="OMD">
+<P>
+<b>!!!OMD:</b>
+<i>Movement designation or movement name</i>.
+Typically movements may be named according to the tempo
+(e.g. "Allegro ma no troppo") or according to a style, genre
+or form (e.g. "Fugue"), or according to a programmatic title
+(e.g. "In Full Flower").
+</P>
+<A NAME="opus number">
+<A NAME="OPS">
+<P>
+<b>!!!OPS:</b>
+<i>Opus number</i>.
+The number may be preceded by the word "Opus" as in <code><big>Opus 23</big></code>.
+Once again, Arabic numerals are used.
+</P>
+<A NAME="(work) number">
+<A NAME="ONM">
+<P>
+<b>!!!ONM:</b>
+<i>Number</i>.
+The number may be preceded by the abbreviations "No." or "Nr."
+as in <code><big>No. 4</big></code>.
+</P>
+<A NAME="(work) volume">
+<A NAME="OVM">
+<P>
+<b>!!!OVM:</b>
+<i>Volume</i>.
+The volume number may be preceded by the abbreviation "Vol."
+as in <code><big>Vol. 2</big></code>.
+Arabic numbers are used.
+</P>
+<A NAME="ODE">
+<A NAME="dedication">
+<P>
+<b>!!!ODE:</b>
+<i>Dedication</i>.
+Name of person or organization to whom the work is dedicated.
+If the work was dedicated to more than one person,
+then each dedicatee's name should appear on a separate <b>!!!ODE:</b> record
+with a number designation prior to the colon.
+</P>
+<A NAME="commission">
+<A NAME="OCO">
+<P>
+<b>!!!OCO:</b>
+<i>Commission</i>.
+Name of person or organization that commissioned the work.
+If the work was commissioned by more than one person,
+then each commissioner's name should appear on a separate <b>!!!OCO:</b> record
+with a number designation prior to the colon.
+</P>
+<A NAME="collector">
+<A NAME="OCL">
+<P>
+<b>!!!OCL:</b>
+<i>Collector</i>.
+Name of person who collected or transcribed the work.
+If the work was collected by more than one person,
+then each collector's name should appear on a separate <b>!!!OCL:</b> record
+with a number designation prior to the colon.
+</P>
+<A NAME="nota bene">
+<A NAME="ONB">
+<P>
+<b>!!!ONB:</b>
+<i>Free format note</i> related to the title or identity of the encoded work.
+Nota bene.
+If more than one such note is encoded,
+each should appear on a separate <b>!!!ONB:</b> record
+with a number designation prior to the colon.
+</P>
+<A NAME="date of composition">
+<A NAME="ODT">
+<P>
+<b>!!!ODT:</b>
+<i>Date of composition</i>.
+The date (or period) of composition should be encoded using the
+<A HREF="representations/date.rep.html">
+<code><big>**date</big></code></A>
+or
+<A HREF="representations/Zeit.rep.html">
+<code><big>**Zeit</big></code></A>
+formats described in the
+<i>Humdrum Reference Manual</i>.
+The <code><big>**date</big></code> and <code><big>**Zeit</big></code> formats provides a highly refined
+representation, including methods for representing uncertainty, approximation,
+and boundary dates (e.g. prior to ..., after ...).
+</P>
+<A NAME="OCY">
+<A NAME="country of composition">
+<P>
+<b>!!!OCY:</b>
+<i>Country of composition</i>.
+Local names should be used, such as `Espana'.
+</P>
+<A NAME="OPC">
+<A NAME="city of composition">
+<P>
+<b>!!!OPC:</b>
+<i>City, town or village of composition</i>.
+Local names should be used, such as `Den Haag.'
+</P>
+<A NAME="Group_Information">
+<H2>Group Information</H2>
+<A NAME="GTL">
+<A NAME="group">
+<P>
+<b>!!!GTL:</b>
+<i>Group Title</i>.
+A logical collection of works
+such as the "London Symphonies" by Haydn,
+or the four concertos by Vivaldi
+forming "The Seasons".
+</P>
+<A NAME="associated work">
+<A NAME="GAW">
+<P>
+<b>!!!GAW:</b>
+<i>Associated Work</i>.
+Some works are associated with other works, such as plays,
+novels, paintings, films, or other musical works.
+E.g. Mendelssohn's Overture to Shakespeare's <i>Midsummer Night's Dream</i>.
+This reference allows associated works to be explicitly identified
+by author and title.
+E.g. 
+</P>
+<P>
+<blockquote>
+<code><big>
+!!!GAW: St&#233;phane Mallarm&#233;, L'Apr&#232;s-midi d'un faune; [The Afternoon of a Faun].
+</code></big>
+</blockquote>
+<A NAME="GCO">
+<A NAME="group">
+<P>
+<b>!!!GCO:</b>
+<i>Collection designation</i>.
+This is a free-form text record that can be used to identify
+a collection of pieces,
+such as works appearing in a compendium or anthology.
+E.g. Norton Scores, Smithsonian Collection, Burkhart Anthology.
+</P>
+<A NAME="Imprint_Information">
+<H2>Imprint Information</H2>
+</P>
+<A NAME="publication status">
+<A NAME="PUB">
+<P>
+<b>!!!PUB:</b>
+<i>Publication status</i>.
+This reference record identifies whether the document has ever been "published".
+One of the following English terms may appear: <code><big>published</big></code>
+or <code><big>unpublished</big></code>.
+</P>
+<A NAME="first publisher">
+<A NAME="PPR">
+<P>
+<b>!!!PPR:</b>
+<i>First publisher</i>.
+Name of the first publisher of the work.
+</P>
+<A NAME="PDT">
+<A NAME="date of first publication">
+<P>
+<b>!!!PDT:</b>
+<i>Date first published</i>.
+The date of publication should be encoded using the
+<A HREF="representations/date.rep.html">
+<code><big>**date</big></code></A>
+format described in the
+<i>Humdrum Reference Manual</i>.
+</P>
+<A NAME="place of first publication">
+<A NAME="PPP">
+<P>
+<b>!!!PPP:</b>
+<i>Place first published</i>.
+(Local language should be used.)
+</P>
+<A NAME="publisher's catalogue number">
+<A NAME="PC#">
+<P>
+<b>!!!PC#:</b>
+<i>Publisher's catalogue number</i>.
+This should not be confused with better known scholarly catalogues,
+such as those of K&#246chel, Hoboken, etc.
+</P>
+<A NAME="SCT">
+<A NAME="scholarly catalogue abbreviation and number">
+<P>
+<b>!!!SCT:</b>
+<i>Scholarly catalogue abbreviation and number</i>.
+E.g. BWV 551
+</P>
+<A NAME="scholarly catalogue (unabbreviated) name">
+<A NAME="SCA">
+<P>
+<b>!!!SCA:</b>
+<i>Scholarly catalogue (unabbreviated) name</i>.
+E.g.<code><big>Koechel 117</big></code>.
+</P>
+<A NAME="manuscript source">
+<A NAME="SMS">
+<P>
+<b>!!!SMS:</b>
+<i>Manuscript source name</i>.
+For unpublished sources, the manuscript source name.
+</P>
+<A NAME="manuscript location">
+<A NAME="SML">
+<P>
+<b>!!!SML:</b>
+<i>Manuscript location</i>.
+For unpublished sources, the location of the manuscript source.
+</P>
+<A NAME="SMA">
+<A NAME="acknowledgement of manuscript access">
+<P>
+<b>!!!SMA:</b>
+<i>Acknowledgement of manuscript access</i>.
+This reference information may be used to encode a free format
+acknowledgement or note of thanks to a given manuscript owner for
+scholarly or other access.
+</P>
+<A NAME="Copyright_Information">
+<H2>Copyright Information</H2>
+</P>
+<A NAME="YEP">
+<A NAME="publisher of electronic edition">
+<P>
+<b>!!!YEP:</b>
+<i>Publisher of electronic edition</i>.
+This reference identifies the publisher of the electronic document.
+</P>
+<A NAME="YEC">
+<A NAME="date and owner of electronic copyright">
+<P>
+<b>!!!YEC:</b>
+<i>Date and owner of electronic copyright</i>.
+This reference identifies the year and owner of the copyright for the
+electronic document.
+</P>
+<A NAME="YER">
+<A NAME="date electronic edition released">
+<P>
+<b>!!!YER:</b>
+Date electronic edition released.
+</P>
+<A NAME="YEM">
+<A NAME="copyright message">
+<P>
+<b>!!!YEM:</b>
+<i>Copyright message</i>.
+This record conveys any special text related to copyright.
+It might convey a simple warning (e.g. "All rights reserved."),
+convey registration or licensing information,
+or indicate that the document is shareware.
+</P>
+<A NAME="YEN">
+<A NAME="country of copyright">
+<P>
+<b>!!!YEN:</b>
+<i>Country of copyright</i>.
+This reference identifies the country in which the electronic document
+was created, or where the copyright was established.
+In effect, it identifies the country under whose laws the
+copyright declaration is to be interpreted.
+</P>
+<A NAME="YOR">
+<A NAME="original document">
+<P>
+<b>!!!YOR:</b>
+<i>Original document</i>.
+This reference identifies any original source or sources from which
+encoded document was prepared.
+Note that original documents may themselves be copyrighted,
+and that permission may be required in order to create an electronic
+derivative document.
+Original documents may also have lapsed copyrights.
+</P>
+<A NAME="original document owner">
+<A NAME="YOO">
+<P>
+<b>!!!YOO:</b>
+<i>Original document owner</i>.
+If the electronic document was prepared from a copyrighted original
+document, this reference identifies the copyright owner of the
+original document.
+Note that unless the electronic and original documents have the same owner,
+some licensing agreement or other legal arrangement is necessary
+in order to create an electronic derivative document.
+</P>
+<A NAME="original copyright year">
+<A NAME="YOY">
+<P>
+<b>!!!YOY:</b>
+<i>Original copyright year</i>.
+If the electronic document was prepared from a copyrighted original
+document, this reference identifies the year of copyright for the
+original document.
+Note that some licensing agreement or other legal arrangement
+is necessary in order to create an electronic derivative document.
+</P>
+<A NAME="original editor">
+<A NAME="YOE">
+<P>
+<b>!!!YOE:</b>
+<i>Original editor</i>.
+The editor of the original
+document from which the electronic edition was prepared.
+Note that some licensing agreement or other legal arrangement
+may be necessary in order to create an electronic derivative document.
+</P>
+<A NAME="EED">
+<A NAME="electronic editor">
+<P>
+<b>!!!EED:</b>
+<i>Electronic Editor</i>.
+Name of the editor of the electronic document.
+If more than one editor was involved in the work,
+then each editor's name should appear on a separate <b>!!!EED:</b> record
+with a number designation prior to the colon.
+</P>
+<A NAME="ENC">
+<A NAME="encoder of electronic document">
+<P>
+<b>!!!ENC:</b>
+<i>Encoder of the electronic document</i>.
+This reference identifies the name of the person or persons who encoded
+the electronic document.
+(Not to be confused with the electronic editor.)
+If more than one encoder was involved in the work,
+then each encoder's name should appear on a separate <b>!!!ENC:</b> record
+with a number designation prior to the colon.
+</P>
+<A NAME="document modification description">
+<A NAME="EMD">
+<P>
+<b>!!!EMD:</b>
+<i>Document modification description</i>.
+This record type is used to chronicle all modifications made
+to the original electronic document.
+EMD records should indicate the date of modification,
+the name of the person making the modification, and a brief
+description of the type of modification made.
+For each successive modification, a separate <b>!!!EMD:</b> record should appear
+with a number designation prior to the colon.
+</P>
+<A NAME="EEV">
+<A NAME="electronic edition version">
+<P>
+<b>!!!EEV:</b>
+<i>Electronic edition version</i>.
+This reference identifies the specific editorial version of the work.
+e.g. Version 1.3g
+Only a single <b>!!!EEV:</b> record can appear in a given electronic document.
+</P>
+<A NAME="EFL">
+<A NAME="file number">
+<P>
+<b>!!!EFL:</b>
+<i>File number</i>.
+Some files are part of a series or group of related files.
+This record indicates that the current document is file <i>x</i>
+in a group of <i>y</i> files.
+The two numbers are separated by a slash as in:
+</P>
+<P>
+<blockquote>
+<code><big>
+!!!EFL: 1/4
+</code></big>
+</blockquote>
+</P>
+<A NAME="encoding status">
+<A NAME="EST">
+<P>
+<b>!!!EST:</b>
+<i>Encoding status</i>.
+This record indicates the current status of the document as it is
+being produced.
+Free-format text may indicate that the encoding is in-progress,
+list tasks remaining, or indicate that the encoding is complete.
+<b>!!!EST:</b> records are normally eliminated prior to
+distribution of the document.
+</P>
+<A NAME="VTS">
+<A NAME="checksum validation number">
+<P>
+<b>!!!VTS:</b>
+<i>Checksum validation number</i>.
+This reference encodes the checksum number for the file -- excluding
+the <b>!!!VTS:</b> record itself.
+When this record is eliminated from the file,
+any POSIX.2 standard
+<b>cksum</b>
+command can be used to determine whether the file originates
+with the publisher, or whether it has been modified in some way.
+(See the Humdrum
+<b>veritas</b>
+command described in Section 4.)
+Note that this validation process is easily circumvented by
+malicious individuals.
+For true security, the checksum value should be compared
+with a printed list of checksums provided by the electronic publisher.
+</P>
+<A NAME="Analytic_Information">
+<H2>Analytic Information</H2>
+<A NAME="ACO">
+<A NAME="collection">
+<P>
+<b>!!!ACO:</b>
+<i>Collection designation</i>.
+This is a free-form text record that can be used to identify
+a collection, set, or group of related works,
+such as works appearing in a compendium or anthology.
+E.g. Norton Scores, Smithsonian Collection, Jones Anthology.
+</P>
+<A NAME="AFR">
+<A NAME="form designation">
+<P>
+<b>!!!AFR:</b>
+<i>Form designation</i>.
+This is a free-form text record that can be used to identify
+the form (if appropriate) of the work.
+E.g. fuga, sonata-allegro, passacaglia, rounded binary, rondo.
+</P>
+<A NAME="AGN">
+<A NAME="genre designation">
+<P>
+<b>!!!AGN:</b>
+<i>Genre designation</i>.
+This is a free-form text record that can be used to identify
+the genre of the work.
+E.g. opera, string quartet, barbershop quartet.
+</P>
+<A NAME="AST">
+<A NAME="style, period, or type of work designation">
+<P>
+<b>!!!AST:</b>
+<i>Style, period, or type of work designation</i>.
+This is a free-form text record that can be used to characterize
+the style, period, or type of work.
+This reference can include any term or terms
+deemed appropriate by the producer of the document.
+Designations might include keywords or keyphrases such as:
+Baroque, bebop, Ecole Notre Dame, minimalist, serial, reggae,
+slendro, heterophony, etc.
+</P>
+<A NAME="AMD">
+<A NAME="mode classification">
+<P>
+<b>!!!AMD:</b>
+<i>Mode Classification</i>.
+A combined numerical/name system for mode identification
+-- used especially for medieval monophonic and later polyphonic works.
+Modes are indicated by numbers from 1 to 12,
+followed by a semicolon,
+followed by the corresponding written name
+(with an initial upper-case character).
+Permissible mode numbers and names are:
+<blockquote>
+<TABLE>
+<TR><TD>1;</TD><TD>Dorian</TD></TR>
+<TR><TD>2;</TD><TD>Hypodorian</TD></TR>
+<TR><TD>3;</TD><TD>Phyrgian</TD></TR>
+<TR><TD>4;</TD><TD>Hypophyrgian</TD></TR>
+<TR><TD>5;</TD><TD>Lydian</TD></TR>
+<TR><TD>6;</TD><TD>Hypolydian</TD></TR>
+<TR><TD>7;</TD><TD>Mixolydian</TD></TR>
+<TR><TD>8;</TD><TD>Hypomixolydian</TD></TR>
+<TR><TD>9;</TD><TD>Ionian</TD></TR>
+<TR><TD>10;</TD><TD>Hypoionian</TD></TR>
+<TR><TD>11;</TD><TD>Aeolian</TD></TR>
+<TR><TD>12;</TD><TD>Hypoaeolian</TD></TR>
+</TABLE>
+</blockquote>
+Other non-standard mode names can be used at the discretion
+of the electronic editor.
+</P>
+<A NAME="AMT">
+<A NAME="metric classification">
+<P>
+<b>!!!AMT:</b>
+<i>Metric Classification</i>.
+Meters for a file may be classified as one of the following eight
+categories: <code><big>simple duple</big></code>, <code><big>simple triple</big></code>,
+<code><big>simple quadruple</big></code>, <code><big>compound duple</big></code>, <code><big>compound triple</big></code>,
+<code><big>compound quadruple</big></code>, <code><big>irregular</big></code>, or <code><big>various</big></code>.
+</P>
+<A NAME="AIN">
+<A NAME="instrumentation">
+<P>
+<b>!!!AIN:</b>
+<A HREF="guide.append2.html"><B>Instrumentation.</B></A>
+This reference is used to list all of the instruments (including voice)
+used in the work.
+Instruments should be encoded using the abbreviations specified
+by the <code><big>*I</big></code> tandem interpretation described in
+Appendix II.
+Instrument codes must appear in alphabetical order separated by spaces.
+(Note that alphabetical ordering is essential in order to facilitate
+searches for specific combinations or subsets of instruments
+using the
+<b>grep</b>
+command.)
+E.g. 
+</P>
+<P>
+<blockquote>
+<code><big>
+!!!AIN: clars corno fagot flt oboe
+</code></big>
+</blockquote>
+</P>
+<A NAME="ARE">
+<A NAME="region designation">
+<P>
+<b>!!!ARE:</b>
+<i>Geographical region of origin</i>.
+This reference identifies the geographical location
+from which the work originates.
+Location designations are encoded using the local language.
+The location begins with the continent designation,
+and becomes successively more refined.
+If the information is available, refinement can continue
+to suburban district or even street address.
+<P>
+<blockquote>
+<code><big>
+!!!ARE: Europa, Mitteleuropa, Deutschland, Wuerttemberg, Sindelfingen
+<br>
+!!!ARE: America, North America, United States of America, Ohio, Columbus
+</code></big>
+</blockquote>
+</P>
+<A NAME="ARL">
+<A NAME="location designation">
+<P>
+<b>!!!ARL:</b>
+<i>Geographical location of origin</i>.
+Like the ARE record, this reference record
+identifies the geographical location
+from which a work originates.
+Location designations are encoded using latitude
+and longitude values -- suitable for creating maps.
+The first numerical value indicates latitude (positive
+values indicating North, negative values indicating South).
+The second numerical value indicates longitude (positive
+values only, indicating distance East from the central
+meridian).
+A slash separates the latitude and longitude values.
+A series of trailing characters is used to indicate
+the degree of accuracy of the location information:
+% (continent), @ (country), # (province or state),
+: (town or village).
+For large regions such as countries or provinces,
+the geographical center of the region is used.
+<P>
+<blockquote>
+<code><big>
+!!!ARL: 51.5/10.5@
+</code></big>
+</blockquote>
+</P>
+
+</P>
+<A NAME="Historical_Information">
+<H2>Historical and Background Information</H2>
+<A NAME="HAO">
+<A NAME="aural_history">
+<P>
+<b>!!!HAO:</b>
+<i>Aural History</i>.
+This is a free-form text record used to relay
+any story or stories about the origin, purpose
+or background of the work.
+This reference record is especially useful in
+ethnomusicological materials, where a particular
+story accompanies a song.
+The story may be encoded using several successive HAO records.
+</P>
+<A NAME="HTX">
+<A NAME="text_translation">
+<P>
+<b>!!!HTX:</b>
+<i>Free-form Translation of Vocal Text</i>.
+This is a free-form text record used to relay
+a non-literal translation of a vocal text.
+This reference record is again especially useful in
+ethnomusicological materials.
+</P>
+<A NAME="Representation_Information">
+<H2>Representation Information</H2>
+</P>
+<A NAME="ASCII language setting">
+<A NAME="RLN">
+<P>
+<b>!!!RLN:</b>
+<i>ASCII language setting</i>.
+This reference identifies the "language" code in which
+the file was encoded.
+This is applicable only to computer platforms which provide
+"extended ASCII" text capabilities (e.g. Danish or Spanish characters).
+</P>
+<A NAME="User-defined signifiers">
+<A NAME="RDF">
+<P>
+<b>!!!RDF:</b>
+<i>User-defined signifiers</i>.
+All Humdrum representations provide some signifiers (ASCII characters) that
+remain undefined.
+Users are free to use these undefined signifiers as they choose.
+When undefined signifiers appear in a given document,
+the <b>!!!RDF**<i>interp</i>:</b> code should
+be used to specify what the signifiers denote.
+Notice that the code RDF is followed by the name of the
+interpretation to which the signifier definition applies.
+In the following example, the letters "X" and "x" symbols that
+are defined within a hypothetical **piano representation.
+E.g.
+</P>
+<P>
+<blockquote>
+<code><big>
+!!!RDF**piano: X=hands cross, left over right
+<br>
+!!!RDF**piano: x=hands cross, right over left
+</code></big>
+</blockquote>
+</P>
+<A NAME="date encoded">
+<A NAME="RDT">
+<P>
+<b>!!!RDT:</b>
+<i>Date encoded</i>.
+This reference uses the Humdrum
+<A HREF="representations/date.rep.html">
+<code><big>**date</big></code></A>
+format to identify the date(s) when the document was encoded.
+</P>
+<A NAME="representaton note">
+<A NAME="RNB">
+<P>
+<b>!!!RNB:</b>
+<i>Representation note</i>.
+This reference provides a free-format text that conveys
+some document-specific note related to matters of representation.
+</P>
+<A NAME="representaton warning">
+<A NAME="RWG">
+<P>
+<b>!!!RWG:</b>
+<i>Representation warning</i>.
+This reference may be used to encode explicit warnings
+concerning the encoded material.
+</P>
+<A NAME="Electronic_Citation">
+<H2>Electronic Citation</H2>
+</P>
+<P>
+</P>
+<P>
+Electronic editions of music might be cited in printed or other documents
+by including the following information.
+The "author" (e.g. <A HREF="#composer"><b>!!!COM:</b></A>),
+the "title" -- either original title
+(<A HREF="#OTL"><b>!!!OTL:</b></A>)
+or translated title (e.g. <A HREF="#XEN"><b>!!!XEN:</b></A>).
+The editor (<A HREF="#electronic editor"><b>!!!EED:</b></A>),
+publisher (<A HREF="#publisher of electronic edition"><b>!!!YEP:</b></A>),
+date of publication and copyright owner
+(<A HREF="#date and owner of electronic copyright"><b>!!!YEC:</b></A>),
+and electronic version
+(<A HREF="#electronic edition version"><b>!!!EEV:</b></A>),
+In addition, a full citation ought to include the validation
+checksum (<A HREF="#checksum validation number"><b>!!!VTS:</b></A>).
+This number will allow others to verify that a particular electronic
+document is precisely the one cited.
+A sample electronic citation might be:
+</P>
+<P>
+<blockquote>
+Franz Liszt, Hungarian Rhapsody No. 8 in F-sharp minor (solo piano).
+<br>
+Amsterdam: Rijkaard Software Publishers, 1994;
+H. Vo\o'r\(hc'i\o's\(hc'ek (Ed.),
+<br>
+Electronic edition version 2.1, checksum 891678772.
+</blockquote>
+</P>
+<P>
+In Humdrum files it does not matter where reference records appear.
+Since it is common for users to inspect the beginning of a file in order
+to check whether the file is being properly processed, the number of
+reference records at the beginning of the file should be kept to a
+minimum.
+A good habit is to place the composer, title of the work, and
+copyright records at the beginning of the file, and to relegate
+all other reference records to the end of the file.
+</P>
+<A NAME="Further_Reference_Record_Codes">
+<H2>ISO Language Codes</H2>
+</P>
+<A NAME="other language translations">
+<P>
+The following table provides further language designation codes
+not identified in the preceding discussion.
+A
+<A HREF="http://lcweb.loc.gov/standards/iso639-2/englangn.html">
+<B>complete list</B></A>
+of ISO 639-2 language codes is available.
+<blockquote><TABLE>
+<TR><TD>Code</TD><TD>Language</TD></TR>
+<TR><TD><b>@ALB</b></TD><TD>in Albanian</TD></TR>
+<TR><TD><b>@ARA</b></TD><TD>in Arabic</TD></TR>
+<TR><TD><b>@ARM</b></TD><TD>in Armenian</TD></TR>
+<TR><TD><b>@AZE</b></TD><TD>in Azeri</TD></TR>
+<TR><TD><b>@BEN</b></TD><TD>in Bengali</TD></TR>
+<TR><TD><b>@BUL</b></TD><TD>in Bulgarian</TD></TR>
+<TR><TD><b>@CHI</b></TD><TD>in Chinese</TD></TR>
+<TR><TD><b>@SCR</b></TD><TD>in Croatian</TD></TR>
+<TR><TD><b>@CZE</b></TD><TD>in Czech</TD></TR>
+<TR><TD><b>@DAN</b></TD><TD>in Danish</TD></TR>
+<TR><TD><b>@DUT</b></TD><TD>in Dutch</TD></TR>
+<TR><TD><b>@ENG</b></TD><TD>in English</TD></TR>
+<TR><TD><b>@EST</b></TD><TD>in Estonian</TD></TR>
+<TR><TD><b>@FIN</b></TD><TD>in Finnish</TD></TR>
+<TR><TD><b>@FRE</b></TD><TD>in French</TD></TR>
+<TR><TD><b>@GLA</b></TD><TD>in Gaelic</TD></TR>
+<TR><TD><b>@GER</b></TD><TD>in German</TD></TR>
+<TR><TD><b>@GRE</b></TD><TD>in Greek (modern)</TD></TR>
+<TR><TD><b>@HEB</b></TD><TD>in Hebrew</TD></TR>
+<TR><TD><b>@HIN</b></TD><TD>in Hindi</TD></TR>
+<TR><TD><b>@HUN</b></TD><TD>in Hungarian</TD></TR>
+<TR><TD><b>@ICE</b></TD><TD>in Icelandic</TD></TR>
+<TR><TD><b>@ITA</b></TD><TD>in Italian</TD></TR>
+<TR><TD><b>@JPN</b></TD><TD>in Japanese</TD></TR>
+<TR><TD><b>@JAV</b></TD><TD>in Javanese</TD></TR>
+<TR><TD><b>@KHM</b></TD><TD>in Khmer</TD></TR>
+<TR><TD><b>@KOR</b></TD><TD>in Korean</TD></TR>
+<TR><TD><b>@LIT</b></TD><TD>in Lithuanian</TD></TR>
+<TR><TD><b>@LAT</b></TD><TD>in Latin</TD></TR>
+<TR><TD><b>@LAV</b></TD><TD>in Latvian</TD></TR>
+<TR><TD><b>@MAL</b></TD><TD>in Malayalam</TD></TR>
+<TR><TD><b>@MON</b></TD><TD>in Mongolian</TD></TR>
+<TR><TD><b>@NOR</b></TD><TD>in Norwegian</TD></TR>
+<TR><TD><b>@POL</b></TD><TD>in Polish</TD></TR>
+<TR><TD><b>@POR</b></TD><TD>in Portugese</TD></TR>
+<TR><TD><b>@RUM</b></TD><TD>in Romanian</TD></TR>
+<TR><TD><b>@RUS</b></TD><TD>in Russian</TD></TR>
+<TR><TD><b>@SCC</b></TD><TD>in Serbian</TD></TR>
+<TR><TD><b>@SLO</b></TD><TD>in Slovak</TD></TR>
+<TR><TD><b>@SLV</b></TD><TD>in Slovenian</TD></TR>
+<TR><TD><b>@SPA</b></TD><TD>in Spanish, Castilian</TD></TR>
+<TR><TD><b>@SWA</b></TD><TD>in Swahili</TD></TR>
+<TR><TD><b>@SWE</b></TD><TD>in Swedish</TD></TR>
+<TR><TD><b>@TAM</b></TD><TD>in Tamil</TD></TR>
+<TR><TD><b>@THA</b></TD><TD>in Thai</TD></TR>
+<TR><TD><b>@TIB</b></TD><TD>in Tibetan</TD></TR>
+<TR><TD><b>@TUR</b></TD><TD>in Turkish</TD></TR>
+<TR><TD><b>@UKR</b></TD><TD>in Ukranian</TD></TR>
+<TR><TD><b>@URD</b></TD><TD>in Urdu</TD></TR>
+<TR><TD><b>@VIE</b></TD><TD>in Vietnamese</TD></TR>
+<TR><TD><b>@WEL</b></TD><TD>in Welsh</TD></TR>
+<TR><TD><b>@XHO</b></TD><TD>in Xhosa</TD></TR>
+<TR><TD><b>@ZUL</b></TD><TD>in Zulu</TD></TR>
+</TABLE></blockquote>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide.append2.html">
+<B>Next Appendix</B></A>
+<li>
+<A HREF="guide.bibliog.html">
+<B>Previous Appendix</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999, 2002 David Huron
+</BODY>
+</HTML>

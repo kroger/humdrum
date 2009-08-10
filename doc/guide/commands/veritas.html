@@ -1,0 +1,130 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- veritas</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>veritas</b>  --  validate that a Humdrum document has not been modified
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>veritas</b>  [<b>-v</b>]  <i>inputfile</i>
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>veritas</b>
+command provides an on-line means for formally or informally verifying
+that a given Humdrum file originates with a given publisher or source,
+or whether the file has been modified in some way.
+The command provides a convenient way of reassuring scholars of
+the accuracy or origin of a document.
+</P>
+<P>
+The
+<b>veritas</b>
+command looks for a checksum validation number
+encoded in a VTS reference record in the given input file.
+(See the
+<A HREF="../guide.append1.html"><b>Reference Records (1)</b></A>
+description.)
+The command then calculates the checksum for the file
+(excluding the VTS record itself) and compares this value with the
+checksum encoded in the file.
+If these values differ, a warning is issued that the file
+has been modified in some way.
+If these values are the same, a confirming message is issued.
+</P>
+<P>
+Note that this verification process is easily circumvented by
+malicious individuals.
+For better security, the
+<b>-v</b>
+option should be invoked and the output checksum value should be
+compared with an independent printed list of checksums provided by
+the supplier of the electronic document.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>veritas</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-v</b></TD><TD>invoke verbose mode</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The
+<b>-v</b>
+option will cause the checksum validation number to be output.
+This value should be manually compared with a printed checksum
+provided by the supplier of the electronic document.
+Note that the change of even a single character in a file typically
+leads to a radically different checksum.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and POSIX.2 compliant
+<b>cksum</b>
+command.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<b>cksum</b> (UNIX),
+<b>sum</b> (UNIX)
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide37.html#Data_Integrity_Using_the_VTS_Checksum_Record">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

@@ -1,0 +1,24 @@
+
+RECORD    : Record live MIDI input into Humdrum **MIDI data format.
+
+     This command captures data from a MIDI input and translates this data
+     into the Humdrum **MIDI representation.  Recording commences as soon
+     as the command is invoked and ceases when any ASCII key is pressed --
+     other than the space bar.  Pressing the space bar causes a barline to
+     be output -- numbered beginning with measure 1.  Each MIDI channel is
+     recorded in a separate Humdrum spine.  (See also ENCODE command.)
+
+Syntax:
+
+     record [-i hex] [-q N] [ > outputfile.hmd]
+
+Options:
+
+     -i hex  : assign MIDI interface input/output address to "hex";
+               default is 330
+     -q N    : invoke quantizing using a temporal window of N clock ticks;
+               (recorded events occurring within this window are deemed
+               "simultaneous," and are encoded as Humdrum multiple-stops)
+
+  Refer to reference manual for further details.
+

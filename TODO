@@ -1,0 +1,4 @@
+* test if shell scripts are portable (just to justify)
+* write command line flags in humdrum.c (not shell)
+* re-write using functions? (the wraper)
+* re-write using python? (the wraper)

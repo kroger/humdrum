@@ -1,0 +1,24 @@
+
+STROPHE   : Selectively extract strophic data.
+
+     Strophic data encode alternative concurrent information for a given pass-
+     age.  Examples of strophic data include the texts for different verses
+     of a song, or alternative renditions of the same passage (e.g. `ossias').
+
+     The STROPHE command permits selective extraction of strophic data.  With-
+     out an option, successive numbered strophes are selected in numerical
+     order.  With the -s option, selected numbered strophes are output in the
+     order specified.  With the -x option, only strophes matching the speci-
+     fied text label are output.  Inputs must be in through-composed format.
+
+Syntax:
+
+     strophe [-s strophe_list | -x strophe_label] [file ...]
+
+Options:
+
+     -s strophe_list   : output numbered strophes according to strophe_list
+     -x strophe_label  : output only strophes labelled strophe_label
+
+  Refer to reference manual for further details.    See also:  THRU
+

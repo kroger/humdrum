@@ -1,0 +1,261 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Barlines</TITLE>
+<!-- Documentation for the Humdrum barlines representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the Humdrum barlines representaton; software for music research.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer representation,barlines ">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Barlines</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>barlines</b>  --  "common system" for representing barlines
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+Several Humdrum representations employ a common system for representing
+barlines.
+This common system is described below.
+(N.B. This common system is not intended to preclude other ways of
+representing barlines in Humdrum.)
+</P>
+<P>
+In the common system, barlines are represented as logical entities,
+with optional signifiers for specifying the precise visual appearance
+of the barlines.
+Barlines are logically signified by the presence of an equals-sign
+<code><big>
+(=)
+</code></big>
+in the first column of a spine.
+Immediately after the equals sign there may follow an optional integer value
+indicating the measure number (e.g.
+<code><big>
+=107
+</code></big>
+--  for measure 107).
+In addition, a lower-case alphabetic character may be appended to the measure
+number -- as in:
+<code><big>
+=14b.
+</code></big>
+This convention permits the user to distinguish measure numbers for
+first and second endings, etc.
+Measure numbers refer to the measure immediately
+following the barline, thus the token
+<code><big>
+=23
+</code></big>
+occurs just prior to the encoded data for measure 23.
+</P>
+<P>
+Double barlines are indicated by a minimum of two successive equals signs
+<code><big>
+(==).
+</code></big>
+Several consecutive equals signs may be encoded
+in order to enhance readability (e.g.
+<code><big>
+=======).
+</code></big>
+</P>
+<P>
+An additional attribute for barlines is the
+<i>pause</i>
+--  which is represented by the-- icolon (;).
+Thus the token
+<code><big>
+=4;
+</code></big>
+means that the barline starting measure number 4 has a
+pause written above or below it, while the token
+<code><big>
+=====;
+</code></big>
+means that a double barline contains a pause indication.
+</P>
+<P>
+Barlines can be visually rendered in a variety of ways.
+Where appropriate, users can specify more precisely the
+notational appearance of the barline by
+<i>appending</i>
+additional signifiers to the basic signifiers identified above.
+Barlines may be normal or heavy in width.
+Barlines of normal width are represented by the addition of the
+vertical bar (<code><big>|</big></code>).
+Heavy barlines are signified by the exclamation mark (<code><big>!</big></code>).
+Dotted barlines are signified by the double quote character (<code><big>"</big></code>).
+Partial barlines (extending between the second and fourth lines)
+are signified by the single quote character (<code><big>'</big></code>).
+Partial barlines (rendered as a short vertical stroke across the top of
+the staff) are signified by the single greve character (<code><big>`</big></code>).
+"Invisible" barlines are signified by the minus sign (<code><big>-</big></code>).
+In addition, barlines may be associated with repetition marks --
+pointing left, right, or in both directions.
+The repeat sign is denoted by the colon character <code><big>:</big></code>).
+(Note that this repeat sign is a
+<i>visual</i>
+signifier, rather than a logical signifier of repetition; see
+<b>section labels (3)</b>
+and
+<b>thru (4)</b>
+for information concerning repetition.)
+All of these visual signifiers may be combined to form complex visual
+representations, such as a triple barline consisting of a normal line,
+followed by a heavy line, followed by a normal line, followed by
+a repeat indicator.
+See
+<A HREF="#EXAMPLES"><B>EXAMPLES</B></A> below.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+mappings of signifiers and signifieds for "common system" barlines.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>measure numbers</TD></TR>
+<TR><TD>a-z</TD><TD>alternate measures</TD></TR>
+<TR><TD>;</TD><TD>pause</TD></TR>
+<TR><TD>=</TD><TD>barline</TD></TR>
+<TR><TD>==</TD><TD>double barline</TD></TR>
+<TR><TD>|</TD><TD>normal width visual rendering</TD></TR>
+<TR><TD>!</TD><TD>heavy width visual rendering</TD></TR>
+<TR><TD>'</TD><TD>partial barline (from second to fourth line)</TD></TR>
+<TR><TD>`</TD><TD>partial barline (short stroke at top of staff)</TD></TR>
+<TR><TD>-</TD><TD>invisible barline</TD></TR>
+<TR><TD>:</TD><TD>repeat sign</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**kern</b>-like Barline Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<A NAME="EXAMPLES">
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+Several examples of "common system" barlines are
+given below:
+<br><br>
+<TABLE>
+<TR><TD><code><big>=</TD><TD></big></code>unnumbered barline</TD></TR>
+<TR><TD><code><big>=29 </TD><TD></big></code>the beginning of measure 29</TD></TR>
+<TR><TD><code><big>=29; </TD><TD></big></code>the beginning of measure 29 with pause</TD></TR>
+<TR><TD><code><big>=29a</TD><TD></big></code>first occurrence of measure 29</TD></TR>
+<TR><TD><code><big>=29c</TD><TD></big></code>third occurrence of measure 29</TD></TR>
+<TR><TD><code><big>=29c;</TD><TD></big></code>third occurrence of measure 29 with pause</TD></TR>
+<TR><TD><code><big>==</TD><TD></big></code>double barline</TD></TR>
+<TR><TD><code><big>==;</TD><TD></big></code>double barline with pause</TD></TR>
+<TR><TD><code><big>====;</TD><TD></big></code>double barline with pause</TD></TR>
+<TR><TD><code><big>=|</TD><TD></big></code>unnumbered barline, normal line width</TD></TR>
+<TR><TD><code><big>=!</TD><TD></big></code>unnumbered barline, heavy line width</TD></TR>
+<TR><TD><code><big>==|!</TD><TD></big></code>double barline, normal line followed by heavy line</TD></TR>
+<TR><TD><code><big>=29|</TD><TD></big></code>beginning of measure 29, normal line width</TD></TR>
+<TR><TD><code><big>=:|:</TD><TD></big></code>barline with left and right repeats, normal line width</TD></TR>
+<TR><TD><code><big>=:||:</TD><TD></big></code>barline with left and right repeats, two normal-width lines</TD></TR>
+<TR><TD><code><big>='</TD><TD></big></code>unnumbered barline, rendered with partial barline (mid)</TD></TR>
+<TR><TD><code><big>=29`</TD><TD></big></code>beginning of measure 29, rendered with partial barline (top)</TD></TR>
+<TR><TD><code><big>=29-</TD><TD></big></code>beginning of measure 29, no barline drawn</TD></TR>
+<TR><TD><code><big>==:|!</TD><TD></big></code>double barline with repeat, normal/heavy lines</TD></TR>
+<TR><TD><code><big>==|</TD><TD></big></code>logical double barline, visually rendered as single normal line</TD></TR>
+<TR><TD><code><big>|</TD><TD></big></code>not a barline</TD></TR>
+<TR><TD><code><big>29|</TD><TD></big></code>not a barline</TD></TR>
+</TABLE>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>PERTINENT REPRESENTATIONS</H3></FONT>
+<blockquote>
+The following Humdrum representations employ "common system" barline
+signifiers:
+<br><br>
+<TABLE>
+<TR><TD><b>**cents</b></TD><TD>absolute pitch representation in hundredths of semitones</TD></TR>
+<TR><TD><b>**deg</b></TD><TD>relative scale degree representation</TD></TR>
+<TR><TD><b>**degree</b></TD><TD>absolute scale degree representation</TD></TR>
+<TR><TD><b>**diss</b></TD><TD>sensory dissonance representation</TD></TR>
+<TR><TD><b>**dur</b></TD><TD>event duration (in seconds)</TD></TR>
+<TR><TD><b>**embel</b></TD><TD>representation for embellishment tones</TD></TR>
+<TR><TD><b>**freq</b></TD><TD>frequency representation</TD></TR>
+<TR><TD><b>**fret</b></TD><TD>generalized fretted tablature representation</TD></TR>
+<TR><TD><b>**harm</b></TD><TD>representation for Western functional harmony</TD></TR>
+<TR><TD><b>**kern</b></TD><TD>core pitch/duration of common practice music notation</TD></TR>
+<TR><TD><b>**melac</b></TD><TD>melodic accent representation</TD></TR>
+<TR><TD><b>**MIDI</b></TD><TD>Musical Instrument Digital Interface notation</TD></TR>
+<TR><TD><b>**mint</b></TD><TD>melodic interval representation</TD></TR>
+<TR><TD><b>**pc</b></TD><TD>pitch-class representation</TD></TR>
+<TR><TD><b>**pcset</b></TD><TD>Fortean pitch-class set representation</TD></TR>
+<TR><TD><b>**pitch</b></TD><TD>American National Standards Institute pitch notation</TD></TR>
+<TR><TD><b>**recip</b></TD><TD>beat-proportion representation</TD></TR>
+<TR><TD><b>**semits</b></TD><TD>semitone absolute pitch representation</TD></TR>
+<TR><TD><b>**solfg</b></TD><TD>French solf&#232ge (pitch) representation</TD></TR>
+<TR><TD><b>**specC</b></TD><TD>spectral centroid representation</TD></TR>
+<TR><TD><b>**spect</b></TD><TD>discrete frequency spectrum representation</TD></TR>
+<TR><TD><b>**synco</b></TD><TD>represent degree of metric syncopation</TD></TR>
+<TR><TD><b>**takt</b></TD><TD>beat-position representation</TD></TR>
+<TR><TD><b>**text</b></TD><TD>vocal text representation</TD></TR>
+<TR><TD><b>**time</b></TD><TD>relative elapsed time (in seconds)</TD></TR>
+<TR><TD><b>**Tonh</b></TD><TD>German Tonh\o'o\(..'he (pitch) representation</TD></TR>
+<TR><TD><b>**URrhythm</b></TD><TD>represent Johnson-Laird beat prototypes for a passage</TD></TR>
+<TR><TD><b>**vox#</b></TD><TD>representation of number of concurrently active voices</TD></TR>
+</TABLE>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="../commands/humsed.html"><b>humsed</b></A>,
+<A HREF="../commands/num.html"><b>num</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="kern.html#Barlines">
+<B>Pertinent description</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

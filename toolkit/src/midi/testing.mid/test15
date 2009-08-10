@@ -1,0 +1,98 @@
+!! midi Test #15
+!! C1 to C8 chromatic scale:  order of pitch and duration tokens is reversed
+!! e.g.  `cc4' rather than `4cc'
+**kern
+!! C1 (low)
+CCC32
+DDD-32
+EEE--32
+FFF--32
+EEE32
+EEE#32
+EEE##32
+EEE###32
+AAA-32
+AAA32
+AAA#32
+AAA##32
+!! C2
+CC32
+EE---32
+EE--32
+EE-32
+EE32
+FF32
+GG-32
+GG32
+AA-32
+C---32
+C--32
+C-32
+!! C3
+C32
+BB##32
+D32
+D#32
+F-32
+G--32
+G-32
+G32
+A-32
+c---32
+c--32
+c-32
+!! C4 (middle C)
+B#32
+B##32
+B###32
+e-32
+e32
+e#32
+e##32
+e###32
+e####32
+cc---32
+cc--32
+cc-32
+!! C5
+cc32
+cc#32
+cc##32
+cc###32
+cc####32
+cc#####32
+ccc------32
+ccc-----32
+ccc----32
+ccc---32
+ccc--32
+ccc-32
+!! C6
+ccc32
+ccc#32
+ccc##32
+ccc###32
+ccc####32
+ggg--32
+ggg-32
+ggg32
+cccc----32
+cccc---32
+cccc--32
+cccc-32
+!! C7 (high)
+cccc32
+dddd-32
+dddd32
+eeee-32
+eeee32
+ffff32
+gggg-32
+gggg32
+aaaa-32
+aaaa32
+bbbb-32
+bbbb32
+!! C8 (very high)
+ccccc32
+*-

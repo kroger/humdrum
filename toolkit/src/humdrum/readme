@@ -1,0 +1,20 @@
+The files in this directory are the C source files for the humdrum
+command (named humdrum_ to avoid confusion with the humdrum.ksh shell script).
+
+The file 'makefile' is to be used only for UNIX systems that have
+gcc (GNU C Compiler).
+
+The file 'dosmake' is for recompiling on a PC with a Borland C compiler.
+It is invoked with 'make -f dosmake' when using MKS Make.
+
+The directory humdrum.awk contains source files for the awk version of
+the humdrum program.
+
+The directory testing.awk contains the test files for the awk version
+of the humdrum program.
+
+The directory testing contains the test files for the C version of
+the humdrum program.
+
+The directory ccarh contains the awkc generated program that was sent
+to CCARH for purposes of testing.

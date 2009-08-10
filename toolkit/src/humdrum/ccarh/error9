@@ -1,0 +1,7 @@
+!! "humdrum: ERROR 9: Local comment precedes first exclusive"
+!! "interpretation record in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 9 
+! wrong	!wrong
+**ex	**ex
+*-	*-

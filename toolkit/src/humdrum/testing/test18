@@ -1,0 +1,7 @@
+!! "humdrum: ERROR 18: Spine-path indicators mixed with"
+!! "keyword interpretations in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 18
+**ex	**ex	**ex
+*^	*-	*tand
+*-	*-	*-

@@ -1,0 +1,235 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- rid</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>rid</b>  --  eliminate specified Humdrum record types
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+</P>
+<P>
+<code><big>
+<b>rid</b>   [<b>-dgiltuDGILTU</b>]   [<i>inputfile ...</i>] 
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>rid</b>
+command allows the user to eliminate specified types of Humdrum records (lines)
+from the input stream.
+Depending on the options selected,
+<b>rid</b>
+will eliminate global comments, local comments, interpretations,
+duplicate exclusive interpretations, tandem interpretations,
+data records, data records consisting of just null tokens (null data records),
+empty global or local comments, empty interpretations,
+or any combination of these record types.
+</P>
+<P>
+Humdrum comments are records that begin with an exclamation mark (!).
+Local comments begin each active spine with a single exclamation mark,
+whereas gobal comments begin with two exclamation marks (!!) at the
+beginning of the record.
+A global comment consisting of only two exclamation marks is
+a null global comment.
+If a local comment record contains only single exclamation marks
+in each spine, it is dubbed a null local comment.
+</P>
+<P>
+Humdrum interpretations are records that begin with an asterisk (*).
+Tandem interpretations begin each active spine with a single asterisk,
+whereas exclusive interpretations begin with an asterisk and
+have at least one active spine beginning with two asterisks.
+If each active spine contains only a single asterisk,
+the record is dubbed a null interpretation.
+</P>
+<P>
+Records that are not comments or interpretations are deemed to be
+data records.
+Null tokens are data tokens consisting of just the period character (.).
+A data record containing only null tokens (separated by tabs)
+is a null data record.
+</P>
+<P>
+A duplicate exclusive interpretation is an exclusive interpretation
+that repeats the name of an interpretation that is already
+active for a given spine.
+If a spine has not been terminated, there is frequently little need
+to indicate (again) the active interpretation for a given spine.
+(An exception occurs when the user wants the data to be processed
+as discontinuous -- such as avoiding calculating pitch intervals
+between the last note of one piece and the first note of a subsequent piece.)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>rid</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-D</b></TD><TD>remove all data records</TD></TR>
+<TR><TD><b>-d</b></TD><TD>remove null data records</TD></TR>
+<TR><TD><b>-G</b></TD><TD>remove all global comments</TD></TR>
+<TR><TD><b>-g</b></TD><TD>remove null global comments</TD></TR>
+<TR><TD><b>-I</b></TD><TD>remove all interpretation records</TD></TR>
+<TR><TD><b>-i</b></TD><TD>remove null interpretation records</TD></TR>
+<TR><TD><b>-L</b></TD><TD>remove all local comments</TD></TR>
+<TR><TD><b>-l</b></TD><TD>remove null local comments</TD></TR>
+<TR><TD><b>-T</b></TD><TD>remove all tandem interpretations</TD></TR>
+<TR><TD><b>-U</b></TD><TD>remove unnecessary (duplicate) exclusive interpretations</TD></TR>
+<TR><TD><b>-u</b></TD><TD>same as <b>-U</b></TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+In general, upper-case options eliminate
+<i>all</i>
+records of a given type, whereas the corresponding lower-case
+options eliminate only null records (devoid of signifiers)
+for a given record type.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following examples illustrate the use of
+<b>rid.</b>
+Consider the following input file:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `rid' example</TD></TR>
+<TR><TD>!!</TD></TR>
+<TR><TD>**abc</TD><TD>**xyz</TD></TR>
+<TR><TD>*tand</TD><TD>*em</TD></TR>
+<TR><TD>12</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>!local</TD><TD>!comments</TD></TR>
+<TR><TD>*</TD><TD>*</TD></TR>
+<TR><TD>*x</TD><TD>*x</TD></TR>
+<TR><TD>**xyz</TD><TD>**abc</TD></TR>
+<TR><TD>!</TD><TD>!</TD></TR>
+<TR><TD>.</TD><TD>34</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+The following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+rid -dlu input
+</code></big>
+</blockquote>
+</P>
+<P>
+will eliminate all null data records, all null local comments,
+and any unnecessary (duplicate) exclusive interpretations:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `rid' example</TD></TR>
+<TR><TD>!!</TD></TR>
+<TR><TD>**abc</TD><TD>**xyz</TD></TR>
+<TR><TD>*tand</TD><TD>*em</TD></TR>
+<TR><TD>12</TD><TD>.</TD></TR>
+<TR><TD>!local</TD><TD>!comments</TD></TR>
+<TR><TD>*</TD><TD>*</TD></TR>
+<TR><TD>*x</TD><TD>*x</TD></TR>
+<TR><TD>.</TD><TD>34</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Alternatively, the command:
+</P>
+<P>
+<code><big>
+rid -DGLiT input
+</i></b></code></big>
+</i></b></code></big>
+</P>
+<P>
+will eliminate all data records, all global and local comments,
+all null interpretations, and all tandem interpretations:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**abc</TD><TD>**xyz</TD></TR>
+<TR><TD>*x</TD><TD>*x</TD></TR>
+<TR><TD>**xyz</TD><TD>**abc</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+Removing Humdrum interpretation records will render the file
+inconsistent with the Humdrum representation syntax.
+Further processing of such a file with the Humdrum tools
+will be impossible.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="humsed.html">
+<b>humsed</b></A> (4),
+<A HREF="recode.html">
+<b>recode</b></A> (4),
+<b>sed</b> (UNIX)
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#The_rid_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

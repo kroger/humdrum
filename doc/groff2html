@@ -1,0 +1,190 @@
+cat html.head
+awk	'{
+	# Eliminate certain input records.
+	if ($0 ~ /OUTTAKES/) exit
+	if ($0 ~ /OUTLINE/) exit
+	if ($0 ~ /^\.po /) next
+	if ($0 ~ /^\.ll /) next
+	if ($0 ~ /^\.pl /) next
+	if ($0 ~ /^\.pn /) next
+	if ($0 ~ /^\.if /) next
+	if ($0 ~ /^\.tm /) next
+	if ($0 ~ /^\.OH /) next
+	if ($0 ~ /^\.EH /) next
+	if ($0 ~ /^\.PH /) next
+	if ($0 ~ /^\.DS/) next
+	if ($0 ~ /^\.DE/) next
+	if ($0 ~ /^\\\"/) next
+	if ($0 ~ /^\\\}/) next
+	if ($0 ~ /^\.S 24/) {chaptertitle="ON"; next}
+	if ($0 ~ /^\.S [0-9]/) next
+	if ($0 ~ /^[lcr]\.$/) next	# Table format statements.
+	if ($0 ~ /^[lcr]$/) next
+	if ($0 ~ /^[lcr] [lcrs].*\.$/) next
+	if ($0 ~ /^[lcr] [lcrs].*$/) next
+	if ($0 ~ /^center;/) next
+	if ($0 ~ /^\.sp [5-9]/) {print ""; next}
+
+	temp = $0
+	if ($0 ~ /^\.bp/) $0 = ".sp 2"
+
+	if ($0 ~ /\.br/) {print "<br>"; next}
+
+	# Process Chapter numbers.
+	if ($0 ~ /^.f.BIChapter [1-9]/)
+		{
+		chapter = $2
+		gsub(".fR$","",chapter)
+		print "<H1>Chapter" chapter "</H1>"
+		print "<center><HR WIDTH=500></center>"
+		next
+		}
+
+	# Process lists.
+	if ($0 ~ /\.LI/) {print "<li>"; next}
+	if ($0 == ".AL") {title="OFF"; print "<ul>"; next}
+	if ($0 == ".LE") {print "</ul>"; next}
+
+	# Process tables.
+	if ($0 ~ /\.TS/) {title="OFF"; print "<blockquote><TABLE>"; table="ON"; next}
+	if ($0 ~ /\.TE/) {title="OFF"; print "</TABLE></blockquote>"; table="OFF"; next}
+
+	# Process centerings.
+	if ($0 ~ /\.ce$/) {print "<CENTER>"; center="ON"; next}
+
+	# Process Indentations.
+	if ($0 ~ /^.in \+/) {print "<blockquote>"; next}
+	if ($0 ~ /^.in -/) {print "</blockquote>"; next}
+
+	# Process paragraphs.
+	if ($0 ~ /^\.sp 2$/) {print "</P>"; next}
+	if ($0 ~ /^\.sp 1$/)
+		{
+		print "</P>"
+		print "<P>"
+		next
+		}
+
+	# Process Single-record Bold.
+	if ($0 ~ /^.B "/)
+		{
+		gsub("\.B \"","",temp)
+		gsub("\"$","",temp)
+		if (chaptertitle == "ON")
+			{
+			print "<H1>" temp "</H1>"
+			chaptertitle = "OFF"
+			title = "OFF"
+			print "<center><HR WIDTH=500></center>"
+			if (center == "ON") {print "</CENTER>"; center="OFF"}
+			next
+			}
+		if (title == "ON")
+			{
+			print "<H2>" temp "</H2>"
+			title = "OFF"
+			}
+		else print "<b>" temp "</b>"
+		if (center == "ON") {print "</CENTER>"; center="OFF"}
+		next
+		}
+
+	# Process Single-record Italics.
+	if ($0 ~ /^.I "/)
+		{
+		gsub("\.I \"","",temp)
+		gsub("\"$","",temp)
+		print "<i>" temp "</i>"; next
+		}
+	# Process Font Size Changes
+	if ($0 ~ /^.S +/) {title = "ON"; next}
+	if ($0 ~ /^.S -/) {title = "OFF"; next}
+
+	# TRANSFORM AND OUTPUT THE CURRENT LINE.
+
+	# If the current line is non-empty and does not start with Bold,
+	# then turn off the title variable:
+	if ($0 !~/^$/ && $0 !~/^\.B /) title="OFF"
+
+	# Eliminate Bold-Italics.
+	if (temp ~ /f.BI/) gsub(".f.BI","",temp)
+	
+	# Em-dashes:
+	if (temp ~ / [^A-Za-z][^A-Za-z]em /) {gsub(" ..em "," -- ",temp)}
+	if (temp ~ / [^A-Za-z][^A-Za-z]em/) {gsub(" ..em"," --",temp)}
+	if (temp ~ /[^A-Za-z][^A-Za-z]em /) {gsub("..em","-- ",temp)}
+
+	# In-line font sizes:
+	if (temp ~ /.s[+-][1-9]/) {gsub(".s[+-][0-9]*","",temp)}
+
+	# Left and right quotes:
+	if (temp ~ /..lq/) {gsub("..lq","\"",temp)}
+	if (temp ~ /..rq/) {gsub("..rq","\"",temp)}
+
+	# Special characters:
+	if (temp ~ /\\.dg/) {gsub("..dg","&#167",temp)}
+	if (temp ~ /\\.da/) {gsub("..da","",temp)}
+	if (temp ~ /\\.eq/) {gsub("..eq","=",temp)}
+
+	if (temp ~ /\\fI/)
+		{
+		gsub(".fI","<i>",temp)
+		italic = "ON"
+		}
+	if (temp ~ /\\fB/)
+		{
+		gsub(".fB","<b>",temp)
+		bold = "ON"
+		}
+	if (temp ~ /\\f.CR/)
+		{
+		gsub(".f.CR","<code><big>",temp)
+		courier = "ON"
+		}
+	if (temp ~ /\\fR/)
+		{
+		if (italic == "ON")
+			{
+			gsub(".fR","</i>",temp)
+			italic = "OFF"
+			}
+		if (bold == "ON")
+			{
+			gsub(".fR","</b>",temp)
+			bold = "OFF"
+			}
+		if (courier == "ON")
+			{
+			gsub(".fR","</big></code>",temp)
+			courier = "OFF"
+			}
+		}
+	if (table == "ON")
+		{
+		gsub("^","<TR><TD>",temp)
+		gsub("$","</TD></TR>",temp)
+		gsub("	","</TD><TD>",temp)
+		}
+	
+	print temp
+	}
+END	{
+	print "<hr>"
+	print "<br>"
+	print "<ul>"
+	print "<li>"
+	print "<A HREF=\"http://dactyl.som.ohio-state.edu/Humdrum/guide" chapter+1 ".html\">"
+	print "<B>Next Chapter</B></A>"
+	print "<li>"
+	print "<A HREF=\"http://dactyl.som.ohio-state.edu/Humdrum/guide" chapter-1 ".html\">"
+	print "<B>Previous Chapter</B></A>"
+	print "<li>"
+	print "<A HREF=\"http://dactyl.som.ohio-state.edu/Music824/humdrum.index.html\">"
+	print "<B>Table of Contents</B></A>"
+	print "<br><img src=\"course.home.pages4.gif\" ALIGN=\"RIGHT\"><br>"
+	print "<br><br>"
+	print ""
+	print "</BODY>"
+	print "</HTML>"
+	}' $1
+

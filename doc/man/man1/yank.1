@@ -1,0 +1,522 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH yank 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +12
+.ti -12
+\fByank\fR  --  extract passages from a Humdrum input
+.in -12
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +8
+.ti -8
+\fByank\fR  [\fB-c\fR]  \fB-l  -r  \fIrange\fR  [\fIinputfile ...\fR]
+.br
+.ti -8
+\fByank\fR  [\fB-c\fR]  \fB-m  \fIregexp\fR  \fB-r  \fIrange\fR  [\fIinputfile ...\fR]
+.br
+.ti -8
+\fByank\fR  [\fB-c\fR]  \fB-n  \fIregexp\fR  \fB-r  \fIrange\fR  [\fIinputfile ...\fR]
+.br
+.ti -8
+\fByank\fR  [\fB-c\fR]  \fB-o  \fIregexp\fR  [\fB-e  \fIregexp\fR]  \fB-r  \fIrange\fR  [\fIinputfile ...\fR]
+.br
+.ti -8
+\fByank\fR  [\fB-c\fR]  \fB-s  \fIsection_label\fB  -r  \fIrange\fR  [\fIinputfile ...\fR]
+.in -8
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "yank"
+command permits the selective extraction of segments or passages
+from a Humdrum input.
+Yanked material may consist of specified input records
+-- addressed by absolute line number, or relative to some marker.
+In addition,
+.B "yank"
+is able to output logical segments
+(such as measures, phrases, or labelled sections),
+and is able to output material according to content.
+The output always consists of complete records;
+.B "yank"
+never outputs partial contents of a given input record.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "yank"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-c\fR	include all comments prior to the yanked material in
+	  the output
+\fB-e \fIregexp\fR	define end-delimiter for yanked segments as
+	  \fIregexp\fR; used with \fB-o\fR
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-l\fR	yank all lines whose line numbers appear in \fB-r \fIrange\fR
+\fB-m \fIregexp\fR	yank lines matching \fIregexp\fR listed in \fB-r \fIrange\fR
+\fB-n \fIregexp\fR	yank segments delineated by \fIregexp\fR according to
+	  cardinal \fB-r \fIrange\fR
+\fB-o \fIregexp\fR	yank segments delineated by \fIregexp\fR according to
+	  ordinal \fB-r \fIrange\fR
+\fB-r \fIrange\fR	yank section in ranges listed in \fIrange\fR; used with
+	  \fB-l\fR, \fB-m\fR, \fB-n\fR, \fB-o\fR and \fB-s\fR
+\fB-s \fIsection\fR	yank section labelled \fIsection\fR according to
+	  \fB-r \fIrange\fR
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The simplest operation for \fByank\fR occurs when the
+.B "-l"
+option is specified.
+In this case
+.B "yank"
+echoes those lines in the input stream whose line-numbers appear in
+a specified
+.I "range."
+The
+.I "range"
+consists of one of more integers separated by commas;
+inclusive ranges can be specified by separating two integers by a dash (-).
+For example, the following command selects lines, 5, 13, 23, 24, 25, and 26
+from the file named \f(CRdvorak\fR:
+.sp 1
+.sp 1
+.in +2
+yank -l -r 5,13,23-26 dvorak
+.in -2
+.sp 1
+.sp 1
+The dollar sign ($) can be used to refer to the last record
+in the input.
+For example, the following command yanks the first and last
+records from the file \f(CRverdi\fR.
+.sp 1
+.sp 1
+.in +2
+yank -l -r '1,$' verdi
+.in -2
+.sp 1
+.sp 1
+(Note that single quotes may be needed in regular expressions
+and range specifications in order to prevent the shell from
+misinterpreting characters such as the dollar sign or the asterisk.)
+Records prior to the end of the input can be specified by subtracting
+some value from $.
+For example, the following command yanks the first 20 records
+of the last 30 records contained in the file \f(CRginastera\fR.
+(Notice that the dash/minus sign is used both to convey a range
+and as an arithmetic operator.)
+.sp 1
+.sp 1
+.in +2
+yank -l -r '$-30-$-10' ginastera
+.in -2
+.sp 1
+.sp 1
+In addition to the specified output lines,
+.B "yank"
+also outputs interpretations and comments as described below
+(see INTERPRETATIONS AND COMMENTS).
+.sp 1
+.sp 1
+Alternatively,
+.B "yank"
+can output lines relative to some user-defined
+.I "marker."
+This mode of operation can be invoked using the
+.B "-m"
+option.
+Markers are specified as regular expressions.
+The following command outputs the first and third data records
+following each occurrence of the string \(odXXX\(cd in the file \f(CRwieck\fR.
+.sp 1
+.sp 1
+.in +2
+yank -m XXX -r 1,3 wieck
+.in -2
+.sp 1
+.sp 1
+The
+.B "-r"
+option is used to specify the range.
+If the value zero ("0") is specified in the range, then the record containing
+the marker is itself output.
+.sp 1
+.sp 1
+Since markers are interpreted by
+.B "yank"
+as regular expressions, complex markers can be defined.
+For example, the following command yanks the first data record
+following all occurrences of any record in the file \f(CRfranck\fR
+beginning with a letter and ending with a number:
+.sp 1
+.sp 1
+.in +2
+yank -m '^[a-zA-Z].*[0-9]$' -r 1 franck
+.in -2
+.sp 1
+.sp 1
+In musical applications, it is often convenient to yank
+material according to logical segments such as measures or phrases.
+In order to access such segments, the user must specify a segment
+.I "delimiter"
+using the
+.B "-o"
+or the
+.B "-o"
+and
+.B "-e"
+options.
+For example, common system barlines are represented by
+the presence of an equals-sign (=)
+at the beginning of a data token.
+Thus the user might yank specific measures from a
+**kern
+file by defining the appropriate barline delimiter and providing a range of
+(measure) numbers.
+Consider the following command:
+.sp 1
+.sp 1
+.in +2
+yank -o ^= -r 1,12-13,25 joplin
+.in -2
+.sp 1
+.sp 1
+Unlike the
+.B "-m"
+option, the
+.B "-o"
+option interprets the range list as ordinal occurrences of segments
+delineated by the delimiter.
+Whole segments are output rather than specified records as
+is the case with
+.B "-m."
+As in the case of markers, delimiters are interpreted according to
+regular expression syntax.
+Each input record containing the delimiter is regarded as the
+.I "start"
+of the next logical segment.
+In the above command, the command-line range specifies that the first,
+twelfth, thirteenth, and twenty-fifth logical segments (measures)
+are to be yanked from the file named \f(CRjoplin\fR.
+All records starting with the delimiter record are output up to,
+but not including the next occurrence of a delimiter record.
+.sp 1
+.sp 1
+Where the input stream contains data prior to the first delimiter record,
+this data may be addressed as logical segment \(odzero.\(cd
+For example,
+.sp 1
+.sp 1
+.in +2
+yank -o '^=' -r 0 mahler
+.in -2
+.sp 1
+.sp 1
+can be used to yank all records prior to the first common system barline.
+With the
+.B "-o"
+option, notice that
+.I "actual"
+measure numbers are irrelevant:
+.B "yank"
+selects segments according to their
+.I "ordinal"
+position in the input stream rather than according to their
+.I "cardinal"
+label.
+.sp 1
+.sp 1
+When the
+.B "-n"
+option is invoked, however,
+.B "yank"
+expects a numerical value to be present in the input immediately following the
+user-specified delimiter.
+In this case,
+.B "yank"
+selects segments based on their numbered label rather than their ordinal
+position in the input.
+For example,
+.sp 1
+.sp 1
+.in +2
+yank -n ^= -r 12 goldberg
+.in -2
+.sp 1
+.sp 1
+will yank all segments begining with the label \f(CR=12\fR in the input
+file \f(CRgoldberg\fR.
+If more than one segment carries the specified segment number(s),
+all such segment are output.
+Note that the dollar-sign anchor cannot be used in the range expression
+for the
+.B "-n"
+option.
+Note also that input tokens containing non-numeric characters appended
+to the number will have no effect on the pattern match.
+For example, input tokens such as \f(CR=12a, =12b\fR, or \f(CR=12\fR;
+will be treated as equivalent to \f(CR=12\fR.
+.sp 1
+.sp 1
+As in the case of the
+.B "-o"
+option, the value zero ("0") addresses material prior to the first
+delimiter record.
+Like the
+.B "-o"
+option, the value zero may be reused for each specified input file.
+Thus, if \f(CRfile1, file2\fR and \f(CRfile3\fR are Humdrum files:
+.sp 1
+.sp 1
+.in +2
+yank -n ^= -r 0 file1 file2 file3
+.in -2
+.sp 1
+.sp 1
+will yank any leading (anacrusis) material in each of the three files.
+.sp 1
+.sp 1
+When the
+.B "-s"
+option is invoked,
+.B "yank"
+extracts passages according to Humdrum section labels
+encoded in the input.
+Humdrum section labels are tandem interpretations that conform to
+the syntax:
+.sp 1
+.sp 1
+.in +2
+*>\fIlabel_name
+.in -2
+.sp 1
+.sp 1
+Labels are frequently used to indicate formal divisions, such as,
+coda, exposition, bridge, second ending, trio, minuet, etc.
+The following command yanks the second instance of a section
+labelled \f(CRFirst Theme\fR in the file \f(CRhaydn08\fR:
+.sp 1
+.sp 1
+.in +2
+yank -s 'First Theme' -r 2 haydn08
+.in -2
+.sp 1
+.sp 1
+Note that with \(odthrough-composed\(cd Humdrum files
+it is possible to have more than one section containing
+the same section-label.
+(See the
+.B "thru"
+command.)
+.in -2
+.sp 1
+.sp 1
+.SH "INTERPRETATIONS AND COMMENTS"
+.in +2
+If
+.B "yank"
+is given a Humdrum input, it always produces a syntactically
+correct Humdrum output.
+All interpretations prior to and within the yanked
+material are echoed in the output.
+The
+.B "yank"
+command also appends the appropriate spine-path terminators at
+the end of the yanked segment.
+.sp 1
+.sp 1
+Any comments
+.I "prior"
+to the yanked passage may be included in
+the output by specifying the
+.B "-c"
+option.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following examples illustrate how the
+.B "yank"
+command may be used.
+.sp 1
+.sp 1
+.in +2
+yank -l -r 1120 messiaen
+.in -2
+.sp 1
+.sp 1
+yanks line 1120 in the file \f(CRmessiaen\fR.
+.sp 1
+.sp 1
+.in +2
+yank -n ^= -r 27 sinfonia
+.in -2
+.sp 1
+.sp 1
+yanks numbered measures 27 from the \f(CR**kern\fR file \f(CRsinfonia\fR.
+.sp 1
+.sp 1
+.in +2
+yank -n ^= -r 10-20 minuet waltz
+.in -2
+.sp 1
+.sp 1
+yanks numbered measures 10 to 20 from
+.I "both"
+the \f(CR**kern\fR files \f(CRminuet\fR and \f(CRwaltz\fR.
+.sp 1
+.sp 1
+.in +2
+yank -o ^= -r '0,$' fugue ricercar
+.in -2
+.sp 1
+.sp 1
+yanks any initial anacrusis material plus the final measure
+of both \f(CRfugue\fR and \f(CRricercar\fR.
+.sp 1
+.sp 1
+.in +2
+cat fugue ricercar | yank -o ^= -r '0,$'
+.in -2
+.sp 1
+.sp 1
+yanks any initial anacrusis material from the file \f(CRfugue\fR followed
+by the final measure of \f(CRricercar\fR.
+.sp 1
+.sp 1
+.in +2
+yank -n 'Rehearsal Marking ' -r 5-7 fugue ricercar
+.in -2
+.sp 1
+.sp 1
+yanks segments beginning with the strings
+"Rehearsal Marking 5," "Rehearsal Marking 6,"
+and
+"Rehearsal Marking 7."
+Segments are deemed to end when a record is encountered containing
+the string
+"Rehearsal Marking ".
+.sp 1
+.sp 1
+.in +2
+yank -o { -e } -r '1-$' webern
+.in -2
+.sp 1
+.sp 1
+yanks all segments in the file \f(CRwebern\fR beginning with a record
+containing \(od{\(cd and ending with a record containing \(od}.\(cd
+The command:
+.sp 1
+.sp 1
+.in +2
+yank -o { -e } -r '1-4,$-3-$' faure
+.in -2
+.sp 1
+.sp 1
+yanks the first four and last four segments in the file \f(CRfaure\fR
+-- where segments begin with an open brace ({) and end with a
+closed brace (}).
+In the \f(CR**kern\fR representation, this would extract the
+first and last four phrases in the file.
+.sp 1
+.sp 1
+.in +2
+yank -s Coda -r 1 stamitz
+.in -2
+.sp 1
+.sp 1
+will yank the first occurrence of a section labelled \f(CRCoda\fR
+in the file \f(CRstamitz\fR.
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+Where integer ranges are specified in the
+.B "yank"
+range-list, overlapping values are collapsed.
+For example, the command \f(CRyank -l -r 5-7,6-8\fR is interpreted as
+equivalent to \f(CRyank -l -r 5-8\fR;
+lines 6 and 7 will be echoed only once in the output stream.
+If the user wishes to have multiple occurrences of material in the
+output stream, the
+.B "yank"
+command can be invoked more than once
+(e.g. \f(CRyank -l -r 5-7 ...; yank -l -r 6-8 ...\fR).
+.sp 1
+.sp 1
+Note that yanked segments cannot be output in an order other
+than their order in the input.
+For example, assuming that measure numbers in an input stream
+increase sequentially,
+.B "yank"
+is unable to output measure number 6 prior to outputting measure number 5.
+Once again, the order of output material can be rearranged by
+invoked the
+.B "yank"
+command more than once
+(e.g. \f(CRyank -l -r 100 ...; yank -l -r 99 ...;
+yank -l -r 98 ...\fR).
+.sp 1
+.sp 1
+In the case of the
+.B "-m"
+option, note that range elements cannot address records more than one
+marker away from the current marker.
+For example, in a file where markers occur every 10 records,
+range expressions such as \f(CR`25'\fR and \f(CR`$-17'\fR will result
+in no output.
+In addition, range expressions such as \f(CR`1-25'\fR
+and \f(CR`$-17-$'\fR will have the same effect as \f(CR`1-10'\fR
+and \f(CR`$-9-$\fR.
+Note also that for the same input file, the range expression \f(CR`6-$-7'\fR
+will result in no output.
+.in -2
+.sp 1
+.sp 1
+.SH "FILES"
+.in +2
+The files \f(CRfind_reg.awk\fR, \f(CRfindpair.awk\fR and \f(CRnumber.awk\fR
+are used by
+.B "yank."
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBawk\fR (\s-1UNIX\s+1),
+\fBextract\fR (1), \fBgrep\fR (\s-1UNIX\s+1),
+\fBegrep\fR (\s-1UNIX\s+1), \fBpatt\fR (1), \fBpattern\fR (1),
+\fBregexp\fR (1), \fBtimebase\fR (1),
+\fBthru\fR (1)
+.in -2

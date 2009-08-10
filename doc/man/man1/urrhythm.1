@@ -1,0 +1,229 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH urrhythm 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +14
+.ti -14
+\fBurrhythm\fR  --  characterize Johnson-Laird rhythmic prototypes in a Humdrum passage
+.in -14
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBurrhythm\fR  \fIinputfile\fR  [ > \fIoutputfile.urr\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "urrhythm"
+command outputs a single Humdrum spine (\f(CR**URrhythm\fR) containing data
+representing rhythmic `prototypes' (Ur-rhythms) evident in a musical passage.
+The command implements a variation of Johnson-Laird's theory of rhythmic
+prototypes (see \s-1REFERENCES\s+1 below).
+In order to identify the rhythmic prototypes,
+.B "urrhythm"
+requires information about note onsets and metric position.
+These may be provided via two input spines:
+\f(CR**kern\fR (or \f(CR**recip\fR) and \f(CR**metpos\fR.
+.sp 1
+.sp 1
+Johnson-Laird's rhythmic-prototype theory can be applied only to musical
+passages conforming to some established metric context,
+such as 2/4, 3/2, or 12/8 meters.
+The
+.B "urrhythm"
+command handles all regular types of meters (simple and compound,
+duple, triple and quadruple).
+Specifically, any meter having a \(odnumerator\(cd
+of 2, 3, 4, 6, 9, or 12 can be processed.
+.B "Urrhym"
+adapts to changes of meter, but is unable to handle irregular meters.
+If an irregular meter is encountered in the input an error is generated
+and the command terminates.
+.sp 1
+.sp 1
+.B "urrhythm"
+characterizes each beat in a passage as belonging to one of
+three beat types:
+.I "Note"
+(N),
+.I "Syncopation"
+(S), or
+.I "Other"
+(O).
+Only major beats are characterized in this way.
+Hence, in 3/4 or 9/8 meters, three beats will be characterized for
+each complete measure.
+Similarly, in 4/2 and 12/16, four beats will be characterized for
+each complete measure.
+.sp 1
+.sp 1
+A \(odNote\(cd (signified in the output by the letter `N') is defined as a beat
+that coincides with a note onset.
+.sp 1
+.sp 1
+A \(odSyncopation\(cd (signified by the letter `S') is defined as arising
+when no note-onset happens on a beat whose position in the metric
+hierarchy is greater than that of the most recent note onset.
+By way of example, imagine a measure in 4/4 meter containing a quarter-note,
+followed by a half-note, followed by a quarter-note.
+The third beat position does not coincide with a note onset.
+The most recent note onset prior to the third beat occurs on beat two.
+Since beat three is a more important metric position than beat two,
+beat three is deemed to be syncopated.
+.sp 1
+.sp 1
+Syncopated beats can happen only after the first note onset;
+subsequent syncopated moments will require another note onset
+(i.e. two syncopated moments can't occur in a row without some note
+onset intervening).
+.sp 1
+.sp 1
+An \(odOther\(cd (signified by the letter `O') is any beat that is not
+a Note (N) or a syncopation (S).
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "urrhythm"
+command should be given names with the distinguishing `.urr' extension.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "urrhythm"
+command provides only a help option:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+.TE
+.sp 1
+Options are specified in the command line.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following example illustrates the operation of
+.B "urrhythm."
+The first two spines (\f(CR**kern\fR and \f(CR**metpos\fR)
+constitute the input.
+The third spine (\f(CR**URrhythm\fR) is added by the
+.B "urrhythm"
+command.
+All three spines are given in the output.
+.in +2
+.sp 1
+.TS
+l l l.
+**kern	**metpos	**URrhythm
+*M4/4	*M4/4	*M4/4
+*tb8	*tb8	*tb8
+8g	3	N
+8g#	4	.
+8a	2	N
+[8cc	4	.
+8cc]	3	S
+8a	4	.
+\(eq1	\(eq1	\(eq1
+4.cc	1	N
+\.	4	.
+\.	3	O
+[8b-	4	.
+4.b-]	2	S
+\.	4	.
+\.	3	O
+[8g	4	.
+\(eq2	\(eq2	\(eq2
+8g]	1	S
+[8e-	4	.
+8e-]	3	S
+4.r	4	.
+\.	2	O
+\.	4	.
+[4c	3	N
+\.	4	.
+\(eq3	\(eq3	\(eq3
+2c]	1	S
+\.	4	.
+\.	3	O
+\.	4	.
+4r	2	O
+\.	4	.
+*-	*-	*-
+.TE
+.sp 1
+.in -2
+.in -2
+.SH "WARNINGS"
+.in +2
+The
+.B "urrhythm"
+command is currently unable to handle Humdrum spine-path changes
+-- such as join-path, exchange-path, or split-path.
+If spine-path changes are encountered an error is issued and the
+command terminates.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fB**kern\fR (2), \fB**metpos\fR (2), \fBmetpos\fR (1),
+\fB**recip\fR (2), \fBtimebase\fR (1), \fBsynco\fR (1), \fB**URrhythm\fR (2)
+.in -2
+.sp 1
+.sp 1
+.SH "NOTE"
+.in +2
+The
+.B "urrhythm"
+command differs from Johnson-Laird's theory in the
+definition of syncopation.
+Johnson-Laird's theory requires that a listener be able to
+identify a syncopation retrospectively.
+That is, a listener is able to determine whether the current
+beat is a syncopation, only by determining what happens at the beginning
+of the next beat.
+The algorithm used here avoids the theoretical assumption of backward listening.
+(See Simpson & Huron, 1993.)
+.in -2
+.sp 1
+.sp 1
+.SH "REFERENCES"
+.in +2
+Johnson-Laird, P.
+\(odRhythm and meter: A theory at the computational level,\(cd
+.I "Psychomusicology,"
+Vol. 10 (1991) pp. 88-106.
+.sp 1
+.sp 1
+Simpson, J. & Huron, D.
+\(odThe perception of rhythmic similarity: A test of a modified
+version of Johnson-Laird's theory,\(cd
+.I "Canadian Acoustics,"
+Vol. 21, No. 3 (1993) pp. 89-90.
+.in -2

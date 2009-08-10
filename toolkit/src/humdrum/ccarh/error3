@@ -1,0 +1,15 @@
+!! "humdrum: ERROR 3: Leading tab in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 3
+**ex	**ex	**ex
+!! Leading tabs before data records
+		a	b	c
+!! Leading tab before interpretation
+	*	*-	*
+!! Leading tab before exclusive interps
+	**ex2	**ex2
+!! Leading tab before global comment
+	!! Global comment
+!! Leading tab before local comment
+	!comment	!comment
+*-	*-

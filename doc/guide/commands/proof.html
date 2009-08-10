@@ -1,0 +1,182 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- proof</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>proof</b>  --  check syntax of Humdrum <code><big>**kern</code></big> file
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>proof</b>  [<b>-w</b>]  [<i>inputfile.krn</i> ...]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>proof</b>
+command checks the syntax of
+<A HREF="../representations/kern.html"><code><big>**kern</big></code>-encoded</A> files.
+It may be used to assist in the detection
+and correction of <code><big>**kern</big></code> encoding errors.
+</P>
+<P>
+The
+<b>proof</b>
+command scans the input stream for ten types of errors:
+(1) consistency of incremented measure numbers, and measure-number agreement
+between concurrent parts,
+(2) incoherent pitch tokens (such as assigning two pitches to the same note),
+(3) incoherent durations (such as assigning two durations to the same note),
+(4) notes that have simultaneous sharp and flat accidentals,
+(5) repeat encodings of trills, mordents, inverted mordents, ties, pauses,
+staccato markings, and natural signs,
+(6) consistent phrase markings (e.g. `{' must precede and be
+matched with `}' etc. with the exception of elisions (&)),
+(7) consistent slur markings (e.g. `(' must precede and be
+matched with `)' etc. with the exception of elisions (&)),
+(8) tied notes which differ in pitch or pitch spelling,
+(9) unequal total durations for each voice within a measure, and
+(10) the presence of multiple-stops that do not share the same duration.
+In addition,
+<b>proof</b>
+issues a number of warnings of possible data errors:
+(11) warn of files which do not end with a double barline,
+(12) warn of material encoded following a double barline,
+(13) warn of measures which change meters unannounced,
+(14) warn of the presence of identical material in consecutive measures,
+(15) warn of the presence of pitches which are encoded without
+an accidental -- where the same pitch had previously received an
+accidental in the same measure, and
+(16) warn of the absence of meter, tempo, key, and key signature declarations.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>proof</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-w</b></TD><TD>suppress output of warnings</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The
+<b>-w</b>
+option causes all warnings to be suppressed;
+only <code><big>**kern</big></code> error messages are output.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DIAGNOSTICS</H3></FONT>
+The following list tabulates all of the potential errors and warnings
+issued by the
+<b>proof</b>
+command.
+<code><big>
+<blockquote><TABLE>
+<TR><TD>Error: Incoherent key signature, line <i>n</i>: assigned more than one accidental to</TD></TR>
+<TR><TD>       the same pitch.</TD></TR>
+<TR><TD>Error: Inconsistent barline indication across spines at line <i>n</i>.</TD></TR>
+<TR><TD>Error: Timing error in measure <i>x</i>, spine <i>y</i>, at line <i>n</i></TD></TR>
+<TR><TD>Error: Double stops at line <i>x</i> in spine <i>n</i> do not have same duration.</TD></TR>
+<TR><TD>Error: Unmatched ties in spine <i>n</i>.</TD></TR>
+<TR><TD>Error: Incorrect pitch specification in spine <i>x</i>, line <i>n</i></TD></TR>
+<TR><TD>Error: Incorrect duration specification in spine <i>x</i>, line <i>n</i></TD></TR>
+<TR><TD>Error: Incorrect accidental specification in spine <i>x</i>, line <i>n</i></TD></TR>
+<TR><TD>Error: Incorrect ornament specification in spine <i>x</i>, line <i>n</i></TD></TR>
+<TR><TD>Error: Tie must begin on valid kern note, spine <i>n</i></TD></TR>
+<TR><TD>Error: Incorrect tie encoding in spine <i>x</i>, line <i>n</i></TD></TR>
+<TR><TD>Error: Tied notes inconsistent in spine <i>x</i>, line <i>n</i></TD></TR>
+<TR><TD>Error: Incorrect tie specification in spine <i>x</i>, line <i>n</i></TD></TR>
+<TR><TD>Error: Incorrect tie in spine <i>x</i>, line <i>n</i></TD></TR>
+<TR><TD>Error: Incorrect slur, spine <i>x</i>, line <i>n</i></TD></TR>
+<TR><TD>Error: Incorrect slur specification in spine <i>x</i>, line <i>n</i></TD></TR>
+<TR><TD>Error: Incorrect phrase marking in spine <i>x</i>, line <i>n</i></TD></TR>
+<TR><TD>Error: Incorrect phrase specification in spine <i>x</i>, line <i>n</i></TD></TR>
+<TR><TD>Error: Only one pause permitted in data token. Spine <i>x</i>, line <i>n</i></TD></TR>
+<TR><TD>Warning: No double barline in input.</TD></TR>
+<TR><TD>Warning: No meter declaration for spine <i>n</i>.</TD></TR>
+<TR><TD>Warning: No tempo declaration for spine <i>n</i>.</TD></TR>
+<TR><TD>Warning: No key declaration for spine <i>n</i>.</TD></TR>
+<TR><TD>Warning: No key signature declaration for spine <i>n</i>.</TD></TR>
+<TR><TD>Warning: Measure <i>n</i> may be out of place near line <i>n</i></TD></TR>
+<TR><TD>Warning: Material follows after double barline at line <i>n</i></TD></TR>
+<TR><TD>Warning: Measure <i>j</i> identical to measure <i>k</i> at line <i>n</i></TD></TR>
+<TR><TD>Warning: Possible change of meter in measure <i>x</i>, line <i>n</i></TD></TR>
+<TR><TD>Warning: Accidental may be missing in m.<i>x</i>, spine <i>y</i>, at line <i>n</i></TD></TR>
+<TR><TD>Warning: No double barline in input.</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Potential errors and warnings issued by <b>proof</b>.</i>
+</CENTER>
+</code></big>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="census.html">census</A>
+<b>census</i> (4),
+<A HREF="encode.html">encode</A>
+<A HREF="humdrum.html">humdrum</A>
+<A HREF="**kern.html">**kern</A>
+<A HREF="(2).html">(2)</A>
+<b>encode</b> (4), <b>humdrum</b> (4), <b>**kern</b> (2)
+</i></b></code></big>
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#Checking_an_Assembled_Score_Using_proof">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

@@ -1,0 +1,1496 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter27}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Text and Lyrics}
+
+
+
+Musical texts include lyrics, librettos, stage directions, recitativo
+and other collections of words.
+It goes without saying that words provide important information
+related to semantics, imagery, similes, allusion, irony, parody, word painting,
+and emotion.
+In addition, words can add to the sonorous dimension of music,
+including rhyme schemes, word-rhythms, and phonetic and syllabic effects
+such as alliteration, vowel-coloration.
+
+\par 
+Humdrum provides three pre-defined representations pertinent
+to text or lyrics.
+The
+\texttt{**text}
+representation can be used to represent \textit{words};
+the
+\texttt{**silbe}
+representation can be used to represent \textit{syllables};
+and the
+\texttt{**IPA}
+representation can be used to represent \textit{phonemes}
+(via the International Phonetic Alphabet).
+Discussion of the \texttt{**IPA} representation will be delayed
+until
+Chapter 34.
+In this chapter we will look at various representational and processing
+issues related to the manipulation of words and syllables.
+
+
+\subsection*{The \textit{**text} and \textit{**silbe} Representations}
+
+
+\par 
+Syllable- and word-oriented representations are
+illustrated in the following excerpt from a motet by Byrd (Example 27.1).
+The encoded Humdrum data includes three spines:
+\texttt{**text}, \texttt{**silbe} and \texttt{**kern}.
+Normally, only the \texttt{**silbe} and \texttt{**kern} data would be
+encoded -$\,$- since the \texttt{**text} spine can be generated
+from the \texttt{**silbe} representation.
+\\\\
+\textbf{Example 27.1.}  From William Byrd, \textit{Why Do I use my paper ink and pen.}
+
+
+
+\texttt{!!!COM: Byrd, William
+!!!OTL: Why do I use my paper ink and pen.
+
+
+**text**silbe**kern
+*LEnglish*LEnglish*
+=11=11=11
+\texttt{..2r
+WhyWhy2g
+=12=12=12
+dodo2b-
+II2a
+=13=13=13
+useuse4g
+mymy4g
+paperpa-[2dd
+=14=14=14
+\texttt{.|2dd]
+\texttt{.-per2cc
+=15=15=15
+inkink2.ff
+andand(4ee
+=16=16=16
+\texttt{.|4dd
+\texttt{.|4cc
+\texttt{.|4b-
+\texttt{.|4cc
+=17=17=17
+pen,pen,1dd
+=18=18=18
+andand1dd
+=19=19=19
+pen,pen,1dd
+=20=20=20
+\texttt{..2r
+andand2ff
+=21=21=21
+callcall2.ee
+mymy4dd
+=22=22=22
+witswits1cc\#
+=23=23=23
+toto2ee
+counselcoun-[2aa
+=24=24=24
+\texttt{.-sel4aa]
+whatwhat4ff
+toto(8ee
+\texttt{.|8dd
+=25=25=25
+\texttt{.|4cc
+\texttt{.|4dd
+\texttt{.|4.ee
+\texttt{.|8dd
+=26=26=26
+\texttt{.|4ee
+\texttt{.|4ee
+\texttt{.|2dd)
+=27=27=27
+say,say,1cc\#
+=28=28=28
+*-*-*-}
+
+
+Note that all three representations in Example 27.1 make use of
+the common system for representing barlines.
+In the
+\texttt{**text}
+representation tokens represent individual words.
+In some scores, several words will be associated with a single moment
+(or pitch), as in the case of
+\textit{recitativo}
+passages.
+Multi-word tokens are encoded as Humdrum multiple-stops with a space
+separating each word on a record.
+
+\par 
+In the
+\texttt{**silbe}
+representation tokens represent individual syllables.
+In \texttt{**silbe} the hyphen (-) is used explicitly to signify syllable
+boundaries and the tilde (~) is used to signify boundaries
+between hyphenated words (necessarily also a syllable boundary).
+In other words, four types of syllables are distinguished by \texttt{**silbe}:
+(1) a single-syllable word,
+(2) a word-initiating syllable,
+(3) a word-completing syllable, and
+(4) a mid-word syllable.
+The following table illustrates how these signifiers are used:
+\\\\
+\textbf{Table 26.1.}
+
+\textit{text}a single-syllable word
+\textit{text-}a word-initiating syllable
+\textit{-text}a word-completing syllable
+\textit{-text-}a mid-word syllable
+\textit{text~}a single-syllable word beginning a hyphenated multi-word
+\textit{~text}a single-syllable word completing a hyphenated multi-word
+\textit{~text~}a single-syllabe word continuing a hyphenated multi-word
+\textit{~text-}a word-initating syllable continuing a hyphenated multi-word
+\textit{-text~}a word-completing syllable -$\,$- part of a hyphenated multi-word
+
+Both the \texttt{**text} and \texttt{**silbe} representations are able to
+distinguish different tones of voice such as spoken voice, whispered voice,
+laughing voice, emotional voice,
+\textit{Sprechstimme}
+and humming.
+In addition, there are signifiers for indicating untexted laughter
+and untexted sobs or crys.
+Some sample signifiers are shown in Table 26.2
+\\\\
+\textbf{Table 26.2.}
+
+\texttt{A-Z}upper-case letters A to Z
+\texttt{a-z}lower-case letters a-z
+\texttt{(}open parenthesis
+\texttt{)}closed parenthesis
+\texttt{\{}beginning of phrase
+\texttt{\}}end of phrase
+\texttt{\%}silence (rest) token (character by itself)
+\texttt{M}humming voice (character by itself)
+\texttt{[}beginning of spoken voice
+\texttt{[[}beginning of whisper
+\texttt{]}end of spoken voice
+\texttt{]]}end of whisper
+\texttt{<}beginning of \textit{Sprechstimme}
+\texttt{>}\textit{end of Sprechstimme}
+\texttt{\#}beginning of laughing voice
+\texttt{\#\#}end of laughing voice
+\texttt{@}laughter (no text)
+\texttt{\&}sob or cry (no text)
+\texttt{\$}beginning of emotional voice
+\texttt{\$\$}end of emotional voice
+\texttt{*}follows stressed word (\texttt{**test}) or stressed syllable (\texttt{**silbe})
+
+
+\textit{Signifiers common to \textbf{**text} and \textbf{**silbe}}
+
+
+\par 
+
+\subsection*{The \textit{text} Command}
+
+\par 
+In most notated music, lyrics are written using a syllabic representation
+rather than a word-oriented representation.
+The \texttt{**silbe} representation is typically a better representation
+of the score than \texttt{**text}.
+However, for many analytic applications, words often prove
+to be more convenient.
+The Humdrum
+\textbf{text}
+command can be used to translate \texttt{**silbe} data to \texttt{**text} data.
+In general, syllabic information is useful for addressing questions related to
+rhythm and rhyme, whereas text information is more useful for addressing
+questions related to semantics, metaphor, word-painting, etc.
+
+\par 
+Invoking the
+\textbf{text}
+command is straightforward:
+
+\par 
+
+\texttt{text inputfile > outputfile}
+
+
+
+\par 
+A simple text-related task might be looking for occurrences of a particular
+word, such as the German "Liebe" (love).
+If the lyrics are encoded in the
+\texttt{**text}
+representation, then a simple
+\textbf{grep}
+will suffice:
+
+\par 
+
+\texttt{grep -n 'Liebe' schubert}
+
+
+\par 
+Recall that the
+\textbf{-n}
+option gives the line number of any occurrences found.
+If the input is encoded in the
+\texttt{**silbe}
+representation,
+then the output of
+\textbf{text}
+can be piped to \textbf{grep}:
+
+\par 
+
+\texttt{extract -i '**silbe' schubert | text | grep -n 'Liebe'}
+
+
+
+\par 
+Given a \texttt{**silbe} input, a inventory of words can be generated using
+\textbf{sort}
+and
+\textbf{uniq}
+in the usual way:
+
+\par 
+
+\texttt{extract -i '**silbe' song | text | rid -GLId | sort | uniq}
+
+
+\par 
+Frequently, it is useful to search for a group of words
+rather than individual words.
+Suppose we are looking for the phrase "white Pangur."
+The
+\textbf{context}
+command can be used to amalgamate words as multiple stops.
+If we are looking for a phrase consisting of just two words,
+we might use the
+\textbf{-n 2}
+option for \textbf{context}:
+
+\par 
+
+\texttt{text barber | context -n 2 | grep -i 'white Pangur'}
+
+
+
+\par 
+Alternatively, we might amalgamate words so they form sentences,
+or at least phrases.
+Puntuation marks provide a convenient marker for
+ending the amalgamation process carried out by \textbf{context}.
+In the following command, we have defined a regular expression
+with a character-class containing all of the puntuation marks.
+The output from this command will display all punctuated phrases
+(one per line) that contain the phrase "white Pangur."
+
+\par 
+
+\texttt{text | context -e '[.,;?!]' | grep -i 'white Pangur'}
+
+
+
+\subsection*{The \textit{fmt} Command}
+
+\par 
+Another common task is simply to provide a readable text of the
+text or lyrics of a work.
+Given a \texttt{**text} representation, we can use the
+\textbf{rid}
+command to eliminate all records except non-null data records.
+This will result in a list of words -$\,$- one word per line.
+UNIX provides a simple text formatter called
+\textbf{fmt}
+that will assemble words or lines into a block text where
+all output lines are roughly the same width.
+
+
+
+Consider the Gregorian chant
+\textit{A Solis Ortus}
+from the
+\textit{Liber Usualis}
+(shown in Example 27.2.)
+\\\\
+\textbf{Example 27.2.}  Beginning of chant \textit{A Solis Ortus}.
+
+
+
+The Latin text for this chant can be formatted as follows:
+
+\texttt{extract -i '**silbe' chant12 | text | rid -GLId | fmt -50}
+
+
+\par 
+The
+\textbf{-50}
+option tells
+\textbf{fmt}
+to place no more than 50 characters per line.
+The default line-length is 72 characters.
+The above pipeline produces the following output:
+
+\par 
+
+\\
+\texttt{A solis ortus cardine ad usque terrae limitem,
+\\
+Christum canamus principem, natum Maria Virgine.
+\\
+Beatus auctor saeculi servile corpus induit: ut
+\\
+carne carnem liberans, ne perderet quos condidit.
+\\
+Castae parentis viscera cae lestis intratgratia:
+\\
+venter puellae bajulat secreta, quae non noverat.
+\\
+Domus pudici pectoris tem plum repente fit Dei:
+\\
+intacta nesciens virum, concepit alvo filium.}
+
+
+\par 
+Another useful output would have the text arranged with one sentence
+or phrase on each line.
+As before we can use the
+\textbf{context}
+command with the
+\textbf{-e}
+option to amalgamate words, where each amalgamated line ends with
+a punctuation mark:
+
+\par 
+
+\texttt{extract -i '**silbe' chant12 | text | context -e '[.,;:?!]' $\backslash$
+
+| rid -GLId}
+
+
+
+\par 
+The corresponding output is:
+
+\par 
+
+\\
+\texttt{A solis ortus cardine ad usque terrae limitem,
+\\
+Christum canamus principem,
+\\
+natum Maria Virgine.
+\\
+Beatus auctor saeculi servile corpus induit:
+\\
+ut carne carnem liberans,
+\\
+ne perderet quos condidit.
+\\
+Castae parentis viscera cae lestis intratgratia:
+\\
+venter puellae bajulat secreta,
+\\
+quae non noverat.
+\\
+Domus pudici pectoris tem plum repente fit Dei:
+\\
+intacta nesciens virum,
+\\
+concepit alvo filium.}
+
+
+\par 
+Yet another way of arranging the text output would be to parse
+the text according to explicit phrase marks in the
+\texttt{**kern}
+data.
+This will require a little more work, but it's worth going through the steps
+since the same process can be applied to any representation.
+First, we will need to transfer the end-of-phrase signifier (`\texttt{\}}') from
+the \texttt{**kern} spine to the \texttt{**silbe} spine.
+This transfer entails four steps.
+(1) Extract the monophonic \texttt{**kern} spine and eliminate all data
+signifiers except closing curly braces (`\texttt{\}}').
+Store the result in a temporary file:
+
+\par 
+
+\texttt{extract -i '**kern' chant12 | humsed 's/[\^{}\}]*//; s/\^{}\$/./' $\backslash$
+
+> temp1}
+
+
+
+\par 
+Notice that
+\textbf{humsed}
+has been given two substitution commands.
+The first eliminates all data signifiers except the close curly brace.
+The second substitution transforms empty output lines to null data records
+by adding a single period.
+
+\par 
+(2) Extract the \texttt{**silbe} spine, translate it to \texttt{**text}
+and store the result in another temporary file:
+
+\par 
+
+\texttt{extract -i '**silbe' chant12 | text > temp2}
+
+
+\par 
+(3) Assemble the two temporary files together and use the
+\textbf{cleave}
+command to join the end-of-phrase marker to the syllable representation.
+
+\par 
+
+\texttt{assemble temp1 temp2 | cleave -i '**kern,**text' $\backslash$
+
+-o '**text' > temp3}
+
+
+
+\par 
+With this cleaved data we can now use the
+\textbf{context}
+command to amalgamate phrase-related text.
+Finally,
+\textbf{rid}
+is used to eliminate everything but non-null data records.
+
+\par 
+
+\texttt{context -o = -e \} temp3 | rid -GLId}
+
+
+\par 
+The result is as follows:
+
+\texttt{A solis ortus cardine \}
+\\
+ad usque terrae limitem, \}
+\\
+Christum canamus principem, \}
+\\
+natum Maria Virgine. \}
+\\
+Beatus auctor saeculi \}
+\\
+servile corpus induit: \}
+\\
+ut carne carnem liberans, \}
+\\
+ne perderet quos condidit. \}
+\\
+Castae parentis viscera \}
+\\
+cae lestis intratgratia: \}
+\\
+venter puellae bajulat \}
+\\
+secreta, quae non noverat. \}
+\\
+Domus pudici pectoris \}
+\\
+tem plum repente fit Dei: \}
+\\
+intacta nesciens virum, \}
+\\
+concepit alvo filium. \}}
+
+
+\par 
+We could clean up the output by using the
+\textbf{sed}
+command to remove the trailing closed curly brace.
+We simple add the following to the pipeline:
+
+\par 
+
+\texttt{ . . . | sed 's/\}//'}
+
+
+\par 
+You might have noticed that each of the above phrases seems to consist
+of eight syllables.
+We can confirm this by returning to the syllabic rather than
+word-oriented output.
+For the above command sequence, simply omit the
+\textbf{text}
+command and replace \texttt{**text} with \texttt{**silbe}.
+The revised script becomes:
+
+\par 
+
+\texttt{extract -i '**kern' chant12 | humsed 's/[\^{}\}]*//; s/\^{}\$/./' $\backslash$
+
+> temp1}
+
+\\
+\texttt{extract -i '**silbe' chant12 > temp2}
+\\
+\texttt{assemble temp1 temp2 | cleave -i '**kern,**silbe' $\backslash$
+
+-o '**silbe' > temp3}
+
+\texttt{context -o = -e \} temp3 | rid -GLId | sed 's/\}//'}
+
+
+\par 
+The corresponding output is:
+
+\texttt{A so/- -lis or/- -tus car/- -di- -ne
+\\
+ad us- -que ter/- -rae li/- -mi- -tem,
+\\
+Chri/- -stum ca- -na/- -mus prin/- -ci- -pem, 
+\\
+na/- -tum Ma- -ri/- -a Vir/- -gi- -ne.
+\\
+Be- -a/- -tus au/- -ctor sae/- -cu- -li
+\\
+ser- -vi/- -le cor/- -pus in/- -du- -it:
+\\
+ut car/- -ne car/- -nem li/- -be- -rans, 
+\\
+ne per/- -de- -ret quos con/- -di- -dit.
+\\
+Ca/- -stae pa- -ren/- -tis vis/- -ce- -ra
+\\
+cae/ le/- -stis in/- -trat- -gra/- -ti- -a:
+\\
+ven/- -ter pu- -el/- -lae ba/- -ju- -lat 
+\\
+se- -cre/- -ta, quae non no/- -ve- -rat.
+\\
+Do/- -mus pu- -di- -ci pe/- -cto- -ris
+\\
+tem/ plum re- -pen/- -te fit De/- -i:
+\\
+in- -ta/- -cta ne/- -sci- -ens vi/- -rum, 
+\\
+con- -ce/- -pit al/- -vo fi/- -li- -um.}
+
+
+
+\par 
+If we are looking for vocal texts that exhibit a recurring rhythm,
+we might make a simple addition to the above script.
+Instead of outputting the actual syllables in each phrase,
+we would output a count of the number of syllables in each phrase.
+The standard
+\textbf{awk}
+utility allows us to write simple in-line programs.
+The following
+\textbf{awk}
+script simply outputs the number of fields (white-space separated text)
+in each input line:
+
+\par 
+
+\texttt{awk '\{print NF\}'}
+
+
+\par 
+If we add this to the end of our command sequence, then
+the output would simply be a sequence of numbers -$\,$- where each
+number indicates the number of syllables in successive phrases.
+In the case of
+\textit{O Solis Ortus}
+our output would consist of a series of 8s indicating that
+each phrase contains precisely eighth syllables.
+
+\par 
+By way of summary, we can generalize the above process so that
+syllable/phrase schemes can be generated for any syllable-related input.
+The following script counts the number of
+syllables in successive phrases for a single input file.
+
+\par 
+
+\\
+\texttt{\# SYLLABLE - count the number of syllables in each phrase
+\\
+\#
+\\
+\# Usage: syllable filename [ > outputfile]
+\\
+\#
+\\
+extract -i '**kern' \$1 | humsed 's/[\^{}\}]*//; s/\^{}\$/./' > temp1
+\\
+extract -i '**silbe' \$1 > temp2
+\\
+assemble temp1 temp2 | cleave -i '**kern,**silbe' -o '**silbe' $\backslash$
+\\
+
+\\
+| context -o = -e \} | rid -GLId | sed 's/\}//' | awk '\{print NF\}'
+\\
+
+\\
+rm temp[12]}
+
+
+\par 
+Variations on this theme abound.
+For example, if we wish to determine the number
+of syllables between successive punctuation marks,
+the following pipeline could be used:
+
+\par 
+
+\texttt{extract -i '**silbe' | context -o = -e '[.,;:?!]' $\backslash$
+
+| rid -GLId | awk '\{print NF\}'}
+
+
+
+
+\subsection*{Rhythmic Feet in Text}
+
+\par 
+Another question related to rhythm is to identify rhythmic patterns.
+Once again, we might look at the chant
+\textit{O Solis Ortus.}
+Below we have recoded the syllables in each phrase,
+where the value \texttt{0} indicates an unstressed syllable and \texttt{1}
+indicates a stressed syllable:
+
+\par 
+
+\\
+\texttt{0 1 0 1 0 1 0 0
+\\
+0 0 0 1 0 1 0 0
+\\
+1 0 0 1 0 1 0 0 
+\\
+1 0 0 1 0 1 0 0
+\\
+0 1 0 1 0 1 0 0
+\\
+0 1 0 1 0 1 0 0
+\\
+0 1 0 1 0 1 0 0 
+\\
+0 1 0 0 0 1 0 0
+\\
+1 0 0 1 0 1 0 0
+\\
+1 1 0 1 0 1 0 0
+\\
+1 0 0 1 0 1 0 0 
+\\
+0 1 0 0 0 1 0 0
+\\
+1 0 0 0 0 1 0 0
+\\
+1 0 0 1 0 0 1 0
+\\
+0 1 0 1 0 0 1 0 
+\\
+0 1 0 1 0 1 0 0}
+
+
+\par 
+The above output was generated using the
+\textbf{humsed}
+command.
+Any syllable containing a trailing asterisk (\texttt{*}) is re-written
+as a `1', otherwise as a `0'.
+
+\par 
+
+\texttt{ . . . | humsed 's/[\^{} ][\^{} ]*$\backslash$*/1/g; s/[\^{}1][\^{}1]*\$/0/g'}
+
+
+\par 
+With the above output, we can generate an inventory of phrase-related
+text-rhythms.
+
+\par 
+
+\texttt{ . . . | sort | uniq -c | sort}
+
+
+\par 
+With the following results:
+
+\par 
+
+\\
+\texttt{5	0 1 0 1 0 1 0 0
+\\
+4	1 0 0 1 0 1 0 0
+\\
+2	0 1 0 0 0 1 0 0
+\\
+1	0 1 0 1 0 0 1 0
+\\
+1	1 1 0 1 0 1 0 0
+\\
+1	1 0 0 0 0 1 0 0
+\\
+1	1 0 0 1 0 0 1 0
+\\
+1	0 0 0 1 0 1 0 0}
+
+
+\par 
+We can create a summary rhythmic pattern by adding together the
+values in each column -$\,$- that is, counting the number of accented
+syllables that occur in each syllable position within the phrase.
+We can isolate each column using the UNIX
+\textbf{cut}
+command;
+\textbf{cut}
+is analogous to the Humdrum
+\textbf{extract}
+command.
+Fields are delineated by white space (tabs or spaces).
+For example,
+\textbf{cut -f 1}
+will isolate the first column of numbers.
+We can then pipe the results to the
+\textbf{stats}
+utility in order to calculate the numerical total.
+For example,
+
+\par 
+
+\texttt{ . . . | cut -f 1 | stats | grep 'total'}
+\\
+\texttt{ . . . | cut -f 2 | stats | grep 'total'}
+\\
+\texttt{ . . . | cut -f 3 | stats | grep 'total'}
+\\
+etc
+
+
+\par 
+For the chant
+\textit{O Solis Ortus}
+the results are as follows:
+
+\par 
+
+\texttt{7 9 0 13 0 14 2 0}
+
+
+\par 
+This means that there are seven stressed syllables in the first
+syllable position of the phrase,
+nine stressed syllables in the second syllable position, and so on.
+These results suggest the following
+rhythmic structure: medium-strong-weak-strong-weak-strong-weak-weak.
+By way of conclusion, it appears that this work has a strongly
+rhythmic text structure -$\,$- implying that this `chant' might have
+been sung rhythmically.
+
+
+\subsection*{Concordance}
+
+\par 
+A traditional text-related reference tool is the
+\textit{concordance.}
+Concordances allow users to look up a word, to see the word
+in the context of several preceding and following words,
+and provide detailed information about the location of the
+word in some repertory or corpus.
+
+
+Suppose, for example, that we wanted to create a concordance for
+the lyrics in Samuel Barber's songs.
+We would like to create a file that has a structure such as shown in
+Table 26.3 below.
+The first column identifies the filename.
+The second column identifies the bar number in which the keyword
+occurs.
+The third column gives a five-word context where the middle
+word (in bold) identifies the keyword.
+
+\textbf{Table 26.3.}
+\par 
+
+\texttt{chant294\texttt{ut possim \textbf{cantare}\texttt{, Alleluia: gaudebunt}
+\texttt{chant297\texttt{mea, dum \textbf{cantavero}\texttt{ tibi: Alleluia,}
+\texttt{chant271\texttt{Cantate Domino \textbf{canticum}\texttt{ novum Alleluia:}
+\texttt{chant544\texttt{Cantate Domino \textbf{canticum}\texttt{ novum, quia}
+\texttt{chant2410\texttt{Cantate Domino \textbf{canticum}\texttt{ novum: quia}
+\texttt{chant4214\texttt{totus non \textbf{capit}\texttt{ orbis, in}
+\texttt{chant475\texttt{et exaltavit \textbf{caput}\texttt{ ejus; et}
+\texttt{chant121\texttt{solis ortus \textbf{cardine}\texttt{ ad usque}
+\texttt{chant144\texttt{arrisit orto \textbf{caritas}\texttt{: Maria, dives}
+\texttt{chant127\texttt{induit: ut \textbf{carne}\texttt{ carnem liberans,}
+\texttt{chant585\texttt{et in \textbf{carne}\texttt{ mea videbo}
+\texttt{chant127\texttt{ut carne \textbf{carnem}\texttt{ liberans, ne}
+\texttt{chant146\texttt{sola quae \textbf{casto}\texttt{ potes fovere}
+\texttt{chant173\texttt{et discerne \textbf{causam}\texttt{ meam de}
+\texttt{chant212\texttt{Dominus a \textbf{cena}\texttt{, misit aquam}
+etc.
+
+
+We would also like to provide a \textbf{grep}-like search tool so
+users can search for particular keywords.
+
+\par 
+The following script will generate our concordance file.
+For each file specified in the input, we extract the \texttt{**silbe}
+spine and store it.
+We then process this spine no less than three times.
+In the first pass, we translate from the \texttt{**silbe}
+to the \texttt{**text} representation,
+and generate a context of 5 words (\textbf{-n 5}) making sure to omit
+barlines (\textbf{-o =}).
+We also pad the amalgamated line with three null tokens (\textbf{-p 3})
+so the context is centered near the third word in the sequence.
+In the second pass, we generate a new spine
+(\texttt{**nums})
+that contains only bar numbers.
+The
+\textbf{ditto}
+command is used to ensure that every data record contains a bar number.
+To ensure that pick-up bars are numbered with the value 0, we've
+used
+\textbf{humsed}
+to replace any leading null-tokens with the number 0.
+In the third pass, we replace every data token with the name of the file.
+Finally, we assemble all three of these spines, eliminate everything
+but data records, and also eliminate lines that don't contain any text.
+All of this processing is carried out in a while-loop that cycles
+through all of the files provided when the command is invoked.
+
+\par 
+
+\\
+\texttt{while [ \$\# -ne 0 ]
+\\
+do
+\\
+
+\\
+extract -i '**silbe' \$1 > temp1
+\\
+text temp1 | context -o = -n 5 -p 3 > temp2
+\\
+num -n = -a '**nums' temp1 | extract -i '**nums' $\backslash$
+\\
+
+\\
+| ditto | humsed 's/$\backslash$./0/' > temp3
+\\
+
+\\
+humsed "s/.*/\$1/" temp1 > temp4
+\\
+assemble temp4 temp3 temp2 | rid -GLId | sed '/.*	$\backslash$.\$/d'
+\\
+shift;
+\\
+
+\\
+done
+\\
+rm temp[1-4]}
+
+
+\par 
+Having generated our concordance file, we can now create a simple tool
+that allows us to search for keywords.
+Suppose we kept our concordance information in a file
+called \texttt{~/home/concord/master}.
+In essence, we'd like to create a command akin to
+\textbf{grep}
+-$\,$-  but one that searches this file solely according to the third word in the
+in the context.
+We cannot use
+\textbf{grep}
+directly since it will find all occurrences of a word no matter where
+it occurs in the context.
+We need to tell
+\textbf{grep}
+to ignore all other data.
+The filename, bar number, and context fields are separated by tabs.
+We can ignore the first two fields by eliminating everything up to
+the last tab in the line.
+Since words are separated by blank space, the expression \texttt{[\^{} ]+}
+will match a word not containing spaces.
+In short, the regular expression "\texttt{\^{}.*\textit{tab}[\^{} ]+ [\^{} ]+ }"
+will match everything up to the first tab, followed by two additional words.
+All we need to do is paste our keyword to the end of this expression.
+
+\par 
+Below is a simple one-line script for a command called
+\textbf{keyword.}
+The user simply types the command
+\textbf{keyword}
+followed by a regular expression that will allow him/her to search
+for a given word in context.
+Note that since we've used the extended regular expression character `+' -$\,$-
+we must invoke
+\textbf{egrep}
+rather than
+\textbf{grep}
+in our script:
+
+\par 
+
+\\
+\texttt{\# KEYWORD - A script for searching a master concordance file
+\\
+\#
+\\
+\# Usage:  keyword 
+\\
+\#
+\\
+egrep "\^{}.*	[\^{} ]+ [\^{} ]+ \$1" ~/home/concord/master}
+
+
+\par 
+Concordances can be used for a number of applications.
+One might use a concordance to help identify metaphor or image
+related words (such as "light," "darkness," etc.)
+
+
+\subsection*{Simile}
+
+\par 
+One of the most important poetic devices is the
+\textit{simile}
+-$\,$-  where an analogy or metaphorical link is created between
+two things ("My love is like a red red rose.")
+In English, similes are often (though not always) signalled
+by the presence of the words "like" or "as."
+
+\par 
+A simple task involves searching for `like' or `as' in the
+lyrics of some input.
+For each occurrence of these words, suppose that we would like
+to output a line that places the word in
+context -$\,$- specifically the preceding and following four words.
+
+\par 
+First we transform and isolate the text data using the
+\textbf{text}
+and
+\textbf{extract}
+commands:
+
+\par 
+
+\texttt{text inputfile | extract -i '**text' }
+
+
+\par 
+Since the input may contain multiple-stops, we might consider
+the precaution of ensuring no more than one word per data record.
+For this we can use \textbf{humsed}.
+Specifically, we can replace any spaces by a carriage return.
+Since the carriage return is interpreted by the shell as
+the instruction to begin executing a command,
+we need to escape it.
+Depending on the shell, the carriage return can be escaped in
+various ways.
+One way is to precede the carriage return by control-V
+(meaning "verbatim").
+Another way is to type control-M rather than a carriage return.
+In the following command we have used the backslash to escape
+a control-M character:
+
+\par 
+
+\texttt{text inputfile | extract -i '**text' | humsed 's/  */$\backslash$\^{}M/g' $\backslash$
+
+| egrep -4 '\^{}|(like)|(as)\$'}
+
+
+
+\par 
+Having ensured that there is no more than one word per line we
+can now search for a line contain
+\textit{just}
+"like" or "as."
+The
+\textbf{-4}
+option for
+\textbf{egrep}
+causes any matched lines to be output with four preceding and
+four following lines of context.
+In addition, an extra line is added consisting of two dashes (\texttt{-$\,$-})
+to segregate each pattern output.
+That is, for each match, ten lines of output are typically given.
+In order to generate our final output, we need to transform
+the linear list of words into a horizontal list where each
+line represents a single match for "like" or "as."
+
+\par 
+The
+\textbf{context}
+command would enable us to do this.
+Unfortunately, however, the output from
+\textbf{egrep}
+fails to conform to the Humdrum syntax.
+In particular, adding \texttt{\^{}$\backslash$*} to the regular expression
+will fail to ensure a proper Humdrum output since preceding and
+following contextual lines will also be output.
+
+\par 
+The
+\textbf{hum}
+command is a special command that takes non-Humdrum input and
+adds sufficient interpretation records so as to make the
+input conform to the Humdrum syntax.
+Typically, this means simply adding a generic initial exclusive interpretation
+(\texttt{**A}) and a spine-path terminator (\texttt{*-}).
+If the input contains tabs, then appropriate spines will be added.
+If the input contains empty lines, then they will be changed to null data records.
+
+\par 
+
+\texttt{text inputfile | extract -i '**text' | humsed 's/  */$\backslash$\^{}M/g' $\backslash$
+
+| egrep -4 '\^{}|(like)|(as)\$' | hum}
+
+
+
+\par 
+Now we can make use of the
+\textbf{context}
+command.
+Each context ends with the double-dash delimiters generated by \textbf{egrep}.
+The
+\textbf{rid}
+command can be used to eliminate the interpretations added by \textbf{hum}.
+
+\par 
+
+\texttt{text inputfile | extract -i '**text' | humsed 's/  */$\backslash$\^{}M/g' $\backslash$
+
+| egrep -4 '\^{}|(like)|(as)\$' | hum | context -e '-$\,$-' $\backslash$
+\\
+| rid -Id}
+
+
+
+
+\subsection*{Word Painting}
+
+\par 
+Word painting has a long history in music.
+There are innumerable examples where the music has somehow
+reflected the meaning of the vocal text.
+Suppose we wanted to determine whether words designating height
+(e.g., English "high," German "hoch,"
+French "haute/haut") tend to coincide with high pitches.
+
+\par 
+A simple approach would be to extract those sonorities that
+coincide with any of the words high/hoch/haut and determine
+the average pitch.
+We can then contrast this average pitch with the average pitch
+for the repertory as a whole.
+Any significant difference might alert us to possible word painting.
+
+\par 
+First we translate any pitch data to
+\texttt{**semits}
+and any
+\texttt{**silbe} data to \texttt{**text}.
+We will also filter the outputs to ensure that
+only \texttt{**semits} and \texttt{**text} are present.
+
+\par 
+
+\texttt{semits * | text | extract -i '**semits,**text'}
+
+
+\par 
+Since a word may be sustained through more than one pitch,
+and a pitch may be intoned for more than one word, we should use the
+\textbf{ditto}
+command to ensure that null tokens are filled-in.
+
+\par 
+
+\texttt{semits * | text | extract -i '**semits,**text' | ditto -s =}
+
+
+\par 
+Next, we can use
+\textbf{egrep}
+to search for the words of interest:
+
+\par 
+
+\texttt{semits * | text | extract -i '**semits,**text' | ditto -s = $\backslash$
+
+| egrep -i '\^{}$\backslash$*|high|hoch|haut'}
+
+
+
+\par 
+Notice the addition of the expression \texttt{\^{}$\backslash$*} in the search
+pattern.
+This expression will match any Humdrum interpretation records and so
+ensures that the output conforms to the Humdrum syntax.
+We can now isolate the \texttt{**semits} data and pass the output to
+\textbf{stats}
+in order to determine the average pitch for the words coinciding
+with the words high/hoch/haut:
+
+\par 
+
+\texttt{semits * | text | extract -i '**semits,**text' | ditto -s = $\backslash$
+
+| egrep -i '\^{}$\backslash$*|high|hoch|haut' | extract -i '**semits' | stats}
+
+
+
+\par 
+The average pitch for the entire work can be determined as follows:
+
+\par 
+
+\texttt{semits * | extract -i '**semits' | ditto -s = | rid -GLI $\backslash$
+
+| stats}
+
+
+
+
+\subsection*{Emotionality}
+
+\par 
+Musical texts often convey or portray a wide range of emotions.
+Some texts celebrate the ecstacy of love or lament the sorrow of loss.
+Yet other texts exhibit little emotional content.
+Suppose that we wanted to create a tool that would allow us
+to estimate the degree of emotional "charge" in the lyrics
+of any given vocal work.
+A simple approach might be to look for words that are commonly
+associated with high emotional content.
+
+\par 
+Table 26.4 shows a sample of six words from a study
+where 10 people were asked to rate the degree of emotionality
+associated with 100 English words.
+Participants rated each word on a scale from -10 to +10
+where -10 indicates a maximum negative emotional rating
+and +10 indicates a maximum positive emotional rating.
+The values shown identify the average rating for all 10 participants.
+\\\\
+\textbf{Table 26.4.  Average Emotionality Ratings for English Words.}
+
+\par 
+
+begin+3.8
+river+4.2
+friend+5.2
+love+8.6
+hate-9.7
+detest-9.8
+
+Clearly, such a rating system might allow us to create a tool
+that would automatically search a large database and identify
+those vocal works whose lyrics are most emotionally charged.
+One way to generate a crude index of emotionality is to
+measure the average ratings for the ten most emotion-laden
+words in a given input.
+
+\par 
+The
+\textbf{humsed}
+command provides an appropriate place to start.
+In effect, we would take a table (such as Table 26.4) and
+use it to create a series of substitutions.
+Emotionally-charged words would be replaced by a numerical rating.
+Our
+\textbf{humsed}
+script would have the following form.
+Notice that the first substitution is used to eliminate
+punctuation marks.
+\\\\
+
+\texttt{
+s/[.,;:'`"!?]//g
+s/begin/+3.8/
+s/river/+4.2/
+s/friend/+5.2/
+s/love/+8.6/
+s/hate/-9.7/
+s/detest/-9.8/
+/[\^{}0-9+-]/s/.*/./}
+
+Also notice that the final command transforms any data records
+that contains anything other than a number to a null data token.
+In other words, words that are not present in the emotionality list
+are not rated.
+
+\par 
+In order to process our input,
+any syllabic text would first be translated to the \texttt{**text}
+representation, and all other spines discarded using \textbf{extract -i}.
+
+\par 
+
+\texttt{text} \textit{inputfile}\texttt{ | extract -i '**text' ...}
+
+
+\par 
+Then we would translate the words using our "emotionality" script,
+eliminate everything other than data records, and calculate
+the numerical statistics:
+
+\par 
+
+\texttt{text} \textit{inputfile}\texttt{ | extract -i '**text' | humsed -f emotion $\backslash$
+
+| rid -GLId | stats}
+
+
+
+\par 
+In general, works whose lyrics express predominantly positive emotions
+ought to exhibit positive emotionality estimates.
+Similarly, works expressing predominantly negative emotions ought
+to exhibit negative emotionality estimates.
+Of course the process of averaging may be deceptive.
+Two sorts of problems may arise.
+First, a large number of fairly neutral words will tend to
+dilute an otherwise large positive or negative score.
+It may be preferable to observe the maximum positive and negative values.
+Alternatively, it may be appropriate to limit the average to (say)
+the ten most emotionally charged words.
+We can do this by sorting the numerical values and using the
+\textbf{head}
+and
+\textbf{tail}
+commands to select the highest or lowest values.
+In our revised processing, we use
+\textbf{sort -n}
+to sort the values in numerical order -$\,$- placing the
+output in a temporary file.
+The UNIX
+\textbf{head}
+command allows us to access a specified number of lines at the
+beginning of a file:
+the option
+\textbf{-5}
+specifies the first five lines.
+Similarly, the UNIX
+\textbf{tail}
+command allows us to access a specified number of lines at the
+end of a file.
+The ten highest and lowest values are then concatenated together
+and piped to the
+\textbf{stats}
+command:
+
+\par 
+
+\texttt{text} \textit{inputfile}\texttt{ | extract -i '**text' | humsed -f emotion $\backslash$
+
+| rid -GLId | sort -n > temp
+
+head -5 temp > lowest
+\\
+tail -5 temp > highest
+\\
+cat highest lowest | stats}
+
+
+\par 
+A second problem with averaging together emotion rating values is
+that an emotionally-charged work might include a rough balance of passionate
+words expressing both positive and negative emotions.
+This might result in an average near zero and be mistaken for
+lyrics that exhibit little emotionality.
+The
+\textbf{stats}
+command outputs a variance measure that can be used to gauge
+the spread of the data.
+However, another way to address this problem is by ignoring the
+plus and minus signs in the input.
+That is, a rough index of emotionality -$\,$- independent of
+whether the emotion is predominantly negative or positive
+would simply focus on the most emotionally charged words.
+
+\par 
+The plus and minus signs can be eliminated using a simple
+\textbf{humsed}
+substitution prior to numerical sorting:
+
+\par 
+
+\texttt{humsed 's/[+-]//g'}
+
+
+\par 
+Once again, we could use the
+\textbf{head}
+command to isolate the 10 or 20 most emotionally charged words.
+
+\par 
+Another variant of this approach might be to identify those
+words in a text which are most emotionally charged.
+Suppose we wanted to determine the location of the most
+emotionally charged word.
+A combination of
+\textbf{sort}
+and
+\textbf{grep}
+can be applied to this task.
+First we generate a spine containing the emotional-charge values
+taking care to eliminate the signs:
+
+\par 
+
+\texttt{text} \textit{inputfile}\texttt{ | extract -i '**text' | humsed -f emotion $\backslash$
+
+| humsed 's/[+-]//g' > charges}
+
+
+
+\par 
+Next we assemble this new spine with the original input:
+
+\par 
+
+\texttt{assemble charges} \textit{inputfile}
+
+
+\par 
+We can isolate data records using
+\textbf{rid}
+and then use
+\textbf{sort -n}
+to sort according to the numbers present in the first column.
+The most emotional charged word will be at the end of the file
+(largest number) so we can use
+\textbf{tail -1}
+to identify the word:
+
+\par 
+
+\texttt{assemble charges} \textit{inputfile}\texttt{ | rid -GLId | sort -n | tail -1}
+
+
+\par 
+Having established what word has been estimated as having the
+highest emotional-charge, we can then use
+\textbf{grep -n}
+to establish the location(s) of this word in the original input file.
+
+
+\subsection*{Other Types of Language Use}
+
+\par 
+Apart from emotionality,
+language tends to be used differently in different musical genres.
+The contrast between
+\textit{aria}
+and
+\textit{recitative}
+provides a classic example.
+The aria is intended to be a poetic reflection of a certain emotional
+state or reaction whereas the recitative moves the action along by
+focusing on concrete circumstances.
+Any number of variants on our "emotionality" processing can be
+conceived.
+
+For example, we might create another language index related to
+the degree of abstraction/concreteness for words.
+Words such as Verona, knife and Montague are comparatively concrete,
+whereas words such as feud, love and tragedy are more conceptual
+or abstract.
+We might expect to be able to observe such differences in
+recitative versus aria texts.
+
+\par 
+Similarly, differences in language use can be found in
+folk and popular music.
+In the case of the folk \textit{ballad}, a detailed story unfolds.
+Differences in language use may be correlated with
+the \texttt{!!!AGN} reference record used to identify genres.
+
+
+
+\subsection*{Reprise}
+
+\par 
+In this chapter we have introduced two text-related representations:
+\texttt{**text}
+and
+\texttt{**silbe}.
+We have examined the
+\textbf{text}
+command (which translates from \texttt{**silbe} to \texttt{**text}).
+We have also been exposed to the UNIX
+\textbf{fmt}
+command (a simple text formatter), the
+\textbf{cut}
+command (similar to \textbf{extract -f}), and the
+\textbf{head}
+and
+\textbf{tail}
+commands.
+
+\par 
+In
+Chapter 34
+we will examine further representations
+and processes related to phonetic data.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

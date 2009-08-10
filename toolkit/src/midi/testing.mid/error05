@@ -1,0 +1,8 @@
+!! midi Error Test #5
+!! This file contains contains no exclusive interpretation.
+!! (*kern rather than **kern).  No MIDI output should occur.
+*kern
+4f
+4g
+4a
+*-

@@ -1,0 +1,755 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 2</TITLE>
+<!-- Chapter 2 (Representing Music Using **kern) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:13:27 EST 2000">
+<meta name="description" content="Chapter 2 (Representing Music Using **kern) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<H1>Chapter2</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide01.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide03.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Representing Music Using <B><I>**kern</B></I> (I)</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+The <code><big>**kern</big></code> representation can be used to represent basic
+or core information for common Western music.
+The <code><big>**kern</big></code> scheme can be used to encode pitch and duration,
+plus other common score-related information.
+In this chapter, we will introduce <code><big>**kern</big></code>
+through a series of tutorial examples.
+A more comprehensive description
+of <code><big>**kern</big></code> will be given in
+<A HREF="guide06.html">Chapter 6.</A>
+Our intention here is to provide a quick introduction.
+</P>
+<P>
+Consider the opening motive from J.S. Bach's <i>Art of Fugue</i>
+shown in Example 2.1.
+A corresponding <code><big>**kern</big></code> representation is given below
+the notation.
+<br>
+<br>
+<b>Example 2.1.</i>  J.S. Bach <i>Die Kunst der Fuge</i>
+<blockquote>
+<img src="guide.figures/guide02.1.gif">
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD><code><big>*clefG2</TD></TR>
+<TR><TD><code><big>*k[b-]</TD></TR>
+<TR><TD><code><big>*M2/2</TD></TR>
+<TR><TD><code><big>=-</TD></TR>
+<TR><TD><code><big>2d/</TD></TR>
+<TR><TD><code><big>2a/</TD></TR>
+<TR><TD><code><big>=</TD></TR>
+<TR><TD><code><big>2f/</TD></TR>
+<TR><TD><code><big>2d/</TD></TR>
+<TR><TD><code><big>=</TD></TR>
+<TR><TD><code><big>2c#/</TD></TR>
+<TR><TD><code><big>4d/</TD></TR>
+<TR><TD><code><big>4e/</TD></TR>
+<TR><TD><code><big>=</TD></TR>
+<TR><TD><code><big>2f/</TD></TR>
+<TR><TD><code><big>2r</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</blockquote>
+</P>
+In general, <code><big>**kern</big></code> is intended to represent the underlying
+<i>functional</i>
+information conveyed by a musical score rather than the visual or
+<i>orthographic</i>
+information found in a given printed rendition.
+The <code><big>**kern</big></code> representation is designed to
+facilitate analytic applications rather than music printing or sound
+generation.
+Nevertheless, both visual output and sound output can be generated from the
+<code><big>**kern</big></code> representation.
+</P>
+<P>
+Notice that whereas the notation is laid out horizontally across
+the page, the Humdrum representation procedes vertically down the page.
+The representation begins with the keyword <code><big>**kern</big></code> which indicates
+that the ensuing encoded material conforms to the kern representation.
+The encoded passage ends with a special
+<A HREF="glossary.html#Terminator"><i>terminator</i></A>
+token (<code><big>*-</big></code>).
+</P>
+<P>
+The clef is identified as a G-clef positioned on the second
+line of the staff (i.e., a treble clef).
+The key signature is encoded as a single flat, B-flat:
+the minus sign here indicates a flat.
+The meter signature (2/2) is encoded next.
+</P>
+<P>
+Lines that begin with an equals-sign indicate
+<i>logical</i>
+barlines.
+Musical works may begin with either a complete measure or
+a partial measure.
+In the <code><big>**kern</big></code> representation, the beginning of the
+first measure is explicitly indicated.
+In Example 2.1, the encoding for the first barline (<code><big>=-</big></code>)
+is a functional encoding that doesn't correspond to anything
+in the printed score.
+The minus sign following the equals-sign indicates that the barline
+is "invisible."
+The presence of this logical barline allows various Humdrum tools
+to recognize that the initial notes start at the beginning of
+the first measure, and are not "pick-up" notes prior to the
+first measure.
+</P>
+<P>
+The durations of the notes are indicated by reciprocal numbers:
+1 for whole-note, 2 for half-note, 4 for quarter-note, etc.
+The
+<i>breve</i>
+or double whole-note is a special case and is
+represented by the number zero.
+</P>
+<P>
+Stem directions are encoded using the slash (/) for up-stems
+and the back-slash (\) for down-stems.
+</P>
+<P>
+Pitches are represented through a scheme of upper- and lower-case letters.
+Middle C (C4) is represented using the single lower-case letter "<code><big>c</big></code>".
+Successive octaves are designated by letter repetition, thus C5 is
+represented by "<code><big>cc</big></code>", C6 by "<code><big>ccc</big></code>" and so on.
+The higher the octave, the more repeated letters.
+</P>
+<P>
+For pitches below C4, upper-case letters are used: "<code><big>C</big></code>" designates C3,
+"<code><big>CC</big></code>" designates C2, and so on.
+Changes of octave occur between B and C.
+Thus the B below middle C is represented as "<code><big>B</big></code>";
+the B below "<code><big>CC</big></code>" is represented as "<code><big>BBB</big></code>", and so on.
+The lower the octave, the greater the number of repeated letters.
+</P>
+<P>
+Accidentals are encoded using the octothorpe (<code><big>#</big></code>) for sharps, the minus
+sign (<code><big>-</big></code>) for flats, and the lower-case letter "<code><big>n</big></code>" for naturals.
+Accidentals are encoded immediately following the pitch letter name.
+Double-sharps and double-flats have no special representations in <code><big>**kern</big></code>
+and are simply denoted by repetition:
+(<code><big>##</big></code>) and (<code><big>--</big></code>) respectively.
+Triple and quadruple accidentals are similarly encoded by repetition.
+Sharps, flats, and naturals are mutually exclusive in <code><big>**kern</big></code>,
+so tokens such as "<code><big>cc#n</big></code>" and "<code><big>GG-#</big></code>" are illegal.
+</P>
+<P>
+In Example 2.2, two musical parts are encoded.
+In the corresponding <code><big>**kern</big></code> encoding, each musical part or
+voice has been assigned to a different musical staff --
+labelled <code><big>*staff1</big></code> and <code><big>*staff2</big></code>.
+Notice that the upper part has been encoded in the right-most column.
+The layout is exactly as though the musical score were turned sideways.
+<br>
+<br>
+<b>Example 2.2.</i>  J.S. Bach, <i>Praeambulum</i> BWV 390.
+<blockquote>
+<img src="guide.figures/guide02.2.gif">
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD></TR>
+<TR><TD><code><big>*staff2</TD><TD>*staff1</TD></TR>
+<TR><TD><code><big>*clefF4</TD><TD>*clefG2</TD></TR>
+<TR><TD><code><big>*k[b-]</TD><TD>*k[b-]</TD></TR>
+<TR><TD><code><big>*M3/4</TD><TD>*M3/4</TD></TR>
+<TR><TD><code><big>=1-</TD><TD>=1-</TD></TR>
+<TR><TD><code><big>2.r</TD><TD>8r</TD></TR>
+<TR><TD><code><big>.</TD><TD>8d/L</TD></TR>
+<TR><TD><code><big>.</TD><TD>8g/</TD></TR>
+<TR><TD><code><big>.</TD><TD>8b-/</TD></TR>
+<TR><TD><code><big>.</TD><TD>8g/</TD></TR>
+<TR><TD><code><big>.</TD><TD>8d/J</TD></TR>
+<TR><TD><code><big>=2</TD><TD>=2</TD></TR>
+<TR><TD><code><big>8r</TD><TD>4dd\ </TD></TR>
+<TR><TD><code><big>8GG/L</TD><TD>.</TD></TR>
+<TR><TD><code><big>8BB-/</TD><TD>4r</TD></TR>
+<TR><TD><code><big>8D/</TD><TD>.</TD></TR>
+<TR><TD><code><big>8BB-/</TD><TD>4r</TD></TR>
+<TR><TD><code><big>8GG/J</TD><TD>.</TD></TR>
+<TR><TD><code><big>=3</TD><TD>=3</TD></TR>
+<TR><TD><code><big>4GWw\</TD><TD>8r</TD></TR>
+<TR><TD><code><big>.</TD><TD>8dd\L </TD></TR>
+<TR><TD><code><big>8GG/L</TD><TD>8b-\ </TD></TR>
+<TR><TD><code><big>8BB-/</TD><TD>8g\ </TD></TR>
+<TR><TD><code><big>8D/</TD><TD>8gg\ </TD></TR>
+<TR><TD><code><big>8G/J</TD><TD>8b-\J</TD></TR>
+<TR><TD><code><big>=4</TD><TD>=4</TD></TR>
+<TR><TD><code><big>4D\</TD><TD>8a/L</TD></TR>
+<TR><TD><code><big>.</TD><TD>8gg/</TD></TR>
+<TR><TD><code><big>4d\</TD><TD>8ff/</TD></TR>
+<TR><TD><code><big>.</TD><TD>8ee/</TD></TR>
+<TR><TD><code><big>4D\</TD><TD>8ff/</TD></TR>
+<TR><TD><code><big>.</TD><TD>8a-/J</TD></TR>
+<TR><TD><code><big>=5</TD><TD>=5</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</blockquote>
+Each column contains its own separate information.
+Both columns have been labelled <code><big>**kern</big></code> and are terminated (<code><big>*-</big></code>).
+The columns are separated by a single tab.
+Barline information is also encoded in each column.
+Notice that measure numbers have been added following the barline
+indicator (=).
+Although measure numbers may not be present in the printed score,
+it is normal to include them in <code><big>**kern</big></code> encodings.
+</P>
+<P>
+A notable feature when representing multi-part music is the presence
+of place holders called
+<A HREF="glossary.html#Null Token"><i>null tokens</i>.</A>
+A null token is represented by a single isolated period character (.).
+Not all musical parts will have a new note with each successive sonority.
+A null token maintains the grid structure for a sustained pitch
+while another part is moving.
+</P>
+<P>
+Rests are encoded by the lower-case letter `<code><big>r</big></code>'.
+Notice that the first rest in the lower part has not been encoded
+as a whole rest.
+Instead, it has been rendered as a dotted half rest.
+This is a good illustration of how <code><big>**kern</big></code> is intended
+to be a
+<i>functional</i>
+rather than
+<i>orthographic</i>
+(visual) representation.
+</P>
+<P>
+Another important difference between functional and orthographic
+representations is evident in the treatment of accidentals.
+In the <code><big>**kern</big></code> representation, all pitches are encoded
+without regard for what is going on around them.
+For example, in <code><big>**kern</big></code>, pitches are encoded
+with the appropriate accidental,
+even if the accidental is specified in a key-signature or is present earlier
+in the same measure.
+Hence the explicit encoding of all occurrences of B-flats in Example 2.2.
+</P>
+<P>
+All pitches are encoded as absolute pitches.
+In <code><big>**kern</big></code>, even transposing instruments are always represented
+at (sounding) concert pitch.
+A special
+<i>transposition interpretation</i>
+is provided to indicate the nature of any transposing instrument
+--  but the encoded pitches -- selves appear only at concert pitch.
+</P>
+<P>
+Finally, pitches in <code><big>**kern</big></code> are encoded as "nominally"
+equally-tempered values.
+A special
+<i>temperament interpretation</i>
+is provided to indicate if the tuning
+system is other than equal temperament.
+</P>
+<P>
+Two other aspects of Example 2.2 are noteworthy.
+In measure 3 an inverted mordent appears on the first note in the
+bass part.
+Mordents are encoded via the letter `<code><big>M</big></code>' -- upper-case `<code><big>M</big></code>' for
+whole-tone mordents and lower-case `<code><big>m</big></code>' for semitone mordents.
+Inverted mordents are similarly encoded using the letter `<code><big>W</big></code>'.
+In Example 2.2, it is not clear whether the mordent should be
+a semitone (consistent with a G harmonic minor figure) or
+a whole-tone mordent (consistent with a G melodic minor figure).
+The signifier `<code><big>Ww</big></code>' is a special representation indicating that
+the ornament may be either one.
+</P>
+<P>
+Also evident in Example 2.2 are the upper-case letters `<code><big>L</big></code>' and `<code><big>J</big></code>'.
+These encode beaming information.
+Each beam is opened by the letter `<code><big>L</big></code>' and closed by the letter `<code><big>J</big></code>'
+(think of left and right angles).
+Multiple beams and partial beams are discussed in Example 2.4.
+</P>
+<P>
+Example 2.3 shows a four-part chorale harmonization by Bach.
+In this example, two musical parts share each of the two staves.
+Notice how the corresponding <code><big>**kern</big></code> encoding
+assigns each part to a separate column, but links the
+appropriate parts using the <code><big>*staff</big></code> indicators.
+<br>
+<br>
+<b>Example 2.3.</i>  <i>Nun danket alle Gott</i>, arr. J.S. Bach.
+<blockquote>
+<img src="guide.figures/guide02.3.gif">
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD></TR>
+<TR><TD><code><big>*staff2</TD><TD>*staff2</TD><TD>*staff1</TD><TD>*staff1</TD></TR>
+<TR><TD><code><big>*clefF4</TD><TD>*clefF4</TD><TD>*clefG2</TD><TD>*clefG2</TD></TR>
+<TR><TD><code><big>*k[f#c#g#]</TD><TD>*k[f#c#g#]</TD><TD>*k[f#c#g#]</TD><TD>*k[f#c#g#]</TD></TR>
+<TR><TD><code><big>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD><code><big>4AA</TD><TD>4c#</TD><TD>4a</TD><TD>4ee</TD></TR>
+<TR><TD><code><big>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD><code><big>8A</TD><TD>4c#</TD><TD>4a</TD><TD>4ee</TD></TR>
+<TR><TD><code><big>8B</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>8c#</TD><TD>4c#</TD><TD>4a</TD><TD>4ee</TD></TR>
+<TR><TD><code><big>8A</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>8D</TD><TD>4d</TD><TD>4a</TD><TD>4ff#</TD></TR>
+<TR><TD><code><big>8E</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>8F#</TD><TD>4d</TD><TD>4a</TD><TD>4ff#</TD></TR>
+<TR><TD><code><big>8D</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD><code><big>2A;</TD><TD>2c#;</TD><TD>2a;</TD><TD>2ee;</TD></TR>
+<TR><TD><code><big>4r</TD><TD>4r</TD><TD>4r</TD><TD>4r</TD></TR>
+<TR><TD><code><big>4A</TD><TD>4e</TD><TD>4a</TD><TD>4cc#</TD></TR>
+<TR><TD><code><big>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD><code><big>4G#</TD><TD>4e</TD><TD>4b</TD><TD>4dd</TD></TR>
+<TR><TD><code><big>4A</TD><TD>4e</TD><TD>4a</TD><TD>4cc#</TD></TR>
+<TR><TD><code><big>8E</TD><TD>4e</TD><TD>4g#</TD><TD>4b</TD></TR>
+<TR><TD><code><big>8D</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>8C#</TD><TD>4e</TD><TD>[4a</TD><TD>8.cc#</TD></TR>
+<TR><TD><code><big>8AA</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>.</TD><TD>16dd</TD></TR>
+<TR><TD><code><big>=4</TD><TD>=4</TD><TD>=4</TD><TD>=4</TD></TR>
+<TR><TD><code><big>2E</TD><TD>8e</TD><TD>8a]</TD><TD>2b</TD></TR>
+<TR><TD><code><big>.</TD><TD>16d</TD><TD>8f#</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>16c#</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>4d</TD><TD>4g#</TD><TD>.</TD></TR>
+<TR><TD><code><big>4AA;</TD><TD>4c#;</TD><TD>4e;</TD><TD>4a;</TD></TR>
+<TR><TD><code><big>=:|!</TD><TD>=:|!</TD><TD>=:|!</TD><TD>=:|!</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</blockquote>
+Once again, clefs, key signatures and meter signatures are
+encoded separately for each part.
+Notice how the meter signature has been encoded as 4/4 rather
+than `common time'.
+This again reflects <code><big>**kern</big></code>'s preoccupation with
+functional information rather than orthographic information.
+(Later we will see how to encode the fact that the meter signature
+is visually rendered as `C' rather than 4/4.)
+</P>
+<P>
+In measure 2, pauses (<code><big>;</big></code>) have been encoded for all four voices
+even though only two pause symbols appear in the printed notation.
+</P>
+<P>
+In the third measure, the last note of the alto part has been
+tied into the fourth measure.
+The <code><big>**kern</big></code> representation provides no generic means for representing
+"curved lines" found in printed scores.
+Since <code><big>**kern</big></code> is a "functional" rather
+than an "orthographic" representation, all lines are explicitly
+interpreted as either
+<i>ties, slurs</i>
+or
+<i>phrases.</i>
+</P>
+<P>
+The open brace <code><big>{</big></code> denotes the beginning of a phrase.
+The closed brace <code><big>}</big></code> denotes the end of a phrase.
+</P>
+<P>
+The open parenthesis <code><big>(</big></code> and closed parenthesis <code><big>)</big></code> signify
+the beginning and end of a slur respectively.
+</P>
+<P>
+The open square bracket <code><big>[</big></code> denotes the first note of a tie.
+The closed square bracket <code><big>]</big></code> denotes the last note of a tie.
+The underscore character <code><big>_</big></code> denotes middle notes (if any) of a tie.
+</P>
+<P>
+Slurs and phrase markings can be
+<i>nested</i>
+(e.g. slurs within slurs)
+and may also be
+<i>elided</i>
+(e.g. overlapping phrases) to a single depth.
+<i>Nested markings</i>
+mean that one slur or phrase is entirely subsumed under
+another slur or phrase.
+For example: <code><big>(  (  )  )</big></code>  means that a short
+slur has occurred within a longer slur.
+<i>Elisions</i>
+are overlaps, for example, where an existing phrase fails to
+end while a new phrase begins.
+In <code><big>**kern</big></code> the ampersand character (<code><big>&</big></code>) is used
+to mark elided slurs or phrases.
+For example: <code><big>{  &{  }  &}</big></code>  means
+that two phrases overlap -- the first phrase ending after
+the second phrase has begun.
+</P>
+<P>
+Example 2.3 ends with a repeat sign.
+The <code><big>**kern</big></code> representation makes a distinction between
+repeat signs that appear in the score and repeat signs
+that are obeyed in performance.
+In this example, only the visual or orthographic rendering of the
+barline has been encoded.
+Later, in
+<A HREF="guide20.html">Chapter 20,</A>
+we will see how sectional repeats are
+functionally represented.
+The visual appearance of the final barline is encoded as follows: <code><big>=:|!</big></code>.
+The equals-sign indicates the logical presence of a barline.
+The colon indicates the repeat sign, followed by a thin line (<code><big>|</big></code>),
+followed by a thick line (<code><big>!</big></code>).
+</P>
+<P>
+Example 2.4 shows a keyboard work by Franz Joseph Haydn.
+In this example, the lower staff appears to have two concurrent voices.
+The excerpt has been encoded using three spines, two of which encode
+material appearing on the same staff.
+Notice that key signatures are provided that explicitly indicate
+that there are no sharps or flats in the key signature.
+</P>
+<P>
+The upper-most part in the first measure shows the use of
+partial beams.
+Partial beams that extend to the left are encoded by the lower-case
+letter `<code><big>k</big></code>'.
+Partial beams that extend to the right are encoded by the upper-case `<code><big>K</big></code>'.
+Letters are repeated for each partial beam present.
+In this case, only a single partial beam is used, so only a single `<code><big>k</big></code>'
+is encoded.
+Notice that the signifiers `<code><big>L</big></code>' and `<code><big>J</big></code>' are used only
+to encode complete beams.
+</P>
+<P>
+In the second-last measure, double beams are used to join the
+sixteenth-note pairs.
+As a result, the beams are started with `<code><big>LL</big></code>' and end with `<code><big>JJ</big></code>'.
+<br>
+<br>
+<b>Example 2.4.</i>  Franz Joseph Haydn, <i>Sonata in C major, Hob. XVI: 35</i>.
+<blockquote>
+<img src="guide.figures/guide02.4.gif">
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD><TD>**kern</TD></TR>
+<TR><TD><code><big>*staff2</TD><TD>*staff2</TD><TD>*staff1</TD></TR>
+<TR><TD><code><big>*clefG2</TD><TD>*clefG2</TD><TD>*clefG2</TD></TR>
+<TR><TD><code><big>*k[]</TD><TD>*k[]</TD><TD>*k[]</TD></TR>
+<TR><TD><code><big>*M3/4</TD><TD>*M3/4</TD><TD>*M3/4</TD></TR>
+<TR><TD><code><big>=1-</TD><TD>=1-</TD><TD>=1-</TD></TR>
+<TR><TD><code><big>4r</TD><TD>4r</TD><TD>[4ee\ </TD></TR>
+<TR><TD><code><big>4c/</TD><TD>4g/</TD><TD>8.ee]\L</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>16ff\Jk</TD></TR>
+<TR><TD><code><big>4f/</TD><TD>4g</TD><TD>8.dd\L</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>16ee\Jk</TD></TR>
+<TR><TD><code><big>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD><code><big>4e/</TD><TD>4g/</TD><TD>4cc\ </TD></TR>
+<TR><TD><code><big>4r</TD><TD>4r</TD><TD>4gg/</TD></TR>
+<TR><TD><code><big>4r</TD><TD>4r</TD><TD>4gg/</TD></TR>
+<TR><TD><code><big>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD><code><big>(2B\</TD><TD>([2.g/</TD><TD>(8gg\L</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>8ff)\J</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>(8ff\L</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>8ee)\J</TD></TR>
+<TR><TD><code><big>4c\</TD><TD>.</TD><TD>(8ee\L</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>8dd)\J</TD></TR>
+<TR><TD><code><big>=4</TD><TD>=4</TD><TD>=4</TD></TR>
+<TR><TD><code><big>4G\)</TD><TD>4g])/</TD><TD>4dd\ </TD></TR>
+<TR><TD><code><big>4r</TD><TD>4r</TD><TD>4b\ </TD></TR>
+<TR><TD><code><big>4r</TD><TD>4r</TD><TD>4g/</TD></TR>
+<TR><TD><code><big>=5</TD><TD>=5</TD><TD>=5</TD></TR>
+<TR><TD><code><big>4r</TD><TD>4r</TD><TD>[4ee\ </TD></TR>
+<TR><TD><code><big>4c/</TD><TD>4g/</TD><TD>8.ee]\L</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>16ff\Jk</TD></TR>
+<TR><TD><code><big>4f/</TD><TD>4g/</TD><TD>8.dd\L</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>16ee\Jk</TD></TR>
+<TR><TD><code><big>=6</TD><TD>=6</TD><TD>=6</TD></TR>
+<TR><TD><code><big>4e/</TD><TD>4g/</TD><TD>4cc\ </TD></TR>
+<TR><TD><code><big>4r</TD><TD>4r</TD><TD>4ccc\ </TD></TR>
+<TR><TD><code><big>4E\</TD><TD>4c\</TD><TD>4ccc\ </TD></TR>
+<TR><TD><code><big>=7</TD><TD>=7</TD><TD>=7</TD></TR>
+<TR><TD><code><big>4f\</TD><TD>4c\</TD><TD>16gg#\LL</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>16aa\JJ</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>8r</TD></TR>
+<TR><TD><code><big>4r</TD><TD>4r</TD><TD>16ee\LL</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>16ff\JJ</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>8r</TD></TR>
+<TR><TD><code><big>4Gn\</TD><TD>4f\</TD><TD>16dd\LL</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>16b\JJ</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>8r</TD></TR>
+<TR><TD><code><big>=8</TD><TD>=8</TD><TD>=8</TD></TR>
+<TR><TD><code><big>4c\</TD><TD>4e\</TD><TD>4cc\ </TD></TR>
+<TR><TD><code><big>4r</TD><TD>4r</TD><TD>4r</TD></TR>
+<TR><TD><code><big>4r</TD><TD>4r</TD><TD>4r</TD></TR>
+<TR><TD><code><big>=:|!</TD><TD>=:|!</TD><TD>=:|!</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</blockquote>
+Slurs are evident in the third measure.
+Open and closed slurs are represented by open (<code><big>(</big></code>)
+and closed (<code><big>)</big></code>) parentheses respectively.
+Notice that the middle part in the third measure
+contains a tied note.
+Considering the presence of concurrent slurs in the other parts
+it is possible that an appropriate interpretation of the score
+would regard the middle voice as also slurred.
+Notice that in the <code><big>**kern</big></code> representation,
+notes can be tied, slurred, and phrased concurrently.
+</P>
+<A NAME="Comment_Records">
+<H2>Comment Records</H2>
+</P>
+<P>
+In any representation, some information may best be conveyed as
+an appended commentary, rather than as part of the encoded data.
+Humdrum comments are records (lines) that begin with an exclamation mark.
+</P>
+<P>
+Humdrum distinguishes two basic types of comments.
+Comments that pertain to all spines in a file are referred to as
+<i>global comments</i>
+and begin with two exclamation marks (<code><big>!!</big></code>).
+Comments that pertain to a single spine are called
+<i>local comments</i>
+and begin with a single exclamation mark in each spine.
+Both types of comments are evident in Example 2.5.
+</P>
+<P>
+The first three records are global comments identifying the source
+and title of the piece.
+The fifth record encodes a local comment in each column.
+One local comment identifies that the lyrics are in the Ojibway
+language.
+On the same line, notice that the other spine also encodes
+single exclamation mark, but contain no text.
+Such isolated exclamation marks are referred to as
+<i>null local comments.</i>
+</P>
+<P>
+Notice that
+<i>local comments</i>
+conform to the prevailing spine structure.
+Each spine begins with an exclamation mark and tabs
+continue to demarcate each spine.
+<i>Global comments</i>
+by contrast completely ignore the spines.
+<br>
+<br>
+<b>Example 2.5.</b>  Ojibway Song.
+</P>
+<P>
+<code><big>
+<blockquote><TABLE>
+<TR><TD><code><big>!! Ojibway Indian Song</TD></TR>
+<TR><TD><code><big>!! Transcribed by Frances Densmore</TD></TR>
+<TR><TD><code><big>!! No. 84 "The Sioux Follow Me"</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>**kern</TD><TD></TD><TD>**lyrics</TD></TR>
+<TR><TD><code><big>!</TD><TD></TD><TD>! In Ojibway</TD></TR>
+<TR><TD><code><big>*clefF4</TD><TD></TD><TD>*</TD></TR>
+<TR><TD><code><big>*M3/4</TD><TD></TD><TD>*</TD></TR>
+<TR><TD><code><big>*k[b-e-a-d-g-]</TD><TD></TD><TD>*</TD></TR>
+<TR><TD><code><big>8.d-</TD><TD></TD><TD>Ma-</TD></TR>
+<TR><TD><code><big>16d-</TD><TD></TD><TD>-gi-</TD></TR>
+<TR><TD><code><big>=1</TD><TD></TD><TD>=1</TD></TR>
+<TR><TD><code><big>8d-</TD><TD></TD><TD>-ja-</TD></TR>
+<TR><TD><code><big>16A-</TD><TD></TD><TD>-go</TD></TR>
+<TR><TD><code><big>16A-</TD><TD></TD><TD>ic-</TD></TR>
+<TR><TD><code><big>4d-</TD><TD></TD><TD>-kew-</TD></TR>
+<TR><TD><code><big>4d-</TD><TD></TD><TD>-yan</TD></TR>
+<TR><TD><code><big>=2</TD><TD></TD><TD>=2</TD></TR>
+<TR><TD><code><big>etc.</TD><TD></TD><TD>etc.</TD></TR>
+<TR><TD><code><big>*-</TD><TD></TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</code></big>
+</P>
+<P>
+<A NAME="Reference_Records">
+<H2>Reference Records</H2>
+</P>
+<P>
+A particularly important type of global comment is the
+<A HREF="guide.append1.html"><i>reference record.</i></A>
+Reference records are formal ways of encoding "library-type"
+information pertaining to a Humdrum document.
+Reference records provide standardized ways of
+encoding bibliographic information
+--  suitable for computer-based access.
+</P>
+<P>
+Humdrum reference records are designated by three exclamation marks at
+the beginning of a line, followed by a letter code,
+followed by an optional number, followed by a colon, followed by some text.
+The following example provides a set of reference records
+related to the "Augurs of Spring" section from Stravinsky's
+<i>Rite of Spring.</i>
+Example 2.6.
+</P>
+<P>
+<blockquote><TABLE>
+<TR><TD><code><big>!!!COM: Stravinsky, Igor Fyodorovich</TD></TR>
+<TR><TD><code><big>!!!CDT: 1882/6/17/-1971/4/6</TD></TR>
+<TR><TD><code><big>!!!ODT: 1911//-1913//; 1947//</TD></TR>
+<TR><TD><code><big>!!!OPT@@RUS: Vesna svyashchennaya</TD></TR>
+<TR><TD><code><big>!!!OPT@FRE: Le sacre du printemps</TD></TR>
+<TR><TD><code><big>!!!OPT@ENG: Rite of Spring</TD></TR>
+<TR><TD><code><big>!!!OTL@FRE: Les augures printaniers</TD></TR>
+<TR><TD><code><big>!!!PUB: Boosey & Hawkes</TD></TR>
+<TR><TD><code><big>!!!YEC: 1945 Boosey & Hawkes</TD></TR>
+<TR><TD><code><big>!!!AGN: ballet</TD></TR>
+<TR><TD><code><big>!!!AST: neo-classical</TD></TR>
+<TR><TD><code><big>!!!AMT: irregular</TD></TR>
+<TR><TD><code><big>!!!AIN: clars corno fagot flt oboe</big></code></TD></TR>
+</TABLE></blockquote>
+Reference records need not be in any particular order.
+The most important reference records (composer, title, etc.)
+are typically placed at the very beginning of a file since
+this makes inspecting the file easier.
+Less important reference records are typically placed at the
+end of the file.
+</P>
+<P>
+Reference codes that begin with the letter `<code><big>C</big></code>' pertain to
+the composer.
+The `<code><big>COM</big></code>' code identifies the composer (surname first followed by given
+names).
+The `<code><big>CDT</big></code>' code identifies the composer's birth and death dates.
+A special format is used in defining such dates,
+and so there are accurate ways to represent uncertainty,
+approximation, ranges of dates, and alternative dates.
+The <i>Humdrum Reference Manual</i> describes date formats in great detail.
+</P>
+<P>
+Reference codes that begin with the letter `<code><big>O</big></code>' pertain to
+the work or opus.
+The `<code><big>OTL</big></code>' code identifies the title of the encoded material --
+in this case the `<i>Les augures printaniers</i>'.
+The `<code><big>OPT</big></code>' code identifies the `parent' work from which the encoded
+music belongs.
+The `<code><big>ODE</big></code>' code identifies the name of a person or organization
+to which the work was dedicated.
+All three of these records (<code><big>OTL</big></code>, <code><big>OPT</big></code> and <code><big>ODE</big></code>)
+are encoded using the original language.
+</P>
+<P>
+Language designations are explicitly indicated by following a reference code
+with one or two "at" signs (@) followed by a three letter language code.
+The `<code><big>OPT@ENG</big></code>' code is used to provide an English translation.
+In this case, the Russian title (<i>Vesna svyashchennaya</i>) is translated
+as <i>Rite of Spring</i>.
+The double "at" sign (@@) is used to designate the original, primary,
+or preferred language.
+</P>
+<P>
+Reference codes beginning with `<code><big>P</big></code>' pertain to publishing and
+imprint information.
+(Codes beginning with `<code><big>S</big></code>' can be used to identify manuscript
+sources, library or archive locations, and other source-related
+data.)
+</P>
+<P>
+Codes beginning with `<code><big>Y</big></code>' identify copyright information.
+Humdrum defines separate codes for publisher of the electronic edition,
+publisher of the original source document, date of copyright,
+date of data release, country of copyright, copyright message,
+original copyright owner, original year of publication, and other
+information.
+The `<code><big>YEC</big></code>' reference record shown in Example 2.6 simply encodes
+the date and copyright owner of the electronic document.
+</P>
+<P>
+Codes that begin with `<code><big>A</big></code>' identify analytic information concerning
+the document.
+The code `<code><big>AMT</big></code>' provides a metric classification.
+Meters may be classified using combinations of the following keywords:
+<code><big>simple, compound, duple, triple, quadruple, irregular</big></code>.
+The `<code><big>AGN</big></code>' code is used to provide a free-form text that helps to
+identify the genre of the work.
+In this case the genre is identified as <code><big>ballet</big></code>.
+Other suitable characterizations may include opera,
+string quartet, concerto, barbershop quartet, folksong, and so on.
+The `<code><big>AST</big></code>' code can be used to identify the style or period of work.
+Once again, this is a free-form text record.
+Suitable keywords might include terms such as baroque, bebop, bossa nova,
+Ecole Notre Dame, minimalist, high-life, hip-hop, reggae, etc.
+Such analytic information is obviously interpretive and often open
+to disagreement.
+Nevertheless, explicit analytic information often proves useful
+in electronic documents.
+</P>
+<P>
+An especially useful analytic reference record is the `<code><big>AIN</big></code>' record
+for encoding instrumentation.
+This reference record follows a strict syntax.
+Each instrument has an official Humdrum abbrevation.
+<A HREF="guide.append2.html"><b>Appendix II</b></A>
+ identifies a number of the more common instrument codes.
+Instrumentation reference records always specify the instrumentation
+in alphabetical order by instrument abbrevation separated by a single
+space.
+For example, the instrumentation for a woodwind quintet is given as:
+</P>
+<P>
+<blockquote>
+<code><big>!!!AIN: clars corno fagot flt oboe</big></code>
+</blockquote>
+</P>
+<P>
+In our discussion here we have only identified some of the more
+common types of reference records.
+A complete description of reference records is given in Appendix II.
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+In this chapter we have introduced the Humdrum <code><big>**kern</big></code>
+representation and a few of the more important reference records.
+As we have seen, <code><big>**kern</big></code> can be used to encode core
+information for common musical scores;
+<code><big>**kern</big></code> is used to represent
+<i>functional</i>
+information rather than
+<i>orthographic</i>
+(visual) information.
+In
+<A HREF="guide06.html">Chapter 6</A>
+an expanded description of <code><big>**kern</big></code> will be given
+that includes a much wider variety of concepts and situations
+than we have encountered in this chapter.
+<A HREF="guide.append1.html"><b>Appendices I</b></A>
+and
+<A HREF="guide.append2.html"><b>II</b></A>
+provide expanded information
+pertaining to Reference Records.
+</P>
+<P>
+Although we have only demonstrated the encoding of fairly
+simple information,
+we can already begin processing such data in musically useful ways.
+In the next chapter we will examine some simple processes.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide03.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide01.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

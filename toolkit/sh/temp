@@ -1,0 +1,80 @@
+#########################################################################
+# 						VERITAS
+# Programmed by: David Huron         Date: ?
+# Copyright (c) 1994 David Huron
+#
+# Modifications:
+#    Date:   Programmer:         	Description:
+# Aug 2/94	Tim Racinsky	Modified to use getopts and added multi-file
+#						capapbility as well as -v option
+#
+#
+OPTION=""
+HELP=""
+FLAG=""
+FOUND=""
+INVALID=""
+#
+USAGE1="USAGE: veritas -h               (Help Screen)"
+USAGE2="       veritas [-v] [file ...]"
+# 
+while getopts hv arg
+do
+	case "$arg" in
+	v) 	OPTION=${arg} ;;
+	h) 	HELP="ON" ;;
+     [?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit ;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/veritas.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/veritas.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	if [ -f "$1" ]
+	then
+		VALIDITY=`grep '^!!!VTS:' $1 | awk '{print $2}'`
+		if [ x"${VALIDITY}" = x ]
+		then
+			echo "File $1 cannot be validated.  No validation number present."
+			INVALID=ON
+			shift
+			continue
+		fi
+		CHECKSUM=`awk '{if ($0 !~/^!!!VTS:/) print $0}' $1 | cksum | awk '{print $1}'`
+		FOUND=ON
+		if [ -n "${OPTION}" ]
+		then
+			echo "Checksum for file $1: ${CHECKSUM}"
+		else
+			if [ "${CHECKSUM}" != "${VALIDITY}" ]
+			then
+				echo "File $1 has been modified."
+				INVALID=ON
+			fi
+		fi
+		shift
+	else
+		echo "veritas: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ -z "${OPTION}" -a -z "${INVALID}" -a -z "${FLAG}" -a -n "${FOUND}" ]
+then
+	echo "All given files are valid."
+fi	

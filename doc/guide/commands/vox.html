@@ -1,0 +1,128 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- vox</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>vox</b>   --  determine number of simultaneously active pitches in a Humdrum input
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>vox</b>  [<i>inputfile</i> ...]  [ > <i>outputfile.vox</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>vox</b>
+command calculates the number of tones sounding together at
+successive moments in time.
+It outputs a single Humdrum spine (<code><big>**vox#</big></code>) where successive integers
+indicate the total number of concurrently sounding pitches for each data record.
+Multiple-stops are properly supported.
+</P>
+<P>
+The
+<b>vox</b>
+command accepts as input any pitch-encoded Humdrum representations
+listed below.
+For descriptions of the various input representations refer to Section 2
+<i>(Representation Reference)</i>
+of this reference manual.
+</P>
+<P>
+It is recommended that output files produced using the
+<b>vox</b>
+command should be given names with the distinguishing `.vox' extension.
+<blockquote><TABLE>
+<TR><TD><code><big>**cbr</big></code></TD><TD>critical band rate (in equivalent rectangular bandwidths)</TD></TR>
+<TR><TD><code><big>**cents</big></code></TD><TD>hundredths of a semitone with respect to middle C=0 (e.g. 1200 equals C5)</TD></TR>
+<TR><TD><code><big>**cocho</big></code></TD><TD>cochlear coordinates (in millimeters)</TD></TR>
+<TR><TD><code><big>**deg</big></code></TD><TD>key-related relative scale degree</TD></TR>
+<TR><TD><code><big>**degree</big></code></TD><TD>key-related absolute scale degree</TD></TR>
+<TR><TD><code><big>**freq</big></code></TD><TD>fundamental frequency (in hertz)</TD></TR>
+<TR><TD><code><big>**kern</big></code></TD><TD>core pitch/duration representation</TD></TR>
+<TR><TD><code><big>**pc</big></code></TD><TD>pitch class representation</TD></TR>
+<TR><TD><code><big>**pitch</big></code></TD><TD>American National Standards Institute pitch notation (e.g. "A#4")</TD></TR>
+<TR><TD><code><big>**semits</big></code></TD><TD>equal-tempered semitones with respect to middle C=0</TD></TR>
+<TR><TD><code><big>**solfa</big></code></TD><TD>tonic solfa syllables</TD></TR>
+<TR><TD><code><big>**solfg</big></code></TD><TD>French solf&#232ge system (fixed `doh')</TD></TR>
+<TR><TD><code><big>**specC</big></code></TD><TD>spectral centroid (in hertz)</TD></TR>
+<TR><TD><code><big>**Tonh</big></code></TD><TD>German pitch system</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Input representations processed by <b>vox</b>.</i>
+</CENTER>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>vox</b>
+command provides only a help option:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<b>vox#</b> (2)
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide.append2.html#vox">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

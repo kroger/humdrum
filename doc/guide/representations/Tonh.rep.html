@@ -1,0 +1,289 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - German Pitch</TITLE>
+<!-- Documentation for the **Tonh Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **Tonh Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,German pitch,software,theory,analysis,systematic musicology,computer representation,**Tonh">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for German Pitch</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**Tonh</b>  --  German Tonh&ouml;he (pitch) notation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**Tonh</b>
+representation permits the encoding of Western musical pitches using the
+common German system for pitch naming.
+This system is similar to the English system of pitch designations
+with the exceptions noted below.
+</P>
+<P>
+The
+<b>**Tonh</b>
+representation distinguishes three types of data tokens:
+pitches, rests, and barlines.
+Pitches are encoded using pitch letter-name, accidental, and octave
+designation.
+In addition,
+<b>**Tonh</b>
+provides limited capabilities for representing phrasing and slurs.
+</P>
+<P>
+Pitch tokens consist of three logical parts -- without
+any intervening spaces.
+The first part is the pitch letter-name;
+only the upper-case letters A, B, C, D, E, F, G, H, and S are permitted.
+The second part is an optional accidental: the suffix `is'
+designates a sharp, while the suffix `es' designates a flat --
+hence `Cis' for C-sharp and `Ges' for G-flat.
+Suffixes may be repeated for double and triple sharps and flats.
+Special exceptions include the following: `B' for B-flat, `H' for
+B-natural, `Heses' for B double-flat (rather than `Bes'),
+and `As' and `Es' rather than `Aes' or `Ees'.
+In addition, `S' may be used as an alias for `Es' (E-flat).
+</P>
+<P>
+The third part of a pitch token is the octave designation.
+The number 4 is used to designate all pitches between middle C
+and the H a major seventh above, inclusive.
+Octave numbers are incremented by one for each successively higher octave,
+and are decremented by one for each successively lower octave.
+Negative octave numbers are not permitted, so the lowest
+pitch in the
+<b>**Tonh</b>
+representation is C0 (16.35 Hz).
+Only a single octave digit is permitted, so the highest
+<b>**Tonh</b>
+pitch is H9 (15,804 Hz).
+</P>
+<P>
+Once again, no intervening spaces are permitted within a single note.
+Notice that the order of signifiers is important for pitch encodings.
+Pitch letter-name is followed by one or more accidentals (if appropriate),
+followed by an octave designation.
+</P>
+<P>
+Several notes may be encoded concurrently in a single spine by using
+the Humdrum multiple-stop convention:
+notes within multiple-stops are separated by single spaces.
+The following example encodes a C-minor chord as four pitches in two
+<b>**Tonh</b>
+spines -- each spine containing a double-stop.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**Tonh</TD><TD>**Tonh</TD></TR>
+<TR><TD>C4 Es4</TD><TD>G4 C5</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+Pitch tokens may be modified by the presence of additional signifiers.
+The open brace `{' denotes the beginning of a phrase.
+The closed brace `}' denotes the end of a phrase.
+The open parenthesis `(' denotes the beginning of a slur.
+The closed parenthesis `)' denotes the end of a slur.
+The semicolon `;' denotes a pause.
+</P>
+<P>
+Rest tokens are denoted by the lower-case letter `r'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**Tonh</big></code>
+data should be given names with the distinguishing `.tnh' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**Tonh</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>octave designation, where C4 equals middle C;</TD></TR>
+<TR><TD>A-H</TD><TD>absolute pitches letter name</TD></TR>
+<TR><TD>es</TD><TD>flat</TD></TR>
+<TR><TD>eses</TD><TD>double flat (`eseses' for triple flat)</TD></TR>
+<TR><TD>is</TD><TD>sharp</TD></TR>
+<TR><TD>isis</TD><TD>double sharp</TD></TR>
+<TR><TD>Heses</TD><TD>B double-flat (rather than `Bes')</TD></TR>
+<TR><TD>As</TD><TD>A-flat (rather than `Aes')</TD></TR>
+<TR><TD>Es</TD><TD>E-flat (rather than `Ees')</TD></TR>
+<TR><TD>S</TD><TD>alias for `Es'</TD></TR>
+<TR><TD>n</TD><TD>natural</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>(</TD><TD>slur start</TD></TR>
+<TR><TD>)</TD><TD>slur end</TD></TR>
+<TR><TD>{</TD><TD>phrase mark (start)</TD></TR>
+<TR><TD>}</TD><TD>phrase mark (end)</TD></TR>
+<TR><TD>;</TD><TD>pause sign</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**Tonh</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! Anton Webern</TD></TR>
+<TR><TD>!! Klavierst&uuml;ck, opus posthumous</TD></TR>
+<TR><TD>!! Im Tempo eines Menuetts</TD></TR>
+<TR><TD>**Tonh</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>(Cis4</TD></TR>
+<TR><TD>Dn5)</TD></TR>
+<TR><TD>Es3</TD></TR>
+<TR><TD>Fis3</TD></TR>
+<TR><TD>F4</TD></TR>
+<TR><TD>E2</TD></TR>
+<TR><TD>=3</TD></TR>
+<TR><TD>Cn6</TD></TR>
+<TR><TD>B2 A3</TD></TR>
+<TR><TD>H4</TD></TR>
+<TR><TD>Gis2 G3</TD></TR>
+<TR><TD>Cis4</TD></TR>
+<TR><TD>D2 S3</TD></TR>
+<TR><TD>=4</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum commands accept <b>**Tonh</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD><A HREF="../commands/cents.html"><b>cents</b></A></TD><TD>translate <b>**Tonh</b> to <b>**cents</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/deg.html"><b>deg</b></A></TD><TD>translate <b>**Tonh</b> to <b>**deg</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/degree.html"><b>degree</b></A></TD><TD>translate <b>**Tonh</b> to <b>**degree</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/freq.html"><b>freq</b></A></TD><TD>translate <b>**Tonh</b> to <b>**freq</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/hints.html"><b>hint</b></A></TD><TD>calculate harmonic intervals from <b>**Tonh</b> input</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/kern.html"><b>kern</b></A></TD><TD>translate <b>**Tonh</b> to <b>**kern</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/mint.html"><b>mint</b></A></TD><TD>calculate melodic intervals from <b>**Tonh</b> input</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/pc.html"><b>pc</b></A></TD><TD>translate <b>**Tonh</b> pitch to <b>**pc</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/pitch.html"><b>pitch</b></A></TD><TD>translate <b>**Tonh</b> pitch to <b>**pitch</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/semits.html"><b>semits</b></A></TD><TD>translate <b>**Tonh</b> pitch to numerical <b>**semits</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/solfa.html"><b>solfa</b></A></TD><TD>translate <b>**Tonh</b> pitch to <b>**solfa</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/solfg.html"><b>solfg</b></A></TD><TD>translate <b>**Tonh</b> pitch to <b>**solfg</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/trans.html"><b>trans</b></A></TD><TD>transpose <b>**Tonh</b> score</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/vox.html"><b>vox</b></A></TD><TD>determine active and inactive voices in a Humdrum file</TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+</blockquote>
+The following Humdrum command produces <b>**Tonh</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD valign="top"><A HREF="../commands/tonh.html"><b>tonh</b></A></TD><TD>translates <b>**cents</b>, <b>**degree</b>, <b>**fret</b>, <b>**freq</b>, <b>**kern</b>,
+<b>**MIDI</b>, <b>**pitch</b>, <b>**semits</b>, <b>**solfg</b>, and <b>**specC</b> to <b>**Tonh</b></TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**Tonh</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**Tonh</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="cents.rep.html"><b>**cents</b></A>,
+<A HREF="deg.rep.html"><b>**deg</b></A>,
+<A HREF="degree.rep.html"><b>**degree</b></A>,
+<A HREF="freq.rep.html"><b>**freq</b></A>,
+<A HREF="hint.rep.html"><b>**hint</b></A>,
+<A HREF="../commands/hint.html"><b>hint</b></A>,
+<A HREF="kern.rep.html"><b>**kern</b></A>,
+<A HREF="mint.rep.html"><b>**mint</b></A>,
+<A HREF="../commands/mint.html"><b>mint</b></A>,
+<A HREF="pc.rep.html"><b>**pc</b></A>,
+<A HREF="../commands/pc.html"><b>pc</b></A>,
+<A HREF="pitch.rep.html"><b>**pitch</b></A>,
+<A HREF="../commands/pitch.html"><b>pitch</b></A>,
+<A HREF="semits.rep.html"><b>**semits</b></A>,
+<A HREF="solfa.rep.html"><b>**solfa</b></A>,
+<A HREF="solfg.rep.html"><b>**solfg</b></A>,
+<A HREF="../commands/solfg.html"><b>solfg</b></A>,
+<A HREF="specC.rep.html"><b>**specC</b></A>,
+<A HREF="../commands/tonh.html"><b>tonh</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide04.html#German_Ton&#246he">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

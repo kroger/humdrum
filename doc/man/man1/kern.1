@@ -1,0 +1,337 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH kern 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +10
+.ti -10
+\fBkern\fR  --  translate selected Humdrum pitch-related representations to \f(CR**kern\fR
+.in -10
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBkern\fR  [\fB-x\fR]  [\fIinputfile\fR ...]  [> \fIoutputfile.krn\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "kern"
+command transforms various pitch-related inputs to corresponding
+\f(CR**kern\fR representations.
+For example, the \f(CR**pitch\fR token `\f(CRAb2\fR' will be output as the
+\f(CR**kern\fR token `\f(CRAA-\fR'.
+Continuous pitch-related representations, such as frequency (\f(CR**freq\fR)
+and cents (\f(CR**cents\fR) are rounded-off to the nearest
+equally-tempered pitch.
+Hence, \f(CR**freq\fR values between 254.178 and 269.291 will be
+output as the \f(CR**kern\fR token for middle C -- `c'.
+.sp 1
+.sp 1
+Pitches in \f(CR**kern\fR
+are encoded as equally-tempered values at concert pitch.
+Kern is not able to represent pitch deviations from equal temperament.
+Diatonic pitch names are encoded using the letters A to G.
+Octaves are indicated by a system of upper- and lower-case
+letters, and by letter repetition.
+Middle C is represented by the single lower-case letter `c'.
+The C an octave above is represented by two lower-case letters: `cc' --
+with each successive octave adding another letter.
+The C an octave below middle C is represented by a single upper-case `C'.
+The C an octave lower yet is represented by two upper-case letters: `CC' --
+and so forth.
+Changes of octave are deemed to occur between the pitches B and C.
+Thus the B below middle `c' is rendered as a single upper-case `B';
+the B below `cc' is `b' and so forth.
+Sharps are indicated by the octothorpe sign (\f(CR#\fR)
+whereas flats are indicated by the minus sign (\f(CR-\fR).
+.sp 1
+.sp 1
+The
+.B "kern"
+command is able to translate any of the pitch-related
+representations listed below.
+In each case, a tuning standard of A4 equals 440 hertz is assumed.
+For descriptions of the various input representations
+(including \f(CR**kern\fR) refer to Section 2
+.I "(Representation Reference)"
+of this reference manual.
+.sp 1
+.TS
+l l.
+\f(CR**cents\fR	hundredths of a semitone with respect to middle C=0
+\f(CR**degree\fR	scale degree including octave designation
+\f(CR**freq\fR	frequency in hertz (abbreviated Hz.)
+\f(CR**fret\fR	fretted-instrument pitch tablature
+\f(CR**MIDI\fR	Music Instrument Digital Interface key-press tablature
+\f(CR**pitch\fR	American National Standards Institute pitch notation
+	  (e.g. \(odA#4\(cd)
+\f(CR**semits\fR	equal-tempered semitones with respect to middle C=0
+\f(CR**solfg\fR	French solf\o'e\(ga'ge system (fixed `doh')
+\f(CR**specC\fR	spectral centroid (in hertz)
+\f(CR**Tonh\fR	German pitch system
+.TE
+.sp 1
+.ce
+.I "Input representations processed by \fBkern\fR."
+.sp 1
+.sp 1
+For numerically-oriented inputs, such as
+\f(CR**cents, **freq, **MIDI, **semits\fR, and \f(CR**specC\fR,
+variant enharmonic spellings are selected for output according to the
+prevailing key signature or explicit key indication.
+(Refer to \fBkey\fR and \fBkey signatures\fR in Section 3
+.I "(Humdrum Tandem Interpretations)."
+Hence, in the key of G minor, F-sharp and E-flat spellings will be
+output rather than G-flat and D-sharp.
+Kern recognizes the presence of key, or key signature
+tandem interpretations.
+If no key or key signature is encountered in the input, a default
+key of C major is assumed.
+Kern is sensitive to both
+.I "pitch-class"
+and
+.I "pitch-height"
+key signatures.
+In the case of pitch-height key signatures, the user can specify
+complex spelling preferences, such as F#2 rather than Gb2, but Gb3
+rather than F#3, etc.
+See SAMPLE OUTPUT below.
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "kern"
+command should be given names with the distinguishing `.krn' extension.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "kern"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-x\fR	suppresses printing of non-pitch-related signifiers
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+In the default operation,
+.B "kern"
+outputs any non-pitch-related signifiers in addition to the kern value.
+For example, the \f(CR**pitch\fR
+token \(odA6zzz\(cd will result in the output
+\(odaaazzz\(cd -- that is, after translating A6 to \(odaaa\(cd,
+the \(odzzz\(cd signifiers are retained in the output.
+For some applications, echoing non-pitch-related signifiers in the output
+is useful.
+However, in other situations, the result can prove confusing --
+especially, when the non-pitch-related signifiers are upper- or
+lower-case letters from A-G.
+Consider the case of the \f(CR**freq\fR token \(odaA#5\(cd;
+after translating \(odA#5\(cd to \(odaa\(cd, the leading non-pitch-related
+signifier \(oda\(cd will be prepended to the output, hence the value
+\(odaaa\(cd -- which will undoubtedly cause confusion.
+The
+.B "-x"
+option is useful for eliminating non-pitch-related signifiers from the output.
+For most inputs, the
+.B "-x"
+option is recommended.
+.in -2
+.sp 1
+.sp 1
+.SH "SAMPLE OUTPUTS"
+.in +2
+The following example illustrates the use of
+.B "kern."
+The input contains six pitch-related spines -- two of which (\f(CR**deg\fR
+and \f(CR**cocho\fR) cannot be processed by
+.B "kern."
+.sp 1
+.TS
+l s s l l l
+l l l l l l.
+!! `kern' example #1
+**specC	**pitch	**MIDI	**deg	**cocho	**Tonh
+*M2/4	*M2/4	*M2/4	*M2/4	*M2/4	*M2/4
+*	*	*	*	*	*
+\(eq1	\(eq1	\(eq1	\(eq1	\(eq1	\(eq1
+foo2000	G#4foo	/60/bar	1foo	r	Gis2
+\.	.	/-60/	.	.	.
+2321	A3+20	/62/	2	9.89	H2
+\.	.	48/-62/	.	.	.
+1807	Ab3	0/70/64	1	7.07	B2
+\.	.	48/-70/	.	.	.
+2487	C#4	/61/	6	7.135	Cis4
+\.	.	/-61/	.	.	.
+\(eq2	\(eq2	\(eq2	\(eq2	\(eq2	\(eq2
+3323	r	.	5	r	r
+\.	.	.	7	5.5	Heses2
+3471	D4-8	/48/ /52/	1	8.11	C3
+\.	.	/-48/	.	.	.
+\.	D4 F4	/-52/	2	7.33 6.4	C3 Es3
+\(eq3	\(eq3	\(eq3	\(eq3	\(eq3	\(eq3
+r	G4	.	r	r	H2 D3
+===	===	===	===	===	===
+*-	*-	*-	*-	*-	*-
+.TE
+.sp 1
+Executing the command
+.sp 1
+.sp 1
+.in +2
+kern -x input > output.krn
+.in -2
+.sp 1
+.sp 1
+produces the following result:
+.sp 1
+.TS
+l s s l l l
+l l l l l l.
+!! `kern' example #1
+**kern	**kern	**kern	**deg	**cocho	**kern
+*M2/4	*M2/4	*M2/4	*M2/4	*M2/4	*M2/4
+*	*	*	*	*	*
+\(eq1	\(eq1	\(eq1	\(eq1	\(eq1	\(eq1
+bbb	g#	c	1foo	r	GG#
+\.	.	.	.	.	.
+dddd	A	d	2	9.89	BB
+\.	.	.	.	.	.
+aaa	A-	b-	1	7.07	BB-
+\.	.	.	.	.	.
+eeee-	c#	d-	6	7.135	c#
+\.	.	.	.	.	.
+\(eq2	\(eq2	\(eq2	\(eq2	\(eq2	\(eq2
+aaaa-	r	.	5	r	r
+\.	.	.	7	5.5	BB--
+aaaa	d	C E	1	8.11	C
+\.	.	.	.	.	.
+\.	d f	.	2	7.33 6.4	C E-
+\(eq3	\(eq3	\(eq3	\(eq3	\(eq3	\(eq3
+r	g	.	r	r	BB D
+===	===	===	===	===	===
+*-	*-	*-	*-	*-	*-
+.TE
+.sp 1
+Both processed and unprocessed spines are output.
+Also notice that the non-pitch-related signifiers (e.g. foo)
+in the first notes of the \f(CR**specC, **pitch\fR, and \f(CR**MIDI\fR,
+spines have been stripped away (due to the
+.B "-x"
+option).
+.sp 1
+.sp 1
+Key signature sensitivity is illustrated in the following example.
+The input contains a \(odpitch-height key signature\(cd --
+where flats and sharps pertain to only a specific absolute pitch.
+For example, Bb3 is preferred to A#3, although A#4 is preferred to Bb4.
+Similarly, C#4 is preferred to Db4, although Db5 is preferred to C#5.
+.in +2
+.sp 1
+.TS
+l.
+!! `kern' example #2
+**semits
+*K[B3-C4#F4#A4#D5-]
+-2
+10
+1
+6
+13
+*-
+.TE
+.sp 1
+.in -2
+Notice in the corresponding output given below, that all pitches
+are rendered with the correct enharmonic spelling.
+.in +2
+.sp 1
+.TS
+l.
+!! `kern' example #2
+**kern
+*K[B3-C4#F4#A4#D5-]
+B-
+a#
+c#
+f#
+dd-
+*-
+.TE
+.sp 1
+.in -2
+.in -2
+.SH "FILES"
+.in +2
+The file \f(CRx_option.awk\fR is used by this program when the
+.B "-x"
+option is invoked.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fB**cents\fR (2), \fBcents\fR (1),
+\fB**degree\fR (2), \fBdegree\fR (1),
+\fB**freq\fR (2), \fBfreq\fR (1),
+\fB**fret\fR (2), \fBhint\fR (1), \fB**kern\fR (2),
+\fBmint\fR (1), \fB**MIDI\fR (2), \fBmidi\fR (1),
+\fB**pitch\fR (2), \fBpitch\fR (1),
+\fBproof\fR (1),
+\fB**semits\fR (2), \fBsemits\fR (1),
+\fB**solfg\fR (2), \fBsolfg\fR (1), \fB**specC\fR (2),
+\fBspecc\fR (1), \fB**Tonh\fR (2), \fBtonh\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "BUGS"
+.in +2
+When translating \f(CR**pitch\fR, \f(CR**solfg\fR, or \f(CR**Tonh\fR,
+inputs,
+.B "kern"
+ignores cents deviation.
+Hence C#6+80 is rendered as `ccc#' rather than the nearest pitch `ddd'.
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+Humdrum representations are expected to avoid context dependency
+insofar as possible.
+This can lead to unexpected results.
+For example, the letter `x' in \f(CR**pitch\fR is intended to signify the
+presence of a double sharp.
+Thus the \f(CR**pitch\fR input token `xyzC4' is correctly translated by
+.B "kern"
+as `yzc##'.
+Similarly, the \f(CR**pitch\fR input token `1yzC4' becomes `yzCCC4'.
+(The first numerical value is interpreted as the octave number and
+the trailing number 4 is interpreted as a non-pitch-related signifier.)
+.in -2

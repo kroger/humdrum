@@ -1,0 +1,871 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 17</TITLE>
+<!-- Chapter 17 (Creating Inventories) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:15:00 EST 2000">
+<meta name="description" content="Chapter 17 (Creating Inventories) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<body>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<br>
+
+<H1>Chapter17</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide16.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide18.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Creating Inventories</H1>
+</CENTER>
+<center><HR WIDTH=500></center>
+</P>
+Many research problems can be addressed by building an
+<i>inventory</i>
+--  that is, identifying the number of occurrences of various
+types of data.
+Questions such as the following all pertain to the generation of
+inventories:
+<ul>
+<li>
+Does Liszt use a greater variety of harmonies than Chopin?
+<li>
+What is the most frequently used dynamic marking in Beethoven,
+and how does Beethoven's practice compare with that of Brahms?
+<li>
+Are flats more common than sharps in Monteverdi?
+<li>
+Did Bart&#243k's preferred articulation marks change over his
+lifetime?
+<li>
+Is there a tendency to use the subdominant pitch less often in
+pop melodies than in (say) French chanson?
+<li>
+How frequent are light-related words such as "lumen" or "lumine"
+in the different monastic offices for Thomas of Canterbury?
+<li>
+Is it true that 90 percent of the notes in a given work by Bach
+use just two durations (such as eighths and sixteenths, or
+eighths and quarters)?
+<li>
+What is the most common instrumental combination for orchestral works
+by Mussorgsky?
+</ul>
+</P>
+<P>
+At the end of this chapter we will show the Humdrum
+commands needed to answer each of the above questions.
+</P>
+<P>
+The above questions are all variations of one of the following forms:
+</P>
+<P>
+<blockquote>
+How many different types of _____ are there?
+<br>
+What is the most/least common _____?
+<br>
+What is the frequency of occurrence for various _____s?
+</blockquote>
+</P>
+<P>
+In some cases, we're asked to compare two or more repertories when
+answering one of these basic questions.
+</P>
+<P>
+For illustration purposes, consider the case of a Humdrum file
+named <code><big>alpha</big></code> containing the following simple input:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**alpha</TD></TR>
+<TR><TD><code><big>A</TD></TR>
+<TR><TD><code><big>B</TD></TR>
+<TR><TD><code><big>A</TD></TR>
+<TR><TD><code><big>A</TD></TR>
+<TR><TD><code><big>C</TD></TR>
+<TR><TD><code><big>B</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+It doesn't matter what the data represent.
+The "<code><big>A</big></code>", "<code><big>B</big></code>", and "<code><big>C</big></code>" might
+signify different articulation marks, chords, harmonic intervals, or
+instrumental configurations.
+Whatever is represented, the process of generating an inventory
+is the same.
+Ultimately, we'd like to produce a simple distribution that indicates:
+</P>
+<P>
+<blockquote>
+<code><big>3 occurrences of "A"
+<br>
+2 occurrences of "B"
+<br>
+1 occurrence  of "C"</big></code>
+</blockquote>
+</P>
+<P>
+<A NAME="Filter,_Sort,_Count">
+<H2>Filter, Sort, Count</H2>
+</P>
+<P>
+Building an inventory is a three-step process.
+First we need to
+<i>filter</i>
+the input so only the data of interest is present.
+Second we need to
+<i>sort</i>
+like-with-like.
+And third we need to
+<i>count</i>
+the number of occurrences of each type of data token.
+</P>
+<P>
+Let's begin by discussing the second process.
+In
+<A HREF="guide03.html">Chapter 3</A>
+we saw how the UNIX
+<b>sort</b>
+command will rearrange lines of data so that they are in
+alphabetical/numerical order.
+The command:
+</P>
+<P>
+<blockquote>
+<code><big>sort alpha > sorted.alpha</big></code>
+</blockquote>
+</P>
+<P>
+will sort the file <code><big>alpha</big></code> and place the results in a file named <code><big>sorted.alpha</big></code>.
+The file <code><big>sorted.alpha</big></code> will contain the following:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**alpha</TD></TR>
+<TR><TD><code><big>*-</TD></TR>
+<TR><TD><code><big>A</TD></TR>
+<TR><TD><code><big>A</TD></TR>
+<TR><TD><code><big>A</TD></TR>
+<TR><TD><code><big>B</TD></TR>
+<TR><TD><code><big>B</TD></TR>
+<TR><TD><code><big>C</big></code></TD></TR>
+</TABLE></blockquote>
+Notice that the asterisk is treated as alphabetically prior to the
+the letter `A', so all the Humdrum interpretation records have been
+moved to the beginning of the output.
+Notice also that all of the lines beginning with the letter `A'
+are now collected on successive lines in
+the output.
+Similarly, the `B's have been rearranged on successive lines.
+</P>
+<P>
+The third step in generating an inventory is to count the number of
+occurrences of each unique data token.  The
+<b>uniq</b>
+command described in
+<A HREF="guide03.html">Chapter 3</A>
+will eliminate successive duplicate
+lines.
+For example, if we type:
+</P>
+<P>
+<blockquote>
+<code><big>uniq sorted.alpha</big></code>
+</blockquote>
+</P>
+<P>
+The output will be as follows:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**alpha</TD></TR>
+<TR><TD><code><big>*-</TD></TR>
+<TR><TD><code><big>A</TD></TR>
+<TR><TD><code><big>B</TD></TR>
+<TR><TD><code><big>C</big></code></TD></TR>
+</TABLE></blockquote>
+Notice that repetitions of the data "A" and "B" have disappeared.
+The simple
+<b>uniq</b>
+command is useful for telling us
+<i>how many different things</i>
+there are in an input.
+For example, the above output identifies just five different
+records -- and three different types of data records.
+</P>
+<P>
+Recall that the
+<b>-c</b>
+option for
+<b>uniq</b>
+will cause a `count' to be prepended to each output line.
+The command:
+</P>
+<P>
+<blockquote>
+<code><big>uniq -c sorted.alpha > unique.alpha</big></code>
+</blockquote>
+</P>
+<P>
+will produce the following output:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>1</TD><TD>**alpha</TD></TR>
+<TR><TD><code><big>1</TD><TD>*-</TD></TR>
+<TR><TD><code><big>3</TD><TD>A</TD></TR>
+<TR><TD><code><big>2</TD><TD>B</TD></TR>
+<TR><TD><code><big>1</TD><TD>C</big></code></TD></TR>
+</TABLE></blockquote>
+The prepended counts tell us that `A' occurs three times, `B'
+occurs twice, and all other records occur just once.
+</P>
+<P>
+In the above output, <code><big>**alpha</big></code>, and <code><big>*-</big></code> are
+Humdrum interpretations rather
+than data, so we probably don't want them to appear in our inventory.
+If our file had contained comments, or null data records,
+then these would have also appeared in our output,
+although we are not likely to be interested in them.
+This leads us to what is normally the first step in generating
+an inventory --
+<i>filtering</i>
+the input in order to eliminate records
+that we'd prefer to omit from our final output.
+</P>
+<P>
+<A NAME="Filtering_Data_with_the_rid_Command">
+<H2>Filtering Data with the <i>rid</i> Command</H2>
+</P>
+<P>
+As we saw in
+<A HREF="guide13.html">Chapter 13,</A>
+the
+<A HREF="commands/rid.html"><b>rid</b></A>
+command can be used to eliminate various classes
+of Humdrum records.
+For example, <b>rid -G</b> eliminates all global comments;
+<b>rid -D</b> eliminates all data records, etc.
+The option combination <b>-GLId</b> is very common with
+<b>rid</b>
+since only data records are retained in the output.
+That is, eliminating all global and local comments,
+omitting all interpretations, and deleting all null data records
+will result in an output consisting only of non-null data records.
+</P>
+<P>
+Returning to our <code><big>**alpha</big></code> data, we can eliminate everything
+but data records as follows:
+</P>
+<P>
+<blockquote>
+<code><big>rid -GLId alpha > filtered.alpha</big></code>
+</blockquote>
+</P>
+<P>
+By way of summary, generating an inventory is a three-step process.
+First we
+<i>filter</i>
+the input so only the data of interest is present.
+Typically, this means using the
+<b>rid</b>
+command with one or more options to eliminate comments,
+interpretations, and perhaps null data records.
+Second we
+<i>sort</i>
+the data using the
+<b>sort</b>
+command so that identical records are amalgamated as
+neighbors.
+Finally, we use the
+<b>uniq -c</b>
+to
+<i>count</i>
+the number of occurrences of each type of data token.
+All three steps can be amalgamated into a single pipeline:
+</P>
+<P>
+<blockquote>
+<code><big>rid -GLId alpha | sort | uniq -c > inventory.alpha</big></code>
+</blockquote>
+</P>
+<P>
+Notice that the inventory will pertain to whatever data was provided
+in the original input.  We've been using the abstract data "A", "B",
+and "C".
+However, this data might represent any type of discrete
+data, such as Latin text, piano fingerings, or dance steps.
+</P>
+<A NAME="Inventories_for_Multi-spine_Inputs">
+<H2>Inventories for Multi-spine Inputs</H2>
+</P>
+<P>
+In the above example, we assumed that the input consists of a single
+Humdrum spine (i.e. a single column of data).
+However, Humdrum files can have any number of spines,
+and each spine might represent radically different types of data.
+For example, the following file (named <code><big>alphabet</big></code>)
+contains two spines, one with "alpha" data, and the second
+with "bet" data.
+These data types might represent melodic intervals
+and fingering information, or dynamic markings and stem-directions,
+or whatever.
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**alpha</TD><TD>**bet</TD></TR>
+<TR><TD><code><big>A</TD><TD>$50</TD></TR>
+<TR><TD><code><big>B</TD><TD>$50</TD></TR>
+<TR><TD><code><big>A</TD><TD>$50</TD></TR>
+<TR><TD><code><big>A</TD><TD>$200</TD></TR>
+<TR><TD><code><big>C</TD><TD>$50</TD></TR>
+<TR><TD><code><big>B</TD><TD>$50</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+If we apply our above inventory-generating commands for the
+file "alphabet," the result will be as follows:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>1</TD><TD>A</TD><TD>$200</TD></TR>
+<TR><TD><code><big>2</TD><TD>A</TD><TD>$50</TD></TR>
+<TR><TD><code><big>2</TD><TD>B</TD><TD>$50</TD></TR>
+<TR><TD><code><big>1</TD><TD>C</TD><TD>$50</big></code></TD></TR>
+</TABLE></blockquote>
+Notice that the inventory is based on
+<i>entire records</i>
+containing both "alpha" and "bet" data.
+This is the reason why the alpha-bet
+data-pair "<code><big>A   $50</big></code>"  is
+considered different from alpha-bet data "<code><big>A   $200</big></code>".
+Depending on the user's goal, this may or may not be the most
+appropriate output.
+</P>
+<P>
+A situation where this approach might be desired arises when we are
+counting the number of different spellings of chords (e.g., how
+many different sonorous arrangements are there?).
+If **alpha and **bet represent pitches in two concurrent voices,
+then it may be important to have both concurrent data tokens
+participating in the inventory.
+</P>
+<P>
+In other circumstances, we may not want this.
+For example, if we are interested only in alpha-related data,
+we need to eliminate the irrelevant **bet data so it won't interfere.
+This can be done using the Humdrum
+<b>extract</b>
+command.
+</P>
+<P>
+For example, we can create an inventory of just the <code><big>**bet</big></code> data:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**bet' alphabet | rid -GLId | sort | uniq -c \
+<blockquote>
+> inventory.bet</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+The resulting <code><big>inventory.bet</big></code> file will contain:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>1</TD><TD>$200</TD></TR>
+<TR><TD><code><big>5</TD><TD>$50</big></code></TD></TR>
+</TABLE></blockquote>
+--  meaning 5 occurrences of the data "$50" and 1 occurrence
+of "$200".
+</P>
+<P>
+Sometimes it is useful to create an aggregate inventory of the
+data in each separate spine.
+In such cases, we will need to use
+<b>extract</b>
+several times so that each spine is placed in a separate file:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**alpha' alphabet > justalpha</big></code>
+<br>
+<code><big>extract -i '**bet' alphabet > justbet</big></code>
+</blockquote>
+</P>
+<P>
+The
+<b>cat</b>
+command can then be used to concatenate the files end-to-end
+so they form a single column of data.
+With each data token of interest is on its own line, we can
+generate the appropriate inventory:
+</P>
+<P>
+<blockquote>
+<code><big>cat justalpha justbet | rid -GLId | sort | uniq -c</big></code>
+</blockquote>
+</P>
+<A NAME="Sorting_By_Frequency_of_Occurrence">
+<H2>Sorting By Frequency of Occurrence</H2>
+</P>
+<P>
+When the output inventory list is short,
+it is easy to identify which records are
+the most common and which records are the least common.
+Frequently inventory lists will contain dozens or hundreds of items
+so it may be more difficult to scan through the output to find the
+most frequent or least frequent occurrences.
+For such long outputs, it might be more convenient to produce an output
+sorted according to frequency of occurrence.
+Notice that each output record from
+<b>uniq -c</b>
+begins with a number, and so the output is ideally
+suited for numerical sorting.
+We've already learned that the
+<b>sort</b>
+command rearranges input records in alphabetic/numeric order.
+</P>
+<P>
+If we type
+</P>
+<P>
+<blockquote>
+<code><big>sort inventory.alpha</big></code>
+</blockquote>
+</P>
+<P>
+The output will be as follows:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>1</TD><TD>C</TD></TR>
+<TR><TD><code><big>2</TD><TD>B</TD></TR>
+<TR><TD><code><big>3</TD><TD>A</big></code></TD></TR>
+</TABLE></blockquote>
+Now the output is sorted so that the least frequent occurrences are
+at the beginning, and the most frequent occurrences are at the end
+of the output.
+Incidentally,
+<b>sort</b>
+has a
+<b>-r</b>
+option that causes the output to be sorted in reverse order.
+If we use <b>sort -r</b>, then the most common occurrences will
+be placed at the beginning of the output:
+</P>
+<P>
+<blockquote>
+<code><big>sort -r inventory.alpha</big></code>
+</blockquote>
+</P>
+<P>
+produces the following output:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>3</TD><TD>A</TD></TR>
+<TR><TD><code><big>2</TD><TD>B</TD></TR>
+<TR><TD><code><big>1</TD><TD>C</big></code></TD></TR>
+</TABLE></blockquote>
+Once again, we can amalgamate all of the required commands into a
+single pipeline.
+The following pipeline produces an inventory
+for any type of Humdrum input, sorted from the most common to the
+least common data:
+</P>
+<P>
+<blockquote>
+<code><big>rid -GLId alpha | sort | uniq -c | sort -r > inventory.alpha</big></code>
+</blockquote>
+</P>
+<A NAME="Counting_with_the_wc_Command">
+<H2>Counting with the <i>wc</i> Command</H2>
+</P>
+<P>
+In other circumstances, it may be helpful to determine the proportion
+or percentage values rather than the actual numerical count.
+This can be calculated by dividing each of the inventory count
+numbers by the total number of data records processed.
+A convenient way to count records is via the UNIX
+<b>wc</b>
+(word count) command.
+The
+<b>wc</b>
+command provides three options.
+With the
+<b>-c</b>
+option,
+<b>wc</b>
+counts the number of characters in an input.
+With the
+<b>-w</b>
+option,
+<b>wc</b>
+counts the number of words in an input.
+A "word" is defined as any sequence of
+characters delineated by white space, such as
+spaces, tabs or new lines.
+With the
+<b>-l</b>
+option,
+<b>wc</b>
+counts the nmber of lines or records in the input.
+</P>
+<P>
+We can count the total number of non-null data records in a
+Humdrum input using the following pipeline:
+</P>
+<P>
+<blockquote>
+<code><big>rid -GLId alpha | wc -l</big></code>
+</blockquote>
+</P>
+<P>
+This will give us the total number of items in our inventory.
+Simple division will generate the percentages for each type
+of data record.
+</P>
+<P>
+Suppose, for example, that the total number of data records
+was determined to be 874.
+Using the UNIX
+<b>awk</b>
+command will allow us to easily generate the percentages for each
+data type via the command:
+</P>
+<P>
+<blockquote>
+<code><big>awk '{print $1/847*100 "\t" $2}' inventory.alpha</big></code>
+</blockquote>
+</P>
+<P>
+This will create a two-column output.
+The first column will indicate the percentage of occurrence,
+and the second column will identify the corresponding type of data.
+</P>
+<A NAME="Excluding_or_Seeking_Rare_Events">
+<H2>Excluding or Seeking Rare Events</H2>
+</P>
+<P>
+Recall from
+<A HREF="guide03.html">Chapter 3</A>
+that the
+<b>uniq</b>
+command provides other options (besides the
+<b>-c</b>
+option).
+The
+<b>-d</b>
+option causes
+<b>uniq</b>
+to output
+<i>only</i>
+those records that are duplicated.
+In other words, records that occur only once are eliminated
+from the input.
+This option can be useful when there are a lot of
+single-occurrence data tokens and you are only interested in
+those data records that occur more frequently.
+</P>
+<P>
+By contrast, the
+<b>uniq -u</b>
+option causes
+<i>only</i>
+those records that are unique (occur only once) to be output.
+This option can be useful when looking for rare
+circumstances in our data.
+</P>
+<P>
+<blockquote>
+<code><big>rid -GLId alpha | sort | uniq -u</big></code>        (output only the rare events)
+<br>
+<code><big>rid -GLId alpha | sort | uniq -d</big></code>        (eliminate all the rare events)
+</blockquote>
+</P>
+<A NAME="Transforming_and_Editing_Inventory_Data">
+<H2>Transforming and Editing Inventory Data</H2>
+</P>
+<P>
+Notice that two data records must be identical in order for them
+to be considered "the same" by
+<b>sort</b>
+and <b>uniq</b>.
+This means that records such as the following are considered
+entirely different:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>ABC</TD></TR>
+<TR><TD><code><big>abc</TD></TR>
+<TR><TD><code><big>Abc</TD></TR>
+<TR><TD><code><big>"ABC"</TD></TR>
+<TR><TD><code><big>ABC.</TD></TR>
+<TR><TD><code><big>CBA</big></code></TD></TR>
+</TABLE></blockquote>
+Remember that step #1 in generating inventories requires that we
+filter the data so only the data of interest is passed to
+<b>sort</b>
+and <b>uniq</b>.
+This means we must be careful about the state of the input.
+Depending on your goal, we will either want to
+<i>translate</i>
+the input to some other more appropriate representation, or
+<i>edit</i>
+the existing representation in order to discard or transform
+otherwise confounding data.
+</P>
+<P>
+<i>Translating</i>
+data involves changing from one type of information
+to another -- that is, changing the exclusive interpretations.
+For example, if we want to produce an inventory of melodic intervals,
+then we might use the
+<A HREF="commands/mint.html"><b>mint</b></A>
+or
+<A HREF="commands/xdelta.html"><b>xdelta</b></A>
+commands to generate a suitable representation.
+Alternatively, we might want to generate an inventory
+of scale degrees using the
+<A HREF="commands/deg.html"><b>deg</b></A>
+or
+<A HREF="commands/solfa.html"><b>solfa</b></A>
+commands.
+</P>
+<P>
+Instead of translating our data, we might wish to edit
+the data using the
+<b>sed</b>
+or
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+stream editors.
+Suppose we had a file (named "notes") consisting of
+pitch information, and we wanted to create an inventory of
+the diatonic pitch-letter names.
+Our input might look like this:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**notes</TD></TR>
+<TR><TD><code><big>A</TD></TR>
+<TR><TD><code><big>B</TD></TR>
+<TR><TD><code><big>B</TD></TR>
+<TR><TD><code><big>D</TD></TR>
+<TR><TD><code><big>F#</TD></TR>
+<TR><TD><code><big>D#</TD></TR>
+<TR><TD><code><big>E</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Without modification, our inventory would appear as follows:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>1</TD><TD>A</TD></TR>
+<TR><TD><code><big>2</TD><TD>B</TD></TR>
+<TR><TD><code><big>1</TD><TD>D</TD></TR>
+<TR><TD><code><big>1</TD><TD>D#</TD></TR>
+<TR><TD><code><big>1</TD><TD>E</TD></TR>
+<TR><TD><code><big>1</TD><TD>F#</big></code></TD></TR>
+</TABLE></blockquote>
+But this inventory distinguishes D-sharp from D-natural -- which
+is not what we want.  The answer is to filter our input so that
+the sharps are removed.
+</P>
+<P>
+Adding the appropriate
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+command to our pipe:
+</P>
+<P>
+<blockquote>
+<code><big>humsed 's/#//' notes | rid -GLId | sort | uniq -c</big></code>
+</blockquote>
+</P>
+<P>
+--  will produce the following output:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>1</TD><TD>A</TD></TR>
+<TR><TD><code><big>2</TD><TD>B</TD></TR>
+<TR><TD><code><big>2</TD><TD>D</TD></TR>
+<TR><TD><code><big>1</TD><TD>E</TD></TR>
+<TR><TD><code><big>1</TD><TD>F</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+<A NAME="Further_Examples">
+<H2>Further Examples</H2>
+</P>
+<P>
+Given your current background, you should now be able to
+generate inventories to answer a wide variety of questions.
+You should now understand how the commands given below can be used
+to solve the question posed:
+</P>
+<A NAME="Harmonic_variety">
+<P>
+<i>Does Liszt use a greater variety of harmonies than Chopin?</i>
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '<A HREF="representations/harm.rep.html">**harm</A>' liszt* | rid -GLId | sort | uniq | wc -l</big></code>
+<br>
+<code><big>extract -i '**harm' chopin* | rid -GLId | sort | uniq | wc -l</big></code>
+</blockquote>
+</P>
+<A NAME="Compare_dynamics">
+<P>
+<i>What is the most frequently used dynamic marking in Beethoven,</i>
+<i>and how does Beethoven's practice compare with that of Brahms?</i>
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '<A HREF="representations/dynam.rep.html">**dynam</A>' beeth* | rid -GLId | sort | uniq -c \
+<blockquote>
+| sort -r | head -1</big></code>
+</blockquote>
+<code><big>extract -i '**dynam' brahm* | rid -GLId | sort | uniq -c \
+<blockquote>
+| sort -r | head -1</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Monteverdi">
+<P>
+<i>Are flats more common than sharps in Monteverdi?</i>
+Let's presume that the input is monophonic <code><big>**kern</big></code> data.
+</P>
+<P>
+<blockquote>
+<code><big>humsed 's/[^#-]//g' montev* | rid -GLId | sort | uniq -c</big></code>
+</blockquote>
+</P>
+<A NAME="Bartok_articulations">
+<P>
+<i>Did Bart&#243;k's preferred articulation marks change</i>
+<i>over his lifetime?</i>
+Assume that copies of early and late works have been
+concatenated to the files <code><big>early</big></code> and <code><big>late</big></code>.
+The
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+command here eliminates all data with the exception of
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+articulation marks.
+(See
+<A HREF="guide06.html">Chapter 6</A>
+for details on **kern articulation marks.)
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**kern' early | humsed 's/[^"`~^:I]//g' \
+<blockquote>
+| rid -GLId | sort | uniq -c</big></code>
+</blockquote>
+<code><big>extract -i '**kern' late | humsed 's/[^"`~^:I]//g' \
+<blockquote>
+| rid -GLId | sort | uniq -c</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Chanson">
+<P>
+<i>Is there a tendency to use the subdominant pitch less often</i>
+<i>in pop melodies than in (say) French chanson?</i>
+Once again assume that the inputs are monophonic.
+</P>
+<P>
+<blockquote>
+<code><big>deg -t pop* | grep -c '4'</big></code>
+<br>
+<code><big>deg -t chanson* | grep -c '4'</big></code>
+</blockquote>
+</P>
+<A NAME="Thomas_of_Canterbury">
+<P>
+<i>How frequent are light-related words such as "lumen"</i>
+<i>or "lumine" in the different monastic offices for</i>
+Thomas of Canterbury?
+Familiarity with regular expressions helps:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '<A HREF="representations/text.rep.html">**text</A>' office* | egrep -ic 'lum.+n[e]*$'</big></code>
+</blockquote>
+</P>
+<A NAME="90_percent">
+<P>
+<i>Is it true that 90 percent of the notes in a given work by Bach</i>
+<i>use just two durations (such as eighths and sixteenths, or</i>
+<i>eighths and quarters)?</i>
+</P>
+<P>
+<blockquote>
+<code><big>humsed 's/[^0-9.]//g' bach | rid -GLId | sort | uniq -c</big></code>
+
+(Repeat the above command for each work and inspect the results.)
+</blockquote>
+</P>
+<A NAME="Mussorgsky">
+<P>
+<i>What is the most common instrumental combination for sonorities</i>
+<i>by Mussorgsky?</i>
+</P>
+<P>
+<blockquote>
+This problem is addressed in
+<A HREF="guide36.html">Chapter 36.</A>
+</blockquote>
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+In this chapter we have discussed how to answer questions
+that involve the creation of inventories.
+Creating an inventory typically entails
+<i>filtering</i>
+some data so only the information of interest is preserved,
+<i>sorting</i>
+the data so that like data are amalgamated,
+and then
+<i>counting</i>
+each instance of each data type.
+</P>
+<P>
+In later chapters we will see how classifying data,
+identifying musical contexts, and marking occurrences
+of patterns can be used to significantly enhance
+the inventory-building tools described in this chapter.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide18.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide16.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

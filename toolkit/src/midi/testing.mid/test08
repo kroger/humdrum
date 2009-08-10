@@ -1,0 +1,52 @@
+!! midi Test #8
+!! Play one note on 16 successive MIDI channels.
+**kern
+!! MIDI channel 1
+*Ch1
+4c
+!! MIDI channel 2
+*Ch2
+4d
+!! MIDI channel 3
+*Ch3
+4e
+!! MIDI channel 4
+*Ch4
+4f
+!! MIDI channel 5
+*Ch5
+4g
+!! MIDI channel 6
+*Ch6
+4a
+!! MIDI channel 7
+*Ch7
+4b
+!! MIDI channel 8
+*Ch8
+4cc
+!! MIDI channel 9
+*Ch9
+4dd
+!! MIDI channel 10
+*Ch10
+4ee
+!! MIDI channel 11
+*Ch11
+4ff
+!! MIDI channel 12
+*Ch12
+4gg
+!! MIDI channel 13
+*Ch13
+4aa
+!! MIDI channel 14
+*Ch14
+4bb
+!! MIDI channel 15
+*Ch15
+4ccc
+!! MIDI channel 16
+*Ch16
+4C
+*-

@@ -1,0 +1,858 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 28</TITLE>
+<!-- Chapter 28 (Dynamics) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:16:09 EST 2000">
+<meta name="description" content="Chapter 28 (Dynamics) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<H1>Chapter28</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide27.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide29.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Dynamics</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+In this chapter we introduce three pre-defined representations
+pertaining to musical dynamics.
+One representation (**dyn) represents dynamic markings
+as they appear visually in a printed score.
+A second representation (**dynam) represents a rationalized
+interpretation of the notated dynamic markings in a score.
+A third scheme (**dB) represents continuous dynamic levels
+in decibels.
+</P>
+<A NAME="The_**dynam_and_**dyn_Representations">
+<H2>The <i>**dynam</i> and <i>**dyn</i> Representations</H2>
+</P>
+<P>
+Musical scores commonly contain dynamic markings that include
+both written text (such as "<i>subito forte</i>" and "<i>dimin.</i>")
+and graphic representations (such as hairpin or wedge-shaped crescendo markings).
+Unfortunately, traditional dynamic markings are often confusing
+or ambiguous.
+Consider, for example, the following sequence of dynamic markings
+from a Beethoven piano sonata:
+</P>
+<P>
+<CENTER>
+<TABLE>
+<TR><TD><b><i>pp</TD><TD></TD><TD><b><i>cresc. </TD><TD></TD><TD><b><i>cresc. </TD><TD></TD><TD><b><i>p    </TD><TD></TD><TD><b><i>cresc.     </TD><TD></TD><TD><b><i>pp</b></i></TD><TR>
+</TABLE>
+</CENTER>
+</P>
+<P>
+What are we to make of these markings?
+Does the music gradually <i>crescendo</i> from <i>pianissimo</i> to <i>piano</i>?
+Does this initial <i>crescendo</i> occur in two distinct phases or does the
+repetition of the term "<i>cresc.</i>" merely indicate a continuation
+of a single <i>crescendo</i>?
+Does this <i>crescendo</i> move to a dynamic level above <i>piano</i>
+and abruptly reduce to <i>piano</i>?
+Does the final <i>crescendo</i> begin at a <i>piano</i> level and get louder --
+followed by a relatively abrupt reduction to <i>pianissimo</i>?
+Or does the final <i>crescendo</i> begin below <i>piano</i> and gradually
+reach <i>pianissimo</i>?
+Such ambiguities are rampant in printed musical scores.
+We can examine the accompanying musical context to help us resolve questions
+of interpretation, but computers are unable to bring such sophistication 
+to the task.
+</P>
+<P>
+Humdrum provides two pre-defined representations for score-related
+dynamic markings.
+One representation
+(<A HREF="representations/dyn.rep.html"><code><big>**dyn</big></code></A>)
+attempts to represent
+the dynamic markings as they appear in a visual rendering of a score.
+That is, <code><big>**dyn</big></code> represents the visual or orthographic information.
+A second representation
+(<A HREF="representations/dynam.rep.html"><code><big>**dynam</big></code></A>)
+provides a "rationalized"
+or canonical means for interpreting score-related dynamic indications.
+Users will want to choose one or the other representation depending on
+the analytic task being pursued.
+</P>
+<P>
+In the first instance, <code><big>**dynam</big></code> uses standardized data tokens to represent
+particular dynamic levels.
+Table 28.1 shows the standard representations for <code><big>**dynam</big></code>.
+For example, the token <code><big>pp</big></code> represents the concept of pianissimo,
+even if the visual rendering may be <b><i>pp</b></i> or
+<i>pianissimo</i> or <i>pianiss.</i>, etc.
+</P>
+<P>
+<b>Table 28.1.</b>
+<blockquote><TABLE>
+<TR><TD>p</TD><TD>piano</TD></TR>
+<TR><TD>pp</TD><TD>pianissimo</TD></TR>
+<TR><TD>ppp</TD><TD>triple piano</TD></TR>
+<TR><TD>pppp</TD><TD>quadruple piano, [etc]</TD></TR>
+<TR><TD>f</TD><TD>forte</TD></TR>
+<TR><TD>ff</TD><TD>fortissimo</TD></TR>
+<TR><TD>fff</TD><TD>triple forte</TD></TR>
+<TR><TD>ffff</TD><TD>quadruple forte, [etc]</TD></TR>
+<TR><TD>mp</TD><TD>mezzo-piano</TD></TR>
+<TR><TD>mf</TD><TD>mezzo-forte</TD></TR>
+<TR><TD>s</TD><TD>subito (suddenly), e.g. spp (<i>subito pianissimo</i>), sf (<i>subito forte</i>)</TD></TR>
+<TR><TD>z</TD><TD>sforzando = fp (forte-piano)</TD></TR>
+<TR><TD><</TD><TD>begin crescendo</TD></TR>
+<TR><TD>></TD><TD>begin diminuendo</TD></TR>
+<TR><TD>(</TD><TD>continuing crescendo</TD></TR>
+<TR><TD>)</TD><TD>continuing diminuendo</TD></TR>
+<TR><TD>[</TD><TD>end crescendo</TD></TR>
+<TR><TD>]</TD><TD>end diminuendo</TD></TR>
+<TR><TD>X</TD><TD>explicit interpretation (not indicated in the score)</TD></TR>
+<TR><TD>x</TD><TD>published interpretation (indicated in the score, often in parentheses)</TD></TR>
+<TR><TD>r</TD><TD>rest (silence)</TD></TR>
+<TR><TD>v</TD><TD>notated accent or stress</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+In the case of crescendo and diminuendo markings,
+<A HREF="representations/dynam.rep.html"><code><big>**dynam</big></code></A>
+requires an explicit interpretation of where the dynamic
+marking begins and ends.
+The beginning of a crescendo is indicated by the less-than sign (<code><big><</big></code>).
+The end of the crescendo is marked by the open square bracket (<code><big>]</big></code>).
+Between the beginning and end points,
+<i>continuation signifiers</i>
+are encoded.
+For crescendos, continuations are indicated using the open parenthesis;
+for diminuendos, continuations are indicated using the closed parenthesis.
+</P>
+<P>
+In the <code><big>**dynam</big></code> representation,
+no distinction is made for various ways a composer might indicate a crescendo or
+a diminuendo.
+For example, it doesn't matter whether a diminuendo is notated as
+<i>dim.</i>, <i>dimin.</i>, <i>diminuendo</i>, <i>decres.</i>, <i>decresc.</i>,
+<i>decresendo</i>, <i>calando</i>, <i>morendo</i>, <i>se perdant</i>,
+<i>c&#233d&#233z</i>, <i>gradually quieter</i>,
+or via a hairpin or wedge graphic diminuendo.
+All are represented by <code><big>></big></code> ... <code><big>)</big></code> ... <code><big>]</big></code>.
+</P>
+<P>
+The <code><big>**dynam</big></code> representation also requires explicit resolution
+of possibly ambiguous dynamic markings.
+In many cases, the user will be required to add dynamic markings that
+are only implicit in the original score.
+Interpreted dynamics are preceded by the upper-case letter <code><big>X</big></code>,
+so an interpreted diminuendo will be
+represented by <code><big>X></big></code> ... <code><big>X)</big></code> ... <code><big>X]</big></code>.
+</P>
+<P>
+Often published editions will include dynamic markings that have
+been introduced by the editor.
+In scholarly publications these editorialisms are indicated
+in parentheses or square brackets.
+Such interpreted dynamics are preceded by the lower-case letter <code><big>x</big></code>.
+</P>
+<P>
+The use of the
+<A HREF="representations/dynam.rep.html"><code><big>**dynam</big></code></A>
+representation is illustrated in
+Example 28.1.
+<br><br>
+<b>Example 28.1</b>
+<blockquote>
+<img src="guide.figures/guide28.1.gif">
+</blockquote>
+This example might be encoded as follows:
+<blockquote><TABLE>
+<TR><TD><code><big>**dynam</TD><TD>**kern</TD></TR>
+<TR><TD>*staff1</TD><TD>*staff1</TD></TR>
+<TR><TD>=</TD><TD>=</TD></TR>
+<TR><TD>p</TD><TD>2c 2e 2g 2cc</TD></TR>
+<TR><TD><</TD><TD>.</TD></TR>
+<TR><TD>(</TD><TD>2G 2d 2g 2b</TD></TR>
+<TR><TD>=</TD><TD>=</TD></TR>
+<TR><TD>(</TD><TD>2A 2c 2e 2a</TD></TR>
+<TR><TD>[</TD><TD>.</TD></TR>
+<TR><TD>pp</TD><TD>2E 2B 2e 2g</TD></TR>
+<TR><TD>=</TD><TD>=</TD></TR>
+<TR><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The <code><big>**dynam</big></code> encoding is interpreted as follows:
+the level begins <i>piano</i> with a crescendo beginning
+prior to the second chord;
+the crescendo continues until after the third chord
+and then the level abruptly drops to <i>pianissimo</i> with
+the onset of the fourth chord.
+Notice that dynamic markings are "read from left-to-right";
+that is, we presume that the crescendo begins <i>piano</i> and
+that the <i>pianissimo</i> is an abrupt reduction in level,
+rather than presuming that the crescendo builds to the <i>pianissimo</i>
+level and so there is an abrupt reduction in level after the initial <i>piano</i>
+just before the cresendo begins.
+In short, a crescendo (or diminuendo) marking is always assumed to
+increase (or decrease) the dynamic level from the preceding indication.
+</P>
+<P>
+If appropriate, a user can render implicit dynamic shading explicitly.
+For example, a user might choose to re-code Example 28.1 as either
+<blockquote><TABLE>
+<TR><TD><code><big>**dynam</TD><TD>**kern</TD></TR>
+<TR><TD>*staff1</TD><TD>*staff1</TD></TR>
+<TR><TD>=</TD><TD>=</TD></TR>
+<TR><TD>p</TD><TD>2c 2e 2g 2cc</TD></TR>
+<TR><TD><</TD><TD>2G 2d 2g 2b</TD></TR>
+<TR><TD>=</TD><TD>=</TD></TR>
+<TR><TD>[</TD><TD>2A 2c 2e 2a</TD></TR>
+<TR><TD>X></TD><TD>.</TD></TR>
+<TR><TD>X]</TD><TD>.</TD></TR>
+<TR><TD>pp</TD><TD>2E 2B 2e 2g</TD></TR>
+<TR><TD>=</TD><TD>=</TD></TR>
+<TR><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+or
+<blockquote><TABLE>
+<TR><TD><code><big>**dynam</TD><TD>**kern</TD></TR>
+<TR><TD>*staff1</TD><TD>*staff1</TD></TR>
+<TR><TD>=</TD><TD>=</TD></TR>
+<TR><TD>p</TD><TD>2c 2e 2g 2cc</TD></TR>
+<TR><TD>Xppp</TD><TD>.</TD></TR>
+<TR><TD><</TD><TD>2G 2d 2g 2b</TD></TR>
+<TR><TD>=</TD><TD>=</TD></TR>
+<TR><TD>(</TD><TD>2A 2c 2e 2a</TD></TR>
+<TR><TD>[</TD><TD>.</TD></TR>
+<TR><TD>pp</TD><TD>2E 2B 2e 2g</TD></TR>
+<TR><TD>=</TD><TD>=</TD></TR>
+<TR><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Notice that null data records may be inserted as necessary to clarify
+the moment of dynamic change.
+The
+<A HREF="representations/dynam.rep.html"><code><big>**dynam</big></code></A>
+representation makes use of the common system
+for representing barlines.
+</P>
+<A NAME="The_**dyn_Representation">
+<H2>The <i>**dyn</i> Representation</H2>
+</P>
+<P>
+The
+<code><big>**dyn</big></code>
+representation provides a method for representing
+the orthographic appearance of notated dynamic markings.
+Unlike <code><big>**dynam</big></code>, the <code><big>**dyn</big></code> representation distinguishes
+between different ways of identifying a dynamic marking.
+For example, <i>dim.</i>, <i>dimin.</i>, <i>diminuendo</i>, <i>decres.</i>,
+<i>decresc.</i>, <i>decresendo</i>, are all regarded as different
+from each other.
+Composers often have idiosyncratic ways of writing dynamic markings.
+As a result, the specific terms used may have repercussions,
+for example, in resolving cases of disputed composership.
+In some circumstances, it is thought that individual composers
+distinguish the terms in their own minds.
+For example, a composer might use <i>decrescendo</i> as a general
+term to indicate a temporary descending dynamic shape,
+whereas <i>diminuendo</i> might have a more specific meaning
+of a `dying away' or `fade-out' gesture.
+</P>
+<P>
+In the **dyn representation the horizontal position of dynamic markings
+is indicated in quarter-durations with respect to the previous barline.
+This number appears prior to the dynamic signifier,
+hence <code><big>4.1f</code></big> means a <i>forte</i> (e.g., <b><i>f</i></b>) marking just after
+the horizontal position of the fourth quarter in the measure.
+The vertical position of dynamic markings is indicated with respect to
+the middle line of a corresponding staff;
+this number appears in curly braces.
+<blockquote><TABLE>
+<TR><TD><</TD><TD>begin wedge-graphic crescendo marking</TD></TR>
+<TR><TD>></TD><TD>begin wedge-graphic diminuendo marking</TD></TR>
+<TR><TD>[</TD><TD>terminate wedge-graphic crescendo marking</TD></TR>
+<TR><TD>]</TD><TD>terminate wedge-graphic diminuendo marking</TD></TR>
+<TR><TD>(</TD><TD>continuing wedge-graphic crescendo</TD></TR>
+<TR><TD>)</TD><TD>continuing wedge-graphic diminuendo</TD></TR>
+<TR><TD>{...}</TD><TD>vertical position (in staff-line steps from mid-line)</TD></TR>
+<TR><TD>#...</TD><TD>size of marking (in staff-line steps)</TD></TR>
+<TR><TD>:number:</TD><TD>density of dashed lines in strokes per quarter-duration</TD></TR>
+<TR><TD>/.../</TD><TD>wedge opening size (in staff-line steps)</TD></TR>
+<TR><TD>r</TD><TD>rest (silence)</TD></TR>
+<TR><TD>H</TD><TD>marking appears in square brackets</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+By way of illustration, consider Example 28.2.
+<br><br>
+<b>Example 28.2:</i> Arnold Schoenberg, <i>Three Piano Pieces, Op. 11, No. 2</i>, excerpt.
+<blockquote>
+<img src="guide.figures/guide28.2.gif">
+</blockquote>
+Using the <code><big>**dyn</big></code> representation, Example 28.2 might be encoded as follows:
+<blockquote><TABLE>
+<TR><TD><code><big>**dyn</TD><TD></TD><TD>**kern</TD><TD></TD><TD>**kern</TD><TD></TD><TD>**kern</TD></TR>
+<TR><TD>*staff1/2</TD><TD></TD><TD>*staff2</TD><TD></TD><TD>*staff1</TD><TD></TD><TD>*staff1</TD></TR>
+<TR><TD>*</TD><TD></TD><TD>*clefF4</TD><TD></TD><TD>*clefG2</TD><TD></TD><TD>*clefG2</TD></TR>
+<TR><TD>*</TD><TD></TD><TD>*M12/8</TD><TD></TD><TD>*M12/8</TD><TD></TD><TD>*M12/8</TD></TR>
+<TR><TD>=</TD><TD></TD><TD>=</TD><TD></TD><TD>=</TD><TD></TD><TD>=</TD></TR>
+<TR><TD>0.8f{-4}</TD><TD></TD><TD>8F# 8en</TD><TD></TD><TD>8r</TD><TD></TD><TD>2.ffn</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>8A#</TD><TD></TD><TD>8r</TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>8Dn 8cn</TD><TD></TD><TD>[8cc#</TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>8F#</TD><TD></TD><TD>8cc#]</TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>8AAn 8Gn</TD><TD></TD><TD>8ccn</TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>8C#</TD><TD></TD><TD>8bn</TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>8FFn 8E-</TD><TD></TD><TD>8b-</TD><TD></TD><TD>[4.aan</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>8AAn</TD><TD></TD><TD>8ddn</TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>8DD- 8C-</TD><TD></TD><TD>8b-</TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>8FFn</TD><TD></TD><TD>4.dd</TD><TD></TD><TD>8aa]</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>8BBB- 8AA-</TD><TD></TD><TD>.</TD><TD></TD><TD>4ff#</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>8DDn</TD><TD></TD><TD>.</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>*</TD><TD></TD><TD>*</TD><TD></TD><TD>*v</TD><TD></TD><TD>*v</TD></TR>
+<TR><TD>=</TD><TD></TD><TD>=</TD><TD></TD><TD>=</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>8r</TD><TD></TD><TD>8r</TD></TR>
+<TR><TD>1.4fp{-4.5}</TD><TD></TD><TD>{8d-</TD><TD></TD><TD>{8gn 8ccn 8ffn</TD></TR>
+<TR><TD>1.6>{-4.3}/1.5/</TD><TD></TD><TD>.</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>)</TD><TD></TD><TD>8fn</TD><TD></TD><TD>8bn 8een</TD></TR>
+<TR><TD>2.4]{-4.3}</TD><TD></TD><TD>.</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>2.5pp{-5}</TD><TD></TD><TD>24A-</TD><TD></TD><TD>4.cn 4.fn 4.b}</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>24d-</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>2.8>/1.4/</TD><TD></TD><TD>24Dn</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>)</TD><TD></TD><TD>8.GG</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>4.2]</TD><TD></TD><TD>16BB-}</TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>8r</TD><TD></TD><TD>8r</TD></TR>
+<TR><TD>4.4fp{-4.5}</TD><TD></TD><TD>{8An</TD><TD></TD><TD>{8e- 8a- 8dd-</TD></TR>
+<TR><TD>4.6>/1.5/</TD><TD></TD><TD>.</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>)</TD><TD></TD><TD>8d-</TD><TD></TD><TD>8gn 8ccn</TD></TR>
+<TR><TD>5.2]</TD><TD></TD><TD>.</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>5.4pp{-4.5}</TD><TD></TD><TD>24F#</TD><TD></TD><TD>4.B- 4.en 4.a}</TD></TR>
+<TR><TD>5.7>/1.4/</TD><TD></TD><TD>24Bn</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>)</TD><TD></TD><TD>24BB-</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>)</TD><TD></TD><TD>8.DD</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>6.8]</TD><TD></TD><TD>16GG}</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>=</TD><TD></TD><TD>=</TD><TD></TD><TD>=</TD></TR>
+<TR><TD>*-</TD><TD></TD><TD>*-</TD><TD></TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The <code><big>*staff1/2</big></code> tandem interpretation indicates that the dynamic markings
+pertain to both staffs 1 and 2, however all vertical
+<A HREF="representations/dyn.rep.html"><code><big>**dyn</big></code></A>
+distance measures are encoded with respect to staff 1.
+(Reversing the numerical order -- <code><big>*staff2/1</big></code> -- would cause
+all distances to be measured with respect to staff 2.)
+The token <code><big>0.8f{-4}</big></code> means that the signifier <b><i>f</big></code> is located
+0.8 quarter-duration spaces from the beginning of the bar and
+4 staff-line steps below the center line of staff 1.
+The token <code><big>1.6>{-4.3}/1.5/</big></code> means that a wedge diminuendo marking begins
+1.6 quarter-durations from the beginning of the bar;
+the size of the opening of the wedge is 1.5 staff-line steps wide and
+the center of the opening is located 4.3 staff-line steps below the center
+line for staff 1.
+The token <code><big>2.4]{-4.3}</big></code> means that a wedge diminuendo marking ends
+2.4 quarter-durations from the beginning of the bar;
+the tip of the wedge converges at a point 4.3 staff-line steps below
+the center line for staff 1.
+Changing this value allows tilted wedges to be represented.
+</P>
+<A NAME="The_**dB_Representation">
+<H2>The <i>**dB</i> Representation</H2>
+</P>
+<P>
+The
+<A HREF="representations/dB.rep.html"><code><big>**dB</big></code></A>
+representation provides a way to represent
+intensity in decibels.
+Decibels can be expressed in relative or absolute terms.
+Absolute values are represented according to sound pressure level (SPL).
+An absolute representation is indicated by the presence of the <code><big>*SPL</big></code>
+tandem interpretation.
+Zero decibels (SPL) corresponds roughly to the quietest sound
+detectable under ideal circumstances.
+A quiet room is roughly 40 dB in intensity;
+a conversation produces roughly 70 dB,
+a vacuum cleaner produces roughly 80 dB,
+a noisy factory produces roughly 90 dB,
+and a passing loud motorcycle generates roughly 100 dB (SPL).
+</P>
+<P>
+The <code><big>**dB</big></code> representation provides a convenient way
+to represent sound intensity in a numerical form.
+A numerical representation allows us to carry out a
+variety of calculations and comparisons.
+</P>
+<A NAME="The_db_Command">
+<H2>The <i>db</i> Command</H2>
+</P>
+<P>
+The
+<b>db</b>
+command translates dynamic markings to dynamic level expressed
+in decibels;
+specifically,
+<b>db</b>
+translates from the <code><big>**dynam</big></code> representation to
+<code><big>**dB</big></code> representation.
+By default,
+<b>db</b>
+uses the following mapping:
+<blockquote><TABLE>
+<TR><TD>dynamic level</TD><TD>dB SPL</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>fffffff</TD><TD>115</TD></TR>
+<TR><TD>ffffff</TD><TD>110</TD></TR>
+<TR><TD>fffff</TD><TD>105</TD></TR>
+<TR><TD>ffff</TD><TD>100</TD></TR>
+<TR><TD>fff</TD><TD>90</TD></TR>
+<TR><TD>ff</TD><TD>80</TD></TR>
+<TR><TD>f</TD><TD>75</TD></TR>
+<TR><TD>mf</TD><TD>70</TD></TR>
+<TR><TD>mp</TD><TD>65</TD></TR>
+<TR><TD>p</TD><TD>60</TD></TR>
+<TR><TD>pp</TD><TD>55</TD></TR>
+<TR><TD>ppp</TD><TD>50</TD></TR>
+<TR><TD>pppp</TD><TD>45</TD></TR>
+<TR><TD>ppppp</TD><TD>40</TD></TR>
+<TR><TD>pppppp</TD><TD>35</TD></TR>
+<TR><TD>ppppppp</TD><TD>30</TD></TR>
+<TR><TD>v</TD><TD>+5</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Notice the presence of the
+<i>accent</i>
+signifier (<code><big>v</big></code>);
+the assigned value (<code><big>+5</big></code>) means that any encoded accents will
+receive a decibel level 5 dB higher than the basic sound pressure level
+at that point in the score.
+For example, an explicitly accented note occurring in a <i>fortissimo</i>
+passage will be assigned a value of 85 dB SPL.
+</P>
+<P>
+Users can define other mappings by using the
+<b>-f</b>
+option for <b>db</b>.
+With
+<b>-f</b>
+the user provides a filename that contains the non-default mapping values.
+The format for this file is the same as that shown in the above table.
+Each table entry specifies a dynamic marking, followed by a tab, followed
+by a numerical value.
+</P>
+<P>
+In the case of crescendo and diminuendo markings, the
+<b>db</b>
+command attempts to interpolate a series of values between any preceding
+and subsequent dynamic markings.
+The following example shows a pianissimo marking at the beginning of
+measure 5;
+a crescendo marking spans all of measure 6, and a mezzo-forte marking
+appears in measure 7.
+The right-most spine shows the corresponding output generated by the
+<b>db</b>
+command.
+It shows an interpolation between the two dynamic levels.
+<blockquote><TABLE>
+<TR><TD><code><big>**dynam</TD><TD>**dB</TD></TR>
+<TR><TD>*SPL</TD><TD>*</TD></TR>
+<TR><TD>=5</TD><TD>=5</TD></TR>
+<TR><TD>pp</TD><TD>55</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=6</TD><TD>=6</TD></TR>
+<TR><TD><</TD><TD>58</TD></TR>
+<TR><TD>(</TD><TD>61</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>(</TD><TD>64</TD></TR>
+<TR><TD>]</TD><TD>67</TD></TR>
+<TR><TD>=7</TD><TD>=7</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>mf</TD><TD>70</TD></TR>
+<TR><TD>.</TD><TD>.</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The interpolation begins with the crescendo indicator and increments
+for each continuation signifier (i.e., the open parentheses).
+Interpolations are linear and continue up to the crescendo termination signifier.
+The size of the increment value depends on starting and ending dynamic levels
+as well as the number of crescendo-continuation signifiers.
+In the above case four pertinent
+crescendo signifiers separate the pianissimo and mezzo-forte markings;
+each of these records has been incremented by 3 decibels.
+Where necessary, decimal values are output.
+Notice that null tokens (such as those in the middle of measure 6)
+are ignored in the calculation.
+</P>
+<A NAME="Processing_Dynamic_Information">
+<H2>Processing Dynamic Information</H2>
+<A NAME="Average_dynamic_level">
+<P>
+The
+<A HREF="representations/dB.rep.html"><code><big>**dB</big></code></A>
+representation can be used to assist a number
+of tasks related to musical dynamics.
+Suppose, for example, that we want to compare the average overall
+dynamic levels for two arabesques:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**dynam' arabesque1 | db | rid -GLId | stats</big></code>
+<br>
+<code><big>extract -i '**dynam' arabesque2 | db | rid -GLId | stats</big></code>
+</blockquote>
+</P>
+<A NAME="Exposition_and_Development_Loudness">
+<P>
+Similarly, we might compare the overall dynamic levels between
+two sections of a single work.
+Perhaps we wish to know whether the exposition is on average louder
+than the development section:
+</P>
+<P>
+<blockquote>
+<code><big>yank -s Exposition -r 1 symphony3 | extract -i '**dynam' \
+<blockquote>
+| db | rid -GLId | stats</big></code>
+</blockquote>
+<code><big>yank -s Development -r 1 symphony3 | extract -i '**dynam' \
+<blockquote>
+| db | rid -GLId | stats</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Begin_Quiet_End_Loud">
+<P>
+Does a work tend to begin quietly and end loudly, or vice versa?
+Here we might compare the first 10 measures with the final 10 measures.
+Notice the use of
+<A HREF="commands/ditto.html"><b>ditto</b></A>
+to increase the number of values participating in the calculation of the
+average dynamic level:
+</P>
+<P>
+<blockquote>
+<code><big>yank -n = -r 1-10 janacek | extract -i '**dynam' \
+<blockquote>
+| ditto -s = | db | rid -GLId | stats</big></code>
+</blockquote>
+<code><big>yank -n = -r '$-10-$' janacek | extract -i '**dynam' \
+<blockquote>
+| ditto -s = | db | rid -GLId | stats</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Higher_Louder_Lower_Quieter">
+<P>
+Suppose we want to determine whether there is an association between
+dynamic levels and pitch height for Klezmer music.
+That is, does the music tend to be quieter for lower pitches and
+louder for higher pitches?
+A straightforward way to determine this is to compare dynamic level
+with pitch height -- represented in semitones
+(<A HREF="representations/semits.rep.html"><code><big>**semits</code></big></A>).
+The
+<A HREF="commands/correl.html"><b>correl</b></A>
+command can then be used to measure Pearson's coefficient of correlation.
+If there is a relationship between pitch height and dynamic level
+then the correlation should be positive.
+</P>
+<A NAME="Klezmer">
+<P>
+<blockquote>
+<code><big>semits klezmer | correl -s ^= -m</big></code>
+</blockquote>
+</P>
+<P>
+This command assumes an input consisting of two spines -- one pitch-related
+and a <code><big>**dB</big></code> spine.
+The
+<b>-s</b>
+option for
+<b>correl</b>
+is used to skip barlines so bar numbers aren't included in the calculation.
+The
+<b>-m</b>
+option for
+<b>correl</b>
+disables the "matched pairs" criterion.
+Normally, if a number is found in one spine but not the other then
+<b>correl</b>
+will complain and terminate.
+With the
+<b>-m</b>
+option, each encoded pitch need not have a corresponding dynamic level indication
+and vice versa.
+</P>
+<P>
+Similarly, we could use this same approach to determine whether there is
+a relationship between duration and dynamic level.
+Are longer notes more likely to be louder in Klezmer music?
+</P>
+<P>
+<blockquote>
+<code><big>dur klezmer | correl -s ^= -m</big></code>
+</blockquote>
+</P>
+<A NAME="Louder_Above_G4">
+<P>
+A variation on this procedure might be to restrict the comparison over a specified
+pitch range.
+For example, one might think that higher pitches tend to be louder but that
+lower pitches are neither softer nor louder than usual.
+In order to test this view we can use the
+<A HREF="commands/recode.html"><b>recode</b></A>
+command to reassign "low" pitches to a single value.
+By way of illustration, the reassignment might presume that below G4 (semits=7)
+there is no relationship between pitch height and dynamic level.
+We might recode all values lower than 7 to a unique string (such as `XXX') and
+then use
+<b>grep -v</b>
+to eliminate these notes from a subsequent correlation:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**kern' klezmer | semits recode > temp1
+<br>
+extract -i '**dB' klezmer > temp2
+<br>
+assemble temp1 temp2 | grep -v 'XXX' | correl -s ^= -m</big></code>
+</blockquote>
+</P>
+<A NAME="Terraced_Dynamics">
+<H2>Terraced Dynamics</H2>
+</P>
+<P>
+Suppose we want to identify whether various works exhibit "terraced"
+or "graduated" dynamics.
+In the case of terraced dynamics, we would expect to see many relatively
+abrupt dynamic contrasts, such as alternations between <i>forte</i> and <i>piano</i>.
+There are several ways of approaching this question.
+One approach might translate
+<A HREF="representations/dynam.rep.html"><code><big>**dynam</big></code></A>
+data to
+<A HREF="representations/dB.rep.html"><code><big>**dB</big></code></A>
+data and then calculate the average (or maximum) changes in dynamic level.
+If a work contains many crescendos and diminuendos markings,
+then most of the changes in <code><big>**dB</big></code> values will be small.
+Conversely, alternations between contrasting dynamic levels will cause
+the average decibel differences to be larger.
+The
+<A HREF="commands/xdelta.html"><b>xdelta</b></A>
+command can be used to calculate the changes in dynamic level.
+Notice that it is important to avoid using the
+<A HREF="commands/ditto.html"><b>ditto</b></A>
+command since repeated dynamic level values will cause the average
+dynamic difference to approach zero.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**dynam' haendel | db | xdelta -a -s = | rid -d \
+<blockquote>
+| stats</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Another approach to this problem might be to count the number of dynamic contrasts,
+avoiding the use of the
+<b>db</b>
+command.
+In the following pipeline, we use
+<A HREF="commands/context.html"><b>context</b></A>
+to generate pairs of dynamic markings, and then use
+<b>grep</b>
+to count the number of alternations between <b><i>f</b></i> and <b><i>p</b></i>.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**dynam' haendel | grep -v '[][()=rX]' | rid -d \
+<blockquote>
+| context -n 2 | grep -c 'f p'</big></code>
+</blockquote>
+<br>
+<code><big>extract -i '**dynam' haendel | grep -v '[][()=rX]' | rid -d \
+<blockquote>
+| context -n 2 | grep -c 'p f'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Dynamic_Swells">
+<H2>Dynamic Swells</H2>
+</P>
+<P>
+Conceptually, crescendos and diminuendos can be paired to form one of two dynamic
+gestures.
+A "swell" gesture consists of a crescendo followed by a diminuendo.
+Conversely, a "dip" gesture would consist of a diminuendo followed by a
+crescendo.
+Musical intuition would suggest that swell gestures are more common than
+dip gestures.
+We could test this view as follows:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**dynam' grieg | grep -v '[][()=rX]' | rid -d \
+<blockquote>
+| context -n 2 | grep -c '< >'</big></code>
+</blockquote>
+<code><big>extract -i '**dynam' grieg | grep -v '[][()=rX]' | rid -d \
+<blockquote>
+| context -n 2 | grep -c '> <'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="MIDI_Dynamics">
+<H2>MIDI Dynamics</H2>
+</P>
+<P>
+Dynamic level data is not always easily available.
+One possible source is to translate MIDI key-velocity data to
+an estimated decibel value.
+Actual sound pressure levels will depend on the timbre of the MIDI
+sounds, the specific pitch played, and the volume on the output amplifier.
+Nevertheless, a rough estimate of sound pressure level may be useful
+for various analytic tasks.
+Recall that in the
+<A HREF="representations/MIDI.rep.html"><code><big>**MIDI</code></big></A>
+representation, key-velocity data is encoded
+as the final number in three-number tokens where numbers are separated by slashes.
+The first value in the triplet is elapsed clock ticks and the second value
+is the MIDI key number (positive for key-on events, negative for key-off events).
+By way of reminder, the following example shows three
+<A HREF="representations/kern.rep.html"><code><big>**kern</code></big></A>
+notes with a corresponding **MIDI representation.
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD>**MIDI</TD></TR>
+<TR><TD>*</TD><TD>*Ch1</TD></TR>
+<TR><TD>4c</TD><TD>72/60/64</TD></TR>
+<TR><TD>4d</TD><TD>72/-60/64 72/62/64</TD></TR>
+<TR><TD>4e</TD><TD>72/-62/64 72/64/64</TD></TR>
+<TR><TD>.</TD><TD>72/-64/64</TD></TR>
+<TR><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+In order to translate to a **dB representation, we must first isolate the
+key velocity values for key-on events.
+The following
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+command simply eliminates all data up to (and including) the last slash character:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**MIDI' mono_input | humsed 's/.*\///'</big></code>
+</blockquote>
+</P>
+<P>
+This will leave us with just the key-down velocity data.
+Let's suppose that the following rough decibel equivalents are established:
+<blockquote><TABLE>
+<TR><TD>key velocity</TD><TD>approximate dB SPL</TD></TR>
+<TR><TD>127</TD><TD>85</TD></TR>
+<TR><TD>100</TD><TD>80</TD></TR>
+<TR><TD>90</TD><TD>77</TD></TR>
+<TR><TD>80</TD><TD>74</TD></TR>
+<TR><TD>70</TD><TD>70</TD></TR>
+<TR><TD>60</TD><TD>65</TD></TR>
+<TR><TD>50</TD><TD>60</TD></TR>
+<TR><TD>40</TD><TD>53</TD></TR>
+<TR><TD>30</TD><TD>44</TD></TR>
+<TR><TD>20</TD><TD>32</TD></TR>
+<TR><TD>10</TD><TD>21</TD></TR>
+<TR><TD>1</TD><TD>10</TD></TR>
+<TR><TD>0</TD><TD>0</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+An appropriate reassignment file for
+<A HREF="commands/recode.html"><b>recode</b></A>
+would begin as follows:
+<blockquote><TABLE>
+<TR><TD><code><big>>=127</TD><TD>85</TD></TR>
+<TR><TD>>=100</TD><TD>80</TD></TR>
+<TR><TD>>=90</TD><TD>77</TD></TR>
+<TR><TD>>=80</TD><TD>74</TD></TR>
+<TR><TD>>=70</TD><TD>70</big></code></TD></TR>
+<TR><TD>etc.</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The completed translation would be accomplished by the following pipeline:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**MIDI' mono_input | humsed 's/.*\///' \
+<blockquote>
+| recode -f reassign | sed 's/**MIDI/**dB/'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Notice the use of the
+<b>sed</b>
+command to replace the **MIDI interpretation by a **dB interpretation.
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+In this chapter we have introduced three representations related
+to musical dynamics.
+The
+<A HREF="representations/dyn.rep.html"><code><big>**dyn</big></code></A>
+representation allows us to encode dynamic markings
+as they appear visually in a printed score.
+Unfortunately, traditional notated dynamic markings are often confusing
+or ambiguous.
+In order to facilitate some types of analytic processing it is useful
+to generate a more rationalized interpretation of the dynamics
+of a work.
+The
+<A HREF="representations/dynam.rep.html"><code><big>**dynam</big></code></A>
+representation provides a canonical scheme
+for representing basic notated dynamic markings
+where ambiguities are resolved by explicitly interpreting
+the meaning of dynamic markings.
+A third scheme
+(<A HREF="representations/dB.rep.html"><code><big>**dB</code></big></A>)
+provides a scheme for representing continuous
+dynamic levels in decibels.
+We have seen that the
+<b>db</b>
+command (which translates from <code><big>**dynam</big></code> to <code><big>**dB</big></code>)
+allows us to pose and answer a variety of questions related to the
+dynamic organization of music.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide29.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide27.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

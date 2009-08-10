@@ -1,0 +1,1221 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit FAQ</TITLE>
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<br>
+<br>
+
+<CENTER>
+<H1>Humdrum Toolkit - Frequently Asked Questions</H1>
+</CENTER>
+
+<P>
+The
+<A HREF="index.html">
+<b>Humdrum Toolkit</b></A>
+is a set of software tools for music research.
+</P>
+<P>
+This FAQ provides answers to frequently asked questions regarding
+Humdrum and the Humdrum Toolkit.
+</P>
+<P>
+This internet file is maintained by
+<A HREF="http://dactyl.som.ohio-state.edu/Huron/Huron.html">David Huron</A>,
+with input from Tim Racinsky, Kyle Dawkins, and Jasba Simpson.
+Comments and suggestions are welcome.
+</P>
+<P>
+File last revised 2001, July 9.
+</P>
+<hr>
+<P>
+The following questions are addressed in this FAQ:
+</P>
+INDEX:
+<ol>
+<li> <A HREF="#Humdrum"><B>What is Humdrum?</B></A>
+<li> <A HREF="#Say_More"><B>Can you say more?</B></A>
+<li> <A HREF="#Do"><B>What can Humdrum do?</B></A>
+<li> <A HREF="#Who_Benefit"><B>Who will benefit from using Humdrum?</B></A>
+<li> <A HREF="#Systems"><B>What computer systems does Humdrum run on?</B></A>
+<li> <A HREF="#Macintosh"><B>Does Humdrum run on Macintosh systems?</B></A>
+<li> <A HREF="#Copy"><B>How can I get a copy of Humdrum?</B></A>
+<li> <A HREF="#FTP"><B>How can I access Humdrum via ftp?</B></A>
+<li> <A HREF="#Version"><B>What is the current version of Humdrum?</B></A>
+<li> <A HREF="#Install"><B>How do I install Humdrum on my machine?</B></A>
+<li> <A HREF="#Other_Access"><B>How can I get a copy of Humdrum if I don't have ftp access?</B></A>
+<li> <A HREF="#Cost"><B>Does it cost money?</B></A>
+<li> <A HREF="#Size"><B>How big is the Humdrum Toolkit?</B></A>
+<li> <A HREF="#Include"><B>What does the Toolkit include?</B></A>
+<li> <A HREF="#Documentation"><B>What's contained in the Reference Manual?</B></A>
+<li> <A HREF="#Source_Code"><B>Is source code included in the distribution?</B></A>
+<li> <A HREF="#Quarter_Note"><B>How do you represent, say, a quarter-note in Humdrum?</B></A>
+<li> <A HREF="#Exchange_Data"><B>If that's so, how do users exchange data?</B></A>
+<li> <A HREF="#Example"><B>Can you show an example of how to encode a piece of music in Humdrum?</B></A>
+<li> <A HREF="#Kern"><B>Okay, how might you encode the pitch and duration for a piece of music?</B></A>
+<li> <A HREF="#Predefined"><B>What kinds of representations are pre-defined in Humdrum?</B></A>
+<li> <A HREF="#Volume"><B>How much music is encoded in Humdrum?</B></A>
+<li> <A HREF="#Repertoire"><B>What sort of repertoires are encoded?</B></A>
+<li> <A HREF="#Availability"><B>Are all of these repertoires available?</B></A>
+<li> <A HREF="#Databases"><B>Who else produces Humdrum databases?</B></A>
+<li> <A HREF="#Other_Databases"><B>Can other musical databases be accessed using Humdrum?</B></A>
+<li> <A HREF="#Tools_Do"><B>What do the Humdrum software tools do?</B></A>
+<li> <A HREF="#Processing"><B>Can you provide some examples of Humdrum processes?</B></A>
+<li> <A HREF="#Searching"><B>Can I search for a specific theme or motif?</B></A>
+<li> <A HREF="#MIDI"><B>Does Humdrum import/export MIDI?</B></A>
+<li> <A HREF="#Finale"><B>Does Humdrum import/export Finale?</B></A>
+<li> <A HREF="#Harmony"><B>Can Humdrum do automatic Roman-numeral type harmonic analysis?</B></A>
+<li> <A HREF="#Not_Do"><B>What else can't Humdrum do?</B></A>
+<li> <A HREF="#Interface"><B>Does Humdrum provide a graphic user interface?</B></A>
+<li> <A HREF="#Easy"><B>Is Humdrum easy to use?</B></A>
+<li> <A HREF="#Why"><B>Why should I consider using Humdrum?</B></A>
+<li> <A HREF="#UNIX"><B>I am a PC user who has had no experience with UNIX.</B></A>
+      How should I go about learning to use Humdrum?</B></A>
+<li> <A HREF="#Video"><B>Where can I see Humdrum in action?</B></A>
+<li> <A HREF="#Seminars"><B>Are there any seminars or courses that teach Humdrum?</B></A>
+<li> <A HREF="#Where"><B>Where does Humdrum come from?</B></A>
+<li> <A HREF="#Information"><B>How can I be kept informed about Humdrum?</B></A>
+</ol>
+ 
+<A NAME="Humdrum">
+<hr>
+
+<H2><FONT color="0000FF">1. What is Humdrum?</FONT></H2>
+<P>
+Humdrum is a set of general-purpose software tools intended to
+assist music researchers in posing and answering research questions.
+Humdrum allows researchers to encode, manipulate, and output a wide
+variety of musically-pertinent representations.  The emphasis is on
+posing and answering questions about music.
+</P>
+<P>
+Humdrum is <b>not</b> (1) a MIDI sequencer, (2) a music printing package,
+or (3) a computer sound synthesis language;
+however, Humdrum provides tools that
+allow limited MIDI, notation, and Csound connectivity.
+</P>
+<P>
+Humdrum allows users to pose and answer questions such as the
+following:
+
+<ul>
+  <li> In Stravinsky, are dissonances more common in strong metric positions
+    than in weak metric positions?
+  <li> Is there evidence of greater metric syncopation in later Gershwin
+    than in early Gershwin?
+  <li> What passages of the original `Salve Regina' antiphon are preserved
+    in the settings by Tomas Luis de Victoria?
+  <li> In Urdu folk songs, how common is the so-called "melodic arch" --
+    where phrases tend to ascend and then descend in pitch?
+  <li> Which of the Brandenburg Concertos contains the B-A-C-H motif?
+  <li> What are the most common fret-board patterns in guitar riffs by
+    Jimi Hendrix?
+  <li> Which of two English translations of Schubert lyrics best
+    preserves the vowel coloration of the original German?
+  <li> After the V-I progression, which harmonic progression is most
+    apt to employ a suspension?
+  <li> In what harmonic contexts does H&#228ndel double the leading-tone?
+  <li> Are crescendos in Wagner more strongly associated with rising
+    pitch than is the case for other composers?
+  <li> Which of several MIDI performances displays the greatest contrast
+    in dynamics between the initial thematic statement and the
+    thematic return?
+</ul>
+
+Only a few of the above questions are "easy" to answer using Humdrum.
+Although the Humdrum tools may take just seconds to compute an answer
+for a given problem, the primary impediment to quick solution is the
+user's skill in interconnecting the right tools for the task at hand.
+<A HREF="guide.toc.html">Detailed documentation</A>
+(in both on-line and printed forms)
+is available to help users develop fluency in using Humdrum.
+</P>
+<A NAME="Say_More">
+<hr>
+
+<H2><FONT color="0000FF">2. Can you say more?</FONT></H2>
+<P>
+"Humdrum" is actually two things:  (1) the <i>Humdrum Syntax</i> and
+(2) the <i>Humdrum Toolkit</i>.
+</P>
+<P>
+The <i>Humdrum Syntax</i> is a grammar for representing sequential symbolic
+information using ASCII (text) data.  Note that "Humdrum" is not a representation
+scheme in the conventional sense -- like DARMS.  Humdrum is a <i>syntax</i>
+within which an endless number of representation schemes can be defined.
+Theoretically, any type of sequential symbolic data may be accommodated --
+such as square notation, Schenkerian graphs, piano fingerings, changes
+of emotional states, MIDI data, acoustic spectra, North Indian tabla bols,
+ballet steps, concurrent television schedules, or industrial
+chemical processes.
+</P>
+<P>
+The <i>Humdrum Toolkit</i> is a set of more than 60 inter-related
+software tools.  These general-purpose tools manipulate ASCII (text) data
+that conforms to the Humdrum Syntax.  If the ASCII data represent
+music-related information, then we can say that the Humdrum Tools
+manipulate music-related information.
+<A HREF="commands.toc.html">On-line documentation</A>
+is available describing each of the tools.
+</P>
+<A NAME="Do">
+<hr>
+
+<H2><FONT color="0000FF">3. What can Humdrum do?</FONT></H2>
+<P>
+Humdrum's capabilities are quite abstract, and so it is difficult
+to characterize briefly what it can do.
+</P>
+<P>
+Humdrum can encode information in various forms, such as French lute
+tablatures, conducting gestures, or structural relationships.  It can
+transform, classify, coordinate, transfer, restructure, contextualize,
+and otherwise manipulate both pre-defined and user-defined information.
+</P>
+<P>
+Humdrum can be used to search for a mind-boggling variety of types
+of patterns.  For example, you can look for specific finger-fret
+combinations (independent of the string, say) in a work for Indian
+sitar.  Or you can look for particular patterns of open and closed
+vowels in vocal lyrics that are associated with a certain melodic
+contour, and are also anchored to a specified metrical context.
+</P>
+<P>
+Humdrum is also able to characterize the similarity between
+various types of information according to user-defined criteria of
+similarity.
+</P>
+<P>
+Humdrum's search and similarity commands are generalized software tools
+that are independent of any given representation.  As a consequence,
+these tools do not impose any pre-defined notions of what you might
+want to search for, or what properties you wish to compare.
+</P>
+<P>
+Several hundred
+<A HREF="problems.html">concrete examples</A>
+of Humdrum's capabilities are
+described on-line.  In addition, several examples are given
+later in this document.
+</P>
+<A NAME="Who_Benefit">
+<hr>
+
+<H2><FONT color="0000FF">4. Who will benefit from using Humdrum?</FONT></H2>
+<P>
+Humdrum will be of potential benefit to anyone wishing to pursue
+systematic investigations of musical information.  This includes
+the posing of "factual" questions about music, and the testing of
+hypotheses about musical organization.
+</P>
+<P>
+In short, Humdrum may prove valuable to music theorists, music analysts,
+ethnomusicologists, historical musicologists, psychomusicologists, music
+librarians, dance scholars, linguists, and people who have a general
+interest in music.
+</P>
+<P>
+Humdrum is less well suited to individuals involved in creative
+(i.e. generative) musical activities -- such as composition, conducting,
+or performance.  However, Humdrum is well suited to <i>studying</i>
+compositions, conducting, performances ...
+</P>
+<A NAME="Systems">
+<hr>
+
+<H2><FONT color="0000FF">5. What computer systems does Humdrum run on?</FONT></H2>
+<P>
+Humdrum was designed for the UNIX operating system.  It runs on a variety
+of UNIX systems including Linux, HPUX, NeXTSTEP, etc.  It also runs
+under Windows '95, Windows '98, Windows NT, DOS and OS/2 -- provided basic
+UNIX commands are available.  For example, Humdrum runs on Microsoft systems
+that have installed either the `MKS Toolkit', or the Consensys Corporation
+`Portage' utilities.
+Humdrum has also been installed and used on Apple computer systems (see below).
+</P>
+<A NAME="Macintosh">
+<hr>
+
+<H2><FONT color="0000FF">6. Does Humdrum run on Macintosh systems?</FONT></H2>
+<P>
+Since Apple computer systems do not provide basic UNIX
+utilities, the Humdrum Toolkit cannot be run on native Apple systems.
+There are three ways to configure Apple hardware to run Humdrum.
+The least disruptive way to install the Humdrum Toolkit is to
+purchase a commercial set of UNIX utilities for Apple Systems.
+<A HREF="http://www.tenon.com">
+<B>Tenon Intersystems</B></A>
+distributes a suitable product called
+<A HREF="http://www.tenon.com/products/machten/">
+<B>MachTEN.</B></A>
+</P>
+<P>
+Humdrum can also run under APPLE's A/UX system.
+A third possibility is to install
+the
+<A HREF="http://www.mklinux.apple.com/"><b>Linux MK kernal (MkLinux)</b></A>
+for Apple hardware.
+These latter two approaches preclude running
+standard Apple software on the machine.
+For this reason, purchasing MachTEN is usually
+considered the best solution for Apple users.
+</P>
+<P>
+A
+<A HREF="http://www.opus1.com/www/jms/machten.html">
+<B>review of the MachTEN software</B></A>
+(including a comparison with A/UX)
+was published in <I>Advanced Systems Magazine</I>
+(formerly <I>Sun World Magazine</I>).
+</P>
+<A NAME="Copy">
+<hr>
+
+<H2><FONT color="0000FF">7. How can I get a copy of Humdrum?</FONT></H2>
+<P>
+The Humdrum Toolkit is being distributed by the non-profit
+<A HREF="http://musedata.Stanford.edu">
+Center for Computer Assisted Research in the Humanities(CCARH)</A>,
+at Stanford University, CA.
+It is also be available via "anonymous ftp" (see next question).
+</P>
+<A NAME="FTP">
+<hr>
+
+<H2><FONT color="0000FF">8. How can I access Humdrum via FTP?</FONT></H2>
+<P>
+The current version of Humdrum is 2.2.  At the moment, only Release 1.0
+is available.  A more recent version will be made available only after
+it has been more thoroughly tested on different platforms.
+</P>
+<P>
+The Humdrum Toolkit Release 1.0 is available free of charge at:
+<blockquote>
+          archive.uwaterloo.ca
+</blockquote>
+On internet type:
+<blockquote>
+<TABLE>
+<TR><TD><code><big>ftp> open archive.uwaterloo.ca</TD><TD>(establishes link to ftp site)</TD></TR>
+<TR><TD><code><big>ftp>[login according to prompt]</TD><TD>(login to ftp remote host; specify</TD></TR>
+<TR><TD><code><big>ftp></TD><TD>"anonymous" or "ftp" as the login name;</TD></TR>
+<TR><TD><code><big>ftp></TD><TD>use your own login name as password)</TD></TR>
+<TR><TD><code><big>ftp> cd uw-data/humdrum</TD><TD>(change directories to Humdrum archive)</TD></TR>
+<TR><TD><code><big>ftp> binary</TD><TD>(set binary transmission mode)</TD></TR>
+<TR><TD><code><big>ftp> mget *</TD><TD>(download all files)</TD></TR>
+<TR><TD><code><big>ftp> bye</TD><TD>(logout and end link to ftp site)</TD></TR>
+</TABLE>
+</blockquote>
+</P>
+<P>
+If you are downloading to 3.5" floppy disks, you will need three
+(empty) 1.4 megabyte DOS-formatted disks.  Copy the file `hum.2'
+to a disk designated `disk 2'.  Copy the file `hum.3' to a disk
+designated `disk 3'.  Copy all other files to a disk designated `disk 1'.
+(The local install procedure will be initiated from `disk 1'.)
+</P>
+<A NAME="Version">
+<hr>
+
+<H2><FONT color="0000FF">9. What is the current version of Humdrum?</FONT></H2>
+<P>
+The current official distribution for Humdrum is Version 1.0.
+<br>
+<br>
+Humdrum continues to be up-dated by adding options to some tools,
+fixing bugs, and augmenting the Toolkit with new commands.
+More recent versions exist -- up to Version 2.6,
+however, these versions are not official distributions.
+In order for a version to be designated "official," we test all
+of the tools using extensive test suites on a wide variety
+of hardware platforms, running different operating systems,
+and using different compilers.
+This is a time-consuming process and can be done only
+when we have funds to hire a programmer for about a month.
+<br>
+<br>
+When making modifications to Humdrum, we don't know whether
+the modifications we have made are fully portable to other
+systems.
+Without full-scale testing of the software on a variety of platforms,
+it is not a good idea to replace the former distributed version.
+Hence the discrepancy between the "official" version and
+more current versions.
+Users are free to use later versions, but we are not
+as confident that these later versions have the
+same portability as version 1.0.
+</P>
+<A NAME="Install">
+<hr>
+
+<H2><FONT color="0000FF">10.  How do I install Humdrum on my machine?</FONT></H2>
+<P>
+It is <b>essential</b> to read the
+<A HREF="install.html"><i>Humdrum Toolkit Installation Guide</i></A>.
+</P>
+<P>
+For users who have downloaded Humdrum from the FTP site, the file
+"install.txt" contains a complete ASCII text of the Installation Guide.
+If you have access to a postscript printer, it is preferable to print
+the entire installation guide (16 pages) from the FTP file "install.ps".
+</P>
+<P>
+For users who have ordered disks by mail, the distribution disks are
+accompanied by a printed Installation Guide.
+</P>
+<A NAME="Other_Access">
+<hr>
+
+<H2><FONT color="0000FF">11. How can I get a copy of Humdrum if I don't have FTP access?</FONT></H2>
+<P>
+Copies of the Humdrum Toolkit may be ordered on 1.4 Mb, 3-1/2 inch DOS
+disks from the non-profit
+<A HREF="http://musedata.Stanford.edu">Center for Computer Assisted Research in the
+Humanities (CCARH)</A>.
+The cost of the 3 disks, plus <i>Installation Guide</i> and
+shipping is $10.00.  A 552-page <i>Humdrum Reference Manual</i> may be purchased
+from CCARH for $30.00 (plus shipping).  The disks, <i>Installation Guide</i>,
+and <i>Reference Manual</i> can be purchased for $40.00 (plus shipping).
+These prices are current as of January 1, 1999.  NOTE: The installation
+disks are available in DOS-format only; the data are compressed and
+can be uncompressed only via a UNIX "uncompress" program.  This means
+that the Humdrum Toolkit DOS disks cannot be installed on a DOS
+system unless appropriate UNIX utilities have already been installed.
+<blockquote>
+<A HREF="http://www.ccarh.org">
+     Center for Computer Assisted Research in the Humanities,</A>
+     <br>
+     Braun Music Center
+     <br>
+     Stanford University
+     <br>
+     Stanford, California     94305-3076
+</blockquote>
+Revised pricing information and availability inquiries may be addressed to:
+<blockquote>
+     Tel. (650) 725-9240
+</blockquote>
+</P>
+<A NAME="Cost">
+<hr>
+
+<H2><FONT color="0000FF">12. Does it cost money?</FONT></H2>
+<P>
+The Humdrum Toolkit software itself is "free" -- but remains protected
+by copyright.  If you order Humdrum by mail, you will be asked to pay
+for the cost of the disks, documentation, and mailing.  On FTP the
+software is available without charge.
+</P>
+<P>
+Any serious user will want to have copies of the printed documentation,
+including the <I>Humdrum Toolkit Reference Manual</I> and
+<I>Humdrum Toolkit User Guide</I>.
+The reference manual is also available as
+postscript files on FTP, and can be printed on a local postscript
+printer.  The reference manual entails about 550 pages of material.
+The <A HREF="guide.toc.html"><B>Humdrum Toolkit User Guide</B></A>
+is also available on-line.
+</P>
+<A NAME="Size">
+<hr>
+
+<H2><FONT color="0000FF">13. How big is the Humdrum Toolkit?</FONT></H2>
+<P>
+The size of Release 1.0 is about 7 megabytes when uncompressed.  This
+includes printable postscript files for the manuals (approximately 3
+megabytes).  The postscript files may be deleted after installation.
+</P>
+<A NAME="Include">
+<hr>
+
+<H2><FONT color="0000FF">14. What does the Toolkit include?</FONT></H2>
+<P>
+The Humdrum Toolkit includes some 60 software tools, demonstration
+software, a selection of about 150 musical scores, an <i>Installation
+Guide</i>, and a <i>Reference Manual</i>.
+</P>
+<A NAME="Documentation">
+<hr>
+
+<H2><FONT color="0000FF">15. What's contained in the Reference Manual?</FONT></H2>
+<P>
+The Humdrum Toolkit <i>Reference Manual</i> provides technical descriptions
+of representation formats, file organizations, command invocations,
+options, and other features for Release 1.0.  The documentation includes
+sections on:
+<blockquote>
+   <ul>
+   <li> Humdrum General Introduction   (35 pages)
+   <li> Humdrum Representation Reference   (180 pages)
+   <li> Humdrum Command Reference   (260 pages)
+   <li> Regular Expression Reference   (18 pages)
+   <li> Software Development Reference   (15 pages)
+   <li> Bibliography   (8 pages)
+   <li> Index   (25 pages)
+   </ul>
+</blockquote>
+</P>
+<A NAME="Source_Code">
+<hr>
+
+<H2><FONT color="0000FF">16. Is source code included in the distribution?</FONT></H2>
+<P>
+Yes.
+</P>
+<P>
+About 15% of the code is written in C, another 15% in kornshell,
+and about 2% using the LEX lexical parser and YACC compiler-compiler.
+The bulk of the code is written in AWK (a fast prototyping language).
+C is used for tools that have special I/O requirements and to accelerate
+some computationally intensive tools.
+</P>
+<A NAME="Quarter_Note">
+<hr>
+
+<H2><FONT color="0000FF">17. How do you represent, say, a quarter-note in Humdrum?</FONT></H2>
+<P>
+The question is mal-formed.  Humdrum doesn't dictate how to
+represent such things as a quarter-note.  Remember, that Humdrum
+is a <i>syntax</i> within which representations can be defined.  Users
+are free to use whatever string of ASCII characters they want in
+order represent a quarter-note.  The only restriction is that the
+representation must conform to the Humdrum Syntax.
+</P>
+<A NAME="Exchange_Data">
+<hr>
+
+<H2><FONT color="0000FF">18. If that's so, how do users exchange data?</FONT></H2>
+<P>
+Actually, there are a large number of pre-defined representations
+each conforming to the Humdrum Syntax.  Users aren't required to
+use these pre-existing representations, but they are generally
+more convenient than starting from scratch.  Think of these predefined
+representations as analogous to macro packages.
+</P>
+<P>
+Each representation conforming to the Humdrum Syntax is given a
+unique name, preceded by two asterisks.  For example, "**freq" is
+a pre-defined representation used to represent frequency;
+"**pcset" is a pre-defined representation used to represent
+pitch-class sets;  "**cocho" is a pre-defined representation used
+to represent basilar-membrance coordinates in the cochlea.  There
+are lots of these pre-defined representations.
+</P>
+<P>
+To answer the previous question: in the "**recip" representation,
+quarter-notes are represented by the ASCII numeral "4" (the
+reciprocal of the American duration names).  But remember,
+HUMDRUM, does not require you to represent quarter-notes this
+way.  Only the "**recip" representation requires this.  If you
+prefer "crotchet" to "quarter note", Humdrum obliges.
+</P>
+<A NAME="Example">
+<hr>
+
+<H2><FONT color="0000FF">19. Can you show an example of how to encode a piece of music in Humdrum?</FONT></H2>
+<P>
+Still not catching on.  There are an infinite number of ways
+of representing a piece in the Humdrum format -- it depends on
+what sort of information the user is interested in.  Some users
+will be interested in stem-direction and size of note-heads.
+Other users will be interested in representing the valve-combinations
+for the trumpet part.
+</P>
+<P>
+For example, here is an encoding of a complete sonata-allegro
+movement that conforms to the Humdrum syntax:
+<blockquote>
+<table>
+<tr><td>**form</td></tr>
+<tr><td>Introduction</td></tr>
+<tr><td>Exposition</td></tr>
+<tr><td>Development</td></tr>
+<tr><td>Recapitulation</td></tr>
+<tr><td>Coda</td></tr>
+<tr><td>*-</td></tr>
+</table>
+</blockquote>
+Probably not what you had in mind.
+</P>
+<A NAME="Kern">
+<hr>
+
+<H2><FONT color="0000FF">20. Okay, how might you encode the pitch and duration for a piece of music?</FONT></H2>
+<P>
+Currently, the most commonly used Humdrum representation is
+<A HREF="representations/kern.html">**kern.</A>
+Kern is a core pitch/duration representation.  Below is a **kern
+representation showing the beginning of "Happy Birthday."  In addition,
+we've represented the lyrics as well:
+<blockquote>
+<TABLE>
+<TR><TD><code><big>**kern</TD><TD><code><big>**lyrics</code></big></TD></TR>
+<TR><TD><code><big>8.g</TD><TD><code><big>Hap-</code></big></TD></TR>
+<TR><TD><code><big>16g</TD><TD><code><big>py</code></big></TD></TR>
+<TR><TD><code><big>4a</TD><TD><code><big>birth-</code></big></TD></TR>
+<TR><TD><code><big>4g</TD><TD><code><big>day</code></big></TD></TR>
+<TR><TD><code><big>4cc</TD><TD><code><big>to</code></big></TD></TR>
+<TR><TD><code><big>2b</TD><TD><code><big>you.</code></big></TD></TR>
+<TR><TD><code><big>8.g</TD><TD><code><big>Hap-</code></big></TD></TR>
+<TR><TD><code><big>16g</TD><TD><code><big>py</code></big></TD></TR>
+<TR><TD><code><big>4a</TD><TD><code><big>birth-</code></big></TD></TR>
+<TR><TD><code><big>4g</TD><TD><code><big>day</code></big></TD></TR>
+<TR><TD><code><big>4dd</TD><TD><code><big>to</code></big></TD></TR>
+<TR><TD><code><big>2cc</TD><TD><code><big>you.</code></big></TD></TR>
+<TR><TD><code><big>*-</TD><TD><code><big>*-</code></big></TD></TR>
+</TABLE>
+</blockquote>
+Note the following:  Time moves down the page.  Data are arranged
+in columns (called "spines") beginning with a keyword (e.g. **kern)
+indicating the type of representation.  Data are terminated by a
+"spine-path terminator" (*-).  Each line represents concurrent
+activities across all spines.  Spines are separated by tabs.  In the
+case of **kern, durations are represented by the reciprocal numbers
+of the American designations (4=quarter, 2=half; 8.=dotted-eighth).
+Pitches are represented by letter names (a-g and A-G).  Lower-case
+letters indicate pitches above (and including) middle C; upper-case
+letters indicate pitches below middle C.  Letters are repeated (e.g.
+"cc" or "CC") for each successive octave distance from middle C.
+Although not shown in the above example, **kern is also able to
+represent rests, ties, phrases, slurs, keys, key signatures, meter
+signatures, keys, accidentals, articulation marks, stem directions,
+beaming, barlines, and ornaments.
+</P>
+<P>
+The following example shows the first and last two measures
+for Fugue 20 from the <i>Well-Tempered Clavier</i> Vol. II:
+<blockquote>
+<TABLE>
+<TR><TD><code><big>!! J.S. Bach, WTC Book II, Fugue 20; BWV 889b</code></big></TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>**kern</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>**kern</TD><TD></TD><TD></TD><TD></TD><TD><code><big>**kern</code></big></TD></TR>
+<TR><TD><code><big>*k[]</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>*k[]</TD><TD></TD><TD></TD><TD></TD><TD><code><big>*k[]</code></big></TD></TR>
+<TR><TD><code><big>*a:</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>*a:</TD><TD></TD><TD></TD><TD></TD><TD><code><big>*a:</code></big></TD></TR>
+<TR><TD><code><big>*M4/4</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>*M4/4</TD><TD></TD><TD></TD><TD></TD><TD><code><big>*M4/4</code></big></TD></TR>
+<TR><TD><code><big>*MM72</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>*MM72</TD><TD></TD><TD></TD><TD></TD><TD><code><big>*MM72</code></big></TD></TR>
+<TR><TD><code><big>=1</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>=1</TD><TD></TD><TD></TD><TD></TD><TD><code><big>=1</code></big></TD></TR>
+<TR><TD><code><big>4r</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>1r</TD><TD></TD><TD></TD><TD></TD><TD><code><big>1r</code></big></TD></TR>
+<TR><TD><code><big>4e</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>4c</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>4f</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>=2</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>=2</TD><TD></TD><TD></TD><TD></TD><TD><code><big>=2</code></big></TD></TR>
+<TR><TD><code><big>4G#</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>1r</TD><TD></TD><TD></TD><TD></TD><TD><code><big>1r</code></big></TD></TR>
+<TR><TD><code><big>4r</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>8r</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>8d</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>8B</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>8e</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</TD><TD></TD><TD></TD><TD></TD><TD><code><big>.</code></big></TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>!! Skipping ahead to measure 27:</code></big></TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>=27</TD><TD><code><big>=27</TD><TD><code><big>=27</code></big></TD></TR>
+<TR><TD><code><big>8r</TD><TD><code><big>8E</TD><TD><code><big>8r</code></big></TD></TR>
+<TR><TD><code><big>8Dn</TD><TD><code><big>8r</TD><TD><code><big>32r</code></big></TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>32e</code></big></TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>32f#</code></big></TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>32g#</code></big></TD></TR>
+<TR><TD><code><big>8BB</TD><TD><code><big>4r</TD><TD><code><big>8.g#T</code></big></TD></TR>
+<TR><TD><code><big>8E</TD><TD><code><big>.</TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>32f#</code></big></TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>32g#</code></big></TD></TR>
+<TR><TD><code><big>8C</TD><TD><code><big>8r</TD><TD><code><big>[2a</code></big></TD></TR>
+<TR><TD><code><big>8AA</TD><TD><code><big>32r</TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>32B</TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>32c</TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>32d</TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>8EE</TD><TD><code><big>8.c#T</TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>8GG</TD><TD><code><big>.</TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>32B</TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>32c#</TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>=28</TD><TD><code><big>=28</TD><TD><code><big>=28</code></big></TD></TR>
+<TR><TD><code><big>32FF</TD><TD><code><big>8d</TD><TD><code><big>8a]</code></big></TD></TR>
+<TR><TD><code><big>32EE</TD><TD><code><big>.</TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>8DD</TD><TD><code><big>.</TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>8f</TD><TD><code><big>8b</code></big></TD></TR>
+<TR><TD><code><big>32EE</TD><TD><code><big>.</TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>32FF</TD><TD><code><big>.</TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>8.EET</TD><TD><code><big>8G#</TD><TD><code><big>8e</code></big></TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>8B</TD><TD><code><big>8g#</code></big></TD></TR>
+<TR><TD><code><big>32DD</TD><TD><code><big>.</TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>32EE</TD><TD><code><big>.</TD><TD><code><big>.</code></big></TD></TR>
+<TR><TD><code><big>2AAA; 2AA;</TD><TD><code><big>2c; 2e;</TD><TD><code><big>2a;</code></big></TD></TR>
+<TR><TD><code><big>==</TD><TD><code><big>==</TD><TD><code><big>==</code></big></TD></TR>
+<TR><TD><code><big>*-</TD><TD><code><big>*-</TD><TD><code><big>*-</code></big></TD></TR>
+</TABLE>
+</blockquote>
+Lines beginning with a double exclamation mark are "global comments"
+and pertain to all spines.  ("Local comments" pertain to single
+columns or spines.)  Following the "exclusive interpretation" (**kern),
+several "tandem interpretations" specify the key-signature (*k[]), the
+key (*a:), the meter signature (*M4/4), and the tempo (*MM72).  Barlines
+are indicated by an equals-sign.  Rests are indicated by the lower-case
+letter `r'.  Columns of data (spines) are separated by tabs.  In this
+case, each spine represents a different musical part or voice.  Parts
+are ordered from left-to right with the lowest voice in the left-hand
+spine.  In the final chord, double-stops (two pitches) are evident in the
+lower two voices.  When only one voice is active, the other voices encode
+"null tokens" (.) as place holders.  The file is structured like a score
+turned sideways.  Whole-tone trills are designated by the upper-case `T';
+tied notes are designed by square brackets; pauses are indicated by the
+semicolon.
+</P>
+<P>
+Remember, we have highlighted only the **kern representation.  This
+is only one of a (potentially infinite) number of representations
+consistent with the Humdrum Syntax.  Do not mistake **kern for Humdrum.
+</P>
+<A NAME="Predefined">
+<hr>
+
+<H2><FONT color="0000FF">21. What kinds of representations are pre-defined in Humdrum?</FONT></H2>
+<P>
+There are currently independent pre-defined representations for such
+data as:  pitch, frequency, MIDI, cents, semitones, pitch-class,
+German Tonhoene, French solfege, chroma, absolute and relative
+scale degree, fretted-instrument tablatures, figured bass,
+functional harmony, embellishment tones, melodic accent, harmonic
+and melodic intervals, sensory dissonance, dates, elapsed duration,
+time-spans, metric position, sequential event ordering, canonical
+note durations, metric syncopation, beat-position, time, rhythmic
+prototypes, parametric and non-parametric similarity, sound pressure
+level, relative amplitude, spectral content, spectral centroid,
+dynamics, pitch-class set, normal form, interval vectors, textual
+underlay, plus many others.
+</P>
+<P>
+Remember that users are free to concoct their own task-specific
+representations -- such as a scheme to represent Telugu notation
+or Dagomba dance.  Humdrum representations may be very highly
+crafted, or they may be invented in a matter of seconds.  It is
+common to generate "throw-away" representations that are used only
+for a single research task.
+</P>
+<A NAME="Volume">
+<hr>
+
+<H2><FONT color="0000FF">22. How much music is encoded in Humdrum?</FONT></H2>
+<P>
+There are currently roughly 10,000 encoded works consistent with the
+Humdrum syntax -- most in the **kern representation.
+</P>
+<A NAME="Repertoire">
+<hr>
+
+<H2><FONT color="0000FF">23. What sort of repertoires are encoded?</FONT></H2>
+<P>
+Gregorian chant, Cantigas de Santa Maria, School of Notre Dame polyphony,
+vocal works by Machaut, Morley, Dunstable, Power, Schubert, Brahms,
+Weber, Foster.  Traditional British folk ballads, Kentucky folk organum,
+Barbershop quartets, hymns; instrumental works by JC Bach, JS Bach,
+WF Bach, Beethoven, Brahms, Buono, Buxtehude, Corelli, Chopin, Clementi,
+David, Debussy, Dowland, Dvorak, Fischer, Franck, Frescobaldi, Froberger,
+Gabrieli, Granados, Grieg, Handel, Haydn, Josquin, Liszt, Mattheson,
+Mendelssohn, Merulo, Mozart, Nielsen, Pachelbel, Reger, Scheidt, Schoenberg,
+Schubert, Schumann, Sibelius, Soriano, Sweelinck, Telemann, Webern, Weckmann.
+</P>
+<P>
+Non-western music from Bali, Burma, Cameroon, Caucacus, China, Columbia,
+Japan, Korean, Tahiti, Thailand, and from Pondo, Venda, Xhosa, and Zulu
+cultures.
+Refer to the following
+<A HREF="http://dactyl.som.ohio-state.edu/Music824/databases.index.html">
+repertoire list</A>.
+</P>
+<A NAME="Availability">
+<hr>
+
+<H2><FONT color="0000FF">24. Are all of these repertoires available?</FONT></H2>
+<P>
+No.  Some of the encoded data are proprietary or restricted by
+copyright and so not likely to be released in the near future.
+About 6,500 encoded works are available.
+</P>
+<A NAME="Databases">
+<hr>
+
+<H2><FONT color="0000FF">25. Who else produces Humdrum databases?</FONT></H2>
+<P>
+The
+<A HREF="http://musedata.Stanford.edu">Center for Computer Assisted Research in the
+Humanities (CCARH)</A>
+has encoded large databases of musical score information.
+The databases are high quality electronic editions suitable for scholarship.
+These "MuseData" (TM) databases represent a major resource for music
+research.
+CCARH has begun making portions of their databases available to music scholars.
+Currently, the following repertoires are available:
+<blockquote>
+  <ul>
+  <li> J.S. Bach, Chorale Harmonizations
+  <li> J.S. Bach, Brandenburg Concertos (Bach Gesellschaft edition)
+  <li> Archangelo Corelli, Trio Sonatas
+  <li> Antonio Vivaldi, Violin Concertos (including The Four Seasons)
+  <li> Essen Folk melody collection (more than 6,000 European folksongs)
+  </ul>
+</blockquote>
+Further releases of data are expected.  For further information contact:
+<blockquote>
+<A HREF="http://musedata.Stanford.edu">
+     Center for Computer Assisted Research in the Humanities,</A>
+     <br>
+     Braun Music Center
+     <br>
+     Stanford University
+     <br>
+     Stanford, California     94305-3076
+</blockquote>
+     (MuseData Ordering information, telephone: 1-800-JSB-MUSE)
+</P>
+<A NAME="Other_Databases">
+<hr>
+
+<H2><FONT color="0000FF">26. Can other musical databases be accessed using Humdrum?</FONT></H2>
+<P>
+Currently, there are a handful of software tools that translate from
+various formats to Humdrum.  Music encoded in Leland Smith's SCORE
+format can be translated to Humdrum using a program written by
+Andreas Kornstaedt of the University of Hamburg.  Music encoded in
+Helmut Schaffrath's ESAC representation (Essen Associative Code) can
+also be translated to Humdrum.  Another program can translate Barry
+Brook's Plaine and Easie Code (used by RILM) to Humdrum.
+</P>
+<P>
+These translation tools are not currently distributed as part of
+the Humdrum Toolkit.  They are available by special request.
+</P>
+<A NAME="Tools_Do">
+<hr>
+
+<H2><FONT color="0000FF">27. What do the Humdrum software tools do?</FONT></H2>
+<P>
+Nearly all Humdrum commands accept some Humdrum-format input(s)
+and produce some corresponding Humdrum-format output.  This means
+that information can be processed through a series of successive
+Humdrum commands.
+</P>
+<A NAME="Processing">
+<hr>
+
+<H2><FONT color="0000FF">28. Can you provide some examples of Humdrum processes?</FONT></H2>
+<P>
+Here are some examples of simple Humdrum pipelines.
+</P>
+<P>
+The following command extracts all woodwind parts from the
+file "ives":
+<blockquote>
+<code><big>
+     extract -i '*ICww' ives
+</code></big>
+</blockquote>
+The following command identifies the frequency of light-related
+words such as "lumen" or "lumine" in the different monastic offices
+for Thomas of Canterbury:
+<blockquote>
+<code><big>
+    extract -i '*Latin' office* | egrep -ic 'lum.+n[e]*$'
+</code></big>
+</blockquote>
+The following command outputs the location of all sonorities in
+the file "machaut" where the leading-tone has been doubled:
+<blockquote>
+<code><big>
+     deg -x machaut | grep -n '7.*7'
+</code></big>
+</blockquote>
+The following commands identify all phrase-endings in the file
+"wagner" that are approached by a descending semitone:
+<blockquote>
+<code><big>
+     semits -xt wagner | fill > temp
+     <br>
+     assemble wagner temp | grep -n '}.*-1[^0-9]'
+</code></big>
+</blockquote>
+The following commands identify German, French, and Italian sixth chords.
+<blockquote>
+<code><big>
+     solfa -x input | fill -s = | grep '.*6-.*4+' | grep '3-'    [German]
+     <br>
+     solfa -x input | fill -s = | grep '.*6-.*4+' | grep '2'     [French]
+     <br>
+     solfa -x input | fill -s = | grep '.*6-.*4+' | grep '[^23]' [Italian]
+</code></big>
+</blockquote>
+A common musicological task is searching for various patterns.
+The `patt' and `pattern' commands accept a user-specified
+template file such as the following:
+<blockquote>
+<code><big>
+     P5
+     <br>
+     P5
+</code></big>
+</blockquote>
+Given the above two-line file ("template"), the following command will
+identify all instances of parallel fifths between the bass and alto
+parts for the file "caccini":
+<blockquote>
+<code><big>
+     extract -i '*bass,*alto' caccini | hint -c | pattern -s = -f template
+</code></big>
+</blockquote>
+Given the following three-line "template" file:
+<blockquote>
+     =
+     <br>
+     .*     +
+     <br>
+     sus
+</code></big>
+</blockquote>
+ ... the following command outputs the measure numbers where
+suspensions are found in the file "bwv552":
+<blockquote>
+<code><big>
+     extract -i '**embel' bwv552 | patt -e -f template | grep '='
+</code></big>
+</blockquote>
+The following command produces an inventory of all pitch-class
+sets evident for successive vertical sonorities in the file "opus24".
+In this case, only Z-related sets are requested in the inventory:
+<blockquote>
+<code><big>
+     pc opus24 | fill -s = | pcset | grep 'Z' | sort | uniq
+</code></big>
+</blockquote>
+The following script command finds all instances of 12-tone rows in
+Webern's Opus 24:
+<blockquote>
+<code><big>
+     matrix -n 12 prime
+     <br>
+     rowfind opus24
+</code></big>
+</blockquote>
+The following command outputs the final two measures for all works
+in the current directory; the output is played as a MIDI output.
+<blockquote>
+<code><big>
+    yank -o ^= '$-1-$' * | midi | perform
+</code></big>
+</blockquote>
+The above examples are mostly simple one-line invocations, and do not
+begin to exhaust Humdrum's capabilities.
+<A HREF="problems.html">
+Further sample problems</A>
+using Humdrum are available on the web.
+</P>
+<A NAME="Searching">
+<hr>
+
+<H2><FONT color="0000FF">29. Can I search for a specific theme or motif?</FONT></H2>
+<P>
+Yes.  There are innumerable ways of defining a "theme" or "motif."
+Typically, motives are thought of as pitch/duration patterns.
+However, motivic instances typically appear at different pitch
+heights, in transpositions, different modes, in augmentation, and so
+on.  Hence, a motif might be better defined as an interval/duration
+pattern, or as an interval/relative-duration pattern, or as a diatonic
+interval pattern, a pitch-contour pattern, a metric pattern, etc.
+Searching for any such patterns is trivial using Humdrum.  Most such
+searches can be accomplished by executing a one-line shell-level command.
+</P>
+<P>
+Humdrum also allows the user to constrain pattern searches by looking
+for combinations of information.  For example, the user might seek
+only those pitch patterns that exhibit certain sequences of articulation
+marks, are anchored in some specified way to a phrase boundary, and/or
+are accompanied by certain harmonies.
+</P>
+<P>
+Pattern searches need not be melodically oriented (horizontal search).
+Searches can also be vertical, or even diagonal (e.g. a Klangfarbenmelodie
+-- a melody that traverses between several instruments).  Patterns may also
+be combinations of horizontal, vertical, and diagonal.  For example, find
+all instances of a lowered seventh based a subdominant root approaching
+a V chord, when the oboe and bassoon are playing, but not at the beginning
+of a phrase.
+</P>
+<P>
+In addition to exact pattern matches, Humdrum provides tools that
+allow matches with passages that are <i>similar</i> but not identical to
+the sought pattern.  Patterns can be sought in which embellishments
+have been added to specified structural elements.  Patterns of patterns,
+and patterns of patterns of patterns can be studied.
+</P>
+<A NAME="MIDI">
+<hr>
+
+<H2><FONT color="0000FF">30. Does Humdrum import/export MIDI?</FONT></H2>
+<P>
+Yes.  Humdrum can important MIDI data via the `record' and `encode'
+commands.  `Record' allows the recording of raw MIDI data in the
+Humdrum format.  `Encode' permits the user to map real-time MIDI
+activity to any user-defined Humdrum representation.
+</P>
+<P>
+Humdrum can export MIDI data via the `smf' and `perform' commands.  `smf'
+is used to generate Standard Midi Files which can be imported to other
+applications software -- such as MIDI sequencers or notation packages.
+The `perform' command plays Humdrum-format MIDI information in real-time.
+</P>
+<P>
+In order to use the Humdrum MIDI capabilities, you must have access
+to an MPU-401 compatible MIDI card.  Currently, the Humdrum MIDI
+tools only work under DOS, Windows 95/98/NT, and Linux..
+</P>
+<A NAME="Finale">
+<hr>
+
+<H2><FONT color="0000FF">31. Does Humdrum import/export Finale?</FONT></H2>
+<P>
+Currently there is no command in the Humdrum Toolkit to
+import Finale score files or to generate Finale score files.
+However, Prof. Robert Gjerdingen at Northwestern University
+has written his own programs to translate from the Humdrum
+`kern' representation to Finale, and from Finale to `kern'.
+</P>
+<A NAME="Harmony">
+<hr>
+
+<H2><FONT color="0000FF">32. Can Humdrum do automatic Roman-numeral type harmonic analysis?</FONT></H2>
+<P>
+Not currently.  A program to do automatic functional analysis is
+being developed by Craig Sapp.
+</P>
+<A NAME="Not_Do">
+<hr>
+
+<H2><FONT color="0000FF">33. What else can't Humdrum do?</FONT></H2>
+<P>
+Humdrum has only limited abilities to print musical scores.
+The Humdrum
+<b>ms</b>
+tool generates output suitable for the commercial "Mup"
+notation package.
+Humdrum users wishing to have postscript notational output
+must purchase "Mup" (cost $29) from
+<A HREF="http://www.arkkra.com/">Arkkra Enterprises</A>.
+</P>
+<P>
+Although Humdrum might be used in high-level aspects of composition,
+Humdrum is not well suited to very low-level acoustical (sound-function)
+manipulations common in electroacoustic music.
+</P>
+<P>
+Remember that Humdrum's emphasis is on <i>posing</i> and <i>answering</i>
+research questions rather than <i>displaying</i> or <i>formatting</i> information.
+Suitable questions might be theoretical, analytic, historical,
+ethnographic, stylistic, perceptual, cognitive, or whatever.
+</P>
+<A NAME="Interface">
+<hr>
+
+<H2><FONT color="0000FF">34. Does Humdrum provide a graphic user interface?</FONT></H2>
+<P>
+A general graphic user interface for Humdrum has been developed by
+Michael Taylor of Queen's University, Belfast.  The Taylor interface
+features pull-down help menus and on-line assistance in constructing
+and launching analytic tasks.  The Taylor interface runs under
+MS Windows.  Distribution and pricing arrangements have not yet been
+announced.  Mr. Taylor may be reached at:  wmt@bfs.Unibol.com
+</P>
+<A NAME="Easy">
+<hr>
+
+<H2><FONT color="0000FF">35. Is Humdrum easy to use?</FONT></H2>
+<P>
+Humdrum is rooted in the UNIX "software tools" design philosophy.
+That is, each tool in the toolkit carries out a simple operation.
+However, by interconnecting the tools, the capacity for music
+processing is legion.  In essence, assembling Humdrum command lines
+amounts to a form of computer programming.  Learning Humdrum is
+comparable in complexity to learning a programming language such
+as pascal or C.
+</P>
+<P>
+Users who understand the concept of a UNIX pipeline, will readily
+grasp how Humdrum works.  Users who are familiar only with menu-driven
+software will find Humdrum takes some time to learn.
+An
+<A HREF="http://dactyl.som.ohio-state.edu/Music824/music824.html">
+on-line course</A>
+is available to learn Humdrum.
+</P>
+<P>
+The graphic user interface developed by Michael Taylor considerably
+simplifies the use of Humdrum -- especially for inexperienced
+users.  Graphical approaches clearly hold much promise, especially
+if the generality of Humdrum remains accessible.
+</P>
+<P>
+Another graphical approach has been pioneered by Andreas Kornstaedt.
+Kornstaedt has suggested that the Humdrum be used as the analytic
+engine for task-specific applications that are designed for use by
+ordinary musicologists.  For example, Kornstaedt has developed a
+graphical environment ("Ring") for doing Leitmovic analysis of Wagner
+operas.  The user interacts only with a graphical environment tailored
+to particular kinds of tasks.  Although this approach does not allow
+access to Humdrum's full capabilities, it may be of greater appeal
+to music scholars with little programming experience.
+</P>
+<A NAME="Why">
+<hr>
+
+<H2><FONT color="0000FF">36. Why should I consider using Humdrum?</FONT></H2>
+<P>
+The principal reasons for using computers in music scholarship
+are the following:
+<blockquote>
+  <ol>
+  <li> the computer increases your scholarly productivity,
+  <li> the computer lets you address problems that are otherwise
+      impossible to pursue.
+  </ol>
+</blockquote>
+Not every musicologist will benefit from using Humdrum.
+It depends on the types of tasks in which the user is interested.
+</P>
+<A NAME="UNIX">
+<hr>
+
+<H2><FONT color="0000FF">37. I am a PC user who has had no experience with UNIX.</FONT></H2>
+    How should I go about learning to use Humdrum?
+<P>
+Understanding UNIX is an essential pre-requisite to the lucid use
+of Humdrum.  If you do not have access to a UNIX system, you can
+purchase a set of commercial UNIX utilities that will operate on
+your PC.  The recommended utilities are available in the
+"MKS Toolkit" -- which you can purchase in most university computer
+stores.  (In the case of Windows NT, Humdrum should also work under
+Consensys Corporation's "Portage".)
+</P>
+<P>
+The essential foundation for using Humdrum includes:
+<blockquote>
+<ol>
+<li> knowledge of how to use a text editor -- such as "vi" or "emacs"
+<li> knowledge of how to define and manipulate "regular expressions"
+    (a standard UNIX syntax for defining patterns)
+<li> knowledge of how to read and interpret manual pages ("man")
+<li> familiarity with UNIX "pipelines"
+</ol>
+</blockquote>
+</P>
+<P>
+Wordprocessors can be used in lieu of an editor, provided ASCII
+text is handled properly.  Many wordprocessors treat carriage
+returns and tabs in irregular ways -- although most wordprocessors
+allow the user to override these defaults.  For example, Microsoft
+Word can be used provided you invoke the "save as text file" option.
+</P>
+<P>
+Note that Microsoft "edit" (comes with DOS) is unsuitable for
+Humdrum since it insists on replacing ASCII tabs by spaces.
+</P>
+<A NAME="Video">
+<hr>
+
+<H2><FONT color="0000FF">38. Where can I see Humdrum in action?</FONT></H2>
+<P>
+A 50-minute VHS videotape is available that demonstrates many
+of the types of manipulations that can be carried out using the
+Humdrum Toolkit.  The videotape is available in the North American
+NTSC format only, and can be ordered for minimal cost.
+</P>
+<A NAME="Seminars">
+<hr>
+
+<H2><FONT color="0000FF">39. Are there any seminars or courses that teach Humdrum?</FONT></H2>
+<P>
+Humdrum seminars have been offered at several universities.
+A two-day Humdrum seminar will be given at Stanford
+University from April 15th and 16th, 1999.
+</P>
+<P>
+For further information contact:
+<blockquote>
+<A HREF="http://musedata.Stanford.edu">
+     Center for Computer Assisted Research in the Humanities,</A>
+     <br>
+     Braun Music Center
+     <br>
+     Stanford University
+     <br>
+     Stanford, California     94305-3076
+</blockquote>
+</P>
+<P>
+In addition, an
+<A HREF="http://dactyl.som.ohio-state.edu/Music824/music824.html">
+on-line course</A>
+is available to help users learn Humdrum.
+</P>
+<A NAME="Where">
+<hr>
+
+<H2><FONT color="0000FF">40. Where does Humdrum come from?</FONT></H2>
+<P>
+Humdrum was designed and originally programmed by David Huron.
+The Humdrum Toolkit was extensively revised
+and augmented with the assistance of Tim Racinsky and Kyle Dawkins.
+</P>
+<A NAME="Information">
+<hr>
+
+<H2><FONT color="0000FF">41. How can I be kept informed about Humdrum?</FONT></H2>
+<P>
+"Humdrum News" is an electronic newsletter for Humdrum users and
+those contemplating using the Humdrum Toolkit.  The newsletter
+contains regular announcements, brief articles, and tutorials
+describing various ways of using the toolkit.  Subscriptions are
+free.
+</P>
+<P>
+Both snail-mail and e-mail mailing lists are maintained.  You can
+receive direct information concerning Humdrum by sending your name,
+address, and e-mail address to h&uuml;ron.1@os&uuml;.ed&uuml;
+(please ignore the umlauts: they are present to foil web crawlers).
+</P>
+<P>
+If you are reading this document in printed form and have no access
+to electronic mail, you can send the above information to:
+<blockquote>
+<A HREF="http://dactyl.som.ohio-state.edu/Huron/Huron.html">David Huron</A>,
+     <br>
+     School of Music
+     <br>
+     1866 College Road
+     <br>
+     Ohio State University
+     <br>
+     Columbus, Ohio     43210
+     <br>
+     U.S.A.
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="index.html">
+<B>Humdrum Home Page</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Humdrum Toolkit User's Guide</B></A>
+<li>
+<A HREF="commands.toc.html">
+<B>Humdrum Command Reference</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>
+

@@ -1,0 +1,98 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH veritas 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +13
+.ti -13
+\fBveritas\fR  --  validate that a Humdrum document has not been modified
+.in -13
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+\fBveritas\fR  [\fB-v\fR]  \fIinputfile\fR
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "veritas"
+command provides an on-line means for formally or informally verifying
+that a given Humdrum file originates with a given publisher or source,
+or whether the file has been modified in some way.
+The command provides a convenient way of reassuring scholars of
+the accuracy or origin of a document.
+.sp 1
+.sp 1
+The
+.B "veritas"
+command looks for a checksum validation number
+encoded in a VTS reference record in the given input file.
+(See the
+.B "Reference Records (1)"
+description.)
+The command then calculates the checksum for the file
+(excluding the VTS record itself) and compares this value with the
+checksum encoded in the file.
+If these values differ, a warning is issued that the file
+has been modified in some way.
+If these values are the same, a confirming message is issued.
+.sp 1
+.sp 1
+Note that this verification process is easily circumvented by
+malicious individuals.
+For better security, the
+.B "-v"
+option should be invoked and the output checksum value should be
+compared with an independent printed list of checksums provided by
+the supplier of the electronic document.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "veritas"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-v\fR	invoke verbose mode
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The
+.B "-v"
+option will cause the checksum validation number to be output.
+This value should be manually compared with a printed checksum
+provided by the supplier of the electronic document.
+Note that the change of even a single character in a file typically
+leads to a radically different checksum.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and POSIX.2 compliant
+.B "cksum"
+command.
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBcksum\fR (\s-1UNIX\s+1), \fBsum\fR (\s-1UNIX\s+1)
+.in -2

@@ -1,0 +1,341 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- metpos</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>metpos</b>  --  assign metric position indicators to Humdrum sonorities
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>metpos</b>  [<b>-m</b> <i>n/n</i>]  [<b>-t</b> <i>n</i>]  [<i>inputfile.tb</i> ...]  [ > <i>outputfile.met</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>metpos</b>
+command is used to characterize the metric strength of successive
+sonorities in a musical passage.
+Specifically,
+<b>metpos</b>
+appends a Humdrum
+<code><big>
+**metpos
+</i></b></code></big>
+</i></b></code></big>
+spine to a time-base (<code><big>*tb</big></code>) input stream.
+The
+<code><big>
+**metpos
+</i></b></code></big>
+</i></b></code></big>
+spine contains integer values indicating the position in the
+metric hierarchy for each data record -- given some meter signature.
+</P>
+<P>
+The highest position in any given metric hierarchy is given the value "1."
+This value is assigned to the first event at the beginning of each measure.
+In duple and quadruple meters, the second level in the metric hierarchy
+occurs in the middle of the measure and is assigned the output value "2."
+(In triple meters, the second and third beats in the measure will be assigned
+to the second level in the metric hierarchy.)
+All other metric positions in the measure
+(beats, sub-beats, sub-sub-beats, etc.)
+are assigned successively increasing numerical
+values according to their placement in the metric hierarchy.
+Larger <code><big>**metpos</big></code> values signify sonorities of lesser
+metric significance.
+</P>
+<P>
+Input to
+<b>metpos</b>
+can be any Humdrum file that conforms to the
+<i>time-base</i>
+format -- i.e. where each data record represents an equivalent
+duration of time.
+Each input measure will thus contain the same number of data records.
+For example, in 3/4 meter with an eighth-note time-base,
+each complete measure should contain 6 data records.
+</P>
+<P>
+For correct operation,
+<b>metpos</b>
+must be informed of both the
+<i>meter signature</i>
+and the
+<i>time-base</i>
+for the given input passage.
+This information may be specified either via the command line,
+or as encoded interpretations in the input stream.
+The command line method of specification is illustrated below:
+</P>
+<P>
+<blockquote>
+<code><big>
+metpos -m 9/16 -t 32
+</code></big>
+</blockquote>
+</P>
+<P>
+This command establishes a meter of 9/16 and a time-base
+of a thirty-second duration for the input.
+</P>
+<P>
+Alternatively, the meter signature and time-base duration can be made known
+through the presence of interpretation records in the encoded input.
+In the above case, the meter signature can be made known to
+<b>metpos</b>
+through the <code><big>*M9/16</big></code> interpretation,
+while the time-base duration can be made known to
+through the <code><big>*tb32</big></code> interpretation.
+A time-base and meter signature interpretation must appear
+in all spines of the input file prior to the occurrence of any data records.
+Note that once the initial meter is established,
+<b>metpos</b>
+is able to adapt to encoded changes of meter within a given score or
+input stream.
+If meter or time-base information is not available to
+<b>metpos</b>
+an error message will be issued and execution terminated.
+</P>
+<P>
+As noted above, metric hierarchies are represented through a series
+of integer values.
+The smallest numerical values represent events having the highest metric stress,
+whereas successively larger values represent positions of
+progressively weaker metric stress.
+For example, in the case of 2/4 meter with an 8th duration time-base,
+the metric hierarchy is: 1, 3, 2, 3.
+If the time-base is 16th durations, the metric
+hierarchy is: 1, 4, 3, 4, 2, 4, 3, 4.
+Metric hierarchies in compound meters are also possible.
+For example, in the case of 6/8 meter (16th durations) the metric
+hierarchy is: 1, 4, 3, 4, 3, 4, 2, 4, 3, 4, 3, 4.
+</P>
+<P>
+Note that
+<b>metpos</b>
+is unable to deal with irregular meters.
+(See "LIMITS" below.)
+</P>
+<P>
+It is recommended that output files produced using the
+<b>metpos</b>
+command should be given names with the distinguishing `.met' extension.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>metpos</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-m <i>n/n</i></TD><TD>set the initial meter signature to <i>n/n</i></TD></TR>
+<TR><TD><b>-t <i>n</i></TD><TD>set the initial time-base duration to <i>n</i> (<code><big>**recip</i> value)</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SAMPLE OUTPUTS</H3></FONT>
+The following extract from Bart&#243k's "Two-Part Study" No. 121 from
+<i>Mikrokosmos</i>
+demonstrates the effect of the
+<b>metpos</b>
+command.
+The two left-most columns show the original input;
+all three columns show the corresponding output from <b>metpos</b>:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**kern</TD><TD>**kern</TD><TD>**metpos</TD></TR>
+<TR><TD>*tb8</TD><TD>*tb8</TD><TD>*tb8</TD></TR>
+<TR><TD>=16</TD><TD>=16</TD><TD>=16</TD></TR>
+<TR><TD>*M6/4</TD><TD>*M6/4</TD><TD>*M6/4</TD></TR>
+<TR><TD>8Gn</TD><TD>8b-</TD><TD>1</TD></TR>
+<TR><TD>8A</TD><TD>8ccn</TD><TD>4</TD></TR>
+<TR><TD>8B-</TD><TD>8cc#}</TD><TD>3</TD></TR>
+<TR><TD>8cn</TD><TD>{8f#</TD><TD>4</TD></TR>
+<TR><TD>8c#}</TD><TD>8gn</TD><TD>3</TD></TR>
+<TR><TD>{8F#</TD><TD>8a</TD><TD>4</TD></TR>
+<TR><TD>8G</TD><TD>8b-</TD><TD>2</TD></TR>
+<TR><TD>8A</TD><TD>8ccn</TD><TD>4</TD></TR>
+<TR><TD>8B-</TD><TD>4b-</TD><TD>3</TD></TR>
+<TR><TD>8cn</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>8c#}</TD><TD>8fn}</TD><TD>3</TD></TR>
+<TR><TD>8r</TD><TD>8r</TD><TD>4</TD></TR>
+<TR><TD>=17</TD><TD>=17</TD><TD>=17</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>8d</TD><TD>2r</TD><TD>1</TD></TR>
+<TR><TD>4.d</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>3</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>{2d_</TD><TD>8dd</TD><TD>2</TD></TR>
+<TR><TD>.</TD><TD>4.dd</TD><TD>4</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>3</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>=18</TD><TD>=18</TD><TD>=18</TD></TR>
+<TR><TD>8d</TD><TD>{1dd_</TD><TD>1</TD></TR>
+<TR><TD>8A</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>8F#</TD><TD>.</TD><TD>3</TD></TR>
+<TR><TD>8E</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>8D</TD><TD>.</TD><TD>2</TD></TR>
+<TR><TD>8BB</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>8D</TD><TD>.</TD><TD>3</TD></TR>
+<TR><TD>8E}</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>=19</TD><TD>=19</TD><TD>=19</TD></TR>
+<TR><TD>*M3/2</TD><TD>*M3/2</TD><TD>*M3/2</TD></TR>
+<TR><TD>{8F#</TD><TD>8dd</TD><TD>1</TD></TR>
+<TR><TD>8A</TD><TD>8ffn</TD><TD>4</TD></TR>
+<TR><TD>8c#</TD><TD>8aa</TD><TD>3</TD></TR>
+<TR><TD>8A</TD><TD>8ff</TD><TD>4</TD></TR>
+<TR><TD>8F#</TD><TD>8dd</TD><TD>2</TD></TR>
+<TR><TD>8A</TD><TD>8ff</TD><TD>4</TD></TR>
+<TR><TD>8F#</TD><TD>8dd</TD><TD>3</TD></TR>
+<TR><TD>8E</TD><TD>8ccn</TD><TD>4</TD></TR>
+<TR><TD>8D</TD><TD>8b-</TD><TD>2</TD></TR>
+<TR><TD>8BBn</TD><TD>8gn</TD><TD>4</TD></TR>
+<TR><TD>8D</TD><TD>8b-</TD><TD>3</TD></TR>
+<TR><TD>8E}</TD><TD>8cc</TD><TD>4</TD></TR>
+<TR><TD>=20</TD><TD>=20</TD><TD>=20</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+Notice that
+<b>metpos</b>
+adapts to changing meter signatures, and
+correctly distinguishes between metric accent patterns such as 6/4 (measure 16)
+and 3/2 (measure 19).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+It is possible to define a time-base that makes little
+sense with respect to the meter signature.
+For example, it is possible to set the time-base to a quarter duration
+(<code><big>*tb4</big></code>) in a 6/8 meter (<code><big>*M6/8</big></code>).
+The resulting metric heirarchy (1,3,3) will produce "hemiola" values.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<b>**kern</b> (2),
+<b>**recip</b> (2),
+<A HREF="timebase.html">
+<b>timebase</b></A> (4)
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>LIMITS</H3></FONT>
+In a number of meters,
+<b>metpos</b>
+is limited in the depth of permissible metric positions.
+These limitations are tabulated below:
+<blockquote><TABLE>
+<TR><TD>compound duple</TD><TD>7 metric levels</TD><TD>96 metric positions/measure</TD></TR>
+<TR><TD>compound triple</TD><TD>6 metric levels</TD><TD>108 metric positions/measure</TD></TR>
+<TR><TD>compound quadruple</TD><TD>7 metric levels</TD><TD>96 metric positions/measure</TD></TR>
+<TR><TD>simple triple</TD><TD>7 metric levels</TD><TD>96 metric positions/measure</TD></TR>
+<TR><TD>simple duple</TD><TD>no limitation</TD><TD>no limitation</TD></TR>
+<TR><TD>simple quadruple</TD><TD>no limitation</TD><TD>no limitation</TD></TR>
+</TABLE></blockquote>
+By way of example, it is possible to process music in 6/8 meter
+in time-base divisions as small as a 256th-notes, or a passage in
+6/2 meter in 64th-note divisions.
+Smaller time-base divisions are not handled.
+</P>
+<P>
+The following meter signatures can be handled by
+<b>metpos:</b>
+<blockquote><TABLE>
+<TR><TD>2/2,</TD><TD>3/2,</TD><TD>4/2,</TD><TD>6/2,</TD><TD>9/2,</TD><TD>12/2,</TD></TR>
+<TR><TD>2/4,</TD><TD>3/4,</TD><TD>4/4,</TD><TD>6/4,</TD><TD>9/4,</TD><TD>12/4,</TD></TR>
+<TR><TD>2/8,</TD><TD>3/8,</TD><TD>4/8,</TD><TD>6/8,</TD><TD>9/8,</TD><TD>12/8,</TD></TR>
+<TR><TD>2/16,</TD><TD>3/16,</TD><TD>4/16,</TD><TD>6/16,</TD><TD>9/16,</TD><TD>12/16,</TD></TR>
+<TR><TD>2/32,</TD><TD>3/32,</TD><TD>4/32,</TD><TD>6/32,</TD><TD>9/32,</TD><TD>12/32,</TD></TR>
+<TR><TD>2/64,</TD><TD>3/64,</TD><TD>4/64,</TD><TD>6/64,</TD><TD>9/64,</TD><TD>12/64,</TD></TR>
+</TABLE></blockquote>
+Some meter signatures containing dotted durations can also be handled:
+<blockquote><TABLE>
+<TR><TD>2/2.(=6/4),</TD><TD>3/2.(=9/4),</TD><TD>4/2.(=12/4),</TD></TR>
+<TR><TD>2/4.(=6/8),</TD><TD>3/4.(=9/8),</TD><TD>4/4.(=12/8),</TD></TR>
+<TR><TD>2/8.(=6/16),</TD><TD>3/8.(=9/16),</TD><TD>4/8.(=12/16),</TD></TR>
+</TABLE></blockquote>
+Meter signatures NOT handled by
+<b>metpos</b>
+include:
+<blockquote><TABLE>
+<TR><TD>5/2,</TD><TD>7/2,</TD><TD>8/2,</TD><TD>10/2,</TD><TD>11/2,</TD><TD>13/2,</TD><TD>14/2,</TD><TD>15/2,</TD><TD>16/2,</TD></TR>
+<TR><TD>5/4,</TD><TD>7/4,</TD><TD>8/4,</TD><TD>10/4,</TD><TD>11/4,</TD><TD>13/4,</TD><TD>14/4,</TD><TD>15/4,</TD><TD>16/4,</TD></TR>
+<TR><TD>5/8,</TD><TD>7/8,</TD><TD>8/8,</TD><TD>10/8,</TD><TD>11/8,</TD><TD>13/8,</TD><TD>14/8,</TD><TD>15/8,</TD><TD>16/8,</TD></TR>
+<TR><TD>5/16,</TD><TD>7/16,</TD><TD>8/16,</TD><TD>10/16,</TD><TD>11/16,</TD><TD>13/16,</TD><TD>14/16,</TD><TD>15/16,</TD><TD>16/16,</TD></TR>
+<TR><TD>etc.</TD></TR>
+</TABLE></blockquote>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PROPOSED MODIFICATIONS</H3></FONT>
+Irregular meters such as 5/4 or 7/8 should be acceptable
+provided the beat subdivisions are made explicit:
+e.g. 5/4 as (3+2)/4 or 5/4 as (2+3)/4 or 8/8 (3+3+2)/8, etc.
+Alternatively, no sub-grouping of irregular meters
+into beats of 2's or 3's need be assumed.
+Thus, for example, all beats other than the first beat in 5/4 could be
+assigned identical values in the metric hierarchy.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide23.html#The_metpos_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

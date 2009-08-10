@@ -1,0 +1,500 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- strophe</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>strophe</b>  --  selectively extract strophic data for Humdrum inputs
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>strophe</b>  [<b>-s</b> <i>strophe_list</i> | <b>-x</b> <i>strophe_label</i>]  [<i>inputfile</i> ...]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>strophe</b>
+command is used to isolate or extract selective strophic data.
+Strophic data encode alternative concurrent information for a given
+passage.
+Examples of alternative concurrent information might include
+the texts for different verses of a song,
+alternative renditions of the same passage (such as <i>ossia</i> passages),
+or differing editorial interpretations of a given note or sequence of notes.
+</P>
+<P>
+The
+<b>strophe</b>
+command permits the user to extract selected information paths
+(called <i>strophes</i>) present in a Humdrum input.
+</P>
+<P>
+Structurally, strophic data must begin from a single common spine,
+split apart into two or more alternative spines, and then rejoin
+to form a single spine.
+Since the strophes split from a common spine,
+all strophic data necessarily begin by sharing the same data type.
+Different exclusive interpretations may be introduced in the
+strophic passage -- provided all strophic spines end up sharing
+the same data type just prior to being rejoined.
+</P>
+<P>
+The beginning of a strophic passage is signalled by the presence of a
+<i>strophic passage initiator</i>
+--  a single asterisk followed by the keyword "strophe"
+(<code><big>*strophe</big></code>).
+The end of a strophic passage is signalled by the
+<i>strophic passage terminator</i>
+--  a single asterisk followed by the upper-case letter `S' followed
+by a minus sign (<code><big>*S-</big></code>).
+Each spine within the strophic passage begins with a
+<i>strophe label</i>
+and ends with a
+<i>strophe end indicator</i>
+(<code><big>*S/fin</big></code>).
+</P>
+<P>
+Strophe labels may consist of either alphanumeric names,
+or numbers.
+Numerical labels should be used when the strophic data imply some
+sort of order, such as verses in a song.
+Alphanumeric labels are convenient for distinguishing different editions or
+<i>ossia</i>
+passages.
+The following example encodes a melodic phrase containing four numbered verses
+from "Das Wandern" from <i>Die Sch&#246ne M&#252llerin</i>
+by Schubert.
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! Franz Schubert, `Das Wandern' from "Die Schoene Muellerin"</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD>**kern</TD><TD>**text</TD></TR>
+<TR><TD>*>[V,V,V,V]</TD><TD>*>[V,V,V,V]</TD></TR>
+<TR><TD>*>V</TD><TD>*>V</TD></TR>
+<TR><TD>*k[b-e-]</TD><TD>*Deutsch</TD></TR>
+<TR><TD>*</TD><TD>*solo</TD></TR>
+<TR><TD>*</TD><TD>*strophe</TD></TR>
+<TR><TD>*</TD><TD>*^</TD></TR>
+<TR><TD>*</TD><TD>*^</TD><TD>*^</TD></TR>
+<TR><TD>*</TD><TD>*S/1</TD><TD>*S/2</TD><TD>*S/3</TD><TD>*S/4</TD></TR>
+<TR><TD>8f</TD><TD>Das</TD><TD>Vom</TD><TD>Das</TD><TD>Die</TD></TR>
+<TR><TD>=5</TD><TD>=5</TD><TD>=5</TD><TD>=5</TD><TD>=5</TD></TR>
+<TR><TD>8f</TD><TD>Wan-</TD><TD>Was-</TD><TD>sehn</TD><TD>Stei-</TD></TR>
+<TR><TD>8b-</TD><TD>-dern</TD><TD>-ser</TD><TD>wir</TD><TD>-ne</TD></TR>
+<TR><TD>8a</TD><TD>ist</TD><TD>ha-</TD><TD>auch</TD><TD>selbst ,</TD></TR>
+<TR><TD>8ee-</TD><TD>des</TD><TD>-ben</TD><TD>den</TD><TD>so</TD></TR>
+<TR><TD>=6</TD><TD>=6</TD><TD>=6</TD><TD>=6</TD><TD>=6</TD></TR>
+<TR><TD>(16dd</TD><TD>M&#252l-</TD><TD>wir's</TD><TD>R&#228-</TD><TD>schwer</TD></TR>
+<TR><TD>)16ff</TD><TD>|</TD><TD>|</TD><TD>|</TD><TD>|</TD></TR>
+<TR><TD>(16dd</TD><TD>-lers</TD><TD>ge-</TD><TD>-dern</TD><TD>sie</TD></TR>
+<TR><TD>)16b-</TD><TD>|</TD><TD>|</TD><TD>|</TD><TD>|</TD></TR>
+<TR><TD>8f</TD><TD>Lust ,</TD><TD>-lernt ,</TD><TD>ab ,</TD><TD>sind ,</TD></TR>
+<TR><TD>8dd</TD><TD>das</TD><TD>vom</TD><TD>den</TD><TD>die</TD></TR>
+<TR><TD>=7</TD><TD>=7</TD><TD>=7</TD><TD>=7</TD><TD>=7</TD></TR>
+<TR><TD>(8.cc</TD><TD>Wan-</TD><TD>Was-</TD><TD>R&#228-</TD><TD>Stei-</TD></TR>
+<TR><TD>)16a</TD><TD>|</TD><TD>|</TD><TD>|</TD><TD>|</TD></TR>
+<TR><TD>8b-</TD><TD>-dern !</TD><TD>-ser !</TD><TD>-dern !</TD><TD>-ne !</TD></TR>
+<TR><TD>8r</TD><TD>%</TD><TD>%</TD><TD>%</TD><TD>%</TD></TR>
+<TR><TD>*</TD><TD>*S/fin</TD><TD>*S/fin</TD><TD>*S/fin</TD><TD>*S/fin</TD></TR>
+<TR><TD>*</TD><TD>*v</TD><TD>*v</TD><TD>*v</TD><TD>*v</TD></TR>
+<TR><TD>*</TD><TD>*S-</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice that this file contains a single section labelled `V' (verse)
+and that an expansion list occurs near the beginning of the file
+that indicates the section is to be repeated 4 times in total.
+</P>
+<P>
+The strophic passage in the above example pertains only to the spine marked
+<code><big>**text</big></code>.
+Following the strophic passage indicator (<code><big>*strophe</big></code>),
+the spine is split apart until the required number of verses are generated.
+Then each spine is labelled with its own strophe label.
+Since the verses have an order, it is appropriate to label them with
+numbers:<code><big>*S/1, *S/2,</big></code> and so on.
+The individual verses are terminated with strophe end indicators
+(<code><big>*S/fin</big></code>), the spines rejoin, and then a strophic passage
+terminator (<code><big>*S-</big></code>) marks the end of the strophic passage.
+</P>
+<P>
+Executing the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+strophe -s 4
+</code></big>
+</blockquote>
+</P>
+<P>
+produces the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! Franz Schubert, `Das Wandern' from "Die Schoene Muellerin"</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD>**kern</TD><TD>**text</TD></TR>
+<TR><TD>*>[V,V,V,V]</TD><TD>*>[V,V,V,V]</TD></TR>
+<TR><TD>*>V</TD><TD>*>V</TD></TR>
+<TR><TD>*k[b-e-]</TD><TD>*Deutsch</TD></TR>
+<TR><TD>*</TD><TD>*solo</TD></TR>
+<TR><TD>8f</TD><TD>Die</TD></TR>
+<TR><TD>=5</TD><TD>=5</TD></TR>
+<TR><TD>8f</TD><TD>Stei-</TD></TR>
+<TR><TD>8b-</TD><TD>-ne</TD></TR>
+<TR><TD>8a</TD><TD>selbst ,</TD></TR>
+<TR><TD>8ee-</TD><TD>so</TD></TR>
+<TR><TD>=6</TD><TD>=6</TD></TR>
+<TR><TD>(16dd</TD><TD>schwer</TD></TR>
+<TR><TD>)16ff</TD><TD>|</TD></TR>
+<TR><TD>(16dd</TD><TD>sie</TD></TR>
+<TR><TD>)16b-</TD><TD>|</TD></TR>
+<TR><TD>8f</TD><TD>sind ,</TD></TR>
+<TR><TD>8dd</TD><TD>die</TD></TR>
+<TR><TD>=7</TD><TD>=7</TD></TR>
+<TR><TD>(8.cc</TD><TD>Stei-</TD></TR>
+<TR><TD>)16a</TD><TD>|</TD></TR>
+<TR><TD>8b-</TD><TD>-ne !</TD></TR>
+<TR><TD>8r</TD><TD>%</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Strophic encodings are nearly always encoded in
+<i>abbreviated</i> rather than <i>through-composed</i> file formats.
+Abbreviated encodings employ
+<i>section labels</i>
+and
+<i>expansion-lists</i>
+in order to identify how various passages are repeated and ordered.
+</P>
+<P>
+When extracting a single strophe, either the abbreviated or
+through-composed versions can be used as input.
+However, when using the
+<b>strophe</b>
+command to select more than one strophe for output,
+it is essential that the input first be expanded to
+a through-composed version, via the
+<A HREF="thru.html"><b>thru</b></A>
+command.
+For example, in order to select the first and third verses
+in the above passage by Schubert, the user would need to execute
+the following command pipeline:
+</P>
+<P>
+<blockquote>
+<code><big>
+thru wandern | strophe -s 1,3
+</code></big>
+</blockquote>
+</P>
+<P>
+The list following the
+<b>-s</b>
+option can contain individual strophes separated by commas.
+For example, the following command extracts verses 1, 3 and 4
+in succession:
+</P>
+<P>
+<blockquote>
+<code><big>
+thru wandern | strophe -s 1,3,4
+</code></big>
+</blockquote>
+</P>
+<P>
+Strophes may also be output in non-numeric order as in the following
+command invocation:
+</P>
+<P>
+<blockquote>
+<code><big>
+thru wandern | strophe -s 4,3,2,1
+</code></big>
+</blockquote>
+</P>
+<P>
+If the
+<b>-x</b>
+option is invoked,
+<b>strophe</b>
+outputs only a single strophe whose string
+<i>label</i>
+is specified as an option.
+Strophe names need not be numerical.
+E.g.
+</P>
+<P>
+<blockquote>
+<code><big>
+strophe -x ossia
+</code></big>
+</blockquote>
+</P>
+<P>
+If the
+<b>strophe</b>
+command is invoked without any option,
+then all strophes are expanded in the output in numerical order
+beginning with strophe 1.
+Missing numerical strophes
+(such as a missing strophe <code><big>S/3</big></code> in a four-strophe encoding)
+will cause an error to be generated and terminate the
+<b>strophe</b>
+command.
+</P>
+<P>
+Note that the
+<b>strophe</b>
+command allows strophe numbers containing a single decimal point,
+such as strophe <code><big>*S/4.2</big></code>.
+Having extracted the verse <code><big>*S/1</big></code>, the
+<b>strophe</b>
+command will output verse <code><big>*S/1.1</big></code>
+in preference to <code><big>*S/2</big></code> -- if the decimal strophe is present.
+This feature allows more than one strophic passage to be encoded
+within a single abbreviated format file.
+This feature might prove useful, for example, in a musical work that contains
+a brief refrain in the middle of each verse.
+</P>
+<P>
+The various strophe-related tandem interpretations are summarized
+below:
+<blockquote><TABLE>
+<TR><TD>*strophe</TD><TD>strophic passage initiator</TD></TR>
+<TR><TD>*S-</TD><TD>strophic passage terminator</TD></TR>
+<TR><TD>*S/<i>string</i></TD><TD>strophe name label</TD></TR>
+<TR><TD>*S/<i>n[.n]</i></TD><TD>strophe number label</TD></TR>
+<TR><TD>*S/fin</TD><TD>strophe end indicator</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Types of Strophe Interpretations</i>
+</CENTER>
+</P>
+<P>
+Note that for each strophic passage, all strophe labels must appear
+on the same record.
+See <A HREF="#EXAMPLES">EXAMPLES</A> below.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<i>strophe</i>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-s <i>strophe_list</i></TD><TD>output numbered strophes according to <i>strophe_list</i></TD></TR>
+<TR><TD><b>-x <i>strophe_label</i></TD><TD>output only strophes labelled <i>strophe_label</i></TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<A NAME="EXAMPLES">
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following example is concocted to illustrate the operation of the
+<b>strophe</b>
+command.
+Consider the following Humdrum input:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `strophe' example.</TD></TR>
+<TR><TD>**example</TD><TD>**bar</TD></TR>
+<TR><TD>*>[A,V,V,Coda]</TD><TD>*>[A,V,V,Coda]</TD></TR>
+<TR><TD>*>A</TD><TD>*>A</TD></TR>
+<TR><TD>A</TD><TD>i</TD></TR>
+<TR><TD>*>V</TD><TD>*>V</TD></TR>
+<TR><TD>*</TD><TD>**foo</TD></TR>
+<TR><TD>*</TD><TD>*strophe</TD></TR>
+<TR><TD>*</TD><TD>*^</TD></TR>
+<TR><TD>*</TD><TD>*S/1</TD><TD>*S/2</TD></TR>
+<TR><TD>B</TD><TD>1</TD><TD>2</TD></TR>
+<TR><TD>*</TD><TD>*S/fin</TD><TD>*S/fin</TD></TR>
+<TR><TD>*</TD><TD>*v</TD><TD>*v</TD></TR>
+<TR><TD>*</TD><TD>*S-</TD></TR>
+<TR><TD>*</TD><TD>**bar</TD></TR>
+<TR><TD>C</TD><TD>refrain</TD></TR>
+<TR><TD>*</TD><TD>*strophe</TD></TR>
+<TR><TD>*</TD><TD>*^</TD></TR>
+<TR><TD>*</TD><TD>*S/1.1</TD><TD>*S/2.1</TD></TR>
+<TR><TD>B</TD><TD>1</TD><TD>2</TD></TR>
+<TR><TD>*</TD><TD>*S/fin</TD><TD>*S/fin</TD></TR>
+<TR><TD>*</TD><TD>*v</TD><TD>*v</TD></TR>
+<TR><TD>*</TD><TD>*S-</TD></TR>
+<TR><TD>*>Coda</TD><TD>*>Coda</TD></TR>
+<TR><TD>*</TD><TD>**foo</TD></TR>
+<TR><TD>E</TD><TD>i</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Since this file is in abbreviated format, we must first
+expand it to through-composed form using the
+<A HREF="thru.html"><b>thru</b></A>
+command.
+The resulting output is:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `strophe' example.</TD></TR>
+<TR><TD>**example</TD><TD></TD><TD></TD><TD>**bar</TD></TR>
+<TR><TD>*thru</TD><TD></TD><TD></TD><TD>*thru</TD></TR>
+<TR><TD>*>A</TD><TD></TD><TD></TD><TD>*>A</TD></TR>
+<TR><TD>A</TD><TD></TD><TD></TD><TD>i</TD></TR>
+<TR><TD>*>V</TD><TD></TD><TD></TD><TD>*>V</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>**foo</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*thru</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*strophe</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*^</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*S/1</TD><TD></TD><TD></TD><TD>*S/2</TD></TR>
+<TR><TD>B</TD><TD></TD><TD></TD><TD>1</TD><TD></TD><TD></TD><TD>2</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*S/fin</TD><TD></TD><TD></TD><TD>*S/fin</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*v</TD><TD></TD><TD></TD><TD>*v</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*S-</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>**bar</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*thru</TD></TR>
+<TR><TD>C</TD><TD></TD><TD></TD><TD>refrain</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*strophe</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*^</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*S/1.1</TD><TD></TD><TD></TD><TD>*S/2.1</TD></TR>
+<TR><TD>B</TD><TD></TD><TD></TD><TD>1</TD><TD></TD><TD></TD><TD>2</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*S/fin</TD><TD></TD><TD></TD><TD>*S/fin</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*v</TD><TD></TD><TD></TD><TD>*v</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*S-</TD></TR>
+<TR><TD>*>V</TD><TD></TD><TD></TD><TD>*>V</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>**foo</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*thru</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*strophe</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*^</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*S/1</TD><TD></TD><TD></TD><TD>*S/2</TD></TR>
+<TR><TD>B</TD><TD></TD><TD></TD><TD>1</TD><TD></TD><TD></TD><TD>2</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*S/fin</TD><TD></TD><TD></TD><TD>*S/fin</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*v</TD><TD></TD><TD></TD><TD>*v</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*S-</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>**bar</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*thru</TD></TR>
+<TR><TD>C</TD><TD></TD><TD></TD><TD>refrain</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*strophe</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*^</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*S/1.1</TD><TD></TD><TD></TD><TD>*S/2.1</TD></TR>
+<TR><TD>B</TD><TD></TD><TD></TD><TD>1</TD><TD></TD><TD></TD><TD>2</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*S/fin</TD><TD></TD><TD></TD><TD>*S/fin</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*v</TD><TD></TD><TD></TD><TD>*v</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*S-</TD></TR>
+<TR><TD>*>Coda</TD><TD></TD><TD></TD><TD>*>Coda</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>**foo</TD></TR>
+<TR><TD>*</TD><TD></TD><TD></TD><TD>*thru</TD></TR>
+<TR><TD>E</TD><TD></TD><TD></TD><TD>i</TD></TR>
+<TR><TD>*-</TD><TD></TD><TD></TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+The command:
+</P>
+<P>
+<blockquote>
+<code><big>
+strophe file
+</code></big>
+</blockquote>
+</P>
+<P>
+will produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `strophe' example.</TD></TR>
+<TR><TD>**example</TD><TD>**bar</TD></TR>
+<TR><TD>*thru</TD><TD>*thru</TD></TR>
+<TR><TD>*>A</TD><TD>*>A</TD></TR>
+<TR><TD>A</TD><TD>i</TD></TR>
+<TR><TD>*>V</TD><TD>*>V</TD></TR>
+<TR><TD>*</TD><TD>**foo</TD></TR>
+<TR><TD>*</TD><TD>*thru</TD></TR>
+<TR><TD>B</TD><TD>1</TD></TR>
+<TR><TD>*</TD><TD>**bar</TD></TR>
+<TR><TD>*</TD><TD>*thru</TD></TR>
+<TR><TD>C</TD><TD>refrain</TD></TR>
+<TR><TD>B</TD><TD>1</TD></TR>
+<TR><TD>*>V</TD><TD>*>V</TD></TR>
+<TR><TD>*</TD><TD>**foo</TD></TR>
+<TR><TD>*</TD><TD>*thru</TD></TR>
+<TR><TD>B</TD><TD>2</TD></TR>
+<TR><TD>*</TD><TD>**bar</TD></TR>
+<TR><TD>*</TD><TD>*thru</TD></TR>
+<TR><TD>C</TD><TD>refrain</TD></TR>
+<TR><TD>B</TD><TD>2</TD></TR>
+<TR><TD>*>Coda</TD><TD>*>Coda</TD></TR>
+<TR><TD>*</TD><TD>**foo</TD></TR>
+<TR><TD>*</TD><TD>*thru</TD></TR>
+<TR><TD>E</TD><TD>i</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="extract.html">
+<b>extract</b></A> (4),
+<A HREF="thru.html">
+<b>thru</b></A> (4),
+<b>*strophe</b> (2),
+<A HREF="yank.html">
+<b>yank</b> (4)</A>
+</i></b></code></big>
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide20.html#The_strophe_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

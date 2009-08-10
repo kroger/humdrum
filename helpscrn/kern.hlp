@@ -1,0 +1,21 @@
+
+KERN      : Converts various pitch representations to **kern.
+
+     This command translates frequency, pitch, semits and other pitch-
+     related units to **kern -- a core pitch/duration representation.
+
+Inputs processed:
+
+     **cents,   **degree,  **freq,    **fret,    **MIDI,
+     **pitch,   **semits,  **solfg,   **specC,   **Tonh
+
+Syntax:
+
+     kern [-x] [inputfile ...]
+
+Options:
+
+  -x     : suppresses outputting of non-kern data
+
+  Refer to reference manual for further details.
+

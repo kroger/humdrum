@@ -1,0 +1,8 @@
+!! "humdrum: ERROR 1: Record containing add-spine indicator has "
+!! "not been followed by exclusive interpretation for that spine in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for Error number 1
+**ex	**ex
+*+	*
+a	b	c
+*-	*-	*-

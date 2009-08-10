@@ -1,0 +1,550 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH correl 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +12
+.ti -12
+\fBcorrel\fR  --  measure the numerical similarity between two Humdrum spines
+.in -12
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+\fBcorrel\fR  [\fB-f \fItemplatefile\fR]  [\fB-m\fR]  [\fB-p \fIn\fR]  [\fB-s \fIregexp\fR]  [\fIinputfile ...\fR]  [> \fIoutputfile.cor\fR]
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "correl"
+command measures the degree of parametric (numerical) similarity
+between corresponding values in two Humdrum spines.
+More precisely,
+.B "correl"
+calculates Pearson's coefficient of correlation for
+paired tokens containing numerical data.
+.sp 1
+.sp 1
+Two modes of operation are provided.
+In the
+.I "single input mode,"
+a single file containing two equal-length spines is processed.
+In this mode, the output from
+.B "correl"
+consists of a single number indicating the linear correlation between
+the two spines of numerical data.
+.sp 1
+.sp 1
+In the
+.I "dual input mode,"
+two single-spine numerical inputs -- called the
+.I "template file"
+and the
+.I "input file"
+-- are specified by the user.
+Normally, the template file is considerably shorter than the input file.
+In this mode, the output consists of a spine of numerical information
+(\f(CR**correl\fR) that reflects the momentary similarity between
+the template and the input for each successive moment in the input.
+In short, the input file is `scanned' using the template values,
+and the correlational similarity determined at each point.
+.sp 1
+.sp 1
+In both
+.I "single input"
+and
+.I "dual input"
+modes, output numerical values range between +1 and -1.
+Correlation values reflect the degree to which two sets of
+numerical values rise and fall in synchrony.
+The maximum output value is +1 -- indicating that the two sets
+of numbers are perfectly related according to a linear relationship.
+A minimum output value of \(mi1 indicates that the two sets of numbers
+are perfectly out-of-phase -- one set of numbers rises while
+the other set falls by a proportional magnitude, and vice versa.
+A correlation value of zero indicates that there is no linear
+relationship between the two sets of numbers.
+.sp 1
+.sp 1
+In
+.I "single input mode,"
+inputs to
+.B "correl"
+must consist of precisely two spines;
+otherwise an error message is generated and the command is terminated.
+The two spines may contain different interpretations and represent
+different types of information.
+In the case of the
+.I "dual input mode,"
+the input file and template file must have precisely one spine each;
+the spines may differ in length, but the
+.I "template"
+file must not be longer than the
+.I "input"
+file.
+.sp 1
+.sp 1
+Only numerical signifiers are considered by
+.B "correl;"
+non-numeric input data are ignored.
+Where a data token contains a mix of numeric and non-numeric signifiers,
+only the first complete numerical subtoken contributes to the calculation.
+The following examples illustrate how
+.B "correl"
+interprets mixed data tokens:
+.in +2
+.sp 1
+.TS
+c c
+l l.
+data token	numerical interpretation
+
+\f(CR4gg#	\fR4
+\f(CR4.gg#	\fR4
+\f(CR-33aa	\fR-33
+\f(CR-aa33	\fR33
+\f(CRx7.2yz	\fR7.2
+\f(CRa7..2bc	\fR7
+\f(CR[+5]12	\fR5
+\f(CR$17@2	\fR17
+\f(CRa1b2 c.3.d	\fR1   0.3
+.TE
+.sp 1
+.in -2
+Humdrum multiple-stops require special attention in
+.B "correl"
+(see below).
+.sp 1
+.sp 1
+In the
+.I "dual input mode"
+the output from the
+.B "correl"
+command consists of a set of records matching the structure of the
+.I "input"
+document.
+Output values indicate the correlation between the
+.I "template"
+data values and the input data values beginning at that record.
+.sp 1
+.sp 1
+When the
+.I "dual input mode"
+is invoked, it is recommended that output files produced by the
+.B "correl"
+command should be given names with the distinguishing `.cor' extension.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "correl"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-f \fItemplatefile\fR	specify source pattern as \fItemplatefile\fR
+	and invoke dual input mode
+\fB-h\fR	displays a help screen summarizing the command
+	syntax
+\fB-m\fR	disable matched-pairs criterion
+\fB-p \fIn\fR	output precision to \fIn\fR decimal places
+\fB-s \fIregexp\fR	skip; completely ignore data records matching
+	\fIregexp\fR
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The
+.B "-f"
+option is used to specify an independent
+.I "template file"
+and so invoke the
+.I "dual input mode."
+.sp 1
+.sp 1
+The
+.B "-p"
+option can be used to set the precision of the output values to
+.I "n"
+decimal places.
+The default precision is 3 decimal places.
+.sp 1
+.sp 1
+The
+.B "-s"
+option allows the user to avoid (or skip) the processing of certain
+types of data records.
+This option must be accompanied by a user-defined regular-expression.
+Input data records matching this expression are not processed.
+.sp 1
+.sp 1
+Correlation values can be calculated only where all numerical data
+are arranged as matched pairs -- that is, the input conforms to
+the \(odmatched pairs criterion.\(cd
+For example, the following two spines illustrate numerical data matching.
+The number of numerical data values in both spines are matched throughout
+the inputs:
+.in +2
+.sp 1
+.TS
+l l.
+**spine1	**spine2
+10.0	4
+7 3	2 .91
+\.	.
+13.8	4
+5 8 5	1 1 2
+a b c	x
+\.	p q
+*-	*-
+.TE
+.sp 1
+.in -2
+By contrast, the following file shows several transgressions of
+the matched pairs criterion.
+For example, the first data record gives a numerical value in spine #1
+that is not matched by a numerical value in spine #2.
+Similarly, the multiple-stop values in the second data record
+are unmatched in spine #2:
+.in +2
+.sp 1
+.TS
+l l.
+**spine1	**spine2
+9.7	a
+7 31	2
+\.	114
+426	.
+r 11 7	35 xy08z 28
+a b c	6 .07
+\.	p q
+*-	*-
+.TE
+.sp 1
+.in -2
+In normal operation, a single failure to conform to
+the matched pairs criterion will cause
+.B "correl"
+to issue an error message and terminate operation.
+If the
+.B "-m"
+option is invoked, unmatched data is simply ignored.
+For example, with the
+.B "-m"
+option, the above input is treated as equivalent to the
+following input:
+.in +2
+.sp 1
+.TS
+l l.
+**spine1	**spine2
+\.	.
+7	2
+\.	.
+\.	.
+11 7	35 08
+\.	.
+\.	.
+*-	*-
+.TE
+.sp 1
+.in -2
+.in -2
+.SH "EXAMPLES"
+.in +2
+The following examples illustrate the operation of
+.B "correl."
+The first example shows an excerpt containing considerable
+parallel motion between two polyphonic voices.
+Measuring the pitch-contour similarity can be done using the
+single input mode.
+.in +2
+.sp 1
+.TS
+l s s s
+l l l l.
+!! J.S. Bach, Invention No. 8; BWV 779
+**semits	**semits
+*M3/4	*M3/4
+9	17
+12	21
+10	19
+12	21
+9	17
+12	21
+10	19
+12	21
+\(eq6	\(eq6
+5	14
+9	17
+7	16
+9	17
+*-	*-
+.TE
+.sp 1
+.in -2
+In order to avoid processing the measure numbers, the skip (\fB-s\fR)
+option is used; executing the command:
+.sp 1
+.sp 1
+.in +2
+correl -s = bwv779
+.in -2
+.sp 1
+.sp 1
+will produce the following output:
+.sp 1
+.sp 1
+.in +2
+0.979
+.in -2
+.sp 1
+.sp 1
+The second example illustrates the dual input mode.
+The target input consists of a single spine (labelled
+**input)
+containing mixed alphabetic and numerical values.
+(This input file is shown below as the left-most spine.)
+The template file consists of the numerical sequence:
+1, 2, 3 -- mixed with the letters a, b, c.
+(This file is shown as the middle spine below.)
+Note that the non-numeric characters in both the input
+and template files have no influence on the operation of
+.B "correl."
+The third (output) spine is produced by the following command:
+.sp 1
+.sp 1
+.in +2
+correl -f template input > output.cor
+.in -2
+.sp 1
+.sp 1
+.in +2
+.sp 1
+.TS
+c c c
+c c c
+l l l.
+(input	(template	(correl
+file)	file)	output)
+**input	**template	**correl
+0	1a	1.000
+1	2b	1.000
+2	3c	1.000
+3	*-	-0.655
+4		-0.655
+x1x		0.866
+y2.		0.866
+2z		0.000
+(3)		-1.000
+[2]		.
+01		.
+*-		*-
+.TE
+.sp 1
+.in -2
+The similarity values generated by
+.B "correl"
+are given in the
+**correl
+spine.
+Each successive value in the output spine is matched with a data token in
+the target input file (\f(CR**foo\fR).
+For example, the initial three output values (1.000)
+indicate that exact positive correlations occur between the template
+and the input.
+That is (0, 1, 2) (1, 2, 3) and (2, 3, 4) all show simple equi-distant
+increases corresponding to the source template.
+The final numerical value in
+**correl
+shows a negative correlation (-1.000) indicating that the numerical sequence
+(3, 2, 1) is the exact opposite contour to the source template (1, 2, 3).
+By contrast, the immediately preceding output
+value (0.000) indicates that the sequence (2, 3, 2)
+shows no systematic linear relationship with the source template (1, 2, 3).
+.sp 1
+.sp 1
+The following example provides a more complicated illustration of
+.B "correl."
+Once again the left-most spine is the target input,
+the middle spine is the source template, and the right-most spine
+shows the corresponding output.
+.in +2
+.sp 1
+.TS
+c c c
+c c c
+l l l.
+(input	(template	(correl
+file)	file)	output)
+**input	**template	**correl
+\(eq1	1	.
+1	2 3	1.000
+2 3	.	-0.370
+100	4	-0.742
+8r	5 6	.
+4	*-	0.042
+5 6		.
+\(eq2		.
+0		.
+4r		.
+-2x -3		.
+-x8		.
+\(eq\(eq		.
+*-		*-
+.TE
+.sp 1
+.in -2
+The above output spine was created by executing the command:
+.sp 1
+.sp 1
+.in +2
+correl -m -s '[=r]' -f template input > output.cor
+.in -2
+.sp 1
+.sp 1
+Due to the
+.B "-s"
+option, all records in the input file containing an equals-sign
+or lower-case `r' are eliminated from the calculations.
+The presence of the null-token in the third data record of the template file is
+noteworthy.
+Although no correlations are calculated with the null-token,
+it acts as a place-holder, and causes the corresponding record
+in the input file to be ignored.
+For example, the first correlation value is calculated on the basis
+of the following coordination of numerical data:
+.in +2
+.sp 1
+.TS
+l l.
+1	1
+2 3 	2 3
+100	.
+4	4
+5 6	5 6
+.TE
+.sp 1
+.in -2
+Since the value `100' is not matched with a numerical value in the
+template, it is ignored in the correlation measure.
+(Note that without the
+.B "-m"
+option, no output would be generated.)
+.sp 1
+.sp 1
+At the next instant, the correlation value is calculated on the basis
+of the following coordination of numerical data:
+.in +2
+.sp 1
+.TS
+l l.
+2 3	1
+100 	2 3
+4	.
+5 6	4
+0	5 6
+.TE
+.sp 1
+.in -2
+The double-stops do not form matched pairs, hence much of the data
+is discarded.
+For example, in the first data record, 2 is matched with 1 and 3 is discarded.
+In the second record, 100 is matched with 2 and 3 is discarded, etc.
+.sp 1
+.sp 1
+The third correlation value is calculated on the basis
+of the following coordination of numerical data:
+.in +2
+.sp 1
+.TS
+l l.
+100	1
+4 	2 3
+5 6	.
+0	4
+-2 -3	5 6
+.TE
+.sp 1
+.in -2
+In this case, the correlation value is based on the following numerical pairing:
+100 \(io 1, 4 \(io 2, 0 \(io 4, \(mi2 \(io 5, \(mi3 \(io 6.
+All other numerical values are ignored.
+.sp 1
+.sp 1
+The final correlation value in this example is calculated on the basis
+of the following coordination of numerical data:
+.in +2
+.sp 1
+.TS
+l l.
+4	1
+5 6 	2 3
+0	.
+-2 -3	4
+8	5 6
+.TE
+.sp 1
+.in -2
+The corresponding correlation value is based on the following numerical pairing:
+4 \(io 1, 5 \(io 2, 6 \(io 3, \(mi2 \(io 4, 8 \(io 5.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBpatt\fR (1), \fBpattern\fR (1), \fBsimil\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+Correlation coefficients indicate only the
+magnitude of the association between two sets of data.
+High correlation values can occur purely by chance.
+The noteworthiness (statistical significance) of a
+correlation value depends on the number of input values
+given in the template spine.
+Novice users should consult a standard statistics textbook
+for further advice on how to interpret the results.
+.sp 1
+.sp 1
+For formal statistical measures, the
+.B "-m"
+option should never be invoked.
+.sp 1
+.sp 1
+If only one pair of matched values is present,
+the linear correlation is mathematically undefined.
+In this case a question mark signifier is output.
+.in -2
+.sp 1
+.sp 1
+.SH "LIMITS"
+.in +2
+The
+.B "correl"
+command is currently unable to handle input files greater than
+about 4,000 records.
+.in -2

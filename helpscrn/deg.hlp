@@ -1,0 +1,24 @@
+
+DEG       : Converts various pitch representations to relative scale degree.
+
+     This command translates kern, pitch, solfg and other pitch-
+     related units to **deg (i.e. relative scale degree).
+
+Inputs processed:
+
+     **kern,    **pitch,   **solfg,   **Tonh
+
+Syntax:
+
+     deg [-apt] [file ...]
+
+Options:
+
+     -a     : output absolute scale degree only; don't indicate melodic
+              direction using "^" or "v"
+     -p     : preserve non-deg data in output
+     -t     : suppresses outputting of all but first note for groups of
+              tied notes
+
+  Refer to reference manual for further details.
+

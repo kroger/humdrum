@@ -1,0 +1,23 @@
+
+PC        : Converts various pitch representations to pitch-class.
+
+     This command translates frequency, pitch, semits, and other pitch-
+     related units to **pc (i.e. pitch-class).
+
+Inputs processed:
+
+     **cents,   **freq,    **kern,    **pc,      **pitch,
+     **semits,  **solfg,   **specC,   **Tonh
+
+Syntax:
+
+     pc [-atx] [inputfile ...]
+
+Options:
+
+  -a     : output alphabetic aliases for **pc values 10 ("A") and 11 ("B")
+  -t     : suppresses outputting of all but first note for groups of tied notes
+  -x     : suppresses outputting of non-pc data
+
+  Refer to reference manual for further details.
+

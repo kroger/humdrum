@@ -1,0 +1,1015 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 3</TITLE>
+<!-- Chapter 3 (Some Initial Processing) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:13:33 EST 2000">
+<meta name="description" content="Chapter 3 (Some Initial Processing) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<H1>Chapter3</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide02.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide04.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Some Initial Processing</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+Now that we have learned some things about Humdrum representations
+(and the <code><big>**kern</big></code> representation in particular),
+let's explore some basic processing tasks.
+</P>
+<A NAME="The_census_Command">
+<H2>The <i>census</i> Command</H2>
+</P>
+<P>
+The Humdrum
+<A HREF="commands/census.html"><b>census</b></A>
+command provides basic information about an input stream or file.
+We can invoke the command by typing the command name followed by
+the name of a file.
+The command
+</P>
+<P>
+<blockquote>
+<code><big>census india01.krn</big></code>
+</blockquote>
+</P>
+<P>
+might produce the following output:
+<blockquote><TABLE>
+<TR><TD><code><big>HUMDRUM DATA</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>Number of data tokens:     91</TD></TR>
+<TR><TD>Number of null tokens:     0</TD></TR>
+<TR><TD>Number of multiple-stops:  0</TD></TR>
+<TR><TD>Number of data records:    91</TD></TR>
+<TR><TD>Number of comments:        14</TD></TR>
+<TR><TD>Number of interpretations: 7</TD></TR>
+<TR><TD>Number of records:         112</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<A NAME="Number_of_barlines">
+<A NAME="Longest_note">
+<A NAME="Highest_note">
+<A NAME="Lowest_note">
+<P>
+Most commands provide
+<i>options</i>
+that will modify the operation of the command in a particular way.
+In UNIX-style commands, options follow after the
+command name and are typically specified by a single letter
+preceded by a hyphen.
+The
+<b>-k</b>
+option with the
+<b>census</b>
+command will give further information pertaining to
+the Humdrum <code><big>**kern</big></code> representation.
+With the
+<b>-k</b>
+option, the output includes the number of notes in the file,
+the longest, shortest, highest, and lowest notes, the maximum
+number of concurrent notes or voices, the number of rests,
+and the number of barlines.
+For example, the command:
+</P>
+<P>
+<blockquote>
+<code><big>census -k india01.krn</big></code>
+</blockquote>
+</P>
+<P>
+might produce the following
+<i>additional</i>
+output:
+<blockquote><TABLE>
+<TR><TD><code><big>KERN DATA</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>Number of noteheads:       78</TD></TR>
+<TR><TD>Number of notes:           78</TD></TR>
+<TR><TD>Longest note:              1</TD></TR>
+<TR><TD>Shortest note:             16</TD></TR>
+<TR><TD>Highest note:              cc</TD></TR>
+<TR><TD>Lowest note:               c</TD></TR>
+<TR><TD>Number of rests:           1</TD></TR>
+<TR><TD>Maximum number of voices:  1</TD></TR>
+<TR><TD>Number of single barlines: 11</TD></TR>
+<TR><TD>Number of double barlines: 1</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Notice that a distinction is made between the number of notes
+and the number of noteheads.
+A tied note is considered to be a single "note,"
+although it may be notated using two or more noteheads.
+</P>
+<P>
+The output from
+<b>census</b>
+can be restricted to a particular item of information by "piping"
+the output to the UNIX
+<b>grep</b>
+command.
+</P>
+<A NAME="Simple_Searches_using_the_grep_Command">
+<H2>Simple Searches using the <i>grep</i> Command</H2>
+</P>
+<P>
+The UNIX
+<b>grep</b>
+command is a popular tool for searching for lines
+that match some specified pattern.
+Patterns may be simple strings of characters, or may be more complicated
+constructions defined using the UNIX
+<i>regular expression</i>
+syntax.
+Regular expressions will be described in detail in
+<A HREF="guide09.html">Chapter 9.</A>
+The command name "<code><big>grep</big></code>" is an acronym
+for "get regular expression."
+</P>
+<A NAME="Andante_Search">
+<P>
+Useful patterns are often literal character strings, such as keywords.
+For example, the following command identifies whether the
+file <code><big>opus28.krn</big></code> contains the word "<code><big>Andante</big></code>":
+</P>
+<P>
+<blockquote>
+<code><big>grep 'Andante' opus28.krn</big></code>
+</blockquote>
+</P>
+<P>
+Every line containing the specified pattern will be output.
+If no match is found, no output is given.
+</P>
+<A NAME="Any_Andante_Search">
+<P>
+Using a single command, all files in the current directory can be
+searched by substituting the asterisk (shell <i>wildcard</i>) in place
+of a filename.
+The following command identifies all instances where the
+word "<code><big>Andante</big></code>" occurs;
+all files in the current directory are searched:
+</P>
+<P>
+<blockquote>
+<code><big>grep 'Andante' *</big></code>
+</blockquote>
+</P>
+<P>
+Once again, every line containing the sought pattern is echoed
+in the output.
+If more than one pattern is found, each instance of the
+pattern will be output on a separate line.
+Whenever an asterisk or "wildcard" is used as part of the filename,
+<b>grep</b>
+causes the <i>name</i> of each file to be prepended to the
+output for all patterns that are found:
+</P>
+<P>
+<blockquote>
+<code><big>opus28:!! Andante
+<br>
+opus29:!! Andante
+<br>
+opus46:!! Andante
+<br>
+opus91:!! Andante
+<br>
+opus98:!! Andante</big></code>
+</blockquote>
+</P>
+<P>
+By default,
+<b>grep</b>
+distinguishes upper- and lower-case characters,
+so the above command will not match strings such
+as "<code><big>ANDANTE</big></code>".
+However, the
+<b>-i</b>
+option tells
+<b>grep</b>
+to ignore the case when searching.
+E.g.,
+</P>
+<P>
+<blockquote>
+<code><big>grep -i 'Andante' *</big></code>
+</blockquote>
+</P>
+<A NAME="Double_sharp_Search">
+<P>
+Sought patterns may occur in any line, including data records
+and comments.
+The following command will identify the presence of any
+double-sharps in the file <code><big>schumann.krn</big></code>.
+</P>
+<P>
+<blockquote>
+<code><big>grep '##' schumann.krn</big></code>
+</blockquote>
+</P>
+<A NAME="Pattern_Locations_Using_grep_-n">
+<H2>Pattern Locations Using grep -n</H2>
+</P>
+<P>
+If a pattern is found, it is sometimes helpful to know the precise
+location of the pattern.
+The
+<b>-n</b>
+option tells
+<b>grep</b>
+to prepend the
+<i>line number</i>
+for each matching instance.
+The following command identifies the line numbers for lines
+containing a double sharp for the file <code><big>melody.krn</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>grep -n '##' melody.krn</big></code>
+</blockquote>
+</P>
+<P>
+The output might look like this:
+</P>
+<P>
+<blockquote>
+<code><big>1109:{4g##
+<br>
+1731:16g##
+<br>
+3002:16f##</big></code>
+</blockquote>
+</P>
+<P>
+--  meaning that double sharps were found in lines 1109, 1731,
+and 3002 in the file <code><big>melody.krn</big></code>.
+</P>
+<A NAME="Counting_Pattern_Occurrences_Using_grep-c">
+<H2>Counting Pattern Occurrences Using grep -c</H2>
+</P>
+<A NAME="Phrase_Count">
+<P>
+In some cases, the user is interested in counting the total number of
+instances of a found pattern.
+The
+<b>-c</b>
+option causes
+<b>grep</b>
+to output a numerical
+<i>count</i>
+of the number of lines containing matching instances.
+For example, in the <code><big>**kern</big></code> representation, the beginning of
+each phrase is marked by the presence of an open curly brace (`<code><big>{</big></code>').
+So the following command can be used to count the number of phrases in the
+file <code><big>glazunov.krn</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>grep -c '{' glazunov.krn</big></code>
+</blockquote>
+</P>
+<P>
+As noted, the
+<b>grep</b>
+command will search all lines (including comments)
+for matching instances of the specified pattern.
+If a curly brace were to appear in a comment or other non-data record,
+then our phrase-count would be incorrect.
+More carefully constructed patterns require a better knowledge of 
+<i>regular expressions.</i>
+Regular expressions are discussed in
+<A HREF="guide09.html">Chapter 9.</A>
+</P>
+<A NAME="Searching_for_Reference_Information">
+<H2>Searching for Reference Information</H2>
+</P>
+<P>
+As we saw in
+<A HREF="guide02.html">Chapter 2,</A>
+Humdrum files typically encode
+library-type information using reference records.
+For example, the
+<A HREF="guide.append1.html#Authorship_Information"><B>composer's name</B></A>
+is encoded in a <code><big>!!!COM:</big></code>
+record, and the
+<A HREF="guide.append1.html#Identification_Information"><B>title</B></A>
+is encoded via the <code><big>!!!OTL:</big></code> record.
+In conjunction with the
+<b>grep</b>
+command, these three-letter codes provide useful tags to search for
+pertinent information.
+For example, the following command will identify the composer
+for the file <code><big>opus24.krn</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>grep '!!!COM:' opus24.krn</big></code>
+</blockquote>
+</P>
+<P>
+The output might look like this:
+</P>
+<P>
+<blockquote>
+<code><big>!!!COM: Boulanger, Nadia</big></code>
+</blockquote>
+</P>
+<A NAME="Generate_Composer_List">
+<P>
+Once again, a wildcard (i.e., the asterisk) can be used to address
+all of the files in the current directory.
+Hence the command
+</P>
+<P>
+<blockquote>
+<code><big>grep '!!!COM:' *</big></code>
+</blockquote>
+</P>
+<A NAME="Generate_Title_List">
+<P>
+will produce a list of all composers of files in the current directory.
+Similarly, the following command will generate a list of all of
+the titles:
+</P>
+<P>
+<blockquote>
+<code><big>grep '!!!OTL:' *</big></code>
+</blockquote>
+</P>
+<P>
+The output might look as follows:
+</P>
+<P>
+<blockquote>
+<code><big>foster11:!!!OTL: Oh! Susanna
+<br>
+foster12:!!!OTL: Jeanie with the Light Brown Hair
+<br>
+foster13:!!!OTL: Beautiful Dreamer
+<br>
+foster14:!!!OTL: Gwine to Run All Night (or 'De Camptown Race')
+<br>
+foster15:!!!OTL: My Old Kentucky Home, Good-Night
+<br>
+foster16:!!!OTL: We are Coming, Father Abraam
+<br>
+foster17:!!!OTL: Don't Bet Your Money on De Shanghai
+<br>
+foster18:!!!OTL: Gentle Annie
+<br>
+foster19:!!!OTL: If You've Only Got a Moustache
+<br>
+foster20:!!!OTL: Maggie by my Side
+<br>
+foster21:!!!OTL: Old Folks at Home
+<br>
+foster22:!!!OTL: Better Times are Coming
+<br>
+foster23:!!!OTL: When this Dreadful War is Ended
+<br>
+foster24:!!!OTL: Hard Times Comes Again No More</big></code>
+</blockquote>
+</P>
+<P>
+Remember that when a wildcard is used in filenames,
+<b>grep</b>
+prepends the filename prior to found patterns.
+These filename `headers' can be eliminated by selecting the
+<b>-h</b>
+option for <b>grep</b>:
+</P>
+<P>
+<blockquote>
+<code><big>grep -h '!!!OTL:' *</big></code>
+</blockquote>
+</P>
+<P>
+(N.B. Some older versions of
+<b>grep</b>
+do not support all of the options described here.
+Filename headers can be stripped from the output by using the UNIX
+<b>sed</b>
+command described in
+<A HREF="guide14.html">Chapter 14.</A>)
+</P>
+<P>
+We might place the resulting list of titles in a separate file using the
+UNIX
+<i>file redirection</i>
+construction.
+The output of a command can be placed into a file by following the
+command with a greater-than sign (>) followed by a filename.
+For example, the following command places the output from
+<b>grep</b>
+in a file called <code><big>titles</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>grep -h '!!!OTL:' * > titles</big></code>
+</blockquote>
+</P>
+<P>
+Beware that if the file <code><big>titles</big></code> already exists
+then it will be over written and its previous contents lost.
+With the
+<b>-h</b>
+option the file <code><big>titles</big></code> might contain the following lines:
+</P>
+<P>
+<blockquote>
+<code><big>!!!OTL: Oh! Susanna
+<br>
+!!!OTL: Jeanie with the Light Brown Hair
+<br>
+!!!OTL: Beautiful Dreamer
+<br>
+!!!OTL: Gwine to Run All Night (or 'De Camptown Race')
+<br>
+!!!OTL: My Old Kentucky Home, Good-Night
+<br>
+!!!OTL: We are Coming, Father Abraam
+<br>
+!!!OTL: Don't Bet Your Money on De Shanghai
+<br>
+!!!OTL: Gentle Annie
+<br>
+!!!OTL: If You've Only Got a Moustache
+<br>
+!!!OTL: Maggie by my Side
+<br>
+!!!OTL: Old Folks at Home
+<br>
+!!!OTL: Better Times are Coming
+<br>
+!!!OTL: When this Dreadful War is Ended
+<br>
+!!!OTL: Hard Times Comes Again No More</big></code>
+</blockquote>
+</P>
+<P>
+<A NAME="The_sort_Command">
+<H2>The <i>sort</i> Command</H2>
+</P>
+<P>
+The UNIX operating system provides a general sorting utility
+called <b>sort</b>.
+We might use this utility to rearrange the titles in alphabetical order:
+</P>
+<P>
+<blockquote>
+<code><big>sort titles</big></code>
+</blockquote>
+</P>
+<P>
+Rather than using an intermediate file, we can directly connect the
+<b>grep</b>
+and
+<b>sort</b>
+commands using a UNIX "pipe."
+The vertical bar (<code><big>|</big></code>) creates a connection between the
+output of one command and the input of the next command.
+We can combine the above two commands to create an alphabetical
+listing of all titles in the current directory:
+</P>
+<P>
+<blockquote>
+<code><big>grep '!!!OTL:' * | sort</big></code>
+</blockquote>
+</P>
+<P>
+File redirection can be added at the end of a pipe so the final
+output is captured in a file.
+In the following case, the alphabetized titles are placed in the
+file <code><big>titles</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>grep '!!!OTL:' * | sort > titles</big></code>
+</blockquote>
+</P>
+<A NAME="The_uniq_Command">
+<H2>The <i>uniq</i> Command</H2>
+</P>
+<P>
+Bach often harmonized a chorale melody more than once.
+In the 185 chorales in the original 1784 edition,
+several duplicate titles are present.
+Suppose you want to create an alphabetical list of titles,
+but you want to exclude duplicate titles.
+The UNIX
+<b>uniq</b>
+command provides a useful utility for eliminating duplication.
+Without any option,
+<b>uniq</b>
+simply eliminates any successive repeated lines.
+For example, given the input:
+</P>
+<P>
+<blockquote>
+<code><big>1
+<br>
+1
+<br>
+1
+<br>
+2
+<br>
+2
+<br>
+3</big></code>
+</blockquote>
+</P>
+<P>
+the 
+<b>uniq</b>
+command will produce the following output:
+</P>
+<P>
+<blockquote>
+<code><big>1
+<br>
+2
+<br>
+3</big></code>
+</blockquote>
+</P>
+<P>
+Note that
+<b>uniq</b>
+only discards
+<i>successive</i>
+repeated records;
+an input such as the following would remain unmodified by the
+<b>uniq</b>
+command:
+</P>
+<P>
+<blockquote>
+<code><big>1
+<br>
+2
+<br>
+3
+<br>
+1
+<br>
+3
+<br>
+1</big></code>
+</blockquote>
+</P>
+<P>
+Another important point about
+<b>uniq</b>
+is that successive lines must be
+<i>exact repetitions</i>
+in order to be discarded.
+For example, if one line has a trailing blank that is not present in
+the previous line, then the line is not discarded.
+</P>
+<P>
+Returning to our problem of creating a list of unique titles
+for J.S. Bach's chorale harmonizations, we can use the following
+command pipeline.
+</P>
+<P>
+<blockquote>
+<code><big>grep -h '!!!OTL:' * | sort | uniq</big></code>
+</blockquote>
+</P>
+<P>
+Note that our "pipeline" consists of three successive commands
+with the outputs connected to the inputs using the UNIX pipe
+symbol (<code><big>|</big></code>).
+The
+<b>sort</b>
+command is essential in order to collect identical titles
+as successive lines before passing the list to
+<b>uniq</b>.
+</P>
+<P>
+Suppose you wanted to ensure that all of the works in the current
+directory are composed by the same composer.
+The same command structure can be used, only we would search for reference
+records encoding the composer's name:
+</P>
+<P>
+<blockquote>
+<code><big>grep -h '!!!COM:' * | sort | uniq</big></code>
+</blockquote>
+</P>
+<P>
+Even if the current directory contains hundreds of works by
+one composer (say Beethoven) and just a single work by another composer,
+the presence of the odd score will be obvious without
+having to look through long lists:
+</P>
+<P>
+<blockquote>
+<code><big>!!!COM: Beethoven, Ludwig van</big></code>
+<br>
+<code><big>!!!COM: Stamitz, Carl Philipp</big></code>
+</blockquote>
+</P>
+<A NAME="Generate_Instrumentation_List">
+<P>
+Of course we can make similar lists for other types of information
+available in reference records.
+The <code><big>AIN</big></code> reference record encodes instrumentation.
+We could make a list of various instrumental combinations
+used for scores in the current directory:
+</P>
+<P>
+<blockquote>
+<code><big>grep -h '!!!AIN:' * | sort | uniq</big></code>
+</blockquote>
+</P>
+<A NAME="Options_for_the_uniq_Command">
+<H2>Options for the <i>uniq</i> Command</H2>
+</P>
+<P>
+Like <b>grep</b>, the
+<b>uniq</b>
+command provides several options that modify its behavior.
+The
+<b>-d</b>
+option causes only those records to be output which are
+<i>duplicated</i>
+(i.e. two or more instances).
+Conversely, the
+<b>-u</b>
+option causes only those records to be output that are truly
+<i>unique</i>
+(i.e. only a single instance is present in the input).
+</P>
+<A NAME="Chorales_with_same_titles">
+<P>
+Suppose, for example, that we want to know which of the Bach
+chorales are harmonizations of the same tunes -- that is,
+have the same titles.
+(Of course the same chorale might be known by two or more titles,
+but let's defer this problem until
+<A HREF="guide25.html">Chapter 25.</A>)
+The
+<b>-d</b>
+option will only output the duplicate records:
+</P>
+<P>
+<blockquote>
+<code><big>grep -h '!!!OTL:' * | sort | uniq -d</big></code>
+</blockquote>
+</P>
+<P>
+The output will identify those titles which appear in two or
+more files in the current directory.
+The output might look as follows:
+</P>
+<P>
+<blockquote>
+<code><big>!!!OTL: Befiehl du deine Wege
+<br>
+!!!OTL: Christ lag in Todesbanden
+<br>
+!!!OTL: Christus, der ist mein Leben
+<br>
+!!!OTL: Das alte Jahr vergangen ist
+<br>
+!!!OTL: Ein' feste Burg ist unser Gott
+<br>
+!!!OTL: Erbarm' dich mein, o Herre Gott
+<br>
+!!!OTL: Herr, ich habe missgehandelt
+<br>
+!!!OTL: Herr, wie du willst, so schick's mit mir
+<br>
+!!!OTL: Ich dank' dir, lieber Herre
+<br>
+!!!OTL: Jesu, der du meine Seele
+<br>
+!!!OTL: Jesu, meiner Seelen Wonne</big></code>
+</blockquote>
+</P>
+<P>
+Having established which titles are duplicates,
+a logical next step might be to identify the specific files involved.
+We can use
+<b>grep</b>
+again to search for a specific title.
+Without the
+<b>-h</b>
+option, the output will identify the appropriate filenames.
+For example:
+</P>
+<P>
+<blockquote>
+<code><big>grep '!!!OTL: Befiehl du deine Wege' *</big></code>
+</blockquote>
+</P>
+<P>
+might produce the following output:
+</P>
+</P>
+<P>
+<blockquote>
+<code><big>bwv270.krn:!!!OTL: Befiehl du deine Wege</big></code>
+<br>
+<code><big>bwv271.krn:!!!OTL: Befiehl du deine Wege</big></code>
+<br>
+<code><big>bwv272.krn:!!!OTL: Befiehl du deine Wege</big></code>
+</blockquote>
+</P>
+<P>
+Sometimes we would like to have an output that
+contains <i>only</i> the <i>filenames</i> containing the sought pattern.
+The
+<b>-l</b>
+option causes
+<b>grep</b>
+to output only filenames that contain one or more instances
+of the sought pattern:
+</P>
+<P>
+<blockquote>
+<code><big>grep -l '!!!OTL: Befiehl du deine Wege' *</big></code>
+</blockquote>
+</P>
+<P>
+The output would appear as follows:
+</P>
+<P>
+<blockquote>
+<code><big>bwv270.krn</big></code>
+<br>
+<code><big>bwv271.krn</big></code>
+<br>
+<code><big>bwv272.krn</big></code>
+</blockquote>
+</P>
+<P>
+As we've already notes, the
+<b>-u</b>
+option for <b>uniq</b> causes only unique entries in a list to be passed
+to the output.
+This is often useful in identifying works that differ in some way
+from other works in a group or corpus.
+For example, in some repertory, you may remember that a particular work
+had a different instrumentation than the other works.
+But you may not be able to remember what the specific instrumentation was.
+Use the
+<b>-u</b>
+option for
+<b>uniq</b>
+to produce a list consisting of only those works whose
+instrumentation differs from all others:
+</P>
+<P>
+<blockquote>
+<code><big>grep -h '!!!AIN:' * | sort | uniq -u</big></code>
+</blockquote>
+</P>
+<A NAME="Count_composer_works">
+<P>
+As in the case of the
+<b>grep</b>
+command,
+<b>uniq</b>
+also supports a
+<b>-c</b>
+option which counts the number of occurrences of a pattern.
+For example, if we want to count the number of works by each composer
+in the current directory:
+</P>
+<P>
+<blockquote>
+<code><big>grep -h '!!!OTL:' * | sort | uniq -c</big></code>
+</blockquote>
+</P>
+<P>
+The output might appear as follows:
+</P>
+<A NAME="Berardi">
+<A NAME="Caldara">
+<A NAME="Zarlino">
+<A NAME="Sweelinck">
+<A NAME="Josquin">
+<P>
+<blockquote>
+<code><big> 9 !!!COM: Berardi, Angelo
+<br>
+ 2 !!!COM: Caldara, Antonio
+<br>
+12 !!!COM: Zarlino, Gioseffo
+<br>
+ 2 !!!COM: Sweelinck, Jan Pieterszoon
+<br>
+ 4 !!!COM: Josquin Des Pres</big></code>
+<br>
+</blockquote>
+</P>
+<P>
+Notice that the number of instances is prepended to the reference
+records.
+</P>
+<P>
+Incidentally, if we wanted to rearrange this list in order of
+the number of works, we could pass the above output to yet another
+<b>sort</b>
+command.
+Since
+<b>sort</b>
+sorts from left to right, it will begin sorting according to
+the numerical values at the extreme left.
+The command
+</P>
+<P>
+<blockquote>
+<code><big>grep -h '!!!COM:' * | sort | uniq -c | sort -n</big></code>
+</blockquote>
+</P>
+<P>
+will rearrange the above output as follows:
+</P>
+<P>
+<blockquote>
+<code><big> 2 !!!COM: Caldara, Antonio
+<br>
+ 2 !!!COM: Sweelinck, Jan Pieterszoon
+<br>
+ 4 !!!COM: Josquin Des Pres
+<br>
+ 9 !!!COM: Berardi, Angelo
+<br>
+12 !!!COM: Zarlino, Gioseffo</big></code>
+<br>
+</blockquote>
+</P>
+<P>
+It is important to understand that the two
+<b>sort</b>
+commands in our pipeline achieve different goals but
+use the same process.
+The first
+<b>sort</b>
+command sorts the composer's names into alphabetical order.
+This is done so that the ensuing
+<b>uniq</b>
+command is able to count successive identical records.
+Since the
+<b>uniq -c</b>
+command prepends numerical counts, the subsequent
+<b>sort</b>
+sorts first according to the numbers to the left of the
+reference records.
+</P>
+<P>
+As a final note, we might mention that, like
+<b>grep</b>
+and <b>uniq</b>, the
+<b>sort</b>
+command has several options.
+One option, the
+<b>-r</b>
+option, causes the output to be arranged in reverse order.
+This can be useful in producing lists that are ordered from
+most common to least common.
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+In this chapter we have introduced some elementary ways
+of processing Humdrum files.
+We noted that the
+<b>census</b>
+command can be used to identify basic statistics about a file.
+The
+<b>-k</b>
+option for
+<b>census</b>
+provides basic information related to <code><big>**kern</big></code> files,
+such as the number of notes and rests, the highest and lowest notes,
+the number of barlines, etc.
+</P>
+<P>
+In this chapter we also introduced simple searching techniques
+using the
+<b>grep</b>
+command;
+<b>grep</b>
+provides a useful way of locating particular patterns of text
+characters in files.
+We used
+<b>grep</b>
+to identify composers, titles, instrumentation and other information.
+Most of our examples were limited to searching for Humdrum reference
+records.
+In later chapters we will use
+<b>grep</b>
+in more sophisticated searches.
+We noted several useful options for <b>grep</b>:
+the
+<b>-c</b>
+option causes a count to be output of the number of instances
+of the pattern in each file.
+The
+<b>-i</b>
+option causes
+<b>grep</b>
+to ignore any distinction between upper- and lower-case characters
+when searching for patterns.
+The
+<b>-h</b>
+option causes
+<b>grep</b>
+to suppress outputting the filenames prior to found patterns
+when more than one file is searched.
+The
+<b>-l</b>
+option results in only the filenames being output.
+In a later chapter we will encounter
+a number of other useful options provided by <b>grep</b>.
+</P>
+<P>
+Also discussed in this chapter was the
+<b>uniq</b>
+command;
+<b>uniq</b>
+provides a useful utility for eliminating
+or isolating duplicate records or lines.
+Once again a number of useful options were introduced.
+The
+<b>-c</b>
+option causes
+<b>uniq</b>
+to prepend a count of the number of duplicate input lines.
+The
+<b>-d</b>
+option results in only duplicate input lines being noted in the
+output.
+The
+<b>-u</b>
+option does the reverse:
+only those input lines that are unique are passed to the output.
+</P>
+<P>
+Finally, we introduced the UNIX
+<b>sort</b>
+utility.
+This command rearranges the order of successive input lines
+so they are in alphabetic/numeric order.
+The
+<b>sort</b>
+command provides a wealth of useful options;
+however, we mentioned only the
+<b>-r</b>
+option -- which causes the output to be sorted in reverse order.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide04.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide02.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

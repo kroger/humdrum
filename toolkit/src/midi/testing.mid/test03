@@ -1,0 +1,4 @@
+!! midi Test #3
+!! **kern spines without data records should cause no problems.
+**kern
+*-

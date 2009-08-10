@@ -1,0 +1,23 @@
+
+TACET     : Reset MIDI output channels to ensure silence.
+
+     This command resets the MIDI output.  It sends "all-notes-off" commands
+     on MIDI channels 1 to 16.  The TACET command is useful if a MIDI
+     application has terminated abnormally -- leaving one or more sounding
+     notes ("ciphers") on a MIDI device.
+
+     This command is for use on DOS systems only.  The MIDI card should be
+     compatible with the Roland MPU-401 standard.
+
+     See also MIDRESET.
+
+Syntax:
+
+     tacet [-i hex]
+
+Options:
+
+     -i hex  : assign MIDI input/output address to "hex"; default is 330
+
+  Refer to reference manual for further details.
+

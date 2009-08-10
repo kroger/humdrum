@@ -1,0 +1,386 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- midi</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>midi</b>  -- convert from <code><big>**kern</code></big> to Humdrum <code><big>**MIDI</code></big> format
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>midi</b>  [<b>-Ccu</b>]  [<b>-d</b> <i>n</i>]  [<b>-q</b> <i>n</i>]  [<i>inputfile.krn</i> ...]  [ > <i>outputfile.hmd</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>midi</b>
+command converts Humdrum <code><big>**kern</big></code> data into Humdrum <code><big>**MIDI</big></code> data.
+Humdrum <code><big>**MIDI</big></code> data may be played by the
+<A HREF="perform.html"><b>perform</b></A>
+command or converted to a standard MIDI file using the
+<A HREF="smf.html"><b>smf</b></A>
+command.
+The
+<b>midi</b>
+command will translate all <code><big>**kern</big></code> spines in the input
+stream into <code><big>**MIDI</big></code> data,
+and will echo any non-kern spines.
+</P>
+<P>
+It is recommended that output files produced using the
+<b>midi</b>
+command should be given names with the distinguishing `.hmd' extension
+(`Humdrum midi').
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>midi</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-c</b></TD><TD>echo all data records as global comments (prior to the data record)</TD></TR>
+<TR><TD><b>-C</b></TD><TD>echo all data records as global comments (following the data record)</TD></TR>
+<TR><TD><b>-d <i>n</i></TD><TD>assigns a note-duration of <i>n</i> <code><big>**recip</code></big> value to all pitches and rests</TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-q <i>n</i></TD><TD>set number of MIDI clock ticks per quarter-duration to <i>n</i></TD></TR>
+<TR><TD><b>-u</b></TD><TD>suppress the deletion of duplicate (unison) concurrent note-on instructions</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+If the
+<b>-c</b>
+option (`comment') is invoked, all data records are echoed as global
+comments in addition to the usual processing.
+This option is useful in conjunction with the
+<A HREF="perform.html"><b>perform</b></A>
+command;
+<b>perform</b>
+echoes all global comments while playing MIDI inputs,
+and so the comment option allows the user to view the original <code><big>**kern</big></code>
+score while the music is performed.
+</P>
+<P>
+The <b>-d</b> <i>n</i> option allows the user to reassign all the durations
+of all notes and rests in a given input.
+The value <i>n</i> is specified in
+reciprocal duration notation (<code><big>**recip</big></code>), where `4' represents
+a quarter-duration, `2.' represents a dotted half-duration, `12'
+represents a quarter-note triplet, `0' represents a breve, etc.
+(See <code><big>**recip</big></code> in Section 2 for details.)
+With the
+<b>-d</b>
+option all pitches and rests in the input will be assigned the specified
+duration value -- whether or not the notes already have encoded durations.
+This option is useful for such tasks as proof-listening to passages
+containing especially short notes, or auditing works --
+such as Gregorian chant -- where durations have not been encoded
+or are suspect for other reasons.
+Note that the
+<b>-d</b>
+option should be used only in the case of monophonic inputs, or multi-part
+inputs that contain strictly isochronous chords.
+Polyphonic inputs containing non-isochronous durations will cause a
+loss of synchronization between the parts.
+The resulting output is apt to cause serious problems with commands
+such as
+<A HREF="perform.html"><b>perform</b></A>
+and
+<A HREF="smf.html"><b>smf.</b></A>
+</P>
+<P>
+In contrast to MIDI performance data, canonical musical scores
+(such as <code><big>**kern</big></code>) frequently contain unisons -- where two
+voices share the same pitch for a period of time.
+MIDI produces a `note-off' instruction at the end of each note; however
+only a single `note-off' instruction is required to turn-off a note.
+Unfortunately, the first note-off will terminate a note -- even if
+the same pitch is sustained in another voice.
+In normal operation,
+<b>midi</b>
+suppresses the sending of the first of two MIDI `note-off' commands when
+a unison is encountered in the input.
+This ensures that the pitch will be sustained for the longer of the
+unison durations.
+This feature can be disabled by invoking the
+<b>-u</b>
+option.
+</P>
+<P>
+The
+<b>midi</b>
+command assigns a default duration of 72 MIDI clock-ticks per quarter-note.
+This default value may be reassigned using the
+<b>-q</b> <i>n</i> option.
+The value <i>n</i> should be chosen so that all canonical durations
+present in a given score divide evenly into it.
+For example, the default value of 72 clock-ticks per quarter-note,
+means that eighth-notes and sixteenth-notes will have durations of
+36 and 18 clock-ticks respectively.
+Eighth-note triplets and sixteenth-note triplets will have durations
+of 24 and 12 clock-ticks respectively.
+Thirty-second notes will have a duration of 9 clock-ticks.
+But sixty-fourth notes can cause synchronization problems since they
+do not divide evenly into 72.
+The user may wish to reassign this value depending on the types of
+canonical durations present in a given input.
+Changing the default number of clock-ticks will affect the tempo
+of performance when using the
+<A HREF="perform.html"><b>perform</b></A>
+command.
+Hence, it may be necessary to revise the tempo indication of a resulting
+Humdrum midi-format file.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following examples illustrate how
+<b>midi</b>
+may be invoked.
+</P>
+<P>
+<blockquote>
+<code><big>
+midi chopin > chopin.hmd
+</code></big>
+</blockquote>
+</P>
+<P>
+converts the <code><big>**kern</big></code> data from the file <code><big>chopin</big></code> to
+<code><big>**MIDI</big></code> data in the file <code><big>chopin.hmd</big></code>.
+The command:
+</P>
+<P>
+<blockquote>
+<code><big>
+midi -c siegfrd.idl > siegfrd.hmd
+</code></big>
+</blockquote>
+</P>
+<P>
+translates the <code><big>**kern</big></code> data from the file <code><big>siegfrd.idl</big></code>
+to <code><big>**MIDI</big></code> data in the file <code><big>siegfrd.hmd</big></code> and echoes
+all <code><big>**kern</big></code> data as global comments.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SAMPLE OUTPUTS</H3></FONT>
+The operation of
+<b>midi</b>
+is illustrated in the following inputs and outputs.
+In the first example, a simple C major scale is encoded in <code><big>**kern</big></code>.
+</P>
+<P>
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! midi example #1</TD></TR>
+<TR><TD>**kern</TD></TR>
+<TR><TD>*M2/4</TD></TR>
+<TR><TD>*C:</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>8c</TD></TR>
+<TR><TD>8r</TD></TR>
+<TR><TD>8d</TD></TR>
+<TR><TD>8e</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>8f</TD></TR>
+<TR><TD>8g</TD></TR>
+<TR><TD>8a</TD></TR>
+<TR><TD>8b</TD></TR>
+<TR><TD>=3</TD></TR>
+<TR><TD>4cc</TD></TR>
+<TR><TD>4r</TD></TR>
+<TR><TD>====</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Executing the
+<b>midi</b>
+command with the default settings results in the <code><big>**MIDI</big></code>
+output given below.
+Notice that a default channel of MIDI channel 1 has been assigned
+via the tandem interpretation <code><big>*Ch1</big></code>.
+Note also that each <code><big>**kern</big></code> note has resulted in two MIDI instructions:
+"key-on" and "key-off".
+Since the end of one note coincides with the start of the subsequent
+note, key-on and key-off data are output as Humdrum double-stops
+(two tokens separated by a single space character).
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! midi example #1</TD></TR>
+<TR><TD>**MIDI</TD></TR>
+<TR><TD>*Ch1</TD></TR>
+<TR><TD>*M2/4</TD></TR>
+<TR><TD>*C:</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>72/60/64</TD></TR>
+<TR><TD>36/-60/64</TD></TR>
+<TR><TD>36/62/64</TD></TR>
+<TR><TD>36/-62/64 36/64/64</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>36/-64/64 36/65/64</TD></TR>
+<TR><TD>36/-65/64 36/67/64</TD></TR>
+<TR><TD>36/-67/64 36/69/64</TD></TR>
+<TR><TD>36/-69/64 36/71/64</TD></TR>
+<TR><TD>=3</TD></TR>
+<TR><TD>36/-71/64 36/72/64</TD></TR>
+<TR><TD>72/-72/64</TD></TR>
+<TR><TD>====</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+<code><big>**MIDI</big></code> data consist of three numbers separated by slashes (/).
+The first integer represents the number of clock ticks that must elapse
+from the previous instruction before the current event is initiated.
+In the above case, a default value of 72 clock ticks per quarter-note
+has resulted in 36 clock ticks for each eighth note.
+The second integer represents the MIDI key number, where middle C is
+represented as key #60 (negative numbers denote key-off instructions).
+The third integer represents the MIDI key velocity.
+The default key velocity is 64 units.
+</P>
+<P>
+The second example illustrates the handling of input containing multiple-stops.
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! midi example #2</TD></TR>
+<TR><TD>**harm</TD><TD>**kern</TD></TR>
+<TR><TD>*</TD><TD>*Ch3</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>I</TD><TD>4c 4e 4g</TD></TR>
+<TR><TD>IV</TD><TD>4c 4f 4a</TD></TR>
+<TR><TD>V</TD><TD>4d 4g 4b</TD></TR>
+<TR><TD>I</TD><TD>4e 4g 4cc</TD></TR>
+<TR><TD>==</TD><TD>==</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+The output below is generated by invoking the following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+midi -c input > output
+</code></big>
+</blockquote>
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! midi example #2</TD></TR>
+<TR><TD>**harm</TD><TD>**MIDI</TD></TR>
+<TR><TD>*</TD><TD>*Ch1</TD></TR>
+<TR><TD>!!**harm</TD><TD>**kern</TD></TR>
+<TR><TD>*</TD><TD>*Ch3</TD></TR>
+<TR><TD>!!*</TD><TD>*Ch3</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>!!=1</TD><TD>=1</TD></TR>
+<TR><TD>I</TD><TD>0/60/64 0/64/64 0/67/64</TD></TR>
+<TR><TD>!!I</TD><TD>4c 4e 4g</TD></TR>
+<TR><TD>IV</TD><TD>96/-60/64 96/-64/64 96/-67/64 96/60/64 96/65/64 96/69/64</TD></TR>
+<TR><TD>!!IV</TD><TD>4c 4f 4a</TD></TR>
+<TR><TD>V</TD><TD>96/-60/64 96/-65/64 96/-69/64 96/62/64 96/67/64 96/71/64</TD></TR>
+<TR><TD>!!V</TD><TD>4d 4g 4b</TD></TR>
+<TR><TD>I</TD><TD>96/-62/64 96/-67/64 96/-71/64 96/64/64 96/67/64 96/72/64</TD></TR>
+<TR><TD>!!I</TD><TD>4e 4g 4cc</TD></TR>
+<TR><TD>==</TD><TD>==</TD></TR>
+<TR><TD>!!==</TD><TD>==</TD></TR>
+<TR><TD>.</TD><TD>96/-64/64 96/-67/64 96/-72/64</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+<TR><TD>!!*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice that non-kern data (<code><big>**harm</big></code>) is echoed in the output.
+Also, notice that each input record has been reproduced as a global
+comment (preceded by !!).
+This feature is useful in conjunction with the
+<A HREF="perform.html"><b>perform</b></A>
+command.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DIAGNOSTICS</H3></FONT>
+The
+<b>midi</b>
+command echoes tempo indications for the benefit of the
+<A HREF="perform.html"><b>perform</b></A>
+command.
+If a tempo range is specified (e.g. MM92-98),
+<b>midi</b>
+calculates the average range and echoes that (MM95).
+Tempo terms (such as "largo") are not handled by
+<b>midi.</b>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<A HREF="humdrum.html">
+<b>humdrum</b></A> (4),
+<b>**kern</b> (2),
+<A HREF="kern.html">
+<b>kern</b></A> (4),
+<b>**MIDI</b> (2),
+<A HREF="perform.html">
+<b>perform</b></A> (4),
+<A HREF="proof.html">
+<b>proof</b></A> (4),
+<A HREF="smf.html">
+<b>smf</b></A> (4),
+<A HREF="tacet.html">
+<b>tacet</b></A> (4)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PROPOSED MODIFICATIONS</H3></FONT>
+Channel assigment tandem interpretations (e.g. <code><big>*Ch6</big></code>) should
+be recognized in the input stream and cause the default channel 1 output
+to be suppressed.
+<hr>
+<br>
+<ul>
+<li>
+Pertinent descriptions in the Humdrum User Guide:
+<A HREF="../guide07.html#The_**MIDI_Representation"><B>The **MIDI representation,</B></A>
+<A HREF="../guide07.html#The_midi_Command"><B>The <i>midi</i> command.</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

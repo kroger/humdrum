@@ -1,0 +1,24 @@
+
+SEMITS    : Converts various pitch representations to semitone representation.
+
+     This command translates frequency, pitch, MIDI and other pitch-
+     related units to **semits (i.e. integer semitones with respect to
+     middle C = 0 semits).
+
+Inputs processed:
+
+     **cents,   **freq,    **fret,    **kern,    **MIDI,    **pitch,
+     **semits,  **solfg,   **specC,   **Tonh
+
+Syntax:
+
+     semits [-p n] [-tx] [inputfile ...]
+
+Options:
+
+  -p n   : set output precision to n decimal places
+  -t     : suppresses outputting of all but first note for groups of tied notes
+  -x     : suppresses outputting of non-semits data
+
+  Refer to reference manual for further details.
+

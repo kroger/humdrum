@@ -1,0 +1,24 @@
+
+HUMSED    : Stream editor for Humdrum inputs
+
+     HUMSED is a non-interactive editor that automatically processes a given
+     input according to user-specified editing instructions.  Only Humdrum
+     data records are affected by HUMSED.  Any Humdrum input is permitted.
+
+     Editing instructions may be given on the command line or collected in a
+     "scriptfile".  Permissible instructions: substitute (s), delete (d),
+     append (a), insert (i), transliterate (y), file-read (r), or file-write (w).
+     The scope of each instruction may be limited via a "regular expression".
+
+Syntax:
+
+     humsed [-E] [-f scriptfile] ['sed_command'] [inputfile ...]
+
+Options:
+
+     -E            : permits Extended Regular Expression syntax
+     -f scriptfile : specify a file containing the script
+     sed_command   : a UNIX sed command (with some restrictions)
+
+  Refer to reference manual or UNIX "sed" command for further details.
+

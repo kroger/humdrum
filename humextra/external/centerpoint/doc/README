@@ -1,0 +1,53 @@
+Instructions for building CenterPoint XML
+=========================================
+
+To use the supplied Makefile, you will also need GNU Make,
+as the Makefile probably won't work with other make's.
+
+If you're not compiling with gcc/g++, edit the Makefile
+as appropriate.
+
+Running make with the supplied Makefile will build two
+libraries in the XML/lib directory: libcslxml.a (the
+release version) and libcslxmld.a (the debug version).
+You can also build a shared library if you set the
+compiler and linker options accordingly.
+
+To build the supplied samples, cd to the samples directory,
+edit the Makefile if necessary and run it.
+
+For users of VC++ 6.0, project and workspace files are
+included.
+
+Documentation
+=============
+
+Online documentation is available at
+http://www.cpointc.com/XML/doc/
+
+For documentation on the SAX interfaces,
+please refer to http://www.saxproject.org
+Additional information on the DOM can be found at 
+http://www.w3.org/DOM
+
+Answers to FAQ are available at
+http://www.cpointc.com/XML/XML-FAQ.html
+
+Portability
+===========
+
+CenterPoint XML has been tested on the following platforms:
+
+- Windows NT 4.0 and 2000/VC++ 6.0
+- Linux 2.2/gcc 2.95.3
+- Solaris 2.9 Sparc/Forte C++, 2.8 Intel/gcc 2.95.2
+- HP-UX 10.20/gcc 2.95.2 and aCC 01.21
+- HP-UX 11i/gcc 2.95.2 and aCC 03.37
+- OpenVMS/Compaq C++ 6.2
+- Mac OS X/gcc 2.95.2 and gcc 3.1
+
+
+--------------------------------------------------
+CenterPoint - Connective Software Engineering GmbH
+www.cpointc.com                    xml@cpointc.com
+--------------------------------------------------

@@ -1,0 +1,189 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Melodic Accent</TITLE>
+<!-- Documentation for the **melac Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **melac Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,melodic accent,software,theory,analysis,systematic musicology,computer representation,**melac">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Melodic Accent</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**melac</b>  --  melodic accent representation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**melac</b>
+representation is used to characterize the degree of pitch-related stress
+(melodic accent) for successive moments.
+Three types of tokens are recognized by
+<b>**melac</b>:
+stress-tokens, rests, and barlines.
+Stress-tokens encode decimal values ranging between 0 (no stress)
+and 1 (maximum stress).
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**melac</big></code>
+data should be given names with the distinguishing `.mac' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**melac</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>melodic accent values specified as integer</TD></TR>
+<TR><TD></TD><TD>     or real value; measure numbers</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>=;</TD><TD>barline with pause sign</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**melac</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+The following sample document shows a single spine of
+<b>**melac</b>
+data for the bass line of J. S. Bach's two-part keyboard Invention No. 1.
+The corresponding
+<A HREF="kern.rep.html"><b>**kern</b></A>
+and
+<A HREF="semits.rep.html"><b>**semits</b></A>
+representations are also shown:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! J.S. Bach, Two-part Invention 1 (BWV 772)</TD></TR>
+<TR><TD>**kern</TD><TD>**semits</TD><TD>**melac</TD></TR>
+<TR><TD>*C:</TD><TD>*C:</TD><TD>*C:</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>2r</TD><TD>r</TD><TD>r</TD></TR>
+<TR><TD>16r</TD><TD>r</TD><TD>r</TD></TR>
+<TR><TD>16C</TD><TD>-12</TD><TD>1</TD></TR>
+<TR><TD>16D</TD><TD>-10</TD><TD>0.33</TD></TR>
+<TR><TD>16E</TD><TD>-8</TD><TD>0.221</TD></TR>
+<TR><TD>16F</TD><TD>-7</TD><TD>0.556</TD></TR>
+<TR><TD>16D</TD><TD>-10</TD><TD>0.121</TD></TR>
+<TR><TD>16E</TD><TD>-8</TD><TD>0.241</TD></TR>
+<TR><TD>16C</TD><TD>-12</TD><TD>0.121</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>8G</TD><TD>-5</TD><TD>0.241</TD></TR>
+<TR><TD>8GG</TD><TD>-17</TD><TD>0.17</TD></TR>
+<TR><TD>4r</TD><TD>r</TD><TD>r</TD></TR>
+<TR><TD>16r</TD><TD>r</TD><TD>r</TD></TR>
+<TR><TD>16G</TD><TD>-5</TD><TD>1</TD></TR>
+<TR><TD>16A</TD><TD>-3</TD><TD>0.33</TD></TR>
+<TR><TD>16B</TD><TD>-1</TD><TD>0.221</TD></TR>
+<TR><TD>16c</TD><TD>0</TD><TD>0.556</TD></TR>
+<TR><TD>16A</TD><TD>-3</TD><TD>0.121</TD></TR>
+<TR><TD>16B</TD><TD>-1</TD><TD>0.241</TD></TR>
+<TR><TD>16G</TD><TD>-5</TD><TD>0.121</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</blockquote>
+</code></big>
+Notice that melodic accent values can be either real or integer values.
+Rests are represented by the single letter `r'.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum command produces <b>**melac</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD><A HREF="../commands/melac.html"><b>melac</b></A></TD><TD>calculate melodic accent values for successive pitches</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**melac</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**melac</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="../commands/melac.html"><b>melac</b></A>,
+<A HREF="semits.rep.html"><b>**semits</b></A>,
+<A HREF="../commands/semits.html"><b>semits</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

@@ -1,0 +1,86 @@
+###################################################################
+#                              MATRIX
+# Programmed by: David Huron        Date: 1994 August 1
+# Copyright (c) 1994 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# 						
+# This script generates a tone-row matrix for a specified prime row.
+# The -n option is used to specify the number of pitches to be output
+# in each row-file (e.g. the first 7 pitches of a 12-tone row).
+#
+# Invoke:
+#
+#       matrix -n N primerowfile
+#
+# Generate a tone-row variant.
+#
+if [ "x$1" != "x-n" ]
+then
+	echo "-n option must be specified."
+	echo "USAGE:   matrix -n number row-file"
+	exit
+fi
+if [ ! -f $3 ]
+then
+	echo "File $3 not found."
+	echo "USAGE:   matrix -n number row-file"
+	exit
+fi
+#
+# Primes:
+reihe -a -P 0 $3 | rid -GLId | head -$2 > P0
+reihe -a -P 1  $3 | rid -GLId | head -$2 > P1
+reihe -a -P 2  $3 | rid -GLId | head -$2 > P2
+reihe -a -P 3  $3 | rid -GLId | head -$2 > P3
+reihe -a -P 4  $3 | rid -GLId | head -$2 > P4
+reihe -a -P 5  $3 | rid -GLId | head -$2 > P5
+reihe -a -P 6  $3 | rid -GLId | head -$2 > P6
+reihe -a -P 7  $3 | rid -GLId | head -$2 > P7
+reihe -a -P 8  $3 | rid -GLId | head -$2 > P8
+reihe -a -P 9  $3 | rid -GLId | head -$2 > P9
+reihe -a -P 10 $3 | rid -GLId | head -$2 > PA
+reihe -a -P 11 $3 | rid -GLId | head -$2 > PB
+#
+# Inversions:
+reihe -a -I 0  $3 | rid -GLId | head -$2 > I0
+reihe -a -I 1  $3 | rid -GLId | head -$2 > I1
+reihe -a -I 2  $3 | rid -GLId | head -$2 > I2
+reihe -a -I 3  $3 | rid -GLId | head -$2 > I3
+reihe -a -I 4  $3 | rid -GLId | head -$2 > I4
+reihe -a -I 5  $3 | rid -GLId | head -$2 > I5
+reihe -a -I 6  $3 | rid -GLId | head -$2 > I6
+reihe -a -I 7  $3 | rid -GLId | head -$2 > I7
+reihe -a -I 8  $3 | rid -GLId | head -$2 > I8
+reihe -a -I 9  $3 | rid -GLId | head -$2 > I9
+reihe -a -I 10 $3 | rid -GLId | head -$2 > IA
+reihe -a -I 11 $3 | rid -GLId | head -$2 > IB
+#
+# Retrogrades:
+reihe -a -R 0  $3 | rid -GLId | head -$2 > R0
+reihe -a -R 1  $3 | rid -GLId | head -$2 > R1
+reihe -a -R 2  $3 | rid -GLId | head -$2 > R2
+reihe -a -R 3  $3 | rid -GLId | head -$2 > R3
+reihe -a -R 4  $3 | rid -GLId | head -$2 > R4
+reihe -a -R 5  $3 | rid -GLId | head -$2 > R5
+reihe -a -R 6  $3 | rid -GLId | head -$2 > R6
+reihe -a -R 7  $3 | rid -GLId | head -$2 > R7
+reihe -a -R 8  $3 | rid -GLId | head -$2 > R8
+reihe -a -R 9  $3 | rid -GLId | head -$2 > R9
+reihe -a -R 10 $3 | rid -GLId | head -$2 > RA
+reihe -a -R 11 $3 | rid -GLId | head -$2 > RB
+#
+# Retrograde Inversions:
+reihe -a -RI 0  $3 | rid -GLId | head -$2 > RI0
+reihe -a -RI 1  $3 | rid -GLId | head -$2 > RI1
+reihe -a -RI 2  $3 | rid -GLId | head -$2 > RI2
+reihe -a -RI 3  $3 | rid -GLId | head -$2 > RI3
+reihe -a -RI 4  $3 | rid -GLId | head -$2 > RI4
+reihe -a -RI 5  $3 | rid -GLId | head -$2 > RI5
+reihe -a -RI 6  $3 | rid -GLId | head -$2 > RI6
+reihe -a -RI 7  $3 | rid -GLId | head -$2 > RI7
+reihe -a -RI 8  $3 | rid -GLId | head -$2 > RI8
+reihe -a -RI 9  $3 | rid -GLId | head -$2 > RI9
+reihe -a -RI 10 $3 | rid -GLId | head -$2 > RIA
+reihe -a -RI 11 $3 | rid -GLId | head -$2 > RIB

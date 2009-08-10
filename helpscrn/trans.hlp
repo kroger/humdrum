@@ -1,0 +1,27 @@
+
+TRANS     : Transpose pitch representation.
+
+     This command transposes pitch representations by defining a diatonic off-
+     set (-d) and a chromatic offset (-c).  For example, transposing from C to
+     C# (up augmented unison) entails a diatonic offset (pitch letter-name) of
+     zero, and a chromatic offset of +1.  Transposing from C to B# (down dimin-
+     ished 2nd) entails a diatonic offset of -1 and a chromatic offset of zero.
+     The -k option causes key signatures to be replaced by a user-specified
+     key signature.
+
+Inputs processed:
+
+     **kern,    **pitch,   **solfg,   **Tonh
+
+Syntax:
+
+     trans -d [+-]n [-c [+-]n] [-k 'keysig'] [inputfile ...]
+
+Options:
+
+     -d n       : define diatonic shift of n (may be positive or negative)
+     -c n       : define chromatic shift of n (may be positive or negative)
+     -k keysig  : replace all key signatures by "keysig"
+
+  Refer to reference manual for further details.
+

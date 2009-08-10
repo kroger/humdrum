@@ -1,0 +1,21 @@
+
+PF        : Converts pitch or set-theory information to prime forms.
+
+     This command determines the "prime form" for any of five set-theory
+     related inputs (see below).
+
+     When given **pc or **semits input, each data record is treated as
+     an separate pitch set.
+
+Inputs processed:
+
+     **iv,      **nf,      **pc,      **pcset,   **pf,      **semits
+
+Syntax:
+
+     pf [inputfile ...]
+
+Options:  None.
+
+  Refer to reference manual for further details.   See also PCSET
+

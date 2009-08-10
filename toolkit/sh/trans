@@ -1,0 +1,101 @@
+###################################################################
+# 					TRANS.KSH
+# Programmed by: Tim Racinsky        Date: July, 1993
+# Copyright (c) 1993 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# June 7/94	Tim Racinsky	Modified to use getopts
+# Jan. 5/97	David Huron	Added -k option
+#
+#
+# 	This shell program is used to invoke the awk program trans1.awk
+# and trans2.awk.
+#
+# These variables will be used in the shell script
+FILENAME=""
+COPTION=""
+CHROMATIC=""
+DOPTION=""
+DIATONIC=""
+KEYSIG="NONE"
+HELP=""
+FLAG=""
+STNDIN=""
+#
+# Fill in the appropriate command usage here
+USAGE1="USAGE: trans -h            (Help Screen)"
+USAGE2="       trans -d n [-c n] [-k keysig] [file ...]"
+# 
+while getopts c:d:hk: arg
+do
+	case "$arg" in
+	d)	DOPTION="${arg}"
+		DIATONIC="${OPTARG}";;
+	c)	COPTION="${arg}"
+		CHROMATIC="${OPTARG}";;
+	h) 	HELP="ON";;
+	k)	KOPTION="${arg}"
+		KEYSIG="${OPTARG}";;
+     [?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit ;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/trans.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/trans.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' may be used
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "trans: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+# Invoke the appropriate awk script depending on the options
+if [ "X$DIATONIC" = X ]
+then
+	echo "trans: ERROR: Must specify -d option." 1>&2
+	echo "" 1>&2
+	echo "$USAGE1" 1>&2
+	echo "$USAGE2" 1>&2
+	exit
+elif [ "X$CHROMATIC" = X ]
+then
+	$AWK_VER -f ${HUMDRUM}/bin/trans1.awk "DUMMY" "$DIATONIC" "$KEYSIG" $FILENAME
+else
+	$AWK_VER -f ${HUMDRUM}/bin/trans2.awk "DUMMY" "$DIATONIC" "$CHROMATIC" "$KEYSIG" $FILENAME
+fi	

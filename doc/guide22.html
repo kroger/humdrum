@@ -1,0 +1,980 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 22</TITLE>
+<!-- Chapter 22 (Classifying) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:15:29 EST 2000">
+<meta name="description" content="Chapter 22 (Classifying) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<H1>Chapter22</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide21.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide23.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Classifying</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+Many of the most important analytic tasks involve classifying
+or categorizing various things.
+In this chapter we will discuss two general approaches to classifying:
+<i>parametric</i>
+classifying and
+<i>non-parametric</i>
+classifying.
+In the first instance, we will see how numerical data can be
+categorized according to arithmetic ranges.
+We will then revisit the
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+command and learn how it can be used to classify different types
+of non-numeric data tokens.
+</P>
+<A NAME="The_recode_Command">
+<H2>The <i>recode</i> Command</H2>
+</P>
+<P>
+Suppose that we have a Humdrum spine that contains numerical
+information representing the moment-to-moment heart-rate of a listener.
+Heart rate is related to arousal level
+and so we might use our data to identify passages that tend to arouse listeners.
+Since the average heart-rate of listeners differs,
+we are interested primarily in the rate-of-change.
+We can use the
+<A HREF="commands/xdelta.html"><b>xdelta</b></A>
+command to calculate the differences in heart-rate
+between successive values.
+</P>
+<P>
+<blockquote>
+<code><big>xdelta -s = heart.dat > changes</big></code>
+</blockquote>
+</P>
+<P>
+The example below displays the input (left) spine and the corresponding
+output (right) spine for the above command:
+<blockquote><TABLE>
+<TR><TD><code><big>**heart</TD><TD>*Xheart</TD></TR>
+<TR><TD>=133</TD><TD>=133</TD></TR>
+<TR><TD>55</TD><TD>0</TD></TR>
+<TR><TD>56</TD><TD>1</TD></TR>
+<TR><TD>55</TD><TD>-1</TD></TR>
+<TR><TD>=134</TD><TD>=134</TD></TR>
+<TR><TD>58</TD><TD>3</TD></TR>
+<TR><TD>56</TD><TD>-2</TD></TR>
+<TR><TD>55</TD><TD>-1</TD></TR>
+<TR><TD>=135</TD><TD>=135</TD></TR>
+<TR><TD>57</TD><TD>2</TD></TR>
+<TR><TD>55</TD><TD>-2</TD></TR>
+<TR><TD>56</TD><TD>1</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>=136</TD><TD>=136</TD></TR>
+<TR><TD>55</TD><TD>-1</TD></TR>
+<TR><TD>60</TD><TD>5</TD></TR>
+<TR><TD>62</TD><TD>2</TD></TR>
+<TR><TD>=137</TD><TD>=137</TD></TR>
+<TR><TD>61</TD><TD>-1</TD></TR>
+<TR><TD>59</TD><TD>-2</TD></TR>
+<TR><TD>59</TD><TD>0</TD></TR>
+<TR><TD>=138</TD><TD>=138</TD></TR>
+<TR><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+A certain amount of heart-rate variation is to be expected
+because of monitoring equipment and other variables.
+So we are primarily interested in large changes of heart-rate,
+such as the change occurring in measure 136.
+The
+<A HREF="commands/recode.html"><b>recode</b></A>
+command allows us to classify numerical data according to value or range.
+In the above case, we may be interested in identifying acceleration
+or decelerations that exceed some threshold.
+The
+<b>recode</b>
+command requires that the user supply a
+<i>reassignment file</i>
+that specifies how numerical values are to be reassigned.
+In our heart-rate application, we might create the following
+reassignment file, named <code><big>reassign</big></code>.
+Reassignment files obey the following syntax:
+for each line,
+<i>conditions</i>
+are given on the left followed by a single tab,
+followed by a
+<i>reassignment string.</i>
+<blockquote><TABLE>
+<TR><TD><code><big>>3</TD><TD></TD><TD>+event</TD></TR>
+<TR><TD><-3</TD><TD></TD><TD>-event</TD></TR>
+<TR><TD>else</TD><TD></TD><TD>.</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The above reassignment file may be interpreted as follows:
+if the numerical value is greater than 3,
+then output the string "<code><big>+event</big></code>";
+if the numerical value is less than -3,
+then output the string "<code><big>-event</big></code>";
+otherwise output a string consisting of an isolated period (<code><big>.</big></code>).
+We can invoke an appropriate command as follows:
+</P>
+<P>
+<blockquote>
+<code><big>recode -f reassign -i '**Xheart' -s ^= changes</big></code>
+</blockquote>
+</P>
+<P>
+The
+<b>-f</b>
+option is required, and is used to identify the file containing the
+reassignment information.
+The
+<b>-i</b>
+option is also required, and is used to identify the
+exclusive interpretation for the data to be processed.
+The
+<b>-s</b>
+option tells
+<b>recode</b>
+to skip records matching some specified regular expression --
+in this case, to skip barlines.
+Finally, "<code><big>changes</big></code>" is the name of our input file.
+</P>
+<P>
+The result of applying this process to the right-most spine in
+the above example is given below:
+<blockquote><TABLE>
+<TR><TD><code><big>*Xheart</TD></TR>
+<TR><TD>=133</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD>=134</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD>=135</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD>=136</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD>+event</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD>=137</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD>=138</TD></TR>
+<TR><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Notice that we have used
+<b>recode</b>
+to drastically reduce the volume of data by
+transforming the input into a set of more basic cateogires.
+</P>
+<P>
+Having constructed our new output spine,
+we can further process this information in various ways.
+For example, we might assemble this spine to our original musical score.
+Then we might then use
+<b>grep -n</b>
+to located any points in the score where a heart-rate related
+event has occurred.
+</P>
+<P>
+Permissible relational operators used by
+<A HREF="commands/recode.html"><b>recode</b></A>
+include the following:
+<blockquote><TABLE>
+<TR><TD>==</TD><TD>equals</TD></TR>
+<TR><TD>!=</TD><TD>not equal</TD></TR>
+<TR><TD><</TD><TD>less than</TD></TR>
+<TR><TD><=</TD><TD>less than or equal</TD></TR>
+<TR><TD>></TD><TD>greater than</TD></TR>
+<TR><TD>>=</TD><TD>greater than or equal</TD></TR>
+<TR><TD>else</TD><TD>default relation</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Conditions are tested in the order given in the reassignment file.
+Thus if a numerical value satisfies more than one condition,
+only the first string replacement is made.
+Consider the following reassignment file:
+<blockquote><TABLE>
+<TR><TD><code><big><=0</TD><TD></TD><TD>LOW</TD></TR>
+<TR><TD>>100</TD><TD></TD><TD>HIGH</TD></TR>
+<TR><TD>>0</TD><TD></TD><TD>MEDIUM</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The order of specification is important here.
+If the <code><big>MEDIUM</big></code> condition was specified prior to the <code><big>HIGH</big></code>
+condition, then all values greater than one hundred would be
+categorized as <code><big>MEDIUM</big></code> rather than as <code><big>HIGH</big></code>.
+Only a single
+<b>else</b>
+condition is allowed in a reassignment file;
+when it is present, the else statement should appear
+as the last reassignment.
+</P>
+<A NAME="Classifying_Intervals">
+<H2>Classifying Intervals</H2>
+</P>
+<P>
+The
+<A HREF="commands/recode.html"><b>recode</b></A>
+command has innumerable applications.
+Suppose we wanted to determine how frequently ascending melodic leaps
+are followed by a descending step.
+Let's consider two different ways of distinguishing steps and leaps:
+a "semitone" method and a "diatonic" method.
+In the first method, we might define a step interval as either one or two
+semitones.
+Our reassignment file (dubbed "<code><big>reassign</big></code>") might appear as follows:
+<blockquote><TABLE>
+<TR><TD><code><big>>=3</TD><TD></TD><TD>up-leap</TD></TR>
+<TR><TD>>0</TD><TD></TD><TD>up-step</TD></TR>
+<TR><TD>==0</TD><TD></TD><TD>unison</TD></TR>
+<TR><TD>>=-2</TD><TD></TD><TD>down-step</TD></TR>
+<TR><TD><=-3</TD><TD></TD><TD>down-leap</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Given this reassignment file, we can now begin our processing.
+In the first method, we translate to semitone data using
+<A HREF="commands/semits.html"><b>semits</b></A>,
+translate to semitone-differences using
+<A HREF="commands/xdelta.html"><b>xdelta</b></A>,
+and then classify into five interval types using
+<A HREF="commands/recode.html"><b>recode</b></A>.
+The
+<A HREF="commands/context.html"><b>context</b></A>
+<b>-n 2</b>
+command will create pairs of interval types, then
+<A HREF="commands/rid.html"><b>rid</b></A>,
+<b>sort</b>
+and
+<b>uniq -c</b>
+are used to generate an
+inventory.
+Finally, we use
+<b>grep</b>
+to identify what happens following ascending leaps:
+</P>
+<P>
+<blockquote>
+<code><big>semits melody | xdelta -s = | recode -f reassign \
+<blockquote>
+-i '**Xsemits' -s = | context -n 2 | rid -GLId | sort \
+<br>
+| uniq -c | grep 'up-leap .*$'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+An alternative way of distinguishing steps from leaps
+is by diatonic interval.
+For example, we might consider a diminished third to be a leap,
+while an augmented second may be considered a step.
+In this case, we can use the
+<A HREF="commands/mint.html"><b>mint</b></A>
+command to determine the melodic interval size; the
+<b>-d</b>
+option limits the output to diatonic intervals and excludes
+the interval quality (perfect, major, minor, etc.).
+The appropriate reassignment file would be:
+<blockquote><TABLE>
+<TR><TD><code><big>>=3</TD><TD></TD><TD>up-leap</TD></TR>
+<TR><TD>==2</TD><TD></TD><TD>up-step</TD></TR>
+<TR><TD>==1</TD><TD></TD><TD>unison</TD></TR>
+<TR><TD>==-2</TD><TD></TD><TD>down-step</TD></TR>
+<TR><TD><=-3</TD><TD></TD><TD>down-leap</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The appropriate command pipe would be:
+</P>
+<P>
+<blockquote>
+<code><big>mint melody | xdelta -s = | recode -f reassign -i '<A HREF="representations/mint.rep.html">**mint</A>' \
+<blockquote>
+-s = | context -n 2 | rid -GLId | sort | uniq -c \
+<br>
+| grep 'up-leap .*$'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Clarinet_Registers">
+<H2>Clarinet Registers</H2>
+</P>
+<P>
+Consider another use of the
+<A HREF="commands/recode.html"><b>recode</b></A>
+command.
+<A NAME="Claude_Debussy">
+<A NAME="Syrinx">
+Imagine that we wanted to arrange Claude Debussy's
+<i>Syrinx</i>
+for soprano clarinet instead of flute.
+Our principle concern as arranger is determining what key
+would be especially well suited to the clarinet.
+Tone color is particularly important for this piece.
+The clarinet has four fairly distinctive tessituras as
+shown in Example 22.1.
+These are the
+<i>chalemeau</i>
+register (dark and rich), the
+<i>clarion</i>
+register (bright and clear), the
+<i>altissimo</i>
+register (very high and piercing), and the
+<i>throat</i>
+register (weak and breathy).
+<br><br>
+<b>Example 22.1.</b>  Clarinet registers (notated at concert pitch).
+<blockquote>
+<img src="guide.figures/guide22.1.gif">
+<blockquote><TABLE>
+<TR><TD><i>chalemeau</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><i>throat</i></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><i>clarion</i></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><i>altissimo</i></TD></TR>
+</TABLE></blockquote>
+</blockquote>
+</P>
+<A NAME="Minimize_Throat_Tones">
+<P>
+Suppose we wanted to pick a key that satisfies two conditions:
+(1) it is not out of range for the clarinet, and
+(2) it minimizes the number of notes played in the throat register.
+We can use
+<b>recode</b>
+to classify all pitches according to the following reassignments:
+<blockquote><TABLE>
+<TR><TD><code><big>>=30</TD><TD>too-high</TD></TR>
+<TR><TD>>=23</TD><TD>altissimo</TD></TR>
+<TR><TD>>=8</TD><TD>clarion</TD></TR>
+<TR><TD>>=5</TD><TD>throat-register</TD></TR>
+<TR><TD>>=-10</TD><TD>chalemeau</TD></TR>
+<TR><TD>else</TD><TD>too-low</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Now we simply explore various transpositions using
+<b>trans</b>
+and create an inventory of pitch types.
+For Debussy's <i>Syrinx</i>, the minimum number of throat tones
+(without exceeding the clarinet's range) occurs when we
+transpose down a major sixth:
+</P>
+<P>
+<blockquote>
+<code><big>trans -d -5 -c -9 syrinx | semits | recode -f reassign \
+<blockquote>
+-i '**semits' -s = | rid -GLId | sort | uniq -c</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Open_and_Close_Position_Chords">
+<H2>Open and Close Position Chords</H2>
+</P>
+<A NAME="Closed_and_Open_Position_Chords">
+<P>
+Inputs to the
+<A HREF="commands/recode.html"><b>recode</b></A>
+command can be quite sophisticated.
+Consider, for example, the task of
+classifying chords as "open" or "close" position.
+According to one definition,
+a chord is said to be in "open" position when the
+the interval separating the soprano and tenor voices is
+an octave or greater.
+One music theorist has claimed that close position chords are
+more common than open position.
+How might we test this?
+</P>
+<P>
+In determining an appropriate sequence of Humdrum commands,
+it is often helpful to work backwards from our goal.
+We'd like to end up with a spine that simply encodes the
+words "open" or "close" for each sonority.
+This classification will be based on the distance separating
+the soprano and tenor voices.
+Our reassignment file might be as follows:
+<blockquote><TABLE>
+<TR><TD><code><big><=12</TD><TD></TD><TD>close</big></code></TD></TR>
+<TR><TD><code><big>>12</TD><TD></TD><TD>open</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+We will need to extract the soprano and tenor voices,
+translate the pitch representation to
+<A HREF="representations/semits.rep.html"><code><big>**semits</big></code></A>
+and use
+<A HREF="commands/ydelta.html"><b>ydelta</b></A>
+to calculate the semitone distance between the two voices.
+In the following set of commands, we have also added the
+<A HREF="commands/ditto.html"><b>ditto</b></A>
+command to ensure that there are semitone values for each sonority.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*Itenor,*Isopran'</code></big> <i>inputfile</i><code><big> | semits -x | ditto \
+<blockquote>
+| ydelta -s = -i '**semits' | recode -f reassign \
+<br>
+-i '**Ysemits' -s = > tempfile
+</blockquote>
+grep -c 'open' tempfile
+<br>
+grep -c 'close' tempfile</code></big>
+</blockquote>
+</P>
+<P>
+The
+<b>grep -c</b>
+commands tell us whether open position sonorities
+are more common than close position sonorities.
+</P>
+<A NAME="Flute_Fingering_Transitions">
+<H2>Flute Fingering Transitions</H2>
+</P>
+<P>
+There is no fixed limit to the length of a reassignment file.
+Consider for example, the following file named <code><big>map</big></code>.
+Each <code><big>**semits</big></code> value from C4 (0) to C7 (36) has been
+assigned to a schematic representation of flute fingerings.
+The letter `X' indicates a closed key, whereas the letter `O'
+indicates an open key.
+The first letter pertains to the left thumb;
+the next group of four letters pertain to the ensuing fingers
+of the left hand;
+the final group of letters pertain to the right-hand fingers.
+The little finger of the right hand is able to play three keys
+(labelled X, Y, and Z).
+Fingerings are shown only for the first octave (from C4 to C5):
+<blockquote><TABLE>
+<TR><TD><code><big><0</TD><TD>out-of-range</TD></TR>
+<TR><TD><code><big>==0</TD><TD><code><big>X-XXXO-XXXZ</TD></TR>
+<TR><TD><code><big>==1</TD><TD><code><big>X-XXXO-XXXY</TD></TR>
+<TR><TD><code><big>==2</TD><TD><code><big>X-XXXO-XXXO</TD></TR>
+<TR><TD><code><big>==3</TD><TD><code><big>X-XXXO-XXXX</TD></TR>
+<TR><TD><code><big>==4</TD><TD><code><big>X-XXXO-XXOX</TD></TR>
+<TR><TD><code><big>==5</TD><TD><code><big>X-XXXO-XOOX</TD></TR>
+<TR><TD><code><big>==6</TD><TD><code><big>X-XXXO-OOXX</TD></TR>
+<TR><TD><code><big>==7</TD><TD><code><big>X-XXXO-OOOX</TD></TR>
+<TR><TD><code><big>==8</TD><TD><code><big>X-XXXX-OOOX</TD></TR>
+<TR><TD><code><big>==9</TD><TD><code><big>X-XXOO-OOOX</TD></TR>
+<TR><TD><code><big>==10</TD><TD><code><big>X-XOOO-XOOX</TD></TR>
+<TR><TD><code><big>==11</TD><TD><code><big>X-XOOO-OOOX</TD></TR>
+<TR><TD><code><big>==12</TD><TD><code><big>O-XOOO-OOOX</big></code></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>etc.</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>else</TD><TD>rest</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Suppose we wanted to determine what kinds of fingering
+<i>transitions</i>
+occur in Joachim Quantz's flute concertos.
+Since instrument fingerings are insensitive to enharmonic spelling,
+an appropriate input representation would be <code><big>**semits</big></code>.
+Having used
+<A HREF="commands/recode.html"><b>recode</b></A>
+to translate the pitches to fingerings,
+we can then use
+<b>context -n 2</b>
+to generate diads of successive finger combinations.
+</P>
+<P>
+<blockquote>
+<code><big>semits con* | recode -f map -s = | context -n 2 -o = > fingers</big></code>
+</blockquote>
+</P>
+<P>
+For example, if our input contains the pitch G5 followed by B4,
+the appropriate data record in the <code><big>fingers</big></code> file would be the
+following Humdrum double-stop:
+</P>
+<P>
+<blockquote>
+<code><big>X-XXXO-OOOX X-XOOO-OOOX</big></code>
+</blockquote>
+</P>
+<P>
+We could create an inventory of finger transitions by continuing the
+processing:
+</P>
+<P>
+<blockquote>
+<code><big>rid -GLI fingers | sort | uniq -c | sort -n</big></code>
+</blockquote>
+</P>
+<A NAME="Pre_Boehm_Fingering">
+<P>
+We could create a similar reassignment file containing fingers pertaining
+to the pre-Boehm flute.
+Suppose the revised reassignment file was called <code><big>premodern</big></code>.
+We could determine how the finger transitions differ between
+the pre-Boehm traverse flute and the modern flute.
+In
+<A HREF="guide29.html">Chapter 29</A>
+we will see how the
+<b>diff</b>
+command can be used to identify
+differences between two spines.
+This will allow us to identify specific places in the score
+where Baroque and modern fingerings differ.
+</P>
+<P>
+The
+<b>recode</b>
+command can be used for innumerable other kinds of classifications.
+For example,
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+durations might be expressed in seconds
+(using the
+<A HREF="commands/dur.html"><b>dur</b></A>
+command), and the elapsed times then classified as
+<i>long</i>, <i>short</i> and <i>medium</i> (say).
+Sound pressure levels (in decibels) might be classified
+as dynamic markings (<b><i>ff</b></i>, <b><i>mf</b></i>, <b><i>mp</b></i>, <b><i>pp</b></i>, etc.),
+and so on.
+</P>
+<A NAME="Classifying_with_humsed">
+<H2>Classifying with <i>humsed</i></H2>
+</P>
+<P>
+The
+<A HREF="commands/recode.html"><b>recode</b></A>
+command is restricted to classifying numerical data only.
+For many applications, it is useful to be able to classify data
+according to non-numerical criteria.
+As we saw in
+<A HREF="guide14.html">Chapter 14,</A>
+stream editors such as
+<b>sed</b>
+and
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+provide automated substitution operations.
+Such string substitutions can be used for non-parametric classifying.
+We can illustrate this with
+<b>humsed.</b>
+</P>
+<A NAME="Flute_Fingering_Difficulty">
+<P>
+Suppose we wanted to classify various flute finger-transitions
+as either <i>easy</i>, <i>moderate</i> or <i>difficult</i>.
+For example, F4 to G4 is an easy fingering,
+E5 to A5 is a moderate fingering, whereas C5 to D5
+is difficult.
+As before, it is best to use a semitone representation
+so we don't need to consider differences in enharmonic pitch spelling.
+We can use the
+<A HREF="commands/semits.html"><b>semits</b></A>
+command to transform all pitches.
+Then we can use
+<b>context -n 2</b>
+to generate pairs of successive pitches as double-stops.
+We can then create a
+<b>humsed</b>
+script file (let's call it <code><big>difficulty</big></code>)
+containing substitutions such as the following:
+<blockquote><TABLE>
+<TR><TD><code><big>s/5 7/easy/</big></code></TD><TD></TD><TD>[i.e. F4 to G4]</TD></TR>
+<TR><TD><code><big>s/16 21/moderate/</big></code></TD><TD></TD><TD>[i.e. E5 to A5]</TD></TR>
+<TR><TD><code><big>s/12 14/difficult/</big></code></TD><TD></TD><TD>[i.e. C5 to D5]</TD></TR>
+<TR><TD>etc.</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+We can apply the script as follows:
+</P>
+<P>
+<blockquote>
+<code><big>humsed -f difficulty sonata*</big></code>
+</blockquote>
+</P>
+<P>
+Since there are a large number of possible pitch transitions,
+our script file is apt to be especially large.
+However, notes an octave apart have a high likelihood of
+having identical fingerings on the modern flute.
+A more succinct
+<b>humsed</b>
+script would deal with fingering transitions rather than pitch transitions.
+</P>
+<P>
+<blockquote>
+<br>
+<code><big>s/X-XXXO-XOOX X-XXXO-OOOX/easy/
+<br>
+s/X-XXXO-XXOX X-XXOO-OOOX/moderate/
+<br>
+s/O-XOOO-OOOX X-OXXO-XXXO/difficult/</big></code>
+<br>
+etc.
+</blockquote>
+</P>
+<P>
+The three substitutions shown above apply to many more pitch
+transitions than the original transitions F4-G4, E5-A5, and C5-D5.
+The above three substitutions apply also to F5-G5, F5-G4, F4-G5,
+E4-A4, E4-A5, and E5-A4.
+</P>
+<P>
+Having created a file classifying all fingering transitions as
+"easy," "moderate" or "difficult,"
+we can characterize our Quantz flute concertos using the following pipeline:
+</P>
+<P>
+<blockquote>
+<code><big>semits Quantz* | recode -f map -s = | context -n 2 -o = \
+<blockquote>
+| humsed -f difficulty</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+The output will be a single spine that classifies the difficulty of
+all fingering transitions.
+</P>
+<A NAME="Classifying_Cadences">
+<H2>Classifying Cadences</H2>
+</P>
+<P>
+Consider another application where we use
+<b>humsed</b>
+to classify cadences.
+Suppose we have Roman-numeral harmonic data (as provided by the
+<A HREF="representations/harm.rep.html"><code><big>**harm</big></code></A>
+representation).
+In the case of Bach's chorale harmonizations, for example,
+cadences are clearly evident by the presence of pauses
+(designated by the semicolon).
+We can easily create a spine that identifies only cadences.
+Consider a suitable reassignment file (dubbed <code><big>cadences</big></code>):
+</P>
+<P>
+<blockquote>
+<br>
+<code><big>s/V I;/authentic/
+<br>
+s/V7 I;/authentic/
+<br>
+s/V i;/authentic/
+<br>
+s/V7 i;/authentic/
+<br>
+s/IV I;/plagal/
+<br>
+s/iv i;/plagal/
+<br>
+s/iv I;/plagal/
+<br>
+s/V vi;/deceptive/
+<br>
+s/V VI;/deceptive/</big></code>
+<br>
+
+<br>
+etc.
+<br>
+
+<br>
+<code><big>s/^[IiVv].*$/./</big></code>
+</blockquote>
+</P>
+<P>
+(The precise file will depend on your preferred way of
+labeling cadences.)
+Remember that, unlike the
+<b>recode</b>
+command, all of the substitutions in a
+<b>humsed</b>
+or
+<b>sed</b>
+script are applied to every input line.
+The final substitution causes any record beginning
+with either an <i>i</i>, <i>i</i>, <i>v</i> or <i>V</i> to be
+changed to a null data token.
+In effect, any progression that is not deemed to be an authentic,
+plagal or deceptive cadence is transformed to a null data record.
+Using the above reassignment file, we could create a cadence
+spine using the following pipeline:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**harm' chorales | context -o = -n 2 \
+<blockquote>
+| humsed -f cadences | sed 's/\*\*harm/**cadences/'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+We first extract the <code><big>**harm</big></code> spine using
+<b>extract</b>.
+We then generate a sequence of two-chord progressions using
+<b>context</b>
+--  taking care to omit barlines (<code><big>-o =</big></code>).
+We then use
+<b>humsed</b>
+to run the script of cadence-name substitutions.
+Finally, we use the
+<b>sed</b>
+command to change the name of the exclusive interpretation from <code><big>**harm</big></code>
+to something more suitable -- <code><big>**cadences</big></code>.
+</P>
+<P>
+Many more sophisticated variants of this sort of procedure may be used.
+For example, one could first classify harmonies more broadly.
+In so-called "functional" harmony, for example,
+supertonic chords in first inversion are normally considered to be
+subdominant functions.
+One could construct a whole series of re-write rules that classify
+harmonies in a variety of ways.
+</P>
+<A NAME="Orchestration">
+<H2>Orchestration</H2>
+</P>
+<P>
+One of the simplest classifications in a musical score is
+whether or not an instrument is sounding or resting.
+Suppose we extracted the viola part from Beethoven's Symphony No. 1.
+We might use the
+<b>ditto</b>
+command to ensure that each data record encodes either a note, rest,
+or barline:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*Iviola' symphony1 | ditto -s =</big></code>
+</blockquote>
+</P>
+<P>
+Let's append to this pipeline a
+<b>humsed</b>
+command that makes two string substitutions.
+The first substitution replaces all data records containing the lower-case
+letter <code><big>r</big></code> (i.e., rests) with the string <code><big>-viola</big></code>.
+The second substitution changes any record that does not begin with
+either a minus sign or an equals sign to the string <code><big>+viola</big></code>.
+In effect, we've transformed the viola part so that all data tokens
+encode either <code><big>+viola</big></code>, <code><big>-viola</big></code> or are barlines.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*Iviola' symphony1 | ditto -s = \
+<blockquote>
+| humsed 's/.*r.*/-viola/; /s/^[^-=].*$/+viola/' > viola</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Now imagine that we repeat this process for every instrument in
+Beethoven's Symphony No. 1.
+In each case, we substitute the name of the instrument (preceded by
+a plus-sign or minus-sign) for the various note or rest tokens.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*Iflt' symphony1 | ditto -s = \
+<blockquote>
+| humsed 's/.*r.*/-flt/; /s/^[^-=].*$/+flt/' > flt</big></code>
+</blockquote>
+<code><big>extract -i '*Ioboe' symphony1 | ditto -s = \
+<blockquote>
+| humsed 's/.*r.*/-oboe/; /s/^[^-=].*$/+oboe/' > oboe</big></code>
+</blockquote>
+<code><big>extract -i '*Iclars' symphony1 | ditto -s = \
+<blockquote>
+| humsed 's/.*r.*/-clars/; /s/^[^-=].*$/+clars/' > clars</big></code>
+</blockquote>
+<code><big>extract -i '*Ifagot' symphony1 | ditto -s = \
+<blockquote>
+| humsed 's/.*r.*/-fagot/; /s/^[^-=].*$/+fagot/' > fagot</big></code>
+</blockquote>
+</P>
+<P>
+etc.
+</blockquote>
+</P>
+<P>
+When we are finished, we reassemble all of the transformed parts into a complete score.
+</P>
+<P>
+<blockquote>
+<code><big>assemble cbass cello viola violn2 violn1 tromb tromp fagot \
+<blockquote>
+clars oboe flt > orchestra</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+We now have a file that contains data records that look something
+like the following excerpt:
+<blockquote><TABLE>
+<TR><TD><code><big>+cbass</TD><TD>+cello</TD><TD>+viola</TD><TD>+violn</TD><TD>+violn</TD><TD>-tromb</TD><TD>-tromp</TD><TD>+fagot</TD><TD>-clars</TD><TD>+oboe</TD><TD>+flt</TD></TR>
+<TR><TD>+cbass</TD><TD>+cello</TD><TD>-viola</TD><TD>-violn</TD><TD>+violn</TD><TD>-tromb</TD><TD>-tromp</TD><TD>+fagot</TD><TD>-clars</TD><TD>+oboe</TD><TD>+flt</TD></TR>
+<TR><TD>+cbass</TD><TD>+cello</TD><TD>+viola</TD><TD>+violn</TD><TD>+violn</TD><TD>-tromb</TD><TD>-tromp</TD><TD>+fagot</TD><TD>-clars</TD><TD>+oboe</TD><TD>+flt</TD></TR>
+<TR><TD>+cbass</TD><TD>+cello</TD><TD>-viola</TD><TD>-violn</TD><TD>+violn</TD><TD>-tromb</TD><TD>-tromp</TD><TD>+fagot</TD><TD>-clars</TD><TD>+oboe</TD><TD>+flt</TD></TR>
+<TR><TD>-cbass</TD><TD>-cello</TD><TD>+viola</TD><TD>+violn</TD><TD>+violn</TD><TD>-tromb</TD><TD>-tromp</TD><TD>-fagot</TD><TD>-clars</TD><TD>+oboe</TD><TD>+flt</TD></TR>
+<TR><TD>-cbass</TD><TD>-cello</TD><TD>-viola</TD><TD>-violn</TD><TD>+violn</TD><TD>-tromb</TD><TD>-tromp</TD><TD>-fagot</TD><TD>-clars</TD><TD>+oboe</TD><TD>+flt</TD></TR>
+<TR><TD>=131</TD><TD>=131</TD><TD>=131</TD><TD>=131</TD><TD>=131</TD><TD>=131</TD><TD>=131</TD><TD>=131</TD><TD>=131</TD><TD>=131</TD><TD>=131</TD></TR>
+<TR><TD>+cbass</TD><TD>+cello</TD><TD>+viola</TD><TD>+violn</TD><TD>+violn</TD><TD>-tromb</TD><TD>-tromp</TD><TD>+fagot</TD><TD>-clars</TD><TD>+oboe</TD><TD>+flt</TD></TR>
+<TR><TD>+cbass</TD><TD>+cello</TD><TD>-viola</TD><TD>-violn</TD><TD>+violn</TD><TD>-tromb</TD><TD>-tromp</TD><TD>+fagot</TD><TD>-clars</TD><TD>+oboe</TD><TD>+flt</TD></TR>
+<TR><TD>-cbass</TD><TD>-cello</TD><TD>+viola</TD><TD>+violn</TD><TD>+violn</TD><TD>-tromb</TD><TD>-tromp</TD><TD>-fagot</TD><TD>-clars</TD><TD>+oboe</TD><TD>+flt</TD></TR>
+<TR><TD>-cbass</TD><TD>-cello</TD><TD>-viola</TD><TD>-violn</TD><TD>+violn</TD><TD>-tromb</TD><TD>-tromp</TD><TD>-fagot</TD><TD>-clars</TD><TD>+oboe</TD><TD>+flt</TD></TR>
+<TR><TD>+cbass</TD><TD>+cello</TD><TD>+viola</TD><TD>+violn</TD><TD>+violn</TD><TD>-tromb</TD><TD>-tromp</TD><TD>+fagot</TD><TD>-clars</TD><TD>+oboe</TD><TD>+flt</TD></TR>
+<TR><TD>+cbass</TD><TD>+cello</TD><TD>-viola</TD><TD>+violn</TD><TD>+violn</TD><TD>-tromb</TD><TD>-tromp</TD><TD>+fagot</TD><TD>-clars</TD><TD>+oboe</TD><TD>+flt</big></code></TD></TR>
+</TABLE>
+etc.
+</blockquote>
+</P>
+<P>
+The first sonority indicates that all of the string instruments are playing,
+that the brass are inactive, and that all of the woodwinds are sounding
+with the exception of the clarinet.
+</P>
+<A NAME="Count_Oboe_and_Bassoon">
+<P>
+A representation such as the above provides an opportunity to
+study instrumental combinations in Beethoven's orchestration.
+For example, the following command will count the number of sonorities
+where the oboe and bassoon sound concurrently:
+</P>
+<P>
+<blockquote>
+<code><big>grep -c '+fagot.*+oboe' orchestra</big></code>
+</blockquote>
+</P>
+<P>
+It is better to express this count as a proportion of the total work.
+We can count the total number of sonorities in the work
+by omitting any leading plus or minus sign:
+</P>
+<P>
+<blockquote>
+<code><big>grep -c 'fagot.*oboe' orchestra</big></code>
+</blockquote>
+</P>
+<A NAME="Oboe_and_Bassoon_Inactive">
+<P>
+How often are the oboe and bassoon resting at the same time?
+</P>
+<P>
+<blockquote>
+<code><big>grep -c '-fagot.*-oboe' orchestra</big></code>
+</blockquote>
+</P>
+<A NAME="Trumpet_Flute_Repell">
+<P>
+Excluding <i>tutti</i> sections, do the trumpet and flute tend to "repell"
+each others' presence?
+</P>
+<P>
+<blockquote>
+<code><big>grep '\-' orchestra | grep -c '+tromp.*-flt' orchestra</big></code>
+<br>
+<code><big>grep '\-' orchestra | grep -c '+tromp.*+flt' orchestra</big></code>
+<br>
+<code><big>grep '\-' orchestra | grep -c '-tromp.*-flt' orchestra</big></code>
+<br>
+<code><big>grep '\-' orchestra | grep -c '-tromp.*+flt' orchestra</big></code>
+</blockquote>
+</P>
+<A NAME="Instruments_Omitted">
+<P>
+When all of the woodwinds are playing, which of the remaining instruments is
+Beethoven most likely to omit from the texture?
+</P>
+<blockquote>
+<code><big>grep '+fagot.*+clars.*+oboe.*+flt' orchestra | grep -c '-cbass'</big></code>
+<br>
+<code><big>grep '+fagot.*+clars.*+oboe.*+flt' orchestra | grep -c '-cello'</big></code>
+<br>
+<code><big>grep '+fagot.*+clars.*+oboe.*+flt' orchestra | grep -c '-viola'</big></code>
+<br>
+<code><big>grep '+fagot.*+clars.*+oboe.*+flt' orchestra | grep -c '-violn'</big></code>
+<br>
+etc.
+</blockquote>
+</P>
+<A NAME="Beethoven_chalemeau_link">
+<P>
+Many refinements can be added to this basic approach.
+For example, instead of classifying instruments as simply being
+"present" or "absent,"
+we might distinguish various registers for each instrument -- as we
+did with the clarinet when describing <b>recode</b>.
+We could then determine whether Beethoven tends to link, say,
+activity in the chalemeau register of the clarinet with low register
+activity in the strings.
+</P>
+<P>
+Further refinements might include relating orchestration to structural
+aspects of the music.
+For example, we might use
+<b>yank</b>
+to extract sections of movements;
+we could then compare possible differences
+of orchestration between the first and second themes, for example.
+Similarly, we could reduce instruments to instrument classes,
+and examine how brass, woodwinds, strings, and percussion in general
+are related.
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+A large number of analytic tasks simply involve classifying things.
+In general, two sorts of classifying methods can be distinguished:
+(1) a numerical or
+<i>parametric</i>
+classification can be used to reassign various ranges of numerical
+values into a finite set of classes or categories;
+(2) a
+<i>non-parametric</i>
+classification maps one set of words or terms into a second (usually smaller)
+set of words (used to label various classes or categories).
+In this chapter, we have seen that,
+for any Humdrum representation, parametric classification can be done
+using the
+<A HREF="commands/recode.html"><b>recode</b></A>
+command and non-parametric classification can be achieved using the
+<i>substitution</i>
+operation provided by the
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+command.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide23.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide21.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

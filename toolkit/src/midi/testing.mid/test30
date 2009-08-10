@@ -1,0 +1,74 @@
+!! midi Test #30
+!! Test of spine-path adds (*+) and spine-path terminators (*-).
+**kern
+*M2/4
+*C:
+=1
+4CC
+4DD
+=2
+*+
+*	**kern
+4EE	4r
+4FF	4r
+=3	=3
+4r	4GG
+*	*-
+4AA
+=4
+4BB
+*+
+*	**kern
+4r	4C
+=5	=5
+*	*+
+*	*	**kern
+4r	4D	4r
+4r	4r	4E
+=6	=6	=6
+4F	4r	4r
+*	*-	*
+4r	4G
+=7	=7
+*+	*
+*	**kern	*
+4r	4r	4A
+4r	4B	4r
+=8	=8	=8
+*-	*	*-
+4c
+4d
+*+
+*	**kern
+=9	=9
+4r	4e
+*+	*+
+*	**kern	*	**kern
+4r	4r	4r	4f
+=10	=10	=10	=10
+4r	4g	4r	4r
+*-	*	*	*-
+4r	4a
+*	*+
+*	*	**foo
+=11	=11	not=11
+4b	4r	not4C#
+4r	4cc	not4b-
+=12	=12	.
+*-	*	*
+4dd	not4d#
+*-	*+
+*	**kern
+not4c#	4ee
+.	=13
+.	4ff
+*	*+
+*	*	**bar
+.	4gg	not16e-
+not16e	=14	not a barline
+not4d#	4aa	not16a-
+.	4bb	not16gg-
+.	=15	not16dd#
+.	2ccc	not16cc#
+====	====	====
+*-	*-	*-

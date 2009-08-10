@@ -1,0 +1,37 @@
+
+THEMA     : Search thematic database; identify the composer and origin.
+
+     This command searches a thematic database according to user-defined
+     search keys.  Themes that match the search key are identified
+     by composer, title, instrumentation, opus, movement, etc.
+
+     Search keys ("incipits") may be defined in several different ways, in-
+     cluding rough up/down contour (-C), up/down contour with step and leap
+     intervals distinguished (-c), by scale degree (-d), by semitone interval
+     (-i), by interval (-I), by pitch (-p), by pitch-class (-P), and by relative
+     rhythm (-r).  Several search keys can be combined in a single search,
+     and searches can be limited to structural tones only (-s).
+     
+Syntax:
+
+     thema [-m|M] [-s] [-C incipit] [-c incipit] [-d incipit] [-i incipit]
+      [-I incipit] [-P incipit] [-p incipit] [-r incipit] [-t tonic]
+
+Options:
+
+  -C incipit  : identify according to up/down/unison(same) contour [UDS]
+  -c incipit  : identify according to up/down/unison step/leap contour [UDuds]
+  -d incipit  : identify according to scale degrees [1234567]
+  -I incipit  : identify according to intervals [+-PMmdA1234567890]
+  -i incipit  : identify according to semitone intervals [+-1234567890]
+  -M          : limit search to themes in major keys
+  -m          : limit search to themes in minor keys
+  -P incipit  : identify according to pitch-class [0123456789AB]
+  -p incipit  : identify according to pitch [#bABCDEFG]
+  -r incipit  : identify according to longer/shorter/same rhythm [<>=]
+  -s          : limit search to structural tones only
+  -T meter    : limit search meter (e.g. 3/8) or class (e.g. 'compound duple')
+  -t tonic    : limit search to themes in key of "tonic" (major or minor)
+
+  Refer to reference manual for further details.
+

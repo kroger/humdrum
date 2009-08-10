@@ -1,0 +1,20 @@
+!! midi Test #22
+!! Tests of 10th and 20th notes.
+**kern	**kern	**kern
+*MM16	*MM16	*MM16
+20C	20E	10G
+20D	20F	.
+20E	20G	10c
+20F	20A	.
+20G	20B	10e
+20A	20c	.
+20B	20d	10g
+20c	20e	.
+20d	20f	10cc
+20e	20g	.
+20f	20a	10ee
+20g	20b	.
+20a	20cc	10aa
+20b	20dd	.
+10cc	10ee	10gg
+*-	*-	*-

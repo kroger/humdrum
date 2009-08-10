@@ -1,0 +1,12 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! A test of -U and -T options together
+**kern	**kern	**semits
+*tand	*tand	*
+*-	*	*
+c	0
+**kern	**freq
+*tand	*
+*-	*-
+**freq
+*tand
+*-

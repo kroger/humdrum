@@ -1,0 +1,235 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Beat Position</TITLE>
+<!-- Documentation for the **takt Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **takt Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,beat position,software,theory,analysis,systematic musicology,computer representation,**takt">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Beat Position</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**takt</b>  --  beat-position representation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+Frequently, it is useful to represent temporal moments within
+a recurring cycle or pattern.
+In music, the best example of such recurring moments is the pattern
+of beats within a measure.
+In 3/4 meter, for example, a recurring cycle of beats occurs: 1-2-3-1-2-3 ...
+The
+<b>**takt</b>
+interpretation permits the representation of recurring
+moments within some temporal cycle.
+For most applications, the duration of the repeating cycle will be
+equivalent to the measure.
+However, other cycles are possible, such as phrase, sub-phrase, etc.
+</P>
+<P>
+In <b>**takt</b>,
+integer values refer to beats, hence the value `2' refers to the second beat.
+Fractional values refer to moments within beats.
+For example, the value `3.5' refers
+to the second half of the third beat.
+In 4/4 meter, the value `4.75' refers to the last sixteenth of the
+measure.
+Up to two digits are permitted following the decimal point.
+Some decimal values are reserved to mean precise subdivisions.
+For example, the decimal values `x.33' and `x.67' are assumed to be precisely
+one-third and two-thirds respectively, i.e. equivalent to `x.33333...' and
+`x.66666...'
+Other fractional values are defined in the following table.
+<blockquote>
+<TABLE>
+<TR><TD><i>x.</i>10</TD><TD>1/10</TD></TR>
+<TR><TD><i>x.</i>11</TD><TD>1/9</TD></TR>
+<TR><TD><i>x.</i>13</TD><TD>1/8</TD></TR>
+<TR><TD><i>x.</i>14</TD><TD>1/7</TD></TR>
+<TR><TD><i>x.</i>16</TD><TD>1/6</TD></TR>
+<TR><TD><i>x.</i>20</TD><TD>1/5</TD></TR>
+<TR><TD><i>x.</i>22</TD><TD>2/9</TD></TR>
+<TR><TD><i>x.</i>25</TD><TD>1/4</TD></TR>
+<TR><TD><i>x.</i>29</TD><TD>2/7</TD></TR>
+<TR><TD><i>x.</i>30</TD><TD>3/10</TD></TR>
+<TR><TD><i>x.</i>33</TD><TD>1/3, 3/9</TD></TR>
+<TR><TD><i>x.</i>38</TD><TD>3/8</TD></TR>
+<TR><TD><i>x.</i>40</TD><TD>2/5</TD></TR>
+<TR><TD><i>x.</i>43</TD><TD>3/7</TD></TR>
+<TR><TD><i>x.</i>44</TD><TD>4/9</TD></TR>
+<TR><TD><i>x.</i>50</TD><TD>1/2</TD></TR>
+<TR><TD><i>x.</i>56</TD><TD>5/9</TD></TR>
+<TR><TD><i>x.</i>57</TD><TD>4/7</TD></TR>
+<TR><TD><i>x.</i>60</TD><TD>3/5</TD></TR>
+<TR><TD><i>x.</i>63</TD><TD>5/8</TD></TR>
+<TR><TD><i>x.</i>67</TD><TD>2/3, 6/9</TD></TR>
+<TR><TD><i>x.</i>70</TD><TD>7/10</TD></TR>
+<TR><TD><i>x.</i>71</TD><TD>5/7</TD></TR>
+<TR><TD><i>x.</i>75</TD><TD>3/4</TD></TR>
+<TR><TD><i>x.</i>78</TD><TD>7/9</TD></TR>
+<TR><TD><i>x.</i>80</TD><TD>4/5</TD></TR>
+<TR><TD><i>x.</i>83</TD><TD>5/6</TD></TR>
+<TR><TD><i>x.</i>86</TD><TD>6/7</TD></TR>
+<TR><TD><i>x.</i>88</TD><TD>7/8</TD></TR>
+<TR><TD><i>x.</i>89</TD><TD>8/9</TD></TR>
+<TR><TD><i>x.</i>90</TD><TD>9/10</TD></TR>
+</TABLE>
+</blockquote>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**takt</big></code>
+data should be given names with the distinguishing `.tak' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**takt</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>.</TD><TD>fractional delimiter; null token</TD></TR>
+<TR><TD>=</TD><TD>barlines</TD></TR>
+<TR><TD>==</TD><TD>double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**takt</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**kern</TD><TD>**metpos</TD><TD>**takt</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>*c:</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>8r</TD><TD>1</TD><TD>1</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD><TD>1.5</TD></TR>
+<TR><TD>16bn</TD><TD>5</TD><TD>1.75</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD><TD>2</TD></TR>
+<TR><TD>8g</TD><TD>4</TD><TD>2.5</TD></TR>
+<TR><TD>8a-</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD><TD>3.5</TD></TR>
+<TR><TD>16b</TD><TD>5</TD><TD>3.75</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD><TD>4</TD></TR>
+<TR><TD>8dd</TD><TD>4</TD><TD>4.5</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>8g</TD><TD>1</TD><TD>1</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD><TD>1.5</TD></TR>
+<TR><TD>16bn</TD><TD>5</TD><TD>1.75</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD><TD>2</TD></TR>
+<TR><TD>8dd</TD><TD>4</TD><TD>2.5</TD></TR>
+<TR><TD>16f</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>16g</TD><TD>5</TD><TD>3.25</TD></TR>
+<TR><TD>[8a-</TD><TD>4</TD><TD>3.5</TD></TR>
+<TR><TD>8a-]</TD><TD>3</TD><TD>4</TD></TR>
+<TR><TD>16g</TD><TD>4</TD><TD>4.5</TD></TR>
+<TR><TD>16f</TD><TD>5</TD><TD>4.75</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+Currently, no special-purpose Humdrum commands produce
+<b>**takt</b>
+as output, or process
+<b>**takt</b>
+encoded data as input.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**takt</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**takt</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="date.rep.html"><b>**date</b></A>,
+<A HREF="dur.rep.html"><b>**dur</b></A>,
+<A HREF="metpos.rep.html"><b>**metpos</b></A>,
+<A HREF="ordo.rep.html"><b>**ordo</b></A>,
+<A HREF="recip.rep.html"><b>**recip</b></A>,
+<A HREF="time.rep.html"><b>**time</b></A>,
+<A HREF="../commands/timebase.html"><b>timebase</b></A>,
+<A HREF="Zeit.rep.html"><b>**Zeit</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

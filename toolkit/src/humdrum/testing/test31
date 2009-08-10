@@ -1,0 +1,14 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! This is a test for the verbose
+!! option for humdrum.awk
+**Thisisalonginterpretation	**ex	**ex
+1234567890	abcdefghijklmnopqrstuvwxyz	next
+*-	*-	*
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+*^
+*a	*b
+*aa	*bb
+`'\,;:?!@#%&#~	_-+=<>{}
+*x	*x
+*v	*v
+*-

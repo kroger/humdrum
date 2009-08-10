@@ -1,0 +1,460 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH toolkit 1 "1994 Dec. 13"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +21
+.ti -21
+\fBHumdrum Toolkit\fR  --  UNIX-based software tools for music research
+.in -21
+.in -2
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBHumdrum Release 1.0\fR  [60 software tools]
+.in -7
+.in -2
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+This document describes general aspects of the Humdrum Toolkit.
+It provides detailed information about getting started,
+and points to important sources of additional information.
+.sp 1
+The following discussion is divided into 9 numbered sections:
+.sp 1
+.in +3
+(1) General description.
+.br
+(2) Configuration and Use.
+.br
+(3) Printed Reference Manual.
+.br
+(4) On-line Information.
+.br
+(5) Command Inventory
+.br
+(6) Sample Commands
+.br
+(7) Available Scores
+.br
+(8) Portability
+.br
+(9) Copyright and Licensing"
+.br
+(10) Authorship
+.in -3
+.sp 1
+.SH "1. GENERAL DESCRIPTION"
+.in +2
+Humdrum is a general-purpose software system intended
+to assist in music research.
+Humdrum may be of potential benefit to anyone wishing to pursue
+systematic investigations of musical information.
+This includes the posing of "factual" questions about music,
+and the testing of hypotheses about musical organization.
+.sp 1
+Humdrum can encode information in an unbounded variety of forms,
+such as French lute tablatures, conducting gestures, spectral information,
+or perceptual data.
+Users are free to concoct their own task-specific representations --
+such as schemes to represent Telugu notation, Dagomba dance,
+or Schenkerian graphs.
+.sp 1
+Most of the Humdrum software tools are quite general in their operation.
+The tools can transform, classify, coordinate, search, transfer,
+restructure, contextualize, compare and otherwise manipulate both
+pre-defined and user-defined information.
+.sp 1
+Like the UNIX operating system, Humdrum consists of a set of independent
+commands that may be interconnected to solve a wide variety of problems.
+Like UNIX, Humdrum requires a certain investment of time in order
+to use lucidly.
+.sp 1
+A detailed FAQ file (Frequently Asked Questions) is maintained
+in the directory: /Local/Unix/src/humdrum/etc.
+In order to view this file type:
+.sp 1
+.in +2
+more /Local/Unix/src/humdrum/etc/faq
+.in -2
+.sp 1
+The FAQ file includes an index to 40 common questions concerning
+Humdrum.
+.in -2
+.sp 1
+.SH "2. CONFIGURATION AND USE"
+.in +2
+In order to use the Humdrum Toolkit, users will typically need to
+make a few changes to their shell configuration.
+Humdrum makes extensive use of facilities provided by the Bourne shell
+-- and it progeny, the Korn shell, and the Born-again shell ("bash").
+.sp 1
+In order to configure your userid for Humdrum use, copy a sample
+BASH profile into your home directory.  Use the following command:
+.sp 1
+.in +2
+cp /Local/Unix/src/humdrum/etc/.bashrc ~/.
+.in -2
+.sp 1
+In order to invoke the BASH shell, simply type the command:
+.sp 1
+.in +2
+bash
+.in -2
+.sp 1
+All of the Humdrum commands should now be available for use.
+In addition, all of your normal UNIX commands will be accessible.
+.sp 1
+If you wish, edit the .bashrc file in your home directory, and tailor
+the various settings (such as the PATH order, umask, prompt,
+backspace, etc.) to your taste.
+If you use either the `emacs' or `vi' editors, edit your .bashrc
+file, and read the instructions for automatically configuring
+the appropriate editor for command-line editing.
+Extensive system documentation is available that describes
+the features of the "bash" shell.
+For more information, type:
+.sp 1
+.in +2
+man bash
+.in -2
+.in -2
+.sp 1
+.SH "3. PRINTED REFERENCE MANUAL"
+.in +2
+A 552-page Reference Manual exists for Humdrum.
+The Reference Manual may be borrowed from Patte Wood.
+Personal copies of the Manual may be purchased from
+the Center for Computer Assisted Research in the Humanities (CCARH).
+A 50-minute videotaped demonstration of the system is also
+available (to borrow) from CCARH.
+.sp 1
+Like any complex system, browsing through the manual is an
+important way of gaining facility with Humdrum.
+.in -2
+.sp 1
+.SH "4. ON-LINE INFORMATION"
+.in +2
+Reference information for individual Humdrum commands is available online.
+Simply use the UNIX "man" command.
+For example, the command
+.sp 1
+.in +2
+man strophe
+.in -2
+.sp 1
+will give on-line information concerning the Humdrum "strophe" command.
+Refer to the Command Inventory (Section 5 below) for a complete
+list of Humdrum commands.
+.sp 1
+There is no online information pertaining to the various Humdrum
+REPRESENTATIONS (i.e., ways of representing different types of
+musical information).
+Refer to Sections 2 and 3 of the printed documentation.
+.in -2
+.sp 1
+.SH "5. COMMAND INVENTORY"
+.in +2
+Humdrum Toolkit commands may be conceptually divided into three
+groups: (1) Basic Tools, (2) Specialized Tools, and (3) MIDI-related Tools.
+.sp 1
+Basic tools are commands that can be applied to ANY Humdrum-format
+representation -- including any representation you may design yourself.
+It does not matter what the representation represents;
+basic tools will always be able to manipulate the ensuing data.
+.sp 1
+Twenty-four basic tools are briefly summarized below:
+.sp 1
+\fBBASIC TOOLS\fR
+.sp 1
+.TS
+l l.
+\fBassemble\fR	paste together Humdrum files
+\fBcensus\fR	determine general properties of a Humdrum input
+\fBcleave\fR	join tokens from two or more spines into a single spine
+\fBcontext\fR	congeal data records to form a contextual frame
+\fBcorrel\fR	measure the numerical similarity between two spines
+\fBextract\fR	select input spines for output
+\fBfields\fR	trace changes in spine structure
+\fBfill\fR	replace null tokens with previous non-null data token
+\fBhumdrum\fR	test conformance to Humdrum syntax
+\fBhumsed\fR	stream editor for Humdrum files
+\fBinfo\fR	calculate information flow
+\fBnum\fR	number selected records according to user-defined criteria
+\fBpatt\fR	locate and output user-defined patterns in a Humdrum input
+\fBpattern\fR	exhaustively locate user-defined patterns in a Humdrum input
+\fBrecode\fR	recode numeric tokens in selected Humdrum spines
+\fBrend\fR	split tokens in a single spine into two or more
+	  spines
+\fBrid\fR	eliminate specified record types from the input
+\fBscramble\fR	randomize order of either Humdrum data records or
+	  data tokens
+\fBsimil\fR	measure the similarity between two Humdrum spines
+\fBstrophe\fR	selectively extract strophic data
+\fBthru\fR	expand repeats to through-composed form
+\fBxdelta\fR	calculate numeric differences for successive tokens
+	  within a spine
+\fByank\fR	extract passages from a Humdrum input
+\fBydelta\fR	calculate numeric differences for concurrent spines
+.TE
+.sp 1
+Specialized Humdrum Tools are commands that serve quite specific functions.
+Such tools might be used to transpose a work, change the representation
+to scale-degree, or calculate an interval-class vector.
+.sp 1
+Twenty-nine specialized Humdrum tools are summarized below:
+.sp 1
+\fBSPECIALIZED TOOLS\fR
+.sp 1
+.TS
+l l.
+\fBcbr\fR	calculate the critical band rate corresponding to
+	  some frequency
+\fBcents\fR	translate pitch-related representations to cents
+\fBdeg\fR	translate pitch-related representations to relative
+	  scale degree
+\fBdegree\fR	translate pitch-related representations to absolute
+	  scale degree
+\fBfreq\fR	translate pitch-related representations to frequency
+\fBhint\fR	determine harmonic intervals between concurrent pitches
+\fBiv\fR	determine interval vectors for successive vertical
+	  sonorities
+\fBhumver\fR	display Humdrum toolkit version and copyright
+	  information
+\fBkern\fR	translate pitch-related representations to kern
+\fBkey\fR	estimate the key (tonic and mode) of a passage
+\fBmelac\fR	calculate melodic accent values for successive pitches
+\fBmetpos\fR	assign metric position indicators to sonorities
+\fBmint\fR	determine sequential diatonic interval between
+	  successive pitches
+\fBnf\fR	determine normal form for successive vertical sonorities
+\fBpc\fR	translate numeric semit values to numeric pitch-class
+\fBpcset\fR	convert pitch-class to set-theoretic representation
+\fBpitch\fR	translate pitch-related representations to American
+	     standard pitch notation
+\fBproof\fR	check syntax of kern file
+\fBregexp\fR	interactive regular-expression tester
+\fBreihe\fR	output specified row variant for a given prime row
+\fBsemits\fR	translate pitch-related representations to semits
+\fBsolfg\fR	translate pitch-related representations to French
+	  solf\o'e\(ga'ge notation
+\fBspect\fR	assemble total spectral content for individual
+	  sonorities
+\fBsynco\fR	measure degree of metric syncopation
+\fBtimebase\fR	reformat kern score with constant time-base
+\fBtonh\fR	translate pitch-related representations to German
+	  pitch notation
+\fBtrans\fR	transpose pitch representations
+\fBurrhythm\fR	characterize the rhythmic prototypes in a passage
+\fBvox\fR	determine number of concurrently active voices
+.TE
+.sp 1
+In addition to the above tools, Humdrum provides several tools
+for processing and outputting MIDI data.
+Currently, these tools only work on IBM-PC-type platforms.
+Until an interface to the NeXT MIDI driver is created,
+the following commands are not yet available on NeXT machines:
+.sp 1
+\fBHUMDRUM MIDI TOOLS\fR
+.sp 1
+.TS
+l l.
+\fBencode\fR	interactively encode Humdrum data from MIDI input
+\fBmidi\fR	convert from \f(CR**kern\fR to Humdrum \f(CR**MIDI\fR
+	  format
+\fBmidreset\fR	reset MIDI controller card
+\fBperform\fR	play Humdrum \f(CR**MIDI\fR files
+\fBrecord\fR	record MIDI activity in Humdrum \f(CR**MIDI\fR data
+	  format
+\fBsmf\fR	create \fIStandard MIDI File\fR from Humdrum
+	  \f(CR**MIDI\fR input
+\fBtacet\fR	reset MIDI channels; silence
+.TE
+.in -2
+.sp 1
+.SH "6. SAMPLE COMMANDS"
+.in +2
+Nearly all Humdrum commands accept some Humdrum input(s) and
+produce some corresponding Humdrum output.  This means that
+information can be processed through a series of successive
+Humdrum commands.
+.sp 1
+Here are some elementary examples of simple Humdrum pipelines.
+.sp 1
+The following command extracts all woodwind parts from the
+file "ives":
+.sp 1
+.in +2
+extract -i '*ICww' ives
+.in -2
+.sp 1
+The following command outputs the line numbers for all sonorities
+in the file "machaut" where the leading-tone has been doubled:
+.sp 1
+.in +2
+deg -x machaut | grep -n '7.*7'
+.in -2
+.sp 1
+The following commands identify all phrase-endings in the file
+"wagner" that are approached by a descending semitone:
+.sp 1
+.in +2
+semits -xt wagner | fill > temp
+.br
+assemble wagner temp | grep -n '}.*-1[^0-9]'
+.in -2
+.sp 1
+A common musicological task is searching for various patterns.
+The `patt' and `pattern' commands accept a user-specified
+template file such as the following:
+.sp 1
+.in +2
+P5
+.br
+P5
+.in -2
+.sp 1
+Given the above two-line file ("template"), the following command will
+identify all instances of parallel fifths between the bass and alto
+parts for the file "caccini":
+.sp 1
+.in +2
+extract -i '*bass,*alto' caccini | hint -c | pattern -s = -f template
+.in -2
+.sp 1
+Given the following three-line "template" file:
+.sp 1
+.in +2
+ =
+.br
+ .*     +
+.br
+sus
+.in -2
+.sp 1
+ ... the following command outputs the measure numbers where
+suspensions are found in the file "bwv552":
+.sp 1
+.in +2
+extract -i '**embel' bwv552 | patt -e -f template | grep '='
+.in -2
+.sp 1
+The following command produces an inventory of all pitch-class
+sets evident for successive vertical sonorities in the file "opus24".
+In this case, only Z-related sets are requested in the inventory:
+.sp 1
+.in +2
+pc opus24 | fill -s = | pcset | grep 'Z' | sort | uniq
+.in -2
+.sp 1
+The following script command finds all instances of 12-tone rows in
+Webern's Opus 24:
+.sp 1
+.in +2
+matrix -n 12 prime
+.br
+rowfind opus24
+.in -2
+.sp 1
+The following command outputs the final two measures for all works
+in the current directory; the output is played as a MIDI output.
+.sp 1
+.in +2
+yank -o ^= '$-1-$' * | midi | perform
+.in -2
+.sp 1
+The above examples only scratch the surface of Humdrum's capabilities.
+.sp 1
+A simple automated "demo" of some Humdrum tasks may be invoked by
+typing the following command:
+.sp 1
+.in +2
+/Local/Unix/src/humdrum/etc/demo
+.in -2
+.sp 1
+Unfortunately, the demo works best in conjunction with MIDI outputs.
+However, the Humdrum MIDI tools are not yet available on NeXT machines.
+When the "demo" prompts you, indicate that the demonstrations
+involving MIDI should be skipped.
+.in -2
+.sp 1
+.SH "7. AVAILABLE SCORES"
+.in +2
+More than 2 thousand scores are encoded in Humdrum.
+Most of these scores are unavailable for public distribution
+due to copyright constraints.
+.sp 1
+A number of scores are available on-line in the following directory:
+.sp 1
+.in +2
+/Local/Unix/src/humdrum/scores
+.in -2
+.sp 1
+An electronic edition of the 48 fugues from J.S. Bach's Well-Tempered Clavier
+is available on-line, as well as a selection of one hundred additional scores.
+In addition, the CCARH also sells (for private use) the six
+Brandenburg Concertos by J.S. Bach and the twelve trio sonatas (Opus 1)
+by Archangelo Corelli.
+These electronic editions are very modestly priced
+(e.g. $13.95 for the complete Brandenburg concertos).
+.in -2
+.SH "8. PORTABILITY"
+.in +2
+The Humdrum Toolkit is available on all UNIX systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+This includes NeXTstep, LINUX, AIX, HP/UX, and other systems.
+In addition, Humdrum is available under
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+.in -2
+.sp 1
+.SH "9. COPYRIGHT AND LICENSING"
+.in +2
+The Humdrum Toolkit is being distributed on a non-profit basis.
+It is available for free via anonymous FTP, or disks may be ordered for a
+modest fee from the non-profit Center for Computer Assisted Research
+in the Humanities (CCARH).
+The Toolkit may be downloaded from "archive.uwaterloo.ca"  Detailed FTP
+instructions are given in the FAQ (see (1) above).
+.sp 1
+Although the Humdrum Toolkit is being distributed on a non-profit basis
+the software remains protected by copyright.
+The copy on the CCRMA site is licensed solely to CCRMA
+for the exclusive use of CCRMA users.
+.sp 1
+To register your own personal copy, simply send your name, address,
+institutional affiliation (where appropriate), and E-mail address
+(if available) to:  Humdrum Research Software, Conrad Grebel College,
+University of Waterloo, Waterloo Ontario, Canada N2L 3G6.
+You will receive a serial number indicating that your copy has been
+registered.
+.sp 1
+Copies of this software may not be sold -- nor may copies of the
+Humdrum Toolkit be distributed to others without the recipient
+establishing legal ownership of the copy.
+.in -2
+.sp 1
+.SH "10. AUTHORSHIP"
+.in +2
+The Humdrum Toolkit was originally programmed by David Huron
+of the Music Department at the University of Waterloo.
+It was expanded and re-programmed by research assistants
+Tim Racinsky and Kyle Dawkins.
+Additional programming was done by Keith Orpen and Keith Mashinter.
+.sp 1
+The Humdrum Toolkit was installed at CCRMA on November 28th, 1994 by
+Fernando Lopez Lezcano and David Huron.
+.sp 1
+Both snail-mail and e-mail mailing lists are maintained.
+You can receive direct information concerning Humdrum by sending
+your name, address, and e-mail address to dhuron@watserv1.uwaterloo.ca
+.in -2

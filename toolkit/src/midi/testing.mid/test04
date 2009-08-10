@@ -1,0 +1,9 @@
+!! midi Test #4
+!! **kern spines with only null tokens should cause no problems.
+**kern
+.
+.
+.
+.
+.
+*-

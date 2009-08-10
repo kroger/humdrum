@@ -1,0 +1,198 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Frequency Spectra</TITLE>
+<!-- Documentation for the **spect Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **spect Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,frequency,spectra,software,theory,analysis,systematic musicology,computer representation,**spect">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Frequency Spectra</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**spect</b>  --  discrete frequency spectrum representation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**spect</b>
+representation is used to represent successive acoustic spectra.
+Three types of data tokens are recognized by
+<b>**spect</b>:
+spectral data, silence (ambient spectrum), and barlines.
+In the case of spectral data, each token represents a complete
+spectrum specified as a set of concurrent discrete frequency components.
+Each component in the spectrum is represented by
+a pair of numerical values separated by a semicolon (;).
+These paired values encode the frequency and amplitude attributes respectively
+for a single spectral component.
+Frequency values are positive integer or real values representing
+<i>hertz.</i>
+Amplitude values are positive integer or real values representing
+the sound pressure level in decibels (dB SPL).
+Where a spectrum consists of more than one pure tone component,
+the data are encoded as Humdrum multiple-stops.
+</P>
+<P>
+When no sound is present, this is represented by an ambient spectrum
+--  denoted simply by the upper-case letter `A'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**spect</big></code>
+data should be given names with the distinguishing `.spe' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**spect</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>frequency or amplitude values specified as integer</TD></TR>
+<TR><TD></TD><TD>     or real value; measure numbers</TD></TR>
+<TR><TD>.</TD><TD>decimal point; null token</TD></TR>
+<TR><TD>A</TD><TD>ambient spectrum ("silence")</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>=;</TD><TD>barline with pause sign</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**spect</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+The following sample document encodes five spectra and a barline.
+The first data record encodes an ambient spectrum (silence).
+There ensues two spectra, each consisting of three spectral components.
+The first spectrum consists of a 261 Hz tone at 47 dB SPL, as well as spectral
+components at 523 Hz and 785 Hz at 57 dB SPL and 35 dB SPL, respectively.
+Following the barline are two data records that encode two different
+amalgamations of the preceding two three-component spectra.
+Notice that these two spectra are identical; only the order of
+the components differs.
+In the
+<b>**spect</b>
+representation there is no special requirement that the spectral components
+be encoded in any particular order.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**spect</TD></TR>
+<TR><TD>A</TD></TR>
+<TR><TD>261;47 523;57 785;35</TD></TR>
+<TR><TD>330;57 659;35 989;27</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>261;47 523;57 785;35 330;57 659;35 989;27</TD></TR>
+<TR><TD>261;47 330;57 523;57 659;35 785;35 989;27</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</blockquote>
+</code></big>
+</blockquote>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum command produces <b>**spect</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD><A HREF="../commands/spect.html"><b>spect</b></A></TD><TD>assemble total spectral content for individual sonorities</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**spect</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**spect</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="dB.rep.html"><b>**dB</b></A>,
+<A HREF="../commands/diss.html"><b>diss</b></A>,
+<A HREF="freq.rep.html"><b>**freq</b></A>,
+<A HREF="semits.rep.html"><b>**semits</b></A>,
+<A HREF="../commands/semits.html"><b>semits</b></A>,
+<A HREF="spect.rep.html"><b>**spect</b></A>,
+<A HREF="../commands/spect.html"><b>spect</b></A>
+</code></big>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>WARNING</H3></FONT>
+<blockquote>
+The
+<b>**spect</b>
+representation frequently produces long data records.
+Viewing or editing the output using restricted window widths
+may be inconvenient.
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

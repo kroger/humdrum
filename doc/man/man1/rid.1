@@ -1,0 +1,210 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH rid 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +12
+.ti -12
+\fBrid\fR  --  eliminate specified Humdrum record types
+.in -12
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.sp 1
+.sp 1
+.in +2
+\fBrid\fR   [\fB-dgiltuDGILU\fR]   [\fIinputfile ...\fR] 
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "rid"
+command allows the user to eliminate specified types of Humdrum records (lines)
+from the input stream.
+Depending on the options selected,
+.B "rid"
+will eliminate global comments, local comments, interpretations,
+duplicate exclusive interpretations, tandem interpretations,
+data records, data records consisting of just null tokens (null data records),
+empty global or local comments, empty interpretations,
+or any combination of these record types.
+.sp 1
+.sp 1
+Humdrum comments are records that begin with an exclamation mark (!).
+Local comments begin each active spine with a single exclamation mark,
+whereas gobal comments begin with two exclamation marks (!!) at the
+beginning of the record.
+A global comment consisting of only two exclamation marks is
+a null global comment.
+If a local comment record contains only single exclamation marks
+in each spine, it is dubbed a null local comment.
+.sp 1
+.sp 1
+Humdrum interpretations are records that begin with an asterisk (*).
+Tandem interpretations begin each active spine with a single asterisk,
+whereas exclusive interpretations begin with an asterisk and
+have at least one active spine beginning with two asterisks.
+If each active spine contains only a single asterisk,
+the record is dubbed a null interpretation.
+.sp 1
+.sp 1
+Records that are not comments or interpretations are deemed to be
+data records.
+Null tokens are data tokens consisting of just the period character (.).
+A data record containing only null tokens (separated by tabs)
+is a null data record.
+.sp 1
+.sp 1
+A duplicate exclusive interpretation is an exclusive interpretation
+that repeats the name of an interpretation that is already
+active for a given spine.
+If a spine has not been terminated, there is frequently little need
+to indicate (again) the active interpretation for a given spine.
+(An exception occurs when the user wants the data to be processed
+as discontinuous -- such as avoiding calculating pitch intervals
+between the last note of one piece and the first note of a subsequent piece.)
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "rid"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-D\fR	remove all data records
+\fB-d\fR	remove null data records
+\fB-G\fR	remove all global comments
+\fB-g\fR	remove null global comments
+\fB-I\fR	remove all interpretation records
+\fB-i\fR	remove null interpretation records
+\fB-L\fR	remove all local comments
+\fB-l\fR	remove null local comments
+\fB-T\fR	remove all tandem interpretations
+\fB-U\fR	remove unnecessary (duplicate) exclusive interpretations
+\fB-u\fR	same as \fB-U\fR
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+In general, upper-case options eliminate
+.I "all"
+records of a given type, whereas the corresponding lower-case
+options eliminate only null records (devoid of signifiers)
+for a given record type.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following examples illustrate the use of
+.B "rid."
+Consider the following input file:
+.in +2
+.sp 1
+.TS
+l s
+l l.
+!! `rid' example
+!!
+**abc	**xyz
+*tand	*em
+12	.
+\.	.
+!local	!comments
+*	*
+*x	*x
+**xyz	**abc
+!	!
+\.	34
+*-	*-
+.TE
+.sp 1
+.in -2
+The following command:
+.sp 1
+.sp 1
+.in +2
+rid -dlu input
+.in -2
+.sp 1
+.sp 1
+will eliminate all null data records, all null local comments,
+and any unnecessary (duplicate) exclusive interpretations:
+.in +2
+.sp 1
+.TS
+l s
+l l.
+!! `rid' example
+!!
+**abc	**xyz
+*tand	*em
+12	.
+!local	!comments
+*	*
+*x	*x
+\.	34
+*-	*-
+.TE
+.sp 1
+.in -2
+Alternatively, the command:
+.sp 1
+.sp 1
+.in +2
+rid -DGLiT input
+.in -2
+.sp 1
+.sp 1
+will eliminate all data records, all global and local comments,
+all null interpretations, and all tandem interpretations:
+.in +2
+.sp 1
+.TS
+l l.
+**abc	**xyz
+*x	*x
+**xyz	**abc
+*-	*-
+.TE
+.sp 1
+.in -2
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+Removing Humdrum interpretation records will render the file
+inconsistent with the Humdrum syntax.
+Further processing of such a file with the Humdrum tools
+may be impossible.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBhumsed\fR (1), \fBrecode\fR (1), \fBsed\fR (\s-1UNIX\s+1)
+.in -2

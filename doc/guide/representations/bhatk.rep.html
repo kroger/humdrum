@@ -1,0 +1,542 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Bhatkhande Notation</TITLE>
+<!-- Documentation for the **bhatk Humdrum representation; software for music research. -->
+<meta name="author" content="Parag Chordia">
+<meta name="creation-date" content="Fri May  6 11:25:11 EDT 2005">
+<meta name="revision-date" content="Fri May  6 11:25:19 EDT 2005">
+<meta name="description" content="Documentation for the **bhatk Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,semitone pitch,software,theory,analysis,systematic musicology,computer representation,**bhatk">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Bhatkhande Notation</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**bhatk</b>  --  representation for Bhatkhande notation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**bhatk</b>
+scheme can be used to represent the basic information
+of the notation system created by Vishnu Narayanan Bhatkhande
+used to transcribe Hindustani music.
+The
+<b>**bhatk</b>
+representation allows a monophonic encoding of the
+various notes including performance gestures akin to ornaments.
+<b>**bhatk</b>
+is primarily designed to facilitate analytic applications
+rather than music printing or sound generation.
+Other Humdrum representations should be used for these latter purposes.
+Since one main purpose of
+<b>**bhatk</b>
+is to allow research tasks
+concerning scribal practices in the manuscripts, the layout and the
+orthographic information of the manuscripts are represented rather
+exactly.
+Non-notational information as clef setting and position of the music
+within the manuscripts (folio) and on the page (line number) is
+represented using tandem interpretations and local comments.
+</P>
+<P>
+These types of data tokens are distinguished in
+<b>**bhatk</b>:
+neumes and flat or natural icons.
+</P>
+<P>
+Neumes can encode a variety of attributes including neume-type,
+accidental and liquescence-type.
+</P>
+<P>
+Pitches are not directly encoded in the
+<b>**bhatk</b> representation.
+Instead, a parallel
+<A HREF="kern.rep.html"><b>**kern</b></A>
+spine is expected to encode the corresponding
+pitches, as well as a parallel spine for the text.
+</P>
+<P>
+A wide variety of neume types can be encoded using
+<b>**bhatk</b>.
+The following table identifies these individual types.
+</P>
+<P>
+Scale degrees:
+
+<blockquote>
+<TABLE>
+<TR>
+<TD>S</TD><TD>Sa</TD>
+</TR><TR>
+<TD>r</TD><TD>komal Re</TD>
+</TR><TR>
+<TD>R</TD><TD>Re</TD>
+</TR><TR>
+<TD>g</TD><TD>komal Ga</TD>
+</TR><TR>
+<TD>G</TD><TD>Ga</TD>
+</TR><TR>
+<TD>M</TD><TD>Ma</TD>
+</TR><TR>
+<TD>m</TD><TD>tivra Ma</TD>
+</TR><TR>
+<TD>P</TD><TD>Pa</TD>
+</TR><TR>
+<TD>d</TD><TD>komal Dha</TD>
+</TR><TR>
+<TD>D</TD><TD>Dha</TD>
+</TR><TR>
+<TD>n</TD><TD>komal Ni</TD>
+</TR><TR>
+<TD>N</TD><TD>Ni</TD>
+</TR>
+</TABLE>
+</blockquote>
+
+Octaves:
+
+<P>
+The first element of a ligature is represented by the signifier itself, the
+following elements by using the null token.
+</P>
+
+<blockquote>
+<TABLE>
+<TR>
+<TD>,</TD><TD>lower octave</TD>
+</TR><TR>
+<TD>'</TD><TD>middle octave</TD>
+</TR><TR>
+<TD>"</TD><TD>upper octave</TD>
+</TR>
+</TABLE>
+</blockquote>
+
+
+</P>
+<P>
+By way of illustration, an <i>epiphonus</i> can be represented by dlP, a
+<i>cepahlicus</i> by dlC.
+</P>
+<P>
+At some places the manuscripts contain very special groupings of neumes
+not found in the common classification of neumes. These neume-groups are
+encoded using open and closed parentheses to denote the beginning and end
+of the group.
+</P>
+<P>
+The only accidentals in Hildegard's notation are the flat (b <i>rotundum</i>)
+and the natural (b <i>quadratum</i>) sign.
+The
+<b>**bhatk</b>
+representation makes a distinction between two types of
+flat and natural signifiers:
+An orthographic and a semantic flat or natural.
+Orthographic accidentals
+frequently appear well before the notes they modify.
+For example, an
+accidental may appear two or more neumes prior to the modified note.
+The notated accidental icon (orthographic accidental) is signified by the
+"at" sign "@" for a flat and by "%" for a natural.
+In addition, it is useful to identify specific notes that are modified by
+the accidental.
+These (semantic) accidentals are represented by the
+ampersand "&" for a flat and by the caret "^" for a natural
+and placed immediately after the neume signifier.
+In summary, accidentals are represented both by their physical location
+in the manuscript and also by the modified note.
+In the former case, the accidental is signified as a separate token
+(encoded on a separate data record).
+In the latter case, the accidental is signified as a modifier of
+a neume token.
+</P>
+<P>
+In representing any work, editorial interpretations are inevitable.
+It may be necessary to make explicit certain implicit information in
+a manuscript (such as expanding abbreviations), or it may be necessary
+to estimate missing or unreadable information.
+The
+<b>**bhatk</b>
+representation provides several special-purpose
+signifiers to help make explicit various classes of
+editorial amendments, interpretations, or commentaries. Five types of
+editorial signifiers are made available:
+(1) <i>sic</i> (information is encoded literally, but is questionable)
+signified by Y; (2) invisible symbol
+(unwritten note etc., but logically implied) signified by y;
+(3) editorial interpretation, (a "modest" editorial act of interpretation --
+such as the interpretation of accidentals) is signified by x;
+(4) editorial intervention (a "significant" editorial intervention)
+signified by X; (5) footnote (accompanying local or global comment
+provides a text commentary pertaining to a specified data token)
+signified by ?.
+</P>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**bhatk</big></code>
+data should be given names with the distinguishing `.hgd' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**bhatk</b>
+mappings of signifiers and signifieds.
+</P>
+<P>
+<blockquote>
+<TABLE>
+<TR><TD>S</TD><TD><i>Sa</i></TD></TR>
+<TR><TD>r</TD><TD><i>komal Re</i></TD></TR>
+<TR><TD>R</TD><TD><i>Re</i></TD></TR>
+<TR><TD>g</TD><TD><i>komal Ga</i></TD>
+<TR><TD>G</TD><TD><i>Ga</i></TD></TR></TR>
+<TR><TD>M</TD><TD><i>Ma</i></TD></TR>
+<TR><TD>m</TD><TD><i>tivra Ma</i></TD></TR>
+<TR><TD>P</TD><TD><i>Pa</i></TD></TR>
+<TR><TD>d</TD><TD><i>komal Dha</i></TD></TR>
+<TR><TD>D</TD><TD><i>Dha</i></TD></TR>
+<TR><TD>n</TD><TD><i>komal Ni</i></TD></TR>
+<TR><TD>N</TD><TD><i>Ni</i></TD></TR>
+
+<TR><TD>X</TD><TD><i>Sam</i> (beginning of rhythmic cycle)</TD></TR>
+<TR><TD>O</TD><TD><i>Khali</i> (mid-point of rhythmic cycle)</TD></TR>
+<TR><TD>|</TD><TD><i>Vibha</i>g indicator (rhythmic cycle separator)</TD></TR>
+
+<TR><TD>0-9.</TD><TD>reciprocal duration indicators (see **recip)</TD></TR>
+
+<TR><TD>(</TD><TD>start of note group</TD></TR>
+<TR><TD>)</TD><TD>end of note group</TD></TR>
+
+<TR><TD>{</TD><TD>start of phrase</TD></TR>
+<TR><TD>}</TD><TD>end of phrase</TD></TR>
+<TR><TD>[</TD><TD>start of specified <i>meend</i> (glissando)</TD></TR>
+<TR><TD>]</TD><TD>end of specified <i>meend</i> (glissando)</TD></TR>
+<TR><TD>[^</TD><TD>start of rising <i>meend</i> (glissando)</TD></TR>
+<TR><TD>[v</TD><TD>start of falling <i>meend</i> (glissando)</TD></TR>
+<TR><TD><</TD><TD>start of <i>kan</i></TD></TR>
+<TR><TD>></TD><TD>end of <i>kan</i></TD></TR>
+<TR><TD>~</TD><TD><i>andolan</i> (vibrato)</TD></TR>
+<TR><TD>%</TD><TD><i>khatka</i> (turn-like ornament)</TD></TR>
+<TR><TD>w</TD><TD><i>murki</i> (mordent-like ornament)</TD></TR>
+<TR><TD>-</TD><TD>rest</TD></TR>
+<TR><TD>+</TD><TD>accent</TD></TR>
+
+<TR><TD>z</TD><TD>editorial interpretation; entire data token is interpreted</TD></TR>
+<TR><TD>Z</TD><TD>editorial intervention; immediately preceding signifier is an
+        editorial addition</TD></TR>
+<TR><TD>ZZ</TD><TD>editorial intervention; entire data token is an editorial addition</TD></TR>
+<TR><TD>y</TD><TD>editorial mark; invisible symbol; unwritten note, but logically
+        implied</TD></TR>
+<TR><TD>yy</TD><TD>editorial mark; entire data token is implied</TD></TR>
+<TR><TD>Y</TD><TD>editorial mark: sic marking; information is encoded literally, but
+        is questionable</TD></TR>
+<TR><TD>YY</TD><TD>editorial mark: sic marking; entire data token is present in the
+        original but questionable</TD></TR>
+<TR><TD>?</TD><TD>editorial mark: immediately preceding signifier has accompanying
+        editorial footnote in an ensuing comment</TD></TR>
+<TR><TD>??</TD><TD>editorial mark: entire preceding data token has accompanying
+        editorial footnote in an ensuing comment</TD></TR>
+
+</TABLE>
+<CENTER>
+<i>Summary of <b>**bhatk</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<blockquote>
+Order of signifiers:
+<ol>
+<li>
+open phrase
+<li>
+note-group
+<li>
+accent
+<li>
+meend
+<li>
+andalan
+<li>
+duration
+<li>
+augmentation dot(s)
+<li>
+pitch or rest
+<li>
+octave
+<li>
+
+<li>
+<li>
+<li>
+close phrase
+</ol>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+The following sample document shows a
+<A HREF="kern.rep.html"><b>**kern</b></A> spine
+with corresponding <code><big>**bhatk</big></code> data.
+In addition, a
+<A HREF="silbe.rep.html"><b>**silbe</b></A> spine
+has been used to encode the text.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**kern</TD><TD>**bhatk</TD><TD>**silbe</TD></TR>
+<TR><TD>*</TD><TD>*mode4</TD><TD>*LLatin</TD></TR>
+<TR><TD>!</TD><TD>!154,7</TD><TD>!</TD></TR>
+<TR><TD>*</TD><TD>*clefC5,F3</TD><TD>*</TD></TR>
+<TR><TD>E</TD><TD>R</TD><TD>O</TD></TR>
+<TR><TD>D</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>G</TD><TD>C</TD><TD>splen-</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>P</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>M3</TD><TD>-di-</TD></TR>
+<TR><TD>D</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>C</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>v</TD><TD>-dis-</TD></TR>
+<TR><TD>AA</TD><TD>S3</TD><TD>-si-</TD></TR>
+<TR><TD>BB</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>C</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>BB</TD><TD>C</TD><TD>-ma</TD></TR>
+<TR><TD>AA</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>C</TD><TD>gem-</TD></TR>
+<TR><TD>D</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>dlP</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>v</TD><TD>-ma</TD></TR>
+<TR><TD>D</TD><TD>v</TD><TD>&</TD></TR>
+<TR><TD>E</TD><TD>p</TD><TD>se-</TD></TR>
+<TR><TD>F</TD><TD>Q</TD><TD>.</TD></TR>
+<TR><TD>G</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>P</TD><TD>.</TD></TR>
+<TR><TD>A</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>A</TD><TD>I6</TD><TD>.</TD></TR>
+<TR><TD>G</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>p</TD><TD>-re-</TD></TR>
+<TR><TD>E</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>Q</TD><TD>.</TD></TR>
+<TR><TD>G</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>P</TD><TD>.</TD></TR>
+<TR><TD>A</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>A</TD><TD>M4</TD><TD>.</TD></TR>
+<TR><TD>G</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>P</TD><TD>-num</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>P2</TD><TD>de-</TD></TR>
+<TR><TD>F</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>G</TD><TD>M3</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>P</TD><TD>-cus</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>G</TD><TD>p</TD><TD>so-</TD></TR>
+<TR><TD>G</TD><TD>p</TD><TD>.??</TD></TR>
+<TR><TD>![-R]</TD><TD>![-R]</TD><TD>![-R]</TD></TR>
+<TR><TD>A</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>c</TD><TD>M3</TD><TD>.</TD></TR>
+<TR><TD>B</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>A</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>!</TD><TD>!154,8</TD><TD>!</TD></TR>
+<TR><TD>*</TD><TD>*clefC4,F2</TD><TD>*</TD></TR>
+<TR><TD>A</TD><TD>M4</TD><TD>.</TD></TR>
+<TR><TD>G</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>Q</TD><TD>.</TD></TR>
+<TR><TD>G</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>C</TD><TD>-lis</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>P3</TD><TD>qui</TD></TR>
+<TR><TD>A</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>G</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>M3</TD><TD>ti-</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>v</TD><TD>-bi</TD></TR>
+<TR><TD>D</TD><TD>p</TD><TD>in-</TD></TR>
+<TR><TD>E</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>Q</TD><TD>.</TD></TR>
+<TR><TD>G</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>P</TD><TD>-fu-</TD></TR>
+<TR><TD>A</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>A</TD><TD>M4</TD><TD>.</TD></TR>
+<TR><TD>G</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>p</TD><TD>-sus</TD></TR>
+<TR><TD>E</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>Q</TD><TD>.</TD></TR>
+<TR><TD>G</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>F</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>P</TD><TD>est</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>*</TD><TD>*clefF3</TD><TD>*</TD></TR>
+<TR><TD>E?</TD><TD>M3</TD><TD>fons</TD></TR>
+<TR><TD>!D</TD><TD>!Erasure</TD><TD>!</TD></TR>
+<TR><TD>D?</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>!C</TD><TD>!Erasure</TD><TD>!</TD></TR>
+<TR><TD>BB</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>D</TD><TD>P</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>*</TD><TD>*clefC4,F2</TD><TD>*</TD></TR>
+<TR><TD>E</TD><TD>U</TD><TD>sa-</TD></TR>
+<TR><TD>B</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>A</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>B</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>e</TD><TD>M4</TD><TD>.</TD></TR>
+<TR><TD>d</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>c</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>B</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>c</TD><TD>C</TD><TD>.</TD></TR>
+<TR><TD>B</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>c</TD><TD>M4</TD><TD>-li-</TD></TR>
+<TR><TD>B</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>A</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>G</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>G</TD><TD>o</TD><TD>.??</TD></TR>
+<TR><TD>![-R]</TD><TD>![-R]</TD><TD>![-R]</TD></TR>
+<TR><TD>F</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>E</TD><TD>p</TD><TD>.</TD></TR>
+<TR><TD>D?</TD><TD>P</TD><TD>.</TD></TR>
+<TR><TD>!E</TD><TD>!Erasure</TD><TD>!</TD></TR>
+<TR><TD>E?</TD><TD>.</TD><TD>-ens</TD></TR>
+<TR><TD>!F</TD><TD>!Erasure</TD><TD>!</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+There are currently no Humdrum commands that directly
+process <b>**bhatk</b> encoded data.
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretation can be used in conjunction with
+<b>**bhatk</b>:
+<blockquote>
+<TABLE>
+<TR><TD>raag</TD><TD><code><big>*raag:</big></code></TD></TR>
+<TR><TD>instrument</TD><TD><code><big>*I</big></code></TD></TR>
+<TR><TD>instrument class</TD><TD><code><big>*IC</big></code></TD></TR>
+</TABLE>
+Immediately following the colon is the name of the rag.
+For instrumentation and instrument-class codes see
+<A HREF="../guide.append2.html">
+Appendix II</A>
+of the
+<A HREF="../guide.toc.html">
+<i>Humdrum User Guide.</i></A>
+<CENTER>
+<i>Tandem interpretations for <b>**bhatk</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="kern.rep.html"><b>**kern</b></A>,
+<A HREF="../commands/kern.html"><b>kern</b></A>,
+<A HREF="MIDI.rep.html"><b>**MIDI</b></A>,
+<A HREF="../commands/midi.html"><b>midi</b></A>,
+<A HREF="pitch.rep.html"><b>**pitch</b></A>,
+<A HREF="semits.rep.html"><b>**semits</b></A>,
+<A HREF="solfg.rep.html"><b>**solfg</b></A>,
+<A HREF="Tonh.rep.html"><b>**Tonh</b></A>,
+</code></big>
+</blockquote>
+</P>
+</blockquote>
+<FONT color="DD00FF"><H3>AUTHOR</H3></FONT>
+<blockquote>
+<P>
+Parag Chordia.
+</P>
+</blockquote>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide04.html#Semitones">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>
+
+
+
+
+Figure 2: The beginning of Hildegard's antiphon "O splendidissima gemma"
+The encoding includes the marking of erasures in D as well as the differences
+found in the parallel source R.
+

@@ -1,0 +1,875 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter9}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Searching with Regular Expressions}
+
+
+
+A common task in computing environments is searching through some set of data
+for occurrences of a given pattern.
+When a pattern is found, various courses of action may be taken.
+The pattern may be copied, counted, deleted, replaced, isolated,
+modified, or expanded.
+A successful pattern match might even be used to initiate further
+pattern searches.
+
+\par 
+In
+Chapter 3
+we introduced simple searching using the
+\textbf{grep}
+command.
+We used
+\textbf{grep}
+to search for strings of characters that match a particular pre-defined
+string.
+This chapter describes the full power of
+\textit{regular expressions}
+for defining complex patterns of characters.
+Becoming skilled with regular expressions is perhaps
+the principal foundation for productive use of Humdrum.
+Regular expressions can be used to define patterns in any representation,
+and are widely used in many UNIX and Humdrum tools.
+
+\par 
+\textit{Regular expression syntax}
+provides a standardized method for defining patterns of characters.
+Regular expressions are restricted to common text characters
+including the upper- and lower-case letters of the alphabet,
+the digits zero to nine, and other characters typically found
+on computer keyboards.
+
+\par 
+Regular expressions will not allow users to define every possible musical
+pattern of potential interest.
+In particular, regular expressions cannot be used directly
+to identify deep-structure patterns from surface-level representations.
+However, regular expressions are quite powerful -$\,$- much
+more powerful than they appear to the novice user.
+Not all users will be equally adept at formulating an appropriate
+regular expression to search for a given pattern.
+As with the study of a musical instrument,
+practise is advised.
+
+
+\subsection*{Literals}
+
+\par 
+The simplest regular expressions are merely literal sequences
+of characters forming a character
+\textbf{string,}
+as in the pattern:
+
+\par 
+\texttt{
+
+car
+
+}
+
+\par 
+This pattern will match any data string containing the sequence
+of letters c-a-r.
+The letters must be contiguous, so no character (including spaces)
+can be interposed between any of the letters.
+The above pattern is present in strings such as "\texttt{carillon}"
+and "\texttt{ricercare}" but not in strings such as "\texttt{Caruso}"
+or "\texttt{clarinet}".
+The above pattern is called a
+\textit{literal}
+since the matching pattern must be literally identical to the regular
+expression (including the correct use of upper- or lower-case).
+
+\par 
+When a pattern is found, a starting point and an ending point
+are identified in the input string, corresponding to the defined
+regular expression.
+The specific sequence of characters found in the input string is
+referred to as the
+\textit{matched string}
+or
+\textit{matched pattern.}
+
+
+\subsection*{Wild-Card}
+
+\par 
+Regular expressions that are not literal involve so-called
+\textit{metacharacters.}
+Metacharacters are used to specify various operations,
+and so are not interpreted as their literal selves.
+The simplest regular expression metacharacter is the period (\texttt{.}).
+The period matches
+\textit{any single character}
+-$\,$-  including spaces, tabs, and other ASCII characters.
+For example, the pattern:
+
+\par 
+\texttt{
+
+c.u
+
+}
+
+\par 
+will match any input string containing three characters, the first of
+which is the lower-case `\texttt{c}' and the third of which is the
+lower-case `\texttt{u}'.
+The pattern is present in strings such as "\texttt{counterpoint}"
+and "\texttt{acoustic}" but not in "\texttt{cuivre}"
+or "\texttt{Crumhorn}".
+Any character can be interposed between the `\texttt{c}' and the `\texttt{u}'
+provided there is precisely one such character.
+
+
+\subsection*{Escape Character}
+
+\par 
+A problem with metacharacters such as the period is that sometimes
+the user wants to use them as literals.
+The special meaning of metacharacters can be "turned-off"
+by preceding the metacharacter with
+the backslash character ($\backslash$).
+The backslash is said to be an
+\textit{escape}
+character since it is used to release the metacharacter from its
+special function.
+For example, the regular expression
+
+\par 
+\texttt{
+
+$\backslash$.
+
+}
+
+\par 
+will match the period character.
+The backslash itself may be escaped by preceding it by an additional
+backslash (i.e. \texttt{$\backslash$$\backslash$}).
+
+
+\subsection*{Repetition Operators}
+
+\par 
+Another metacharacter is the plus sign (\texttt{+}).
+The plus sign means "one or more consecutive instances of the
+previous expression."
+For example,
+
+\par 
+\texttt{
+
+fo+
+
+}
+
+\par 
+specifies any character string beginning with a lower-case `\texttt{f}' followed
+by one or more consecutive instances of the small letter `\texttt{o}'.
+This pattern is present in such strings as "\texttt{food}"
+and "\texttt{folly}," but not in "\texttt{front}"
+or "\texttt{flood}."
+The length of the matched string is variable.
+In the case of "\texttt{food}" the matched string consists of
+three characters, whereas in "\texttt{folly}" the matched string
+consists of just two characters.
+
+\par 
+The plus sign in our example modifies only the preceding
+letter `\texttt{o}' -$\,$- that is, the single letter `\texttt{o}' is
+deemed to be the
+\textit{previous expression}
+which is affected by the \texttt{+}.
+However, the affected expression need not consist of just a single character.
+In regular expressions, parentheses (  ) are metacharacters that can be
+used to bind several characters into a single unit or sub-expression.
+Consider, by way of example, the following regular expression:
+
+\par 
+\texttt{
+
+(fo)+
+
+}
+
+\par 
+The parentheses now bind the letters `\texttt{f}' and `\texttt{o}' into a single
+two-character expression,
+and it is this expression that is now modified by the plus sign.
+The regular expression may be read as "one or more consecutive
+instances of the string `\texttt{fo}'."
+This pattern is present in strings like "\texttt{food}" (one instance) and
+"\texttt{fofoe}" (two instances).
+
+\par 
+Of course we can mix metacharacters together.
+The expression:
+
+\par 
+\texttt{
+
+(.o)+
+
+}
+
+\par 
+will match strings such as "\texttt{polo}" and the first
+four letters of "\texttt{tomorrow}."
+
+\par 
+Several sub-expressions may occur within a single regular expression.
+For example, the following regular expression means "one or
+more instances of the letter `\texttt{a}', followed by one or more instances
+of the string `\texttt{go}'."
+
+\par 
+\texttt{
+
+(a)+(go)+
+
+}
+
+\par 
+This would match character strings in inputs such as "\texttt{ago}"
+and "\texttt{agogic}," but not in "\texttt{largo}"
+(intervening `r') or "\texttt{gogo}" (no leading `\texttt{a}').
+Note that the parentheses around the letter `\texttt{a}'
+can be omitted without changing the sense of the expression.
+The following expression mixes the \texttt{+} repetition operator with the
+wild-card (\texttt{.}):
+
+\par 
+\texttt{
+
+c+.m+
+
+}
+
+\par 
+This pattern is present in strings such as "\texttt{accompany},"
+"\texttt{accommodate}," and "\texttt{cymbal}."
+This pattern will also match strings such as "\texttt{ccm}"
+since the second `\texttt{c}' can be understood to match the period
+metacharacter.
+
+\par 
+A second repetition operator is the asterisk (\texttt{*}).
+The asterisk means "zero or more consecutive instances of the
+previous expression."
+For example,
+
+\par 
+\texttt{
+
+Do*r
+
+}
+
+\par 
+specifies any character string beginning with an upper-case `\texttt{D}'
+followed by zero or more instances of the letter `\texttt{o}' followed
+by the letter `\texttt{r}'.
+This pattern is present in such strings as "\texttt{Dorian},"
+"\texttt{Doors}" as well as "\texttt{Drum},"
+and "\texttt{Drone}."
+As in the case of the plus sign, the asterisk modifies only the
+preceding expression -$\,$- in this case the letter `\texttt{o}'.
+Multi-character expressions may be modified by the asterisk repetition
+operator by placing the expression in parentheses.
+Thus, the regular expression:
+
+\par 
+\texttt{
+
+ba(na)*
+
+}
+
+\par 
+will match strings such as "\texttt{ba}," "\texttt{bana},"
+"\texttt{banana}," "\texttt{bananana}," etc.
+
+\par 
+Incidentally, notice that the asterisk metacharacter can be used to
+replace the plus sign (\texttt{+}) metacharacter.
+For example, the regular expression \texttt{X+} is the same as \texttt{XX*}.
+Similarly, \texttt{(abc)+} is equivalent to \texttt{(abc)(abc)*}.
+
+\par 
+A frequent construction used in regular expressions joins the
+wild-card (\texttt{.}) with the asterisk repetition character (\texttt{*}).
+The regular expression:
+
+\par 
+\texttt{
+
+ .*
+
+}
+
+\par 
+means "zero or more instances of any characters."
+(Notice the plural "characters;"
+this means the repetition need not be of one specific character.)
+This expression will match \textit{any string}, including nothing at all
+(the \textit{null string}).
+By itself, this expression is not very useful.
+However it proves invaluable in combination with other expressions.
+For example, the expression:
+
+\par 
+\texttt{
+
+\{.*\}
+
+}
+
+\par 
+will match any string beginning with a left curly brace and ending
+with a right curly brace.
+If we replaced the curly braces by the space character,
+then the resulting regular expression would match any string of characters
+separated by spaces -$\,$- such as printed words.
+
+\par 
+A third repetition operator is the question mark (\texttt{?}), which means
+"zero or one instance of the preceding expression."
+This metacharacter is frequently useful when you want to specify
+the presence or absence of a single expression.
+For example, the pattern:
+
+\par 
+\texttt{
+
+Ch?o
+
+}
+
+\par 
+is present in such strings as "\texttt{Chopin}" and
+"\texttt{Corelli}" but not "\texttt{Chinese}" or
+"\texttt{cornet}."
+
+\par 
+Once again, parentheses can be used to specify more complex expressions.
+The pattern:
+
+\par 
+\texttt{
+
+Ch?(o)+
+
+}
+
+\par 
+is present in such strings as "\texttt{Chorale}," "\texttt{Couperin},"
+and "\texttt{Cooper},"
+but not in "\texttt{Chloe}" or "\texttt{Chant}."
+
+\par 
+In summary, we've identified three metacharacters pertaining to
+the number of occurrences of some character or string.
+The plus sign means "one or more,"
+the asterisk means "zero or more,"
+and the question mark means "zero or one."
+Collectively, these metacharacters are known as
+\textit{repetition operators}
+since they indicate the number of times an expression can occur
+in order to match.
+
+
+\subsection*{Context Anchors}
+
+\par 
+Often it is helpful to limit the number of occurrences matched
+by a given pattern.
+You may want to match patterns in a more restricted context.
+One way of restricting regular expression pattern-matches is
+by using so-called
+\textit{anchors.}
+There are two regular expression anchors.
+The caret (\texttt{\^{}}) anchors the expression to the beginning of the line.
+The dollar sign (\texttt{\$}) anchors the expression to the end of the line.
+For example,
+
+\par 
+\texttt{
+
+\^{}A
+
+}
+
+\par 
+matches the upper-case letter `\texttt{A}' only if it occurs at the beginning
+of a line.
+Conversely,
+
+\par 
+\texttt{
+
+A\$
+
+}
+
+\par 
+will match the upper-case letter `\texttt{A}' only if it is the last character
+in a line.
+Both anchors may be used together, hence the following regular expression
+matches only those lines containing just the letter `\texttt{A}':
+
+\par 
+\texttt{
+
+\^{}A\$
+
+}
+
+\par 
+Of course anchors can be used in conjunction with the other
+regular expressions we have discussed.
+For example, the regular expression:
+
+\par 
+\texttt{
+
+\^{}a.*z\$
+
+}
+
+\par 
+matches any line that begins with `\texttt{a}' and ends with `\texttt{z}'.
+
+
+\subsection*{OR Logical Operator}
+
+\par 
+One of several possibilities may be matched by making use of the
+logical
+\textit{OR}
+operator, represented by the vertical bar (\texttt{|}).
+For example, the following regular expression matches
+either the letter `\texttt{x}' or the letter `\texttt{y}' or the
+letter `\texttt{z}':
+
+\par 
+\texttt{
+
+x|y|z
+
+}
+
+\par 
+Expressions may consist of multiple characters, as in the following
+expression which matches the string `\texttt{sharp}' or `\texttt{flat}'
+or `\texttt{natural}'.
+
+\par 
+\texttt{
+
+sharp|flat|natural
+
+}
+
+\par 
+More complicated expressions may be created by using parentheses.
+For example, the regular expression:
+
+\par 
+\texttt{
+
+(simple|compound) (duple|triple|quadruple|irregular) meter
+
+}
+
+\par 
+will match eight different strings, including \texttt{simple triple meter}
+and \texttt{compound quadruple meter}.
+
+
+\subsection*{Character Classes}
+
+\par 
+In the case of single characters,
+a convenient way of identifying or listing a set of possibilities
+is to use the
+\textit{character class.}
+For example, rather than writing the expression:
+
+\par 
+\texttt{
+
+a|b|c|d|e|f|g
+
+}
+
+\par 
+the expression may be simplified to:
+
+\par 
+\texttt{
+
+[abcdefg]
+
+}
+
+\par 
+Any character within the square brackets (a "character class") will match.
+Spaces, tabs, and other characters can be included within the class.
+When metacharacters like the period (\texttt{.}),
+the asterisk (\texttt{*}), the plus sign (\texttt{+}), and the dollar
+sign (\texttt{\$}) appear within a character class, they lose their special
+meaning, and become simple literals.
+Thus the regular expression:
+
+\par 
+\texttt{
+
+[xyz.+*\$]
+
+}
+
+\par 
+matches any one of the characters `\texttt{x},' `\texttt{y},' `\texttt{z},'
+the period, plus sign, asterisk, or the dollar sign.
+
+\par 
+Some other characters take on special meanings within character classes.
+One of these is the dash (\texttt{-}).
+The dash acts as a
+\textit{range}
+operator.
+For example,
+
+\par 
+\texttt{
+
+[A-Z]
+
+}
+
+\par 
+represents the class of all upper-case letters from A to Z.
+Similarly,
+
+\par 
+\texttt{
+
+[0-9]
+
+}
+
+\par 
+represents the class of digits from zero to nine.
+The expression given earlier -$\,$- \texttt{[abcdefg]} -$\,$- can be simplified
+further to: \texttt{[a-g]}.
+Several ranges can be mixed within a single character class:
+
+\par 
+\texttt{
+
+[a-gA-G0-9\#]
+
+}
+
+\par 
+This regular expression matches any one of the lower- or upper-case
+characters from A to G, or any digit, or the octothorpe (\texttt{\#}).
+If the dash appears at the beginning or end of the character
+class, it loses its special meaning and becomes a literal dash, as in:
+
+\par 
+\texttt{
+
+[a-gA-G0-9\#-]
+
+}
+
+\par 
+This regular expression adds the dash character to the list of possible
+matching characters.
+
+\par 
+Another useful metacharacter within character classes is the caret (\texttt{\^{}}).
+When the caret appears at the beginning of a character-class list,
+it signifies a
+\textit{complementary character class.}
+That is, only those characters
+\textit{not}
+in the list are matched.
+For example,
+
+\par 
+\texttt{
+
+[\^{}0-9]
+
+}
+
+\par 
+matches any character other than a digit.
+If the caret appears in any position other than at the beginning
+of the character class, it loses its special meaning and is treated as
+a literal.
+Note that if a character-class range is not specified in numerically
+ascending order or alphabetic order, the regular expression is considered
+ungrammatical and will result in an error.
+
+
+\subsection*{Examples of Regular Expressions}
+\par 
+The following table lists some examples of regular expressions and provides
+a summary description of the effect of each expression:
+\\\\
+
+Amatch letter `A'
+\^{}Amatch letter `A' at the beginning of a line
+A\$match letter `A' at the end of a line
+.match any character (including space or tab)
+A+match one or more instances of letter `A'
+A?match a single instance of `A' or the null string
+A*match one or more instances of `A' or the null string
+.*match any string, including the null string
+A.*Bmatch any string starting with `A' up to and including `B'
+A|Bmatch `A' or `B'
+(A)|(B)match `A' or `B'
+[AB]match `A' or `B'
+[\^{}AB]match any character other than `A' or `B'
+ABmatch `A' followed by `B'
+AB+match `A' followed by one or more `B's
+(AB)+match one or more instances of `AB', e.g. ABAB
+(AB)|(BA)match `AB' or `BA'
+[\^{}A]AA[\^{}A]match two `A's preceded and followed by characters other than `A's
+\^{}[\^{}\^{}]match any character at the beginning of a record except the caret
+
+
+\textit{Examples of regular expressions.}
+
+
+
+\subsection*{Examples of Regular Expressions in Humdrum}
+\par 
+The following table provides some examples of regular expressions pertinent
+to Humdrum-format inputs:
+\\\\
+
+\^{}!!match any global comment
+\^{}!!.*Beethovenmatch any global comment containing `Beethoven'
+\^{}!!.*[Rr]ecapitulationmatch any global comment containing the word
+     `Recapitulation' or `recapitulation'
+\^{}!(\$|[\^{}!])match only local comments
+\^{}$\backslash$*$\backslash$*  match any exclusive interpretation
+\^{}$\backslash$*[\^{}*]  match only tandem interpretations
+\^{}$\backslash$*[-+vx\^{}]\$  match spine-path indicators
+\^{}[\^{}*!]  match only data records
+\^{}[\^{}*!].*\$match entire data records
+\^{}($\backslash$.<\textit{tab>})*/.\$  match records containing only null tokens (\textit{} means a tab)
+\^{}$\backslash$*f\#:  match key interpretation indicating F\# minor
+
+
+\textit{Regular expressions suitable for all Humdrum inputs.}
+
+
+\par 
+By way of illustration, the next table shows examples of
+regular expressions appropriate for processing
+\texttt{**kern}
+representations.
+\\\\
+
+\^{}=match any \texttt{**kern} barline or double barline
+\^{}=[\^{}=]match \texttt{**kern} single barlines but not double barlines
+\^{}[\^{}=]match any token other than a barline or double barline
+;match any \texttt{**kern} note or barline containing a pause
+Tmatch any \texttt{**kern} note containing a whole-tone trill
+[Tt]match any \texttt{**kern} note containing a whole-tone or
+     half-tone trill
+-match any \texttt{**kern} note containing at least one flat
+[\#]match any \texttt{**kern} note containing a sharp, double-
+     sharp, etc.
+[\#n-;]match any \texttt{**kern} note containing an accidental,
+     including a natural
+[A-Ga-g]+match any diatonic pitch letter-name
+[0-9]+/.  match \texttt{**kern} dotted durations
+[0-9]+/./.[\^{}.]  match only doubly-dotted durations
+[Gg]+[\^{}\#-]match any \texttt{**kern} pitch `G' that does not have a sharp
+     or flat
+(\^{}|[\^{}g])gg(\$|[\^{}g\#-])match only the pitch `gg' (G5)
+\{.*r|r.*\{match all phrases that start with a rest
+\^{}4[\^{}0-9.]|[\^{}0-9]4([\^{}0-9.]|\$)match \texttt{**kern} quarter durations
+\^{}(8|16)[\^{}0-9.]|[\^{}0-9](8|16)[\^{}0-9.]match eighth and sixteenth durations only
+(([Ee]+-)|([Gg]+-)|([Bb]+-))(\$|[\^{}-])match any note from E-flat minor chord
+
+
+\textit{Regular expressions suitable for **kern data records.}
+
+\par 
+Note that the above regular expressions assume that comments and
+interpretations are not processed in the input.
+The processing of just data records can be assured by embedding
+each of the regular expressions given above in the expression
+
+\par 
+\texttt{
+
+(\^{}[\^{}*!].*\textit{regexp})|(\^{}\textit{regexp})
+
+}
+
+\par 
+For example, the following regular expression can be used
+to match
+\texttt{**kern}
+trills without possibly mistaking comments or
+interpretations:
+
+\par 
+\texttt{
+
+(\^{}[\^{}*!].*[Tt])|(\^{}[Tt])
+
+}
+
+\par 
+For Humdrum commands such as
+\textbf{humsed},
+\textbf{rend},
+\textbf{yank},
+\textbf{xdelta},
+and
+\textbf{ydelta},
+regular expressions are applied only to data records so there is no
+need to use the more complex expressions.
+In many circumstances, we will see that it is convenient to use the Humdrum
+\textbf{rid}
+command to explicitly remove comments and interpretations
+prior to processing (see
+Chapter 13).
+
+
+\subsection*{Basic, Extended, and Humdrum-Extended Regular Expressions}
+
+\par 
+Over the years, new features have been added to regular expression syntax.
+Some of the early software tools that make use of regular expressions
+do not support the extended features provided by more recently developed tools.
+So-called "basic" regular expressions include the following features:
+the single-character wild-card (\texttt{.}), the repetition
+operators (\texttt{*}) and (\texttt{?}) but not (\texttt{+}),
+the context anchors (\texttt{\^{}}) and (\texttt{\$}), character classes
+(\texttt{[...]}), or complementary character classes (\texttt{[\^{}...]}).
+Parenthesis grouping is supported in basic regular expressions,
+but the parentheses must be used in conjunction with the backslash to
+\textit{enable}
+this function (i.e.\texttt{ $\backslash$(  $\backslash$)  }).
+In
+Chapter 3
+we introduced the
+\textbf{grep}
+command;
+\textbf{grep}
+supports only basic regular expressions.
+
+\par 
+"Extended" regular expressions include the following:
+the single-character wild-card (\texttt{.}), the repetition
+operators (\texttt{*}), (\textbf{?})}
+and \texttt{(+)},
+the context anchors (\texttt{\^{}}) and (\texttt{\$}),
+character classes (\texttt{[...]}), complementary character
+classes (\texttt{[\^{}...]}),
+the logical OR (\texttt{|}),
+and parenthesis grouping.
+Extended regular expressions are supported by the
+\textbf{egrep}
+command;
+\textbf{egrep}
+operates in the same manner as \textbf{grep},
+only the search patterns are interpreted according to
+extended regular expression syntax.
+
+\par 
+The Humdrum
+\textbf{pattern}
+command further extends regular expression syntax by providing
+multi-record repetition operators that prove very useful
+in musical applications.
+These Humdrum extensions will be discussed in
+Chapter 21.
+
+
+
+\subsection*{Reprise}
+
+\par 
+Regular expressions provide a powerful method for defining
+abstract patterns of alphanumeric characters.
+The wild card (.) matches any character.
+Repetition operators include "one or more" (+),
+"zero or more" (*), and "zero or one" (?).
+Context anchors define the beginning of the line (\^{})
+or the end of the line (\$).
+Character classes ([ ]) specify a choice of possible characters.
+Ranges can be specified within character classes ([  -  ])
+and complementary classes may be defined ([\^{}   ]).
+The logical OR (|) may be used in conjunction with
+parentheses to define more complex expressions.
+
+\par 
+There are many software tools that make use of regular expressions.
+The UNIX
+\textbf{grep}
+command supports standard or "basic" regular expressions.
+The UNIX
+\textbf{egrep}
+command supports "extended" regular expressions.
+
+\par 
+In the next chapter we will explore how regular expressions may be
+used in musical applications.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

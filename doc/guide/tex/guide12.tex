@@ -1,0 +1,1427 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter12}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Selecting Musical Parts and Passages}
+
+
+
+A Humdrum file may contain an encoding of a full score,
+or even of a large collection of scores.
+Often, we would like to isolate or extract particular parts
+or segments from a file or input stream.
+For example, we might want to extract a particular instrumental part,
+or select a group of related instruments;
+we might want to isolate a particular passage,
+remove certain measures, or extract a specific phrase;
+we might want to pull out a labelled section of a score
+(such as a \textit{Coda} or \textit{Da Capo}),
+or we might want to select a particular verse in a strophic song.
+In addition, we might want to isolate specific types of information,
+such as the figured bass, melodic interval information,
+or vocal text.
+
+\par 
+In this chapter we will explore two Humdrum tools for extracting
+material:
+\textbf{extract}
+and
+\textbf{yank}.
+
+\par 
+We know that Humdrum representations are structured like a grid with
+horizontal data ("records") representing concurrent information,
+and vertical data ("spines") representing sequentially
+occuring information.
+The Humdrum
+\textbf{extract}
+command can be used to isolate columns or spines of information.
+The
+\textbf{yank}
+command can be used to isolate rows or records.
+The
+\textbf{extract}
+command can be used to extract musical parts or other types of
+information that might be represented in individual spines.
+The
+\textbf{yank}
+command can be used to isolate passages or segments from an input,
+such as specified measures, phrases, or sections.
+
+
+\subsection*{Extracting Spines: The \textit{extract} Command}
+
+\par 
+The
+\textbf{extract}
+command allows the user to select one or more spines from a Humdrum input.
+The command is typically used to extract parts (such as a tuba part)
+from some multi-part score.
+However,
+\textbf{extract}
+can also be used to isolate dynamic markings, musical lyrics,
+or any other stream of information
+that has been encoded as a separate Humdrum spine.
+
+\par 
+The
+\textbf{extract" }
+command has several modes of operation.
+With the \textbf{-f} option, the user may specify a given
+data column (spine) or "field" to extract.
+Consider the opening of Bach's second Brandenburg
+Concerto shown in Example 12.1.
+\\\\
+\textbf{Example 12.1.}  J.S. Bach \textit{Brandenburg Concerto No. 2}, mov. 1.
+
+\par 
+
+\texttt{!!!COM: Bach, Johann Sebastian
+\texttt{!!!OPR: Six Concerts Avec plusieurs ... le prince regnant d'Anhalt-Coethen
+\texttt{!!!OTL: Brandenburgische Konzerte F
+\texttt{!!!XEN: Brandenburg Concerto No. 2 in F major.
+\texttt{!!!OMV: Movement 1.
+\texttt{!!!SCT: BWV 1047
+\texttt{!! [Allegro]
+
+
+\texttt{**kern**kern**kern**kern**kern**kern**kern**kern**kern**kern
+\texttt{*ICklav*ICstr*ICstr*ICstr*ICstr*ICstr*ICstr*ICww*ICww*ICbras
+\texttt{*Icemba*Icello*Icbass*Iviola*Ivioln*Ivioln*Ivioln*Ioboe*Ifltds*Itromp
+\texttt{*IGcont*IGcont********
+\texttt{*IGripn*IGripn*IGripn*IGripn*IGripn*IGripn*IGconc*IGconc*IGconc*IGconc
+\texttt{!cembal!'cello!Bd'rip!Vd'rip!v'lin2!v'lin1!v'lino!oboe!flauto!tromba
+\texttt{*k[b-]*k[b-]*k[b-]*k[b-]*k[b-]*k[b-]*k[b-]*k[b-]*k[b-]*k[]
+\texttt{*F:*F:*F:*F:*F:*F:*F:*F:*F:*F:
+\texttt{*M2/2*M2/2*M2/2*M2/2*M2/2*M2/2*M2/2*M2/2*M2/2*M2/2
+\texttt{*MM54*MM54*MM54*MM54*MM54*MM54*MM54*MM54*MM54*MM54
+\texttt{*clefF4*clefF4*clefF4*clefC3*clefG2*clefG2*clefG2*clefG2*clefG2*clefG2
+\texttt{8FF/8FF/8FFF/8a$\backslash$8cc$\backslash$8ff$\backslash$8ff$\backslash$8ff$\backslash$8ff$\backslash$8f/
+\texttt{=1=1=1=1=1=1=1=1=1=1
+\texttt{16F$\backslash$LL16F$\backslash$LL16FF$\backslash$LL8f$\backslash$L8a/L8cc$\backslash$L8cc$\backslash$L8cc$\backslash$L8cc$\backslash$L8a/L
+\texttt{16G$\backslash$16G$\backslash$16GG$\backslash$.......
+\texttt{16A$\backslash$16A$\backslash$16AA$\backslash$8c$\backslash$16f/LL16a$\backslash$LL16a$\backslash$LL16a$\backslash$LL16a$\backslash$LL8cc/
+\texttt{16G$\backslash$JJ16G$\backslash$JJ16GG$\backslash$JJ.16g/JJ16b-$\backslash$JJ16b-$\backslash$JJ16b-$\backslash$JJ16b-$\backslash$JJ.
+\texttt{16F$\backslash$LL16F$\backslash$LL16FF$\backslash$LL8f$\backslash$8a/L8cc$\backslash$L8cc$\backslash$L8cc$\backslash$L8cc$\backslash$L8a/
+\texttt{16G$\backslash$16G$\backslash$16GG$\backslash$.......
+\texttt{16A$\backslash$16A$\backslash$16AA$\backslash$8c$\backslash$J16f/LL16a$\backslash$LL16a$\backslash$LL16a$\backslash$LL16a$\backslash$LL8f/J
+\texttt{16G$\backslash$JJ16G$\backslash$JJ16GG$\backslash$JJ.16g/JJ16b-$\backslash$JJ16b-$\backslash$JJ16b-$\backslash$JJ16b-$\backslash$JJ.
+\texttt{16F$\backslash$LL16F$\backslash$LL16FF$\backslash$LL8f$\backslash$L8a/L8cc$\backslash$L8cc$\backslash$L8cc$\backslash$L8cc$\backslash$L8a/L
+\texttt{16E$\backslash$16E$\backslash$16EE$\backslash$.......
+\texttt{16F$\backslash$16F$\backslash$16FF$\backslash$8a$\backslash$8cc/8ff$\backslash$8ff$\backslash$8ff$\backslash$8ff$\backslash$8cc/
+\texttt{16G$\backslash$JJ16G$\backslash$JJ16GG$\backslash$JJ.......
+\texttt{16A$\backslash$LL16A$\backslash$LL16AA$\backslash$LL8cc$\backslash$8f/8cc$\backslash$8cc$\backslash$8cc$\backslash$8cc$\backslash$8ff/
+\texttt{16B-$\backslash$16B-$\backslash$16BB-$\backslash$.......
+\texttt{16A$\backslash$16A$\backslash$16AA$\backslash$8c$\backslash$J8cc/J8ff$\backslash$J8ff$\backslash$J8ff$\backslash$J8ff$\backslash$J8cc/J
+\texttt{16G$\backslash$JJ16G$\backslash$JJ16GG$\backslash$JJ.......
+\texttt{=2=2=2=2=2=2=2=2=2=2
+\texttt{*-*-*-*-*-*-*-*-*-*-}
+
+Suppose we wanted to extract the 'cello part.
+In the above encoding, the 'cello occupies
+the second spine (second field) from the left, hence:
+
+\par 
+
+\texttt{extract -f 2 brandenburg2.krn}
+
+
+\par 
+The resulting output would begin as follows:
+\\\\
+
+\texttt{!!!COM: Bach, Johann Sebastian
+!!!OPR: Six Concerts Avec plusieurs ... le prince regnant d'Anhalt-Coethen
+!!!OTL: Brandenburgische Konzerte F
+!!!XEN: Brandenburg Concerto No. 2 in F major.
+!!!OMV: Movement 1.
+!!!SCT: BWV 1047
+!! [Allegro]
+**kern
+*ICstr
+*Icello
+*IGcont
+*IGripn
+!'cello
+*k[b-]
+*F:
+*M2/2
+*MM54
+*clefF4
+8FF/
+=1
+16F$\backslash$LL
+16G$\backslash$ }
+etc.
+
+Notice that the
+\textbf{extract}
+command outputs all global comments.
+In the case of local comments,
+\textbf{extract}
+outputs only those local comments that belong to the output spine.
+
+
+\par 
+The oboe and flauto dolce parts are encoded in spines 8 and 9.
+So we could extract the `cello, oboe and flauto dolce parts by
+submitting a list of the corresponding fields.
+Spine numbers are separated by commas:
+
+\par 
+
+\texttt{extract -f 2,8,9 brandenburg2.krn}
+
+
+\par 
+Numerical
+\textbf{ranges}
+can be specified using the dash.
+For example, if we wanted to extract all of the string parts
+(spines 2 through 7):
+
+\par 
+
+\texttt{extract -f 2-7 brandenburg2.krn}
+
+
+\par 
+With the
+\textbf{-f}
+option, field specifications may also be made with respect
+to the right-most field.
+The dollars-sign character (\texttt{\$})
+refers to the right-most field in the input.
+The trumpet part can be extracted as follows:
+
+\par 
+
+\texttt{extract -f '\$' brandenburg2.krn}
+
+
+\par 
+(Notice the use of the single quotes to ensure that the shell
+doesn't misinterpret the dollar sign.)
+Simple arithmetic expressions are also permitted;
+for example `\texttt{\$-1}' refers to the right-most field minus one, etc.
+By way of example, the command
+
+\par 
+
+\texttt{extract -f '\$-2' brandenburg2.krn}
+
+
+\par 
+will extract the oboe part.
+
+
+\subsection*{Extraction by Interpretation}
+
+
+\par 
+Typically, it is inconvenient to have to determine the numerical
+position of various spines in order to extract them.
+With the
+\textbf{-i}
+option,
+\textbf{extract}
+outputs all spines containing a specified
+\textit{interpretation.}
+Suppose we had a file containing a Schubert song,
+including vocal score, piano accompaniment and vocal text
+(encoded using
+\texttt{**text}).
+The vocal text from the file \texttt{lieder} can be
+extracted as follows:
+
+\par 
+
+\texttt{extract -i '**text' lieder}
+
+
+\par 
+(Notice again the need for single quotes in order to avoid
+the asterisk being interpreted by the shell.)
+Several different types of data can be extracted simultaneously.
+For example:
+
+
+\par 
+
+\texttt{extract -i '**semits,**MIDI' hildegard}
+
+
+\par 
+will extract all spines in the file \texttt{hildegard}
+containing
+\texttt{**semits}
+or
+\texttt{**MIDI}
+data.
+
+\par 
+An important use of the
+\textbf{-i}
+option for
+\textbf{extract}
+is to ensure that a particular input contains only a specified
+type of information.
+For example, the lower-case letter `\texttt{r}' represents a rest in the
+\texttt{**kern}
+representation.
+If we wish to determine which sonorities contain rests,
+we might want to use
+\textbf{grep}
+to search for this letter.
+However, the input might contain other Humdrum interpretations
+(such as \texttt{**text}) where the presence of the letter `\texttt{r}'
+does not signify a rest.
+We can ensure that our search is limited to \texttt{**kern} data
+by using the
+\textbf{extract}
+command:
+
+\par 
+
+\texttt{extract -i '**kern' | grep  ...}
+
+
+
+\par 
+Both exclusive interpretations and tandem interpretations can be
+specified with the
+\textbf{-i}
+option.
+For example, the following command will extract any
+\textit{transposing}
+instruments in the score \texttt{albeniz}:
+
+\par 
+
+\texttt{extract -i '*ITr' albeniz}
+
+
+
+
+
+\par 
+Tandem interpretations are commonly used to designate instrument classes
+and groups, so different configurations of instruments are easily extracted.
+The Brandenburg Concerto shown in Example 12.1 illustrates a number
+of tandem interpretations related to instrumentation classes and groups.
+For example, the interpretation \texttt{*ICww} identifies woodwind
+instruments;
+\texttt{*ICbras} identifies brass instruments;
+\texttt{*ICstr} identifies string instruments.
+In addition, \texttt{*IGcont} identifies "continuo" instruments;
+\texttt{*IGripn} identifies "ripieno" instruments;
+and \texttt{*IGconc} identifies "concertino" instruments.
+The following three commands extract (1) the woodwind instruments,
+(2) the ripieno instruments, and (3) any vocal parts, respectively.
+
+\par 
+
+\texttt{extract -i '*ICww' concerto4}
+\\
+\texttt{extract -i '*IGrip' brandenburg2}
+\\
+\texttt{extract -i '*ICvox' symphony9}
+
+
+
+\par 
+Once again, more than one interpretation can be extracted simultaneously.
+The following command will extract the instrument-class
+"strings" and the instrument "oboe" from the file \texttt{milhaud}.
+
+\par 
+
+\texttt{extract -i '*ICstr,*Ioboe' milhaud}
+
+
+
+\par 
+Similarly, the following command will extract the shamisen
+and shakuhachi parts from a score:
+
+\par 
+
+\texttt{extract -i '*Ishami,*Ishaku' hito.uta}
+
+
+\par 
+The behavior of
+\textbf{extract}
+is subtly different for tandem interpretations versus exclusive
+interpretations.
+Remember that exclusive interpretations are mutually exclusive,
+whereas tandem interpretations are not.
+Consider the following Humdrum representation:
+
+\texttt{**foo
+a
+b
+**bar
+x
+y
+z
+*-}
+
+The command
+
+\par 
+
+\texttt{extract -i '**foo'}
+
+
+\par 
+will result in the output:
+
+\texttt{**foo
+a
+b
+*-}
+
+Whereas the command
+
+\par 
+
+\texttt{extract -i '**bar'}
+
+
+\par 
+will result in the output:
+
+\texttt{**bar
+x
+y
+z
+*-}
+
+The \texttt{**foo} and \texttt{**bar} data are mutually exclusive.
+Now consider an input file where \texttt{foo} and \texttt{bar}
+are tandem interpretations:
+
+\texttt{**foobar
+*foo
+a
+b
+*bar
+x
+y
+z
+*-}
+
+The command
+
+\par 
+
+\texttt{extract -i '*foo'}
+
+
+\par 
+will result in the output:
+
+\texttt{**foobar
+*foo
+a
+b
+*bar
+x
+y
+*-}
+
+Whereas the command
+
+\par 
+
+\texttt{extract -i '*bar'}
+
+
+\par 
+will result in the output:
+
+\texttt{**foobar
+*foo
+*bar
+x
+y
+z
+*-}
+
+When searching for a particular exclusive interpretation,
+\textbf{extract}
+resets each time a new exclusive interpretation is encountered.
+By contrast, when
+\textbf{extract}
+finds a target tandem interpretation, it begins outputting
+and doesn't stop until the spine is terminated.
+
+
+\subsection*{Using \textit{extract} in Pipelines}
+
+\par 
+Of course the output from
+\textbf{extract}
+can be used to generate inputs for other Humdrum tools.
+Here are a few examples.
+
+\par 
+Recall that the
+\textbf{census}
+command tells us basic information about a file.
+With the
+\textbf{-k}
+option,
+\textbf{census}
+will tell us the number of barlines, the number of rests,
+the number of notes, the highest and lowest notes,
+and the longest and shortest notes for a **kern input.
+The following commands can be used to determine this information
+for (1) a bassoon part, (2) all woodwind parts:
+
+\par 
+
+\texttt{extract -i '*Ifagot' ives | census -k}
+\\
+\texttt{extract -i '*ICww' ives | census -k}
+
+
+
+\par 
+With the
+\textbf{midi}
+and
+\textbf{perform}
+commands,
+\textbf{extract}
+allows the user to hear particular parts.
+For example, the following command extracts the bass and soprano
+voices, translates them to
+\texttt{**MIDI}
+data, and plays the output:
+
+\par 
+
+\texttt{extract -i '*Ibass,*Isopran' lassus | midi | perform}
+
+
+
+\par 
+We might extract a particular part (such as the trumpet part) and use the
+\textbf{trans}
+command to transpose it to another key:
+
+\par 
+
+\texttt{extract -i '*Itromp' purcell | trans -d +1 -c +2}
+
+
+\par 
+In addition, we might extract a particular instrument or group of
+instruments for notational display using the
+\textbf{ms}
+command.
+The following command will extract the string parts and create a postscript
+file for displaying or printing.
+
+\par 
+
+\texttt{extract -i '*ICstr' brahms | ms > brahms.ps}
+
+
+
+\par 
+The UNIX
+\textbf{lpr}
+command can be used to print a file or input stream.
+Suppose we want to transpose the piano accompaniment
+for a song by Hugo Wolf up an augmented second,
+and then print the transposed part:
+
+\par 
+
+\texttt{extract -i '*IGacmp' wolf | trans -d +1 -c +3 | ms | lpr}
+
+
+
+\subsection*{Extracting Spines that Meander}
+
+\par 
+As we saw in
+Chapter 5,
+spines can move around via various
+spine-path interpretations.
+Changes of spine position will cause havoc
+when extracting by fields (the \textbf{-f} option);
+\textbf{extract}
+will generate an error message and terminate.
+With the
+\textbf{-i}
+option,
+\textbf{extract}
+will follow the material throughout the input.
+
+\par 
+Consider the following input:
+
+\texttt{**mip**dip**dip**blip
+Aabx
+Aabx
+**\^{}**
+Aa1a2bx
+Aa1a2bx
+Aa1a2bx
+*-*-*-*-*-}
+
+Suppose we want to extract the second spine (the first \texttt{**dip}) spine.
+Using the field option (\textbf{-f})
+will generate an error message since this spine splits.
+Similarly, using the interpretation (\textbf{-i}) option
+will fail because the output will contain
+\textit{all}
+of the \texttt{**dip} spines.
+
+\par 
+The
+\textbf{extract}
+command provides a third
+\textbf{-p}
+option that traces specific spine
+\textit{paths.}
+Like the
+\textbf{-f}
+option, the
+\textbf{-p}
+option requires one or more numbers indicating the
+\textit{beginning}
+field position for the spine.
+The command
+
+\par 
+
+\texttt{extract -p 2 }...
+
+
+\par 
+will generate the following output:
+
+\texttt{**dip
+a
+a
+*\^{}
+a1a2
+a1a2
+a1a2
+*-*-}
+
+In 
+\textit{spine-path mode,}
+the
+\textbf{extract" }
+command follows a given spine starting at the beginning of the file,
+and traces the course of that spine throughout the input stream.
+If spine-path changes are encountered in the input
+(such as spine exchanges, spine merges, or spine splits)
+the output adapts accordingly.
+If the "nth" spine is selected,
+the output consists of the nth spine and follows the path of that spine
+throughout the input until it is terminated or the end-of-file is encountered.
+What begins as the nth column, may end up as
+some other column (or columns) in the input.
+
+\par 
+There are complex circumstances where the
+\textbf{-p}
+option will not guarantee an output that conforms to the Humdrum syntax.
+When using the
+\textbf{-p}
+option it is prudent to check the output using the
+\textbf{humdrum}
+command in order to ensure that the output is valid.
+A full discussion of the
+\textbf{-p}
+option is given in the
+\textit{Humdrum Reference Manual.}
+
+
+\subsection*{Field-Trace Extracting}
+
+\par 
+For circumstances where the input is very complex,
+\textbf{extract}
+provides a
+\textit{field-trace mode}
+(\textbf{-t} option)
+that allows the user to select any combination of data tokens
+from the input stream.
+The field-trace option is rarely used when extracting spines.
+Refer to the
+\textit{Humdrum Reference Manual}
+for further information.
+
+
+\subsection*{Extracting Passages:  The \textit{yank} Command}
+
+\par 
+A useful companion to the
+\textbf{extract}
+command is the Humdrum
+\textbf{yank}
+command.
+The
+\textbf{yank}
+command can be used to selectively extract segments or
+passages from a Humdrum input.
+The yanked material can be identified by absolute line numbers,
+or relative to some marker.
+In addition,
+\textbf{yank}
+is able to output logical segments,
+such as measures, phrases, or labelled sections,
+and is able to output material according to content.
+The output always consists of complete records;
+\textbf{yank}
+never outputs partial contents of a given input record.
+
+\par 
+The
+\textbf{yank}
+command provides five different ways of extracting material.
+The simplest way of yanking material is by specifying ranges
+of line numbers.
+In the following command, the
+\textbf{-l}
+option invokes the line-number operation.
+The
+\textbf{-r}
+option is used to specify the range.
+Ranges are defined by integers separated by commas,
+or with a dash indicating a range of consecutive values.
+
+For example, the following command selects lines, 5, 13, 23, 24, 25 and 26
+from the file named \texttt{casella}:
+
+\par 
+
+\texttt{yank -l -r 5,13,23-26 casella}
+
+
+
+\par 
+The dollar sign (\$) can be used to refer to the last record in the input.
+For example, the following command yanks the first and last
+records from the file \texttt{mosolov}.
+
+\par 
+
+\texttt{yank -l -r '1,\$' mosolov}
+
+
+
+
+\par 
+Once again note that single quotes are needed here in order to prevent
+the shell from misinterpreting characters such as the dollar
+sign or the asterisk.
+Records close to the end of the input can be specified by subtracting
+some value from \$.
+For example, the following command yanks the first 20 records
+from the last 30 records contained in the file \texttt{ginastera}.
+Notice that the dash/minus sign is used both to convey a range
+and as an arithmetic operator.
+
+\par 
+
+\texttt{yank -l -r '\$-30-\$-10' ginastera}
+
+
+\par 
+If
+\textbf{yank}
+is given a Humdrum input, it always produces a syntactically
+correct Humdrum output.
+All interpretations prior to and within the yanked
+material are echoed in the output.
+The
+\textbf{yank}
+command also appends the appropriate spine-path terminators at
+the end of the yanked segment.
+By way of example, if we yanked line 10 (containing 4 spines)
+and line 100 (containing 5 spines),
+\textbf{yank}
+will include in the output the appropriate spine-path interpretations
+that specify how 4 spines became 5 spines.
+
+
+\subsection*{Yanking by Marker}
+
+\par 
+Alternatively,
+\textbf{yank}
+can output lines relative to some user-defined
+\textit{marker.}
+This mode of operation can be invoked using the
+\textbf{-m}
+option.
+Markers are specified using regular expressions.
+The range option (\textbf{-r}) specifies which lines are to be output
+whenever a marker is encountered.
+
+For example, the following command outputs the first and third data records
+following each occurrence of the string "XXX" in the file \texttt{wieck}.
+
+\par 
+
+\texttt{yank -m XXX -r 1,3 wieck}
+
+
+\par 
+If the value zero is specified in the range, the record containing
+the marker is itself output.
+
+
+\par 
+Since markers are interpreted by
+\textbf{yank}
+as regular expressions, complex markers can be defined.
+For example, the following command yanks the first data record
+following any record in the file \texttt{franck}
+beginning with a letter and ending with a number:
+
+\par 
+
+\texttt{yank -m '\^{}[a-zA-Z].*[0-9]\$' -r 1 franck}
+
+
+\par 
+Using
+\textbf{yank -m}
+with a range defined as zero is an especially useful construction:
+
+\par 
+
+\texttt{yank -m \textit{regexp} -r 0}
+
+
+\par 
+This command is analogous to the familiar
+\textbf{grep}
+command.
+However, the output from
+\textbf{yank}
+will preserve all of the appropriate interpretations.
+In short,
+\textbf{yank}
+guarantees that the output conforms to the Humdrum syntax,
+whereas
+\textbf{grep}
+does not.
+
+
+
+\par 
+Suppose, for example, that we wanted to calculate the pitch intervals
+between notes that either begin or end a phrase in a monophonic input.
+If we use
+\textbf{grep}
+to search for
+\texttt{**kern}
+phrase indicators, we will be unable
+to process the resulting (non-Humdrum) output,
+since it will typically consist of just data records:
+
+\par 
+
+\texttt{grep [\{\}] sibelius}
+
+
+
+\par 
+By contrast, the comparable
+\textbf{yank}
+command preserves the Humdrum syntax and so allows us to pipe
+the output to the melodic interval command:
+
+\par 
+
+\texttt{yank -m [\{\}] -r 0 sibelius | mint}
+
+
+
+\subsection*{Yanking by Delimiters}
+
+\par 
+It is often convenient to yank
+material according to logical segments such as measures or phrases.
+In order to access such segments, the user must specify a segment
+\textit{delimiter}
+using the
+\textbf{-o}
+option
+or the
+\textbf{-o}
+and
+\textbf{-e}
+options.
+For example, common system barlines are represented by
+the presence of an equals sign (=)
+at the beginning of a data token.
+Thus the user might yank specific measures from a
+file by defining the appropriate barline delimiter and providing a range of
+(measure) numbers.
+Consider the following command:
+
+
+\par 
+
+\texttt{yank -o \^{}= -r 1,12-13,25 joplin}
+
+
+\par 
+This command will extract the first, twelfth, thirteenth
+and twenty-fifth measures from the file \texttt{joplin}.
+Unlike the
+\textbf{-m}
+option, the
+\textbf{-o}
+option interprets the range list as
+\textit{ordinal}
+occurrences of segments delineated by the delimiter.
+Whole segments are output rather than specified records as
+is the case with
+\textbf{-m.}
+As in the case of markers, delimiters are interpreted according to
+regular expression syntax.
+Each input record containing the delimiter is regarded as the
+\textit{start}
+of the next logical segment.
+In the above command, the range (\textbf{-r}) specifies that the first,
+twelfth, thirteenth, and twenty-fifth logical segments (measures)
+are to be yanked.
+All records starting with the delimiter record are output up to,
+but not including, the next occurrence of a delimiter record.
+
+
+\par 
+Where the input stream contains data prior to the first delimiter record,
+this data may be addressed as logical segment "zero."
+For example,
+
+\par 
+
+\texttt{yank -o \^{}= -r 0 mahler}
+
+
+\par 
+can be used to yank all records prior to the first common system barline.
+Notice that
+\textit{actual}
+measure numbers are irrelevant with the
+\textbf{-o}
+option:
+\textbf{yank}
+selects segments according to their
+\textit{ordinal}
+position in the input stream rather than according to their
+\textit{cardinal}
+label.
+
+
+
+\par 
+Not all segments are defined by a single marker.
+For example, unlike barlines, \texttt{**kern} phrases are marked
+by separate phrase-begin signifiers (`\{') and phrase-end signifiers (`\}').
+The
+\textbf{-e}
+option for
+\textbf{yank}
+can be used to explicitly identify markers that
+\textit{end}
+a segment.
+For example, the following command extracts the first four phrases
+in the file \texttt{tailleferre}:
+
+\par 
+
+\texttt{yank -o \{ -e \} -r '1-4' tailleferre}
+
+
+\par 
+When the
+\textbf{-n}
+option is invoked, however,
+\textbf{yank}
+expects a numerical value to be present in the input immediately following the
+user-specified delimiter.
+In this case,
+\textbf{yank}
+selects segments based on their numbered label rather than their ordinal
+position in the input.
+For example,
+
+
+\par 
+
+\texttt{yank -n \^{}= -r 12 goldberg}
+
+
+\par 
+will yank all segments beginning with the label \texttt{=12} in the input
+file \texttt{goldberg}.
+If more than one segment carries the specified segment number(s),
+all such segments are output.
+That is, if there are five measures labelled "measure 12",
+all five measures will be output.
+Note that the dollar sign anchor cannot be used in the range expression
+for the
+\textbf{-n}
+option.
+Note also that input tokens containing non-numeric characters appended
+to the number will have no effect on the pattern match.
+For example, input tokens such as \texttt{=12a, =12b}, or \texttt{=12};
+will be treated as equivalent to \texttt{=12}.
+
+\par 
+As in the case of the
+\textbf{-o}
+option, a range of zero (`0') addresses material prior to the first
+delimiter record.
+(N.B. This behavior is unlike the
+\textbf{-m}
+option where zero addresses the record itself.)
+Like the
+\textbf{-o}
+option, the value zero may be reused for each specified input file.
+Thus, if \texttt{file1}, \texttt{file2} and \texttt{file3} are Humdrum files:
+
+
+\par 
+
+\texttt{yank -n \^{}= -r 0 file1 file2 file3}
+
+
+\par 
+will yank any leading (anacrusis) material in each of the three files.
+
+
+\subsection*{Yanking by Section}
+
+\par 
+When the
+\textbf{-s}
+option is invoked,
+\textbf{yank}
+extracts passages according to Humdrum section labels
+encoded in the input.
+Humdrum section labels will be described fully in
+Chapter 20.
+For now, we can simply note that section labels are tandem
+interpretations that conform to the syntax:
+
+\par 
+
+\texttt{*>\textit{label\_name}}
+
+
+
+
+\par 
+Label names can include any character except the tab.
+Labels are frequently used to indicate formal divisions, such as
+coda, exposition, bridge, second ending, trio, minuet, etc.
+The following command yanks the second instance of a section
+labelled \texttt{First Theme} in the file \texttt{mendelssohn}:
+
+\par 
+
+\texttt{yank -s 'First Theme' -r 2 mendelssohn}
+
+
+\par 
+Note that with "through-composed" Humdrum files
+it is possible to have more than one section containing
+the same section-label.
+Such situations are described in
+Chapter 20.
+
+
+\subsection*{Examples Using \textit{yank}}
+
+\par 
+As mentioned earlier,
+\textbf{yank}
+will always produce a syntactically correct Humdrum output if given a
+proper Humdrum input.
+All interpretations prior to, and within, the yanked material are
+echoed in the output.
+
+\par 
+Any
+\textit{comments}
+prior to the yanked passage may be included in
+the output by specifying the
+\textbf{-c}
+option.
+
+
+\par 
+The following examples illustrate how the
+\textbf{yank}
+command may be used.
+
+\par 
+
+\texttt{yank -l -r 1120 messiaen}
+
+
+\par 
+yanks line 1120 in the file \texttt{messiaen}.
+
+
+\par 
+
+\texttt{yank -n \^{}= -r 27 sinfonia}
+
+
+\par 
+yanks numbered measures 27 from the \texttt{**kern} file \texttt{sinfonia}.
+
+
+\par 
+
+\texttt{yank -n \^{}= -r 10-20 minuet waltz}
+
+
+\par 
+yanks numbered measures 10 to 20 from both
+the \texttt{**kern} files \texttt{minuet} and \texttt{waltz}.
+
+
+\par 
+
+\texttt{yank -o \^{}= -r '0,\$' fugue ricercar}
+
+
+\par 
+yanks any initial anacrusis material plus the final measure
+of both \texttt{fugue} and \texttt{ricercar}.
+
+\par 
+
+\texttt{cat fugue ricercar | yank -o \^{}= -r '0,\$'}
+
+
+\par 
+yanks any initial anacrusis material from the file \texttt{fugue} followed
+by the final measure of \texttt{ricercar}.
+
+
+\par 
+
+\texttt{yank -n 'Rehearsal Marking ' -r 5-7 fugue ricercar}
+
+
+\par 
+yanks segments beginning with the labels
+\texttt{"Rehearsal Marking 5", "Rehearsal Marking 6"},
+and
+\texttt{"Rehearsal Marking 7"}.
+Segments are deemed to end when a record is encountered containing
+the text
+\texttt{"Rehearsal Marking "}.
+
+
+\par 
+
+\texttt{yank -o \{ -e \}  -r '1-\$' webern}
+
+
+\par 
+yanks all segments in the file \texttt{webern} beginning with a record
+containing "\{" and ending with a record containing "\}."
+The command:
+
+
+\par 
+
+\texttt{yank -o \{ -e \} -r '1-4,\$-3-\$' faure}
+
+
+\par 
+yanks the first four and last four segments in the file \texttt{faure},
+where segments begin with an open brace (\{) and end with a
+closed brace (\}).
+In the \texttt{**kern} representation, this would extract the
+first four and last four phrases in the file.
+
+
+\par 
+
+\texttt{yank -s Coda -r 1 stamitz}
+
+
+\par 
+will yank the first occurrence of a section labelled \texttt{Coda}
+in the file \texttt{stamitz}.
+
+\par 
+Note that yanked segments are output in exactly the order
+they appear in the input file.
+For example, assuming that measure numbers in an input stream
+increase sequentially,
+\textbf{yank}
+is unable to output measure number 6 prior to outputting measure number 5.
+The order of output material can be rearranged by
+invoked the
+\textbf{yank}
+command more than once
+(e.g. \texttt{yank -l -r 100 ...; yank -l -r 99 ...;
+yank -l -r 98 ...}).
+
+
+\subsection*{Using \textit{yank} in Pipelines}
+
+
+\par 
+Like the other tools we have examined,
+\textbf{yank}
+can be profitably used in conjunction with other Humdrum tools.
+It is often useful to employ more than one
+\textbf{yank}
+in a pipeline.
+In the following command, the first
+\textbf{yank}
+isolates the `Trio' section from the input file, and the second
+\textbf{yank}
+isolates the first four measures of the extracted Trio:
+
+\par 
+
+\texttt{yank -s Trio dvorak | yank -o \^{}= 1-4}
+
+
+
+\par 
+Similarly, we can link two
+\textbf{yank}
+commands to extract particular phrases from specified sections.
+For example, suppose we wanted to compare the first phrase
+of the exposition with the first phrase of the recapitulation:
+
+
+\par 
+
+\texttt{yank -s Exposition haydn | yank -o \{ -e \} -r 1 > Ephrase}
+\\
+\texttt{yank -s Recapitulation haydn | yank -o \{ -e \} -r 1 > Rphrase}
+
+
+
+
+\par 
+Suppose we want to know how many notes there are
+in measures 8-16 in a \texttt{**kern} file named \texttt{borodin}.
+
+\par 
+
+\texttt{yank -n = -r 8-16 borodin | census -k}
+
+
+
+\par 
+Are there any subdominant chords between measures 80 and 86?
+
+
+\par 
+
+\texttt{yank -n = -r 80-86 elgar | solfa | grep fa | grep la | grep do}
+
+
+
+
+\par 
+How frequent is the dominant pitch in Strauss' horn parts?
+
+\par 
+
+\texttt{extract -i '*Icor' strauss | solfa | grep -c so}
+
+
+
+\par 
+Combining
+\textbf{yank}
+and
+\textbf{extract}
+can be especially useful.
+What is the highest note in the trumpet part in measure 29?
+
+
+\par 
+
+\texttt{extract -i '*Itromp' tallis | yank -n = -r 29 | census -k}
+
+
+
+\par 
+Also, we can combine
+\textbf{yank}
+with the
+\textbf{midi}
+and
+\textbf{perform}
+commands to hear particular sections.
+Play the Trio section in a Waldteufel waltz:
+
+\par 
+
+\texttt{yank -s 'Trio' -r 1 waldteufel | midi | perform}
+
+
+
+\par 
+Listen to the soprano clarinet part in the fourth and eighth phrases.
+
+\par 
+
+\texttt{extract -i '*Iclars' quintet | yank -o \{ -e \} -r 4,8 $\backslash$
+
+| midi | perform}
+
+
+
+\par 
+Note that when using
+\textbf{yank}
+to retrieve passages by markers (such as phrase marks),
+care must be taken since markers may be miscoordinated between
+several concurrent parts.
+Example 12.2 shows a passage that has overlapping phrases.
+When trying to extract a particular phrase for a particular part,
+the outputs will differ significantly depending on whether
+the
+\textbf{yank}
+command is invoked
+\textit{before}
+or
+\textit{after}
+the
+\textbf{extract}
+command.
+
+\textbf{Example 12.2.}  A Passage Containing Unsynchronized Phrases.
+\par 
+
+\texttt{**kern**kern
+=1-=1-
+2r8r
+\texttt{.\{8g
+\texttt{.8a
+\texttt{.8b
+=2=2
+8r4cc
+\{8e.
+8f4dd\}
+8a.
+=3=3
+8g\{4ee
+8e.
+4d\}4ff
+=4=4
+*-*-}
+
+
+The order of execution for some commands may cause some subtle differences.
+Suppose we wanted to identify the melodic intervals
+present in measures 8-32 for a work by Toru Takemitsu.
+The following two commands are likely to produce different results:
+
+
+\par 
+
+\texttt{yank -n = -r 8-32 takemitsu | mint}
+\\
+\texttt{mint takemitsu | yank -n = -r 8-32}
+
+
+\par 
+In the second case, an interval will probably be calculated between
+between the last note of measure 7 and the first note of measure 8.
+This interval will be absent in the first case.
+
+
+
+\subsection*{Reprise}
+
+\par 
+In this chapter we have learned how to extract musical parts using
+\textbf{extract}
+and how to grab musical passages using
+\textbf{yank}.
+We saw that the
+\textbf{extract}
+command is also useful for isolating specific types of information,
+such as the lyrics, or ensuring that no other type of information
+is present in a data stream.
+In the case of
+\textbf{yank}
+we saw that passages can be extracted by defining arbitrary delimiters.
+In addition to extracting by measures, by sonorities, or by
+labelled sections, we can extract by rests, phrase marks -$\,$-
+in fact, by any user-defined marker.
+We also saw how the command
+\textbf{yank -m \textit{regular-expression} -r 0}
+can be used as a more sophisticated version of
+\textbf{grep}
+-$\,$-  a search tool that ensures the output will conform to the Humdrum syntax.
+
+\par 
+In the next chapter we will discuss how segments of music
+can be put back together again.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

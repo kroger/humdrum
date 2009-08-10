@@ -1,0 +1,157 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH nf 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +8
+.ti -8
+\fBnf\fR  --  determine normal form for successive vertical sonorities in Humdrum inputs
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+\fBnf\fR  [\fIinputfile\fR ...]  [> \fIoutputfile.nf\fR]
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "nf"
+command is used to determine the
+.I "normal form"
+for any of five set-theory related inputs:
+pitch (\f(CR**semits\fR), pitch-class (\f(CR**pc\fR),
+prime form (\f(CR**pf\fR), interval-vector (\f(CR**iv\fR),
+or Fortean set name (\f(CR**pcset\fR).
+.sp 1
+.sp 1
+\(odNormal form\(cd is a standardized way of representing the pitch material
+for any arbitrary set of pitches.
+Normal form provides the most intervallically compact spelling of the
+pitch-classes evident in a given sonority.
+It is analogous to rearranging notes in a chord so that the
+spelling is in root position,
+close position, with duplicate pitch-classes eliminated.
+By way of example, a D major chord (in any inversion,
+with any spelling) will have the normal form: 2,6,9 -- namely,
+the pitch-classes D, F#, A (as opposed to 6,9,2 or 2,9,6).
+See \s-1REFERENCES\s+1 below.
+.sp 1
+.sp 1
+When provided with \f(CR**semits\fR or \f(CR**pc\fR inputs,
+.B "nf"
+treats each input record as a set of pitches.
+Unisons and other pitch-class duplications have no effect on the output.
+Rests within a set of pitches are ignored;
+where an input record consists solely of one or more
+rests, a null-token is output.
+.sp 1
+.sp 1
+The
+.B "nf"
+command is able to translate any of the representations listed below.
+For descriptions of the various input representations
+(including \f(CR**nf\fR) refer to Section 2
+.I "(Representation Reference)"
+of this reference manual.
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "nf"
+command should be given names with the distinguishing `.nf' extension.
+.sp 1
+.TS
+l l.
+\f(CR**iv\fR	interval vector representation
+\f(CR**nf\fR	normal form representation
+\f(CR**pc\fR	pitch-class representation
+\f(CR**pcset\fR	Fortean pitch-class set name
+\f(CR**pf\fR	prime form representation
+\f(CR**semits\fR	equal-tempered semitones with respect to middle C=0
+	  (e.g. 12 = C5)
+.TE
+.sp 1
+.ce
+.I "Input representations processed by \fBnf\fR."
+.in -2
+.SH "OPTIONS"
+.in +2
+The
+.B "nf"
+command provides only a help option:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+.TE
+.sp 1
+Options are specified in the command line.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following command outputs the normal form for the sets
+formed by successive sonorities in the input file \f(CRopus24\fR.
+The input may be pitches, pitch-classes, Fortean set names, etc.
+.sp 1
+.sp 1
+.in +2
+nf opus24 > opus24.nf
+.in -2
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBcontext\fR (1), \fB**iv\fR (2), \fBiv\fR (1),
+\fB**nf\fR (2),
+\fB**pc\fR (2), \fBpc\fR (1),
+\fB**pcset\fR (2), \fBpcset\fR (1),
+\fB**pf\fR (2), \fBpf\fR (1),
+\fB**semits\fR (2), \fBsemits\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "NOTE"
+.in +2
+The
+.B "nf"
+command is a shell script that invokes
+\f(CRpcset -n\fR.
+.in -2
+.sp 1
+.sp 1
+.SH "REFERENCES"
+.in +2
+Allen Forte,
+.I "The Structure of Atonal Music."
+New Haven: Yale University Press, 1973.
+.sp 1
+.sp 1
+John Rahn,
+.I "Basic Atonal Theory."
+New York: Longman Inc., 1980.
+.sp 1
+.sp 1
+Straus, J.
+.I "Introduction to Post-Tonal Theory."
+Englewood Cliffs, N.J.: Prentice Hall, 1990.
+.in -2

@@ -1,0 +1,851 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 5</TITLE>
+<!-- Chapter 5 (The Humdrum Syntax) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:13:46 EST 2000">
+<meta name="description" content="Chapter 5 (The Humdrum Syntax) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<body>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<H1>Chapter5</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide04.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide06.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>The Humdrum Syntax</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+In the previous chapters we have seen several examples of
+pre-defined Humdrum representations, such as
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>,
+<A HREF="representations/solfa.rep.html"><code><big>**solfa</big></code></A>
+and
+<A HREF="representations/MIDI.rep.html"><code><big>**MIDI</big></code></A>.
+These representations exhibit a number of common properties,
+including the manner in which the data are organized in spines.
+In this chapter, we provide a complete description of
+the Humdrum representation syntax.
+This chapter will help you better understand how Humdrum
+representations are organized, and will provide essential
+foundations for designing your own Humdrum representations.
+</P>
+<P>
+The Humdrum syntax provides a framework
+within which representation schemes can be defined.
+Each scheme consists of a mapping between the concepts we wish to
+represent (called <i>signifieds</i>) and how we wish to represent
+them (called <i>signifiers</i>).
+The signifieds can be any music-related concept determined by the user.
+The signifiers consist of the text characters commonly available on computers.
+</P>
+<P>
+Humdrum regards each file as a two-dimensional plane,
+much like a sheet of paper.
+<i>Successions</i>
+of events proceed vertically down the page, whereas
+<i>concurrent</i>
+events extend horizontally across the page.
+Two signifiers that occupy the same horizontal line represent concurrent
+(or overlapping) events.
+The basic organization of Humdrum files may be schematically illustrated
+as follows:
+<blockquote><TABLE>
+<TR><TD></TD><TD>successive</TD><TD>events</TD></TR>
+<TR><TD></TD><TD></TD></TR>
+<TR><TD>concurrent events -></TD><TD>A</TD><TD>J</TD><TD></TD><TD>V</TD><TD>etc.</TD></TR>
+<TR><TD></TD><TD>B</TD><TD>K</TD><TD></TD><TD>W</TD><TD>etc.</TD></TR>
+<TR><TD></TD><TD>C</TD><TD>L</TD><TD></TD><TD>X</TD><TD>etc.</TD></TR>
+<TR><TD></TD><TD>D</TD><TD>M</TD><TD></TD><TD>Y</TD><TD>etc.</TD></TR>
+<TR><TD></TD><TD>etc.</TD><TD>etc.</TD><TD></TD><TD>etc.</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+<A NAME="Types_of_Records">
+<H2>Types of Records</H2>
+</P>
+<P>
+Humdrum encodings consist of a set of one or more lines or
+<i>records.</i>
+There are three types of Humdrum records:
+<ul>
+<li>
+comment records,
+<li>
+interpretation records,  and
+<li>
+data records.
+</ul>
+</P>
+<P>
+These three record types are mutually exclusive, so it is not possible
+to mix comments, interpretations, or data records on the same line.
+</P>
+<A NAME="Comment_Records">
+<H2>Comment Records</H2>
+</P>
+<P>
+As we noted in
+<A HREF="guide02.html">Chapter 2,</A>
+there are two kinds of comments:
+global comments and local comments.
+<i>Global comments</i>
+pertain to all concurrent parts,
+whereas
+<i>local comments</i>
+pertain to some specific column of data
+(such as a particular staff, instrument, note, finger, etc.).
+Comments are lines that contain an exclamation mark (!) at the beginning
+of the record (in the left-most position);
+subsequent characters up to and including the occurrence
+of a carriage return or newline character constitute the comment record.
+Recall that global comments are denoted by two exclamation marks
+(!!) at the beginning of the record.
+Global comments may contain any sequence of printable characters,
+including `blank space' such as tabs and spaces.
+Local comments may contain any sequence of printable ASCII characters,
+with the important exception of the tab character which is used to separate spines.
+Comments may be used to insert free-format commentaries in Humdrum encodings.
+</P>
+<A NAME="Interpretation_Records">
+<H2>Interpretation Records</H2>
+</P>
+<P>
+<i>Interpretations</i>
+are lines that begin with the asterisk character (<code><big>*</big></code>).
+Interpretations are used to identify more precisely the state of the
+representation -- for example, to indicate that an encoded part
+is for a transposing instrument in E-flat, or to indicate that
+the representation is for a given Balinese tuning, or
+that the representation encodes a conductor's physical gestures.
+Humdrum requires that at least one interpretation must be specified before
+any data records are encountered.
+The difference between a comment and an interpretation is that
+interpretations are formal, potentially
+<i>executable</i>
+statements;
+interpretations pass information to programs that process
+the Humdrum encoding.
+</P>
+<P>
+As in the case of comments, there are two types of interpretations:
+<i>exclusive</i>
+interpretations begin with a double asterisk (<code><big>**</big></code>)
+whereas
+<i>tandem</i>
+interpretations begin with a single asterisk (<code><big>*</big></code>).
+Exclusive interpretations are mutually exclusive:
+only one such interpretation can be active at a given time for a given string
+of data.
+No set of data is complete without the presence of an exclusive interpretation.
+Tandem interpretations,
+by contrast, provide supplementary information
+about how a set of data is to be interpreted.
+Several tandem interpretations may pertain to a given set of data;
+unlike exclusive interpretations,
+tandem interpretations are not necessarily mutually exclusive.
+</P>
+<A NAME="Data_Records">
+<H2>Data Records</H2>
+</P>
+<P>
+Lines that do not contain either an exclamation mark or
+an asterisk in the first column are
+<i>data records.</i>
+Blank lines (i.e., lines which are either empty, or contain
+only blank space, such as tabs and spaces) are forbidden in Humdrum.
+Thus data records may be formally defined as non-empty lines that do not begin
+with either an exclamation mark or an asterisk.
+</P>
+<P>
+In Humdrum, each data record encodes information pertaining either to a
+particular moment in time or to a particular time window or duration.
+(Whether a record represents a precise moment or 
+an expanse of time depends on the accompanying interpretation.)
+Each data record may contain one or more data
+<i>tokens.</i>
+When more than one token is present, tokens are separated from
+each other by tabs.
+When several data records are present, multiple tokens are aligned
+in columns through the file.
+As we noted earlier, these columns are referred to as
+<i>spines.</i>
+By itself, a spine has no particular meaning;
+it is simply a way of linking together related tokens through time.
+Spines become meaningful only when they are labelled by adding
+an interpretation.
+</P>
+<P>
+By itself, Humdrum recognizes only six ASCII characters.
+Two of these characters -- the exclamation mark (!) and the asterisk (*) --
+have a special meaning
+<i>only</i>
+when they appear in the first column of
+a record (or are preceded by a tab; see below).
+The remaining special Humdrum characters are the period (.),
+the space, the tab character, and the carriage return
+(= newline character).
+As we have seen, the exclamation mark and the asterisk are used
+to identify comments and interpretations, respectively.
+The tab and carriage return characters are used to format the
+data into
+<i>spines</i>
+and
+<i>records,</i>
+respectively.
+</P>
+<A NAME="Data_Tokens_and_Null_Tokens">
+<H2>Data Tokens and Null Tokens</H2>
+</P>
+<P>
+As we noted above, the data in the data records are conceptually
+divided into tokens.
+In Humdrum, there are two possible types of tokens:
+<ul>
+<li>
+<i>data</i>
+tokens, and
+<li>
+<i>null</i>
+tokens (.).
+</ul>
+Consider, for example, the following file:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>X</TD><TD></TD><TD></TD><TD>.</TD><TD></TD><TD></TD><TD>X</TD></TR>
+<TR><TD>X</TD><TD></TD><TD></TD><TD>X</TD><TD></TD><TD></TD><TD>X</TD></TR>
+<TR><TD>.</TD><TD></TD><TD></TD><TD>X</TD><TD></TD><TD></TD><TD>X</TD></TR>
+<TR><TD>X</TD><TD></TD><TD></TD><TD>.</TD><TD></TD><TD></TD><TD>X</TD></TR>
+</TABLE></blockquote>
+</code></big>
+This file consists of three vertical spines and four horizontal records.
+The first and third spines begin with data tokens,
+while the second spine begins with a null token.
+Without the presence of interpretations, the meaning of this file
+is indeterminate.
+The file below contains two spines that have been labelled
+using Humdrum interpretations:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**left</TD><TD>**right</TD></TR>
+<TR><TD>X</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>X</TD></TR>
+<TR><TD>X</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>X</TD></TR>
+<TR><TD>X</TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+The user has defined two interpretations: "left" and "right."
+The intention is to represent the footfalls of a person's left and right feet.
+The representation simply encodes that the left and right feet
+have alternating events, such as might be produced by walking or running.
+Notice that null tokens (.) indicate nothing at all and merely act as
+place-holders to maintain the format of the two spines.
+Notice also that interpretations must be defined for each spine,
+and that each interpretation consists of some keyword appended to
+the double asterisks (e.g. <code><big>**left</big></code>).
+No intervening spaces are permitted between the interpretation
+<i>keyword</i>
+(<code><big>left</big></code>) and the asterisks; however, spaces may appear as part of
+the keyword itself.
+In addition, when more than one spine is present, both the data tokens
+and the associated interpretations must be separated by a tab character;
+spaces cannot be used to separate spines.
+Finally, note that each spine is formally terminated by a
+<i>spine-path terminator</i>
+--  an asterisk followed by a minus sign.
+</P>
+<P>
+Interpretations can be cascaded so that a single spine has more than
+one interpretation associated with it.
+This is done through the addition of tandem interpretations.
+Consider the following example:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**foot</TD><TD>**foot</TD><TD>**arm</TD><TD>**arm</TD></TR>
+<TR><TD>*left</TD><TD>*right</TD><TD>*left</TD><TD>*right</TD></TR>
+<TR><TD>X</TD><TD>.</TD><TD>.</TD><TD>X</TD></TR>
+<TR><TD>.</TD><TD>X</TD><TD>X</TD><TD>.</TD></TR>
+<TR><TD>X</TD><TD>.</TD><TD>.</TD><TD>X</TD></TR>
+<TR><TD>.</TD><TD>X</TD><TD>X</TD><TD>.</TD></TR>
+<TR><TD>X</TD><TD>.</TD><TD>.</TD><TD>X</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+In this case the categories "left" and "right" have been
+transformed to tandem interpretations.
+The first spine is interpreted both as "left" and as "foot."
+The exclusive interpretation (double asterisks) takes conceptual
+precedence over the tandem interpretation (single asterisk).
+That is, tandem interpretations merely modify or supplement the
+exclusive interpretation.
+Hence, given the above representation, we could say that "left"
+is an attribute of "foot" or "arm," but we could not
+say that "foot" is an attribute of "left."
+</P>
+<P>
+Users are free to define as many different exclusive and tandem
+interpretations as they wish.
+For example, a user might define the interpretation <code><big>**bowing</big></code>
+that would be suitable for encoding detailed bowing information
+in works for strings.
+For each exclusive interpretation, the Humdrum user can re-define the
+meaning of all of the text characters, with the
+exception of the tab and the carriage return, which always retain their
+functions as `token/spine separator' and `record separator' respectively.
+The characters   !   .   *   can also be re-defined,
+although there are some restrictions as to how they can be used.
+Specifically, the exclamation mark cannot occur in the first column of
+the record unless it is used to indicate a comment.
+Similarly, the asterisk cannot occur in the first column of a record
+unless it is used to indicate a Humdrum interpretation.
+The period cannot appear in the first column unless it is used to
+indicate a null data token.
+In addition, the exclamation mark, asterisk, and period cannot appear
+following a tab unless they are used to indicate a comment, interpretation,
+or null token, respectively.
+</P>
+<A NAME="Data_Sub-Tokens">
+<H2>Data Sub-Tokens</H2>
+</P>
+<P>
+Data tokens can be split into sub-tokens via the space character.
+In the first data record of the following example,
+the first spine contains two sub-tokens whereas the third
+spine contains three sub-tokens.
+Sub-tokens do not have their own spine organization and
+can appear and disappear as necessary:
+<blockquote><TABLE>
+<TR><TD><code><big>**spine1</TD><TD>**spine2</TD><TD>**spine3</TD></TR>
+<TR><TD>A B</TD><TD>J</TD><TD>X Y Z</TD></TR>
+<TR><TD>AB</TD><TD>J</TD><TD>XYZ</TD></TR>
+<TR><TD>A B C</TD><TD>.</TD><TD>X Z</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Data sub-tokens are useful in a variety of circumstances.
+An appropriate use of sub-tokens might be to encode double-
+and triple-stops in string parts.
+</P>
+<P>
+In the Humdrum data records, the space character is
+reserved solely for use as a sub-token delimiter.
+Note that consecutive spaces are illegal, and that
+data tokens cannot begin or end with a space character.
+Of course spaces can be used freely in comments and
+in interpretations.
+</P>
+<A NAME="Spine_Paths">
+<H2>Spine Paths</H2>
+</P>
+<P>
+Humdrum representations often consist of a fixed number of spines
+that continue throughout the course of an encoded file.
+As we have seen in the preceding chapters,
+a typical use of spines is to encode
+different voices or parts in a musical work.
+However, there is no reason to equate spines with voices;
+spines are used for many other purposes as well.
+</P>
+<P>
+In encoding Humdrum representations it is
+occasionally useful to be able to vary the number of spines.
+However, files with varying numbers of spines can pose significant questions
+of interpretation.
+Consider, for example, the following sequence of Humdrum-like data records:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD></TD><TD></TD><TD>2</TD><TD></TD><TD></TD><TD>3</TD></TR>
+<TR><TD>1</TD><TD></TD><TD></TD><TD>2</TD><TD></TD><TD></TD><TD>3</TD></TR>
+<TR><TD>1</TD><TD></TD><TD></TD><TD>2</TD><TD></TD><TD></TD><TD>3</TD></TR>
+<TR><TD>A</TD><TD></TD><TD></TD><TD>B</TD></TR>
+<TR><TD>A</TD><TD></TD><TD></TD><TD>B</TD></TR>
+<TR><TD>A</TD><TD></TD><TD></TD><TD>B</TD></TR>
+</TABLE></blockquote>
+</code></big>
+At the point where three spines are reduced to two spines
+the continuity is ambiguous:
+Has spine `3' been discontinued?
+Or is spine `B' a continuation of spine `3' with spine `A' a continuation
+of spine `1' or `2'?
+For some representations such questions will be of little concern;
+however, in other circumstances, the manner in which the spines continue will
+be of critical importance.
+For example, if all of the above spines encoded pitch information
+for various musical parts,
+a study of melodic intervals would need to resolve the specific
+melodic paths as the representation moves from three to two spines.
+Failure to clarify the pitch paths would make it difficult
+to determine or search for specific successions of melodic intervals.
+</P>
+<P>
+The Humdrum syntax provides special
+<i>spine path indicators</i>
+that make it possible to resolve such ambiguities
+and to ensure that the continuity (or lack of continuity) is made clear.
+Humdrum provides five special path indicators,
+one of which we have already encountered:
+<ul>
+<li>
+a new spine may be introduced
+<li>
+an existing spine may terminate (without continuing further)
+<li>
+a previous spine may be split into two spines
+<li>
+two or more spines may be amalgamated into a single spine
+<li>
+the positions of two spines may be exchanged
+</ul>
+Spine path indicators use the following signifiers:
+the plus sign (add a spine), the minus sign (terminate a spine),
+the caret (split a spine), the lower-case letter `v' (join spines),
+and the lower-case letter `x' (exchange spines).
+In addition to these, a
+<i>null interpretation</i>
+exists whose purpose is merely to act as a place-holder
+in interpretation records:
+</P>
+<P>
+<blockquote><TABLE>
+<TR><TD><code><big>*+</big></code></TD><TD>add a new spine (to the right of the current spine)</TD></TR>
+<TR><TD><code><big>*-</big></code></TD><TD>terminate a current spine</TD></TR>
+<TR><TD><code><big>*^</big></code></TD><TD>split a spine (into two)</TD></TR>
+<TR><TD><code><big>*v</big></code></TD><TD>join (two or more) spines into one</TD></TR>
+<TR><TD><code><big>*x</big></code></TD><TD>exchange the position of two spines</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>*</big></code></TD><TD>null interpretation (place holder)</TD></TR>
+</TABLE></blockquote>
+<i>Spine Path Interpretations</i>
+Spine paths are types of interpretations, so the
+spine path indicators are encoded as Humdrum interpretations,
+using the asterisk signifier (*).
+The following examples illustrate a few possible path changes:
+</P>
+<P>
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>*</TD><TD>*-</TD><TD>*</TD><TD></TD><TD></big></code>(elimination of spine #2)<code><big></TD></TR>
+<TR><TD>1</TD><TD>3</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>*</TD><TD>*x</TD><TD>*x</TD><TD></TD><TD></big></code>(exchange spines #2 and #3)<code><big></TD></TR>
+<TR><TD>1</TD><TD>3</TD><TD>2</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>*</TD><TD>*^</TD><TD>*</TD><TD></TD><TD></big></code>(splitting of spine #2)<code><big></TD></TR>
+<TR><TD>1</TD><TD>2a</TD><TD>2b</TD><TD>3</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>*</TD><TD>*v</TD><TD>*v</TD><TD></TD><TD></big></code>(amalgamation of spines #2 and #3)<code><big></TD></TR>
+<TR><TD>1</TD><TD>2&3</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice that in cases where two or more spines are amalgamated,
+the spines must be adjacent neighbors.
+For example, the arrangement below is forbidden by the Humdrum syntax
+since it is not clear whether spines #1 and #3 amalgamate into
+spine `A' or spine `B'.
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>*v</TD><TD>*</TD><TD>*v</TD><TD></TD><TD></big></code>(syntactically illegal)<code><big></TD></TR>
+<TR><TD>A</TD><TD>B</TD></TR>
+</TABLE></blockquote>
+</code></big>
+In such cases, amalgamating the two outer spines can be accomplished by first
+using the exchange path signifier.
+Here we exchange spines #2 and #3 before amalgamating the original
+first and third spines:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>*</TD><TD>*x</TD><TD>*x</TD></TR>
+<TR><TD>*v</TD><TD>*v</TD><TD>*</TD></TR>
+<TR><TD>1&3</TD><TD>2</TD></TR>
+</TABLE></blockquote>
+</code></big>
+In cases where the user wishes to amalgamate several spines, a number
+of interpretation records may be necessary.
+In the following example, spines #1 and #2 are first joined together
+(momentarily defining three spines: 1&2, 3, 4).
+In the subsequent interpretation record, spine #2 (previous spine #3) and
+spine #3 (previous spine #4) are then joined:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD><TD>4</TD></TR>
+<TR><TD>*v</TD><TD>*v</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>*</TD><TD>*v</TD><TD>*v</TD></TR>
+<TR><TD>1&2</TD><TD>3&4</TD></TR>
+</TABLE></blockquote>
+</code></big>
+In addition, it is possible to join more than two spines
+at the same time:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD></TD><TD>2</TD><TD></TD><TD>3</TD><TD></TD><TD>4</TD></TR>
+<TR><TD>*v</TD><TD></TD><TD>*v</TD><TD></TD><TD>*v</TD><TD></TD><TD>*v</TD></TR>
+<TR><TD>1&2&3&4</TD></TR>
+</TABLE></blockquote>
+</code></big>
+In cases where a new spine is introduced, it is essential to indicate
+the exclusive interpretation that applies to the new data.
+Thus an `add spine' indication must be followed by a second
+interpretation record:
+<blockquote><TABLE>
+<TR><TD><code><big>1</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>*</TD><TD>*+</TD><TD>*</TD><TD></TD><TD></big></code>(add a new spine.)<code><big></TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>**inter</TD><TD>*</TD><TD></big></code>(define exclusive interpretation for the new spine)<code><big></TD></TR>
+<TR><TD>1</TD><TD>2</TD><TD>new</TD><TD>3</TD><TD></TD></TR>
+</TABLE></blockquote>
+Failing to follow the introduction of a new spine by a subsequent
+exclusive interpretation is illegal.
+</P>
+<P>
+The following examples illustrate a variety of more complex
+path redefinitions:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD><TD>4</TD></TR>
+<TR><TD>*v</TD><TD>*v</TD><TD>*^</TD><TD>*^</TD></TR>
+<TR><TD>1&2</TD><TD>3a</TD><TD>3b</TD><TD>4a</TD><TD>4b</TD></TR>
+</TABLE></blockquote>
+</code></big>
+</P>
+<P>
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD><TD>4</TD><TD>5</TD></TR>
+<TR><TD>*</TD><TD>*-</TD><TD>*</TD><TD>*-</TD><TD>*</TD></TR>
+<TR><TD>*v</TD><TD>*v</TD><TD>*v</TD></TR>
+<TR><TD>1&3&5</TD></TR>
+</TABLE></blockquote>
+</code></big>
+</P>
+<P>
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD><TD>4</TD><TD>5</TD></TR>
+<TR><TD>*</TD><TD>*-</TD><TD>*</TD><TD>*^</TD><TD>*+</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>**new</TD></TR>
+<TR><TD>*v</TD><TD>*v</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>1&3</TD><TD>4a</TD><TD>4b</TD><TD>5</TD><TD>new</TD></TR>
+</TABLE></blockquote>
+</code></big>
+</P>
+<P>
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD><TD>4</TD></TR>
+<TR><TD>*x</TD><TD>*x</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>*</TD><TD>*x</TD><TD>*x</TD><TD>*</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>*x</TD><TD>*x</TD></TR>
+<TR><TD>2</TD><TD>3</TD><TD>4</TD><TD>1</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Note that with judicious planning, the user can completely reconfigure
+all spines within a Humdrum file.
+</P>
+<P>
+Syntactically, some path constructions are illegal;
+here are some examples of illegal constructions:
+<blockquote><TABLE>
+<TR><TD><code><big>1</TD><TD>2</TD><TD>3</big></code></TD></TR>
+<TR><TD><code><big>*v</TD><TD>*</TD><TD>*v</big></code></TD><TD></TD><TD>(The join-spine indication in spine #1 does not adjoin</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD></TD><TD> spine #3.)</TD></TR>
+<TR><TD><code><big>1</TD><TD>2</TD><TD>3</big></code></TD></TR>
+<TR><TD><code><big>*x</TD><TD>*x</TD><TD>*x</big></code></TD><TD></TD><TD>(No more than two exchange interpretations at a time.)</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>1</TD><TD>2</TD><TD>3</big></code></TD></TR>
+<TR><TD><code><big>*x</TD><TD>*</TD><TD>*</big></code></TD><TD></TD><TD>(Must have two exchange interpretations together.)</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>1</TD><TD>2</TD><TD>3</big></code></TD></TR>
+<TR><TD><code><big>*v</TD><TD>*</TD><TD>*</big></code></TD><TD></TD><TD>(Must have two or more join interpretations at a time.)</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>1</TD><TD>2</TD><TD>3</big></code></TD></TR>
+<TR><TD><code><big>*</TD><TD>*</big></code></TD><TD></TD><TD></TD><TD>(Spine eliminated without using a termination interpretation.)</TD></TR>
+<TR><TD><code><big>1</TD><TD>2</big></code></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>1</TD><TD>2</TD><TD>3</big></code></TD></TR>
+<TR><TD><code><big>*</TD><TD>*</TD><TD>*+</big></code></TD><TD></TD><TD>(Adding a new spine should result in 4 interpretations.)</TD></TR>
+<TR><TD><code><big>1</TD><TD>2</TD><TD>3</big></code></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>1</TD><TD>2</big></code></TD></TR>
+<TR><TD><code><big>*</TD><TD>*</TD><TD>*-</big></code></TD><TD></TD><TD>(Cannot eliminate non-existent spine.)</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>1</TD><TD>2</big></code></TD></TR>
+<TR><TD><code><big>*+</TD><TD>*</big></code></TD></TR>
+<TR><TD><code><big>1</TD><TD>new</TD><TD>2</big></code></TD><TD></TD><TD>(New spine started without specifying new interpretation.)</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>1</TD><TD>2</big></code></TD></TR>
+<TR><TD><code><big>*</TD><TD>*+</big></code></TD></TR>
+<TR><TD><code><big>*</TD><TD>**inter</TD><TD>*</big></code></TD><TD></TD><TD>(Interpretation labels the wrong spine.)</TD></TR>
+<TR><TD><code><big>A</TD><TD>B</TD><TD>C</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+<A NAME="The_Humdrum_Syntax:_A_Formal_Definition">
+<H2>The Humdrum Syntax:  A Formal Definition</H2>
+</CENTER>
+</P>
+<P>
+With the preceding background it is now possible to define formally
+a Humdrum representation.
+First we can define a Humdrum file.
+A Humdrum file must conform to one of the following:
+<ul>
+<li>
+A file containing
+<i>comments, data records</i>
+and
+<i>interpretations</i>
+with the restriction that no data record or local comment appears before
+the first
+<i>exclusive interpretation.</i>
+<li>
+A file containing
+<i>data records</i>
+preceded by at least one
+<i>exclusive interpretation.</i>
+<li>
+A file containing only
+<i>comments</i>
+and
+<i>interpretations</i>
+with the restriction that no local comments appear before the first
+interpretation.
+<li>
+A file containing only
+<i>interpretations</i>
+beginning with an exclusive interpretation.
+<li>
+A file containing only global
+<i>comments.</i>
+<li>
+A totally empty file (i.e. a file containing no records).
+</ul>
+In addition, each spine in a Humdrum file must ultimately end with
+a path terminator (*-).
+Only global comments (or new exclusive interpretations) may occur
+following the termination of all spines.
+A property of Humdrum files is that the concatenation of two or
+more Humdrum files will always result in a Humdrum file.
+</P>
+<P>
+Additional interpretations may be added throughout the file.
+Global comments may appear anywhere in the file.
+However, local comments are much more restricted:
+(1) Local comments may not appear until after the first
+interpretation record, and
+(2) The number of sub-comments in a local comment record must
+be equivalent to the number of currently active spines.
+</code></big>
+<blockquote><TABLE>
+<TR><TD>Comment</TD><TD>Either a global or local comment.  Any record beginning</TD></TR>
+<TR><TD></TD><TD>with an exclamation mark.</TD></TR>
+<TR><TD>Global comment</TD><TD>Any record beginning with two exclamation marks (!!).</TD></TR>
+<TR><TD>Local comment</TD><TD>Any record beginning with one and only one exclamation mark (!).</TD></TR>
+<TR><TD></TD><TD>Every spine in that record must also begin with an exclamation</TD></TR>
+<TR><TD></TD><TD>mark.</TD></TR>
+<TR><TD>Null comment</TD><TD>A comment record containing no commentary; only the</TD></TR>
+<TR><TD></TD><TD>appropriate exclamation mark(s) are present.</TD></TR>
+<TR><TD>Interpretation</TD><TD>Either an exclusive or tandem interpretation.  Any record</TD></TR>
+<TR><TD></TD><TD>beginning with an asterisk (*).</TD></TR>
+<TR><TD>Exclusive interpretation</TD><TD>Any record beginning with one or more asterisks (*), where at</TD></TR>
+<TR><TD></TD><TD>least one spine begins with two asterisks.</TD></TR>
+<TR><TD>Tandem interpretation</TD><TD>Any record beginning with a single asterisk (*) where none of the</TD></TR>
+<TR><TD></TD><TD>spines begin with two asterisks.</TD></TR>
+<TR><TD>Path indicator</TD><TD>One of five special tandem interpretations *+  *-  *v  *^  *x found only</TD></TR>
+<TR><TD></TD><TD>in tandem interpretation records.</TD></TR>
+<TR><TD>Null interpretation</TD><TD>An interpretation for a given spine or spines consisting of just the</TD></TR>
+<TR><TD></TD><TD>interpretation signifier (i.e., a single asterisk).</TD></TR>
+<TR><TD>Data record</TD><TD>Any record that is not a comment or interpretation.  Must contain</TD></TR>
+<TR><TD></TD><TD>the same number of tokens as the number of current spines.</TD></TR>
+<TR><TD>Null token</TD><TD>The period (.) either alone on a single record or separated from</TD></TR>
+<TR><TD></TD><TD>other characters by a tab.  Appears only in data records.</TD></TR>
+<TR><TD>Null data record</TD><TD>A data record consisting only of null tokens.</TD></TR>
+<TR><TD>Spine</TD><TD>A column-like "path" of information -- including data records,</TD></TR>
+<TR><TD></TD><TD>local comments, and interpretations.</TD></TR>
+</TABLE></blockquote>
+<i>Humdrum Terminology</i>
+As a supplement to the above "positive" definition of the
+Humdrum syntax, we can also describe various inputs that do
+<i>not</i>
+conform to the Humdrum syntax:
+<blockquote><TABLE>
+<TR><TD>An empty record.</TD></TR>
+<TR><TD>A record containing only tabs.</TD></TR>
+<TR><TD>A record beginning with a tab.</TD></TR>
+<TR><TD>A record ending with a tab.</TD></TR>
+<TR><TD>Any record containing two successive tab characters.</TD></TR>
+<TR><TD>Any data record having fewer or more spines than the immediately</TD></TR>
+<TR><TD>   preceding data record.</TD></TR>
+<TR><TD>A record having only one join-spine indication.</TD></TR>
+<TR><TD>A record having only one exchange-spine indication.</TD></TR>
+<TR><TD>A record having more than two exchange-spine indications.</TD></TR>
+</TABLE>
+<i>Some Illegal Humdrum Constructions</i>
+</blockquote>
+<A NAME="The_humdrum_Command">
+<H2>The <i>humdrum</i> Command</H2>
+</CENTER>
+</P>
+<P>
+One of the most important commands in the Humdrum Toolkit is the
+<A HREF="commands/humdrum.html"><b>humdrum</b></A>
+command itself.
+This command is used to identify whether a file or other input stream
+conforms to the above Humdrum syntax.
+Where appropriate, the
+<b>humdrum</b>
+command issues error messages identifying the type and location
+of any syntactic transgressions.
+If no infractions are found,
+<b>humdrum</b>
+produces no output (i.e., in UNIX parlance "silence is golden").
+All of the commands in the Humdrum toolkit
+assume that the inputs given to them conform to the Humdrum syntax.
+Whenever you encounter a problem, you should always test the input to
+assure that it is in the proper Humdrum format.
+</P>
+<P>
+The examples given below provide further illustrations
+of Humdrum representations:
+<blockquote><TABLE>
+<TR><TD><code><big>**form</TD></TR>
+<TR><TD>Introduction</TD></TR>
+<TR><TD>Exposition</TD></TR>
+<TR><TD>Development</TD></TR>
+<TR><TD>Recapitulation</TD></TR>
+<TR><TD>Coda</TD></TR>
+<TR><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+<blockquote><TABLE>
+<TR><TD><code><big>**American</TD><TD>**British</TD></TR>
+<TR><TD>quarter</TD><TD>crotchet</TD></TR>
+<TR><TD>eighth</TD><TD>quaver</TD></TR>
+<TR><TD>dotted half</TD><TD>dotted minim</TD></TR>
+<TR><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+<blockquote><TABLE>
+<TR><TD><code><big>**Opus/No</TD><TD>**Year</TD></TR>
+<TR><TD>23/1</TD><TD>1821</TD></TR>
+<TR><TD>23/2</TD><TD>1821</TD></TR>
+<TR><TD>23/3</TD><TD>1822?</TD></TR>
+<TR><TD>24</TD><TD>1822</TD></TR>
+<TR><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+<blockquote><TABLE>
+<TR><TD><code><big>**recip</TD><TD>**diaton</TD><TD>**accidental</TD><TD>**stem-dir</TD><TD>**kern</TD></TR>
+<TR><TD>4</TD><TD>c</TD><TD>#</TD><TD>/</TD><TD>4c#/</TD></TR>
+<TR><TD>8</TD><TD>d</TD><TD>.</TD><TD>/</TD><TD>8d/</TD></TR>
+<TR><TD>8</TD><TD>e</TD><TD>.</TD><TD>/</TD><TD>8e/</TD></TR>
+<TR><TD>2</TD><TD>f</TD><TD>#</TD><TD>/</TD><TD>8f#/</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+<blockquote><TABLE>
+<TR><TD><code><big>**heart-rate</TD></TR>
+<TR><TD>74</TD></TR>
+<TR><TD>73</TD></TR>
+<TR><TD>74</TD></TR>
+<TR><TD>77</TD></TR>
+<TR><TD>78</big></code></TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+<blockquote><TABLE>
+<TR><TD><code><big>**foreground</TD></TR>
+<TR><TD>flute</TD></TR>
+<TR><TD>*^</TD></TR>
+<TR><TD>flute</TD><TD>violin1</TD></TR>
+<TR><TD>*-</TD><TD>*</TD></TR>
+<TR><TD>violin1</TD></TR>
+<TR><TD>*^</TD></TR>
+<TR><TD>violin1</TD><TD>bassoon</TD></TR>
+<TR><TD>*</TD><TD>*^</TD></TR>
+<TR><TD>violin1</TD><TD>bassoon</TD><TD>'cello</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>*^</TD></TR>
+<TR><TD>violin1</TD><TD>bassoon</TD><TD>'cello</TD><TD>trombone</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*</TD></TR>
+<TR><TD>trombone</TD></TR>
+<TR><TD>*^</TD></TR>
+<TR><TD>trombone</TD><TD>trumpet</TD></TR>
+<TR><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</code></big>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+This chapter has identified the formal
+structural and organizational features of the Humdrum syntax.
+The syntax provides a framework within which sequential
+symbolic data can be represented.
+Individual representation schemes map the ASCII character set (signifiers)
+to various music-related concepts (signifieds).
+</P>
+<P>
+Each representation is designated by an exclusive interpretation.
+The corresponding data are organized in spines that 
+may meander throughout the file.
+New spines may be added, spines joined together, exchanged,
+split, or terminated.
+Data are organized as tokens, although tokens
+can consist of multiple subtokens separated by single spaces.
+Null tokens can appear as place-holders where no specific data exists.
+</P>
+<P>
+Free-form comments may be interspersed throughout the file.
+Global comments pertain to all spines whereas
+local comments pertain to individual spines.
+Additional interpretive information may be encoded using tandem
+interpretations.
+Both local comments and tandem interpretations may occur anywhere,
+but must be preceded in the spine by some exclusive interpretation.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide06.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide04.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

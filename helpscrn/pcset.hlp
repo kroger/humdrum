@@ -1,0 +1,24 @@
+
+PCSET     : Convert pitch or pitch-class input to set-theory representations.
+
+     This command is used to generate or convert between set-theoretic repre-
+     sentations.  Each input data record is presumed to represent a pitch or
+     pitch-class set.  By default, the Fortean pitch-class set type is output.
+
+Inputs processed:
+
+     **iv,      **nf,      **pc,      **pcset,   **pf,      **semits
+
+Syntax:
+
+     pcset [-c] [-n|-p|-v] [inputfile ...]
+
+Options:
+
+     -c  : generate complement for set output
+     -n  : output Normal Form (**nf) rather than Fortean set type
+     -p  : output Prime Form (**pf) rather than Fortean set type
+     -v  : output Interval Vector (**iv) rather than Fortean set type
+
+  Refer to reference manual for further details.
+

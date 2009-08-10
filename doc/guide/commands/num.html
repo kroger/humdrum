@@ -1,0 +1,516 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- num</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>num</b>  --  number selected Humdrum records according to user-defined criteria
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>num</b> [<b>-efT</b>] [<b>-a</b> <i>**interp</i>] [<b>-i</b> <i>n</i>] [<b>-n</b> <i>regexp</i>] [<b>-o</b> <i>n</i>] [<b>-O</b> <i>n</i>] [<b>-p</b> <i>regexp</i>] [<b>-P</b> <i>regexp</i>]
+[<b>-r</b> <i>regexp</i>] [<b>-R</b> <i>regexp</i>] [<b>-s</b> <i>regexp</i>] [<b>-S</b> <i>regexp</i>] [<b>-x</b> <i>regexp</i>] [<b>-z</b> <i>regexp</i>] [<b>-Z</b> <i>regexp</i>] [<i>inputfile ...</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>num</b>
+command produces sequential numerical output according to
+user-defined numbering criteria.
+In its default operation,
+<b>num</b>
+simply inserts numbers at the beginning of each
+data record -- beginning with the value 1,
+and increasing by 1 for successive data records.
+However,
+<b>num</b>
+provides various options that allow the user
+to specify more precisely the kinds of data and conditions
+under which numbering occurs.
+</P>
+<P>
+Numbers may be inserted prior to data tokens, appended
+following data tokens, or inserted in the middle of data tokens.
+Numbers may be output only for the first input spine,
+or for all input spines.
+Alternatively, numbers may be output in a separate output spine
+specified by the user.
+Numbers may be assigned only to those data records matching
+a given regular expression, or may be assigned to all records
+<i>other</i>
+than those matching a regular expression.
+Numerical counts may begin at any real or integer value and may be
+incremented or decremented by any real or integer value.
+Numbering may restart at some defined value whenever a
+certain regular expression is matched in the input.
+Numbers may be output only when certain conditions are met;
+for example, although counting may continue,
+outputting of numbers may be suspended or resumed
+when the input data match user-specified regular expressions.
+</P>
+<P>
+By way of example, the
+<b>num</b>
+command might be used to number measures, phrases,
+chords, notes, rests, or other musically-pertinent features.
+(See <A HREF="#EXAMPLES">EXAMPLES</A> below.)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>num</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-a <i>**interp</i></TD><TD>append a new spine (<i>**interp</i>) containing the output numbers</TD></TR>
+<TR><TD><b>-e</b></TD><TD>place numbers at end of data tokens (rather than at the beginning)</TD></TR>
+<TR><TD><b>-f</b></TD><TD>number all spines (all fields) in the input</TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-i <i>n</i></TD><TD>set increment value to <i>n</i> (defaults to 1)</TD></TR>
+<TR><TD><b>-n <i>regexp</i></TD><TD>number only those records matching <i>regexp</i></TD></TR>
+<TR><TD><b>-o <i>n</i></TD><TD>set initial offset value to <i>n</i> (defaults to 1)</TD></TR>
+<TR><TD><b>-O <i>n</i></TD><TD>set offset value to <i>n</i> after a reset</TD></TR>
+<TR><TD><b>-p <i>regexp</i></TD><TD>horizontally position the output number immediately following the</TD></TR>
+<TR><TD></TD><TD>first occurrence of <i>regexp</i> on the line</TD></TR>
+<TR><TD><b>-P <i>regexp</i></TD><TD>horizontally position the output number immediately prior to the</TD></TR>
+<TR><TD></TD><TD>first occurrence of <i>regexp</i> on the line</TD></TR>
+<TR><TD><b>-r <i>regexp</i></TD><TD>resume numbering records when <i>regexp</i> is matched</TD></TR>
+<TR><TD><b>-R <i>regexp</i></TD><TD>resume numbering records <b>after <i>regexp</i> is matched</TD></TR>
+<TR><TD><b>-s <i>regexp</i></TD><TD>suspend numbering records when <i>regexp</i> is matched</TD></TR>
+<TR><TD><b>-S <i>regexp</i></TD><TD>suspend numbering records <b>after <i>regexp</i> is matched</TD></TR>
+<TR><TD><b>-T</b></TD><TD>reset counter when all spines have exclusive interpretations</TD></TR>
+<TR><TD><b>-x <i>regexp</i></TD><TD>exclude numbering those records matching <i>regexp</i></TD></TR>
+<TR><TD><b>-z <i>regexp</i></TD><TD>reset counter when record matches <i>regexp</i></TD></TR>
+<TR><TD><b>-Z <i>regexp</i></TD><TD>reset counter <b>after</i> record matches <i>regexp</i></TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+Normally, the effect of
+<b>num</b>
+is to add numbers to data tokens already in the input.
+With the
+<b>-a</b>
+option,
+<b>num</b>
+creates a new spine which is appended to the right of the input stream.
+The numerical outputs of
+<b>num</b>
+become data records in this new output spine.
+The user can specify the name of the output interpretation
+via the command line parameter <i>**interp</i>.
+The
+<b>-a</b>
+option cannot be used with the
+<b>-p</b>
+or
+<b>-P</b>
+options.
+</P>
+<P>
+The
+<b>-e</b>
+option causes numbers generated by
+<b>num</b>
+to be append to the end of each appropriate data token rather
+than the (default) beginning of each data token.
+The
+<b>-e</b>
+and
+<b>-a</b>
+options are mutually exclusive.
+In addition, the
+<b>-e</b>
+option cannot be used with the
+<b>-p</b>
+or
+<b>-P</b>
+options.
+</P>
+<P>
+The
+<b>-f</b>
+option causes all spines (all fields) in the input to be
+numbered rather than the (default) first (left-most) spine.
+The
+<b>-f</b>
+option is mutually exclusive with the
+<b>-a</b>
+option.
+In addition, the
+<b>-f</b>
+option cannot be used with the
+<b>-p</b>
+or
+<b>-P</b>
+options.
+</P>
+<P>
+The
+<b>-i</b>
+option allows the user to set the increment value for successive
+numbers.
+The default value is 1 -- meaning that successive numerical
+outputs are 1 greater than the previous value.
+Negative increment values are also permissible.
+For example, the user might define an initial value beginning at 100,
+and decrement by 5 with each successive value.
+</P>
+<P>
+The
+<b>-n</b>
+option causes
+<b>num</b>
+to output numerical values, only when the current data record
+matches a specified regular expression.
+</P>
+<P>
+The
+<b>-o</b>
+option is used to define an initial (offset) value from which
+subsequent numbers are calculated.
+If no offset is defined, the default value is 1.
+</P>
+<P>
+The
+<b>-O</b>
+option defines an offset value to which the counter will be
+returned each time a
+<i>reset</i>
+action occurs.
+The
+<b>-O</b>
+option should be used in conjunction with one of either the
+<b>-T</b>, <b>-z</b> or <b>-Z</b>
+options.
+</P>
+<P>
+The
+<b>-p</b>
+and
+<b>-P</b>
+options allow the user to place any output numerical value in
+a particular (horizontal) place in the output line.
+In the case of
+<b>-p</b>
+the output number is positioned immediately following the first
+(left-most) string matching the specified regular expression.
+With the
+<b>-P</b>
+option, the output number is positioned immediately prior to the
+first string matching the specified regular expression.
+The
+<b>-p</b>
+and
+<b>-P</b>
+options cannot be used with either the
+<b>-a</b>, <b>-e</b> or
+<b>-f</b>
+options.
+</P>
+<P>
+The
+<b>-r</b>
+option defines a condition under which the outputting of numbers
+will resume.
+Specifically, the user defines a regular expression with the
+<b>-r</b>
+option that, when matched, causes the immediate resumption of printing.
+</P>
+<P>
+The
+<b>-R</b>
+option is similar to the
+<b>-r</b>
+option, with the exception that outputting of numbers is resumed
+<i>after</i>
+any record matching the specified regular expression.
+</P>
+<P>
+The
+<b>-s</b>
+option causes the outputting of numbers to be suspended
+when an input record matches a specified regular expression.
+Although the numerical values are not outputted,
+the numerical values continue to be incremented in accordance
+with the defined counting conditions.
+</P>
+<P>
+The
+<b>-S</b>
+option is similar to the
+<b>-s</b>
+option, with the exception that the outputting of numbers is suspended
+<i>after</i>
+any record matching the specified regular expression.
+</P>
+<P>
+The
+<b>-T</b>
+option causes the counter to be reset (to the value specified by <b>-O</b>)
+whenever exclusive interpretations are encountered in all of the
+input spines.
+If no initial offset has been specified via the
+<b>-O</b>
+option, then the counter is reset to the value 1.
+</P>
+<P>
+The
+<b>-x</b>
+option causes records matching a given regular expression
+to be excluded from the counting;
+no output is generated for such records.
+Note that when used in conjunction with the
+<b>-n</b>
+option, both the
+<i>match</i>
+and
+<i>don't match</i>
+criteria must be fulfilled in order for the current record to participate
+in the counting.
+</P>
+<P>
+The
+<b>-z</b>
+option causes the counter to be reset (to the value specified by <b>-O</b>)
+whenever a data record matches a specified regular expression.
+If no initial offset has been specified via the
+<b>-O</b>
+option, then the counter is reset to the value 1.
+</P>
+<P>
+The
+<b>-Z</b>
+option is similar to the
+<b>-z</b>
+option, with the exception that the counter is reset
+<i>after</i>
+any record matching the specified regular expression.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<A NAME="EXAMPLES">
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following examples illustrate how
+<b>num</b>
+may be used.
+Consider the following input (left spine) and corresponding
+<b>num</b>
+output (right spine).
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**kern</TD><TD>**plength</TD></TR>
+<TR><TD>=23</TD><TD>.</TD></TR>
+<TR><TD>{8a</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>8cc</TD><TD>.</TD></TR>
+<TR><TD>}8ee</TD><TD>3</TD></TR>
+<TR><TD>{8g#</TD><TD>.</TD></TR>
+<TR><TD>=24</TD><TD>.</TD></TR>
+<TR><TD>8dd</TD><TD>.</TD></TR>
+<TR><TD>8ee</TD><TD>.</TD></TR>
+<TR><TD>}8ff</TD><TD>4</TD></TR>
+<TR><TD>8r</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=25</TD><TD>.</TD></TR>
+<TR><TD>{8gn</TD><TD>.</TD></TR>
+<TR><TD>8cc</TD><TD>.</TD></TR>
+<TR><TD>}8ee</TD><TD>3</TD></TR>
+<TR><TD>{8f#</TD><TD>.</TD></TR>
+<TR><TD>=26</TD><TD>.</TD></TR>
+<TR><TD>8cc</TD><TD>.</TD></TR>
+<TR><TD>8dd</TD><TD>.</TD></TR>
+<TR><TD>}8ee-</TD><TD>4</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+The <code><big>**plength</big></code> output indicates the number of notes in each
+phrase for the corresponding <code><big>**kern</big></code> spine.
+The output was generated using the following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+num -a '**plength' -z '{' -x '[.r=]' -s '{' -r '}' -S '}'
+</code></big>
+</blockquote>
+</P>
+<P>
+The
+<b>-x</b>
+option excludes <code><big>**kern</big></code> rests, barlines, and null tokens from
+the counting.
+The
+<b>-z</b>
+option causes the counter to be reset to 1 whenever a begin-phrase
+signifier (`{') is encountered.
+The
+<b>-s</b>
+option causes suspension of output numbers to occur at the
+beginning of each phrase, and the
+<b>-r</b>
+option causes output numbers to be resumed at the end of each phrase
+(hence, only the phrase-end signifiers are given numbered output).
+The
+<b>-S</b>
+option ensures that numbers are not printed for notes outside of phrases;
+that is, it suspends outputting numbers following the end of a phrase.&#167
+.FS &#167
+Note that this command will still fail to suppress the numbering of notes
+occuring prior to the first phrase.
+.FE
+The
+<b>-a</b>
+option causes the numbers to be output as a
+separate spine labelled <code><big>**plength</big></code>.
+</P>
+<P>
+The command
+</P>
+<P>
+<blockquote>
+<code><big>
+num -a '**ordo' koto
+</code></big>
+</blockquote>
+</P>
+<P>
+outputs a new spine labelled <code><big>**ordo</big></code> containing successive
+integers beginning at 1 for each data record in the input.
+</P>
+<P>
+<blockquote>
+<code><big>
+num -n '^=' -x '==' -p '=' -o 108 sarod
+</code></big>
+</blockquote>
+</P>
+<P>
+numbers all "common system" barlines in the file <code><big>sarod</big></code>,
+beginning with measure 108.
+Double barlines are not numbered (due to the
+<b>-x</b>
+option) and numbers are positioned directly following the equals sign
+(due to the
+<b>-p</b>
+option).
+The
+<b>-p</b>
+option ensures that the number precedes pause markings and other
+possible barline signifiers.
+Note that if measure numbers already exist for a file,
+the measures can be renumbered
+by first removing the existing measure numbers using <b>humsed</b>.
+</P>
+<P>
+The command
+</P>
+<P>
+<blockquote>
+<code><big>
+num -a '**phrase#' -n '{' -T rebec
+</code></big>
+</blockquote>
+</P>
+<P>
+outputs a spine containing numbers that number the beginning
+of each <code><big>**kern</big></code> phrase for the file <code><big>rebec</big></code>;
+if any exclusive interpretation is encountered,
+the phrase numbering is restarted at 1.
+</P>
+<P>
+The command
+</P>
+<P>
+<blockquote>
+<code><big>
+num -x '^='
+</code></big>
+</blockquote>
+</P>
+<P>
+numbers all data records other than common system barlines.
+</P>
+<P>
+<blockquote>
+<code><big>
+num -x '^=' -Z '='
+</code></big>
+</blockquote>
+</P>
+<P>
+numbers all data records within each common system measure
+--  starting at the value 1 with each new measure.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<b>nl</b> (UNIX),
+<b>**ordo</b> (2),
+<A HREF="regexp.html">
+<b>regexp</b></A> (4),
+<b>regexp</b> (6),
+<A HREF="rend.html">
+<b>rend</b></A> (4)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>NOTES</H3></FONT>
+The
+<b>-O</b>
+option should be used in conjunction with one of either the
+<b>-T</b>, <b>-z</b> or <b>-Z</b> options.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

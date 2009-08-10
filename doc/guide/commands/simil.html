@@ -1,0 +1,568 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- simil</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>simil</b>  --  measure the non-numeric similarity between two single-spine Humdrum inputs
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>simil</b>  [<b>-nr</b>]  [<b>-x</b> <i>length</i>]  <i>sourcefile</i>  [<i>templatefile</i>]  [ > <i>outputfile.sim</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>simil</b>
+command measures the degree of similarity between two single-spine inputs.
+Similarity measures are calculated by determining the minimum
+<i>edit distance</i>
+--  that is, the least amount of editorial manipulation required
+to transform the two inputs so that they are identical.
+In contrast to the
+<A HREF="correl.html"><b>correl</b></A>
+command,
+<b>simil</b>
+can act on both numeric and non-numeric data, and so can be used
+to characterize similarity for any form of Humdrum input.
+</P>
+<P>
+Two inputs are required by
+<b>simil</b>
+--  the
+<i>source</i>
+and
+<i>template</i>
+inputs.
+Both inputs must contain single columns of data;
+multi-column inputs are forbidden.
+The
+<i>source</i>
+input must conform to the Humdrum syntax,
+however the
+<i>template</i>
+should contain only data records.
+Comments and interpretations should not appear in the
+<i>template.</i>
+In addition, following the initial exclusive interpretation,
+all comments and interpretations in the
+<i>source</i>
+input should be removed.
+</P>
+<P>
+Depending on the mode of operation,
+<b>simil</b>
+outputs either one or two spines of continuous information
+regarding the similarity of the two inputs.
+The length of <b>simil</b>'s output matches that of the
+<i>source</i>
+file.
+</P>
+<P>
+Two modes of operation are provided by <b>simil</b>: the
+<i>fixed template mode</i>
+and the
+<i>variable template mode.</i>
+The fixed template mode is useful for scanning a source input for
+patterns similar to a given template.
+This mode of operation is useful when the user knows in advance
+what feature or pattern is being sought.
+The variable template mode, by contrast, provides an automated means for
+discovering common patterns shared by the template and source inputs.
+</P>
+<P>
+In the
+<i>fixed template mode,</i>
+a single output spine is generated, dubbed <code><big>**simil</big></code>.
+Output similarity values are numbers ranging between zero and one.
+These numbers indicate the relative similarity between the source
+and template inputs at the current location in the
+<i>source</i>
+file.
+Values near zero indicate great dissimilarity whereas a value of
+precisely 1.00 indicates that the template and source match exactly
+at the current position.
+</P>
+<P>
+In
+<i>fixed template mode,</i>
+the entire
+<i>template</i>
+input is treated as a single pattern and compared with the
+<i>source</i>
+input.
+In this mode, the template may not be longer than the source input.
+If the length of the template is the same as the
+length of the source input, then only a single
+output value is generated -- representing the edit-distance
+similarity of the two files.
+The remaining output is padded by null tokens.
+If the template is shorter than the source input, then the source input
+is scanned using the template.
+For each data record in the source input the edit-distance similarity
+is measured between the entire template and a string of corresponding length
+beginning at the current point in the source input.
+Each successive output value indicates the degree of similarity between
+the template and source inputs as the template is shifted along
+the source input.
+</P>
+<P>
+In the
+<i>variable template mode,</i>
+the template input provides a "reservoire" from which multiple
+templates are derived.
+Specifically, the template input is broken-up into a series of
+(shorter) overlapping "subordinate" templates.
+The length of each of these subordinate templates is determined by the
+<b>-x</b>
+option parameter.
+For example, consider a template input consisting of
+the values: 1, 2, 3, 4 -- each number appearing on successive lines.
+With <b>-x 3</b>, two subordinate templates will be generated,
+each consisting of three data records: 1, 2, 3 and 2, 3, 4.
+With <b>-x 2</b>, three subordinate templates will be generated,
+each consisting of two data records: 1, 2; 2, 3; and 3, 4.
+</P>
+<P>
+Two output spines are generated in the
+<i>variable template mode:</i>
+<code><big>**simil</big></code> and <code><big>**simxrf</big></code>.
+The <code><big>**simxrf</big></code> spine provides cross-reference information
+identifying the place in the template input where a subordinate pattern
+is highly similar to the current position in the source file.
+As each record is encountered in the source input,
+<b>simil</b>
+scans the list of all possible subordinate templates and identifies
+the template with the highest similarity value.
+This value is output (in the <code><big>**simil</big></code> spine) along with the
+<i>line number</i>
+in the original template input where the subordinate template begins.
+If more than one subordinate template shows the same similarity value,
+then the line numbers for each high-similarity template appear
+in the <code><big>**simxrf</big></code> spine, separated by commas.
+Common subordinate patterns will appear frequently in the <code><big>**simxrf</big></code>
+output.
+</P>
+<P>
+It is recommended that output files produced using the
+<b>simil</b>
+command should be given names with the distinguishing `.sim' extension.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>FURTHER DETAILS</H3></FONT>
+The
+<b>simil</b>
+program implements the Damerau-Levenshtein metric for edit distance
+(see <A HREF="#REFERENCES">REFERENCES</A>).
+Permissible edit operations include substitutions and deletions.
+Each edit action incurs a penalty, and the cummulative edit-distance
+penalty determines the similarity.
+</P>
+<P>
+In the default operation,
+<b>simil</b>
+assigns equivalent edit penalties (1.0) for deletions and substitutions.
+However, the user can explicitly define these penalties.
+</P>
+<P>
+The
+<b>simil</b>
+command allows the user to define the cost of each edit operation via an
+initialization file.
+The initialization file must be named <code><big>simil.rc</big></code>
+and be located in the current directory or the user's home directory.
+Arbitrary costs may be assigned to any of eight edit operations shown
+in the following table:
+</P>
+<P>
+<blockquote><TABLE>
+<TR><TD>Name Tag</TD><TD>Edit Operation</TD></TR>
+<TR><TD>D1</TD><TD>Delete a nonrepeated token in String 1</TD></TR>
+<TR><TD>D2</TD><TD>Delete a nonrepeated token in String 2</TD></TR>
+<TR><TD>R1</TD><TD>Delete a repeated token in String 1</TD></TR>
+<TR><TD>R2</TD><TD>Delete a repeated token in String 2</TD></TR>
+<TR><TD>S0</TD><TD>Substitute a token that is repeated in neither String 1 nor String 2</TD></TR>
+<TR><TD>S1</TD><TD>Substitute a token that is repeated in String 1 only</TD></TR>
+<TR><TD>S2</TD><TD>Substitute a token that is repeated in String 2 only</TD></TR>
+<TR><TD>S3</TD><TD>Substitute a token that is repeated in String 1 and String 2</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Edit operations used by <b>simil</b>.</i>
+</CENTER>
+</P>
+<P>
+In describing the edit operations, String 1 is the
+source string and String 2 is the template string.
+Notice that there is no overt edit operation for insertion:
+an insertion in String 1 is deemed equivalent to a deletion in String 2.
+However, different edit penalties may be defined for deletions from
+String 1 (D1) compared with deletions from String 2 (D2).
+In musical applications defining such asymmetrical penalties may
+be important.
+For example, two inputs may represent a basic melody and an embellished
+variant of the melody.
+Using asymmetrical penalties allows the user
+to specify that the deletion of tones from the embellished version
+is less costly than deletion of tones from the basic melody.
+</P>
+<P>
+Since repetition is a common form of musical variation,
+<b>simil</b>
+allows the user to distinguish between repeated and non-repeated tokens.
+A repeated token is defined as one that is immediately preceded by
+an identical token.
+Thus, in deleting a sequence of identical symbols in String 1, say,
+all deletions except the first occurrence are R1 operations,
+whereas the deletion of the first occurrence is a D1 operation.
+</P>
+<P>
+Note that the minimum theoretical similarity for any set of penalty
+weightings can be determined empirically by providing the
+<b>simil</b>
+program with source and template strings that share no symbols in common.
+For example, the source input may consist entirely of numbers,
+whereas the template input consists entirely of alphabetic characters.
+In the case where all edit operations are assigned a penalty of +1,
+the minimum quantitative similarity between two strings is 0.37.
+</P>
+<P>
+Some user-defined weightings may give rise to
+peculiar results -- such as negative costs -- but 
+<b>simil</b>
+does not forbid this.  
+<b>Simil</b>
+generates warning messages if the weighting seem illogical;
+for example, if the cost of R1 is more than that of D1.
+In addition,
+<b>simil</b>
+will abort operation if the defined edit penalties transgress
+the triangular inequality (see <A HREF="#REFERENCES">REFERENCES</A>).
+The default weighting for all operations is +1.
+</P>
+<P>
+Below is a sample initialization file that defines the R1 substitution
+has having an edit penalty of 0.7, whereas the R2 substitution is
+given a penalty of 0.9.
+Edit penalties are defined by specifying the operation,
+followed by some spaces or tabs, followed by some real number.
+Since no other penalties are defined in this file,
+the remaining edit operations use the default edit penalty of 1.0.
+If any operation is assigned more than one weight, the latest assignment
+is used.
+The user may effectively eliminate a given edit operation by
+defining an arbitrarily high edit penalty.
+<code><big>
+<blockquote><TABLE>
+<TR><TD># This is a comment.</TD></TR>
+<TR><TD>R1</TD><TD>0.7</TD></TR>
+<TR><TD>R2</TD><TD>0.9</TD></TR>
+</TABLE></blockquote>
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>simil</b>
+command provides the following options.
+<blockquote><TABLE>
+<TR><TD><b>-n</b></TD><TD>do not scale similarity measures according to template length</TD></TR>
+<TR><TD><b>-r</i></TD><TD>reverse the order of <i>source</i> and <i>template</i> inputs on the command line;</TD></TR>
+<TR><TD></TD><TD>permits the source file to be entered using the standard input.</TD></TR>
+<TR><TD><b>-x <i>length</i></TD><TD>invoke <i>variable template mode</i>; break-up template file input into subordinate</TD></TR>
+<TR><TD></TD><TD>patterns of length <i>length</i></TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+Raw edit-distance scores are normally unreliable estimates of
+similarity, unless the length of the template is considered.
+For example, 3 editing operations constitutes a rather modest change
+for a template consisting of 20 elements.
+However, 3 edit operations is significant for a template consisting
+of only 5 elements.
+In the default operation,
+<b>simil</b>
+scales the edit-distance scores according to the length of the
+comparison template.
+This ensures that all similarity values remain between 0 and 1.
+The
+<b>-n</b>
+option defeats this scaling procedure, and outputs the raw
+similarity scores.
+</P>
+<P>
+The
+<b>-r</b>
+option reverses the order of the
+<i>source</i>
+and
+<i>template</i>
+input specifications on the command line.
+If both inputs are files, this option is of little use.
+Where one input is to be typed manually via the standard input,
+this option allows the user to specify a template file as input,
+and to type the source document manually.
+</P>
+<P>
+The
+<b>-x</b>
+option invokes the
+<i>variable template mode</i>
+discussed above.
+The numerical argument given to the
+<b>-x</b>
+option determines the length of the subordinate templates drawn
+from the template file.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following examples illustrate the operation of
+<b>simil.</b>
+Consider first, the
+<i>fixed template mode.</i>
+In the following example, the source input consists of the left-most spine
+(labelled <code><big>**foo</big></code>) and is held in a file named <code><big>source</big></code>;
+the middle column (not Humdrum) consists of the letters A, B and C,
+and is held in the file named <code><big>template</big></code>.
+The following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+simil source template
+</code></big>
+</blockquote>
+</P>
+<P>
+generates the third column (labelled <code><big>**simil</big></code>):
+<code><big>
+<blockquote><TABLE>
+<TR><TD>(source</TD><TD>(template</TD><TD>(simil</TD></TR>
+<TR><TD>input)</TD><TD>input)</TD><TD>output)</TD></TR>
+<TR><TD>**foo</TD><TD>A</TD><TD>**simil</TD></TR>
+<TR><TD>X</TD><TD>B</TD><TD>0.51</TD></TR>
+<TR><TD>A</TD><TD>C</TD><TD>1.00</TD></TR>
+<TR><TD>B</TD><TD></TD><TD>0.51</TD></TR>
+<TR><TD>C</TD><TD></TD><TD>0.37</TD></TR>
+<TR><TD>D</TD><TD></TD><TD>0.51</TD></TR>
+<TR><TD>A</TD><TD></TD><TD>0.72</TD></TR>
+<TR><TD>B</TD><TD></TD><TD>0.72</TD></TR>
+<TR><TD>B</TD><TD></TD><TD>0.51</TD></TR>
+<TR><TD>C</TD><TD></TD><TD>0.51</TD></TR>
+<TR><TD>B</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>A</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD></TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Each successive value in the output spine is matched with a data token in
+the source input file.
+For example, the second value (1.00) in the <code><big>**simil</big></code> spine
+arises from an exact match of the (A, B, C) pattern
+<i>beginning</i>
+with the second data token in the source input.
+The second highest value (0.72) occurs in both the sixth and seventh
+<code><big>**simil</big></code> data records, indicating that fairly similar sequences
+occur beginning with the sixth and seventh data records in the source input.
+Specifically,
+<b>simil</b>
+has recognized that the sequence (A, B, B, C) is only one edit-operation
+(a deletion) different from the template (A, B, C).
+In the ensuing record,
+<b>simil</b>
+has recognized that the sequence (B, B, C)
+is only one edit-operation (substitution A/B) different from (A, B, C).
+Notice that the final value (0.51) indicates that the edit distance
+for (C, B, A) is less like the template.
+Also notice that the lowest value (0.37) corresponds to an input pattern
+(beginning C, D, A) that bears little resemblance to the template.
+</P>
+<P>
+If the above input were pitches, it might be argued that
+<i>changing</i>
+a pitch is more dissimilar than
+<i>repeating</i>
+a pitch.
+In the following <code><big>simil.rc</big></code> file, an increased penalty has
+been assigned for dissimilar substitution, and decreased penalties
+have been assigned for repetition.
+<code><big>
+<blockquote><TABLE>
+<TR><TD>S0</TD><TD>1.6</TD></TR>
+<TR><TD>S1</TD><TD>0.7</TD></TR>
+<TR><TD>S3</TD><TD>0.7</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Repeating the above command with this new <code><big>simil.rc</big></code> file
+produces the following results:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>(source</TD><TD>(template</TD><TD>(simil</TD></TR>
+<TR><TD>input)</TD><TD>input)</TD><TD>output)</TD></TR>
+<TR><TD>**foo</TD><TD>A</TD><TD>**simil</TD></TR>
+<TR><TD>X</TD><TD>B</TD><TD>0.51</TD></TR>
+<TR><TD>A</TD><TD>C</TD><TD>1.00</TD></TR>
+<TR><TD>B</TD><TD></TD><TD>0.51</TD></TR>
+<TR><TD>C</TD><TD></TD><TD>0.26</TD></TR>
+<TR><TD>D</TD><TD></TD><TD>0.51</TD></TR>
+<TR><TD>A</TD><TD></TD><TD>0.79</TD></TR>
+<TR><TD>B</TD><TD></TD><TD>0.59</TD></TR>
+<TR><TD>B</TD><TD></TD><TD>0.51</TD></TR>
+<TR><TD>C</TD><TD></TD><TD>0.51</TD></TR>
+<TR><TD>B</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>A</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD></TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice that the similarity measure for the pattern (A, B, B, C) has increased
+from 0.72 to 0.79, whereas the similarity measure for (B, B, C) has
+decreased from 0.72 to 0.59.
+</P>
+<P>
+Consider now the use of the
+<i>variable template mode.</i>
+Once again, we will use the same source and template files.
+Given the short length of the template, there is little choice
+regarding the length of the subordinate templates.
+In the following command, a template length of two elements is specified:
+</P>
+<P>
+<blockquote>
+<code><big>
+simil -x 2 source template
+</code></big>
+</blockquote>
+</P>
+<P>
+This command produces the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**simil</TD><TD>**simxrf</TD></TR>
+<TR><TD>0.37</TD><TD>1,2</TD></TR>
+<TR><TD>1.00</TD><TD>1</TD></TR>
+<TR><TD>1.00</TD><TD>2</TD></TR>
+<TR><TD>0.37</TD><TD>1,2</TD></TR>
+<TR><TD>0.37</TD><TD>1,2</TD></TR>
+<TR><TD>1.00</TD><TD>1</TD></TR>
+<TR><TD>0.61</TD><TD>1,2</TD></TR>
+<TR><TD>1.00</TD><TD>2</TD></TR>
+<TR><TD>0.61</TD><TD>1</TD></TR>
+<TR><TD>0.61</TD><TD>2</TD></TR>
+<TR><TD>0.61</TD><TD>1</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Only two two-element subordinate patterns are possible given out
+template -- (A, B) and (B, C).
+The first subordinate template begins on line 1 of the template file,
+while the second subordinate template begins on line 2.
+The <code><big>**simxrf</big></code> spine identifies which of the subordinate patterns
+is most similar to the source file at the given input record.
+The <code><big>**simil</big></code> spine identifies the corresponding similarity
+measure for the most similar pattern.
+For example, the second and third <code><big>**simil</big></code> records both report
+similarity values of 1.00.
+However, the first instance is associated with the pattern beginning
+on template record 1 (A, B), whereas the second instance is
+associated with the pattern (B, C) beginning on template record 2.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up.
+OS/2.
+All UNIX systems.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="context.html">
+<b>context</b></A> (4),
+<b>**correl</b> (2),
+<A HREF="correl.html">
+<b>correl</b></A> (4),
+<A HREF="patt.html">
+<b>patt</b></A> (4),
+<A HREF="pattern.html">
+<b>pattern</b></A> (4)
+</i></b></code></big>
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+In
+<i>variable template mode,</i>
+execution times may be quite lengthy.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<A NAME="REFERENCES">
+<FONT color="0000FF"><H3>REFERENCES</H3></FONT>
+The Damerau-Levenshtein metric is described in P. Hall & G. Dowling
+"Approximate string matching,"
+<i>ACM Computing Surveys,</i>
+Vol. 12 (1980) pp. 381-402.
+</P>
+<P>
+The theory and operation of
+<i>simil</i>
+is explained in Keith Orpen and David Huron,
+<A HREF="http://dactyl.som.ohio-state.edu/Huron/Publications/orpen.similarity.text.html">
+"Measurement of similarity in music:
+A quantitative approach for non-parametric representations,"</A>
+<i>Computers in Music Research,</i>
+Vol. 4 (1992), pp. 1-44.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>AUTHOR</H3></FONT>
+Written by Keith S. Orpen, University of Waterloo.
+Copyright 1992.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide25.html#The_simil_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

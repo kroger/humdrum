@@ -1,0 +1,24 @@
+
+CENTS     : Converts various pitch representations to cents.
+
+     This command translates frequency, pitch, semits and other pitch-
+     related units to **cents (i.e. hundredths of semitones).
+
+Inputs processed:
+
+     **cents,   **freq,   **fret,   **kern,  **MIDI,  **pitch,
+     **semits,  **solfg,  **specC,  **Tonh
+
+Syntax:
+
+     cents [-p n] [-tx] [inputfile ...]
+
+Options:
+
+     -p n   : set output precision to n decimal places
+     -t     : suppress outputting of all but first note for groups of
+              tied notes
+     -x     : suppress outputting of non-cents data
+
+  Refer to reference manual for further details.
+

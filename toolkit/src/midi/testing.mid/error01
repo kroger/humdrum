@@ -1,0 +1,5 @@
+!! midi Error Test #1
+!! Play a note without a pitch.
+**kern
+4
+*-

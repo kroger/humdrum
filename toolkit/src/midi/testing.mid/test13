@@ -1,0 +1,131 @@
+!! midi Test #13
+!! Test all pitches.
+!! Play all MIDI notes (via kern) from C0 to G9 (spelled using FLATS)
+**kern
+!! C0 (very low)
+32CCCC
+32DDDD-
+32DDDD
+32EEEE-
+32EEEE
+32FFFF
+32GGGG-
+32GGGG
+32AAAA-
+32AAAA
+32BBBB-
+32BBBB
+!! C1 (low)
+32CCC
+32DDD-
+32DDD
+32EEE-
+32EEE
+32FFF
+32GGG-
+32GGG
+32AAA-
+32AAA
+32BBB-
+32BBB
+!! C2
+32CC
+32DD-
+32DD
+32EE-
+32EE
+32FF
+32GG-
+32GG
+32AA-
+32AA
+32BB-
+32BB
+!! C3
+32C
+32D-
+32D
+32E-
+32E
+32F
+32G-
+32G
+32A-
+32A
+32B-
+32B
+!! C4 (middle C)
+32c
+32d-
+32d
+32e-
+32e
+32f
+32g-
+32g
+32a-
+32a
+32b-
+32b
+!! C5
+32cc
+32dd-
+32dd
+32ee-
+32ee
+32ff
+32gg-
+32gg
+32aa-
+32aa
+32bb-
+32bb
+!! C6
+32ccc
+32ddd-
+32ddd
+32eee-
+32eee
+32fff
+32ggg-
+32ggg
+32aaa-
+32aaa
+32bbb-
+32bbb
+!! C7 (high)
+32cccc
+32dddd-
+32dddd
+32eeee-
+32eeee
+32ffff
+32gggg-
+32gggg
+32aaaa-
+32aaaa
+32bbbb-
+32bbbb
+!! C8 (very high)
+32ccccc
+32ddddd-
+32ddddd
+32eeeee-
+32eeeee
+32fffff
+32ggggg-
+32ggggg
+32aaaaa-
+32aaaaa
+32bbbbb-
+32bbbbb
+!! C9 (stratospheric)
+32cccccc
+32dddddd-
+32dddddd
+32eeeeee-
+32eeeeee
+32ffffff
+32gggggg-
+32gggggg
+*-

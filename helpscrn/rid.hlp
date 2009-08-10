@@ -1,0 +1,23 @@
+
+RID       : Eliminate specified Humdrum record (line) types.
+
+Syntax:
+
+     rid [-dgiluDGILTU] [inputfile ...]
+
+Options:
+
+     -D : remove all data records
+     -d : remove null data records only
+     -G : remove all global comments
+     -g : remove null global comments only
+     -I : remove all interpretation records
+     -i : remove null interpretation records only
+     -L : remove all local comments
+     -l : remove null local comments only
+     -T : remove all tandem interpretations
+     -U : remove unnecessary exclusive interpretations
+     -u : synonomous with -U
+
+  Refer to reference manual for further details.
+

@@ -1,0 +1,168 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Similarity</TITLE>
+<!-- Documentation for the **simil Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **simil Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,similarity,software,theory,analysis,systematic musicology,computer representation,**simil">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Similarity Values</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**simil</b>  --  similarity representation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**simil</b>
+representation encodes numerical values that
+indicate the
+<A HREF="../commands/simil.html#REFERENCES">
+<b>Damerau-Levenshtein edit distance</b></A>
+between two other Humdrum representations.
+Data tokens for
+<b>**simil</b>
+consist only of decimal numbers.
+The value 1.0 indicates identical material beginning at the
+current data record.
+Lower numerical values indicate increasingly less similarity
+at the current data record.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**simil</big></code>
+data should be given names with the distinguishing `.sim' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**simil</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>.</TD><TD>fractional delimiter; null token</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**simil</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**simil</TD></TR>
+<TR><TD>0.78</TD></TR>
+<TR><TD>0.73</TD></TR>
+<TR><TD>0.74</TD></TR>
+<TR><TD>0.69</TD></TR>
+<TR><TD>0.71</TD></TR>
+<TR><TD>0.68</TD></TR>
+<TR><TD>0.68</TD></TR>
+<TR><TD>0.63</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+</P>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum command produces <b>**simil</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD><A HREF="../commands/simil.html"><b>simil</b></A></TD><TD>measure the similarity between two Humdrum spines</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**simil</b>:
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**simil</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<b>cmp</b> (UNIX),
+<A HREF="correl.rep.html"><b>**correl</b></A>,
+<A HREF="../commands/correl.html"><b>correl</b></A>,
+<b>diff</b> (UNIX),
+<A HREF="../commands/patt.html"><b>patt</b></A>,
+<A HREF="../commands/pattern.html"><b>pattern</b></A>,
+<A HREF="../commands/simil.html"><b>simil</b></A>,
+<A HREF="xref.rep.html"><b>**xref</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

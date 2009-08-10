@@ -1,0 +1,18 @@
+
+VERITAS   : verify that a distributed Humdrum file has not been modified
+
+     This command allows the user to determine whether a publicly
+     distributed Humdrum file has been modified.  For greatest reliability,
+     the -v option should be used, and the resulting checksum number
+     manually compared to a published numerical value for each file.
+
+Syntax:
+
+     veritas [-v] [inputfile ...]
+
+Options:
+
+     -v     : verbose mode; print checksum value for each input file
+
+  Refer to reference manual for further details.
+

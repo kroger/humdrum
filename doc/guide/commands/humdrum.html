@@ -1,0 +1,475 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- humdrum</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>humdrum</b>  --  general syntax checker for Humdrum files
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>humdrum</b>  [<b>-v</b>]  [<i>inputfile</i> ...]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>humdrum</b>
+command identifies whether an input conforms to the Humdrum
+representation syntax.
+Error messages are issued where appropriate.
+If the input conforms to the Humdrum syntax, then the
+<b>humdrum</b>
+command produces no output, unless the verbose (<b>-v</b>) option is invoked.
+</P>
+<P>
+Formally, a Humdrum representation may be defined as any ASCII input
+containing zero or more
+<i>comments, data records</i>
+or
+<i>interpretations</i>
+--  with the restriction that no
+<i>data records</i>
+or
+<i>local comments</i>
+appear without a prior
+<i>exclusive interpretation,</i>
+and that the file maintain a coherent
+<i>spine</i>
+organization.
+</P>
+<P>
+Humdrum comments are records (lines) that begin with an exclamation mark (!).
+Local comments begin each active spine with a single exclamation mark,
+whereas gobal comments begin with two exclamation marks (!!) at the
+beginning of the record.
+</P>
+<P>
+Humdrum interpretations are records that begin with an asterisk (*).
+Tandem interpretations begin each active spine with a single asterisk,
+whereas exclusive interpretations begin the record with one or more asterisks
+and have at least one active spine beginning with two asterisks.
+Spine-path indicators are special types of interpretations that
+include any one of the following tokens: *+  *-  *v  *^  or *x.
+Spine-path indicators cannot appear on the same line with a tandem
+or exclusive interpretation.
+</P>
+<P>
+Any record that does not begin with either an exclamation mark
+of asterisk is a data record.
+</P>
+<P>
+The following table defines some of the pertinent Humdrum terminology.
+<blockquote><TABLE>
+<TR><TD><i>record</i></TD><TD>a line of text; a sequences of (zero or more) ASCII characters</TD></TR>
+<TR><TD></TD><TD>   terminated by a carriage return or newline character</TD></TR>
+<TR><TD><i>data record</i></TD><TD>any <i>record</i> which is not a <i>comment</i> or an <i>interpretation</i></TD></TR>
+<TR><TD><i>comment</i></TD><TD>a <i>global</i> or <i>local comment</i></TD></TR>
+<TR><TD><i>global comment</i></TD><TD>any <i>record</i> beginning with two exclamation marks (!!)</TD></TR>
+<TR><TD><i>local comment</i></TD><TD>any <i>record</i> beginning with a single exclamation mark (!)</TD></TR>
+<TR><TD><i>interpretation</i></TD><TD>an <i>exclusive</i> or <i>tandem interpretation</i>, or a <i>spine-path indicator</i></TD></TR>
+<TR><TD><i>exclusive interpretation</i></TD><TD>any <i>record</i> beginning with one or more asterisks (**) and</TD></TR>
+<TR><TD></TD><TD>   having at least one active spine beginning with two asterisks</TD></TR>
+<TR><TD><i>tandem interpretation</i></TD><TD>any <i>record</i> in which each active spine begins with a single</TD></TR>
+<TR><TD></TD><TD>   asterisk, excluding spine-path indicators</TD></TR>
+<TR><TD><i>spine-path indicator</i></TD><TD>one of the following five <i>interpretations</i>:  *+   *-   *v   *^   *x</TD></TR>
+<TR><TD><i>null token</i></TD><TD>the period (.) either alone on a single <i>record</i> or</TD></TR>
+<TR><TD></TD><TD>   separated from other characters by tabs</TD></TR>
+<TR><TD><i>spine</i></TD><TD>a column of information -- including <i>data records, local</i></TD></TR>
+<TR><TD></TD><TD>   <i>comments</i>, and <i>interpretations.</i></TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Some Humdrum Definitions</i>
+</CENTER>
+</P>
+<P>
+The following files may satisfy the Humdrum syntactical requirements:
+<ul>
+<li>
+a file containing data records preceded by at least one
+exclusive interpretation
+<li>
+a file containing only comments and interpretations
+<li>
+a file containing only interpretations
+<li>
+a file containing only global comments
+<li>
+a totally empty file.
+</ul>
+</P>
+<P>
+Additional interpretations may be added throughout the file.
+Global comments may appear anywhere in the file.
+Local comments and data records can appear only after a spine
+has been initiated via an exclusive interpretation.
+</P>
+<P>
+Illegal constructions in Humdrum include the following:
+<ul>
+<li>
+empty record (i.e. a record containing only a carriage return or newline)
+<li>
+record containing only tabs
+<li>
+any record beginning with a tab
+<li>
+any record ending with a tab (except in a global comment)
+<li>
+any record containing two successive tab characters (except in a global comment)
+<li>
+any data record with fewer or more spines than the immediately preceding
+data or exclusive interpretation record
+<li>
+spine-path record containing only one join-spine indication
+<li>
+spine-path record containing only one exchange-spine indication,
+or containing more than two exchange-spine indicators.
+</ul>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SPINE ORGANIZATION</H3></FONT>
+A Humdrum file must maintain a coherent spine organization.
+Spines are columns of information separated by tabs.
+Each spine must be labelled with an exclusive interpretation.
+If the number of spines varies in a given file,
+spines must be added, terminated, split, joined, or exchanged using
+the appropriate spine path indicators.
+Spines may (1) start, (2) terminate, (3) split (into two),
+(4) join (<i>n</i>-into-one), and (5) exchange.
+<blockquote><TABLE>
+<TR><TD><code><big>*+</big></code></TD><TD>- start a new spine</TD></TR>
+<TR><TD><code><big>*-</big></code></TD><TD>- terminate a current spine</TD></TR>
+<TR><TD><code><big>*^</big></code></TD><TD>- split a spine (into two)</TD></TR>
+<TR><TD><code><big>*v</big></code></TD><TD>- join (two or more) spines into one</TD></TR>
+<TR><TD><code><big>*x</big></code></TD><TD>- exchange the position of two spines</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Spine-path Indicators</i>
+</CENTER>
+</P>
+<P>
+The use of various spine-path indicators is illustrated below:
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>*</TD><TD>*+</TD><TD>*</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>**inter</TD><TD>*</TD><TD></TD><TD>(must follow immediately after)</TD></TR>
+<TR><TD>1</TD><TD>2</TD><TD>new</TD><TD>3</TD></TR>
+</P>
+<P>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>*</TD><TD>*-</TD><TD>*</TD></TR>
+<TR><TD>1</TD><TD>3</TD></TR>
+</P>
+<P>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>*</TD><TD>*^</TD><TD>*</TD></TR>
+<TR><TD>1</TD><TD>2a</TD><TD>2b</TD><TD>3</TD></TR>
+</P>
+<P>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>*</TD><TD>*v</TD><TD>*v</TD></TR>
+<TR><TD>1</TD><TD>2&3</TD></TR>
+</P>
+<P>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>*x</TD><TD>*x</TD><TD>*</TD></TR>
+<TR><TD>2</TD><TD>1</TD><TD>3</TD></TR>
+</P>
+<P>
+<TR><TD>More complex examples:</TD></TR>
+</P>
+<P>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD><TD>4</TD><TD>5</TD></TR>
+<TR><TD>*</TD><TD>*-</TD><TD>*</TD><TD>*-</TD><TD>*</TD></TR>
+<TR><TD>*v</TD><TD>*v</TD><TD>*v</TD></TR>
+<TR><TD>1&3&5</TD></TR>
+</P>
+<P>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD><TD>4</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>*v</TD><TD>*v</TD></TR>
+<TR><TD>*</TD><TD>*x</TD><TD>*x</TD></TR>
+<TR><TD>*v</TD><TD>*v</TD><TD>*</TD></TR>
+<TR><TD>1&3&4</TD><TD>2</TD></TR>
+</P>
+<P>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD><TD>4</TD></TR>
+<TR><TD>*v</TD><TD>*v</TD><TD>*^</TD><TD>*^</TD></TR>
+<TR><TD>1&2</TD><TD>3a</TD><TD>3b</TD><TD>4a</TD><TD>4b</TD></TR>
+</P>
+<P>
+<TR><TD>1</TD><TD>2</TD><TD>3</TD><TD>4</TD><TD>5</TD></TR>
+<TR><TD>*</TD><TD>*-</TD><TD>*</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>*v</TD><TD>*v</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>*</TD><TD>*^</TD><TD>*</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>*+</TD><TD>*</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>*</TD><TD>**inter</TD><TD>*</TD></TR>
+<TR><TD>1&3</TD><TD>4a</TD><TD>4b</TD><TD>new</TD><TD>5</TD></TR>
+</TABLE></blockquote>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>humdrum</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-v</b></TD><TD>verbose mode</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The
+<b>-v</b>
+option invokes the verbose mode which provides summary information
+and statistics concerning the input file.
+A list of all of interpretations found in the file is output.
+In addition, an inventory of all of the ASCII signifiers (characters) found
+in the data records is output.
+The total number of data records is also provided, as well as the
+number of null tokens encountered.
+</P>
+<P>
+The verbose summary also produces a number of statistics related
+to the spine-organization in the Humdrum file.
+Both the minimum and maximum number of spines are identified.
+The paths of the various spines through the file are also summarized.
+Specifically,
+<b>humdrum</b>
+indicates the number of terminated spines, the number of new spines
+introduced, the number of joined spines, the number of split spines,
+and the number of exchanged spines.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+</P>
+<P>
+The following is a sample input that conforms to the Humdrum syntax.
+</P>
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! This is a global comment.</TD></TR>
+<TR><TD>!! The following line specifies three</TD></TR>
+<TR><TD>!! interpretations called "inter":</TD></TR>
+<TR><TD>**inter</TD><TD>**inter</TD><TD>**inter</TD></TR>
+<TR><TD>!! The next line has three local comments.</TD></TR>
+<TR><TD>! flute</TD><TD>! oboe</TD><TD>! fingering</TD></TR>
+<TR><TD>We</TD><TD>are</TD><TD>ASCII</TD></TR>
+<TR><TD>data</TD><TD>tokens</TD><TD>.</TD></TR>
+<TR><TD>We are</TD><TD>data as</TD><TD>well.</TD></TR>
+<TR><TD>!! The above three lines are data records.</TD></TR>
+<TR><TD>!! More examples of data records:</TD></TR>
+<TR><TD>76.3</TD><TD>x+y</TD><TD>L(-)%4^</TD></TR>
+<TR><TD>_ _ _</TD><TD>_ _</TD><TD>_ _ _ _ _</TD></TR>
+<TR><TD>></TD><TD><</TD><TD>|||</TD></TR>
+<TR><TD>!! The next data record contains</TD></TR>
+<TR><TD>!! only null tokens:</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>!! Some spine-path exchanges:</TD></TR>
+<TR><TD>!Spine1</TD><TD>!Spine2</TD><TD>!Spine3</TD></TR>
+<TR><TD>*x</TD><TD>*x</TD><TD>*</TD></TR>
+<TR><TD>*</TD><TD>*x</TD><TD>*x</TD></TR>
+<TR><TD>!Spine2</TD><TD>!Spine3</TD><TD>!Spine1</TD></TR>
+<TR><TD>Monday</TD><TD>Tuesday</TD><TD>Wednesday</TD></TR>
+<TR><TD>4:00</TD><TD>5:00</TD><TD>6:00PM</TD></TR>
+<TR><TD>!! Some null comments follow:</TD></TR>
+<TR><TD>!!</TD></TR>
+<TR><TD>!</TD><TD>!</TD><TD>!</TD></TR>
+<TR><TD>!! New exclusive interpretations:</TD></TR>
+<TR><TD>**foo</TD><TD>**bar</TD><TD>**ding</TD></TR>
+<TR><TD>!! A tandem interpretation in spine #2:</TD></TR>
+<TR><TD>*</TD><TD>*bop</TD><TD>*</TD></TR>
+<TR><TD>More</TD><TD>data</TD><TD>tokens.</TD></TR>
+<TR><TD>!! Some spine-path terminators:</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Where the verbose
+<b>(-v)</b>
+flag has been selected, the corresponding output for the above file would be:
+</P>
+<P>
+<blockquote>
+<code><big>
+Inventory of Interpretations:                           HUMDRUM FILE SUMMARY
+<br>
+
+<br>
+        Interpretations  Occurrences
+<br>
+        **inter          3
+<br>
+        **foo            1
+<br>
+        **bar            1
+<br>
+        **ding           1
+<br>
+        *                2
+<br>
+        *bop             1
+<br>
+
+<br>
+Inventory of data token signifiers:     %()+-.034567:<>
+<br>
+                                        ACILMPSTW^_
+<br>
+                                        adeklnorstuwxy
+<br>
+
+<br>
+Number of global comments:      14      Number of local comments:       4
+<br>
+Maximum # of concurrent spines: 3       Minimum # of concurrent spines: 3
+<br>
+Number of data records:         10      Number of null tokens:          4
+<br>
+
+<br>
+
+<br>
+Changes in number of spines:
+<br>
+        New spines:        0
+<br>
+        Terminated spines: 3
+<br>
+        Split spines:      0
+<br>
+        Joined spines:     0
+<br>
+        Exchanges spines:  4
+</i></b></code></big>
+</i></b></code></big>
+</blockquote>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>FILES</H3></FONT>
+The
+<b>humdrum</b>
+command uses a kornshell script to invoke an executable.
+In order to avoid conflict, the executable file is named
+<code><big>humdrum_.exe</big></code> (<code><big>humdrum_</big></code> on UNIX) rather than
+<code><big>humdrum.exe</big></code>.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<A HREF="census.html">
+<b>census</b></A> (4),
+<A HREF="proof.html">
+<b>proof</b></A> (4)
+</P>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DIAGNOSTICS</H3></FONT>
+The following list tabulates all of the potential errors and
+warnings issued by the
+<b>humdrum</b>
+command.
+<code><big>
+<blockquote><TABLE>
+<TR><TD>ERROR 1:</TD><TD>Record containing add-spine indicator has not been followed</TD></TR>
+<TR><TD></TD><TD>by exclusive interpretation for that spine in line </TD></TR>
+<TR><TD>ERROR 2:</TD><TD>Illegal empty record in line</TD></TR>
+<TR><TD>ERROR 3:</TD><TD>Leading tab in line</TD></TR>
+<TR><TD>ERROR 4:</TD><TD>Trailing tab in line</TD></TR>
+<TR><TD>ERROR 5:</TD><TD>Consecutive tabs in line</TD></TR>
+<TR><TD>ERROR 6:</TD><TD>Missing initial asterisk in interpretation keyword in line</TD></TR>
+<TR><TD>ERROR 7:</TD><TD>Null exclusive interpretation found in line</TD></TR>
+<TR><TD>ERROR 8:</TD><TD>Incorrect number of spines in interpretation record in line</TD></TR>
+<TR><TD>ERROR 9:</TD><TD>Local comment precedes first exclusive interpretation record in line</TD></TR>
+<TR><TD>ERROR 10:</TD><TD>Number of sub-comments in local comment does not match the</TD></TR>
+<TR><TD></TD><TD>number of currently active spines in line </TD></TR>
+<TR><TD>ERROR 11:</TD><TD>Missing initial exclamation mark in local comment in line</TD></TR>
+<TR><TD>ERROR 12:</TD><TD>Data record appears before first exclusive interpretation</TD></TR>
+<TR><TD></TD><TD>record in line </TD></TR>
+<TR><TD>ERROR 13:</TD><TD>Number of tokens in data record does not match the number</TD></TR>
+<TR><TD></TD><TD>of currently active spines in line</TD></TR>
+<TR><TD>ERROR 14:</TD><TD>All spines have not been properly terminated in file</TD></TR>
+<TR><TD>ERROR 15:</TD><TD>First exclusive interpretation record contains a null</TD></TR>
+<TR><TD></TD><TD>interpretation in line</TD></TR>
+<TR><TD>ERROR 16:</TD><TD>First exclusive interpretation record contains a spine-path</TD></TR>
+<TR><TD></TD><TD>indicator in line</TD></TR>
+<TR><TD>ERROR 17:</TD><TD>First exclusive interpretation record contains a</TD></TR>
+<TR><TD></TD><TD>non-exclusive interpretation in line</TD></TR>
+<TR><TD>ERROR 18:</TD><TD>Spine-path indicators mixed with keyword interpretations in line</TD></TR>
+<TR><TD>ERROR 19:</TD><TD>Improper number of exchange-path indicators in line</TD></TR>
+<TR><TD>ERROR 20:</TD><TD>Single join-path indicator found at end of interpretation</TD></TR>
+<TR><TD></TD><TD>record in line</TD></TR>
+<TR><TD>ERROR 21:</TD><TD>Join-path indicator is not adjacent to another join-path</TD></TR>
+<TR><TD></TD><TD>indicator in line</TD></TR>
+<TR><TD>ERROR 22:</TD><TD>Exclusive interpretations do not match for designated</TD></TR>
+<TR><TD></TD><TD>join spines in line</TD></TR>
+<TR><TD>ERROR 23:</TD><TD>Leading spaces in token in line</TD></TR>
+<TR><TD>ERROR 24:</TD><TD>Trailing spaces in token in line</TD></TR>
+<TR><TD>ERROR 25:</TD><TD>Consecutive spaces in token in line</TD></TR>
+<TR><TD>ERROR 26:</TD><TD>Multiple-stop contains null token in line</TD></TR>
+<TR><TD>WARNING 1:</TD><TD>Local comment may be mistaken for global comment in line</TD></TR>
+<TR><TD>WARNING 2:</TD><TD>Data token may be mistaken for global comment in line</TD></TR>
+<TR><TD>WARNING 3:</TD><TD>Data token may be mistaken for local comment in line</TD></TR>
+<TR><TD>WARNING 4:</TD><TD>Data token may be mistaken for exclusive interpretation in line</TD></TR>
+<TR><TD>WARNING 5:</TD><TD>Data token may be mistaken for tandem interpretation in line</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+<CENTER>
+<i>Potential errors and warnings issued by <b>humdrum</b>.</i>
+</CENTER>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide05.html#The_humdrum_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

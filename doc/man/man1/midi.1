@@ -1,0 +1,364 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH midi 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBmidi\fR  -- convert from \f(CR**kern\fR to Humdrum \f(CR**MIDI\fR format
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBmidi\fR  [\fB-Ccu\fR]  [\fB-d \fIn\fR]  [\fB-q \fIn\fR]  [\fIinputfile.krn\fR ...]  [ > \fIoutputfile.hmd\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "midi"
+command converts Humdrum \f(CR**kern\fR data into Humdrum \f(CR**MIDI\fR data.
+Humdrum \f(CR**MIDI\fR data may be played by the
+.B "perform"
+command or converted to a standard MIDI file using the
+.B "smf"
+command.
+The
+.B "midi"
+command will translate all \f(CR**kern\fR spines in the input
+stream into \f(CR**MIDI\fR data,
+and will echo any non-kern spines.
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "midi"
+command should be given names with the distinguishing `.hmd' extension
+(`Humdrum midi').
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "midi"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-c\fR	echo all data records as global comments (prior to the
+	  data record)
+\fB-C\fR	echo all data records as global comments (following the
+	  data record)
+\fB-d \fIn\fR	assigns a note-duration of \fIn\fR \f(CR**recip\fR value to
+	  all pitches and rests
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-q \fIn\fR	set number of MIDI clock ticks per quarter-duration to \fIn\fR
+\fB-u\fR	suppress the deletion of duplicate (unison) concurrent
+	  note-on instructions
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+If the
+.B "-c"
+option (`comment') is invoked, all data records are echoed as global
+comments in addition to the usual processing.
+This option is useful in conjunction with the
+.B "perform"
+command;
+.B "perform"
+echoes all global comments while playing MIDI inputs,
+and so the comment option allows the user to view the original \f(CR**kern\fR
+score while the music is performed.
+.sp 1
+.sp 1
+The \fB-d \fIn\fR option allows the user to reassign all the durations
+of all notes and rests in a given input.
+The value \fIn\fR is specified in
+reciprocal duration notation (\f(CR**recip\fR), where `4' represents
+a quarter-duration, `2.' represents a dotted half-duration, `12'
+represents a quarter-note triplet, `0' represents a breve, etc.
+(See \f(CR**recip\fR in Section 2 for details.)
+With the
+.B "-d"
+option all pitches and rests in the input will be assigned the specified
+duration value -- whether or not the notes already have encoded durations.
+This option is useful for such tasks as proof-listening to passages
+containing especially short notes, or auditing works --
+such as Gregorian chant -- where durations have not been encoded
+or are suspect for other reasons.
+Note that the
+.B "-d"
+option should be used only in the case of monophonic inputs, or multi-part
+inputs that contain strictly isochronous chords.
+Polyphonic inputs containing non-isochronous durations will cause a
+loss of synchronization between the parts.
+The resulting output is apt to cause serious problems with commands
+such as
+.B "perform"
+and
+.B "smf."
+.sp 1
+.sp 1
+In contrast to MIDI performance data, canonical musical scores
+(such as \f(CR**kern\fR) frequently contain unisons -- where two
+voices share the same pitch for a period of time.
+MIDI produces a `note-off' instruction at the end of each note; however
+only a single `note-off' instruction is required to turn-off a note.
+Unfortunately, the first note-off will terminate a note -- even if
+the same pitch is sustained in another voice.
+In normal operation,
+.B "midi"
+suppresses the sending of the first of two MIDI `note-off' commands when
+a unison is encountered in the input.
+This ensures that the pitch will be sustained for the longer of the
+unison durations.
+This feature can be disabled by invoking the
+.B "-u"
+option.
+.sp 1
+.sp 1
+The
+.B "midi"
+command assigns a default duration of 72 MIDI clock-ticks per quarter-note.
+This default value may be reassigned using the
+\fB-q \fIn\fR option.
+The value \fIn\fR should be chosen so that all canonical durations
+present in a given score divide evenly into it.
+For example, the default value of 72 clock-ticks per quarter-note,
+means that eighth-notes and sixteenth-notes will have durations of
+36 and 18 clock-ticks respectively.
+Eighth-note triplets and sixteenth-note triplets will have durations
+of 24 and 12 clock-ticks respectively.
+Thirty-second notes will have a duration of 9 clock-ticks.
+But sixty-fourth notes can cause synchronization problems since they
+do not divide evenly into 72.
+The user may wish to reassign this value depending on the types of
+canonical durations present in a given input.
+Changing the default number of clock-ticks will affect the tempo
+of performance when using the
+.B "perform"
+command.
+Hence, it may be necessary to revise the tempo indication of a resulting
+Humdrum midi-format file.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following examples illustrate how
+.B "midi"
+may be invoked.
+.sp 1
+.sp 1
+.in +2
+midi chopin > chopin.hmd
+.in -2
+.sp 1
+.sp 1
+converts the \f(CR**kern\fR data from the file \f(CRchopin\fR to
+\f(CR**MIDI\fR data in the file \f(CRchopin.hmd\fR.
+The command:
+.sp 1
+.sp 1
+.in +2
+midi -c siegfrd.idl > siegfrd.hmd
+.in -2
+.sp 1
+.sp 1
+translates the \f(CR**kern\fR data from the file \f(CRsiegfrd.idl\fR
+to \f(CR**MIDI\fR data in the file \f(CRsiegfrd.hmd\fR and echoes
+all \f(CR**kern\fR data as global comments.
+.in -2
+.sp 1
+.sp 1
+.SH "SAMPLE OUTPUTS"
+.in +2
+The operation of
+.B "midi"
+is illustrated in the following inputs and outputs.
+In the first example, a simple C major scale is encoded in \f(CR**kern\fR.
+.sp 1
+.sp 1
+.in +2
+.sp 1
+.TS
+l.
+!! midi example #1
+**kern
+*M2/4
+*C:
+\(eq1
+8c
+8r
+8d
+8e
+\(eq2
+8f
+8g
+8a
+8b
+\(eq3
+4cc
+4r
+====
+*-
+.TE
+.sp 1
+.in -2
+Executing the
+.B "midi"
+command with the default settings results in the \f(CR**MIDI\fR
+output given below.
+Notice that a default channel of MIDI channel 1 has been assigned
+via the tandem interpretation \f(CR*Ch1\fR.
+Note also that each \f(CR**kern\fR note has resulted in two MIDI instructions:
+\(odkey-on\(cd and \(odkey-off\(cd.
+Since the end of one note coincides with the start of the subsequent
+note, key-on and key-off data are output as Humdrum double-stops
+(two tokens separated by a single space character).
+.in +2
+.sp 1
+.TS
+l.
+!! midi example #1
+**MIDI
+*Ch1
+*M2/4
+*C:
+\(eq1
+72/60/64
+36/-60/64
+36/62/64
+36/-62/64 36/64/64
+\(eq2
+36/-64/64 36/65/64
+36/-65/64 36/67/64
+36/-67/64 36/69/64
+36/-69/64 36/71/64
+\(eq3
+36/-71/64 36/72/64
+72/-72/64
+====
+\.
+*-
+.TE
+.sp 1
+.in -2
+\f(CR**MIDI\fR data consist of three numbers separated by slashes (/).
+The first integer represents the number of clock ticks that must elapse
+from the previous instruction before the current event is initiated.
+In the above case, a default value of 72 clock ticks per quarter-note
+has resulted in 36 clock ticks for each eighth note.
+The second integer represents the MIDI key number, where middle C is
+represented as key #60 (negative numbers denote key-off instructions).
+The third integer represents the MIDI key velocity.
+The default key velocity is 64 units.
+.sp 1
+.sp 1
+The second example illustrates the handling of input containing multiple-stops.
+.in +2
+.sp 1
+.TS
+l s
+l l.
+!! midi example #2
+**harm	**kern
+*	*Ch3
+\(eq1	\(eq1
+I	4c 4e 4g
+IV	4c 4f 4a
+V	4d 4g 4b
+I	4e 4g 4cc
+==	==
+*-	*-
+.TE
+.sp 1
+.in -2
+The output below is generated by invoking the following command:
+.sp 1
+.sp 1
+.in +2
+midi -c input > output
+.in -2
+.in +2
+.sp 1
+.TS
+l s
+l l.
+!! midi example #2
+**harm	**MIDI
+*	*Ch1
+!!**harm	**kern
+*	*Ch3
+!!*	*Ch3
+\(eq1	\(eq1
+!!=1	=1
+I	0/60/64 0/64/64 0/67/64
+!!I	4c 4e 4g
+IV	96/-60/64 96/-64/64 96/-67/64 96/60/64 96/65/64 96/69/64
+!!IV	4c 4f 4a
+V	96/-60/64 96/-65/64 96/-69/64 96/62/64 96/67/64 96/71/64
+!!V	4d 4g 4b
+I	96/-62/64 96/-67/64 96/-71/64 96/64/64 96/67/64 96/72/64
+!!I	4e 4g 4cc
+==	==
+!!==	==
+\.	96/-64/64 96/-67/64 96/-72/64
+*-	*-
+!!*-	*-
+.TE
+.sp 1
+.in -2
+Notice that non-kern data (\f(CR**harm\fR) is echoed in the output.
+Also, notice that each input record has been reproduced as a global
+comment (preceded by !!).
+This feature is useful in conjunction with the
+.B "perform"
+command.
+.in -2
+.sp 1
+.sp 1
+.SH "DIAGNOSTICS"
+.in +2
+The
+.B "midi"
+command echoes tempo indications for the benefit of the
+.B "perform"
+command.
+If a tempo range is specified (e.g. MM92-98),
+.B "midi"
+calculates the average range and echoes that (MM95).
+Tempo terms (such as \(odlargo\(cd) are not handled by
+.B "midi."
+.sp 1
+.sp 1
+.in -2
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up.
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBhumdrum\fR (1), \fB**kern\fR (2),
+\fBkern\fR (1), \fB**MIDI\fR (2), \fBperform\fR (1),
+\fBproof\fR (1), \fBsmf\fR (1), \fBtacet\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "PROPOSED MODIFICATIONS"
+.in +2
+Channel assigment tandem interpretations (e.g. \f(CR*Ch6\fR) should
+be recognized in the input stream and cause the default channel 1 output
+to be suppressed.
+.in -2

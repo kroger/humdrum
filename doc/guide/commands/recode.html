@@ -1,0 +1,425 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- recode</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>recode</b>  --  recode numeric tokens in selected Humdrum spines
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>recode</b>  <b>-f</b>  <i>reassign-file</i>  <b>-i</b>  '<i>**interpretation</i>'  [<b>-s</b> <i>regexp</i>]  [<b>-x</b>]  [<i>inputfile</i> ...]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>recode</b>
+command is used to recode numeric components of data tokens in
+selected input spines.
+Typically,
+<b>recode</b>
+is used to reassign a range of numerical values into a finite set of classes
+or categories.
+For example,
+<b>recode</b>
+could be used to reassign all numerical values less than zero to the value -1,
+and to assign all values greater than or equal to zero to the value +1.
+A typical use of
+<b>recode</b>
+might be to reassign melodic intervals (represented in semitones) to one of
+five categories: (1) unison [0 semits],
+(2) up step [plus 1 or 2 semits], (3) up leap [plus 3 or more semits],
+(4) down step [minus 1 or 2 semits], (5) down leap [minus 3 or more semits].
+Similarly, duration information might be rhythmically "justified"
+so that all durations near 0.5 seconds are recoded as precisely 0.5 seconds.
+</P>
+<P>
+Note that
+<b>recode</b>
+will modify only those input spines matching the exclusive interpretation
+specified in the command line.
+</P>
+<P>
+The manner by which numeric values are reassigned is specified by
+the user in a separate
+<i>reassignment file.</i>
+Reassignment files consist of one or more reassignment records;
+each record specifies a
+<i>condition</i>
+and a resulting replacement
+<i>string.</i>
+When the condition is satisfied, the numerical data is replaced by
+the associated string.
+A simple reassignment file is:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>==0</TD><TD>zero</TD></TR>
+<TR><TD>!=0</TD><TD>other</TD></TR>
+</TABLE></blockquote>
+</code></big>
+This file contains two reassignment records.
+<i>Conditions</i>
+are given in the left column and the associated replacement
+<i>strings</i>
+are given in the right column.
+Conditions and strings are separated by a single tab.
+Given the above reassignment, when a numerical value in an input token
+is equal to zero, the output replaces the input number by the
+alphabetic string "<code><big>zero</big></code>."
+The second condition (!= means not-equals) indicates that if a
+numerical value not equal to zero is encountered in an input token,
+the output replaces the number by the alphabetic string
+"<code><big>other</big></code>."
+</P>
+<P>
+Permissible relational operators are listed in the following table.
+</P>
+<P>
+<blockquote><TABLE>
+<TR><TD>==</TD><TD>equals</TD></TR>
+<TR><TD>!=</TD><TD>not equals</TD></TR>
+<TR><TD><</TD><TD>less than</TD></TR>
+<TR><TD><=</TD><TD>less than or equal</TD></TR>
+<TR><TD>></TD><TD>greater than</TD></TR>
+<TR><TD>>=</TD><TD>greater than or equal</TD></TR>
+<TR><TD>else</TD><TD>default relation</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Relational operators for <b>recode</b></i>
+</CENTER>
+</P>
+<P>
+Permissible replacement strings include any combination of printable ASCII
+characters with the exception of the tab.
+</P>
+<P>
+Conditions are tested in the order given in the reassignment file.
+Thus if a numeric value satisfies more than one condition,
+only the first string replacement is made.
+Consider, for example, the following reassignment file:
+<code><big>
+<blockquote><TABLE>
+<TR><TD><=0</TD><TD>LOW</TD></TR>
+<TR><TD>>100</TD><TD>HIGH</TD></TR>
+<TR><TD>>0</TD><TD>MEDIUM</TD></TR>
+</TABLE></blockquote>
+</code></big>
+In this case, all numeric values are replaced by one of three strings:
+<code><big>
+HIGH, MEDIUM,
+</i></b></code></big>
+</i></b></code></big>
+or
+<code><big>
+LOW.
+</i></b></code></big>
+</i></b></code></big>
+The order of specification is important in the above file.
+If the <code><big>MEDIUM</big></code> condition was specified prior to the <code><big>HIGH</big></code>
+condition, then all values greater than one hundred would be categorized
+as <code><big>MEDIUM</big></code> rather than as <code><big>HIGH</big></code>.
+</P>
+<P>
+The
+<i>else</i>
+relation can be used to specify the default string output for
+numeric input values that satisfy none of the preceding conditions
+in the reassignment file.
+If no
+<i>else</i>
+condition is specified and none of the other conditions are satisfied,
+<b>recode</b>
+outputs the original input token without any modification.
+</P>
+<P>
+Substitutions are made even when a number
+is embedded in non-numeric data.
+For example, given the above reassignment file, an input token
+<code><big>foo200bar</big></code> would be output as <code><big>fooHIGHbar</big></code>.
+That is, the numeric portion of the input string (200) would be
+deemed to satisfy the condition (>100) and so would be replaced by
+the string ("HIGH").
+</P>
+<P>
+An important property of the
+<b>recode</b>
+command is that string replacements are limited to the
+<b>first</b>
+occurrence of numeric data within each data token.
+Subsequent numeric data within the token remains untouched.
+Thus, using the above reassignment file, the input token
+<code><big>foo200bar300</big></code>
+would be output as
+<code><big>fooHIGHbar300</big></code>.
+</P>
+<P>
+In the case of multiple-stops (data tokens having two or more parts
+separated by spaces),
+<b>recode</b>
+processes the first occurrence of numeric data for each part of the token.
+For example, the double-stop token <code><big>foo200 bar300</big></code>
+would be output as <code><big>fooHIGH barHIGH</big></code>.
+</P>
+<P>
+The
+<b>recode</b>
+command provides options to identify which data tokens may be excluded
+(skipped) in processing
+<b>(-s),</b>
+plus an option that suppresses the echoing of unprocessed signifiers
+in the output
+<b>(-x).</b>
+See OPTIONS for further information.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>recode</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-f <i>reassign</i></TD><TD>use reassignments given in file <i>reassign</i></TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-i <i>'**interp'</i></TD><TD>process only <i>**interp</i> spines</TD></TR>
+<TR><TD><b>-s <i>regexp</i></TD><TD>skip; completely ignore tokens matching <i>regexp</i>;</TD></TR>
+<TR><TD></TD><TD> (echo in output only)</TD></TR>
+<TR><TD><b>-x</b></TD><TD>(exclude) do not echo unprocessed data signifiers in the output</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The user can suppress the echoing of non-numeric data within a token
+by specifying the
+<b>-x</b>
+option on the command line.
+When this exclude option is selected, only the replacement strings are output.
+For example, given the following reassignment file:
+<code><big>
+<blockquote><TABLE>
+<TR><TD><=0</TD><TD>LOW</TD></TR>
+<TR><TD>>100</TD><TD>HIGH</TD></TR>
+<TR><TD>>0</TD><TD>MEDIUM</TD></TR>
+</TABLE></blockquote>
+</code></big>
+The input token
+<code><big>
+foo200bar
+</i></b></code></big>
+</i></b></code></big>
+would be output as
+<code><big>HIGH</big></code>.
+If a data token contains no numeric component, then the
+<b>-x</b>
+option causes a null token to be output.
+</P>
+<P>
+The
+<b>-x</b>
+option also suppresses the echoing of unprocessed numerical components.
+(Recall that string replacements made by
+<b>recode</b>
+are limited to the first occurrence of numerica data within a data token.)
+For example, with the
+<b>-x</b>
+option, the input data token
+<code><big>
+foo200bar17
+</i></b></code></big>
+</i></b></code></big>
+would be output as
+<code><big>HIGH</big></code>.
+</P>
+<P>
+Processing of certain types of data tokens may be avoided by invoking the
+<b>-s</b>
+(skip) option.
+This option must be accompanied by a user-define regular-expression
+(see <b>regexp (6)</b>).
+Input data tokens matching this expression are not processed
+and are simply echoed in the output.
+This option may be useful, for example, in avoiding the processing
+of barlines, or other types of data.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The operation of the
+<b>recode</b>
+command can be illustrated by referring to the following hypothetical
+Humdrum file named <code><big>patrie</big></code>.
+</P>
+<P>
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**kern</TD><TD>**abc</TD></TR>
+<TR><TD>16g</TD><TD>0</TD></TR>
+<TR><TD>8.g</TD><TD>00</TD></TR>
+<TR><TD>16g</TD><TD>1</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>4cc</TD><TD>2.0</TD></TR>
+<TR><TD>4cc</TD><TD>+3.</TD></TR>
+<TR><TD>4ee</TD><TD>4</TD></TR>
+<TR><TD>4ee</TD><TD>-1</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>4.gg</TD><TD>22.</TD></TR>
+<TR><TD>8ee</TD><TD>1.1</TD></TR>
+<TR><TD>8.cc</TD><TD>.1</TD></TR>
+<TR><TD>16cc</TD><TD>x1X</TD></TR>
+<TR><TD>8.ee</TD><TD>x1x2x</TD></TR>
+<TR><TD>16cc</TD><TD>1 2</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>4a</TD><TD>.</TD></TR>
+<TR><TD>4r</TD><TD>r</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Consider also the following "reassignment" file, named <code><big>reassign</big></code>.
+<code><big>
+<blockquote><TABLE>
+<TR><TD>==0</TD><TD>zero</TD></TR>
+<TR><TD>==1</TD><TD>one</TD></TR>
+<TR><TD>==2</TD><TD>two</TD></TR>
+<TR><TD><0</TD><TD>negative</TD></TR>
+<TR><TD><=3</TD><TD><=3</TD></TR>
+<TR><TD>>4</TD><TD>>4</TD></TR>
+<TR><TD>else</TD><TD>???</TD></TR>
+</TABLE></blockquote>
+</code></big>
+The command:
+</P>
+<P>
+<blockquote>
+<code><big>
+recode -s = -i '**abc' -f reassign patrie
+</code></big>
+</blockquote>
+</P>
+<P>
+would produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**kern</TD><TD>**abc</TD></TR>
+<TR><TD>16g</TD><TD>zero</TD></TR>
+<TR><TD>8.g</TD><TD>zero</TD></TR>
+<TR><TD>16g</TD><TD>one</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>4cc</TD><TD>two</TD></TR>
+<TR><TD>4cc</TD><TD><=3</TD></TR>
+<TR><TD>4ee</TD><TD>???</TD></TR>
+<TR><TD>4ee</TD><TD>negative</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>4.gg</TD><TD>>4</TD></TR>
+<TR><TD>8ee</TD><TD><=3</TD></TR>
+<TR><TD>8.cc</TD><TD><=3</TD></TR>
+<TR><TD>16cc</TD><TD>xoneX</TD></TR>
+<TR><TD>8.ee</TD><TD>xonex2x</TD></TR>
+<TR><TD>16cc</TD><TD>one two</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>4a</TD><TD>.</TD></TR>
+<TR><TD>4r</TD><TD>r</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice the following:
+(1) the measure numbers <code><big>1</big></code> and <code><big>2</big></code> have remained
+unchanged due to the skip option <code><big>-s =</big></code>,
+(2) the input <code><big>x1X</big></code> has been replaced by the output string
+<code><big>
+xoneX
+</i></b></code></big>
+</i></b></code></big>
+(non-numeric data remain in the same relative position),
+(3) the input <code><big>x1x2x</big></code> has been replaced by the output string
+<code><big>
+xonex2x
+</i></b></code></big>
+</i></b></code></big>
+(only the first numerical value in each token is modified),
+(4) the double-stop input <code><big>1 2</big></code> has been replaced by the output string
+<code><big>
+one two,
+</i></b></code></big>
+</i></b></code></big>
+and (5) both the null token (.) and the non-numeric token (<code><big>r</big></code>)
+have been echoed in the input unchanged.
+</P>
+<P>
+Note that with the
+<b>-x</b>
+option, all of the non-numeric signifiers in
+<code><big>
+**abc
+</i></b></code></big>
+</i></b></code></big>
+spine would be suppressed in the output.
+The single non-numeric token (<code><big>r</big></code>) would be output as a null token.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="humsed.html">
+<b>humsed</b></A> (4),
+<A HREF="rend.html">
+<b>rend</b></A> (4),
+<A HREF="regexp.html">
+<b>regexp</b></A> (4),
+<b>regexp</b> (6),
+<b>sed</b> (UNIX)
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide22.html#The_recode_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

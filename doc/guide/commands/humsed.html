@@ -1,0 +1,459 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- humsed</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>humsed</b>  --  stream editor for Humdrum inputs
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>humsed</b>   [<b>-E</b>]   '<i>sed_instruction[;sed_instruction;</i>...]'   [<i>inputfile ...</i>]   [<b> ></b> <i>outputfile</i>]
+<br>
+<b>humsed</b>   [<b>-E</b>]   [<b>-f</b> <i>scriptfile</i>]   [<i>inputfile ...</i>]   [<b> ></b> <i>outputfile</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>humsed</b>
+command provides a stream-editor for Humdrum data records.
+A stream-editor is a non-interactive editor that automatically
+processes a given input according to a user-specified set of
+editing instructions.
+Possible editing operations include substitution, deletion,
+transliteration, file-read, and file-write.
+By default the output is sent to the display,
+however the output can be routed to a file using file redirection (>
+<i>outputfile).</i>
+</P>
+<P>
+The
+<b>humsed</b>
+command is fashioned after the UNIX
+<b>sed</b>
+stream editor.
+In contrast to
+<b>sed,</b>
+<b>humsed</b>
+editing instructions are applied only to Humdrum data records;
+Humdrum
+<i>interpretations</i>
+and 
+<i>comments</i>
+are not affected by
+<b>humsed.</b>
+</P>
+<P>
+The
+<b>humsed</b>
+command accepts one or more
+<b>sed</b>
+instructions.
+Instructions are specified on the command-line within a pair of single quotes.
+Where more than one editing instruction is specified,
+successive instructions are separated by a semicolon.
+Alternatively, instructions may be executed from a
+<i>scriptfile</i>
+using the
+<b>-f</b>
+option.
+If instructions are provided both on the command-line as well as via a
+<i>scriptfile,</i>
+the command line instructions are performed prior to the
+<i>scriptfile</i>
+instructions.
+</P>
+<P>
+Permissible instructions include
+<code><big>
+<b>s</b>
+</i></b></code></big>
+</i></b></code></big>
+for substitution,
+<code><big>
+<b>y</b>
+</i></b></code></big>
+</i></b></code></big>
+for transliteration,
+<code><big>
+<b>d</b>
+</i></b></code></big>
+</i></b></code></big>
+for deletion,
+<code><big>
+<b>i</b>
+</i></b></code></big>
+</i></b></code></big>
+for insertion,
+<code><big>
+<b>a</b>
+</i></b></code></big>
+</i></b></code></big>
+for append,
+<code><big>
+<b>r</b>
+</i></b></code></big>
+</i></b></code></big>
+for file-read, and
+<code><big>
+<b>w</b>
+</i></b></code></big>
+</i></b></code></big>
+for file-write.
+Each instruction may be preceded by an optional
+<i>regular expression</i>
+that limits the scope of the editing instruction only to those
+data records matching the regular expression.
+For example, the user may replace all occurrences of `X' with `Y' --
+provided the signifier `Z' also occurs in the same data record.
+In the case of the delete
+<code><big>
+<b>(d)</b>
+</i></b></code></big>
+</i></b></code></big>
+instruction, failing to specify a preceding regular expression will
+result in the deletion of all data records in the input.
+</P>
+<P>
+For further information concerning the syntax and use of
+<b>humsed</b>
+editing instructions, refer to the documentation for the UNIX
+<b>sed</b>
+command.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>humsed</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-E</b></TD><TD>invoke Extended Regular Expression syntax</TD></TR>
+<TR><TD><b>-f <i>scriptfile</i></TD><TD>execute editing instructions from the file <i>scriptfile</i></TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+With the
+<b>-E</b>
+option,
+<b>humsed</b>
+invokes the "extended" regular expression syntax, rather than the normal
+or "basic" regular expression syntax.
+With extended regular expressions, the following additional operations
+are supported:
+one-or-more (+), zero-or-one (?), logical OR (|),
+precedence grouping (  ), and alphanumeric token start and end anchors <   >.
+</P>
+<P>
+Note that not all systems support extended regular expressions for the
+<b>sed</b>
+command; on such systems the
+<b>-E</b>
+option for
+<b>humsed</b>
+is ineffective and may result in an error.
+</P>
+<P>
+The
+<b>-f</b>
+options allows the user to specify a
+<i>scriptfile</i>
+that contains a set of editing instructions.
+Instructions in
+<i>scriptfile</i>
+are executed after any command-line editing scripts.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following examples illustrate the substitution, transliteration,
+deletion, file-read and file-write instruction provided by
+<b>humsed.</b>
+</P>
+<P>
+Simple substitution:
+</P>
+<P>
+<blockquote>
+<code><big>
+humsed 's/A/X/g' ragtime
+</code></big>
+</blockquote>
+</P>
+<P>
+The above command replaces the upper-case letter A
+by the upper-case letter X.
+Without the
+<code><big>
+g
+</code></big>
+(global) modifier, only the first occurrence of an "A"
+in each data record would be modified.
+The use of
+<code><big>
+g
+</code></big>
+applies the substitution instruction to
+<i>all</i>
+occurrences in a data record.
+</P>
+<P>
+Substitution commands can be preceded by another regular expression
+that limits the selection of records that are affected by the substitution.
+For example, the following command eliminates all measure numbers in a
+<code><big>
+**kern
+</code></big>
+representation:
+</P>
+<P>
+<blockquote>
+<code><big>
+humsed '/=/s/[0-9]*//g' jellyroll
+</code></big>
+</blockquote>
+Rather than simply eliminating all numerical data, the initial
+regular expression
+<code><big>
+(/=/)
+</code></big>
+limits the substitution operation to those data records contain the
+<code><big>
+**kern
+</code></big>
+barline signifier
+<code><big>
+(=).
+</code></big>
+</P>
+<P>
+More complicated substitutions may involve compound (two or more)
+instructions.
+Instructions are separated by a semicolon, and are executed in
+succession for each data record.
+Consider the following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+humsed 's/4[A-G]/8&/g;s/84/8/g' chicago > fastbass
+</code></big>
+</blockquote>
+</P>
+<P>
+This command changes all quarter-note pitches (in a
+<code><big>
+**kern
+</code></big>
+representation) below middle C
+to eighth-note durations, while leaving quarter-notes above middle C unchanged.
+The first substitution instruction
+<code><big>
+(s/4[A-G]/8&/g)
+</code></big>
+searches for all strings beginning
+with the number 4, followed by one of the upper-case letters A to G.
+It then prepends the number 8;
+thus the token 4F will be replaced by 84F.
+(Note that the ampersand (&) in the substitution denotes the
+matched string found by the target regular expression.)
+The second substitution
+<code><big>
+(s/84/8/g)
+</code></big>
+replaces the string 84 by the string 8.
+In short, tokens such as 4F and 4CC# will be modified to 8F and 8CC#
+respectively -- whereas tokens such as 2F and 4cc# will remain unmodified.
+(Note that this command is inadequate if 24th notes
+(thirty-second note triplets) are present in the input --
+since they will be transformed to 28th notes.)
+</P>
+<P>
+The transliteration instruction
+<b>(y)</b>
+provides a short-cut for multiple
+single-character substitutions.
+For example, the following command replaces A with 0, B with 1, C with 2, etc.
+for the letters A to J:
+</P>
+<P>
+<blockquote>
+<code><big>
+humsed 'y/ABCDEFGHIJ/0123456789/' dixieland
+</code></big>
+</blockquote>
+</P>
+<P>
+Substitutions are organized by mapping each element in the first
+character string with the corresponding element in the second string.
+The first and second character strings must contain the same number of
+characters.
+</P>
+<P>
+The delete instruction is preceded by a regular expression,
+followed by the single letter
+<b>d.</b>
+The following command deletes all data records containing the lower-case
+letter "r".
+</P>
+<P>
+<blockquote>
+<code><big>
+humsed '/r/d' swing
+</code></big>
+</blockquote>
+</P>
+<P>
+The file-write instruction
+<b>(w)</b>
+provides a way of copying selected material
+to a specified output file.
+Consider the following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+humsed '/;/w pauses' bigband
+</code></big>
+</blockquote>
+</P>
+<P>
+This command identifies all data records in the file "bigband"
+that contain a semicolon (the
+<code><big>
+**kern
+</code></big>
+pause signifier) and copies them into the file "pauses."
+Recall that
+<b>humsed</b>
+operates only on Humdrum data records, so
+the
+<code><big>
+<b>w</b>
+</code></big>
+command will cause only data records to be outputted.
+Hence the resulting file "pauses" will not be a valid Humdrum file.
+(If the user wishes the extracted material to be in a valid Humdrum
+format, this could be done using the Humdrum
+<b>yank</b>
+command:<code><big>yank -m ';' 0 bigband > pauses</big></code>.)
+</P>
+<P>
+The
+<b>humsed</b>
+command can also be used to read
+<b>(r)</b>
+material from a specified file whenever
+a certain condition occurs in the input stream.
+For example, the following command could be used to search for
+<code><big>
+**kern
+</code></big>
+pause signifiers (;) and add a global comment indicating
+the presence of a pause.
+</P>
+<P>
+<blockquote>
+<code><big>
+humsed '/;/r comment' bebop
+</code></big>
+</blockquote>
+</P>
+<P>
+--  where the file "comment" contains the following global comment:
+</P>
+<P>
+<blockquote>
+<code><big>
+!! A pause.
+</code></big>
+</blockquote>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+Any system supporting the UNIX-style
+<b>sed</b>
+command.
+Note that the
+<b>-E</b>
+option is a non-POSIX extension currently supported only by
+the MKS toolkit.
+It is hoped that in the future, other systems will support
+extended regular expression syntax for
+<b>sed.</b>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<b>awk</b> (UNIX),
+<A HREF="regexp.html">
+<b>regexp</b></A> (4),
+<b>regexp</b> (6),
+<A HREF="rid.html">
+<b>rid</b></A> (4),
+<b>sed</b> (UNIX),
+<b>vi</b> (UNIX),
+<A HREF="yank.html">
+<b>yank</b></A> (4)
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+In the process of modifying text, it is possible to transform inadvertently
+Humdrum data records into interpretation records or comments.
+Particular caution should be exercised when inserting exclamation marks or
+asterisks.
+</P>
+<P>
+In addition, it is possible to disrupt the spine structure by
+inserting or deleting tabs.
+Substitutions may result in empty lines or extra spaces that render
+the file no longer consistent with the Humdrum syntax.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide14.html#The_sed_and_humsed_Commands">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

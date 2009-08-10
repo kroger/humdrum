@@ -1,0 +1,243 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH pcset 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBpcset\fR  --  convert Humdrum pitch and pitch-class information to set-theoretic representations
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+\fBpcset\fR  [\fB-c\fR]  [\fB-n\fR|\fBp\fR|\fBv\fR]  [\fIinputfile\fR ...]
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "pcset"
+command is used to generate and convert between various
+set-theoretic representations.
+.sp 1
+.sp 1
+By default, the output is the Fortean pitch-class set type (\f(CR**pcset\fR).
+Alternatively, the user may choose to output the corresponding
+.I "normal form"
+(\f(CR**nf\fR) or the more succinct
+.I "prime form"
+(\f(CR**pf\fR) or the associated
+.I "interval vector"
+(\f(CR**iv\fR).
+See \s-1REFERENCES\s+1 below.
+.sp 1
+.sp 1
+In addition to accepting \f(CR**semits\fR or \f(CR**pc\fR inputs,
+.B "pcset"
+can also process \f(CR**nf\fR, \f(CR**iv\fR,
+\f(CR**pf\fR or \f(CR**pcset\fR inputs.
+This permits the user to determine the normal form, prime form or
+interval vector for a given pc-set, or the interval vector for a given
+pc-set, prime form, or normal form, etc.
+.sp 1
+.sp 1
+For all of the above translations,
+.B "pcset"
+also provides a
+.I "complementation"
+operator, where output values corresponding to the pitch-class set complement.
+For example, when the complementation option is invoked,
+an input consisting of the pitch-classes (0,4,7,10)
+would produce an output pertinent to the complementary set (1,2,3,5,6,8,9,11).
+Complementation can be applied to any accepted input type,
+including normal form, prime form, interval vector, and pc-set.
+Note that if the input consists of all twelve pitch-classes,
+.B "pcset"
+produces a null token as the set complement.
+.sp 1
+.sp 1
+When provided with \f(CR**semits\fR or \f(CR**pc\fR inputs,
+.B "pcset"
+treats each input record as a set of pitches.
+Unisons and other pitch-class duplications have no effect on the output.
+Rests within a set of pitches are ignored;
+where an input record consists solely of one or more
+rests, a null-token is output.
+.sp 1
+.sp 1
+The
+.B "pcset"
+command is able to translate any of the representations listed below.
+For descriptions of the various input representations
+(including \f(CR**pcset\fR) refer to Section 2
+.I "(Representation Reference)"
+of this reference manual.
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "pcset"
+command should be given names with the distinguishing
+extensions `.pcs', `.nf' `.pf' or `.iv' -- depending on the
+selected option.
+.sp 1
+.TS
+l l.
+\f(CR**iv\fR	interval vector representation
+\f(CR**nf\fR	normal form for pitch-class sets
+\f(CR**pc\fR	pitch-class representation
+\f(CR**pcset\fR	Fortean pitch-class set name
+\f(CR**pf\fR	prime form representation
+\f(CR**semits\fR	equal-tempered semitones with respect to middle C=0
+	  (e.g. 12 = C5)
+.TE
+.sp 1
+.ce
+.I "Input representations processed by \fBpcset\fR."
+.in -2
+.SH "OPTIONS"
+.in +2
+The
+.B "pcset"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-c\fR	generate output for set complement
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-n\fR	output normal form (\f(CR**nf\fR) spine
+\fB-p\fR	output prime form (\f(CR**pf\fR) spine
+\fB-v\fR	output interval vector (\f(CR**iv\fR) spine
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+By default, the
+.B "pcset"
+command outputs a \f(CR**pcset\fR representation.
+.sp 1
+.sp 1
+The
+.B "-n"
+option causes
+.B "pcset"
+to output normal form (\f(CR**nf\fR) data instead of \f(CR**pcset\fR data.
+\(odNormal form\(cd is a standard way of representing the interval
+structure of any arbitrary set of pitch-classes.
+.sp 1
+.sp 1
+The
+.B "-p"
+option causes
+.B "pcset"
+to output the prime form (\f(CR**pf\fR) for the input.
+Prime form is analogous to rearranging notes in a chord so that
+the spelling is in root position,
+close position, transposed so that the root of the chord is C.
+By way of example, any major chord (having any root, in any inversion,
+with any spelling) will have the normal form: 0,4,7 -- namely, a given
+(basic) pitch, plus a pitch 4 semitones above than the basic pitch,
+plus a pitch 7 semitones above the basic pitch.
+(See \s-1REFERENCES\s+1.)
+.sp 1
+.sp 1
+The
+.B "-v"
+option causes interval vector information (\f(CR**iv\fR) to be output
+rather than \f(CR**pcset\fR data.
+All pitch-class sets can be characterized according to the possible
+interval-classes that can be constructed.
+The six-element interval-vector specifies the abundance
+of various interval-classes from 1 semitone to 6 semitones.
+(See \s-1REFERENCES\s+1.)
+.sp 1
+.sp 1
+Note that the
+.B "iv"
+command, the
+.B "nf"
+command, and the
+.B "pf"
+command are aliases for
+\f(CRpcset -v\fR,
+\f(CRpcset -n\fR and
+\f(CRpcset -p\fR respectively.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following command outputs the interval vectors for the sets
+formed by successive sonorities in the input file \f(CRwebern\fR:
+.sp 1
+.sp 1
+.in +2
+pcset -v webern > webern.iv
+.in -2
+.sp 1
+.sp 1
+The following command outputs the Fortean set type for the complement
+of the sonorities given in the input file \f(CRberg\fR:
+.sp 1
+.sp 1
+.in +2
+pcset -c berg > berg.pcs
+.in -2
+.sp 1
+.sp 1
+The following command outputs the normal form representation
+for sets formed from successive
+sonorities in the input file \f(CRboulez\fR:
+.sp 1
+.sp 1
+.in +2
+pcset -n boulez.nf
+.in -2
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBcontext\fR (1), \fB**iv\fR (2), \fBiv\fR (1),
+\fB**nf\fR (2), \fBnf\fR (1),
+\fB**pc\fR (2), \fBpc\fR (1),
+\fB**pcset\fR (2),
+\fB**pf\fR (2), \fBpf\fR (1),
+\fB**semits\fR (2), \fBsemits\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "REFERENCES"
+.in +2
+Allen Forte,
+.I "The Structure of Atonal Music."
+New Haven: Yale University Press, 1973.
+.sp 1
+.sp 1
+John Rahn,
+.I "Basic Atonal Theory."
+New York: Longman Inc., 1980.
+.sp 1
+.sp 1
+Straus, J.
+.I "Introduction to Post-Tonal Theory."
+Englewood Cliffs, N.J.: Prentice Hall, 1990.
+.in -2

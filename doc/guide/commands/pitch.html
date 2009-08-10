@@ -1,0 +1,312 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- pitch</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>pitch</b>  --  translate selected Humdrum pitch-related representations to American standard pitch notation
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>pitch</b>  [<b>-tx</b>]  [<i>inputfile</i> ...]  [ > <i>outputfile.pit</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>pitch</b>
+command transforms various pitch-related inputs to the corresponding
+pitch designations approved by the American National
+Standards Institute (ANSI).
+The
+<b>pitch</b>
+command outputs one or more Humdrum <code><big>**pitch</big></code> spines.
+ANSI pitch designations use the upper-case letters A to G followed
+by an optional accidental, followed by an octave number.
+In the Humdrum <code><big>**pitch</big></code> representation,
+optional cents deviation from equal temperament can also be encoded.
+</P>
+<P>
+The
+<b>pitch</b>
+command is able to translate any of the pitch-related
+input representations listed below.
+In each case, a tuning standard of A4 equals 440 hertz is assumed.
+For descriptions of the various input representations
+(including <code><big>**pitch</big></code>) refer to Section 2
+<i>(Representation Reference)</i>
+of this reference manual.
+</P>
+<P>
+It is recommended that output files produced using the
+<b>pitch</b>
+command should be given names with the distinguishing `.pit' extension.
+<blockquote><TABLE>
+<TR><TD><code><big>**cents</big></code></TD><TD>hundredths of a semitone with respect to middle C=0</TD></TR>
+<TR><TD><code><big>**degree</big></code></TD><TD>key-related scale degree</TD></TR>
+<TR><TD><code><big>**freq</big></code></TD><TD>fundamental frequency (in hertz)</TD></TR>
+<TR><TD><code><big>**fret</big></code></TD><TD>fretted-instrument pitch tablature</TD></TR>
+<TR><TD><code><big>**kern</big></code></TD><TD>core pitch/duration representation</TD></TR>
+<TR><TD><code><big>**MIDI</big></code></TD><TD>Music Instrument Digital Interface tablature</TD></TR>
+<TR><TD><code><big>**semits</big></code></TD><TD>equal-tempered semitones with respect to middle C=0 (e.g. 12 = C5)</TD></TR>
+<TR><TD><code><big>**solfg</big></code></TD><TD>French solf&#232ge system (fixed `doh')</TD></TR>
+<TR><TD><code><big>**specC</big></code></TD><TD>spectral centroid (in hertz)</TD></TR>
+<TR><TD><code><big>**Tonh</big></code></TD><TD>German pitch system</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Input representations processed by <b>pitch</b>.</i>
+</CENTER>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+<P>
+The
+<b>pitch</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-t</b></TD><TD>suppresses printing of all but the first of a group of tied <code><big>**kern</b> notes</TD></TR>
+<TR><TD><b>-x</b></TD><TD>suppresses printing of non-pitch-related signifiers</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The
+<b>-t</b>
+option ensures that only a single output value is given for tied
+<code><big>**kern</big></code> notes;
+the output coincides with the first note of the tie.
+</P>
+<P>
+In the default operation,
+<b>pitch</b>
+outputs non-pitch-related signifiers in addition to the <code><big>**pitch</big></code>
+pitch value.
+For example, the <code><big>**Tonh</big></code> token "Ges5zzz" will result in
+the output "Gb5zzz" -- that is, after translating Ges5 to Gb5,
+the "zzz" signifiers are retained in the output.
+For some applications, echoing non-pitch-related signifiers in the output
+is useful.
+However, in other situations, the result can prove confusing --
+especially, when the non-pitch-related signifiers are numbers.
+Consider the case of the <code><big>**kern</big></code> token "8aa#";
+after translating `aa#' to A#5, the non-pitch-related signifier `8'
+will also be output, hence the value 8A#5 -- which may cause
+confusion;
+commands such as
+<A HREF="tonh.html"><b>tonh,</b></A>
+<A HREF="solfg.html"><b>solfg,</b></A>
+and
+<A HREF="pitch.html"><b>pitch</b></A>
+treat the first number encountered in an input token
+as the octave designation.
+Hence further processing of this token may lead to it's interpretation as A#8
+--  or even A#58 -- rather than A#5.
+</P>
+<P>
+The
+<b>-x</b>
+option is useful for eliminating non-pitch-related signifiers from the output.
+For most <code><big>**kern</big></code> inputs, the
+<b>-x</b>
+option is recommended.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following example illustrates the use of
+<b>pitch.</b>
+The input contains six pitch-related spines -- two of which
+(<code><big>**deg</big></code> and <code><big>**cocho</big></code>) cannot be processed by
+<b>pitch.</b>
+In addition, there are two non-pitch-related spines
+(<code><big>**embell</big></code> and <code><big>**metpos</big></code>).
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `pitch' example.</TD></TR>
+<TR><TD>**kern</TD><TD>**freq</TD><TD>**MIDI</TD><TD>**deg</TD><TD>**metpos</TD><TD>**cocho</TD><TD>**degree</TD><TD>**embell</TD></TR>
+<TR><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*d:</TD><TD>*</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*tb8</TD><TD>*</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>8ee-</TD><TD>93foo</TD><TD>/60/bar</TD><TD>1foo</TD><TD>1</TD><TD>r</TD><TD>1/4</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-60/</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>8ff</TD><TD>220</TD><TD>/62/</TD><TD>2</TD><TD>3</TD><TD>9.89</TD><TD>2/4</TD><TD>upt</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-62/</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>8dd-</TD><TD>936.2</TD><TD>/70/</TD><TD>1</TD><TD>2</TD><TD>7.07</TD><TD>3+/4</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-70/</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>8d-</TD><TD>277.18</TD><TD>/61/</TD><TD>6</TD><TD>3</TD><TD>7.135</TD><TD>7/3</TD><TD>sus</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-61/</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>[4a-</TD><TD>r</TD><TD>.</TD><TD>5</TD><TD>1</TD><TD>r</TD><TD>r</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD><TD>7</TD><TD>3</TD><TD>5.5</TD><TD>1/4</TD><TD>ct</TD></TR>
+<TR><TD>4a-]</TD><TD>300</TD><TD>/48/ /52/</TD><TD>1</TD><TD>2</TD><TD>8.11</TD><TD>6+/4</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-48/</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>82.4 261.6</TD><TD>/-52/</TD><TD>2</TD><TD>3</TD><TD>7.33 6.4</TD><TD>3/4 5/4</TD><TD>ct</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>r</TD><TD>512</TD><TD>.</TD><TD>r</TD><TD>1</TD><TD>r</TD><TD>3/4 1/5</TD><TD>.</TD></TR>
+<TR><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+Executing the command
+</P>
+<P>
+<blockquote>
+<code><big>
+pitch -tx input > output.pit
+</code></big>
+</blockquote>
+</P>
+<P>
+produces the following result:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `pitch' example.</TD></TR>
+<TR><TD>**pitch</TD><TD>**pitch</TD><TD>**pitch</TD><TD>**deg</TD><TD>**metpos</TD><TD>**cocho</TD><TD>**pitch</TD><TD>**embell</TD></TR>
+<TR><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*d:</TD><TD>*</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*tb8</TD><TD>*</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>Eb5</TD><TD>F#2+9</TD><TD>C4</TD><TD>1foo</TD><TD>1</TD><TD>r</TD><TD>D4</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>F5</TD><TD>A3</TD><TD>D4</TD><TD>2</TD><TD>3</TD><TD>9.89</TD><TD>E4</TD><TD>upt</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>Db5</TD><TD>Bb5+7</TD><TD>Bb4</TD><TD>1</TD><TD>2</TD><TD>7.07</TD><TD>F#4</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>Db4</TD><TD>Db4</TD><TD>Db4</TD><TD>6</TD><TD>3</TD><TD>7.135</TD><TD>C#3</TD><TD>sus</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>Ab4</TD><TD>r</TD><TD>.</TD><TD>5</TD><TD>1</TD><TD>r</TD><TD>r</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD><TD>7</TD><TD>3</TD><TD>5.5</TD><TD>D4</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>D4+36</TD><TD>C3 E3</TD><TD>1</TD><TD>2</TD><TD>8.11</TD><TD>B4</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>E2 C4</TD><TD>.</TD><TD>2</TD><TD>3</TD><TD>7.33 6.4</TD><TD>F4 A4</TD><TD>ct</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>r</TD><TD>C5-37</TD><TD>.</TD><TD>r</TD><TD>1</TD><TD>r</TD><TD>F4 D5</TD><TD>.</TD></TR>
+<TR><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Both processed and unprocessed spines are output.
+Notice that the tied note at the beginning of measure 2 in the <code><big>**kern</big></code>
+spine has been rendered as a single note rather than as two notes
+(due to the
+<b>-t</b>
+option).
+Also notice that the non-pitch-related signifiers (e.g. foo)
+in the first notes of the <code><big>**freq, **MIDI</big></code>, and <code><big>**cocho</big></code>
+spines have been stripped away (due to the
+<b>-x</b>
+option).
+In the case of the <code><big>**degree</big></code> input,
+<b>pitch</b>
+recognizes the spelling of various pitches in the context of the key of
+D minor.
+Hence, the raised third degree is F#, and the raised sixth degree
+is B natural.
+Also note the presence of cents-deviation from equal temperament
+in the translation of the <code><big>**freq</big></code> data (second spine).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>FILES</H3></FONT>
+The file <code><big>x_option.awk</big></code>
+is used by this program when the
+<b>-x</b>
+option is invoked.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<b>**cents</b> (2),
+<A HREF="cents.html">
+<b>cents</b></A> (4),
+<b>**degree</b> (2),
+<A HREF="degree.html">
+<b>degree</b></A> (4),
+<b>**freq</b> (2),
+<A HREF="freq.html">
+<b>freq</b></A> (4),
+<b>**fret</b> (2),
+<A HREF="hint.html">
+<b>hint</b></A> (4),
+<b>**kern</b> (2),
+<A HREF="kern.html">
+<b>kern</b></A> (4),
+<b>**MIDI</b> (2),
+<A HREF="midi.html">
+<b>midi</b></A> (4),
+<A HREF="mint.html">
+<b>mint</b></A> (4),
+<b>**pitch</b> (2),
+<b>**semits</b> (2),
+<A HREF="semits.html">
+<b>semits</b></A> (4),
+<b>**solfg</b> (2),
+<A HREF="solfg.html">
+<b>solfg</b></A> (4),
+<b>**specC</b> (2)
+<A HREF="specC.html">
+<b>specC</b></A> (4),
+<b>**Tonh</b> (2),
+<A HREF="tonh.html">
+<b>tonh</b></A> (4)
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide04.html#Pitch_Representation">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

@@ -1,0 +1,7 @@
+!! "humdrum: ERROR 11: Missing initial exclamation mark in local"
+!! "comment in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 11
+**ex	**ex	**ex
+!comment	comment	!comment
+*-	*-	*-

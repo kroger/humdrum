@@ -1,0 +1,243 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- ydelta</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>ydelta</b>  --  calculate numeric differences for concurrent Humdrum data
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>ydelta</b>  [<b>-o</b>]  [<b>-s</b>  <i>regexp</i>]  <b>-i</b> '<i>**interpretation</i>'  </i>[<i>inputfile</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>ydelta</b>
+command outputs a single spine containing numeric data representing
+the numeric differences for concurrent tokens in specified input spines.
+For example,
+<b>ydelta</b>
+may be used to characterize the semitone distances separating
+pitches in a given vertical sonority or chord.
+</P>
+<P>
+The user indicates which spines in the input stream are to be processed
+by specifying an interpretation via the
+<b>-i</b>
+option.
+The output interpretation is automatically assigned a new name by
+prepending the upper-case letter `Y' to the given input interpretation.
+For example, a specified input of
+<code><big>
+**semits
+</i></b></code></big>
+</i></b></code></big>
+will result in an output interpretation named
+<code><big>
+**Ysemits.
+</i></b></code></big>
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>ydelta</b>
+command provides the following option:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-i <i>**interp</i></TD><TD>process input spines with interpretations <i>**interp</i></TD></TR>
+<TR><TD><b>-o</b></TD><TD>in square brackets output lowest value ("origin") from which</TD></TR>
+<TR><TD></TD><TD>differences are calculated</TD></TR>
+<TR><TD><b>-s <i>regexp</i></TD><TD>skip over records matching <i>regexp;</i>  If all target spines contain the same</TD></TR>
+<TR><TD></TD><TD>token; token is output.  If the tokens differ, the entire record is output</TD></TR>
+<TR><TD></TD><TD>(although all tabs are replaced by spaces).</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The operation of
+<b>ydelta</b>
+is best illustrated using an example.
+Consider the following input file called <code><big>praetorius</big></code>:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! Praetorius, Es ist ein' Ros' entsprungen.</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD>**semits</TD><TD>**semits</TD><TD>**text</TD><TD>**semits</TD><TD>**kern</TD></TR>
+<TR><TD>!bass</TD><TD>!tenor</TD><TD>!text</TD><TD>!alto</TD><TD>!soprano</TD></TR>
+<TR><TD>*M2/2</TD><TD>*M2/2</TD><TD>*M2/2</TD><TD>*M2/2</TD><TD>*M2/2</TD></TR>
+<TR><TD>*F:</TD><TD>*F:</TD><TD>*</TD><TD>*F:</TD><TD>*F:</TD></TR>
+<TR><TD>-7</TD><TD>0</TD><TD>Es</TD><TD>9</TD><TD>1cc</TD></TR>
+<TR><TD>-7</TD><TD>0</TD><TD>ist</TD><TD>9</TD><TD>2cc</TD></TR>
+<TR><TD>-7</TD><TD>-3</TD><TD>ein'</TD><TD>5</TD><TD>2cc</TD></TR>
+<TR><TD>-2</TD><TD>-2</TD><TD>Ros'</TD><TD>5</TD><TD>2dd</TD></TR>
+<TR><TD>-7</TD><TD>-3</TD><TD>ent-</TD><TD>5</TD><TD>2cc</TD></TR>
+<TR><TD>-12</TD><TD>-5</TD><TD>sprun-</TD><TD>4</TD><TD>1cc</TD></TR>
+<TR><TD>-10</TD><TD>-7</TD><TD>gen</TD><TD>2</TD><TD>1a</TD></TR>
+<TR><TD>-14</TD><TD>-7</TD><TD>aus</TD><TD>2</TD><TD>1b-</TD></TR>
+<TR><TD>-7</TD><TD>-3</TD><TD>ei-</TD><TD>0</TD><TD>2a</TD></TR>
+<TR><TD>-8</TD><TD>0</TD><TD>ner</TD><TD>.</TD><TD>1g</TD></TR>
+<TR><TD>-10</TD><TD>(-2</TD><TD>Wur-</TD><TD>2</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>-3)</TD><TD>.</TD><TD>.</TD><TD>1f</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD><TD>-3</TD><TD>.</TD></TR>
+<TR><TD>-12</TD><TD>.</TD><TD>zel</TD><TD>0</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>-5</TD><TD>.</TD><TD>.</TD><TD>2e</TD></TR>
+<TR><TD>-19</TD><TD>-3</TD><TD>zart,</TD><TD>0</TD><TD>1f</TD></TR>
+<TR><TD>=</TD><TD>=</TD><TD>=</TD><TD>=</TD><TD>=</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+Given the following command line:
+</P>
+<P>
+<blockquote>
+<code><big>
+ydelta -o -i '**semits' praetorius > chords
+</code></big>
+</blockquote>
+</P>
+<P>
+the above input file would result in the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! Praetorius, Es ist ein' Ros' entsprungen.</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD>**Ysemits</TD></TR>
+<TR><TD>!</TD></TR>
+<TR><TD>*</TD></TR>
+<TR><TD>*</TD></TR>
+<TR><TD>[-7] 7 16</TD></TR>
+<TR><TD>[-7] 7 16</TD></TR>
+<TR><TD>[-7] 4 12</TD></TR>
+<TR><TD>[-2] 0 7</TD></TR>
+<TR><TD>[-7] 4 12</TD></TR>
+<TR><TD>[-12] 7 16</TD></TR>
+<TR><TD>[-10] 3 12</TD></TR>
+<TR><TD>[-14] 7 16</TD></TR>
+<TR><TD>[-7] 4 7</TD></TR>
+<TR><TD>[-8] 8</TD></TR>
+<TR><TD>[-10] 8 12</TD></TR>
+<TR><TD>[-3]</TD></TR>
+<TR><TD>[-3]</TD></TR>
+<TR><TD>[-12] 12</TD></TR>
+<TR><TD>[-5]</TD></TR>
+<TR><TD>[-19] 16 19</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+Only those input spines labelled
+<code><big>
+**semits
+</i></b></code></big>
+</i></b></code></big>
+have been processed;
+both
+<code><big>
+**text
+</i></b></code></big>
+</i></b></code></big>
+and
+<code><big>
+**kern
+</i></b></code></big>
+</i></b></code></big>
+have been ignored.
+The first value (given in square brackets) represents the lowest numerical
+value found in the processed spine(s) for the current data record.
+This value appears only when the
+<b>-o</b>
+option is invoked.
+Successive numerical values indicate the differences between
+the lowest value and the remaining numeric values in the other spines.
+For example, the first input record contains the
+<code><big>
+**semits
+</i></b></code></big>
+</i></b></code></big>
+values -7, 0, and 9.
+The lowest of these values is -7 -- which is placed in square brackets.
+The next lowest value (0) is 7 units above the lowest value,
+whereas the value 9 is 16 units above the lowest value.
+These other values are sorted and printed in ascending order in the output
+token.
+Notice that the output is typically in the form of Humdrum multiple stops.
+If no numerical values are present, a null token (.) is output
+(see for example, the barlines).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="hint.html">
+<b>hint</b></A> (4),
+<A HREF="regexp.html">
+<b>regexp</b></A> (4),
+<b>regexp</b> (6),
+<A HREF="xdelta.html">
+<b>xdelta</b></A> (4)
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide15.html#The_ydelta_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

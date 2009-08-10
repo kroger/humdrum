@@ -1,0 +1,10 @@
+!! "humdrum: ERROR 13: Number of tokens in data record does not"
+!! "match the number of currently active spines in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 13
+**ex	**ex	**ex	**ex
+!! Too many tokens
+a	b	c	d	e
+!! Not enough tokens
+f	g	h
+*-	*-	*-	*-

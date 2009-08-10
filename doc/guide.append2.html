@@ -1,0 +1,307 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Appendix II</TITLE>
+<!-- Appendix II (Instrumentation Codes) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:12:40 EST 2000">
+<meta name="description" content="Appendix II (Instrumentation Codes) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<H1>Appendix II</H1>
+</P>
+<CENTER>
+<center><HR WIDTH=500></center>
+<H1>Instrumentation Codes</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+<A NAME="Introduction">
+<H2>Introduction</H2>
+</P>
+<P>
+Humdrum provides standard voice and instrument names in order
+to facilitate various tasks.
+Voice and instrument names are used both in
+tandem interpretations, and in <code><big>AIN</big></code> reference
+records identifying the instrumentation for a work (see
+<A HREF="guide.append1.html#AIN"><B>Appendix I</B></A>).
+</P>
+<P>
+Instrument tandem interpretations are used to identify the instrumentation
+pertaining to a specified spine.
+The word "instrument" is used in a broad sense and embraces
+vocal qualities and vocal types as well as mechanical sound makers.
+</P>
+<A NAME="vox">
+<A NAME="Instrument_Groups">
+<P>
+Three distinctions are currently made in Humdrum:
+<i>instrument name,</i>
+<i>instrument class</i>
+and
+<i>instrument group.</i>
+The following table identifies six pre-defined instrument classes:
+<blockquote><TABLE>
+<TR><TD><code><big>*ICvox</big></code></TD><TD>voice</TD></TR>
+<TR><TD><code><big>*ICstr</big></code></TD><TD>string instrument</TD></TR>
+<TR><TD><code><big>*ICww</big></code></TD><TD>woodwind instrument</TD></TR>
+<TR><TD><code><big>*ICbras</big></code></TD><TD>brass instrument</TD></TR>
+<TR><TD><code><big>*ICklav</big></code></TD><TD>keyboard instrument</TD></TR>
+<TR><TD><code><big>*ICidio</big></code></TD><TD>percussion instrument (idiophone)</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The following table identifies five pre-defined instrument groups:
+<blockquote><TABLE>
+<TR><TD><code><big>*IGacmp</big></code></TD><TD>accompaniment instrument</TD></TR>
+<TR><TD><code><big>*IGsolo</big></code></TD><TD>solo instrument</TD></TR>
+<TR><TD><code><big>*IGcont</big></code></TD><TD>basso-continuo instrument</TD></TR>
+<TR><TD><code><big>*IGripn</big></code></TD><TD>ripieno instrument</TD></TR>
+<TR><TD><code><big>*IGconc</big></code></TD><TD>concertino instrument</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The following set of tables list currently defined
+instrument names.
+When the name is used to form an instrument tandem
+interpretation the instrument keyword is preceded by an asterisk
+and the upper-case letter `<code><big>I</big></code>'.
+For example, the instrument tandem interpretation for the guitar
+is <code><big>*Iguitr</big></code>.
+If the guitar appears as an instrument in a <code><big>AIN</big></code> Reference
+Record only the designation `<code><big>guitr</big></code>' is used.
+<blockquote><TABLE>
+<A NAME="Voice_Range">
+<TR><TD><b>Voice Range</b></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>*Isoprn</big></code></TD><TD>soprano</TD></TR>
+<TR><TD><code><big>*Imezzo</big></code></TD><TD>mezzo soprano</TD></TR>
+<TR><TD><code><big>*Icalto</big></code></TD><TD>contralto</TD></TR>
+<TR><TD><code><big>*Itenor</big></code></TD><TD>tenor</TD></TR>
+<TR><TD><code><big>*Ibarit</big></code></TD><TD>baritone</TD></TR>
+<TR><TD><code><big>*Ibass</big></code></TD><TD>bass</TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+<TABLE>
+<A NAME="Voice_Quality">
+<TR><TD><b>Voice Quality</b></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>*Ivox</big></code></TD><TD>generic (undesignated) voice</TD></TR>
+<TR><TD><code><big>*Ifeme</big></code></TD><TD>female voice</TD></TR>
+<TR><TD><code><big>*Imale</big></code></TD><TD>male voice</TD></TR>
+<TR><TD><code><big>*Infant</big></code></TD><TD>child's voice</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>*Irecit</big></code></TD><TD>recitativo</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>*Ilyrsp</big></code></TD><TD>lyric soprano</TD></TR>
+<TR><TD><code><big>*Idrmsp</big></code></TD><TD>dramatic soprano</TD></TR>
+<TR><TD><code><big>*Icolsp</big></code></TD><TD>coloratura soprano</TD></TR>
+<TR><TD><code><big>*Ialto</big></code></TD><TD>alto</TD></TR>
+<TR><TD><code><big>*Ictenor</big></code></TD><TD>counter-tenor</TD></TR>
+<TR><TD><code><big>*Iheltn</big></code></TD><TD>Heldentenor, tenore robusto</TD></TR>
+<TR><TD><code><big>*Ilyrtn</big></code></TD><TD>lyric tenor</TD></TR>
+<TR><TD><code><big>*Ibspro</big></code></TD><TD>basso profondo</TD></TR>
+<TR><TD><code><big>*Ibscan</big></code></TD><TD>basso cantante</TD></TR>
+<TR><TD><code><big>*Ifalse</big></code></TD><TD>falsetto</TD></TR>
+<TR><TD><code><big>*Icastr</big></code></TD><TD>castrato</TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+<TABLE>
+<A NAME="String_Instruments">
+<TR><TD><b>String Instruments</b></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>*Iarchl</i></TD><TD>archlute; <i>archiluth</i> (Fr.); <i>liuto attiorbato/arcileuto/arciliuto</i> (It.)</TD></TR>
+<TR><TD><code><big>*Iarpa</i></TD><TD>harp; <i>arpa</i> (It.), <i>arpa</i> (Span.)</TD></TR>
+<TR><TD><code><big>*Ibanjo</big></code></TD><TD>banjo</TD></TR>
+<TR><TD><code><big>*Ibiwa</big></code></TD><TD>biwa</TD></TR>
+<TR><TD><code><big>*Ibguit</big></code></TD><TD>electric bass guitar</TD></TR>
+<TR><TD><code><big>*Icbass</big></code></TD><TD>contrabass</TD></TR>
+<TR><TD><code><big>*Icello</big></code></TD><TD>violoncello</TD></TR>
+<TR><TD><code><big>*Icemba</i></TD><TD>harpsichord; <i>clavecin</i> (Fr.); <i>Cembalo</i> (Ger.); <i>cembalo</i> (It.)</TD></TR>
+<TR><TD><code><big>*Icetra</i></TD><TD>cittern; <i>cistre/sistre</i> (Fr.); <i>Cither/Zitter</i> (Ger.); <i>cetra/cetera</i> (It.)</TD></TR>
+<TR><TD><code><big>*Iclavi</i></TD><TD>clavichord; <i>clavicordium</i> (Lat.); <i>clavicorde</i> (Fr.)</TD></TR>
+<TR><TD><code><big>*Idulc</i></TD><TD>dulcimer or cimbalom; <i>Cimbal</i> or Hackbrett (Ger.)</TD></TR>
+<TR><TD><code><big>*Ieguit</big></code></TD><TD>electric guitar</TD></TR>
+<TR><TD><code><big>*Iforte</big></code></TD><TD>fortepiano</TD></TR>
+<TR><TD><code><big>*Iguitr</i></TD><TD>guitar; <i>guitarra</i> (Span.); <i>guitare</i> (Fr.); <i>Gitarre</i> (Ger.); <i>chitarra</i> (It.)</TD></TR>
+<TR><TD><code><big>*Ihurdy</big></code></TD><TD>hurdy-gurdy; variously named in other languages</TD></TR>
+<TR><TD><code><big>*Iliuto</i></TD><TD>lute; <i>lauto, liuto leuto</i> (It.); <i>luth</i> (Fr.); <i>Laute</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Ikit</big></code></TD><TD>kit; variously named in other languages</TD></TR>
+<TR><TD><code><big>*Ikokyu</big></code></TD><TD>kokyu (Japanese spike fiddle)</TD></TR>
+<TR><TD><code><big>*Ikomun</big></code></TD><TD>komun'go (Korean long zither)</TD></TR>
+<TR><TD><code><big>*Ikoto</big></code></TD><TD>koto (Japanese long zither)</TD></TR>
+<TR><TD><code><big>*Imando</i></TD><TD>mandolin; <i>mandolino</i> (It.); <i>mandoline</i> (Fr.); <i>Mandoline</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Ipiano</big></code></TD><TD>pianoforte</TD></TR>
+<TR><TD><code><big>*Ipipa</big></code></TD><TD>Chinese lute</TD></TR>
+<TR><TD><code><big>*Ipsalt</big></code></TD><TD>psaltery (box zither)</TD></TR>
+<TR><TD><code><big>*Iqin</big></code></TD><TD>qin, ch'in (Chinese zither)</TD></TR>
+<TR><TD><code><big>*Iquitr</i></TD><TD>gittern (short-necked lute); <i>quitarre</i> (Fr.); <i>Quinterne</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Irebec</i></TD><TD>rebec; <i>rebeca</i> (Lat.); <i>rebec</i> (Fr.); <i>Rebec</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Isarod</big></code></TD><TD>sarod</TD></TR>
+<TR><TD><code><big>*Ishami</big></code></TD><TD>shamisen (Japanese fretless lute)</TD></TR>
+<TR><TD><code><big>*Isitar</big></code></TD><TD>sitar</TD></TR>
+<TR><TD><code><big>*Itambu</big></code></TD><TD>tambura</TD></TR>
+<TR><TD><code><big>*Itanbr</big></code></TD><TD>tanbur</TD></TR>
+<TR><TD><code><big>*Itiorb</i></TD><TD>theorbo; <i>tiorba</i> (It.); <i>t&#232orbe</i> (Fr.); <i>Theorb</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Iud</big></code></TD><TD>ud</TD></TR>
+<TR><TD><code><big>*Iukule</big></code></TD><TD>ukulele</TD></TR>
+<TR><TD><code><big>*Ivina</big></code></TD><TD>vina</TD></TR>
+<TR><TD><code><big>*Iviola</i></TD><TD>viola; <i>alto</i> (Fr.); <i>Bratsche</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Iviolb</i></TD><TD>bass viola da gamba; <i>viole</i> (Fr.); <i>Gambe</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Iviold</i></TD><TD>viola d'amore; <i>viole d'amour</i> (Fr.); <i>Liebesgeige</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Ivioln</i></TD><TD>violin; <i>violon</i> (Fr.); <i>Violine</i> or <i>Geige</i> (Ger.); <i>violino</i> (It.)</TD></TR>
+<TR><TD><code><big>*Iviolp</i></TD><TD>piccolo violin; <i>violino piccolo</i> (It.)</TD></TR>
+<TR><TD><code><big>*Iviolp</i></TD><TD>piccolo violin; <i>violino piccolo</i> (It.)</TD></TR>
+<TR><TD><code><big>*Iviols</i></TD><TD>treble viola da gamba; <i>viole</i> (Fr.); <i>Gambe</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Iviolt</i></TD><TD>tenor viola da gamba; <i>viole (Fr.); <i>Gambe (Ger.)</TD></TR>
+<TR><TD><code><big>*Izithr</i></TD><TD>zither; <i>Zither</i> (Ger.); <i>cithare</i> (Fr.); <i>cetra da tavola</i> (It.)</TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+<TABLE>
+<A NAME="Wind_Instruments">
+<TR><TD><b>Wind Instruments</b></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>*Iaccor</i></TD><TD>accordion; <i>accord&#233on</i> (Fr.); <i>Akkordeon</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Iarmon</i></TD><TD>harmonica; <i>armonica</i> (It.)</TD></TR>
+<TR><TD><code><big>*IbagpS</big></code></TD><TD>bagpipe (Scottish)</TD></TR>
+<TR><TD><code><big>*IbagpI</big></code></TD><TD>bagpipe (Irish)</TD></TR>
+<TR><TD><code><big>*Ibaset</big></code></TD><TD>bassett horn</TD></TR>
+<TR><TD><code><big>*Icalam</i></TD><TD>chalumeau; <i>calamus</i> (Lat.); <i>kalamos</i> (Gk.)</TD></TR>
+<TR><TD><code><big>*Icalpe</big></code></TD><TD>calliope</TD></TR>
+<TR><TD><code><big>*Icangl</i></TD><TD>english horn; <i>cor anglais</i> (Fr.)</TD></TR>
+<TR><TD><code><big>*Ichlms</i></TD><TD>soprano shawm, chalmeye, shalme, etc.; <i>chalemie</i> (Fr.); <i>ciaramella</i> (It.)</TD></TR>
+<TR><TD><code><big>*Ichlma</big></code></TD><TD>alto shawm, chalmeye, shalme, etc.</TD></TR>
+<TR><TD><code><big>*Ichlmt</big></code></TD><TD>tenor shawm, chalmeye, shalme, etc.</TD></TR>
+<TR><TD><code><big>*Iclars</i></TD><TD>soprano clarinet (in either B-flat or A); <i>clarinetto</i> (It.)</TD></TR>
+<TR><TD><code><big>*Iclarp</big></code></TD><TD>piccolo clarinet</TD></TR>
+<TR><TD><code><big>*Iclara</big></code></TD><TD>alto clarinet (in E-flat)</TD></TR>
+<TR><TD><code><big>*Iclarb</big></code></TD><TD>bass clarinet (in B-flat)</TD></TR>
+<TR><TD><code><big>*Icor</i></TD><TD>horn; <i>cor</i> (Fr.); <i>corno</i> (It.); <i>Horn</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Icornm</big></code></TD><TD>cornemuse; French bagpipe</TD></TR>
+<TR><TD><code><big>*Icorno</i></TD><TD>cornett (woodwind instr.); <i>cornetto</i> (It.); <i>cornaboux</i> (Fr.); <i>Zink</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Icornt</i></TD><TD>cornet (brass instr.); <i>cornetta</i> (It.); <i>cornet &#224 pistons</i> (Fr.); <i>Cornett</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Ictina</i></TD><TD>concertina; <i>concertina</i> (Fr.); <i>Konzertina</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Ifagot</i></TD><TD>bassoon; <i>fagotto</i> (It.)</TD></TR>
+<TR><TD><code><big>*Ifag_c</i></TD><TD>contrabassoon; <i>contrafagotto</i> (It.)</TD></TR>
+<TR><TD><code><big>*Ifife</big></code></TD><TD>fife</TD></TR>
+<TR><TD><code><big>*Iflt</i></TD><TD>flute; <i>flauto</i> (It.); <i>Fl&#246te</i> (Ger.); <i>fl&#251te</i> (Fr.)</TD></TR>
+<TR><TD><code><big>*Iflt_a</big></code></TD><TD>alto flute</TD></TR>
+<TR><TD><code><big>*Iflt_b</big></code></TD><TD>bass flute</TD></TR>
+<TR><TD><code><big>*Ifltds</i></TD><TD>soprano recorder; <i>fl&#251te &#224 bec, fl&#251te douce</i> (Fr.); <i>Blockfl&#246te</i> (Ger.); <i>flauto dolce</i> (It.)</TD></TR>
+<TR><TD><code><big>*Ifltdn</big></code></TD><TD>sopranino recorder</TD></TR>
+<TR><TD><code><big>*Ifltda</big></code></TD><TD>alto recorder</TD></TR>
+<TR><TD><code><big>*Ifltdt</big></code></TD><TD>tenor recorder</TD></TR>
+<TR><TD><code><big>*Ifltdb</big></code></TD><TD>bass recorder</TD></TR>
+<TR><TD><code><big>*Iflugh</big></code></TD><TD>flugelhorn</TD></TR>
+<TR><TD><code><big>*Ihichi</big></code></TD><TD>hichiriki (Japanese double reed used in gagaku)</TD></TR>
+<TR><TD><code><big>*Ikrums</i></TD><TD>soprano crumhorn; <i>Krummhorn/Krumbhorn</i> (Ger.); <i>tournebout</i> (Fr.)</TD></TR>
+<TR><TD><code><big>*Ikruma</big></code></TD><TD>alto crumhorn</TD></TR>
+<TR><TD><code><big>*Ikrumt</big></code></TD><TD>tenor crumhorn</TD></TR>
+<TR><TD><code><big>*Ikrumb</big></code></TD><TD>bass crumhorn</TD></TR>
+<TR><TD><code><big>*Inokan</big></code></TD><TD>nokan (Japanese flute for the no theatre)</TD></TR>
+<TR><TD><code><big>*Ioboe</i></TD><TD>oboe; <i>hautbois</i> (Fr.); <i>Hoboe, Oboe</i> (Ger.): <i>oboe</i> (It.)</TD></TR>
+<TR><TD><code><big>*IoboeD</big></code></TD><TD>oboe d'amore</TD></TR>
+<TR><TD><code><big>*Iocari</big></code></TD><TD>ocarina</TD></TR>
+<TR><TD><code><big>*Iorgan</i></TD><TD>pipe organ; <i>organum</i> (Lat.); <i>organo</i> (It.); <i>orgue</i> (Fr.); <i>Orgel</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Ipanpi</big></code></TD><TD>panpipe</TD></TR>
+<TR><TD><code><big>*Ipicco</big></code></TD><TD>piccolo flute</TD></TR>
+<TR><TD><code><big>*Ipiri</big></code></TD><TD>Korean p'iri</TD></TR>
+<TR><TD><code><big>*Iporta</big></code></TD><TD>portative organ</TD></TR>
+<TR><TD><code><big>*Irackt</i></TD><TD>racket; <i>Rackett</i> (Ger.); <i>cervelas</i> (Fr.)</TD></TR>
+<TR><TD><code><big>*Ireedo</big></code></TD><TD>reed organ</TD></TR>
+<TR><TD><code><big>*Isarus</big></code></TD><TD>sarrusophone</TD></TR>
+<TR><TD><code><big>*IsaxN</big></code></TD><TD>sopranino saxophone (in E-flat)</TD></TR>
+<TR><TD><code><big>*IsaxS</big></code></TD><TD>soprano saxophone (in B-flat)</TD></TR>
+<TR><TD><code><big>*IsaxA</big></code></TD><TD>alto saxophone (in E-flat)</TD></TR>
+<TR><TD><code><big>*IsaxT</big></code></TD><TD>tenor saxophone (in B-flat)</TD></TR>
+<TR><TD><code><big>*IsaxR</big></code></TD><TD>baritone saxophone (in E-flat)</TD></TR>
+<TR><TD><code><big>*IsaxB</big></code></TD><TD>bass saxophone (in B-flat)</TD></TR>
+<TR><TD><code><big>*IsaxC</big></code></TD><TD>contrabass saxophone (in E-flat)</TD></TR>
+<TR><TD><code><big>*Ishaku</big></code></TD><TD>shakuhachi</TD></TR>
+<TR><TD><code><big>*Isheng</big></code></TD><TD>mouth organ (Chinese)</TD></TR>
+<TR><TD><code><big>*Isho</big></code></TD><TD>mouth organ (Japanese)</TD></TR>
+<TR><TD><code><big>*IsxhS</big></code></TD><TD>soprano saxhorn (in B-flat)</TD></TR>
+<TR><TD><code><big>*IsxhA</big></code></TD><TD>alto saxhorn (in E-flat)</TD></TR>
+<TR><TD><code><big>*IsxhT</big></code></TD><TD>tenor saxhorn (in B-flat)</TD></TR>
+<TR><TD><code><big>*IsxhR</big></code></TD><TD>baritone saxhorn (in E-flat)</TD></TR>
+<TR><TD><code><big>*IsxhB</big></code></TD><TD>bass saxhorn (in B-flat)</TD></TR>
+<TR><TD><code><big>*IsxhC</big></code></TD><TD>contrabass saxhorn (in E-flat)</TD></TR>
+<TR><TD><code><big>*Itromt</i></TD><TD>tenor trombone; <i>trombone</i> (It.); <i>trombone</i> (Fr.); <i>Posaune</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Itromb</big></code></TD><TD>bass trombone</TD></TR>
+<TR><TD><code><big>*Itromp</i></TD><TD>trumpet; <i>tromba</i> (It.); <i>trompette</i> (Fr.); <i>Trompete</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Ituba</big></code></TD><TD>tuba</TD></TR>
+<TR><TD><code><big>*Izurna</big></code></TD><TD>zurna </TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+<TABLE>
+<A NAME="Percussion_Instruments">
+<TR><TD><b>Percussion Instruments</b></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>*Ibdrum</big></code></TD><TD>bass drum (kit)</TD></TR>
+<TR><TD><code><big>*Icampn</i></TD><TD>bell; <i>campana</i> (It.); <i>cloche</i> (Fr.); <i>campana</i> (Span.)</TD></TR>
+<TR><TD><code><big>*Icaril</big></code></TD><TD>carillon</TD></TR>
+<TR><TD><code><big>*Icasts</i></TD><TD>castanets; <i>casta&#241etas</i> (Span.); <i>castagnette</i> (It.)</TD></TR>
+<TR><TD><code><big>*Ichime</big></code></TD><TD>chimes</TD></TR>
+<TR><TD><code><big>*Iclest</i></TD><TD>celesta; <i>c&#233leste</i> (Fr.)</TD></TR>
+<TR><TD><code><big>*Icrshc</big></code></TD><TD>crash cymbal (kit)</TD></TR>
+<TR><TD><code><big>*Ifingc</big></code></TD><TD>finger cymbal</TD></TR>
+<TR><TD><code><big>*Iglock</big></code></TD><TD>glockenspiel</TD></TR>
+<TR><TD><code><big>*Igong</big></code></TD><TD>gong</TD></TR>
+<TR><TD><code><big>*Imarac</big></code></TD><TD>maracas</TD></TR>
+<TR><TD><code><big>*Imarim</big></code></TD><TD>marimba</TD></TR>
+<TR><TD><code><big>*Ipiatt</i></TD><TD>cymbals; <i>piatti</i> (It.); <i>cymbales</i> (Fr.); <i>Becken</i> (Ger.); <i>kymbos</i> (Gk.)</TD></TR>
+<TR><TD><code><big>*Iridec</big></code></TD><TD>ride cymbal (kit)</TD></TR>
+<TR><TD><code><big>*Isdrum</big></code></TD><TD>snare drum (kit)</TD></TR>
+<TR><TD><code><big>*Ispshc</big></code></TD><TD>splash cymbal (kit)</TD></TR>
+<TR><TD><code><big>*Isteel</big></code></TD><TD>steel-drum, tinpanny</TD></TR>
+<TR><TD><code><big>*Itabla</big></code></TD><TD>tabla</TD></TR>
+<TR><TD><code><big>*Itambn</i></TD><TD>tambourine, timbrel; <i>tamburino</i> (It.); <i>Tamburin</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Itimpa</i></TD><TD>timpani; <i>timpani</i> (It.); <i>timbales</i> (Fr.); <i>Pauken</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Itom</big></code></TD><TD>tom-tom drum</TD></TR>
+<TR><TD><code><big>*Itrngl</i></TD><TD>triangle; <i>triangle</i> (Fr.); <i>Triangel</i> (Ger.); <i>triangolo</i> (It.)</TD></TR>
+<TR><TD><code><big>*Ivibra</big></code></TD><TD>vibraphone</TD></TR>
+<TR><TD><code><big>*Ixylo</i></TD><TD>xylophone; <i>xylophone</i> (Fr.); <i>silofono</i> (It.)</TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+<TABLE>
+<A NAME="Keyboard_Instruments">
+<TR><TD><b>Keyboard Instruments</b></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>*Iaccor</i></TD><TD>accordion; <i>accord&#233on</i> (Fr.); <i>Akkordeon</i> (Ger.)</TD></TR>
+<TR><TD><code><big>*Icaril</big></code></TD><TD>carillon</TD></TR>
+<TR><TD><code><big>*Icemba</i></TD><TD>harpsichord; <i>clavecin</i> (Fr.); <i>Cembalo</i> (Ger.); <i>cembalo</i> (It.)</TD></TR>
+<TR><TD><code><big>*Iclavi</i></TD><TD>clavichord; <i>clavicordium</i> (Lat.); <i>clavicorde</i> (Fr.)</TD></TR>
+<TR><TD><code><big>*Iclest</i></TD><TD>celesta; <i>c&#233leste</i> (Fr.)</TD></TR>
+<TR><TD><code><big>*Iforte</big></code></TD><TD>fortepiano</TD></TR>
+<TR><TD><code><big>*Ihammd</big></code></TD><TD>Hammond electronic organ</TD></TR>
+<TR><TD><code><big>*Iorgan</i></TD><TD>pipe organ; <i>orgue</i> (Fr.); <i>Orgel</i> (Ger.); <i>organo</i> (It.); <i>organo</i> (Span.); <i>organum</i> (Lat.)</TD></TR>
+<TR><TD><code><big>*Ipiano</big></code></TD><TD>pianoforte</TD></TR>
+<TR><TD><code><big>*Iporta</big></code></TD><TD>portative organ</TD></TR>
+<TR><TD><code><big>*Ireedo</big></code></TD><TD>reed organ</TD></TR>
+<TR><TD><code><big>*Irhode</big></code></TD><TD>Fender-Rhodes electric piano</TD></TR>
+<TR><TD><code><big>*Isynth</big></code></TD><TD>keyboard synthesizer</TD></TR>
+</TABLE></blockquote>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide.append1.html">
+<B>Previous Appendix</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

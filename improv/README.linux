@@ -1,0 +1,45 @@
+Improv 2.4: Performer/Computer Interaction Programming in C++ using MIDI
+
+README for Linux on Intel computers
+This version was created Thu Dec 30 11:22:19 PST 2004
+
+Craig Stuart Sapp <craig@ccrma.stanford.edu>
+
+The latest version of improv for linux is avaliable at
+   http://improv.sapp.org
+or
+   http://www-ccrma.stanford.edu/~craig/improv 
+
+============================================================================
+=                                                                          =
+=          To create the improv library, type:                             =
+=             make library                                                 =
+=                                                                          =
+=          To create the improv example programs, type:                    =
+=             make examples                                                =
+=                                                                          =
+=          To create a particular example programs, type:                  =
+=             make library                                                 =
+=             make cinmidi                                                 =
+=                                                                          =
+============================================================================
+
+Description of various files/directories in this directory tree:
+
+Makefile.examples -- makefile for creating binaries from the 
+   example programs directory named "examples".
+Makefile.library -- makefile for creating the improv library
+   file which is located in lib/libimprov.a
+
+include -- directory containing header files for use when compiling
+   programs with the sig++ library.
+src -- directory which contains the source code for making the
+   compiled improv library file.  The source code is not
+   necessary for compiling programs written using the improv library,
+   and it may be deleted if not needed
+examples -- directory of source code for example programs which use the 
+   improv library.
+lib -- directory for compiled library file (lib/libimprov.a on UNIX computers).
+bin -- directory for compiled example programs.
+
+

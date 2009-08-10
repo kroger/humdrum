@@ -1,0 +1,148 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH iv 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +8
+.ti -8
+\fBiv\fR  --  determine interval-class vectors for successive vertical sonorities for Humdrum inputs
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+\fBiv\fR  [\fIinputfile\fR ...]  [> \fIoutputfile.iv\fR]
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "iv"
+command is used to determine the
+.I "interval vector"
+for any of five set-theory related inputs:
+pitch (\f(CR**semits\fR), pitch-class (\f(CR**pc\fR),
+normal form (\f(CR**nf\fR), prime form (\f(CR**pf\fR),
+or Fortean set name (\f(CR**pcset\fR).
+An interval vector is a six-element numerical list that indicates
+the abundance of various interval-classes (from 1 semitone
+to 6 semitones) for some pitch-class set.
+See \s-1REFERENCES\s+1 below.
+.sp 1
+.sp 1
+When provided with \f(CR**semits\fR or \f(CR**pc\fR inputs,
+.B "iv"
+treats each input record as a set of pitches.
+Unisons and other pitch-class duplications have no effect on the output.
+Rests within a set of pitches are ignored;
+where an input record consists solely of one or more
+rests, a null-token is output.
+.sp 1
+.sp 1
+The
+.B "iv"
+command is able to translate any of the representations listed below.
+For descriptions of the various input representations
+(including \f(CR**iv\fR) refer to Section 2
+.I "(Representation Reference)"
+of this reference manual.
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "iv"
+command should be given names with the distinguishing `.iv' extension.
+.sp 1
+.TS
+l l.
+\f(CR**iv\fR	interval vector representation
+\f(CR**nf\fR	normal form representation
+\f(CR**pc\fR	pitch-class representation
+\f(CR**pcset\fR	Fortean pitch-class set name
+\f(CR**pf\fR	prime form representation
+\f(CR**semits\fR	equal-tempered semitones with respect to middle C=0
+	  (e.g. 12 = C5)
+.TE
+.sp 1
+.ce
+.I "Input representations processed by \fBiv\fR."
+.in -2
+.SH "OPTIONS"
+.in +2
+The
+.B "iv"
+command provides only a help option:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+.TE
+.sp 1
+Options are specified in the command line.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following command outputs the interval vectors for
+successive sonorities in the input file \f(CRopus24\fR.
+The input may be pitches, pitch-classes, normal forms, Fortean set names, etc.
+.sp 1
+.sp 1
+.in +2
+iv opus24 > opus24.iv
+.in -2
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBcontext\fR (1), \fB**iv\fR (2),
+\fB**nf\fR (2), \fBnf\fR (1),
+\fB**pc\fR (2), \fBpc\fR (1),
+\fB**pcset\fR (2), \fBpcset\fR (1),
+\fB**pf\fR (2), \fBpf\fR (1),
+\fB**semits\fR (2), \fBsemits\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "NOTE"
+.in +2
+The
+.B "iv"
+command is a shell script that invokes
+\f(CRpcset -v\fR.
+.in -2
+.sp 1
+.sp 1
+.SH "REFERENCES"
+.in +2
+Allen Forte,
+.I "The Structure of Atonal Music."
+New Haven: Yale University Press, 1973.
+.sp 1
+.sp 1
+John Rahn,
+.I "Basic Atonal Theory."
+New York: Longman Inc., 1980.
+.sp 1
+.sp 1
+Straus, J.
+.I "Introduction to Post-Tonal Theory."
+Englewood Cliffs, N.J.: Prentice Hall, 1990.
+.in -2

@@ -1,0 +1,13 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Another test of -u option
+**kern	**semits	**freq
+c	0	273
+*	**semits	**pitch
+c	0	C4
+**kern	**semits	**pitch
+*x	*x	*+
+*	*	*	**freq
+*	*^	*-	*
+**semits	**pitch	**kern	*
+0	C4	c	273
+*-	*-	*-	*-

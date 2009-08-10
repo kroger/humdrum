@@ -1,0 +1,486 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Absolute Time</TITLE>
+<!-- Documentation for the **date Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **date Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,absolute time,software,theory,analysis,systematic musicology,computer representation,**date">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Absolute Time</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**date</b>  --  absolute time representation (year, month, day, hour, minute, second ...)
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**date</b>
+representation provides a flexible means for specifying particular
+moments in historical time.
+The
+<b>**date</b>
+scheme is able to represent year, month, day, hour, minute, second,
+and fractional second information.
+In addition, various degrees of approximation and
+uncertainty may be represented.
+N.B. Time-<i>spans</i> are not represented by <b>**date</b>;
+see the
+<A HREF="dur.rep.html"><b>**dur</b></A>,
+<A HREF="time.rep.html"><b>**time</b></A>,
+or
+<A HREF="Zeit.rep.html"><b>**Zeit</b></A>
+representations.
+</P>
+<P>
+In the
+<b>**date</b>
+representation, date information is encoded according to the
+following basic syntax:
+</P>
+<P>
+<CENTER>
+<i>year<b>/</b>month<b>/</b>day<b>/</b>hour<b>:</b>minute<b>:</b>second<b>.</b>decimal</i>
+</CENTER>
+</P>
+<P>
+Date information may be encoded in full, or may consist of isolated elements
+or parts.
+The following table shows the most succinct ways of encoding single date values
+within <b>**date</b>:
+<blockquote>
+<TABLE>
+<TR><TD><code><big>.11</big></code></TD><TD>eleven one-hundredths of a second</TD></TR>
+<TR><TD><code><big>11</big></code></TD><TD>11th second</TD></TR>
+<TR><TD><code><big>11:</big></code></TD><TD>11th minute</TD></TR>
+<TR><TD><code><big>11::</big></code></TD><TD>11 o'clock</TD></TR>
+<TR><TD><code><big>11/</big></code></TD><TD>the year 11 A.D.</TD></TR>
+<TR><TD><code><big>@11/</big></code></TD><TD>the year 11 B.C.E./TD></TR>
+<TR><TD><code><big>/11</big></code></TD><TD>November</TD></TR>
+<TR><TD><code><big>//11</big></code></TD><TD>11th day of the month</TD></TR>
+</TABLE>
+<CENTER>
+<i>Examples of <b>**date</b> components</i>
+</CENTER>
+</blockquote>
+Notice that if a single numerical value appears, it is interpreted as
+<i>seconds</i>;
+if a single value appears followed by a slash, it is interpreted as a
+<i>year</i>;
+if a single value appears followed by a colon, it is interpreted as a
+<i>minutes</i>.
+Days and hours require two leading or two trailing delimiters
+respectively.
+In general, abbreviated forms of <b>**date</b> representations
+tend to favor the two extremes of time: seconds and years.
+These are the time frames that are typically of greatest interest
+to music scholars.
+</P>
+<P>
+The
+<b>**date</b>
+representation makes use of the Gregorian calendar and
+the 24-hour clock;
+Dates prior to the year 1 A.D. can be specified by prepending the "at"
+sign (<code><big>@</big></code>) to the year.
+</P>
+<P>
+The
+<b>**date</b>
+representation provides three distinct means for representing
+approximate moments.
+It also provides two independent means for representing
+uncertainty, as well as mechanisms for representing time boundaries
+(prior to ...; after ...).
+</P>
+<P>
+If a date token is preceded by 
+the tilde (~) signifier, the entire data token is taken to be
+<i>approximate.</i>
+Hence, the token
+<code><big>
+~1556/
+</code></big>
+represents the approximate year 1556, whereas the token
+<code><big>
+~1901/9/1/
+</code></big>
+represents approximately September 1st, 1901.
+When the lower-case letter `x' appears in a data token, it indicates
+that only the adjoining numerical value is approximate.
+Hence, the token
+<code><big>
+1921/6x//
+</code></big>
+means approximately June in the year 1921, whereas the token
+<code><big>
+1921x/6//
+</code></big>
+means the month of June in the approximate year 1921.
+The `x' may precede or follow a given value -- provided it is
+adjacent to the approximate value.
+</P>
+<P>
+<blockquote>
+<code><big>
+14:30x:
+</code></big>
+</blockquote>
+</P>
+<P>
+means
+<i>approximately 30 minutes</i>
+after 2 PM, rather than approximately 2:30 PM.
+In this case, only the value `30' is approximate.
+</P>
+<P>
+A third method for representing temporal approximation employs the caret (^)
+to denote a range.
+For example, the
+<b>**date</b>
+token:
+</P>
+<P>
+<blockquote>
+<code><big>
+1554/^1557/
+</code></big>
+</blockquote>
+</P>
+<P>
+represents a moment somewhere between the years 1554 and 1557.
+Conceptually,
+<b>**date</b>
+is intended to represent
+<i>moments</i>
+rather than
+<i>periods</i>
+of time.
+In other words, the above token represents a moment sometime between 1554
+and 1557;
+it is not intended to signify an event that spanned the years 1554 to 1557.
+<b>**date</b>
+does not presume how long a moment "lasts," so it is
+theoretically possible to interpret 1554 to 1557 as a "long moment."
+However, another representation --
+<b>**Zeit (2)</b>
+--  is intended to represent
+<i>periods</i>
+of time, and so is better suited to the task of representing an ongoing
+state or condition.
+In
+<b>**date,</b>
+the caret (^) is meant merely to provide a more precise
+means for specifying the degree of approximation.
+The following
+<b>**date</b>
+tokens:
+</P>
+<P>
+<blockquote>
+<code><big>
+1954/6/1/^1954/6/2/
+<br>
+2.23^2.238
+</code></big>
+</blockquote>
+</P>
+<P>
+represent approximate times between June 1st and 2nd, 1954,
+and between 2.230 and 2.238 seconds respectively.
+</P>
+<P>
+In addition to methods for representing approximation,
+<b>**date</b>
+also allows three methods for the encoding of uncertainty.
+General uncertainty is signified using the question-mark (?).
+A
+<b>**date</b>
+token preceded by a question-mark indicates that the
+date information is
+<i>uncertain</i>
+(rather than imprecise).
+For example, the
+<b>**date</b>
+token:
+</P>
+<P>
+<blockquote>
+<code><big>
+?1661/4//
+</code></big>
+</blockquote>
+</P>
+<P>
+represents the month of April, 1661 -- but indicates that this
+date is uncertain.
+When the lower-case letter `z' appears in a data token, it indicates
+that only the adjoining numerical value is uncertain.
+This allows the user to be more specific about what aspect of the
+date is uncertain.
+For example, a composer's letter might be dated `September 17th,' but
+historians may be uncertain of the precise year.
+This date might be encoded as:
+</P>
+<P>
+<blockquote>
+<code><big>
+1840z/9/17/
+</code></big>
+</blockquote>
+</P>
+<P>
+Note that uncertainty is not the same as approximation.
+Consider, for example, the contents of a letter dated simply "the 10th"
+that refers to especially hot summer temperatures.
+The letter is thought to have been written in 1932:
+</P>
+<P>
+<blockquote>
+<code><big>
+1932z/8x/10/
+</code></big>
+</blockquote>
+</P>
+<P>
+This representation indicates that the year 1932 is uncertain,
+that the month is approximately August, but that the date is definitely
+the tenth.
+As in the case of the `x' signifier,
+the `z' may precede or follow a given value -- provided it is
+adjacent to the uncertain value.
+</P>
+<P>
+A third method for representing uncertainty is provided by the
+<b>**date</b>
+logical OR signifier (|).
+As in the case of the logical BETWEEN (^), the OR signifier separates
+two component sub-dates.
+For example, the token
+<code><big>
+10:41:|11:41:
+</code></big>
+means "either 10:41 AM or 11:41 AM."
+</P>
+<P>
+In addition to the approximation and uncertainty signifiers,
+<b>**date</b>
+also permits the encoding of time boundaries.
+The less-than sign (<) denotes "prior to" and the greater-than sign (>)
+denotes "after."
+For example, the data token
+<code><big>
+<1100/
+</code></big>
+means prior to 1100 A.D.,
+whereas the token
+<code><big>
+>21::
+</code></big>
+means after 21 hours.
+</P>
+<P>
+Time boundaries can be mixed with approximation and uncertainty
+operators.
+Hence, the data token
+<code><big>
+<5:30x:
+</code></big>
+represents a time prior to 5 minutes and approximately 30 seconds.
+Similarly, time boundaries can be mixed with time ranges.
+Thus, the data token
+<code><big>
+<1604/^1605/
+</code></big>
+means before some time between 1604 and 1605.
+</P>
+<P>
+Note that > and < apply to entire date tokens (only one of > or < may
+appear in a given token).
+The signifiers ? and ~ can apply to subtokens (joined by the
+<i>BETWEEN</i>
+(^) or
+<i>OR</i>
+conjunction operators.
+The signifiers x and z apply to individual numerical values only.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**data</big></code>
+data should be given names with the distinguishing `.dte' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**date</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>@</TD><TD>year B.C. (B.C.E.) rather than A.D.</TD></TR>
+<TR><TD>/</TD><TD>year-month, month-day and day-hour delimiter</TD></TR>
+<TR><TD>:</TD><TD>hour-minute and minute-second delimiter</TD></TR>
+<TR><TD>.</TD><TD>fractional second delimiter; null token</TD></TR>
+<TR><TD>?</TD><TD>date uncertain</TD></TR>
+<TR><TD>z</TD><TD>value uncertain</TD></TR>
+<TR><TD>~</TD><TD>date approximate</TD></TR>
+<TR><TD>x</TD><TD>value approximate</TD></TR>
+<TR><TD><</TD><TD>sometime prior to</TD></TR>
+<TR><TD>></TD><TD>sometime after</TD></TR>
+<TR><TD>^</TD><TD>"between" conjunction</TD></TR>
+<TR><TD>|</TD><TD>"or" conjunction</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**date</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+Several examples of
+<b>**date</b>
+data tokens are identified below:
+<blockquote>
+<TABLE>
+<TR><TD>**date tokens</TD><TD>meaning</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>1917/06/02/23:55:00.0</TD><TD></big></code>5 minutes before midnight on June 2nd, 1917.</TD></TR>
+<TR><TD><code><big>1917/6/2/23:55:00.0</TD><TD></big></code>5 minutes before midnight on June 2nd, 1917.</TD></TR>
+<TR><TD><code><big>///11:59:59</TD><TD></big></code>One second before noon (no day info. provided).</TD></TR>
+<TR><TD><code><big>11:59:59</TD><TD></big></code>One second before noon (no day info. provided).</TD></TR>
+<TR><TD><code><big>.001</TD><TD></big></code>Time of one millisecond.</TD></TR>
+<TR><TD><code><big>23.8</TD><TD></big></code>Time of 23.8 seconds.</TD></TR>
+<TR><TD><code><big>/1/1/</TD><TD></big></code>New Years' Day (January 1st).</TD></TR>
+<TR><TD><code><big>1770/</TD><TD></big></code>The year 1770.</TD></TR>
+<TR><TD><code><big>@446/</TD><TD></big></code>The year 446 B.C.</TD></TR>
+<TR><TD><code><big>1983///.741</TD><TD></big></code>The year 1983; a time-point of 741 milliseconds.</TD></TR>
+<TR><TD><code><big><1300/</TD><TD></big></code>Sometime before the year 1300.</TD></TR>
+<TR><TD><code><big>>1::</TD><TD></big></code>Sometime after 1 AM.</TD></TR>
+<TR><TD><code><big>~14:30:</TD><TD></big></code>Approximately 2:30 PM.</TD></TR>
+<TR><TD><code><big>14:30x:</TD><TD></big></code>Approximately 30 minutes past 2 PM.</TD></TR>
+<TR><TD><code><big>?14:30:</TD><TD></big></code>Perhaps 2:30 PM.</TD></TR>
+<TR><TD><code><big>14:30z:</TD><TD></big></code>Perhaps 30 minutes past 2 PM.</TD></TR>
+<TR><TD><code><big>?1848/</TD><TD></big></code>Perhaps 1848.</TD></TR>
+<TR><TD><code><big>~1848/</TD><TD></big></code>Approximately 1848.</TD></TR>
+<TR><TD><code><big>1847/^1849/</TD><TD></big></code>Sometime between 1847 and 1849.</TD></TR>
+<TR><TD><code><big>1847/|1848/|1849/</TD><TD></big></code>Either 1847, 1848, or 1849.</TD></TR>
+<TR><TD><code><big>1848/4z//</TD><TD></big></code>1848; perhaps April.</TD></TR>
+<TR><TD><code><big>1848x/4//</TD><TD></big></code>Approximately 1848; certainly April.</TD></TR>
+<TR><TD><code><big><@4000/</TD><TD></big></code>Prior to 4000 B.C.</TD></TR>
+<TR><TD><code><big>>~:1:30</TD><TD></big></code>After approximately a minute and a half.</TD></TR>
+<TR><TD><code><big>//3/^~//5/3</TD><TD></big></code>Sometime between March and approximately May 3rd.</TD></TR>
+<TR><TD><code><big>>?~1933/7/30z/</TD><TD></big></code>Perhaps sometime after about July 30(?) 1933.</TD></TR>
+</TABLE>
+<CENTER>
+<i>Examples of <b>**date</b> Tokens</i>
+</CENTER>
+</blockquote>
+</blockquote>
+The following is a sample document:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**opus</TD><TD>**date</TD></TR>
+<TR><TD>33#1</TD><TD>1864/</TD></TR>
+<TR><TD>33#2</TD><TD>1864/3/31</TD></TR>
+<TR><TD>33#3</TD><TD>1864/</TD></TR>
+<TR><TD>34</TD><TD>1865/4z/</TD></TR>
+<TR><TD>35#1</TD><TD>?1865/</TD></TR>
+<TR><TD>35#2</TD><TD><1865/9/</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+Currently, no special-purpose Humdrum commands produce
+<b>**date</b>
+as output, or process
+<b>**date</b>
+encoded data as input.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction
+with <b>**date</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**date</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="dur.rep.html"><b>**dur</b></A>,
+<A HREF="metpos.rep.html"><b>**metpos</b></A>,
+<A HREF="ordo.rep.html"><b>**ordo</b></A>,
+<A HREF="recip.rep.html"><b>**recip</b></A>,
+<A HREF="takt.rep.html"><b>**takt</b></A>,
+<A HREF="time.rep.html"><b>**time</b></A>,
+<A HREF="Zeit.rep.html"><b>**Zeit</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

@@ -1,0 +1,53 @@
+##########################################################
+#                          MSPHRASE
+#
+# Programmed by: David Huron        Date: January, 1997
+# Copyright (c) 1997 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+#
+#
+# This script joins together successive lines containing
+# phrase-related information or phrase comments.  A single
+# output line is generated for each group of successive
+# phrase data.
+#
+awk 'BEGIN	{
+	TRUE=1; FALSE=0; LYRICS_RECORD = ACTIVE_PHRASE = FALSE
+	}
+{
+	if (LYRICS_RECORD)
+		{
+		if ($0 ~ /^phrase/ || $0 ~ /^\/\/phrase/)
+			{
+			if (phrase_line == "") phrase_line = $0
+			else phrase_line = phrase_line "	" $0
+			ACTIVE_PHRASE = TRUE
+			next
+			}
+		else
+			{
+			if (ACTIVE_PHRASE)
+				{
+				print phrase_line
+				ACTIVE_PHRASE = FALSE
+				LYRICS_RECORD = FALSE
+				phrase_line = ""
+				}
+			else
+				{
+				print "//phrase"
+				LYRICS_RECORD = FALSE
+				}
+			}
+		}
+	if ($0 ~ /^lyrics/ || $0 ~ /^\/\/lyrics/)
+		{
+		LYRICS_RECORD = TRUE
+		}
+	print $0
+}
+END	{
+	if (ACTIVE_PHRASE) print phrase_line
+	}'

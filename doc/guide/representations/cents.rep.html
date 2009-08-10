@@ -1,0 +1,212 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Pitch Cents</TITLE>
+<!-- Documentation for the **cents Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **cents Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer representation,**cents">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Pitch Cents</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**cents</b>  --  absolute pitch representation in hundredths of semitones
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The <b>**cents</b> representation is used to represent absolute pitch
+in units of hundredths of semitones with respect to middle C.
+Each equally tempered semitone spans a distance of 100 cents.
+Middle C is designated zero cents.
+All other pitches are represented with respect to this reference,
+hence A4 is 900 cents and A3 is -300 cents.
+Cents may be specified as either integer or real values.
+</P>
+<P>
+Pitch tokens may be modified by the presence of additional signifiers.
+The open brace `{' denotes the beginning of a phrase.
+The closed brace `}' denotes the end of a phrase.
+The open parenthesis `(' denotes the beginning of a slur.
+The closed parenthesis `)' denotes the end of a slur.
+The semicolon `;' denotes a pause.
+</P>
+<P>
+Rest tokens are denoted by the lower-case letter `r'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**cents</big></code>
+spines should be given names with the distinguishing `.cnt' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**cents</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>.</TD><TD>decimal point; or null token</TD></TR>
+<TR><TD>-</TD><TD>minus sign</TD></TR>
+<TR><TD>+</TD><TD>plus sign (optional)</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>(</TD><TD>slur start</TD></TR>
+<TR><TD>)</TD><TD>slur end</TD></TR>
+<TR><TD>{</TD><TD>phrase mark (start)</TD></TR>
+<TR><TD>}</TD><TD>phrase mark (end)</TD></TR>
+<TR><TD>;</TD><TD>pause sign</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**cents</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**cents</TD><TD>**cents</TD></TR>
+<TR><TD>!tempered</TD><TD>!untempered</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>{1200</TD><TD>{1209.</TD></TR>
+<TR><TD>700</TD><TD>720.4</TD></TR>
+<TR><TD>700</TD><TD>698</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>(800</TD><TD>(804.1</TD></TR>
+<TR><TD>700)}</TD><TD>722)}</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>r</TD><TD>r</TD></TR>
+<TR><TD>500 1100</TD><TD>492 1131.2</TD></TR>
+<TR><TD>=4</TD><TD>=4</TD></TR>
+<TR><TD>400 1200</TD><TD>397 1202</TD></TR>
+<TR><TD>==</TD><TD>==</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum commands accept <b>**cents</b> encoded data as inputs:
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/cents.html"><b>cents</b></A></TD><TD>change numerical precision of **cents values</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/freq.html"><b>freq</b></A></TD><TD>translates <b>**cents</b> to <b>**freq</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/kern.html"><b>kern</b></A></TD><TD>translates <b>**cents</b> to <b>**kern</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/pc.html"><b>pc</b></A></TD><TD>translates <b>**cents</b> to <b>**pc</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/pitch.html"><b>pitch</b></A></TD><TD>translate <b>**cents</b> pitch to numerical <b>**pitch</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/semits.html"><b>semits</b></A></TD><TD>translates <b>**cents</b> to <b>**semits</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/solfg.html"><b>solfg</b></A></TD><TD>translates <b>**cents</b> to <b>**solfg</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/tonh.html"><b>tonh</b></A></TD><TD>translates <b>**cents</b> to <b>**Tonh</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/vox.html"><b>vox</b></A></TD><TD>determine active and inactive voices in a Humdrum file</TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+The following Humdrum command produces <b>**cents</b> data as output:
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD valign="top"><A HREF="../commands/cents.html"><b>cents</b></A></TD><TD>translates <b>**cents</b>, <b>**freq</b>, <b>**fret</b>, <b>**kern</b>, <b>**MIDI</b>, <b>**pitch</b>,
+<b>**semits</b>, <b>**solfg</b>, <b>**specC</b>, and <b>**Tonh</b> to <b>**cents</b></TD></TR>
+</TABLE>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**cents:</b>
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**cents</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="../commands/cents.html"><b>cents</b></A>,
+<A HREF="freq.rep.html"><b>**freq</b></A>,
+<A HREF="../commands/freq.html"><b>freq</b></A>,
+<A HREF="fret.rep.html"><b>**fret</b></A>,
+<A HREF="kern.rep.html"><b>**kern</b></A>,
+<A HREF="../commands/kern.html"><b>kern</b></A>,
+<A HREF="MIDI.rep.html"><b>**MIDI</b></A>,
+<A HREF="../commands/midi.html"><b>midi</b></A>,
+<A HREF="pitch.rep.html"><b>**pitch</b></A>,
+<A HREF="../commands/pitch.html"><b>pitch</b></A>,
+<A HREF="semits.rep.html"><b>**semits</b></A>,
+<A HREF="../commands/semits.html"><b>semits</b></A>,
+<A HREF="solfg.rep.html"><b>**solfg</b></A>,
+<A HREF="../commands/solfg.html"><b>solfg</b></A>,
+<A HREF="specC.rep.html"><b>**specC</b></A>,
+<A HREF="../commands/specc.html"><b>specc</b></A>,
+<A HREF="Tonh.rep.html"><b>**Tonh</b></A>,
+<A HREF="../commands/tonh.html"><b>tonh</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide04.html#Cents">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

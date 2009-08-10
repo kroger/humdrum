@@ -1,0 +1,26 @@
+
+TIMEBASE  : Reformat **kern or **recip score with constant time-base.
+
+     This command reformats a **kern or **recip input so that each data
+     record represents an equivalent span of time (such as an eighth duration).
+     The span is defined by the user as the time-base using the -t option.
+     Processed inputs may contain null-token padding, or lose brief details.
+
+Inputs processed:
+
+     **kern,    **recip
+
+Syntax:
+
+     timebase -t N [-M pre-marker] [-m post-marker] [-x] [inputfile ...]
+
+Options:
+
+     -t N     : set time-base where N designates a **recip duration value,
+                e.g. `16.' for dotted sixteenth duration
+     -M mark  : prepend string `mark' to beginning of any padded output records
+     -m mark  : append string `mark' to end of any padded output records
+     -x       : suppress echoing of duration values in output
+
+  Refer to reference manual for further details.
+

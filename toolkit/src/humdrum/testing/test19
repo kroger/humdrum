@@ -1,0 +1,14 @@
+!! "humdrum: ERROR 19: Improper number of exchange-path"
+!! "indicators in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 19
+**ex	**ex	**ex	**ex
+a	b	c	d
+!! Too many indicators
+*x	*x	*x	*
+*-	*-	*-	*-
+**ex	**ex	**ex
+a	b	c
+!! Too few indicators
+*x	*	*
+*-	*-	*-

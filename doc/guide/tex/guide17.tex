@@ -1,0 +1,859 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter17}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Creating Inventories}
+
+
+
+Many research problems can be addressed by building an
+\textit{inventory}
+-$\,$-  that is, identifying the number of occurrences of various
+types of data.
+Questions such as the following all pertain to the generation of
+inventories:
+\begin{itemize}
+\item 
+Does Liszt use a greater variety of harmonies than Chopin?
+\item 
+What is the most frequently used dynamic marking in Beethoven,
+and how does Beethoven's practice compare with that of Brahms?
+\item 
+Are flats more common than sharps in Monteverdi?
+\item 
+Did Bartók's preferred articulation marks change over his
+lifetime?
+\item 
+Is there a tendency to use the subdominant pitch less often in
+pop melodies than in (say) French chanson?
+\item 
+How frequent are light-related words such as "lumen" or "lumine"
+in the different monastic offices for Thomas of Canterbury?
+\item 
+Is it true that 90 percent of the notes in a given work by Bach
+use just two durations (such as eighths and sixteenths, or
+eighths and quarters)?
+\item 
+What is the most common instrumental combination for orchestral works
+by Mussorgsky?
+\end{itemize}
+
+\par 
+At the end of this chapter we will show the Humdrum
+commands needed to answer each of the above questions.
+
+\par 
+The above questions are all variations of one of the following forms:
+
+\par 
+
+How many different types of \_\_\_\_\_ are there?
+\\
+What is the most/least common \_\_\_\_\_?
+\\
+What is the frequency of occurrence for various \_\_\_\_\_s?
+
+
+\par 
+In some cases, we're asked to compare two or more repertories when
+answering one of these basic questions.
+
+\par 
+For illustration purposes, consider the case of a Humdrum file
+named \texttt{alpha} containing the following simple input:
+\\\\
+
+\texttt{**alpha
+\texttt{A
+\texttt{B
+\texttt{A
+\texttt{A
+\texttt{C
+\texttt{B
+\texttt{*-}
+
+It doesn't matter what the data represent.
+The "\texttt{A}", "\texttt{B}", and "\texttt{C}" might
+signify different articulation marks, chords, harmonic intervals, or
+instrumental configurations.
+Whatever is represented, the process of generating an inventory
+is the same.
+Ultimately, we'd like to produce a simple distribution that indicates:
+
+\par 
+
+\texttt{3 occurrences of "A"
+\\
+2 occurrences of "B"
+\\
+1 occurrence  of "C"}
+
+
+\par 
+
+\subsection*{Filter, Sort, Count}
+
+\par 
+Building an inventory is a three-step process.
+First we need to
+\textit{filter}
+the input so only the data of interest is present.
+Second we need to
+\textit{sort}
+like-with-like.
+And third we need to
+\textit{count}
+the number of occurrences of each type of data token.
+
+\par 
+Let's begin by discussing the second process.
+In
+Chapter 3
+we saw how the UNIX
+\textbf{sort}
+command will rearrange lines of data so that they are in
+alphabetical/numerical order.
+The command:
+
+\par 
+
+\texttt{sort alpha > sorted.alpha}
+
+
+\par 
+will sort the file \texttt{alpha} and place the results in a file named \texttt{sorted.alpha}.
+The file \texttt{sorted.alpha} will contain the following:
+\\\\
+
+\texttt{**alpha
+\texttt{*-
+\texttt{A
+\texttt{A
+\texttt{A
+\texttt{B
+\texttt{B
+\texttt{C}
+
+Notice that the asterisk is treated as alphabetically prior to the
+the letter `A', so all the Humdrum interpretation records have been
+moved to the beginning of the output.
+Notice also that all of the lines beginning with the letter `A'
+are now collected on successive lines in
+the output.
+Similarly, the `B's have been rearranged on successive lines.
+
+\par 
+The third step in generating an inventory is to count the number of
+occurrences of each unique data token.  The
+\textbf{uniq}
+command described in
+Chapter 3
+will eliminate successive duplicate
+lines.
+For example, if we type:
+
+\par 
+
+\texttt{uniq sorted.alpha}
+
+
+\par 
+The output will be as follows:
+\\\\
+
+\texttt{**alpha
+\texttt{*-
+\texttt{A
+\texttt{B
+\texttt{C}
+
+Notice that repetitions of the data "A" and "B" have disappeared.
+The simple
+\textbf{uniq}
+command is useful for telling us
+\textit{how many different things}
+there are in an input.
+For example, the above output identifies just five different
+records -$\,$- and three different types of data records.
+
+\par 
+Recall that the
+\textbf{-c}
+option for
+\textbf{uniq}
+will cause a `count' to be prepended to each output line.
+The command:
+
+\par 
+
+\texttt{uniq -c sorted.alpha > unique.alpha}
+
+
+\par 
+will produce the following output:
+\\\\
+
+\texttt{1**alpha
+\texttt{1*-
+\texttt{3A
+\texttt{2B
+\texttt{1C}
+
+The prepended counts tell us that `A' occurs three times, `B'
+occurs twice, and all other records occur just once.
+
+\par 
+In the above output, \texttt{**alpha}, and \texttt{*-} are
+Humdrum interpretations rather
+than data, so we probably don't want them to appear in our inventory.
+If our file had contained comments, or null data records,
+then these would have also appeared in our output,
+although we are not likely to be interested in them.
+This leads us to what is normally the first step in generating
+an inventory -$\,$-
+\textit{filtering}
+the input in order to eliminate records
+that we'd prefer to omit from our final output.
+
+\par 
+
+\subsection*{Filtering Data with the \textit{rid} Command}
+
+\par 
+As we saw in
+Chapter 13,
+the
+\textbf{rid}
+command can be used to eliminate various classes
+of Humdrum records.
+For example, \textbf{rid -G} eliminates all global comments;
+\textbf{rid -D} eliminates all data records, etc.
+The option combination \textbf{-GLId} is very common with
+\textbf{rid}
+since only data records are retained in the output.
+That is, eliminating all global and local comments,
+omitting all interpretations, and deleting all null data records
+will result in an output consisting only of non-null data records.
+
+\par 
+Returning to our \texttt{**alpha} data, we can eliminate everything
+but data records as follows:
+
+\par 
+
+\texttt{rid -GLId alpha > filtered.alpha}
+
+
+\par 
+By way of summary, generating an inventory is a three-step process.
+First we
+\textit{filter}
+the input so only the data of interest is present.
+Typically, this means using the
+\textbf{rid}
+command with one or more options to eliminate comments,
+interpretations, and perhaps null data records.
+Second we
+\textit{sort}
+the data using the
+\textbf{sort}
+command so that identical records are amalgamated as
+neighbors.
+Finally, we use the
+\textbf{uniq -c}
+to
+\textit{count}
+the number of occurrences of each type of data token.
+All three steps can be amalgamated into a single pipeline:
+
+\par 
+
+\texttt{rid -GLId alpha | sort | uniq -c > inventory.alpha}
+
+
+\par 
+Notice that the inventory will pertain to whatever data was provided
+in the original input.  We've been using the abstract data "A", "B",
+and "C".
+However, this data might represent any type of discrete
+data, such as Latin text, piano fingerings, or dance steps.
+
+
+\subsection*{Inventories for Multi-spine Inputs}
+
+\par 
+In the above example, we assumed that the input consists of a single
+Humdrum spine (i.e. a single column of data).
+However, Humdrum files can have any number of spines,
+and each spine might represent radically different types of data.
+For example, the following file (named \texttt{alphabet})
+contains two spines, one with "alpha" data, and the second
+with "bet" data.
+These data types might represent melodic intervals
+and fingering information, or dynamic markings and stem-directions,
+or whatever.
+\\\\
+
+\texttt{**alpha**bet
+\texttt{A\$50
+\texttt{B\$50
+\texttt{A\$50
+\texttt{A\$200
+\texttt{C\$50
+\texttt{B\$50
+\texttt{*-*-}
+
+If we apply our above inventory-generating commands for the
+file "alphabet," the result will be as follows:
+\\\\
+
+\texttt{1A\$200
+\texttt{2A\$50
+\texttt{2B\$50
+\texttt{1C\$50}
+
+Notice that the inventory is based on
+\textit{entire records}
+containing both "alpha" and "bet" data.
+This is the reason why the alpha-bet
+data-pair "\texttt{A   \$50}"  is
+considered different from alpha-bet data "\texttt{A   \$200}".
+Depending on the user's goal, this may or may not be the most
+appropriate output.
+
+\par 
+A situation where this approach might be desired arises when we are
+counting the number of different spellings of chords (e.g., how
+many different sonorous arrangements are there?).
+If **alpha and **bet represent pitches in two concurrent voices,
+then it may be important to have both concurrent data tokens
+participating in the inventory.
+
+\par 
+In other circumstances, we may not want this.
+For example, if we are interested only in alpha-related data,
+we need to eliminate the irrelevant **bet data so it won't interfere.
+This can be done using the Humdrum
+\textbf{extract}
+command.
+
+\par 
+For example, we can create an inventory of just the \texttt{**bet} data:
+
+\par 
+
+\texttt{extract -i '**bet' alphabet | rid -GLId | sort | uniq -c $\backslash$
+
+> inventory.bet}
+
+
+
+\par 
+The resulting \texttt{inventory.bet} file will contain:
+\\\\
+
+\texttt{1\$200
+\texttt{5\$50}
+
+-$\,$-  meaning 5 occurrences of the data "\$50" and 1 occurrence
+of "\$200".
+
+\par 
+Sometimes it is useful to create an aggregate inventory of the
+data in each separate spine.
+In such cases, we will need to use
+\textbf{extract}
+several times so that each spine is placed in a separate file:
+
+\par 
+
+\texttt{extract -i '**alpha' alphabet > justalpha}
+\\
+\texttt{extract -i '**bet' alphabet > justbet}
+
+
+\par 
+The
+\textbf{cat}
+command can then be used to concatenate the files end-to-end
+so they form a single column of data.
+With each data token of interest is on its own line, we can
+generate the appropriate inventory:
+
+\par 
+
+\texttt{cat justalpha justbet | rid -GLId | sort | uniq -c}
+
+
+
+\subsection*{Sorting By Frequency of Occurrence}
+
+\par 
+When the output inventory list is short,
+it is easy to identify which records are
+the most common and which records are the least common.
+Frequently inventory lists will contain dozens or hundreds of items
+so it may be more difficult to scan through the output to find the
+most frequent or least frequent occurrences.
+For such long outputs, it might be more convenient to produce an output
+sorted according to frequency of occurrence.
+Notice that each output record from
+\textbf{uniq -c}
+begins with a number, and so the output is ideally
+suited for numerical sorting.
+We've already learned that the
+\textbf{sort}
+command rearranges input records in alphabetic/numeric order.
+
+\par 
+If we type
+
+\par 
+
+\texttt{sort inventory.alpha}
+
+
+\par 
+The output will be as follows:
+\\\\
+
+\texttt{1C
+\texttt{2B
+\texttt{3A}
+
+Now the output is sorted so that the least frequent occurrences are
+at the beginning, and the most frequent occurrences are at the end
+of the output.
+Incidentally,
+\textbf{sort}
+has a
+\textbf{-r}
+option that causes the output to be sorted in reverse order.
+If we use \textbf{sort -r}, then the most common occurrences will
+be placed at the beginning of the output:
+
+\par 
+
+\texttt{sort -r inventory.alpha}
+
+
+\par 
+produces the following output:
+\\\\
+
+\texttt{3A
+\texttt{2B
+\texttt{1C}
+
+Once again, we can amalgamate all of the required commands into a
+single pipeline.
+The following pipeline produces an inventory
+for any type of Humdrum input, sorted from the most common to the
+least common data:
+
+\par 
+
+\texttt{rid -GLId alpha | sort | uniq -c | sort -r > inventory.alpha}
+
+
+
+\subsection*{Counting with the \textit{wc} Command}
+
+\par 
+In other circumstances, it may be helpful to determine the proportion
+or percentage values rather than the actual numerical count.
+This can be calculated by dividing each of the inventory count
+numbers by the total number of data records processed.
+A convenient way to count records is via the UNIX
+\textbf{wc}
+(word count) command.
+The
+\textbf{wc}
+command provides three options.
+With the
+\textbf{-c}
+option,
+\textbf{wc}
+counts the number of characters in an input.
+With the
+\textbf{-w}
+option,
+\textbf{wc}
+counts the number of words in an input.
+A "word" is defined as any sequence of
+characters delineated by white space, such as
+spaces, tabs or new lines.
+With the
+\textbf{-l}
+option,
+\textbf{wc}
+counts the nmber of lines or records in the input.
+
+\par 
+We can count the total number of non-null data records in a
+Humdrum input using the following pipeline:
+
+\par 
+
+\texttt{rid -GLId alpha | wc -l}
+
+
+\par 
+This will give us the total number of items in our inventory.
+Simple division will generate the percentages for each type
+of data record.
+
+\par 
+Suppose, for example, that the total number of data records
+was determined to be 874.
+Using the UNIX
+\textbf{awk}
+command will allow us to easily generate the percentages for each
+data type via the command:
+
+\par 
+
+\texttt{awk '\{print \$1/847*100 "$\backslash$t" \$2\}' inventory.alpha}
+
+
+\par 
+This will create a two-column output.
+The first column will indicate the percentage of occurrence,
+and the second column will identify the corresponding type of data.
+
+
+\subsection*{Excluding or Seeking Rare Events}
+
+\par 
+Recall from
+Chapter 3
+that the
+\textbf{uniq}
+command provides other options (besides the
+\textbf{-c}
+option).
+The
+\textbf{-d}
+option causes
+\textbf{uniq}
+to output
+\textit{only}
+those records that are duplicated.
+In other words, records that occur only once are eliminated
+from the input.
+This option can be useful when there are a lot of
+single-occurrence data tokens and you are only interested in
+those data records that occur more frequently.
+
+\par 
+By contrast, the
+\textbf{uniq -u}
+option causes
+\textit{only}
+those records that are unique (occur only once) to be output.
+This option can be useful when looking for rare
+circumstances in our data.
+
+\par 
+
+\texttt{rid -GLId alpha | sort | uniq -u}        (output only the rare events)
+\\
+\texttt{rid -GLId alpha | sort | uniq -d}        (eliminate all the rare events)
+
+
+
+\subsection*{Transforming and Editing Inventory Data}
+
+\par 
+Notice that two data records must be identical in order for them
+to be considered "the same" by
+\textbf{sort}
+and \textbf{uniq}.
+This means that records such as the following are considered
+entirely different:
+\\\\
+
+\texttt{ABC
+\texttt{abc
+\texttt{Abc
+\texttt{"ABC"
+\texttt{ABC.
+\texttt{CBA}
+
+Remember that step \#1 in generating inventories requires that we
+filter the data so only the data of interest is passed to
+\textbf{sort}
+and \textbf{uniq}.
+This means we must be careful about the state of the input.
+Depending on your goal, we will either want to
+\textit{translate}
+the input to some other more appropriate representation, or
+\textit{edit}
+the existing representation in order to discard or transform
+otherwise confounding data.
+
+\par 
+\textit{Translating}
+data involves changing from one type of information
+to another -$\,$- that is, changing the exclusive interpretations.
+For example, if we want to produce an inventory of melodic intervals,
+then we might use the
+\textbf{mint}
+or
+\textbf{xdelta}
+commands to generate a suitable representation.
+Alternatively, we might want to generate an inventory
+of scale degrees using the
+\textbf{deg}
+or
+\textbf{solfa}
+commands.
+
+\par 
+Instead of translating our data, we might wish to edit
+the data using the
+\textbf{sed}
+or
+\textbf{humsed}
+stream editors.
+Suppose we had a file (named "notes") consisting of
+pitch information, and we wanted to create an inventory of
+the diatonic pitch-letter names.
+Our input might look like this:
+\\\\
+
+\texttt{**notes
+\texttt{A
+\texttt{B
+\texttt{B
+\texttt{D
+\texttt{F\#
+\texttt{D\#
+\texttt{E
+\texttt{*-}
+
+Without modification, our inventory would appear as follows:
+\\\\
+
+\texttt{1A
+\texttt{2B
+\texttt{1D
+\texttt{1D\#
+\texttt{1E
+\texttt{1F\#}
+
+But this inventory distinguishes D-sharp from D-natural -$\,$- which
+is not what we want.  The answer is to filter our input so that
+the sharps are removed.
+
+\par 
+Adding the appropriate
+\textbf{humsed}
+command to our pipe:
+
+\par 
+
+\texttt{humsed 's/\#//' notes | rid -GLId | sort | uniq -c}
+
+
+\par 
+-$\,$-  will produce the following output:
+\\\\
+
+\texttt{1A
+\texttt{2B
+\texttt{2D
+\texttt{1E
+\texttt{1F}
+
+
+\par 
+
+\subsection*{Further Examples}
+
+\par 
+Given your current background, you should now be able to
+generate inventories to answer a wide variety of questions.
+You should now understand how the commands given below can be used
+to solve the question posed:
+
+
+\par 
+\textit{Does Liszt use a greater variety of harmonies than Chopin?}
+
+\par 
+
+\texttt{extract -i '**harm' liszt* | rid -GLId | sort | uniq | wc -l}
+\\
+\texttt{extract -i '**harm' chopin* | rid -GLId | sort | uniq | wc -l}
+
+
+
+\par 
+\textit{What is the most frequently used dynamic marking in Beethoven,}
+\textit{and how does Beethoven's practice compare with that of Brahms?}
+
+\par 
+
+\texttt{extract -i '**dynam' beeth* | rid -GLId | sort | uniq -c $\backslash$
+
+| sort -r | head -1}
+
+\texttt{extract -i '**dynam' brahm* | rid -GLId | sort | uniq -c $\backslash$
+
+| sort -r | head -1}
+
+
+
+
+\par 
+\textit{Are flats more common than sharps in Monteverdi?}
+Let's presume that the input is monophonic \texttt{**kern} data.
+
+\par 
+
+\texttt{humsed 's/[\^{}\#-]//g' montev* | rid -GLId | sort | uniq -c}
+
+
+
+\par 
+\textit{Did Bartók's preferred articulation marks change}
+\textit{over his lifetime?}
+Assume that copies of early and late works have been
+concatenated to the files \texttt{early} and \texttt{late}.
+The
+\textbf{humsed}
+command here eliminates all data with the exception of
+\texttt{**kern}
+articulation marks.
+(See
+Chapter 6
+for details on **kern articulation marks.)
+
+\par 
+
+\texttt{extract -i '**kern' early | humsed 's/[\^{}"`~\^{}:I]//g' $\backslash$
+
+| rid -GLId | sort | uniq -c}
+
+\texttt{extract -i '**kern' late | humsed 's/[\^{}"`~\^{}:I]//g' $\backslash$
+
+| rid -GLId | sort | uniq -c}
+
+
+
+
+\par 
+\textit{Is there a tendency to use the subdominant pitch less often}
+\textit{in pop melodies than in (say) French chanson?}
+Once again assume that the inputs are monophonic.
+
+\par 
+
+\texttt{deg -t pop* | grep -c '4'}
+\\
+\texttt{deg -t chanson* | grep -c '4'}
+
+
+
+\par 
+\textit{How frequent are light-related words such as "lumen"}
+\textit{or "lumine" in the different monastic offices for}
+Thomas of Canterbury?
+Familiarity with regular expressions helps:
+
+\par 
+
+\texttt{extract -i '**text' office* | egrep -ic 'lum.+n[e]*\$'}
+
+
+
+\par 
+\textit{Is it true that 90 percent of the notes in a given work by Bach}
+\textit{use just two durations (such as eighths and sixteenths, or}
+\textit{eighths and quarters)?}
+
+\par 
+
+\texttt{humsed 's/[\^{}0-9.]//g' bach | rid -GLId | sort | uniq -c}
+
+(Repeat the above command for each work and inspect the results.)
+
+
+
+\par 
+\textit{What is the most common instrumental combination for sonorities}
+\textit{by Mussorgsky?}
+
+\par 
+
+This problem is addressed in
+Chapter 36.
+
+
+
+
+\subsection*{Reprise}
+
+\par 
+In this chapter we have discussed how to answer questions
+that involve the creation of inventories.
+Creating an inventory typically entails
+\textit{filtering}
+some data so only the information of interest is preserved,
+\textit{sorting}
+the data so that like data are amalgamated,
+and then
+\textit{counting}
+each instance of each data type.
+
+\par 
+In later chapters we will see how classifying data,
+identifying musical contexts, and marking occurrences
+of patterns can be used to significantly enhance
+the inventory-building tools described in this chapter.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

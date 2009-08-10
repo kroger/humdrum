@@ -1,0 +1,58 @@
+Humdrum Extras library and program source code
+Wed Apr  6 01:59:37 PDT 2005
+Craig Stuart Sapp <craig@ccrma.stanford.edu>
+======================================================
+
+This directory contains the source code for programs in the set 
+of Humdrum programs which are compiled from C++ programs.
+Compiled versions of these programs for various operating systems
+are available with documentation from the website:
+   http://extras.humdrum.org
+
+The Humdrum Extras set of programs are a subset of programs
+found in the Museinfo set:
+  http://museinfo.sapp.org
+Humdrum Extras is a set of the more useful Humdrum processing
+programs available from the Museinfo set.
+
+The most recent version of the Humdrum Extra program set is
+available for download from the webpage:
+   http://extras.humdrum.org/download
+
+In linux, you can download the source files with one of the following
+command:
+   wget http://extras.humdrum.org/download/humextra.tgz
+and uncompress the GUN-zipped tar file with the command:
+   tar xvzf humextra.tgz
+
+To compile the Humdrum Extra programs found in this directory
+structure, type the following commands:
+   cd humextra		# if not already in the humextra base directory
+   make library
+   make programs
+
+To compile only a single program, such as barnum, you would
+type the following commands:
+   make library
+   make barnum
+
+If you write your own programs, you can place them in the
+directory humextra/src-programs and then compile them in
+a manner similar to compiling single programs described above.
+
+Compiled programs are written to the humextra/bin directory.
+
+------------------------------------------------------
+
+The Centerpoint XML parsing library used in the program xml2hum
+and the class MusicXML is made available by:
+   CenterPoint - Connective Software Engineering GmbH, Europastrasse 8, 
+   A-9524 Villach, Tel. +43 (0)4242 43883-0
+
+  "CenterPoint XML is a C++ class library with SAX 2 (Simple API for XML,
+   Version 2) and DOM (Document Object Model) Level 1 and Level 2 conforming
+   interfaces for reading and writing XML files. It features a lightweight,
+   efficient design, is based on the C++ Standard Library, and runs on
+   many platforms."
+
+

@@ -1,0 +1,24 @@
+
+INFOT     : Calculate information-theoretic values for Humdrum input.
+
+     This command is used to calculate several information-theoretic
+     values on the basis of the input stream.
+
+Syntax:
+     infot -b [-H] [-x regexp] [inputfile ...]
+     infot -n [-H] [-x regexp] [inputfile ...]
+     infot -p [-H] [-x regexp] [inputfile ...]
+     infot -r [-H] [-x regexp] [inputfile ...]
+     infot -s [-x regexp] [inputfile ...]
+
+Options:
+     -b        : outputs bit values for each token
+     -H        : output is formatted as HUMSED commands
+     -n        : outputs frequency count for each token
+     -p        : outputs probability for each token
+     -r        : outputs redundancy value for each token
+     -s        : outputs summary screen for information measures
+     -x regexp : excludes tokens matching regexp from calculations
+
+  Refer to reference manual for further details.
+

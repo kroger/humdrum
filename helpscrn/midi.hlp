@@ -1,0 +1,24 @@
+
+MIDI      : Convert **kern to **MIDI
+
+     This command is used to convert **kern data to **MIDI data.
+
+Syntax:
+
+     midi [-c] [-C] [-u] [-d n] [-q n]  inputfile
+
+Options:
+
+     -c   : echo all data records as global comments BEFORE the corresponding
+            MIDI events
+     -C   : echo all data records as global comments AFTER the corresponding
+            MIDI events
+     -d n : reassign all note durations to n, where n is a valid **kern or
+            **recip duration
+     -q n : set the number of MIDI clockticks per quarter note to n (default
+            is 72)
+     -u   : suppress the deletion of duplicate (unison) concurrent note-ons
+            instructions
+
+  Refer to reference manual for further details.
+

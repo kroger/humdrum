@@ -1,0 +1,12 @@
+!! "humdrum: ERROR 5: Consecutive tabs in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 5
+!! Consecutive tab in exclusive interp.
+**ex				**ex		**ex
+!! Consecutive tab in data record
+a		b		c
+!! Consecutive tab in local comment
+!local	!local		!local
+!! Consecutive tab in global comment (should be OK)
+!! Global 		comment
+*-	*-		*-

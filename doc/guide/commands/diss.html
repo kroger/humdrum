@@ -1,0 +1,189 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- diss</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>diss</b>  --  calculate the degree of sensory dissonance for successive spectra
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>diss</b>  [<i>inputfile.spt</i> ...] [> <i>outputfile.dis</i>]
+</i></b></code></big>
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The <b>diss</b> command measures the degree of sensory
+dissonance for successive acoustic moments.
+It outputs a single
+<A HREF="../representations/diss.rep.html">**diss</A>
+spine containing numerical values -- where higher
+values indicate greater amounts of sensory dissonance.
+The input must consist of one or more
+<A HREF="../representations/spect.rep.html">**spect</A>
+spines.
+Each data record in the
+**spect
+input represents a concurrent set of discrete
+frequencies (spectrum).
+Spectral data consist of sets of paired frequency/amplitude
+values for each pure tone component present.
+Typical musical sonorities contain dozens of spectral components.
+</P>
+<P>
+The
+<b>diss</b>
+command implements an algorithm arising from the work of
+Kameoka and Kuriyagawa (see REFERENCES.)
+<i>Sensory dissonance</i>
+is a low-level auditory phenomenon that is considered distinct from
+culturally-mediated and contextual experiences of consonance or
+dissonance (Greenwood, 1961; Plomp and Levelt, 1965).
+It is therefore inappropriate to equate sensory dissonance with
+"musical dissonance" broadly construed.
+Sensory dissonance values are known to be influenced by the loudness,
+overall pitch-height, interval-relationship,
+and timbre of any participating tones.
+</P>
+<P>
+For a description of the input
+**spect
+representation, refer to Section 2
+<i>(Representation Reference)</i>
+of this reference manual.
+</P>
+<P>
+The output file format is dubbed `.dis'
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>diss</b>
+command provides only a help option:
+<blockquote>
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+</TABLE></blockquote>
+</blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The
+<b>-k</b>
+option pertains to <code><big>**kern</big></code> inputs only.
+This option adds <code><big>**kern</big></code>-related information to the output.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following example illustrates an input and a corresponding output from the
+<b>diss</b>
+command.
+The first and second spines
+(**spect)
+encode a simple input spectrum consisting of six pure tone components.
+The first component has a frequency of 261 Hz at a sound pressure
+level of 47 decibels.
+The six components represent the pitches C4 and E4 played with 3 harmonics each.
+The third spine
+(<A HREF="../representations/diss.rep.html">**diss</A>)
+displays the corresponding sensory dissonance value as calculated by
+<b>diss.</b>
+An output value of about 65 is typical for a single pure tone
+at about 60 dB SPL.
+An output value near zero results for silence.
+<blockquote>
+<TABLE>
+<TR>
+<TD>**spect</TD><TD>**spect</TD><TD>**diss</TD>
+</TR>
+<TR>
+<TD>261;47 523;57 785;35</TD><TD>330;57 659;35 989;27</TD><TD>173</TD>
+</TR>
+<TR>
+<TD>*-</TD><TD>*-</TD><TD>*-</TD
+</TR>
+</TABLE>
+</blockquote>
+
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="../representations/diss.rep.html">**diss</A>,
+<A HREF="hint.html">hint</A>,
+<A HREF="../representations/spect.rep.html">**spect</A>,
+<A HREF="spect.html">spect</A>
+</i></b></code></big>
+</i></b></code></big>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>REFERENCES</H3></FONT>
+<P>
+Kameoka, A. & Kuriyagawa, M.
+"Consonance theory, part I: Consonance of dyads."
+<i>Journal of the Acoustical Society of America</i>,
+Vol. 45, No. 6 (1969a) pp.1451-1459. 
+</P>
+<P>
+Kameoka, A. & Kuriyagawa, M.
+"Consonance theory, part II: Consonance of complex tones
+and its calculation method."
+<i>Journal of the Acoustical Society of America</i>,
+Vol. 45, No. 6 (1969b) pp.1460-1469. 
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../../Music829B/tonotopic.html">
+<B>Description the tonotopic theory of dissonance.</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

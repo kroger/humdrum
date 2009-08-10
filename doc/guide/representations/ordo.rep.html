@@ -1,0 +1,178 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Sequential Order</TITLE>
+<!-- Documentation for the **ordo Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **ordo Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,sequential order,software,theory,analysis,systematic musicology,computer representation,**ordo">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Sequential Order</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**ordo</b>  --  sequential order of events representation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**ordo</b>
+representation consists of a set of numerical
+values indicating the order of events.
+An
+<b>**ordo</b>
+spine simply encodes a series of ascending integers
+marking the succession of events:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**ordo</TD></TR>
+<TR><TD>1</TD></TR>
+<TR><TD>2</TD></TR>
+<TR><TD>3</TD></TR>
+<TR><TD>4</TD></TR>
+<TR><TD>5</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+The
+<b>**ordo</b>
+representation recognizes "common system" barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**ordo</big></code>
+data should be given names with the distinguishing `.ord' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**ordo</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>.</TD><TD>null token</TD></TR>
+<TR><TD>=</TD><TD>barlines</TD></TR>
+<TR><TD>==</TD><TD>double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**ordo</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**ordo</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>1</TD></TR>
+<TR><TD>2</TD></TR>
+<TR><TD>3</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>4</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>5</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum command produces <b>**ordo</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD><A HREF="../commands/num.html"><b>num</b></A></TD><TD>number selected Humdrum data records</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**ordo</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+<TR><TD>timebase</TD><TD><code><big>*tb32</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**ordo</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="date.rep.html"><b>**date</b></A>,
+<A HREF="dur.rep.html"><b>**dur</b></A>,
+<A HREF="metpos.rep.html"><b>**metpos</b></A>,
+<A HREF="recip.rep.html"><b>**recip</b></A>,
+<A HREF="../commands/scramble.html"><b>scramble</b></A>,
+<A HREF="takt.rep.html"><b>**takt</b></A>,
+<A HREF="time.rep.html"><b>**time</b></A>,
+<A HREF="Zeit.rep.html"><b>**Zeit</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

@@ -1,0 +1,13 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Testing for all options (dgilDGIL)
+**ex1	**ex2	**ex3
+*	*	*tand3
+.	.	c
+!	!	!local
+.	.	.
+!! 			Global comment
+*	*	*
+!!
+!local	!local	!local
+1	2	3
+*-	*-	*-

@@ -1,0 +1,327 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- scramble</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>scramble</b>  --  randomize order of either Humdrum data records or data tokens
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>scramble</b>   <b>-r</b>   [<b>-s</b> <i>regexp</i>]   [<i>inputfile</i>]
+<br>
+<b>scramble</b>   <b>-t</b>   [<b>-m</b>]   [<b>-s</b> <i>regexp</i>]   [<i>inputfile</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>scramble</b>
+command can be used to randomize either the order of Humdrum data records
+or the arrangement of data tokens within each data record.
+The
+<b>scramble</b>
+command is useful for generating control data when testing
+contextual relationships between signifiers.
+</P>
+<P>
+Two modes of operation are supported according to whether the
+<b>-r</b> (record) or <b>-t</b> (token) option is invoked.
+When the <b>-r</b> mode is selected, the order of data records
+is randomized.
+In this mode, each output record is identical to some input record;
+only the order of the output records is changed.
+When the <b>-t</b> mode is selected, the order of data tokens within
+each record is randomized.
+In this mode, the order of the input records is preserved --
+however, data tokens between concurrent spines are randomly swapped.
+The <b>-t</b> mode will also cause sub-tokens within
+multiple stops to be rearranged within the data token.
+However, if the
+<b>-m</b>
+option is concurrently invoked,
+then sub-tokens within multiple-stops will be randomly
+redistributed across all tokens in the record.
+The
+<b>-r</b>
+and
+<b>-t</b>
+options cannot be invoked concurrently.
+</P>
+<P>
+In both modes of operation, Humdrum comments and interpretations
+remain unaffected.
+Comments and interpretations are output intact, and in precisely
+the same location (line number) as in the input.
+Only data records are affected by
+<b>scramble.</b>
+</P>
+<P>
+Each time
+<b>scramble</b>
+is invoked, a different random ordering is generated.
+</P>
+<P>
+Note that when using the <b>-r</b> mode,
+the scrambling process may produce an output that is no longer
+syntactically correct Humdrum.
+With the <b>-r</b> mode,
+<b>scramble</b>
+is guaranteed to produce Humdrum output only if (1) the input file
+is bona fide Humdrum, and (2) the number of spines in the input does not vary.
+</P>
+<P>
+With the <b>-t</b> mode,
+<b>scramble</b>
+will always produce output conforming to the Humdrum syntax,
+however it can produce uninterpretable output if concurrent spines do not
+contain the same type of data (that is, they have different exclusive interpretations).
+</P>
+<P>
+Notice also that reordering data records may destroy data-token links
+such as
+<code><big>
+**kern
+</i></b></code></big>
+</i></b></code></big>
+ties.
+</P>
+<P>
+A skip option (<b>-s</b>) permits users to anchor certain data records
+so that they are not either repositioned, or their data tokens re-ordered.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>scramble</b>
+command provides the following option:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-m</b></TD><TD>redistribute subtokens in multiple stops across all tokens in the</TD></TR>
+<TR><TD></TD><TD>record; used in conjunction with <b>-t</b> only</TD></TR>
+<TR><TD><b>-r</b></TD><TD>scramble the order of data records; don't scramble data tokens</TD></TR>
+<TR><TD><b>-s <i>regexp</i></TD><TD>skip; don't scramble records matching <i>regexp</i>;</TD></TR>
+<TR><TD></TD><TD>leave matching records intact, and in the same position</TD></TR>
+<TR><TD><b>-t</b></TD><TD>scramble data tokens within each record; don't scramble record order</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+One of either the
+<i>record mode</i>
+(<b>-r</b>) or
+<i>token mode</i>
+(<b>-t</b>) must be invoked.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The use of the
+<b>scramble</b>
+command can be illustrated using the following input:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! A global comment</TD></TR>
+<TR><TD>!! Another comment</TD></TR>
+<TR><TD>**inter</TD><TD>**inter</TD></TR>
+<TR><TD>*abcd</TD><TD>*efgh</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>1a 1b</TD><TD>a</TD></TR>
+<TR><TD>!local</TD><TD>!local</TD></TR>
+<TR><TD>2</TD><TD>b1 b2 b3</TD></TR>
+<TR><TD>3</TD><TD>c</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>!! A later comment.</TD></TR>
+<TR><TD>4a 4b</TD><TD>d</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>5</TD><TD>e</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+When processed using the
+<i>record mode,</i>
+the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+scramble -r -s = inputfile
+</code></big>
+</blockquote>
+</P>
+<P>
+might produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! A global comment</TD></TR>
+<TR><TD>!! Another comment</TD></TR>
+<TR><TD>**inter</TD><TD>**inter</TD></TR>
+<TR><TD>*abcd</TD><TD>*efgh</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>3</TD><TD>c</TD></TR>
+<TR><TD>!local</TD><TD>!local</TD></TR>
+<TR><TD>5</TD><TD>e</TD></TR>
+<TR><TD>1a 1b</TD><TD>a</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>!! A later comment.</TD></TR>
+<TR><TD>4a 4b</TD><TD>d</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>2</TD><TD>b1 b2 b3</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+In this example, notice that the Humdrum comments and interpretations
+remain in their original location; only the data records have
+been reordered.
+In addition, data records containing an equals-sign have been
+frozen in their original locations.
+</P>
+<P>
+When processed using the
+<i>token mode,</i>
+the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+scramble -t -m -s = inputfile
+</code></big>
+</blockquote>
+</P>
+<P>
+might produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! A global comment</TD></TR>
+<TR><TD>!! Another comment</TD></TR>
+<TR><TD>**inter</TD><TD>**inter</TD></TR>
+<TR><TD>*abcd</TD><TD>*efgh</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>1b</TD><TD>a 1a</TD></TR>
+<TR><TD>!local</TD><TD>!local</TD></TR>
+<TR><TD>b2</TD><TD>b3 2 b1</TD></TR>
+<TR><TD>c</TD><TD>3</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>!! A later comment.</TD></TR>
+<TR><TD>4a 4b</TD><TD>d</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>5</TD><TD>e</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice that a complete scrambling of data tokens within a Humdrum file
+cannot be achieved merely by invoking one
+<b>scramble</b>
+mode followed by the other mode.
+In order to completely scramble a Humdrum file the user must
+extract and scramble the record order for each spine independently,
+and then reassemble the scrambled spines into a new file using the
+<b>assemble</b>
+command.
+</P>
+<P>
+Note also that where the number of spines changes over the course
+of the input file, valid Humdrum output is unlikely.
+Outputs consistent with the Humdrum syntax can be ensured by using the
+<b>fields -i</b>
+command to chronicle changing numbers of spines in a file,
+followed by the
+<b>yank</b>
+command to segregate data blocks containing the same number of spines.
+Each such bock can be <b>scramble</b>d independently and then the
+blocks reconnected using the UNIX
+<b>cat</b>
+command.
+Unnecessary (duplicate) interpretations can be eliminated using
+<b>rid -u.</b>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="assemble.html">
+<b>assemble</b></A> (4),
+<A HREF="extract.html">
+<b>extract</b></A> (4),
+<A HREF="fields.html">
+<b>fields</b></A> (4),
+<A HREF="humdrum.html">
+<b>humdrum</b></A> (4)
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+If the number of spines changes over the course of the input
+file, valid Humdrum output is unlikely when using the
+<b>-r</b>
+option.
+Note also that reordering data records or data tokens
+will destroy data-token links such as
+</P>
+<P>
+Note that the
+<b>scramble</b>
+command cannot be used in pipes.
+<code><big>
+**kern
+</i></b></code></big>
+</i></b></code></big>
+"ties."
+Use of the <b>-t</b> mode,
+can produce uninterpretable output when concurrent spines do not
+contain the same interpretations.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide38.html#Using_the_scramble_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

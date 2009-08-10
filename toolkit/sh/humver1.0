@@ -1,0 +1,46 @@
+#########################################################################
+##					HUMVER.KSH
+# Programmed by: Tim Racinsky         Date: July, 1993
+# Copyright (c) 1993 David Huron
+#
+# Modifications:
+#    Date:   Programmer:         	Description:
+# Aug 4/94	Tim Racinsky	Added -h option
+#
+#	This shell script prints the version of the current toolkit and 
+# returns the appropriate value.
+#	The -s option only returns the value of the version without the echos
+#
+HELP=""
+USAGE1="USAGE: humver -h     (Help Screen)"
+USAGE2="       humver [-s]"
+while getopts hs arg
+do
+	case $arg in
+	h) HELP="ON";;
+	s) exit 1;;
+	[?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+#
+# If no parameters were specified, print out a help screen
+#
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/humver.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/humver.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+echo ""
+echo "        Humdrum Version 1.1"
+echo "        (c) David Huron 1993, 1996"
+echo ""
+exit 1

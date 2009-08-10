@@ -1,0 +1,251 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Metric Hierarchy</TITLE>
+<!-- Documentation for the **metpos Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **metpos Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,metric hierarchy,software,theory,analysis,systematic musicology,computer representation,**metpos">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Metric Hierarchy</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**metpos</b>  --  position in metric hierarchy
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**metpos</b>
+representation consists of simply a set of numerical
+values indicating the order of events.
+Normally, a
+<b>**metpos</b>
+spine simply encodes a set of ascending integers
+marking the succession of events:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**metpos</TD></TR>
+<TR><TD>1</TD></TR>
+<TR><TD>2</TD></TR>
+<TR><TD>3</TD></TR>
+<TR><TD>4</TD></TR>
+<TR><TD>5</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+The
+<b>**metpos</b>
+representation also recognizes <b>**kern</b>-like
+<A HREF="barlines.rep.html"><b>barlines</b></A>.
+The presence of an equals-sign
+<code><big>
+(=)
+</code></big>
+in the first column of a
+<b>**metpos</b>
+spine is used to denote a barline.
+Immediately after the equals sign there may follow an optional integer value
+indicating the measure number (e.g.
+<code><big>
+=107
+</code></big>
+--  for measure 107).
+In addition, a lower-case alphabetic character may be appended to the measure
+number -- as in:
+<code><big>
+=14b.
+</code></big>
+This convention permits the user to distinguish measure numbers for
+first and second endings.
+Measure numbers refer to the information immediately
+following the barline, thus the token
+<code><big>
+=23
+</code></big>
+occurs just prior to the encoded beats for measure 23.
+</P>
+<P>
+Double barlines are indicated by using two or more successive equals signs
+<code><big>
+(==).
+</code></big>
+Several consecutive equals signs may be encoded
+in order to enhance readability (e.g.
+<code><big>
+=======).
+</code></big>
+An additional attribute for barlines is the
+<i>pause</i>
+--  which is represented by the-- icolon (;).
+Thus the token
+<code><big>
+=4;
+</code></big>
+means that the barline starting measure number 4 has a
+pause written above or below it, while the token
+<code><big>
+=====;
+</code></big>
+means that a double barline contains a pause indication.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**metpos</big></code>
+data should be given names with the distinguishing `.mtp' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**metpos</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>.</TD><TD>fractional delimiter; null token</TD></TR>
+<TR><TD>=</TD><TD>barlines</TD></TR>
+<TR><TD>==</TD><TD>double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**metpos</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**kern</TD><TD>**metpos</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>*tb16</TD><TD>*tb16</TD></TR>
+<TR><TD>*c:</TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>8r</TD><TD>1</TD></TR>
+<TR><TD>.</TD><TD>5</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD></TR>
+<TR><TD>16bn</TD><TD>5</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD></TR>
+<TR><TD>.</TD><TD>5</TD></TR>
+<TR><TD>8g</TD><TD>4</TD></TR>
+<TR><TD>.</TD><TD>5</TD></TR>
+<TR><TD>8a-</TD><TD>2</TD></TR>
+<TR><TD>.</TD><TD>5</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD></TR>
+<TR><TD>16b</TD><TD>5</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD></TR>
+<TR><TD>.</TD><TD>5</TD></TR>
+<TR><TD>8dd</TD><TD>4</TD></TR>
+<TR><TD>.</TD><TD>5</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum commands accept <b>**metpos</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD><A HREF="../commands/synco.html"><b>synco</b></A></TD><TD>measure degree of metric syncopation</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/urrhythm.html"><b>urrhythm</b></A></TD><TD>characterize the rhythmic prototypes in a passage</TD></TR>
+</TABLE>
+</blockquote>
+The following Humdrum command produces <b>**metpos</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD valign="top"><A HREF="../commands/metpos.html"><b>metpos</b></A></TD><TD>generate metric position values for timebase-formatted
+<b>**kern</b> or <b>**recip</b> inputs</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**metpos</b>:
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+<TR><TD>timebase</TD><TD><code><big>*tb32</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**metpos</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="date.rep.html"><b>**date</b></A>,
+<A HREF="dur.rep.html"><b>**dur</b></A>,
+<A HREF="kern.rep.html"><b>**kern</b></A>,
+<A HREF="../commands/kern.html"><b>kern</b></A>,
+<A HREF="../commands/metpos.html"><b>metpos</b></A>,
+<A HREF="ordo.rep.html"><b>**ordo</b></A>,
+<A HREF="recip.rep.html"><b>**recip</b></A>,
+<A HREF="takt.rep.html"><b>**takt</b></A>,
+<A HREF="time.rep.html"><b>**time</b></A>,
+<A HREF="../commands/timebase.html"><b>timebase</b></A>,
+<A HREF="Zeit.rep.html"><b>**Zeit</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

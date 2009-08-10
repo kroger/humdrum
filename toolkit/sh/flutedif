@@ -1,0 +1,74 @@
+###################################################################
+#                               FLUTEDIF
+# Programmed by: Rebecca Fiebrink        Date: January, 2002
+# Copyright (c) 2002 Rebecca Fiebrink
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+#
+#
+#
+# 	This shell program is used to invoke the awk program barks.awk.
+#
+FILENAME=""
+HELP=""
+FLAG=""
+STNDIN=""
+X_OPTION=""
+PVALUE=""
+USAGE1="USAGE: flutedif -h                (Help Screen)"
+USAGE2="       flutedif [file ...]"
+# 
+while getopts h arg
+do
+	case "$arg" in
+	h) 	HELP="ON";;
+     [?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit ;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/non-toolkit/bin/helpscrn/flutedif.hlp ]
+	then
+		cat ${HUMDRUM}/bin/non-toolkit/bin/helpscrn/flutedif.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' may be used
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "barks: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+$AWK_VER -f ${HUMDRUM}/bin/non-toolkit/bin/prepflt.awk "DUMMY" $FILENAME | sed 's/[xX]//g' | ${HUMDRUM}/bin/non-toolkit/bin/flute_diff

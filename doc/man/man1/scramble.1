@@ -1,0 +1,307 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH scramble 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +14
+.ti -14
+\fBscramble\fR  --  randomize order of either Humdrum data records or data tokens
+.in-14
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+\fBscramble\fR   \fB-r\fR   [\fB-s \fIregexp\fR]   [\fIinputfile\fR]
+.br
+\fBscramble\fR   \fB-t\fR   [\fB-m\fR]   [\fB-s \fIregexp\fR]   [\fIinputfile\fR]
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "scramble"
+command can be used to randomize either the order of Humdrum data records
+or the arrangement of data tokens within each data record.
+The
+.B "scramble"
+command is useful for generating control data when testing
+contextual relationships between signifiers.
+.sp 1
+.sp 1
+Two modes of operation are supported according to whether the
+\fB-r\fR (record) or \fB-t\fR (token) option is invoked.
+When the \fB-r\fR mode is selected, the order of data records
+is randomized.
+In this mode, each output record is identical to some input record;
+only the order of the output records is changed.
+When the \fB-t\fR mode is selected, the order of data tokens within
+each record is randomized.
+In this mode, the order of the input records is preserved --
+however, data tokens between concurrent spines are randomly swapped.
+The \fB-t\fR mode will also cause sub-tokens within
+multiple stops to be rearranged within the data token.
+However, if the
+.B "-m"
+option is concurrently invoked,
+then sub-tokens within multiple-stops will be randomly
+redistributed across all tokens in the record.
+The
+.B "-r"
+and
+.B "-t"
+options cannot be invoked concurrently.
+.sp 1
+.sp 1
+In both modes of operation, Humdrum comments and interpretations
+remain unaffected.
+Comments and interpretations are output intact, and in precisely
+the same location (line number) as in the input.
+Only data records are affected by
+.B "scramble."
+.sp 1
+.sp 1
+Each time
+.B "scramble"
+is invoked, a different random ordering is generated.
+.sp 1
+.sp 1
+Note that when using the \fB-r\fR mode,
+the scrambling process may produce an output that is no longer
+syntactically correct Humdrum.
+With the \fB-r\fR mode,
+.B "scramble"
+is guaranteed to produce Humdrum output only if (1) the input file
+is bona fide Humdrum, and (2) the number of spines in the input does not vary.
+.sp 1
+.sp 1
+With the \fB-t\fR mode,
+.B "scramble"
+will always produce output conforming to the Humdrum syntax,
+however it can produce uninterpretable output if concurrent spines do not
+contain the same type of data (i.e. have the same exclusive interpretations).
+.sp 1
+.sp 1
+Notice also that reordering data records may destroy data-token links
+such as
+**kern
+ties.
+.sp 1
+.sp 1
+A skip option (\fB-s\fR) permits users to anchor certain data records
+so that they are not either repositioned, or their data tokens rearranged.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "scramble"
+command provides the following option:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the
+	  command syntax
+\fB-m\fR	redistribute subtokens in multiple stops across
+	  all tokens in the record; used in conjunction
+	  with \fB-t\fR only
+\fB-r\fR	scramble the order of data records; don't scramble
+	  data tokens
+\fB-s \fIregexp\fR	skip; don't scramble records matching \fIregexp\fR; leave
+	  matching records intact, and in the same position
+\fB-t\fR	scramble data tokens within each record; don't
+	  scramble record order
+.TE
+.sp 1
+Options are specified in the command line.
+One of either the
+.I "record mode"
+(\fB-r\fR) or
+.I "token mode"
+(\fB-t\fR) must be invoked.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The use of the
+.B "scramble"
+command can be illustrated using the following input:
+.in +2
+.sp 1
+.TS
+l s
+l s
+l l.
+!! A global comment
+!! Another comment
+**inter	**inter
+*abcd	*efgh
+\(eq1	\(eq1
+1a 1b	a
+!local	!local
+2	b1 b2 b3
+3	c
+\(eq2	\(eq2
+.T&
+l s
+l l.
+!! A later comment.
+4a 4b	d
+\(eq3	\(eq3
+5	e
+*-	*-
+.TE
+.sp 1
+.in -2
+When processed using the
+.I "record mode,"
+the command:
+.sp 1
+.sp 1
+.in +2
+scramble -r -s = inputfile
+.in -2
+.sp 1
+.sp 1
+might produce the following output:
+.in +2
+.sp 1
+.TS
+l s
+l s
+l l.
+!! A global comment
+!! Another comment
+**inter	**inter
+*abcd	*efgh
+\(eq1	\(eq1
+3	c
+!local	!local
+5	e
+1a 1b	a
+\(eq2	\(eq2
+.T&
+l s
+l l.
+!! A later comment.
+4a 4b	d
+\(eq3	\(eq3
+2	b1 b2 b3
+*-	*-
+.TE
+.sp 1
+.in -2
+In this example, notice that the Humdrum comments and interpretations
+remain in their original location; only the data records have
+been reordered.
+In addition, data records containing an equals-sign have been
+frozen in their original locations.
+.sp 1
+.sp 1
+When processed using the
+.I "token mode,"
+the command:
+.sp 1
+.sp 1
+.in +2
+scramble -t -m -s = inputfile
+.in -2
+.sp 1
+.sp 1
+might produce the following output:
+.in +2
+.sp 1
+.TS
+l s
+l s
+l l.
+!! A global comment
+!! Another comment
+**inter	**inter
+*abcd	*efgh
+\(eq1	\(eq1
+1b	a 1a
+!local	!local
+b2	b3 2 b1
+c	3
+\(eq2	\(eq2
+.T&
+l s
+l l.
+!! A later comment.
+4a 4b	d
+\(eq3	\(eq3
+5	e
+*-	*-
+.TE
+.sp 1
+.in -2
+Notice that a complete scrambling of data tokens within a Humdrum file
+cannot be achieved merely by invoking one
+.B "scramble"
+mode followed by the other mode.
+In order to completely scramble a Humdrum file the user must
+extract and scramble the record order for each spine independently,
+and then reassemble the scrambled spines into a new file using the
+.B "assemble"
+command.
+.sp 1
+.sp 1
+Note also that where the number of spines changes over the course
+of the input file, valid Humdrum output is unlikely.
+Outputs consistent with the Humdrum syntax can be ensured by using the
+.B "fields -i"
+command to chronicle changing numbers of spines in a file,
+followed by the
+.B "yank"
+command to segregate data blocks containing the same number of spines.
+Each such bock can be \fBscramble\fRd independently and then the
+blocks reconnected using the \s-1UNIX\s+1
+.B "cat"
+command.
+Unnecessary (duplicate) interpretations can be eliminated using
+.B "rid -u."
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBassemble\fR (1),
+\fBextract\fR (1),
+\fBfields\fR (1),
+\fBhumdrum\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+If the number of spines changes over the course of the input
+file, valid Humdrum output is unlikely when using the
+.B "-r"
+option.
+Note also that reordering data records or data tokens
+will destroy data-token links such as
+**kern
+\(odties.\(cd
+Use of the \fB-t\fR mode,
+can produce uninterpretable output when concurrent spines do not
+contain the same interpretations.
+.in -2

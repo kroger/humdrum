@@ -1,0 +1,540 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- extract</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>extract</b>  --  get specified spines from a Humdrum input
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>extract</b>  <b>-f</b>  <i>field1,field2,...,$-1,$</i>  [<i>inputfile  ...</i>]
+<br>
+<b>extract</b>  <b>-i</b>  <i>interp1,interp2,...,interp</i>n  [<i>inputfile  ...</i>]
+<br>
+<b>extract</b>  <b>-p</b>  <i>spine#</i>n  [<i>inputfile  ...</i>]
+<br>
+<b>extract</b>  <b>-t</b>  <i>field_trace_file.ftf</i>  [<i>inputfile  ...</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>extract</b>
+command allows the user to select one or more spines from a Humdrum input.
+The command is typically used to extract parts (such as a tuba part)
+from some multi-part score; however
+<b>extract</b>
+can be used to isolate dynamic markings, musical lyrics, or any other
+stream of information
+that has been encoded as a separate Humdrum spine.
+</P>
+<P>
+The
+<b>extract" </b>
+command has four distinct modes of operation:  (1) field mode
+<b>(-f),</b>
+(2) interpretation mode
+<b>(-i),</b>
+(3) spine-path mode
+<b>(-p),</b>
+and (4) field-trace mode
+<b>(-t).</b>
+The simplest mode is field mode;
+the most general-purpose mode is field-trace mode.
+</P>
+<P>
+In 
+<i>field mode,</i>
+the 
+<b>extract" </b>
+command operates in a manner similar to the UNIX
+<code><big>
+cut
+</i></b></code></big>
+</i></b></code></big>
+command.
+The user may specify a given field (data column) or set of fields to
+be selected from the input stream. 
+For example, the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+extract -f 1,3,8
+</code></big>
+</blockquote>
+</P>
+<P>
+will extract the first, third, and eighth spines from the input stream.
+In field mode, field specifications may also be made
+with respect to the right-most field.
+For example, the expression
+<code><big>
+"$"
+</i></b></code></big>
+</i></b></code></big>
+refers to the right-most field in the input;
+the arithmetic expression
+<code><big>
+"$-1"
+</i></b></code></big>
+</i></b></code></big>
+refers to the right-most field minus one, etc.
+By way of example, the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+extract -f '2,4-6,$' lassus
+</code></big>
+</blockquote>
+</P>
+<P>
+will extract the second, fourth, fifth, sixth, and last (right-most)
+spines in the file "lassus."
+The
+<code><big>
+extract -f
+</i></b></code></big>
+</i></b></code></big>
+command differs from the UNIX
+<code><big>
+cut
+</i></b></code></big>
+</i></b></code></big>
+command in that Humdrum global comments are properly preserved
+in the output.
+</P>
+<P>
+In 
+<i>interpretation mode,</i>
+the 
+<b>extract</b>
+command outputs all spines containing the
+interpretation(s) specified by the user.
+By way of example, the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+extract -i '**semits,**MIDI' hildegard
+</code></big>
+</blockquote>
+</P>
+<P>
+will extract all spines in the file <code><big>hildegard</big></code>
+containing <code><big>**semits</big></code> or <code><big>**MIDI</big></code> data.
+</P>
+<P>
+In 
+<i>spine-path mode,</i>
+the
+<b>extract" </b>
+command follows a given spine starting at the beginning of the file,
+and traces the course of that spine throughout the input stream.
+If spine-path changes are encountered in the input
+(such as spine-exchanges, spine-merges, or spine-splits)
+the output adapts accordingly.
+By way of example, if the "third" spine is selected,
+the output consists of the third spine and follows the path of that spine
+through the input until it is terminated or the end-of-file is encountered.
+What begins as the third column, may end up as
+some other column (or columns) in the input.
+</P>
+<P>
+In the 
+<i>field-trace mode,</i>
+the 
+<b>extract</b>
+command accepts a list of spine-column
+positions over the course of the file.
+In the 
+<i>field-trace</i>
+mode, the user provides a file containing a list
+specifying the precise selection of spines through the file
+at various line numbers.
+The first column in this list specifies the line (record) number
+at which the field selection is defined.
+The second column lists the spine or spines to be
+extracted beginning at the specified line.
+For example, the following
+<i>field-trace file</i>
+specifies that the first spine
+from line 1 should be output; beginning at line 2, spines 3, 4, and 5
+should be output; beginning at line 18, spines 1 and 4 should be output,
+and from line 78 to the end of the input, spine 9 should be output.
+<blockquote>
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>1</TD></TR>
+<TR><TD>2</TD><TD>3-5</TD></TR>
+<TR><TD>18</TD><TD>1,4</TD></TR>
+<TR><TD>78</TD><TD>9</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+</blockquote>
+The
+<i>field-trace</i>
+mode allows the user to select virtually any combination of data tokens
+from the input stream.
+Note that using the
+<i>field-trace</i>
+mode may produce output that no longer conforms to the Humdrum syntax.
+(See EXAMPLES below.)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>extract</b>
+command provides the following options:
+<blockquote>
+<blockquote><TABLE>
+<TR><TD><b>-f  <i>fieldlist</i></TD><TD>select field mode</TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-i  <i>interplist</i></TD><TD>select interpretation mode</TD></TR>
+<TR><TD><b>-p  <i>spine#</i></TD><TD>select spine-path mode</TD></TR>
+<TR><TD><b>-t  <i>fieldtrace file</i></TD><TD>select field-trace mode</TD></TR>
+</TABLE></blockquote>
+</blockquote>
+Options are specified in the command line.
+</P>
+<P>
+A <i>fieldlist</i> consists of any set of integers separated by commas,
+or a range specification in which the lower and upper values are
+separated by a dash: e.g.<code><big>1,4-8,13</big></code>.
+With the exception of range specifications, the order of the integers
+in the list is unimportant, hence <code><big>13,1,4-8</big></code>
+is equivalent to <code><big>1,4-8,13</big></code>.
+The right-field anchor ($) can be used only with the
+<b>-f</b>
+option.
+</P>
+<P>
+An <i>interplist</i> consists of any set of tandem or exclusive
+interpretations separated by commas, e.g.<code><big>'**kern,*C:'</big></code>
+Option arguments may require the use of quotation marks in order to prevent
+inadvertent expansion of shell metacharacter (*, ?, etc.).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following examples illustrate how
+<b>extract</b>
+may be used.
+</P>
+<P>
+<blockquote>
+<code><big>
+extract -f '1,3,$' holst
+</code></big>
+</blockquote>
+</i></b></code></big>
+</P>
+<P>
+outputs the first, third, and last columns from the file <code><big>holst</big></code>.
+</P>
+<P>
+<blockquote>
+<code><big>
+extract -p 4 mossolov
+</code></big>
+</blockquote>
+</P>
+<P>
+outputs the spine
+<i>beginning</i>
+(but not necessarily continuing) in the fourth
+column of the file <code><big>mossolov</big></code>.
+</P>
+<P>
+<blockquote>
+<code><big>
+extract -t sibelius.fld sibelius
+</code></big>
+</blockquote>
+</P>
+<P>
+outputs the spines specified in the file <code><big>sibelius.fld</big></code> for 
+the file <code><big>sibelius</big></code>.
+(See SAMPLE OUTPUTS below.)
+</P>
+<P>
+<blockquote>
+<code><big>
+extract -i '*F:,*f:' hendrix
+</code></big>
+</blockquote>
+</P>
+<P>
+outputs all spines that contain the tandem interpretations *F: or *f:
+(i.e. in the keys of F major or F minor).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SAMPLE OUTPUTS</H3></FONT>
+The following examples illustrate the various
+<b>extract</b>
+options.
+Consider the following input file, dubbed <code><big>input1</big></code>:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `extract' example #1</TD></TR>
+<TR><TD>**ABC</TD><TD>**xyz</TD><TD>**123</TD><TD>**ABC</TD><TD>**foo</TD></TR>
+<TR><TD>A</TD><TD>x</TD><TD>1</TD><TD>a</TD><TD>bar</TD></TR>
+<TR><TD>B</TD><TD>y</TD><TD>2</TD><TD>b</TD><TD>.</TD></TR>
+<TR><TD>C</TD><TD>z</TD><TD>3</TD><TD>c</TD><TD>#</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+Executing either of the following commands:
+</P>
+<P>
+<blockquote>
+<code><big>
+extract -f '1,3,$-1' input1 > output
+</code></big>
+</blockquote>
+</P>
+<P>
+or
+</P>
+<P>
+<blockquote>
+<code><big>
+extract -i '**ABC,**123' input1 > output
+</code></big>
+</blockquote>
+</P>
+<P>
+would produce the following result:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `extract' example #1</TD></TR>
+<TR><TD>**ABC</TD><TD>**123</TD><TD>**ABC</TD></TR>
+<TR><TD>A</TD><TD>1</TD><TD>a</TD></TR>
+<TR><TD>B</TD><TD>2</TD><TD>b</TD></TR>
+<TR><TD>C</TD><TD>3</TD><TD>c</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+Consider next the following sample input -- dubbed <code><big>input2</big></code>:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `extract' example #2</TD></TR>
+<TR><TD>**ABC</TD><TD>**xyz</TD><TD>**123</TD><TD>**ABC</TD><TD>**foo</TD></TR>
+<TR><TD>A</TD><TD>x</TD><TD>1</TD><TD>a</TD><TD>%</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>*^</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>B</TD><TD>y</TD><TD>2a</TD><TD>2b</TD><TD>b</TD><TD>&</TD></TR>
+<TR><TD>C</TD><TD>z</TD><TD>3a</TD><TD>3b</TD><TD>c</TD><TD>#</TD></TR>
+<TR><TD>*</TD><TD>*x</TD><TD>*x</TD><TD>*</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>A</TD><TD>4a</TD><TD>xyz</TD><TD>4b</TD><TD>d</TD><TD>%</TD></TR>
+<TR><TD>*-</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*-</TD><TD>*</TD></TR>
+<TR><TD>5a</TD><TD>xyz</TD><TD>5b</TD><TD>&</TD></TR>
+<TR><TD>*</TD><TD>*x</TD><TD>*x</TD><TD>*</TD></TR>
+<TR><TD>6a</TD><TD>6b</TD><TD>xyz</TD><TD>#</TD></TR>
+<TR><TD>*v</TD><TD>*v</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>7</TD><TD>xyz</TD><TD>%</TD></TR>
+<TR><TD>8</TD><TD>xyz</TD><TD>&</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Executing the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+extract -p 3 input2 > output
+</code></big>
+</blockquote>
+</P>
+<P>
+would produce the following result:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `extract' example #2</TD></TR>
+<TR><TD>**123</TD></TR>
+<TR><TD>1</TD></TR>
+<TR><TD>*^</TD></TR>
+<TR><TD>2a</TD><TD>2b</TD></TR>
+<TR><TD>3a</TD><TD>3b</TD></TR>
+<TR><TD>*x</TD><TD>*</TD></TR>
+<TR><TD>4a</TD><TD>4b</TD></TR>
+<TR><TD>*</TD><TD>*</TD></TR>
+<TR><TD>5a</TD><TD>5b</TD></TR>
+<TR><TD>*</TD><TD>*x</TD></TR>
+<TR><TD>6a</TD><TD>6b</TD></TR>
+<TR><TD>*v</TD><TD>*v</TD></TR>
+<TR><TD>7</TD></TR>
+<TR><TD>8</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice that this output no longer conforms to the Humdrum syntax.
+(Output lines 7 and 11 contain only a single exchange-path interpretation.)
+</P>
+<P>
+For the `example #2' input file, the field-structure is as follows:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>1-1</TD><TD># Line 1 must appear in the file.</TD></TR>
+<TR><TD>4</TD><TD>1-5</TD><TD># *     *     *^     *     * ....</TD></TR>
+<TR><TD>5</TD><TD>1-6</TD><TD># Line after path indicator record</TD></TR>
+<TR><TD>7</TD><TD>1-6</TD><TD># *     *x     *x     *      ....</TD></TR>
+<TR><TD>8</TD><TD>1-6</TD><TD># Line after path indicator record</TD></TR>
+<TR><TD>9</TD><TD>1-6</TD><TD># *-     *     *     *     * ....</TD></TR>
+<TR><TD>10</TD><TD>1-4</TD><TD># Line after path indicator record</TD></TR>
+<TR><TD>11</TD><TD>1-4</TD><TD># *     *x     *x     *      ....</TD></TR>
+<TR><TD>12</TD><TD>1-4</TD><TD># Line after path indicator record</TD></TR>
+<TR><TD>13</TD><TD>1-4</TD><TD># *v     *v     *     *      ....</TD></TR>
+<TR><TD>14</TD><TD>1-3</TD><TD># Line after path indicator record</TD></TR>
+<TR><TD>16</TD><TD>1-3</TD><TD># *-     *-     *-           ....</TD></TR>
+</TABLE></blockquote>
+</code></big>
+(The above file may be generated via the
+<code><big>
+fields -s
+</i></b></code></big>
+command.)
+On the basis of this information a user might create the following
+field-trace file, dubbed <code><big>trace</big></code>:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>1</TD></TR>
+<TR><TD>4</TD><TD>3</TD></TR>
+<TR><TD>5</TD><TD>3,5</TD></TR>
+<TR><TD>7</TD><TD>2,3</TD></TR>
+<TR><TD>8</TD><TD>3,2</TD></TR>
+<TR><TD>9</TD><TD>1,3</TD></TR>
+<TR><TD>10</TD><TD>4</TD></TR>
+<TR><TD>14</TD><TD>3</TD></TR>
+<TR><TD>15</TD><TD>2</TD></TR>
+<TR><TD>16</TD><TD>1</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Executing the following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+extract -t trace input2 > output
+</code></big>
+</blockquote>
+</P>
+<P>
+would produce the following result:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `extract' example #2</TD></TR>
+<TR><TD>**ABC</TD></TR>
+<TR><TD>A</TD></TR>
+<TR><TD>*^</TD></TR>
+<TR><TD>2a</TD><TD>b</TD></TR>
+<TR><TD>3a</TD><TD>c</TD></TR>
+<TR><TD>*x</TD><TD>*x</TD></TR>
+<TR><TD>4a</TD><TD>xyz</TD></TR>
+<TR><TD>*-</TD><TD>*</TD></TR>
+<TR><TD>&</TD></TR>
+<TR><TD>*</TD></TR>
+<TR><TD>#</TD></TR>
+<TR><TD>*</TD></TR>
+<TR><TD>%</TD></TR>
+<TR><TD>xyz</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice that in this case, data tokens have been selected
+from a variety of input spines.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DIAGNOSTICS</H3></FONT>
+In
+<i>field-trace</i>
+mode, if the specified field-structure does not correspond
+to the actual input file, then an ERROR message is issued.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+Note that only the
+<i>field</i>
+mode
+<b>(-f)</b>
+guarantees that the output will conform to the Humdrum syntax.
+</P>
+<P>
+In 
+<i>interpretation</i>
+mode, tandem interpretations may be specified in the command
+invocation, but mutually exclusive tandem interpretations
+(such as changes of key) will not force the program to stop
+outputting a specified spine.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<A HREF="assemble.html">
+<b>assemble</b></A> (4),
+<b>cut</b> (UNIX),
+<A HREF="fields.html">
+<b>fields</b></A> (4),
+<A HREF="yank.html">
+<b>yank</b></A> (4)
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide12.html#Extracting_Spines:_The_extract_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

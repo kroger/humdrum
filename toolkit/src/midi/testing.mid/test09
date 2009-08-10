@@ -1,0 +1,20 @@
+!! midi Test #9
+!! Kern data without durations should invoke a default duration.
+**kern
+c
+d
+e
+f
+g
+a
+b
+cc
+dd
+ee
+ff
+gg
+aa
+bb
+ccc
+C
+*-

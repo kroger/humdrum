@@ -1,0 +1,557 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH context 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +13
+.ti -13
+\fBcontext\fR  --  congeal Humdrum data records to form a contextual frame
+.in -13
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+\fBcontext\fR [\fB-b \fIregexp\fR] [\fB-d \fIstring\fR] [\fB-e \fIregexp\fR] [\fB-i \fIregexp\fR] [\fB-n \fIn\fR] [\fB-o \fIregexp\fR] [\fB-p \fIn\fR] [\fIinputfile\fR ...]
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "context"
+command amalgamates one or more successive input data records into
+single records according to user-defined criteria.
+Only single-spine Humdrum inputs are permitted.
+The
+.B "context"
+command provides a useful means for amalgamating on a single line
+those data tokens that are somehow deemed to be contextually related.
+For example,
+.B "context"
+might be used to link together all pitches in a measure,
+or pair the first and last notes of each phrase.
+The command is useful in such tasks as partitioning possible pitch-class sets
+or grouping arpeggio tones into chords.
+.sp 1
+.sp 1
+In its simplest mode of operation
+.B "context"
+will join a specified number of successive data records together
+to form a single output record.
+By way of example, consider a file (named \f(CRinput\fR) consisting of a single
+spine whose data records contain the numbers 1 through 6 on separate lines:
+.in +2
+.sp 1
+.TS
+l l l l l.
+**numbers
+1
+2
+3
+4
+5
+6
+*-
+.TE
+.sp 1
+.in -2
+The command
+.sp 1
+.sp 1
+.in +2
+context -n 3 input
+.in -2
+.sp 1
+.sp 1
+will produce the following output:
+.in +2
+.sp 1
+.TS
+l.
+**numbers
+1 2 3
+2 3 4
+3 4 5
+4 5 6
+\.
+\.
+*-
+.TE
+.sp 1
+.in -2
+Notice that the output file has been padded with null tokens so that
+the number of output records matches the number of input records.
+By invoking the
+.B "-p"
+option, the padded null tokens can be placed either at the beginning or the
+end of the file, or split between beginning and end.
+For example, the command
+.sp 1
+.sp 1
+.in +2
+context -n 3 -p 3 input
+.in -2
+.sp 1
+.sp 1
+will place the trailing null tokens in the above example at the beginning
+of the output.
+The
+.B "-p"
+option defaults to the value 0.
+.sp 1
+.sp 1
+If null tokens are present in the input, they remain in place,
+yet do not affect the congealed data records.
+For example, if a null token was present between the
+numbers 1 and 2 in the above input, the command
+.sp 1
+.sp 1
+.in +2
+context -n 4 -p 1 input
+.in -2
+.sp 1
+.sp 1
+would produce an output beginning with a single padded null token:
+.in +2
+.sp 1
+.TS
+l.
+**numbers
+\.
+1 2 3 4
+\.
+2 3 4 5
+3 4 5 6
+\.
+\.
+*-
+.TE
+.sp 1
+.in -2
+Rather than specifying a fixed number of congealed data records,
+input records can alternatively be amalgamated according to the
+signifiers present in the input data itself.
+The
+.B "-e"
+option allows the user to specify an \(odend\(cd signifier.
+When this signifier is encountered in the input,
+the input record is appended to the current congealed record
+-- which is then output -- and a new congealed output record begins.
+End signifiers are defined as string patterns using the
+.I "regular expression"
+syntax (see \fBregexp (5)\fR).
+For example, given an input of six successive numbers, the command
+.sp 1
+.sp 1
+.in +2
+context -e [0246] input
+.in -2
+.sp 1
+.sp 1
+would produce the following output:
+.in +2
+.sp 1
+.TS
+l.
+**numbers
+1 2
+\.
+3 4
+\.
+5 6
+\.
+*-
+.TE
+.sp 1
+.in -2
+.in -2
+.SH "OPTIONS"
+.in +2
+The
+.B "context"
+command supports the following options:
+.sp 1
+.TS
+l l.
+\fB-b \fIregexp\fR	begin a new output record starting with token matching
+	\fIregexp\fR
+\fB-d \fIstring\fR	use \fIstring\fR as output delimiter for input records
+	rather than the space character
+\fB-e \fIregexp\fR	begin a new output record starting after token matching
+	\fIregexp\fR
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-i \fIregexp\fR	ignore any records matching \fIregexp\fR when counting
+\fB-n \fIn\fR	amalgamate \fIn\fR input data records for each output record
+\fB-o \fIregexp\fR	omit any records matching \fIregexp\fR from amalgamated
+	output; do not count
+\fB-p \fIn\fR	pad \fIn\fR (normally trailing) null tokens at the beginning of
+	the output spine
+.TE
+.sp 1
+Options are specified in the command line.
+Note that the \fB-b\fR and \fB-e\fR options are mutually exclusive
+with the \fB-n\fR, \fB-p\fR, and \fB-i\fR options.
+.sp 1
+.sp 1
+In the default operation,
+.B "context"
+separates amalgamated tokens by inserting a space character.
+(Thus the input tokens are treated as subtokens in a Humdrum multiple-stop.)
+The
+.B "-d"
+option allows the user to define an alternative string as the
+subtoken delimiter.
+.sp 1
+.sp 1
+The
+.B "-n"
+option allows the user to specify the maximum number of data records
+assembled into a single output record.
+.sp 1
+.sp 1
+The
+.B "-b"
+option allows the user to specify a \(odbegin\(cd marker.
+When this marker (\fIregexp\fR) is matched in the input,
+any current congealed record is output, and a new congealed
+record begins.
+Begin signifiers are defined as string patterns using the
+.I "regular expression"
+syntax.
+.sp 1
+.sp 1
+With the
+.B "-e"
+option, if
+.B "context"
+encounters a data record matching
+.I "regexp"
+then it appends the current input record to the current assembled output
+record and begins assembling a new record with the following input record.
+.sp 1
+.sp 1
+The
+.B "-i"
+option is used only with
+.B "-n;"
+it causes any data records matching
+.I "regexp"
+to be ignored in the counting of amalgamated tokens.
+Such \(oduncounted\(cd records are nevertheless output.
+.sp 1
+.sp 1
+The
+.B "-o"
+option causes data records matching
+.I "regexp"
+to be omitted from the output.
+.sp 1
+.sp 1
+The
+.B "-p"
+option may be used in conjunction with \fB-n\fR.
+Normally, the output from
+.B "context -n"
+is padded with trailing null tokens -- one fewer in number than
+the value specified with \fB-n\fR.
+The \fB-p \fIn\fR option causes \fIn\fR null tokens to be padded at the
+.I "beginning"
+of the output spine, rather than trailing at the end.
+.sp 1
+.sp 1
+Note that tandem interpretations and comments are processed like null tokens;
+they are merely echoed in the output in their appropriate position.
+Note also that
+.B "context"
+automatically breaks a congealed output record whenever
+it encounters a spine-path terminator or exclusive interpretation
+in the input.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following excerpt from Edgar Var\o'e\(ga'se's
+.I "Density 21.5 (1936)"
+illustrates the use of
+.B "context."
+Consider the initial input:
+.in +2
+.sp 1
+.TS
+l.
+!! Edgar Var\o'e\(ga'se, Density 21.5 (1936)
+!! excerpt: mm.41-45
+**kern
+*MM72
+\(eq41
+(16f#
+16e#
+[8gn
+2.g_
+\(eq42
+4g])
+4r
+4r
+8r
+(16f#
+16e#
+\(eq43
+6gn)
+(6e#
+6f#
+8g)
+(8f#
+12e#
+12g
+12dn
+\(eq44
+2a-)
+(4an
+8een
+[8bb-
+\(eq45
+4bb-]
+2.ccc#)
+\(eq45
+8r
+*-
+.TE
+.sp 1
+.in -2
+A simple transformation would be to amalgamate successive data
+records in overlapping groups of 3.
+The following command:
+.sp 1
+.sp 1
+.in +2
+context -n 3 density
+.in -2
+.sp 1
+.sp 1
+would produce the following output:
+.in +2
+.sp 1
+.TS
+l.
+!! Edgar Var\o'e\(ga'se, Density 21.5 (1936)
+!! excerpt: mm.41-45
+**kern
+*MM72
+\(eq41 (16f# 16e#
+(16f# 16e# [8gn
+16e# [8gn 2.g_
+[8gn 2.g_ \(eq42
+2.g_ \(eq42 4g])
+\(eq42 4g]) 4r
+4g]) 4r 4r
+4r 4r 8r
+4r 8r (16f#
+8r (16f# 16e#
+(16f# 16e# \(eq43
+16e# \(eq43 6gn)
+\(eq43 6gn) (6e#
+6gn) (6e# 6f#
+(6e# 6f# 8g)
+6f# 8g) (8f#
+8g) (8f# 12e#
+(8f# 12e# 12g
+12e# 12g 12dn
+12g 12dn \(eq44
+12dn \(eq44 2a-)
+\(eq44 2a-) (4an
+2a-) (4an 8een
+(4an 8een [8bb-
+8een [8bb- \(eq45
+[8bb- \(eq45 4bb-]
+\(eq45 4bb-] 2.ccc#)
+4bb-] 2.ccc#) \(eq45
+2.ccc#) \(eq45 8r
+\.
+\.
+*-
+.TE
+.sp 1
+.in -2
+Notice once again that the input and output have the same number of records.
+Preserving the structure in this way allows the user to
+coordinate the contextual output with the original input using the
+.B "assemble"
+command.
+.sp 1
+.sp 1
+A more useful transformation might amalgamate successive data
+records in overlapping groups of 3
+.I "notes;"
+that is rests and barlines should be ignored.
+The following command causes input records containing either an equals-sign
+or the letter `r' to be ignored when counting the number of amalgamated
+data records:
+.sp 1
+.sp 1
+.in +2
+context -n 3 -i [=r] density
+.in -2
+.sp 1
+.sp 1
+The input and corresponding output are given in the left
+and right spines below:
+.in +2
+.sp 1
+.TS
+l s
+l s
+l l.
+!! Edgar Var\o'e\(ga'se, Density 21.5 (1936)
+!! excerpt: mm.41-45
+**kern	**kern
+*MM72	*MM72
+\(eq41	\(eq41 (16f# 16e# [8gn
+(16f#	(16f# 16e# [8gn
+16e#	16e# [8gn 2.g_
+[8gn	[8gn 2.g_ \(eq42 4g])
+2.g_	2.g_ \(eq42 4g]) 4r 4r 8r (16f#
+\(eq42	\(eq42 4g]) 4r 4r 8r (16f# 16e#
+4g])	4g]) 4r 4r 8r (16f# 16e#
+4r	4r 4r 8r (16f# 16e# \(eq43 6gn)
+4r	4r 8r (16f# 16e# \(eq43 6gn)
+8r	8r (16f# 16e# \(eq43 6gn)
+(16f#	(16f# 16e# \(eq43 6gn)
+16e#	16e# \(eq43 6gn) (6e#
+\(eq43	\(eq43 6gn) (6e# 6f#
+6gn)	6gn) (6e# 6f#
+(6e#	(6e# 6f# 8g)
+6f#	6f# 8g) (8f#
+8g)	8g) (8f# 12e#
+(8f#	(8f# 12e# 12g
+12e#	12e# 12g 12dn
+12g	12g 12dn \(eq44 2a-)
+12dn	12dn \(eq44 2a-) (4an
+\(eq44	\(eq44 2a-) (4an 8een
+2a-)	2a-) (4an 8een
+(4an	(4an 8een [8bb-
+8een	8een [8bb- \(eq45 4bb-]
+[8bb-	[8bb- \(eq45 4bb-] 2.ccc#)
+\(eq45	.
+4bb-]	.
+2.ccc#)	.
+\(eq45	.
+8r	.
+*-	*-
+.TE
+.sp 1
+.in -2
+Notice that as the end of the file is approached,
+.B "context"
+will continue amalgamating data records until it
+is no longer able to satisfy the amalgamating criteria.
+If unable to complete an output record,
+.B "context"
+will output a null token.
+.sp 1
+.sp 1
+If the above command had used the
+.B "-o"
+rather than the
+.B "-i"
+option, all of the rests and barlines would have been omitted
+from the output.
+Otherwise, the output would be the same as given above.
+.sp 1
+.sp 1
+A more musically useful partitioning of Var\o'e\(ga'se's
+work might be based on slur markings.
+The following command uses open- and closed-slur markings
+to demarcate the contextual outputs;
+(note the need to escape the parentheses since they are regular expression
+metacharacters).
+.sp 1
+.sp 1
+.in +2
+context -b '\\(' -e '\\)' -o '[=r]' density
+.in -2
+.sp 1
+.sp 1
+Notice that the ensuing output (shown below) pads the output with
+null tokens in order to maintain the same
+number of data records as the original input.
+(An output such as the following might be used as input to
+a command sequence such as \fBpc -x | pcset\fR).
+.in +2
+.sp 1
+.TS
+l.
+!! Edgar Var\o'e\(ga'se, Density 21.5 (1936)
+!! excerpt: mm.41-45
+**kern
+*MM72
+\.
+(16f# 16e# [8gn 2.g_ 4g])
+\.
+\.
+\.
+\.
+\.
+\.
+\.
+\.
+(16f# 16e# 6gn)
+\.
+\.
+\.
+(6e# 6f# 8g)
+\.
+\.
+(8f# 12e# 12g 12dn 2a-)
+\.
+\.
+\.
+\.
+\.
+(4an 8een [8bb- 4bb-] 2.ccc#)
+\.
+\.
+\.
+\.
+\.
+\.
+\.
+*-
+.TE
+.sp 1
+.in -2
+If there were any notes not embraced within a slur,
+the above command would have caused them to be output on
+their own line.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBcontext\fR (1), \fBgrep\fR (\s-1UNIX\s+1),
+\fBnf\fR (1), \fBpatt\fR (1),
+\fBpattern\fR (1), \fBpcset\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+The \fB-b\fR and \fB-e\fR options are mutually exclusive
+with the \fB-n\fR, \fB-p\fR, and \fB-i\fR options.
+.in -2

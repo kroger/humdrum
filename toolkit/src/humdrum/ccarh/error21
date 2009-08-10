@@ -1,0 +1,7 @@
+!! "humdrum: ERROR 22: Join-path indicator is not adjacent to an"
+!! "other join-path indicator in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 22
+**ex	**ex	**ex	**ex
+*v	*	*v	*v
+*-	*-	*-

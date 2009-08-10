@@ -1,0 +1,80 @@
+###################################################################
+# 					REGEXP.KSH
+# Programmed by: David Huron         Date: April, 1994
+# Copyright (c) 1994 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# June 17/94	Tim Racinsky	Modified to use getopts command
+#
+#
+# 	This shell program is used to invoke the awk program regexp.awk.
+#
+# These variables will be used in the shell script
+HELP=""
+TEXTFILE=""
+FILE_COUNT="0"
+#
+# Fill in the appropriate command usage here
+USAGE1="USAGE: regexp -h                 (Help Screen)"
+USAGE2="       regexp [textfile]"
+while getopts h arg
+do
+	case ${arg} in
+	h) 	HELP="ON";;
+	[?])
+		echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit ;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/regexp.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/regexp.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# If there are more parameters, they must be filenames
+while [ "$#" -ne 0 ]
+do
+	if [ -f "$1" ]
+	then
+		TEXTFILE="$1"
+		shift
+		FILE_COUNT=`expr $FILE_COUNT + 1`
+		if [ "$FILE_COUNT" -gt "1" ]
+		then
+			echo "regexp: ERROR: No more than one text file accepted." 1>&2
+			echo "" 1>&2
+			echo "$USAGE1" 1>&2
+			echo "$USAGE2" 1>&2
+			exit
+		fi
+	else
+		echo "regexp: ERROR: File not found: $1" 1>&2
+		shift
+	fi
+done
+if [ "X$TEXTFILE" = "X" ]
+then
+	if [ -f ${HUMDRUM}/bin/regexp.tst ]
+	then
+		TEXTFILE="${HUMDRUM}/bin/regexp.tst"
+		$AWK_VER -f ${HUMDRUM}/bin/regexp.awk $TEXTFILE
+	else
+		echo "regexp: ERROR: Default test text file ${HUMDRUM}/bin/regexp.tst not found." 1>&2
+		echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit
+	fi
+else
+	$AWK_VER -f ${HUMDRUM}/bin/regexp.awk $TEXTFILE
+fi

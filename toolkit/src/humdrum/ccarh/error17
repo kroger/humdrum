@@ -1,0 +1,6 @@
+!! "humdrum: ERROR 18: First exclusive interpretation record contains"
+!! "a non-exclusive interpretation in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 18
+**ex	*tand	**ex	**ex
+*-	*-	*-	*-

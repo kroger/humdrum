@@ -1,0 +1,169 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- smf</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>smf</b>  -- generate standard MIDI file from Humdrum <code><big>**MIDI</code></big> input
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>smf</b>   [<b>-t</b> <i>n.n</i>]   [<b>-v</b> <i>n</i>]   <i>outputfile.smf</i>   <   <i>inputfile.hmd</i>
+<br>
+<b>cat</b> <i>inputfile.hmd</i> <b>|</b> smf</i>   [<b>-t</b> <i>n.n</i>]   [<b>-v</b> <i>n</i>]  >  <i>outputfile.smf</i>
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>smf</b>
+command allows the user to create "standard MIDI files"
+from Humdrum <code><big>**MIDI</big></code>-format files.
+Standard MIDI files (SMFs) are industry-standard binary files that
+can be imported by a variety of MIDI applications software packages,
+including sequencer programs and several music notation packages.
+</P>
+<P>
+The
+<b>smf</b>
+command accepts as input Humdrum files containing <code><big>**MIDI</big></code>
+representations.
+All <code><big>**MIDI</big></code> spines present in the input stream are translated
+to SMF MIDI.
+Non-<code><big>**MIDI</big></code> spines are ignored and will not affect the SMF output.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>smf</b>
+command provides the following command-line options:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-t <i>n.n</i></TD><TD>set initial tempo to <i>n.n</i> times the default tempo</TD></TR>
+<TR><TD><b>-v <i>n</i></TD><TD>specify default MIDI key-velocity value (0-127)</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The performance tempo may be specified either in the command line
+or in the input Humdrum representation.
+The tempo may be specified on the command line by using the
+<b>-t</b>
+option.
+The
+<b>-t</b>
+must be followed by an integer or real value between 0.13 and 3.80.
+A value of 1.0 corresponds to the default tempo of 66 quarter-notes
+per minute.
+A value of 2.0 doubles the tempo, whereas a value of 0.5 halves
+the tempo.
+Alternatively, tempo may be specified using the <code><big>**MIDI</big></code> tandem
+interpretation for metronome marking (e.g. <code><big>*MM96</big></code>).
+Minimum and maximum tempi are 8 and 250 quarter-notes per minute respectively.
+Tempo specifications found in the input representation take precedence over
+any tempo specified on the command line.
+If no tempo information is available,
+<b>smf</b>
+assumes a default tempo of 66 quarter-notes per minute.
+</P>
+<P>
+The
+<b>-v</b>
+option allows the user to specify a key-velocity default.
+MIDI instruments normally treat key-velocity data as
+dynamic or accent information --
+thus higher key-velocity values are associated with accented notes.
+Permissible key-velocity values range between 0 (slowest) and 127 (fastest).
+The
+<b>-v</b>
+option can be used to set the default key-velocity for
+key-on commands with unspecified key-velocities.
+In the absence of the
+<b>-v</b>
+option, the default key-velocity value is 64.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DIAGNOSTICS</H3></FONT>
+The
+<b>smf</b>
+command produces MIDI Standard "format 0" files.
+When used in conjunction with the
+<A HREF="midi.html"><b>midi</b></A>
+command, the
+<b>midi -u</b>
+option should be invoked in order to ensure that all notes are turned off.
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up.
+DOS 2.0 and up.
+OS/2.
+UNIX.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PROPOSED MODIFICATIONS</H3></FONT>
+The program should be modified to allow inputs to contain
+MIDI control codes and MIDI system exclusive codes.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<b>**MIDI</b> (2),
+<A HREF="midi.html">
+<b>midi</b></A> (4),
+<A HREF="perform.html">
+<b>perform</b></A> (4),
+<A HREF="record.html">
+<b>record</b></A> (4)
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>REFERENCES</H3></FONT>
+Use of the Music Quest Inc. MIDI library functions is gratefully
+acknowledged.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide07.html#The_smf_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

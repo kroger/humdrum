@@ -1,0 +1,889 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 20</TITLE>
+<!-- Chapter 20 (Strophes, Verses and Repeats) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:15:16 EST 2000">
+<meta name="description" content="Chapter 20 (Strophes, Verses and Repeats) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<body>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<br>
+
+<H1>Chapter20</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide19.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide21.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Strophes, Verses and Repeats</H1>
+</CENTER>
+<center><HR WIDTH=500></center>
+</P>
+We often tend to think of musical information as a linear stream of
+successive events.
+However, there are many circumstances where musical
+information exhibits more complex structures.
+These include such structural devices as repeats, da capos,
+first and second ending, multiple verses, alternative or
+<i>ossia</i>
+passages, different performance renditions,
+divergent sources, and competing editions or versions.
+</P>
+<P>
+This chapter describes the basic Humdrum mechanisms
+for representing non-linear musical structures.
+The two critical mechanisms are the Humdrum
+<i>section</i>
+and <i>strophe</i>.
+We will encounter examples using the
+<A HREF="commands/yank.html"><b>yank</b></A>,
+<A HREF="commands/thru.html"><b>thru</b></A>,
+and
+<A HREF="commands/strophe.html"><b>strophe</b></A>
+commands.
+</P>
+<P>
+<A NAME="Section_Labels">
+<H2>Section Labels</H2>
+</P>
+<P>
+Musical scores are often notated to take advantage of
+repetitions in the music.
+Devices such as repeat marks, <i>Da Capo</i>, <i>Dal Segno</i>, <i>Codas</i>,
+and other mechanisms make it possible to represent a musical
+work in an abbreviated format.
+Humdrum provides corresponding mechanisms that allow works to
+be represented in succinct ways.
+</P>
+<P>
+Humdrum files may be logically divided into segments or passages
+by encoding Humdrum
+<i>section labels.</i>
+A section label is a type of tandem interpretation that consists
+of a single asterisk, followed by a greater-than sign,
+followed by a keyword that labels the section.
+The following are examples of section labels.
+</P>
+<P>
+<blockquote>
+<code><big>
+*>Coda
+<br>
+*>1st Ending
+<br>
+*>Refrain
+<br>
+*>Exposition>2nd Theme
+</code></big>
+</blockquote>
+</P>
+<P>
+Notice that spaces can appear in section labels -- as in <code><big>1st Ending</big></code>.
+Sections begin with a section label and generally end when another
+section label is encountered.
+Sections also end whenever all spines are assigned new
+exclusive interpretations, or all spines terminate.
+If there is more than one spine present in a passage,
+identical section labels must appear concurrently in all spines.
+</P>
+<A NAME="Expansion_Lists">
+<H2>Expansion Lists</H2>
+</P>
+<P>
+Rather than encode multiple copies of a passage,
+a single instance may be encoded and labelled as a section.
+The complete version of the work can be reconstructed by referring to an
+<i>expansion list.</i>
+An expansion list is another tandem interpretation that contains
+an ordered list of section labels.
+The list is specified in square brackets.
+Like section labels, expansion lists begin with an
+asterisk followed by a greater-than sign.
+In effect, the expansion list indicates how the abbreviated
+file should be expanded to a full-length encoding.
+Consider the following expansion list:
+</P>
+<P>
+<blockquote>
+<code><big>
+*>[verse1,refrain,verse2,refrain]
+</code></big>
+</blockquote>
+</P>
+<P>
+This list indicates that the abbreviated file contains
+(at least) three sections, labelled "<code><big>verse1</big></code>,"
+"<code><big>verse2</big></code>" and "<code><big>refrain</big></code>."
+When the file is expanded, the "<code><big>refrain</big></code>" section should
+be repeated following each verse.
+</P>
+<A NAME="Using_yank_to_Extract_Sections">
+<H2>Using <i>yank</i> to Extract Sections</H2>
+</P>
+<A NAME="Extract_Coda">
+<P>
+We encountered the
+<A HREF="commands/yank.html"><b>yank</b></A>
+command earlier in
+<A HREF="guide12.html">Chapter 12.</A>
+Recall that
+<b>yank</b>
+can be used to extract material by
+<i>section</i>
+using the
+<b>-s</b>
+option.
+For example, if the appropriate section is labelled, we might
+extract the coda of a work as follows:
+</P>
+<P>
+<blockquote>
+<code><big>yank -s Coda -r 1</code></big> <i>file</i>
+</blockquote>
+</P>
+<P>
+Recall that the
+<b>-r</b>
+option is mandatory with <b>yank</b>;
+in this case, it identifies the
+<i>first</i>
+occurrence of a section labelled <code><big>Coda</big></code>.
+</P>
+<A NAME="Using_the_thru_Command_to_Expand_Encodings">
+<H2>Using the <i>thru</i> Command to Expand Encodings</H2>
+</P>
+<P>
+The Humdrum
+<A HREF="commands/thru.html"><b>thru</b></A>
+command expands
+<i>abbreviated format</i>
+representations to a so-called
+<i>through-composed format</i>
+in which repeated passages are expanded according to an expansion list.
+When the
+<b>thru</b>
+command is invoked, it eliminates any expansion lists present in
+the input;
+in addition,
+<b>thru</b>
+places a <code><big>*thru</big></code> tandem interpretation in all spines
+immediately following each instance of an exclusive interpretation in the input.
+This marks the file as being in a through-composed format.
+Any other <code><big>*thru</big></code> tandem interpretations encountered in the input
+are subsequently discarded.
+As a result, running a file through
+<b>thru</b>
+twice will not result in further changes to the file.
+</P>
+<A NAME="Alternative_Versions">
+<H2>Alternative Versions</H2>
+</P>
+<P>
+For works encoded in an abbreviated format, it is not always useful
+to expand it according to a single fixed recipe.
+Depending on the performance practice, individual performer, or edition,
+certain repeats may be avoided, passages may be added, or
+material eliminated altogether.
+In short, several different versions or interpretations of
+the overall organization of a work may exist.
+</P>
+<A NAME="Select_Landowska_Version">
+<P>
+Humdrum provides a mechanism by which several alternative versions
+of the overall organization of a work may co-exist in the same file.
+This is achieved simply by encoding more than one expansion list.
+In order to distinguish different versions,
+each expansion list is given a unique <i>version label</i>.
+<A NAME="Landowska">
+Consider the following expansion lists:
+</P>
+<P>
+<blockquote>
+<code><big>
+*>Gould1982[A,A,B]
+<br>
+*>Landowska[A,A,B,B]
+</code></big>
+</blockquote>
+</P>
+<A NAME="Play_Binary">
+<P>
+Here we see two expansion lists, one carries the version label <code><big>Gould1982</big></code>
+and the other is labelled version <code><big>Landowska</big></code>.
+These expansion lists might encode different interpretations
+of the repeats in a rounded binary form -- Landowska performed the
+second repeat whereas Gould (1982) did not.
+When the
+<b>thru</b>
+command is invoked, the user can specify which
+<i>version</i>
+is intended using the
+<b>-v</b>
+option.
+The appropriate through-composed expansion will be output.
+</P>
+<P>
+The following example illustrates the use of the
+<b>thru</b>
+command in selecting particular versions of data in a file.
+Three sections are encoded in the file -- labelled A, B and C.
+Each section in this example contains just a single data record.
+Three expansion lists are encoded:
+one is unlabelled, a second is labelled <code><big>long</big></code> and a third is
+labelled <code><big>weird</big></code>.
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**example</TD><TD><code><big>**example</TD></TR>
+<TR><TD><code><big>*>[A,B,A,C]</TD><TD><code><big>*>[A,B,A,C]</TD></TR>
+<TR><TD><code><big>*>long[A,A,B,A,C]</TD><TD><code><big>*>long[A,A,B,A,C]</TD></TR>
+<TR><TD><code><big>*>weird[C,A,C]</TD><TD><code><big>*>weird[C,A,C]</TD></TR>
+<TR><TD><code><big>*>A</TD><TD><code><big>*>A</TD></TR>
+<TR><TD><code><big>data-A</TD><TD><code><big>data-A</TD></TR>
+<TR><TD><code><big>*>B</TD><TD><code><big>*>B</TD></TR>
+<TR><TD><code><big>data-B</TD><TD><code><big>data-B</TD></TR>
+<TR><TD><code><big>*>C</TD><TD><code><big>*>C</TD></TR>
+<TR><TD><code><big>data-C</TD><TD><code><big>data-C</TD></TR>
+<TR><TD><code><big>*-</TD><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Consider the following command:
+</P>
+<P>
+<blockquote>
+<code><big>thru -v weird file</big></code>
+</blockquote>
+</P>
+<P>
+The corresponding "through-composed" output would be as follows:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**example</TD><TD><code><big>**example</TD></TR>
+<TR><TD><code><big>*thru</TD><TD><code><big>*thru</TD></TR>
+<TR><TD><code><big>*>C</TD><TD><code><big>*>C</TD></TR>
+<TR><TD><code><big>data-C</TD><TD><code><big>data-C</TD></TR>
+<TR><TD><code><big>*>A</TD><TD><code><big>*>A</TD></TR>
+<TR><TD><code><big>data-A</TD><TD><code><big>data-A</TD></TR>
+<TR><TD><code><big>*>C</TD><TD><code><big>*>C</TD></TR>
+<TR><TD><code><big>data-C</TD><TD><code><big>data-C</TD></TR>
+<TR><TD><code><big>*-</TD><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Notice that all expansion-list records have been eliminated from
+the output.
+A <code><big>*thru</big></code> tandem interpretation has been added to all output spines
+immediately following the exclusive interpretation.
+Also notice that there are now two sections in the output sharing
+the same label (<code><big>*>C</big></code>).
+This duplication of section-labels is not permitted in abbreviated-format
+encodings and can only occur in through-composed documents.
+</P>
+<P>
+Without the
+<b>-v</b>
+option,
+<b>thru</b>
+expands the abbreviated file according to the
+<i>unlabelled</i>
+(default) expansion list.
+So the following command would result in an output consisting
+of section A, followed by section B, followed by section A (again),
+followed by section C:
+</P>
+<P>
+<blockquote>
+<code><big>thru file</big></code>
+</blockquote>
+</P>
+<A NAME="Section_Types">
+<H2>Section Types</H2>
+</P>
+<P>
+Suppose we had two different theorists -- Smith and Jones --
+who had analyzed the same work differently.
+Smith thinks there are basically two sections in the work,
+whereas Jones argues that there are essentially three sections.
+Humdrum permits alternative schemes of section labels
+to coexist in a file by allowing the user to designate section
+<i>types</i>.
+A section label is considered to have a "type" when more
+than one greater-than sign (<code><big>></big></code>) is present in the label.
+Consider the following example of sections defined by Smith and Jones:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**Example</TD></TR>
+<TR><TD><code><big>*>Smith>A</TD></TR>
+<TR><TD><code><big>*>Jones>A</TD></TR>
+<TR><TD><code><big>data1</TD></TR>
+<TR><TD><code><big>*>Jones>B</TD></TR>
+<TR><TD><code><big>data2</TD></TR>
+<TR><TD><code><big>*>Smith>B</TD></TR>
+<TR><TD><code><big>data3</TD></TR>
+<TR><TD><code><big>*>Jones>C</TD></TR>
+<TR><TD><code><big>data4</big></code></TD></TR>
+<TR><TD><code><big>*-</TD></TR>
+</TABLE></blockquote>
+Both Smith and Jones label the work as beginning with section `A'.
+Later Jones's `B' section begins; then Smith's `B' section;
+then Jones's `C' section.
+Note that Smith's `B' section also contains the material Jones
+has identified as section `C'.
+</P>
+<P>
+Normally, the
+<b>yank</b>
+command extracts a labelled section up to the next occurrence
+of a section label.
+However, the
+<b>-t</b>
+option causes
+<b>yank</b>
+to ignore all section labels except for a specified type.
+We could extract Smith's `B' section by using the
+<b>-t</b>
+option to limit extraction to "Smith"-type section labels:
+</P>
+<P>
+<blockquote>
+<code><big>yank -t Smith -s B</big></code>
+</blockquote>
+</P>
+<P>
+This command would produce the following output:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**Example</TD></TR>
+<TR><TD><code><big>*>Smith>B</TD></TR>
+<TR><TD><code><big>data3</TD></TR>
+<TR><TD><code><big>*>Jones>C</TD></TR>
+<TR><TD><code><big>data4</big></code></TD></TR>
+<TR><TD><code><big>*-</TD></TR>
+</TABLE></blockquote>
+Without the
+<b>-t</b>
+option,
+<b>yank</b>
+will simply extract material up to the occurrence of the next
+section label.
+Note that section types can be used to define innumerable
+alternative organizations for a single document.
+</P>
+<A NAME="Hierarchical_Sections">
+<H2>Hierarchical Sections</H2>
+</P>
+<P>
+For many applications, it is useful to define "nested" structures
+where two or more sections form part of a larger section.
+Humdrum section labels allow users to distinguish hierarchical <i>levels</i>.
+Levels are indicated by the number of greater-than signs
+following the section type.
+Consider the following:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**Example</TD></TR>
+<TR><TD><code><big>*>Form>Exposition</TD></TR>
+<TR><TD><code><big>data1</TD></TR>
+<TR><TD><code><big>*>Form>>1st Theme</TD></TR>
+<TR><TD><code><big>data2</TD></TR>
+<TR><TD><code><big>*>Form>>2nd Theme</TD></TR>
+<TR><TD><code><big>data3</TD></TR>
+<TR><TD><code><big>*>Form>Development</TD></TR>
+<TR><TD><code><big>data4</TD></TR>
+<TR><TD><code><big>*>Form>Recapitulation</TD></TR>
+<TR><TD><code><big>*>Form>>1st Theme</TD></TR>
+<TR><TD><code><big>data5</TD></TR>
+<TR><TD><code><big>*>Form>>2nd Theme</TD></TR>
+<TR><TD><code><big>data6</TD></TR>
+<TR><TD><code><big>*>Form>Coda</TD></TR>
+<TR><TD><code><big>data7</TD></TR>
+<TR><TD><code><big>*-</TD></TR>
+</TABLE></blockquote>
+All of the above section labels are identified as type <code><big>Form</big></code>.
+However, two levels are distinguished (denoted by <code><big>></big></code> and <code><big>>></big></code>).
+Subsections are specified by increasing the number of greater-than signs,
+hence <code><big>2nd Theme</big></code> is a subsection.
+When
+<b>yank</b>
+is invoked, it will extract the identified section up to the
+next section of comparable level.
+The operation is illustrated in the following sample commands:
+indicating the first and second themes.
+<blockquote><TABLE>
+<TR><TD><code><big>yank -t Form -s '1st Theme' -r 1</TD><TD>(</big></code>extracts up to <code><big>>Form>>2nd Theme</big></code>)</TD></TR>
+<TR><TD><code><big>yank -t Form -s '2nd Theme' -r 1</TD><TD>(</big></code>extracts up to <code><big>>Form>Development</big></code>)</TD></TR>
+<TR><TD><code><big>yank -t Form -s 'Exposition' -r 1</TD><TD>(</big></code>extracts up to <code><big>>Form>Development</big></code>)</TD></TR>
+</TABLE></blockquote>
+</P>
+<A NAME="Extract_2nd_Theme_Recapitulation">
+<P>
+For example, the second theme from the recapitulation can be extracted
+as follows:
+</P>
+<P>
+<blockquote>
+<code><big>yank -t Form -s '2nd Theme' -r 2</big></code>
+</blockquote>
+</P>
+<P>
+Alternatively:
+</P>
+<P>
+<blockquote>
+<code><big>yank -t Form -s Recapitulation</code></big> <i>file</i><code><big> | yank -t Form -s '2nd Theme' -r 1</code></big>
+</blockquote>
+</P>
+<A NAME="Using_the_yank_and_thru_Commands">
+<H2>Using the <i>yank</i> and <i>thru</i> Commands</H2>
+</P>
+<P>
+Section labels can be used in a wide number of applications.
+By way of illustration, here are a few pipeline processes
+involving section labels.
+First, we might ask the question -- how does the user
+know what sections labels are present in a document?
+This is a task for <b>grep</b>:
+</P>
+<P>
+<blockquote>
+<code><big>grep '^\*>'</code></big> <i>file</i>
+</blockquote>
+</P>
+<P>
+This command will also output any expansion-lists.
+If we want to restrict our output to identifying which
+<i>versions</i>
+are available for a document we would look for the presence
+of square brackets:
+</P>
+<P>
+<blockquote>
+<code><big>grep '^\*>.*\[.*\]'</code></big> <i>file</i>
+</blockquote>
+</P>
+<A NAME="Count_notes_Exposition">
+<P>
+How many notes are there in the exposition?
+</P>
+<P>
+<blockquote>
+<code><big>yank -t Form -s Exposition -r 1</code></big> <i>file</i><code><big> | census</i></code></big>
+</blockquote>
+</P>
+<A NAME="Count_phrases_Development">
+<P>
+How many phrases are there in the development?
+</P>
+<P>
+<blockquote>
+<code><big>yank -t Form -s Development -r 1</code></big> <i>file</i><code><big> | grep -c '{'</code></big>
+</blockquote>
+</P>
+<A NAME="Extract_third_recitative">
+<P>
+Extract the figured bass for the third recitative:
+</P>
+<P>
+<blockquote>
+<code><big>yank -s Recitativo -r 3</code></big> <i>file</i><code><big> | extract -i '**B-num'</code></big>
+</blockquote>
+</P>
+<A NAME="Compare_keys">
+<P>
+Compare the estimated key for the second theme in the exposition
+versus the estimated key for the second theme in the recapitulation:
+</P>
+<P>
+<blockquote>
+<code><big>yank -t Form -s '2nd Theme' -r 1</code></big> <i>file</i><code><big> | key</code></big>
+<br>
+<code><big>yank -t Form -s '2nd Theme' -r 2</code></big> <i>file</i><code><big> | key</code></big>
+</blockquote>
+</P>
+<A NAME="Gould_duration">
+<P>
+Determine the nominal (non-rubato) duration of Gould's performance
+of the work:
+</P>
+<P>
+<blockquote>
+<code><big>thru -v Gould1982</code></big> <i>file</i><code><big> | extract -i '**kern' | extract -f 1 \
+<blockquote>
+| dur -d | rid -GLId | grep -v '^=' | stats | grep -i total</code></big>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Perform the first three measures from the second section of a binary form:
+</P>
+<P>
+<blockquote>
+<code><big>yank -s B</code></big> <i>file</i><code><big> | yank -o = -r 1-3 | midi | perform</code></big>
+</blockquote>
+</P>
+<A NAME="Strophic_Representations">
+<H2>Strophic Representations</H2>
+</P>
+<P>
+Section labels and versions allow Humdrum users to select
+alternative groups of (horizontal) records within a Humdrum file or document.
+In other circumstances it is useful to be able to select
+alternative (vertical) paths within a file.
+Strophic representations may be conceived as
+"alternative concurrent paths" through a Humdrum document.
+Examples of alternative concurrent representation paths might
+include (1) texts for different verses of a song,
+(2) alternative renditions of the same passage (such as
+<i>ossia</i>
+passages),
+or (3) differing editorial interpretations of a given note or sequence of notes.
+</P>
+<P>
+Structurally, strophic data must begin from a single common spine,
+split apart into two or more alternative spines, and then rejoin
+to form a single spine.
+Since the strophes split from a common spine, they all necessarily
+begin by sharing the same exclusive interpretation.
+Different exclusive interpretations may be introduced in the strophic
+passage -- provided all strophic spines end up sharing the
+same data type just prior to being rejoined.
+</P>
+<P>
+The beginning of a strophic passage is signalled by the presence of a
+<i>strophic passage initiator</i>
+--  a single asterisk followed by the keyword "strophe"
+(<code><big>*strophe</big></code>).
+The end of a strophic passage is signalled by the
+<i>strophic passage terminator</i>
+--  a single asterisk followed by the upper-case letter `S' followed
+by a minus sign (<code><big>*S-</big></code>).
+Each spine within the strophic passage begins with a
+<i>strophe label</i>
+and ends with a
+<i>strophe end indicator</i>
+(<code><big>*S/fin</big></code>).
+Strophe labels may consist of either alphanumeric names, or numbers.
+Numerical labels should be used when the strophic data imply some
+sort of order, such as verses in a song.
+Alphanumeric labels are convenient for distinguishing different editions or
+<i>ossia</i>
+passages.
+The following example encodes a melodic phrase containing four numbered verses
+from "Das Wandern" from
+<i>Die Schoene Muellerin</i>
+by Schubert:
+<br><br>
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD><code><big>!! Franz</TD><TD><code><big>Schubert,</TD><TD><code><big>`Das Wandern' from "Die Schoene Muellerin"</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>**kern</TD><TD><code><big>**silbe</TD></TR>
+<TR><TD><code><big>*k[b-e-]</TD><TD><code><big>*Deutsch</TD></TR>
+<TR><TD><code><big>*</TD><TD><code><big>*solo</TD></TR>
+<TR><TD><code><big>*>[1,1,1,1]</TD><TD><code><big>*>[1,1,1,1]</TD></TR>
+<TR><TD><code><big>*>1</TD><TD><code><big>*>1</TD></TR>
+<TR><TD><code><big>*</TD><TD><code><big>*strophe</TD></TR>
+<TR><TD><code><big>*</TD><TD><code><big>*^</TD></TR>
+<TR><TD><code><big>*</TD><TD><code><big>*^</TD><TD><code><big>*^</TD></TR>
+<TR><TD><code><big>*</TD><TD><code><big>*S/1</TD><TD><code><big>*S/2</TD><TD><code><big>*S/3</TD><TD><code><big>*S/4</TD></TR>
+<TR><TD><code><big>8f</TD><TD><code><big>Das</TD><TD><code><big>Vom</TD><TD><code><big>Das</TD><TD><code><big>Die</TD></TR>
+<TR><TD><code><big>=5</TD><TD><code><big>=5</TD><TD><code><big>=5</TD><TD><code><big>=5</TD><TD><code><big>=5</TD></TR>
+<TR><TD><code><big>8f</TD><TD><code><big>Wan-</TD><TD><code><big>Was-</TD><TD><code><big>sehn</TD><TD><code><big>Stei-</TD></TR>
+<TR><TD><code><big>8b-</TD><TD><code><big>-dern</TD><TD><code><big>-ser</TD><TD><code><big>wir</TD><TD><code><big>-ne</TD></TR>
+<TR><TD><code><big>8a</TD><TD><code><big>ist</TD><TD><code><big>ha-</TD><TD><code><big>auch</TD><TD><code><big>selbst,</TD></TR>
+<TR><TD><code><big>8ee-</TD><TD><code><big>des</TD><TD><code><big>-ben</TD><TD><code><big>den</TD><TD><code><big>so</TD></TR>
+<TR><TD><code><big>=6</TD><TD><code><big>=6</TD><TD><code><big>=6</TD><TD><code><big>=6</TD><TD><code><big>=6</TD></TR>
+<TR><TD><code><big>(16dd</TD><TD><code><big>M&#252l-</TD><TD><code><big>wir's</TD><TD><code><big>R&#228-</TD></TR>
+<TR><TD><code><big>16ff)</TD><TD><code><big>|</TD><TD><code><big>|</TD><TD><code><big>|</TD><TD><code><big>|</TD></TR>
+<TR><TD><code><big>(16dd</TD><TD><code><big>-lers</TD><TD><code><big>ge-</TD><TD><code><big>-dern</TD><TD><code><big>sie</TD></TR>
+<TR><TD><code><big>16b-)</TD><TD><code><big>|</TD><TD><code><big>|</TD><TD><code><big>|</TD><TD><code><big>|</TD></TR>
+<TR><TD><code><big>8f</TD><TD><code><big>Lust,</TD><TD><code><big>-lernt,</TD><TD><code><big>ab,</TD><TD><code><big>sind,</TD></TR>
+<TR><TD><code><big>8dd</TD><TD><code><big>das</TD><TD><code><big>vom</TD><TD><code><big>den</TD><TD><code><big>die</TD></TR>
+<TR><TD><code><big>=7</TD><TD><code><big>=7</TD><TD><code><big>=7</TD><TD><code><big>=7</TD><TD><code><big>=7</TD></TR>
+<TR><TD><code><big>(8.cc</TD><TD><code><big>Wan-</TD><TD><code><big>Was-</TD><TD><code><big>R&#228-</TD><TD><code><big>Stei-</TD></TR>
+<TR><TD><code><big>16a)</TD><TD><code><big>|</TD><TD><code><big>|</TD><TD><code><big>|</TD><TD><code><big>|</TD></TR>
+<TR><TD><code><big>8b-</TD><TD><code><big>-dern!</TD><TD><code><big>-ser!</TD><TD><code><big>-dern!</TD><TD><code><big>-ne!</TD></TR>
+<TR><TD><code><big>8r</TD><TD><code><big>%</TD><TD><code><big>%</TD><TD><code><big>%</TD><TD><code><big>%</TD></TR>
+<TR><TD><code><big>*</TD><TD><code><big>*S/fin</TD><TD><code><big>*S/fin</TD><TD><code><big>*S/fin</TD><TD><code><big>*S/fin</TD></TR>
+<TR><TD><code><big>*</TD><TD><code><big>*v</TD><TD><code><big>*v</TD><TD><code><big>*v</TD><TD><code><big>*v</TD></TR>
+<TR><TD><code><big>*</TD><TD><code><big>*S-</TD></TR>
+<TR><TD><code><big>*-</TD><TD><code><big>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice that this file contains a single section labelled `1'
+and that an expansion list occurs near the beginning of the file
+that indicates section 1 is to be repeated 4 times in total.
+</P>
+<P>
+The strophic passage pertains only to the spine marked
+<code><big>**silbe</big></code>.
+The
+<A HREF="representations/silbe.rep.html"><code><big>**silbe</big></code></A>
+representation pertains to syllabic text
+encoding and is a pre-defined representation in Humdrum.
+The <code><big>**silbe</big></code> representation is discussed in
+<A HREF="guide27.html">Chapter 27.</A>
+Following the strophic passage indicator (<code><big>*strophe</big></code>),
+the spine is split apart until the required number of verses
+are generated.
+Then each spine is labelled with its own strophe label.
+Since the verses have an order, it is appropriate to label them
+with numbers: <code><big>*S/1, *S/2,</big></code> and so on.
+The individual verses are terminated with strophe end indicators
+(<code><big>*S/fin</big></code>), the spines rejoin, and then a strophic passage
+terminator (<code><big>*S-</big></code>) marks the end of the strophic passage.
+</P>
+<A NAME="The_strophe_Command">
+<H2>The <i>strophe</i> Command</H2>
+</P>
+<P>
+The Humdrum
+<b>strophe</b>
+command can be used to isolate or extract selective strophic data.
+The
+<b>-x</b>
+option for
+<b>strophe</b>
+allows the user to extract a particular labelled strophe.
+Consider, for example the effect of the following command:
+</P>
+<P>
+<blockquote>
+<code><big>strophe -x 3 schubert</big></code>
+</blockquote>
+</P>
+<P>
+Using the above data, the result is:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>!! Franz Schubert, `Das Wandern' from "Die Schoene Muellerin"</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD>**kern</TD><TD>**silbe</TD></TR>
+<TR><TD>*k[b-e-]</TD><TD>*Deutsch</TD></TR>
+<TR><TD>*>[1,1,1,1]</TD><TD>*>[1,1,1,1]</TD></TR>
+<TR><TD>*</TD><TD>*solo</TD></TR>
+<TR><TD>*>1</TD><TD>*>1</TD></TR>
+<TR><TD>8f</TD><TD>Das</TD></TR>
+<TR><TD>=5</TD><TD>=5</TD></TR>
+<TR><TD>8f</TD><TD>sehn</TD></TR>
+<TR><TD>8b-</TD><TD>wir</TD></TR>
+<TR><TD>8a</TD><TD>auch</TD></TR>
+<TR><TD>8ee-</TD><TD>den</TD></TR>
+<TR><TD>=6</TD><TD>=6</TD></TR>
+<TR><TD>(16dd</TD><TD>R&#228-</TD></TR>
+<TR><TD>16ff)</TD><TD>|</TD></TR>
+<TR><TD>(16dd</TD><TD>-dern</TD></TR>
+<TR><TD>16b-)</TD><TD>|</TD></TR>
+<TR><TD>8f</TD><TD>ab,</TD></TR>
+<TR><TD>8dd</TD><TD>den</TD></TR>
+<TR><TD>=7</TD><TD>=7</TD></TR>
+<TR><TD>(8.cc</TD><TD>R&#228-</TD></TR>
+<TR><TD>16a)</TD><TD>|</TD></TR>
+<TR><TD>8b-</TD><TD>-dern!</TD></TR>
+<TR><TD>8r</TD><TD>%</TD></TR>
+<TR><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Notice that all of the tandem interpretations related to the
+strophe organization are eliminated from the output.
+</P>
+<A NAME="Expand_Verses">
+<P>
+Suppose that we wanted to create a through-composed version
+of the entire work.
+We would expect as output, just two spines -- the
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+spine and the <code><big>**silbe</big></code> spine.
+First, we need to create the full length version using the
+<b>thru</b>
+command.
+This will take the default expansion list, and repeat the
+appropriate section for each successive verse.
+</P>
+<P>
+<blockquote>
+<code><big>thru schubert</big></code>
+</blockquote>
+</P>
+<P>
+The effect of this will be to simply repeat section 1 four times.
+However, each repetition will contain all four verses.
+We can use the
+<b>strophe</b>
+command to eliminate the unwanted verse texts at each verse.
+When no option is given,
+<b>strophe</b>
+operates by preserving strophes in numerical order.
+That is, when it encounters the first strophic section it will
+preserve strophe #1 (<code><big>*S/1</big></code>);
+then when it encounters the next strophic section it will
+preserve strophe #2 (<code><big>*S/2</big></code>).
+And so on.
+In summary, the follow command will create a proper through-composed
+rendition of the Schubert lieder illustrated above.
+</P>
+<P>
+<blockquote>
+<code><big>thru schubert | strophe</big></code>
+</blockquote>
+</P>
+<P>
+Incidentally, the input passage need not necessary begin with strophe #1.
+The
+<b>strophe</b>
+command will adapt to the input, and use the lowest previously unencountered
+strophe number.
+</P>
+<A NAME="Using_the_strophe_and_thru_Commands">
+<H2>Using the <i>strophe</i> and <i>thru</i> Commands</H2>
+</P>
+<A NAME="Erk_edition">
+<P>
+As noted, the strophe technique can be used to encode
+different editorial interpretations of a single work.
+Suppose for example that we had two editions of the Bach
+chorale harmonizations: Erk and Reimenschneider.
+We could select the Erk edition as follows:
+</P>
+<P>
+<blockquote>
+<code><big>strophe -x Erk chorale166</big></code>
+</blockquote>
+</P>
+<A NAME="Syllables_in_Verses">
+<P>
+In a strophic song, suppose we would like to
+compare the number of syllables in the first and second verses.
+We begin by selecting the appropriate verse,
+extract the syllable spine, eliminate all non-data records,
+eliminate any other special signifiers (like barlines),
+and finally count the number of remaining records.
+We repeat this procedure for both verses:
+</P>
+<P>
+<blockquote>
+<code><big>strophe -x 1</code></big> <i>file</i><code><big> | extract -i '**silbe' | rid -GLId \
+<blockquote>
+| grep -v [=\|%] | wc -l</code></big>
+</blockquote>
+<code><big>strophe -x 2</code></big> <i>file</i><code><big> | extract -i '**silbe' | rid -GLId \
+<blockquote>
+| grep -v [=\|%] | wc -l</code></big>
+</blockquote>
+</blockquote>
+</P>
+<P>
+(In the <code><big>**silbe</big></code> representation, the vertical bar (|) and
+the percent sign (%) have special meanings so the
+<b>grep -v</b>
+is used to eliminate them along with barlines.)
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+Between stophes and sections, highly non-linear musical documents
+can be constructed.
+We have seen how section labels can be defined,
+how lists of sections ("expansion lists")
+can be constructed and expanded to through-composed formats using the
+<b>thru</b>
+command.
+An unlabelled expansion list is the default version.
+Other versions have labelled expansion lists.
+</P>
+<P>
+Several different
+<i>types</i>
+of section labels can coexist in the same document and the
+<b>yank</b>
+command can be instructed to ignore all sections other than
+a certain type via the
+<b>-t</b>
+option.
+</P>
+<P>
+The basic ideas introduced in this chapter are summarized in the
+following table.
+<br><br>
+<blockquote><TABLE>
+<TR><TD>section</TD><TD>passage defined by a section label, ends with occurrence of</TD></TR>
+<TR><TD></TD><TD>section label of identical or higher level</TD></TR>
+<TR><TD>section label</TD><TD>tandem interpretation beginning: <code><big>*></big></code> and not containing</TD></TR>
+<TR><TD></TD><TD>square brackets</TD></TR>
+<TR><TD>section type</TD><TD>first part of section label: <code><big>*><i>type<code><big>></i></TD></TR>
+<TR><TD>expansion list</TD><TD>tandem interpretation beginning <code><big>*></big></code> and containing a list of</TD></TR>
+<TR><TD></TD><TD>section labels in square brackets, e.g. <code><big>*>[A,B,A]</big></code></TD></TR>
+<TR><TD>version</TD><TD>a labelled expansion list, e.g. <code><big>*>ternary[A,B,A]</big></code></TD></TR>
+<TR><TD>level</TD><TD>hierarchical level of a section, designed by the number of `>'</TD></TR>
+<TR><TD></TD><TD>following the section type, e.g. <code><big>*>type>>>name</big></code> is lower</TD></TR>
+<TR><TD></TD><TD>than <code><big>*>type>name</big></code></TD></TR>
+<TR><TD>abbreviated format</TD><TD>Humdrum document encoded using expansion lists</TD></TR>
+<TR><TD>through-composed</TD><TD>Humdrum document encoded without expansion lists</TD></TR>
+<TR><TD><code><big>thru</big></code></TD><TD>command to create a through-composed document from an</TD></TR>
+<TR><TD></TD><TD>abbrevatiated format</TD></TR>
+<TR><TD><code><big>thru -v</big></code></TD><TD>command to create a particular version of a through-composed</TD></TR>
+<TR><TD></TD><TD>document</TD></TR>
+<TR><TD><code><big>yank -s</big></code></TD><TD>command to extract sections</TD></TR>
+<TR><TD><code><big>yank -t -s</big></code></TD><TD>command to extract sections limited to sections of a particular type</TD></TR>
+<TR><TD>strophe</TD><TD>1. alternative spine path, 2. command for extracting a particular</TD></TR>
+<TR><TD></TD><TD>strophe</TD></TR>
+<TR><TD>strophic passage initiator</TD><TD>tandem interpretation indicating the beginning of a strophe (<code><big>*strophe</big></code>)</TD></TR>
+<TR><TD>strophic passage terminator</TD><TD>tandem interpretation indicating the end of a strophe (<code><big>*S-</big></code>)</TD></TR>
+<TR><TD>strophe label</TD><TD>tandem interpretation labelling one of several alternative spine-</TD></TR>
+<TR><TD></TD><TD>paths, begins <code><big>*S/</big></code></TD></TR>
+<TR><TD>strophe end indicator</TD><TD>tandem interpretation indicating the end of some spine path,</TD></TR>
+<TR><TD></TD><TD>e.g. <code><big>*S/fin</big></code></TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Summary of terms related to sections and strophes</i>
+</CENTER>
+</P>
+<P>
+In
+<A HREF="guide37.html">Chapter 37</A>
+we will see further examples of how sections and
+strophes are especially useful when producing electronic editions.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide21.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide19.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

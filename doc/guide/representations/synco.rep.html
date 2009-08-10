@@ -1,0 +1,209 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Metric Syncopation</TITLE>
+<!-- Documentation for the **synco Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **synco Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,metric,syncopation,software,theory,analysis,systematic musicology,computer representation,**synco">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Metric Syncopation</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**synco</b>  --  represent degree of metric syncopation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**synco</b>
+representation encodes numerical values that indicate the
+degree of metric syncopation for successive moments in a musical passage.
+Data tokens for
+<b>**synco</b>
+consist only of decimal numbers.
+The value 0 indicates no metric syncopation at the current data record.
+Higher numerical values indicate increasing amounts of metric syncopation
+at the current data record.
+</P>
+<P>
+Syncopation values follow a definition of metric syncopation inspired by the
+work of Lee and Longuet-Higgins (1982).
+In brief, metric syncopation may be defined as a moment where an expected
+metric stress is absent.
+More specifically, a metrically syncopated moment is defined as occurring when
+no note-onset happens at a moment whose metric position is more important
+than that of the most recent note onset.
+For example, where a note occurs on the second beat of a quadruple meter,
+and is not followed by a note on the third beat, the third beat is
+deemed syncopated because it occupies a higher metric position than
+the previous onset.
+</P>
+<P>
+Numerical
+<b>**synco</b>
+values are equal to the logarithm of the metric position of the
+previous onset minus the logarithm of the metric position of the
+current moment -- where the
+current moment has no note onset, and coincides with a higher
+metric position than the previous onset.
+For example, missing downbeats at the beginning of a measure produce
+the large syncopation values.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</P>
+<P>
+Note:
+<b>**synco</b>
+data is normally produced by the
+<b>synco</b>
+command.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**synco</big></code>
+data should be given names with the distinguishing `.syn' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**synco</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>.</TD><TD>fractional delimiter; null token</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**synco</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**synco</TD></TR>
+<TR><TD>*M2/4</TD></TR>
+<TR><TD>*tb8</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>1.10</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>=3</TD></TR>
+<TR><TD>0.69</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum command produces <b>**synco</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD><A HREF="../commands/synco.html"><b>synco</b></A></TD><TD>measure the degree of metric syncopation</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**synco</b>:
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+<TR><TD>timebase</TD><TD><code><big>*tb32</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**synco</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="metpos.rep.html"><b>**metpos</b></A>,
+<A HREF="../commands/synco.html"><b>synco</b></A>,
+<A HREF="timebase.rep.html"><b>**timebase</b></A>
+</code></big>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>REFERENCES</H3></FONT>
+<blockquote>
+Longuet-Higgins, H. C., & Lee, C. S.,
+"The perception of musical rhythms,"
+<i>Perception,</i>
+Vol. 11 (1982) pp. 115-128.
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

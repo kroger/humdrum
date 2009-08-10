@@ -1,0 +1,191 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Dissonance</TITLE>
+<!-- Documentation for the **diss Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **diss Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,dissonance,software,theory,analysis,systematic musicology,computer representation,**diss">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Dissonance</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**diss</b>  --  sensory dissonance representation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**diss</b>
+representation is used to characterize the degree of sensory dissonance
+for successive acoustic moments.
+Two types of tokens are recognized by
+<b>**diss:</b>
+dissonance-tokens and barlines.
+Dissonance-tokens encode integer values greater than or equal to zero.
+Larger values represent higher sensory dissonance.
+Dissonance values reflect the measurement method devised by
+Kameoka and Kuriyagawa (see
+<A HREF="#REFERENCES"><b>REFERENCES</b></A>).
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**diss</big></code>
+data should be given names with the distinguishing `.dis' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**diss</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>dissonance values specified as integers;</TD></TR>
+<TR><TD></TD><TD>     measure numbers</TD></TR>
+<TR><TD>=</TD><TD>barline</TD></TR>
+<TR><TD>==</TD><TD>double barline</TD></TR>
+<TR><TD>=;</TD><TD>barline with pause sign</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**diss</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**diss</TD></TR>
+<TR><TD>*C:</TD></TR>
+<TR><TD>*M4/4</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>65</TD></TR>
+<TR><TD>84</TD></TR>
+<TR><TD>152</TD></TR>
+<TR><TD>160</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>211</TD></TR>
+<TR><TD>1017</TD></TR>
+<TR><TD>841</TD></TR>
+<TR><TD>1221</TD></TR>
+<TR><TD>=3</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</blockquote>
+</code></big>
+Note that rests are not represented in the
+<b>**diss</b>
+scheme.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum command produces <b>**diss</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/diss.html"><b>diss</b></A></TD><TD>calculate the degree of sensory dissonance for successive spectra</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**diss</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**diss</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="../commands/diss.html"><b>diss</b></A>,
+<A HREF="spect.rep.html"><b>**spect</b></A>,
+<A HREF="../commands/spect.html"><b>spect</b></A>
+</code></big>
+</blockquote>
+</P>
+<P>
+<A NAME="REFERENCES">
+<FONT color="DD00FF"><H3>REFERENCES</H3></FONT>
+<blockquote>
+Kameoka, A. & Kuriyagawa, M.
+"Consonance theory, part I: Consonance of dyads."
+<i>Journal of the Acoustical Society of America,</i>
+Vol. 45, No. 6 (1969a) pp.1451-1459.
+</P>
+<P>
+Kameoka, A. & Kuriyagawa, M.
+"Consonance theory, part II: Consonance of complex tones and its
+calculation method."
+<i>Journal of the Acoustical Society of America,</i>
+Vol. 45, No. 6 (1969b) pp.1460-1469.
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

@@ -1,0 +1,863 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter28}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Dynamics}
+
+
+
+In this chapter we introduce three pre-defined representations
+pertaining to musical dynamics.
+One representation (**dyn) represents dynamic markings
+as they appear visually in a printed score.
+A second representation (**dynam) represents a rationalized
+interpretation of the notated dynamic markings in a score.
+A third scheme (**dB) represents continuous dynamic levels
+in decibels.
+
+
+\subsection*{The \textit{**dynam} and \textit{**dyn} Representations}
+
+\par 
+Musical scores commonly contain dynamic markings that include
+both written text (such as "\textit{subito forte}" and "\textit{dimin.}")
+and graphic representations (such as hairpin or wedge-shaped crescendo markings).
+Unfortunately, traditional dynamic markings are often confusing
+or ambiguous.
+Consider, for example, the following sequence of dynamic markings
+from a Beethoven piano sonata:
+
+\par 
+
+
+\textbf{\textit{pp\textbf{\textit{cresc. \textbf{\textit{cresc. \textbf{\textit{p    \textbf{\textit{cresc.     \textbf{\textit{pp}}
+
+
+
+\par 
+What are we to make of these markings?
+Does the music gradually \textit{crescendo} from \textit{pianissimo} to \textit{piano}?
+Does this initial \textit{crescendo} occur in two distinct phases or does the
+repetition of the term "\textit{cresc.}" merely indicate a continuation
+of a single \textit{crescendo}?
+Does this \textit{crescendo} move to a dynamic level above \textit{piano}
+and abruptly reduce to \textit{piano}?
+Does the final \textit{crescendo} begin at a \textit{piano} level and get louder -$\,$-
+followed by a relatively abrupt reduction to \textit{pianissimo}?
+Or does the final \textit{crescendo} begin below \textit{piano} and gradually
+reach \textit{pianissimo}?
+Such ambiguities are rampant in printed musical scores.
+We can examine the accompanying musical context to help us resolve questions
+of interpretation, but computers are unable to bring such sophistication 
+to the task.
+
+\par 
+Humdrum provides two pre-defined representations for score-related
+dynamic markings.
+One representation
+(\texttt{**dyn})
+attempts to represent
+the dynamic markings as they appear in a visual rendering of a score.
+That is, \texttt{**dyn} represents the visual or orthographic information.
+A second representation
+(\texttt{**dynam})
+provides a "rationalized"
+or canonical means for interpreting score-related dynamic indications.
+Users will want to choose one or the other representation depending on
+the analytic task being pursued.
+
+\par 
+In the first instance, \texttt{**dynam} uses standardized data tokens to represent
+particular dynamic levels.
+Table 28.1 shows the standard representations for \texttt{**dynam}.
+For example, the token \texttt{pp} represents the concept of pianissimo,
+even if the visual rendering may be \textbf{\textit{pp}} or
+\textit{pianissimo} or \textit{pianiss.}, etc.
+
+\par 
+\textbf{Table 28.1.}
+
+ppiano
+pppianissimo
+ppptriple piano
+ppppquadruple piano, [etc]
+fforte
+fffortissimo
+ffftriple forte
+ffffquadruple forte, [etc]
+mpmezzo-piano
+mfmezzo-forte
+ssubito (suddenly), e.g. spp (\textit{subito pianissimo}), sf (\textit{subito forte})
+zsforzando = fp (forte-piano)
+<begin crescendo
+>begin diminuendo
+(continuing crescendo
+)continuing diminuendo
+[end crescendo
+]end diminuendo
+Xexplicit interpretation (not indicated in the score)
+xpublished interpretation (indicated in the score, often in parentheses)
+rrest (silence)
+vnotated accent or stress
+
+
+\par 
+In the case of crescendo and diminuendo markings,
+\texttt{**dynam}
+requires an explicit interpretation of where the dynamic
+marking begins and ends.
+The beginning of a crescendo is indicated by the less-than sign (\texttt{<}).
+The end of the crescendo is marked by the open square bracket (\texttt{]}).
+Between the beginning and end points,
+\textit{continuation signifiers}
+are encoded.
+For crescendos, continuations are indicated using the open parenthesis;
+for diminuendos, continuations are indicated using the closed parenthesis.
+
+\par 
+In the \texttt{**dynam} representation,
+no distinction is made for various ways a composer might indicate a crescendo or
+a diminuendo.
+For example, it doesn't matter whether a diminuendo is notated as
+\textit{dim.}, \textit{dimin.}, \textit{diminuendo}, \textit{decres.}, \textit{decresc.},
+\textit{decresendo}, \textit{calando}, \textit{morendo}, \textit{se perdant},
+\textit{cédéz}, \textit{gradually quieter},
+or via a hairpin or wedge graphic diminuendo.
+All are represented by \texttt{>} ... \texttt{)} ... \texttt{]}.
+
+\par 
+The \texttt{**dynam} representation also requires explicit resolution
+of possibly ambiguous dynamic markings.
+In many cases, the user will be required to add dynamic markings that
+are only implicit in the original score.
+Interpreted dynamics are preceded by the upper-case letter \texttt{X},
+so an interpreted diminuendo will be
+represented by \texttt{X>} ... \texttt{X)} ... \texttt{X]}.
+
+\par 
+Often published editions will include dynamic markings that have
+been introduced by the editor.
+In scholarly publications these editorialisms are indicated
+in parentheses or square brackets.
+Such interpreted dynamics are preceded by the lower-case letter \texttt{x}.
+
+\par 
+The use of the
+\texttt{**dynam}
+representation is illustrated in
+Example 28.1.
+\\\\
+\textbf{Example 28.1}
+
+
+
+This example might be encoded as follows:
+
+\texttt{**dynam**kern
+*staff1*staff1
+==
+p2c 2e 2g 2cc
+<.
+(2G 2d 2g 2b
+==
+(2A 2c 2e 2a
+[.
+pp2E 2B 2e 2g
+==
+*-*-}
+
+
+\par 
+The \texttt{**dynam} encoding is interpreted as follows:
+the level begins \textit{piano} with a crescendo beginning
+prior to the second chord;
+the crescendo continues until after the third chord
+and then the level abruptly drops to \textit{pianissimo} with
+the onset of the fourth chord.
+Notice that dynamic markings are "read from left-to-right";
+that is, we presume that the crescendo begins \textit{piano} and
+that the \textit{pianissimo} is an abrupt reduction in level,
+rather than presuming that the crescendo builds to the \textit{pianissimo}
+level and so there is an abrupt reduction in level after the initial \textit{piano}
+just before the cresendo begins.
+In short, a crescendo (or diminuendo) marking is always assumed to
+increase (or decrease) the dynamic level from the preceding indication.
+
+\par 
+If appropriate, a user can render implicit dynamic shading explicitly.
+For example, a user might choose to re-code Example 28.1 as either
+
+\texttt{**dynam**kern
+*staff1*staff1
+==
+p2c 2e 2g 2cc
+<2G 2d 2g 2b
+==
+[2A 2c 2e 2a
+X>.
+X].
+pp2E 2B 2e 2g
+==
+*-*-}
+
+
+\par 
+or
+
+\texttt{**dynam**kern
+*staff1*staff1
+==
+p2c 2e 2g 2cc
+Xppp.
+<2G 2d 2g 2b
+==
+(2A 2c 2e 2a
+[.
+pp2E 2B 2e 2g
+==
+*-*-}
+
+
+\par 
+Notice that null data records may be inserted as necessary to clarify
+the moment of dynamic change.
+The
+\texttt{**dynam}
+representation makes use of the common system
+for representing barlines.
+
+
+\subsection*{The \textit{**dyn} Representation}
+
+\par 
+The
+\texttt{**dyn}
+representation provides a method for representing
+the orthographic appearance of notated dynamic markings.
+Unlike \texttt{**dynam}, the \texttt{**dyn} representation distinguishes
+between different ways of identifying a dynamic marking.
+For example, \textit{dim.}, \textit{dimin.}, \textit{diminuendo}, \textit{decres.},
+\textit{decresc.}, \textit{decresendo}, are all regarded as different
+from each other.
+Composers often have idiosyncratic ways of writing dynamic markings.
+As a result, the specific terms used may have repercussions,
+for example, in resolving cases of disputed composership.
+In some circumstances, it is thought that individual composers
+distinguish the terms in their own minds.
+For example, a composer might use \textit{decrescendo} as a general
+term to indicate a temporary descending dynamic shape,
+whereas \textit{diminuendo} might have a more specific meaning
+of a `dying away' or `fade-out' gesture.
+
+\par 
+In the **dyn representation the horizontal position of dynamic markings
+is indicated in quarter-durations with respect to the previous barline.
+This number appears prior to the dynamic signifier,
+hence \texttt{4.1f} means a \textit{forte} (e.g., \textbf{\textit{f}}) marking just after
+the horizontal position of the fourth quarter in the measure.
+The vertical position of dynamic markings is indicated with respect to
+the middle line of a corresponding staff;
+this number appears in curly braces.
+
+<begin wedge-graphic crescendo marking
+>begin wedge-graphic diminuendo marking
+[terminate wedge-graphic crescendo marking
+]terminate wedge-graphic diminuendo marking
+(continuing wedge-graphic crescendo
+)continuing wedge-graphic diminuendo
+\{...\}vertical position (in staff-line steps from mid-line)
+\#...size of marking (in staff-line steps)
+:number:density of dashed lines in strokes per quarter-duration
+/.../wedge opening size (in staff-line steps)
+rrest (silence)
+Hmarking appears in square brackets
+
+
+\par 
+By way of illustration, consider Example 28.2.
+\\\\
+\textbf{Example 28.2:}} Arnold Schoenberg, \textit{Three Piano Pieces, Op. 11, No. 2}, excerpt.
+
+
+
+Using the \texttt{**dyn} representation, Example 28.2 might be encoded as follows:
+
+\texttt{**dyn**kern**kern**kern
+*staff1/2*staff2*staff1*staff1
+**clefF4*clefG2*clefG2
+**M12/8*M12/8*M12/8
+====
+0.8f\{-4\}8F\# 8en8r2.ffn
+\texttt{.8A\#8r.
+\texttt{.8Dn 8cn[8cc\#.
+\texttt{.8F\#8cc\#].
+\texttt{.8AAn 8Gn8ccn.
+\texttt{.8C\#8bn.
+\texttt{.8FFn 8E-8b-[4.aan
+\texttt{.8AAn8ddn.
+\texttt{.8DD- 8C-8b-.
+\texttt{.8FFn4.dd8aa]
+\texttt{.8BBB- 8AA-.4ff\#
+\texttt{.8DDn..
+***v*v
+===
+\texttt{.8r8r
+1.4fp\{-4.5\}\{8d-\{8gn 8ccn 8ffn
+1.6>\{-4.3\}/1.5/..
+)8fn8bn 8een
+2.4]\{-4.3\}..
+2.5pp\{-5\}24A-4.cn 4.fn 4.b\}
+\texttt{.24d-.
+2.8>/1.4/24Dn.
+)8.GG.
+4.2]16BB-\}.
+\texttt{.8r8r
+4.4fp\{-4.5\}\{8An\{8e- 8a- 8dd-
+4.6>/1.5/..
+)8d-8gn 8ccn
+5.2]..
+5.4pp\{-4.5\}24F\#4.B- 4.en 4.a\}
+5.7>/1.4/24Bn.
+)24BB-.
+)8.DD.
+6.8]16GG\}.
+===
+*-*-*-}
+
+
+\par 
+The \texttt{*staff1/2} tandem interpretation indicates that the dynamic markings
+pertain to both staffs 1 and 2, however all vertical
+\texttt{**dyn}
+distance measures are encoded with respect to staff 1.
+(Reversing the numerical order -$\,$- \texttt{*staff2/1} -$\,$- would cause
+all distances to be measured with respect to staff 2.)
+The token \texttt{0.8f\{-4\}} means that the signifier \textbf{\textit{f}}} is located
+0.8 quarter-duration spaces from the beginning of the bar and
+4 staff-line steps below the center line of staff 1.
+The token \texttt{1.6>\{-4.3\}/1.5/} means that a wedge diminuendo marking begins
+1.6 quarter-durations from the beginning of the bar;
+the size of the opening of the wedge is 1.5 staff-line steps wide and
+the center of the opening is located 4.3 staff-line steps below the center
+line for staff 1.
+The token \texttt{2.4]\{-4.3\}} means that a wedge diminuendo marking ends
+2.4 quarter-durations from the beginning of the bar;
+the tip of the wedge converges at a point 4.3 staff-line steps below
+the center line for staff 1.
+Changing this value allows tilted wedges to be represented.
+
+
+\subsection*{The \textit{**dB} Representation}
+
+\par 
+The
+\texttt{**dB}
+representation provides a way to represent
+intensity in decibels.
+Decibels can be expressed in relative or absolute terms.
+Absolute values are represented according to sound pressure level (SPL).
+An absolute representation is indicated by the presence of the \texttt{*SPL}
+tandem interpretation.
+Zero decibels (SPL) corresponds roughly to the quietest sound
+detectable under ideal circumstances.
+A quiet room is roughly 40 dB in intensity;
+a conversation produces roughly 70 dB,
+a vacuum cleaner produces roughly 80 dB,
+a noisy factory produces roughly 90 dB,
+and a passing loud motorcycle generates roughly 100 dB (SPL).
+
+\par 
+The \texttt{**dB} representation provides a convenient way
+to represent sound intensity in a numerical form.
+A numerical representation allows us to carry out a
+variety of calculations and comparisons.
+
+
+\subsection*{The \textit{db} Command}
+
+\par 
+The
+\textbf{db}
+command translates dynamic markings to dynamic level expressed
+in decibels;
+specifically,
+\textbf{db}
+translates from the \texttt{**dynam} representation to
+\texttt{**dB} representation.
+By default,
+\textbf{db}
+uses the following mapping:
+
+dynamic leveldB SPL
+
+fffffff115
+ffffff110
+fffff105
+ffff100
+fff90
+ff80
+f75
+mf70
+mp65
+p60
+pp55
+ppp50
+pppp45
+ppppp40
+pppppp35
+ppppppp30
+v+5
+
+
+\par 
+Notice the presence of the
+\textit{accent}
+signifier (\texttt{v});
+the assigned value (\texttt{+5}) means that any encoded accents will
+receive a decibel level 5 dB higher than the basic sound pressure level
+at that point in the score.
+For example, an explicitly accented note occurring in a \textit{fortissimo}
+passage will be assigned a value of 85 dB SPL.
+
+\par 
+Users can define other mappings by using the
+\textbf{-f}
+option for \textbf{db}.
+With
+\textbf{-f}
+the user provides a filename that contains the non-default mapping values.
+The format for this file is the same as that shown in the above table.
+Each table entry specifies a dynamic marking, followed by a tab, followed
+by a numerical value.
+
+\par 
+In the case of crescendo and diminuendo markings, the
+\textbf{db}
+command attempts to interpolate a series of values between any preceding
+and subsequent dynamic markings.
+The following example shows a pianissimo marking at the beginning of
+measure 5;
+a crescendo marking spans all of measure 6, and a mezzo-forte marking
+appears in measure 7.
+The right-most spine shows the corresponding output generated by the
+\textbf{db}
+command.
+It shows an interpolation between the two dynamic levels.
+
+\texttt{**dynam**dB
+*SPL*
+=5=5
+pp55
+..
+..
+..
+=6=6
+<58
+(61
+..
+(64
+]67
+=7=7
+..
+mf70
+..}
+
+
+\par 
+The interpolation begins with the crescendo indicator and increments
+for each continuation signifier (i.e., the open parentheses).
+Interpolations are linear and continue up to the crescendo termination signifier.
+The size of the increment value depends on starting and ending dynamic levels
+as well as the number of crescendo-continuation signifiers.
+In the above case four pertinent
+crescendo signifiers separate the pianissimo and mezzo-forte markings;
+each of these records has been incremented by 3 decibels.
+Where necessary, decimal values are output.
+Notice that null tokens (such as those in the middle of measure 6)
+are ignored in the calculation.
+
+
+\subsection*{Processing Dynamic Information}
+
+\par 
+The
+\texttt{**dB}
+representation can be used to assist a number
+of tasks related to musical dynamics.
+Suppose, for example, that we want to compare the average overall
+dynamic levels for two arabesques:
+
+\par 
+
+\texttt{extract -i '**dynam' arabesque1 | db | rid -GLId | stats}
+\\
+\texttt{extract -i '**dynam' arabesque2 | db | rid -GLId | stats}
+
+
+
+\par 
+Similarly, we might compare the overall dynamic levels between
+two sections of a single work.
+Perhaps we wish to know whether the exposition is on average louder
+than the development section:
+
+\par 
+
+\texttt{yank -s Exposition -r 1 symphony3 | extract -i '**dynam' $\backslash$
+
+| db | rid -GLId | stats}
+
+\texttt{yank -s Development -r 1 symphony3 | extract -i '**dynam' $\backslash$
+
+| db | rid -GLId | stats}
+
+
+
+
+\par 
+Does a work tend to begin quietly and end loudly, or vice versa?
+Here we might compare the first 10 measures with the final 10 measures.
+Notice the use of
+\textbf{ditto}
+to increase the number of values participating in the calculation of the
+average dynamic level:
+
+\par 
+
+\texttt{yank -n = -r 1-10 janacek | extract -i '**dynam' $\backslash$
+
+| ditto -s = | db | rid -GLId | stats}
+
+\texttt{yank -n = -r '\$-10-\$' janacek | extract -i '**dynam' $\backslash$
+
+| ditto -s = | db | rid -GLId | stats}
+
+
+
+
+\par 
+Suppose we want to determine whether there is an association between
+dynamic levels and pitch height for Klezmer music.
+That is, does the music tend to be quieter for lower pitches and
+louder for higher pitches?
+A straightforward way to determine this is to compare dynamic level
+with pitch height -$\,$- represented in semitones
+(\texttt{**semits}).
+The
+\textbf{correl}
+command can then be used to measure Pearson's coefficient of correlation.
+If there is a relationship between pitch height and dynamic level
+then the correlation should be positive.
+
+
+\par 
+
+\texttt{semits klezmer | correl -s \^{}= -m}
+
+
+\par 
+This command assumes an input consisting of two spines -$\,$- one pitch-related
+and a \texttt{**dB} spine.
+The
+\textbf{-s}
+option for
+\textbf{correl}
+is used to skip barlines so bar numbers aren't included in the calculation.
+The
+\textbf{-m}
+option for
+\textbf{correl}
+disables the "matched pairs" criterion.
+Normally, if a number is found in one spine but not the other then
+\textbf{correl}
+will complain and terminate.
+With the
+\textbf{-m}
+option, each encoded pitch need not have a corresponding dynamic level indication
+and vice versa.
+
+\par 
+Similarly, we could use this same approach to determine whether there is
+a relationship between duration and dynamic level.
+Are longer notes more likely to be louder in Klezmer music?
+
+\par 
+
+\texttt{dur klezmer | correl -s \^{}= -m}
+
+
+
+\par 
+A variation on this procedure might be to restrict the comparison over a specified
+pitch range.
+For example, one might think that higher pitches tend to be louder but that
+lower pitches are neither softer nor louder than usual.
+In order to test this view we can use the
+\textbf{recode}
+command to reassign "low" pitches to a single value.
+By way of illustration, the reassignment might presume that below G4 (semits=7)
+there is no relationship between pitch height and dynamic level.
+We might recode all values lower than 7 to a unique string (such as `XXX') and
+then use
+\textbf{grep -v}
+to eliminate these notes from a subsequent correlation:
+
+\par 
+
+\texttt{extract -i '**kern' klezmer | semits recode > temp1
+\\
+extract -i '**dB' klezmer > temp2
+\\
+assemble temp1 temp2 | grep -v 'XXX' | correl -s \^{}= -m}
+
+
+
+\subsection*{Terraced Dynamics}
+
+\par 
+Suppose we want to identify whether various works exhibit "terraced"
+or "graduated" dynamics.
+In the case of terraced dynamics, we would expect to see many relatively
+abrupt dynamic contrasts, such as alternations between \textit{forte} and \textit{piano}.
+There are several ways of approaching this question.
+One approach might translate
+\texttt{**dynam}
+data to
+\texttt{**dB}
+data and then calculate the average (or maximum) changes in dynamic level.
+If a work contains many crescendos and diminuendos markings,
+then most of the changes in \texttt{**dB} values will be small.
+Conversely, alternations between contrasting dynamic levels will cause
+the average decibel differences to be larger.
+The
+\textbf{xdelta}
+command can be used to calculate the changes in dynamic level.
+Notice that it is important to avoid using the
+\textbf{ditto}
+command since repeated dynamic level values will cause the average
+dynamic difference to approach zero.
+
+\par 
+
+\texttt{extract -i '**dynam' haendel | db | xdelta -a -s = | rid -d $\backslash$
+
+| stats}
+
+
+
+\par 
+Another approach to this problem might be to count the number of dynamic contrasts,
+avoiding the use of the
+\textbf{db}
+command.
+In the following pipeline, we use
+\textbf{context}
+to generate pairs of dynamic markings, and then use
+\textbf{grep}
+to count the number of alternations between \textbf{\textit{f}} and \textbf{\textit{p}}.
+
+\par 
+
+\texttt{extract -i '**dynam' haendel | grep -v '[][()=rX]' | rid -d $\backslash$
+
+| context -n 2 | grep -c 'f p'}
+
+\\
+\texttt{extract -i '**dynam' haendel | grep -v '[][()=rX]' | rid -d $\backslash$
+
+| context -n 2 | grep -c 'p f'}
+
+
+
+
+\subsection*{Dynamic Swells}
+
+\par 
+Conceptually, crescendos and diminuendos can be paired to form one of two dynamic
+gestures.
+A "swell" gesture consists of a crescendo followed by a diminuendo.
+Conversely, a "dip" gesture would consist of a diminuendo followed by a
+crescendo.
+Musical intuition would suggest that swell gestures are more common than
+dip gestures.
+We could test this view as follows:
+
+\par 
+
+\texttt{extract -i '**dynam' grieg | grep -v '[][()=rX]' | rid -d $\backslash$
+
+| context -n 2 | grep -c '< >'}
+
+\texttt{extract -i '**dynam' grieg | grep -v '[][()=rX]' | rid -d $\backslash$
+
+| context -n 2 | grep -c '> <'}
+
+
+
+
+\subsection*{MIDI Dynamics}
+
+\par 
+Dynamic level data is not always easily available.
+One possible source is to translate MIDI key-velocity data to
+an estimated decibel value.
+Actual sound pressure levels will depend on the timbre of the MIDI
+sounds, the specific pitch played, and the volume on the output amplifier.
+Nevertheless, a rough estimate of sound pressure level may be useful
+for various analytic tasks.
+Recall that in the
+\texttt{**MIDI}
+representation, key-velocity data is encoded
+as the final number in three-number tokens where numbers are separated by slashes.
+The first value in the triplet is elapsed clock ticks and the second value
+is the MIDI key number (positive for key-on events, negative for key-off events).
+By way of reminder, the following example shows three
+\texttt{**kern}
+notes with a corresponding **MIDI representation.
+
+\texttt{**kern**MIDI
+**Ch1
+4c72/60/64
+4d72/-60/64 72/62/64
+4e72/-62/64 72/64/64
+.72/-64/64
+*-*-}
+
+
+\par 
+In order to translate to a **dB representation, we must first isolate the
+key velocity values for key-on events.
+The following
+\textbf{humsed}
+command simply eliminates all data up to (and including) the last slash character:
+
+\par 
+
+\texttt{extract -i '**MIDI' mono\_input | humsed 's/.*$\backslash$///'}
+
+
+\par 
+This will leave us with just the key-down velocity data.
+Let's suppose that the following rough decibel equivalents are established:
+
+key velocityapproximate dB SPL
+12785
+10080
+9077
+8074
+7070
+6065
+5060
+4053
+3044
+2032
+1021
+110
+00
+
+
+\par 
+An appropriate reassignment file for
+\textbf{recode}
+would begin as follows:
+
+\texttt{>=12785
+>=10080
+>=9077
+>=8074
+>=7070}
+etc.
+
+
+\par 
+The completed translation would be accomplished by the following pipeline:
+
+\par 
+
+\texttt{extract -i '**MIDI' mono\_input | humsed 's/.*$\backslash$///' $\backslash$
+
+| recode -f reassign | sed 's/**MIDI/**dB/'}
+
+
+
+\par 
+Notice the use of the
+\textbf{sed}
+command to replace the **MIDI interpretation by a **dB interpretation.
+
+
+
+\subsection*{Reprise}
+
+\par 
+In this chapter we have introduced three representations related
+to musical dynamics.
+The
+\texttt{**dyn}
+representation allows us to encode dynamic markings
+as they appear visually in a printed score.
+Unfortunately, traditional notated dynamic markings are often confusing
+or ambiguous.
+In order to facilitate some types of analytic processing it is useful
+to generate a more rationalized interpretation of the dynamics
+of a work.
+The
+\texttt{**dynam}
+representation provides a canonical scheme
+for representing basic notated dynamic markings
+where ambiguities are resolved by explicitly interpreting
+the meaning of dynamic markings.
+A third scheme
+(\texttt{**dB})
+provides a scheme for representing continuous
+dynamic levels in decibels.
+We have seen that the
+\textbf{db}
+command (which translates from \texttt{**dynam} to \texttt{**dB})
+allows us to pose and answer a variety of questions related to the
+dynamic organization of music.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

@@ -1,0 +1,29 @@
+
+EKERN     : Translate ESAC database to **kern format file
+
+     This command translates the database files in the Essen
+     Associative Code format to Humdrum **kern format files.
+     ESAC databases encode monophonic melodies.  The result
+     is a single spine of **kern output.  Normally, an ESAC database
+     encodes many works -- thus resulting in a Humdrum output
+     consisting of many works separated by spine-path terminators, etc.
+
+     Due to the complexity of database translation some assumptions
+     have been made.  For example, keys are assumed to be major
+     unless a lowered mediant or lowered submediant tone appears in
+     the first phrase -- in which case the key is assumed to be minor.
+
+     N.B. Some manual editing of the output may be necessary.  Check
+     for "ERROR" records in the output.
+
+     Only one input file (database) can be processed at a time.
+
+Syntax:
+
+     ekern ESAC-database  [> outfile.krn]
+
+Options:    None.
+
+  This special-purpose utility is currently not documented in the
+  Humdrum Reference Manual.
+

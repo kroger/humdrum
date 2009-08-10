@@ -1,0 +1,898 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH encode 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBencode\fR  -- interactive Humdrum encoding from \s-1MIDI\s+1 input
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBencode\fR [\fB-r \fIcontrolfile.rc\fR] [\fIeditfile\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "encode"
+command provides an interactive editor for capturing Humdrum
+data from a \s-1MIDI\s+1 input device.
+The operation of
+.B "encode"
+can be tailored by the user to generate a wide range of Humdrum
+representations -- including representations designed by the user.
+.sp 1
+.sp 1
+The
+.B "encode"
+command is limited to encoding information one spine at a time.
+A typical use of
+.B "encode"
+might be to encode individual musical \(odparts\(cd or \(odvoices\(cd
+in a representation such as \f(CR**kern\fR;
+the user might then use the Humdrum
+.B "timebase"
+and
+.B "assemble"
+commands to construct a full score from the encoded parts.
+The user must have access to an appropriate \s-1MIDI\s+1 controller connected
+via a Roland MPU-401 (or compatible) \s-1MIDI\s+1 controller card.
+Currently,
+.B "encode"
+is available only for IBM PC or compatible hardware running under
+the DOS operating system.
+.sp 1
+.sp 1
+The
+.B "encode"
+command implements a full-screen interactive text editor
+-- similar to the
+.B "vi"
+text editor.
+When invoked, the screen is divided into three display regions: a
+.I "status window,"
+a
+.I "command window,"
+and a larger
+.I "text window."
+The
+.I "status window"
+displays various pieces of information,
+including the name of the file being edited, the current size of the file
+(in bytes), the run-control (\f(CR.rc\fR) file used to configure the editor,
+the number of beats per measure, the output signifier assigned to each beat,
+the current metronome rate, and mode.
+The
+.I "command window"
+is used to construct and execute general-purpose
+commands.
+The
+.I "text window"
+is used to display and edit the encoded Humdrum text.
+.sp 1
+.sp 1
+The editor has four modes of operation:
+.I "edit mode,"
+.I "input mode,"
+.I "MIDI input mode,"
+and
+.I "command mode."
+.in -2
+.sp 1
+.sp 1
+.SH "EDIT MODE"
+.in +2
+When
+.B "encode"
+is first invoked, the editor is placed in
+.I "edit mode."
+If an edit-file has been specified in the command-line,
+then the beginning of any existing text is displayed in the text window.
+Edit mode allows the user to move to particular locations in the text
+and execute certain types of text manipulation instructions.
+Movement through the text can be achieved by either scrolling the
+display, or by relative cursor motions within the text window.
+The cursor position is indicated by a pulsing underscore character.
+.sp 1
+.sp 1
+Four scrolling commands are available.
+\fBControl-F\fR is used to scroll forward in the document by one page.
+\fBControl-B\fR is used to scroll backward by one page.
+\fBControl-D\fR is used to scroll down by half a page.
+\fBControl-U\fR is used to scroll up by half a page.
+The \fBpage-down\fR and \fBpage-up\fR keys can be used instead of CTRL-F
+and CTRL-B respectively.
+If any of these commands is preceded by a typed
+.I "number,"
+then the action is repeated
+.I "number"
+times.
+Hence \f(CR5\fI<page-down>\fR will cause the display to advance five pages.
+.sp 1
+.sp 1
+Movement to specific line numbers can be achieved using the
+upper-case `\fBG\fR' command preceded by the desired line number.
+If no line number is specified, the \fBG\fR command causes the cursor to
+be moved to the end of the file.
+.sp 1
+.sp 1
+Vertical motions of the cursor relative to the displayed text can be
+controlled by a variety of means.
+The up (\fB\(ua\fR) and down (\fB\(da\fR) cursor-control keys move the cursor
+up one line or down one line respectively.
+Alternatively, the lower-case letters `\fBk\fR' and `\fBj\fR' may be used
+for up and down movements -- as in the
+.B "vi"
+text editor.
+If the cursor is at the bottom or top of the screen,
+cursor movement down or up a line (respectively) will cause the
+screen to scroll one line as needed.
+The carriage return or \fB\s-1ENTER\s+1\fR key will cause the cursor
+to move to the beginning of the next line.
+Once again, if any of these commands is preceded by a typed
+.I "number,"
+then the action is repeated
+.I "number"
+times.
+.sp 1
+.sp 1
+The upper-case letter `\fBH\fR' positions the cursor at the highest line
+displayed on the screen, whereas the upper-case letter `\fBL\fR' positions
+the cursor at the lowest line displayed on the current screen.
+Alternatively, the `\fBhome\fR' and `\fBend\fR' keys can be used to move
+the cursor to the top and bottom respectively.
+The upper-case letter `\fBM\fR' positions the cursor in the middle
+of the current screen.
+In all of these commands, the cursor is positioned at the horizontal
+beginning of the appropriate line.
+.sp 1
+.sp 1
+Horizontal motions of the cursor within a line can be carried out using
+the left (\fB\(<-\fR) and right (\fB\(->\fR) arrow keys.
+Alternatively, the lower-case `\fBh\fR' and `\fBl\fR' keys can be used
+as aliases for the left and right cursor motions -- as in the
+.B "vi"
+text editor.
+The \fBspace\fR bar can also be used to move the cursor to the right.
+The dollar sign (\fB$\fR) causes the cursor to move to the end of the
+current line.
+The number zero (\fB0\fR) or the caret (\fB^\fR) causes the cursor to
+move to the beginning of the current line.
+.sp 1
+.sp 1
+Horizontal cursor movements may also be defined by context.
+Where multiple data tokens are encoded on a single line,
+the `\fBw\fR' command causes the cursor to move forward word-by-word,
+whereas the `\fBb\fR' command causes backward movement word-by-word.
+A
+.I "word"
+is defined as any character string separated by spaces (or by new lines).
+In both the `\fBw\fR' and `\fBb\fR' commands the cursor is placed at
+the beginning of the appropriate word.
+.sp 1
+.sp 1
+Three forms of simple text deletions are possible in
+.I "edit mode."
+The character corresponding to the current cursor position
+can be deleted by typing the lower-case letter `\fBx\fR'.
+The character immediately before the current cursor position
+can be deleted by typing the upper-case letter `\fBX\fR'.
+The lower-case letter `\fBd\fR' will cause the current line to
+be deleted;
+line deletions may also be achieved by typing the `\fBDel\fR' key.
+Preceding any of these commands by a typed
+.I "number"
+causes the action to be repeated
+.I "number"
+times.
+The most recent deletion can be restored or \(odundone\(cd by typing
+the lower-case letter `\fBu\fR'.
+.in -2
+.sp 1
+.sp 1
+.SH "INPUT MODE"
+.in +2
+The
+.I "input mode"
+allows the manual inputting of typed characters into the text file.
+This mode is invoked from the
+.I "edit mode"
+by typing either `\fBa\fR', `\fBi\fR', `\fBo\fR', or `\fBO\fR'.
+When any of these commands is invoked, the cursor increases in size
+and the status window reports the new mode.
+Typing the letter `\fBi\fR' will cause all subsequently typed material to be
+.I "inserted"
+immediately prior to the current cursor position.
+Typing the letter `\fBa\fR' will cause all subsequently typed material to be
+.I "appended"
+following the current cursor position.
+This can also be achieved by typing the `\fBIns\fR'
+or `\fB\s-1INSERT\s+1\fR' key.
+Typing the letter `\fBo\fR' will cause a new line to be
+.I "opened"
+following the current line;
+subsequently typed material will begin on this new line.
+Typing the upper-case letter `\fBO\fR' will cause a new line to be
+opened immediately
+.I "prior"
+to the current line.
+.sp 1
+.sp 1
+Once the input mode is invoked, typed ASCII characters
+will be added at the current cursor position until the ESCape or TAB
+key is pressed.
+Pressing ESCape or TAB will return
+.B "encode"
+to the
+.I "edit mode."
+Tabs are explicitly forbidden as input in order to reduce
+the possibility of creating text that does not conform to the Humdrum syntax.
+.in -2
+.sp 1
+.sp 1
+.SH "MIDI INPUT MODE"
+.in +2
+The most characteristic feature of
+.B "encode"
+is the
+.I "MIDI input mode."
+The \s-1MIDI\s+1 input mode can be invoked from
+.I "edit mode"
+by typing either of the upper-case letters `\fBA\fR' or `\fBI\fR'.
+The letter `\fBI\fR' will cause all subsequent \s-1MIDI\s+1-driven input to be
+.I "inserted"
+immediately prior to the current line.
+The letter `\fBA\fR' will cause all subsequent \s-1MIDI\s+1-driven input to be
+.I "appended"
+immediately following the current line.
+.sp 1
+.sp 1
+In the
+.I "MIDI input mode,"
+data is entered into the current document according to user-defined
+mappings between
+.I "MIDI events"
+(such as caused by playing on a \s-1MIDI\s+1 keyboard)
+and ASCII character strings.
+Predefined mappings are specified in a
+.I "run-time control"
+(\f(CR.rc\fR) file.
+When the
+.B "encode"
+command is invoked, it must have access to a\f(CR .rc\fR file containing
+configuration information.
+The user can identify a specific\f(CR .rc\fR file on the command line
+via the
+.B "-r"
+option (see OPTIONS).
+Alternatively,
+.B "encode"
+will seek a default\f(CR .rc\fR file (named \f(CRencode.rc\fR) residing in the
+the current directory, or if absent, in the \f(CR$HUMDRUM/etc\fR directory.
+The run-time control file is essential to the operation of
+.B "encode,"
+and inability to locate a \f(CR .rc\fR file will cause
+.B "encode"
+to abort (see discussion in OPTIONS below).
+.sp 1
+.sp 1
+The run-control file contains a series of definitions mapping
+\s-1MIDI\s+1 events to output strings.
+Three classes of \s-1MIDI\s+1 events can be mapped:
+.I "key number"
+(\f(CRKEY\fR),
+.I "delta-time"
+(\f(CRDEL\fR), and
+.I "key velocity"
+(\f(CRVEL\fR).
+Normally, a\f(CR .rc\fR file contains a number of definitions
+for each class of event, although some events may not appear at all
+in some\f(CR .rc\fR files.
+.sp 1
+.sp 1
+By way of example, the run-control instruction:
+.sp 1
+.sp 1
+.in +2
+KEY 60 middle-C
+.in -2
+.sp 1
+.sp 1
+assigns the key-on event for \s-1MIDI\s+1 key #60 to the
+string \f(CRmiddle-C\fR.
+When in
+.I "MIDI input mode,"
+each key-on event for key #60 will cause the string \f(CRmiddle-C\fR to be
+prepared for insertion into the text window.
+Typically, a number of \f(CRKEY\fR definitions will appear in
+a given run-control file -- often one definition for
+each \s-1MIDI\s+1 key (0 to 127).
+.sp 1
+.sp 1
+A second class of \s-1MIDI\s+1 events is key-down velocity (\f(CRVEL\fR).
+Key velocities can range between 0 (low key velocity)
+and 127 (high key velocity).
+Each \f(CRVEL\fR mapping specifies a range of values for which a given string
+will be output.
+By way of example, the following assignment maps key velocity
+values between 90 and 127 to a string consisting merely of
+the apostrophe (the \f(CR**kern\fR signifier for a staccato note):
+.sp 1
+.sp 1
+.in +2
+VEL 90 127 '
+.in -2
+.sp 1
+.sp 1
+Given this mapping, key-down velocities within the specified
+range will cause the apostrophe character to be prepared for
+insertion into the text window.
+.sp 1
+.sp 1
+A third class of \s-1MIDI\s+1 events is delta-time (\f(CRDEL\fR).
+When determing the \(odduration\(cd of a performed note,
+the durations of individual key-presses are confound by the articulation.
+In general, performing musicians are less concerned by the
+.I "duration"
+of individual key-presses, than by the keypress-to-keypress time spans;
+the elapsed time between one key-onset and the next
+key-onset provides a better estimate of the nominal musical
+duration of a note than the actual held duration.
+The variable \f(CRDEL\fR contains the
+.I "difference between successive key-onset times"
+-- expressed in \s-1MIDI\s+1 clock ticks.
+Values of \f(CRDEL\fR may range from 0 upward.
+For a tempo of 60 beats per minute,
+inter-onset durations of one second correspond to
+\f(CRDEL\fR values of about 100.
+.sp 1
+.sp 1
+The following sample\f(CR .rc\fR file illustrates a simple run-control file.
+Notice that a series of \f(CRDEL\fR ranges have been defined and
+mapped to \f(CR**kern\fR- or \f(CR**recip\fR-type durations.
+For example, inter-onset times lying between 48 and 80 clock ticks
+generate the output string `\f(CR8\fR';
+values between 113 and 160 generate the string `\f(CR4\fR' and so on.
+Notice that this file restricts the number of possible output \(oddurations\(cd
+to just five.
+.in +2
+.sp 1
+.TS
+l.
+# Sample .rc file
+KEY 60 c
+KEY 62 d
+KEY 64 e
+KEY 65 f
+KEY 67 g
+KEY 69 a
+KEY 71 b
+KEY 72 cc
+
+DEL 48 80 8
+DEL 81 112 8.
+DEL* 113 160 4
+DEL 161 224 4.
+DEL 225 320 2
+
+VEL 90 127 '
+
+ORDER DEL KEY VEL
+.TE
+.sp 1
+.in -2
+Any records in the run-control file beginning with a \fB#\fR character are
+treated as comments.
+Empty lines are ignored.
+.sp 1
+.sp 1
+The effect of the above run-control file can be illustrated by example.
+Imagine that
+.B "encode"
+received two key-on events (key #60 followed by key #62),
+where the first key exhibited a velocity value of 94 and the inter-onset time
+(\f(CRDEL\fR) was 100.
+The first key (#60) would be mapped to the string `\f(CRc\fR';
+the delta-time would be mapped to the string `\f(CR8.\fR';
+and the key-velocity (\f(CRVEL\fR) would be mapped to the apostrophe.
+At the moment of the key-onset for key #62, these three
+strings would be amalgamated according to the \f(CRORDER\fR instruction
+(\f(CRDEL\fR first, \f(CRKEY\fR second, and \f(CRVEL\fR third) --
+producing the output string: \f(CR8.c'\fR
+.sp 1
+.sp 1
+Notice that
+.B "encode"
+outputs assembled strings only when the
+.I "next"
+key-on event occurs.
+This means that the text display is always one \(odnote\(cd
+behind the performer.
+Note that if musical durations are based on key inter-onset times,
+it is impossible to output a note prior to the onset of the next note.
+The last note in a buffer can be flushed by typing the ESCape key.
+(The timing of the last note is based on the \f(CRDEL\fR between key-onset
+and the moment of pressing ESCape.)
+.sp 1
+.sp 1
+In addition to mapping velocities, inter-onset times,
+and key numbers, run-control files can define a number of other
+attributes.
+The \s-1MIDI\s+1 channel number attended to by
+.B "encode"
+can be set by the \f(CRRECEIVE\fR instruction.
+Any one of 16 channels (1-16) can be selected.
+A default channel 1 is assumed if no \f(CRRECEIVE\fR instruction is present
+in the run-control file.
+.sp 1
+.sp 1
+The
+.B "encode"
+command has a built-in metronome for assisting real-time encoding.
+The metronome sends commands to the \s-1MIDI\s+1 instrument
+generating metronome tones.
+Two types of tones are generated -- tones marking each beat,
+and tones marking the beginning of each measure.
+The metronome rate (in beats per minute) is set by the TEMPO command.
+The beat is specified in two ways.
+The default beat is indicated by the presence of an asterisk following
+.I "one"
+of the DEL instructions.
+In the above example, the signifier `4' is assigned to the default beat.
+Apart from the default beat, the beat may also be explicitly assigned
+using the BEAT instruction.
+This instruction is followed by a single argument identifying the output
+.I "signifier"
+intended to coincide with each metronome beat.
+For example, \f(CRBEAT 4.\fR would set the beat in the above example to
+the dotted quarter, rather than the quarter.
+Note that the specified signifier in the BEAT command must correspond to
+one of the existing signifiers defined using a DEL instruction.
+.sp 1
+.sp 1
+The following table lists all of the types of instructions
+permitted in a run-control file.
+.sp 1
+.TS
+l l.
+\fB# \fItext\fR	unexecutable comment
+\fBBEAT \fIstring\fR	set beat to \fBDEL\fR whose output signifier
+	is \fIstring\fR beat
+\fBBUFFER \fIn text\fR	define (potentially multi-line)
+	text buffer # \fIin\fR (0-9)
+\fBDEL \fImin max string\fR	key inter-onset times between \fImin\fR and
+	\fImax\fR clock ticks cause \fIstring\fR to be
+	output
+\fBKEY \fIn string\fR	\s-1MIDI\s+1 key-on #\fIn\fR causes \fIstring\fR to be
+	output
+\fBMETER \fIn\fR	define number of beats per measure as \fIn\fR
+\fBMETRE \fIn\fR	same as \fBMETER\fR
+\fBMM \fIon|off\fR	switch metronome \fIon\fR or \fIoff\fR; default is
+	\fIon\fR
+\fBORDER \fIcodeword1 codeword2 ...\fR	define order of string outputs, where
+	codewords are selected from: BUFFER,
+	DEL, KEY, SRING, VEL
+\fBRECEIVE \fIn\fR	define the \s-1MIDI\s+1 channel from which data
+	is accepted
+\fBSTRING \fIn text\fR	define string constant # \fIin\fR (0-9)
+\fBTEMPO \fIn\fR	set metronome to \fIn\fR beats per minute
+\fBVEL \fImin max string\fR	key-down velocities between \fImin\fR and
+	\fImax\fR cause \fIstring\fR to be output
+.TE
+.sp 1
+.ce
+.I "Definition types for \fBencode\fR"
+The \f(CRBUFFER\fR, \f(CRDEL\fR, \f(CRKEY\fR, \f(CRSTRING\fR,
+and \f(CRVEL\fR instructions
+can be repeated multiple times within the \f(CR.rc\fR file.
+All other instructions (\f(CRBEAT\fR, \f(CRMETER\fR, \f(CRMM\fR,
+\f(CRTEMPO\fR, \f(CRORDER\fR and \f(CRRECEIVE\fR)
+should appear only once in the \f(CR.rc\fR file.
+The \f(CRBEAT\fR and \f(CRTEMPO\fR instructions cannot appear in
+the \f(CR.rc\fR file until after the default beat (\f(CRDEL*\fR)
+has been defined.
+.in -2
+.sp 1
+.sp 1
+.SH "COMMAND MODE"
+.in +2
+The
+.B "encode"
+.I "command mode"
+allows a number of general-purpose commands to be executed --
+such as editing a specified file, changing a default mapping,
+or auditioning the encoded material.
+The
+.I "command mode"
+can be invoked from the
+.B "encode"
+.I "edit mode"
+by typing the colon character (:).
+.sp 1
+.sp 1
+Each command is formulated in the
+.I "command window"
+and launched by pressing the ENTER key.
+After execution,
+.B "encode"
+is returned to
+.I "edit mode."
+.sp 1
+.sp 1
+Most commands consist of a single character;
+some commands require one or more parameters.
+.sp 1
+.sp 1
+The `\fBw\fR' command causes the current text to be written to disk.
+If there is currently no active filename, then an error is
+displayed indicating that
+.B "encode"
+is unable to write a file without knowledge of the filename.
+The command `\fBw \fIfilename\fR\fR' will cause the current contents
+to be written to the file \fIfilename\fR.
+If
+.B "encode"
+was invoked with a specified filename, then that filename is
+active throughout the session.
+.sp 1
+.sp 1
+If the user attempts to write to an existing file (that was not specified
+when
+.B "encode"
+was invoked), then an error message is issued.
+Overwriting an existing file can be achieved by appending an exclamation
+mark following the write instruction -- as in `\fBw! \fIfilename\fR.'
+.sp 1
+.sp 1
+The `\fBq\fR' command causes
+.B "encode"
+to terminate.
+If the current file has been modified without writing to disk,
+then a warning will be displayed and the quit instruction ignored.
+Appending an exclamation mark (`\fBq!\fR') will cause
+.B "encode"
+to terminate without saving any recent modifications.
+.sp 1
+.sp 1
+Note that the
+.I "quit"
+and
+.I "write"
+commands can be combined as a single instruction
+-- `\fBwq\fR'.
+.sp 1
+.sp 1
+The `\fBr \fIfilename\fR' command causes
+.B "encode"
+to read the file \fIfilename\fR into the text, beginning at
+the line following the current cursor position.
+.sp 1
+.sp 1
+The `\fBv\fR' command causes
+.B "encode"
+to spawn a
+.B "vi"
+text editing session -- importing the current
+.B "encode"
+text.
+The
+.B "vi"
+text editor provides text manipulation capabilities, including
+searching, substitution, and macro-instruction facilities not available in
+.B "encode."
+(Refer to the \s-1UNIX\s+1
+.B "vi"
+reference document for further information.)
+When the
+.B "vi"
+session is closed,
+the edited text file is returned to the
+.B "encode"
+session.
+.sp 1
+.sp 1
+The `\fBm\fR' command invokes a Humdrum pipeline that is suitable for
+auditioning text data conforming to either the \f(CR**kern\fR
+or \f(CR**MIDI\fR representation formats.
+Specifically, `\fBm\fR' causes the current text to be passed to the
+Humdrum pipeline: \f(CRmidi -c | perform\fR.
+Any \f(CR**kern\fR data will be translated to \f(CR**MIDI\fR
+data and sent to the \f(CRperform\fR command.
+The user can then interactively proof-listen or audition
+the encoded data.
+Refer to the
+.B "perform (1)"
+for information regarding the types of
+interactive commands available during proof-listening.
+The
+.B "perform"
+command is terminated when the end-of-file is reached,
+or if the user presses either the ESCape key or the letter `q'.
+In either case, control is returned to
+.B "encode."
+.sp 1
+.sp 1
+The `\fBb\fR' command is used to read buffer text defined in the\f(CR .rc\fR
+file.
+Up to ten numbered buffers (0-9) can be defined.
+The command:
+.sp 1
+.sp 1
+.in +2
+b 1
+.in -2
+.sp 1
+.sp 1
+will cause any text denoted \f(CRBUFFER 1\fR to be output following
+the current cursor position.
+Use of the upper-case `\fBB\fR' rather than `\fBb\fR' causes the
+buffer contents to be inserted prior to the current line rather
+than following the current line.
+.sp 1
+.sp 1
+Buffer zero (0) has a special status.
+When the
+.B "encode"
+command is invoked, if the current text is empty
+(i.e. empty file or no filename specified),
+then the contents of \f(CRBUFFER 0\fR are automatically inserted into
+the text.
+This provides a convenient way to import header information
+for a newly encoded file.
+.sp 1
+.sp 1
+The `\fBrc \fIfilename\fR' command causes
+.B "encode"
+to use a different run-control file \fIfilename\fR.
+This allows the
+.B "encode"
+environment to be entirely reconfigured without
+interrupting the encoding session.
+This command can prove useful, for example, when the music being
+encoded changes key.
+.sp 1
+.sp 1
+The \fBset\fR command can be used to define (or redefine) any parameters
+permitted in a \f(CR.rc\fR file.
+For example, the tempo may be changed, the metronome turned-off,
+the metronome beat redefined, a string variable assigned,
+or a specific key re-mapped, e.g.
+.sp 1
+.sp 1
+.in +2
+set TEMPO 92
+.br
+set MM off
+.br
+set BEAT 4.
+.br
+set STRING 3 !! Variation No. ...
+.br
+set KEY 60 C4
+.in -2
+.sp 1
+.sp 1
+For the \f(CRBUFFER\fR command,
+.B "set"
+defines an
+.I "additional"
+buffer record, rather than replacing any existing buffer definitions.
+.sp 1
+.sp 1
+Note that run-control keywords, such as \f(CRTEMPO\fR,
+may be spelled using either upper-case or lower-case.
+.sp 1
+.sp 1
+Note that due to the small size of the command window,
+especially long command lines may wrap around within the window.
+This wrap-around has no affect on the command operation.
+.in -2
+.sp 1
+.sp 1
+.SH "SUMMARY"
+.in +2
+The various built-in commands in
+.B "encode"
+are summarized in the following table.
+.sp 1
+.TS
+l l.
+\fBEDIT MODE\fR
+\s-1CTRL\s+1-F	scroll forward one page
+\s-1CTRL\s+1-B	scroll backward one page
+\s-1CTRL\s+1-D	scroll down by half a page
+\s-1CTRL\s+1-U	scroll up by half a page
+<\s-1PAGE-DOWN\s+1>	scroll forward one page
+<\s-1PAGE-UP\s+1>	scroll backward one page
+\(da	move cursor down one line
+\(ua	move cursor up one line
+j	move cursor down one line
+k	move cursor up one line
+<ENTER>	move cursor to the beginning of the next line
+H	move cursor to the top of the display
+M	move cursor to the middle of the display
+L	move cursor to the bottom of the display
+<\s-1HOME\s+1>	move cursor to the top of the display
+<\s-1END\s+1>	move cursor to the bottom of the display
+\(->	move cursor one character to the right
+\(<-	move cursor one character to the left
+l	move cursor one character to the right
+h	move cursor one character to the left
+<\s-1SPACE\s+1>	move cursor one character to the right
+x	delete character at current cursor position
+X	delete character immediately preceding currrent
+	cursor position
+d	delete current line
+u	undo most recent deletion or insertion command
+<\s-1INSERT\s+1>	insert text prior to current cursor position
+	(invoke \s-1INPUT MODE\s+1)
+i	insert text prior to current cursor position
+	(invoke \s-1INPUT MODE\s+1)
+a	insert text after to current cursor position
+	(invoke \s-1INPUT MODE\s+1)
+o	insert text beginning with the next line
+	(invoke \s-1INPUT MODE\s+1)
+O	insert text beginning with the previous line
+	(invoke \s-1INPUT MODE\s+1)
+A	invoke \s-1MIDI INPUT MODE\s+1; insert data beginning with
+	the next line
+I	invoke \s-1MIDI INPUT MODE\s+1; insert data beginning with
+	the previous line
+<\fInumber\fR>	repeat ensuing command <\fInumber\fR> times
+
+\fBINPUT MODE\fR
+ESC	return to \s-1EDIT MODE\s+1
+<\s-1TAB\s+1>	return to \s-1EDIT MODE\s+1
+
+.T&
+l s
+l l.
+\fBMIDI INPUT MODE\fR
+ESC	complete last \s-1MIDI\s+1 event and return to \s-1EDIT MODE\s+1
+
+.T&
+l s
+l l.
+\fBCOMMAND MODE\fR
+b \fIn\fR	append run-control buffer number \fIn\fR following
+	current cursor position
+B \fIn\fR	insert run-control buffer number \fIn\fR before
+	current cursor position
+m	invoke interactive proof-listening for \f(CR**kern\fR or
+	\f(CR**MIDI\fR text
+set \fIrc-command\fR	set or reset a \f(CR.rc\fR mapping
+q	quit \fBencode\fR
+q!	quit \fBencode\fR without saving modifications since
+	last write
+r \fIfilename\fR	read input file \fIfilename\fR at current
+	cursor position
+rc \fIcontrolfile\fR	use run-control file \fIcontrolfile\fR rather
+	than current \f(CR.rc\fR file
+s \fIn\fR	append run-control string number \fIn\fR following
+	current cursor position
+S \fIn\fR	insert run-control string number \fIn\fR before
+	current cursor position
+v	spawn \fBvi\fR text editing session using current text
+w [\fIfilename\fR]	write file \fIfilename\fR to disk; default filename
+	is current file
+w! \fIfilename\fR	overwrite existing file \fIfilename\fR
+wq	write current file and quit
+.TE
+.sp 1
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "encode"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-r \fIfile.rc\fR	invoke using the run-control file \fIfile.rc\fR
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The
+.B "-r"
+option permits the user to identify a specific run-control file
+to configure the
+.B "encode"
+editor.
+If this option is omitted,
+.B "encode"
+will seek a default run-control file named \f(CRencode.rc\fR
+in the current directory, or in the directory \f(CR$HUMDRUM/etc\fR
+if not present in the current directory.
+If the option is specified,
+.B "encode"
+will search the current directory for the specified run-control file.
+If this search fails to locate the file,
+.B "encode"
+will search \f(CR$HUMDRUM/etc\fR.
+If this fails,
+.B "encode"
+will treat the input filename as an absolute file path.
+If this fails, encode will issue an error message indicating
+that it failed to locate the specified run-control file.
+.in -2
+.sp 1
+.sp 1
+.SH "FILES"
+.in +2
+A number of predefined \f(CR.rc\fR files are maintained
+in the \f(CR$HUMDRUM/etc\fR directory.
+Exploration is encouraged.
+The default file is \f(CR$HUMDRUM/etc/encode.rc\fR.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+DOS 2.0 and up.
+An appropriate \s-1MIDI\s+1 controller (such as a keyboard synthesizer)
+connected via a Roland MPU-401 (or compatible) \s-1MIDI\s+1 controller card.
+The \f(CRvi\fR text editor must be available in order to invoke
+the `v' edit command.
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+Unlike the \s-1UNIX\s+1
+.B "vi"
+text editor, only a single `\fBd\fR' is required in edit mode to delete a line
+(rather than two \fRd\fR's).
+Experienced
+.B "vi"
+users should be careful when deleting lines.
+.sp 1
+.sp 1
+Note that the \f(CRBEAT\fR and \f(CRTEMPO\fR instructions cannot appear in
+the \f(CR.rc\fR file until after the default beat (\f(CRDEL*\fR)
+has been defined.
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.sp 1
+.sp 1
+.in +2
+\fBassemble\fR (1), \fBcleave\fR (1),
+\fBencode.rc\fR (5),
+\fBhumdrum\fR (1), \fB**kern\fR (2),
+\fB**MIDI\fR (2), \fBmidi\fR (1),
+\fBnum\fR (1),
+\fBperform\fR (1), \fBproof\fR (1),
+\fBrecord\fR (1),
+\fBtimebase\fR (1),
+\fBvi\fR (\s-1UNIX\s+1)
+.in -2
+.sp 1
+.sp 1
+.SH "REFERENCES"
+.in +2
+Use the the Music Quest Inc. \s-1MIDI\s+1 library functions is gratefully
+acknowledged.
+.in -2
+.sp 1
+.sp 1
+.SH "NOTE"
+.in +2
+Especially long input lines may exceed the size of the text window.
+Although the characters to the right of the text screen may not be
+visible, they remain encoded in the file.
+.in -2

@@ -1,0 +1,374 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- thru</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>thru</b>  --  expand Humdrum abbreviated format representation to through-composed format
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>thru</b>   [<b>-v</b>  <i>version</i>]   [<i>inputfile</i> ...]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>thru</b>
+command expands
+<i>abbreviated format</i>
+Humdrum representations to
+<i>through-composed formats</i>
+in which input passages are rearranged and output according to some specified
+<i>expansion list.</i>
+</P>
+<P>
+Musical scores frequently contain notational devices such as repeat signs
+and Da Capos which permit more succinct renderings of a given document.
+Humdrum
+<i>section labels</i>
+and
+<i>expansion-lists</i>
+provide parallel mechanisms for encoding
+<i>abbreviated format</i>
+files.
+The
+<b>thru</b>
+command is normally used to expand various repetition devices.
+However, depending on the input, one of several expansions
+(dubbed <i>versions</i>) may be possible.
+Hence,
+<b>thru</b>
+is also useful for selecting a particular edition, performance,
+or interpretation from a composite input.
+</P>
+<P>
+The input to
+<b>thru</b>
+must contain one or more sections identified by section labels.
+A
+<i>section</i>
+is a set of contiguous records.
+A
+<i>section label</i>
+is a tandem interpretation that consists of a single
+asterisk, followed by a greater-than sign, followed by a keyword
+that labels the section, e.g.
+</P>
+<P>
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD><code><big>*>Exposition</TD></TR>
+<TR><TD><code><big>*>Trio</TD></TR>
+<TR><TD><code><big>*>Refrain</TD></TR>
+<TR><TD><code><big>*>2nd ending</TD></TR>
+<TR><TD><code><big>*>Coda</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</P>
+<P>
+The section label
+<i>keywords</i>
+may contain any sequence of the following ASCII characters:
+the upper- or lower-case letters <code><big>A-Z</big></code>, the numbers <code><big>0</big></code> to <code><big>9</big></code>,
+the underscore (<code><big>_</big></code>), dash (<code><big>-</big></code>), period (<code><big>.</big></code>),
+plus sign (<code><big>+</big></code>), octothorpe (<code><big>#</big></code>), tilde (<code><big>~</big></code>),
+at-sign (<code><big>@</big></code>), or space.
+All other characters are forbidden.
+A section label interpretation may occur anywhere in a Humdrum input,
+however, if more than one spine is present in a passage,
+identical section labels must appear concurrently in all spines.
+</P>
+<P>
+Sections begin with a section label and end when either another
+section label is encountered, all spines are assigned new
+exclusive interpretations, or all spines terminate.
+If there is more than one spine present in a passage,
+identical section labels must appear concurrently in all spines.
+</P>
+<P>
+An
+<i>expansion-list</i>
+is a tandem interpretation that
+takes the form of a single asterisk followed
+by a greater-than sign, followed by an optional label, followed by a list of
+section-labels enclosed in square brackets and separated by commas.
+Examples are given below.
+The first and second expansion-lists identify
+two section-labels in their lists.
+The last three expansion-lists have been labelled `long,' `1955'
+and `Czerny_edition' respectively.
+</P>
+<P>
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD><code><big>*>[section1,2nd ending]</TD></TR>
+<TR><TD><code><big>*>long[Exposition,Exposition]</TD></TR>
+<TR><TD><code><big>*>1955[Aria]</TD></TR>
+<TR><TD><code><big>*>Czerny_edition[refrain]</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</P>
+<P>
+The
+<b>thru</b>
+command outputs each section in the order specified in the
+expansion list.
+If more than one expansion list is present in a file,
+then the desired
+<i>version</i>
+is indicated on the command line via the
+<b>-v</b>
+option.
+(See <A HREF="#EXAMPLES">EXAMPLES</A>.)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>thru</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-v <i>version</i></TD><TD>expand the encoding according to expansion-list label <i>version</i></TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<A NAME="EXAMPLES">
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following examples illustrate the operation of the
+<b>thru</b>
+command.
+Consider the following simple file:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**example</TD><TD>**example</TD></TR>
+<TR><TD>*>[A,B,A,C]</TD><TD>*>[A,B,A,C]</TD></TR>
+<TR><TD>*>A</TD><TD>*>A</TD></TR>
+<TR><TD>data-A</TD><TD>data-A</TD></TR>
+<TR><TD>*>B</TD><TD>*>B</TD></TR>
+<TR><TD>data-B</TD><TD>data-B</TD></TR>
+<TR><TD>*>C</TD><TD>*>C</TD></TR>
+<TR><TD>data-C</TD><TD>data-C</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+This example contains just three data records -- each of
+which has been labelled with its own section label.
+The file contains a single unlabelled expansion list which
+indicates that `A' section should be repeated between the `B' and `C' sections.
+The following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+thru inputfile
+</code></big>
+</blockquote>
+</P>
+<P>
+would produce the following "through-composed" output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**example</TD><TD>**example</TD></TR>
+<TR><TD>*thru</TD><TD>*thru</TD></TR>
+<TR><TD>*>A</TD><TD>*>A</TD></TR>
+<TR><TD>data-A</TD><TD>data-A</TD></TR>
+<TR><TD>*>B</TD><TD>*>B</TD></TR>
+<TR><TD>data-B</TD><TD>data-B</TD></TR>
+<TR><TD>*>A</TD><TD>*>A</TD></TR>
+<TR><TD>data-A</TD><TD>data-A</TD></TR>
+<TR><TD>*>C</TD><TD>*>C</TD></TR>
+<TR><TD>data-C</TD><TD>data-C</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice that the expansion-list record has been eliminated from the
+output.
+A <code><big>*thru</big></code> tandem interpretation is added to all output spines
+immediately following each instance of an exclusive interpretation in the input.
+If <code><big>*thru</big></code> tandem interpretations are already present in the input,
+they are discarded
+(thus, running a file through
+<b>thru</b>
+twice will not change the file in any way).
+Also notice that there are now two sections in the output sharing the
+same label (<code><big>*>A</big></code>).
+This duplication of section-labels is not permitted in
+abbreviated-format encodings.
+</P>
+<P>
+Consider the following more complex example.
+Imagine a
+<i>Da Capo</i>
+work in which a conventional performance procedes as follows:
+a first section (`A') is performed twice, followed by
+first and second endings -- labelled `B' and `C' respectively.
+A subsequent section ensues (`D'), followed by a return to the
+first section (`A').
+This first section is played just once, immediately followed by
+a final coda section (`E').
+</P>
+<P>
+Imagine also a hypothetical performance of this work in which
+Murray Perahia makes three changes:
+Perahia repeats the `D' section,
+he repeats the `A' section when returning to the Da Capo
+--  re-using the first ending before continuing
+to the coda following the repetition.
+Finally, Perahia has improvised an introduction to the work.
+Both the conventional interpretation and the hypothetical
+Perahia interpretation can be represented in the same encoded file
+as follows.
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**example</TD></TR>
+<TR><TD>*>Perahia[X,A,B,A,C,D,D,A,B,A,E]</TD></TR>
+<TR><TD>*>Conventional[A,B,A,C,D,A,E]</TD></TR>
+<TR><TD>*>X</TD></TR>
+<TR><TD>data-X</TD></TR>
+<TR><TD>*>A</TD></TR>
+<TR><TD>data-A</TD></TR>
+<TR><TD>*>B</TD></TR>
+<TR><TD>!! 1st ending</TD></TR>
+<TR><TD>data-B</TD></TR>
+<TR><TD>*>C</TD></TR>
+<TR><TD>!! 2nd ending</TD></TR>
+<TR><TD>data-C</TD></TR>
+<TR><TD>*>D</TD></TR>
+<TR><TD>data-D</TD></TR>
+<TR><TD>*>E</TD></TR>
+<TR><TD>!! Coda</TD></TR>
+<TR><TD>data-E</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+The hypothetical Perahia version can be recreated by invoking the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+thru -v Perahia inputfile
+</code></big>
+</blockquote>
+</P>
+<P>
+Alternatively, the "conventional" interpretation of the Da Capo
+structure could be produced by the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+thru -v Conventional inputfile
+</code></big>
+</blockquote>
+</P>
+<P>
+In each case, the
+<b>thru</b>
+command will expand the input file according to the designated
+label for the expansion-lists.
+Note that there is no limit to the number of expansion-lists
+that may appear in a Humdrum file.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="strophe.html">
+<b>strophe</b></A> (4),
+<A HREF="yank.html">
+<b>yank</b></A> (4)
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+Humdrum ouput is not guaranteed with the
+<b>thru</b>
+command.
+In order to assure Humdrum output, it is necessary to have the
+same number of active spines at each point where sections are joined
+together in the expanded output.
+In addition, the exclusive interpretations must match where
+sections are joined.
+</P>
+<P>
+Note that if an expansion list appears after some initial data records, then
+<b>thru</b>
+causes the initial material to be output before expanding the
+document according to the expansion list.
+</P>
+<P>
+No two expansion lists can be identified using the same version label.
+</P>
+<P>
+If two sections contain the same section label in the abbreviated
+document, then subsequent sections having the same label are ignored
+when expanded by
+<b>thru.</b>
+</P>
+<P>
+Inputs that contain different section labels or expansion-lists
+in concurrent spines are illegal and will produce an error.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide20.html#Using_the_thru_Command_to_Expand_Encodings">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

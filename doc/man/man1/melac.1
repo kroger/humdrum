@@ -1,0 +1,133 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH melac 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBmelac\fR  --  calculate melodic accent values for successive pitches in a Humdrum input
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+\fBmelac\fR  [\fIinputfile.sem\fR ...]  [> \fIoutputfile.tac\fR]
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "melac"
+command accepts as input Humdrum
+**semits
+data and outputs a series of values representing the degree of melodic
+accent associated with each note.
+Melodic accent values vary between 0 (no accent)
+and 1 (maximum accent).
+Input is limited to only a single
+**semits
+data spine.
+.sp 1
+.sp 1
+The
+.B "melac"
+command implements a model of melodic accent developed by Joseph Thomassen
+(see \s-1REFERENCES\s+1).
+Thomassen's model is sensitive to pitch contour only -- distinguishing
+just three types of melodic motion:
+ascending, descending, and unison.
+The model calculates tonal accent values according to a moving 3-pitch window.
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "melac"
+command should be given names with the distinguishing `.mac' extension.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "melac"
+command provides only a help option:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+.TE
+.sp 1
+Options are specified in the command line.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following example illustrates the output of the
+.B "melac"
+command.
+The \f(CR**semits\fR spine is the input, and the \f(CR**melac\fR
+spine is the corresponding output.
+(A \f(CR**kern\fR equivalent to \f(CR**semits\fR has been added
+to increase the readability.)
+.in +2
+.sp 1
+.TS
+l l l.
+**kern	**semits	**melac
+16ee	16	1
+16cc	12	0.5
+16b	11	0.355
+16cc	12	0.2407
+16g	7	0.1207
+16cc	12	0.2407
+16b	11	0.1207
+16cc	12	0.0957
+16ff	17	0.5561
+16cc	12	0.085
+16b	11	0.355
+16cc	12	0.2407
+16a	9	0.1207
+16cc	12	0.2407
+16b	11	0.1207
+16cc	12	0.29
+*-	*-	*-
+.TE
+.sp 1
+.in -2
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "LIMITS"
+.in +2
+This command is currently able to handle only a single (monophonic)
+input stream.
+.in -2
+.sp 1
+.sp 1
+.SH "REFERENCES"
+.in +2
+Joseph Thomassen,
+\(odMelodic accent: Experiments and a tentative model,\(cd
+.I "Journal of the Acoustical Society of America,"
+Vol. 71, No. 6 (1982) pp.1598-1605;
+see also, Erratum,
+.I "Journal of the Acoustical Society of America,"
+Vol. 73, No. 1 (1983) p.373.
+.in -2

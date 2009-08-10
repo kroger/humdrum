@@ -1,0 +1,22 @@
+
+HUMVER    : Display Humdrum Toolkit version and copyright information.
+
+     This command indicates which version or release of the Humdrum Toolkit
+     is installed or available on a given computer system.  The command also
+     prints copyright information pertaining to the Humdrum Toolkit.
+
+     The -s option suppresses output and returns a value to the shell
+     corresponding to the Humdrum Toolkit version number.  (This option
+     allows shell programs to determine the version number without sending
+     data to the standard output.)
+
+Syntax:
+
+     humdrum [-s]
+
+Options:
+
+     -s      : suppress output
+
+  Refer to reference manual for further details.
+

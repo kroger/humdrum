@@ -1,0 +1,21 @@
+<table>
+<td align=center bgcolor=F0F0F0>
+<FORM ACTION="http://search.freefind.com/find.html" 
+METHOD="GET" target="_top">
+&nbsp;&nbsp;
+<font size=1 face=arial color=black>
+<A HREF="http://search.freefind.com/find.html?id=7111222">
+<B>Search this site</B></A>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+powered by <A HREF="http://www.freefind.com">FreeFind</A><br></font>
+<INPUT TYPE="HIDDEN" NAME="id" SIZE="-1" VALUE="7111222">
+<INPUT TYPE="HIDDEN" NAME="pageid" SIZE="-1" VALUE="r">
+<INPUT TYPE="HIDDEN" NAME="mode" SIZE="-1" VALUE="ALL">
+&nbsp;<INPUT TYPE="TEXT" NAME="query" SIZE="20">
+<INPUT TYPE="SUBMIT" 
+VALUE=" Find! "><input type="SUBMIT" 
+name="sitemap" value="Site Map">
+</FORM>
+</td>
+</table>

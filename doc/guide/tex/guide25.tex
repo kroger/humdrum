@@ -1,0 +1,1180 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter25}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Similarity}
+
+
+
+There is no precise way to measure similarity.
+However, there are several useful techniques that can be used
+to estimate the degree of similarity between different types of information.
+In this chapter we discuss two general tools for characterizing
+similarity:
+\textbf{correl}
+and
+\textbf{simil}.
+The
+\textbf{correl}
+command can be used to measure numerical similarity
+between two sets of numbers.
+The
+\textbf{simil}
+command can be used to measure similarity between non-numeric data.
+
+\par 
+In addition, we will discuss the
+\textbf{accent}
+command -$\,$- a tool which estimates how salient or noticeable
+a given note is.
+The 
+\textbf{accent}
+command can be used to pre-process musical passages so only
+those notes of greatest importance are considered when
+measuring musical similarity.
+
+
+\subsection*{The \textit{correl} Command}
+
+
+\par 
+One way of measuring similarity is to compare the rise and
+fall of two sets of numbers.
+Suppose, for example, that we wanted to determine whether
+high pitches have a general tendency to be longer in duration than low pitches.
+For each note we would establish two numerical values:
+one characterizing the pitch height and one characterizing
+the duration (say in seconds).
+Our data might look as follows:
+\\\\
+
+\texttt{**semits**dur
+71.00
+161.50
+140.50
+122.00
+71.00
+40.50
+50.50
+71.00
+*-*-}
+
+This data does seem to exhibit an association between
+higher pitches and longer notes.
+The longest notes are fairly high (12 and 16 semits),
+whereas most of the shortest notes (4 and 5 semits) are lower.
+There are some exceptions, however, such as the 0.5 sec. duration
+for a pitch of 14 semits.
+
+\par 
+The Humdrum
+\textbf{correl}
+command allows us to characterize more precisely the degree of
+similarity between two sets of numbers.
+The
+\textbf{correl}
+command expects precisely two input spines;
+it is easily invoked:
+
+\par 
+
+\texttt{correl inputfile}
+
+
+\par 
+For the above semitone/duration data,
+\textbf{correl}
+will output the value +0.515.
+
+\par 
+Technically, the
+\textbf{correl}
+command calculates Pearson's coefficient of correlation between
+two spines containing numerical data.
+Correlation coefficients range between +1 and -1.
+A value of +1 indicates that both sets of numbers rise and fall
+in precise synchrony -$\,$- although the magnitude of the numbers
+may differ.
+For example, the following input exhibits a correlation of +1.0
+-$\,$-  even though the two sets of numbers differ in overall magnitude.
+\\\\
+
+\texttt{**foo**bar
+1100
+3300
+2200
+1100
+*-*-}
+
+If we multiply these numbers by a constant, or if we substract or add
+a constant value to each number in one of the spines, they would
+still exhibit a correlation of +1.0.
+In summary, correlations are insensitive to the absolute magnitude and offsets
+for different sets of numbers.
+
+\par 
+A correlation coefficient of -1 means that the rise and fall of
+numerical values are exactly reversed.
+When one set of numbers is rising, the other set is falling -$\,$- and vice versa.
+By contrast, a correlation coefficient of zero means that the two
+sets of numbers are statistically independent of each other.
+For example, comparing two large sets of random numbers will result in
+a correlation coefficient near zero.
+
+\par 
+The
+\textbf{correl}
+command attends only to numerical input data.
+Non-numerical data is simply ignored.
+If a data token contains a mix of numeric and non-numeric characters,
+then only the first complete numerical subtoken is considered.
+The following examples illustrate how
+\textbf{correl}
+interprets mixed data tokens:
+\\\\
+\textbf{Table 25.1}
+
+tokeninterpretation
+\texttt{4gg\#4
+4.gg\#4
+-32aa-32
+-aa3333
+x7.2yz7.2
+a7..2bc7
+[+5]125
+\$17@217
+=28b28
+a1b2 c.3.d1 0.3}
+
+
+\textit{Numerical interpretations of data tokens by \textbf{correl}}.
+
+
+\par 
+Notice in the last example that multiple-stops are treated as
+potentially independent numbers.
+For example, if the data token encodes a double-stop,
+then
+\textbf{correl}
+
+will determine whether both subtokens can be interpreted numerically.
+
+\par 
+In normal operation, the
+\textbf{correl}
+command expects numerical data to be precisely matched
+in both input spines.
+That is, if a particular data record contains no numbers
+in the left spine, it should also contain no numbers in
+the right spine.
+Similarly, if the left spine contains three numbers (in a triple stop)
+then the right spine must also contain three numbers in the same record.
+If there is any breach of the criterion of number pairing,
+\textbf{correl}
+will issue an error message and stop.
+
+\par 
+Suppose we had a passage of two-part, first species counterpoint
+and we were interested in whether the two voices tend toward
+contrary and oblique motion rather than parallel and similar motion.
+In first species counterpoint, each pitch in the upper voice is
+matched with a pitch in the lower voice.
+We could measure the pitch-related correlation between the two
+parts as follows:
+
+\par 
+
+\texttt{semits species1.krn | correl -s \^{}=}
+
+
+\par 
+The output will consist of a single numerical value.
+If the value is positive, then it indicates that the parts tend
+to move up and down together in pitch.
+That is, a positive correlation indicates a preponderance of
+parallel and similar contrapuntal motion.
+Conversely, a negative correlation would indicate a preponderance
+of contrary and oblique motion.
+
+\par 
+Notice the use of the
+\textbf{-s}
+option in the above command.
+Since common system barlines often contain measure numbers
+(e.g. \texttt{=28}), they are interpretable as numeric data.
+For most inputs, the user will not want to have measure numbers
+participate in the similarity calculation.
+The
+\textbf{-s}
+option allows the user to specify a regular expression indicating
+data records to skip.
+
+\par 
+Now suppose that we wanted to measure a similar pitch-related
+correlation for a passage of second species counterpoint.
+In second species counterpoint, there are two pitches in the upper
+voice for each pitch in the lower voice.
+Translating our pitch data to semitones will result in
+a failure of the matched-pairs criterion.
+There are two ways of overcoming this problem.
+One method is to use
+\textbf{ditto}
+to repeat the sustained semitone value for the slower-moving part:
+
+\par 
+
+\texttt{semits species2.krn | ditto -s \^{}= | correl -s \^{}=}
+
+
+\par 
+Another approach would be to omit from consideration those
+notes that are not concurrent with a note in the other voice.
+The
+\textbf{-m}
+option for
+\textbf{correl}
+disables the matched-pairs criterion.
+That is, if numerical data is missing from either one of the input spines,
+\textbf{correl}
+will simply discard the entire data record from the correlation calculation.
+Using this approach, we would omit the
+\textbf{ditto}
+command:
+
+\par 
+
+\texttt{semits species2.krn | correl -m -s \^{}=}
+
+
+\par 
+Note that in formal statistical tests, the
+\textbf{-m}
+option should never be used.
+
+
+\subsection*{Using a Template with \textit{correl}}
+
+\par 
+In the above examples,
+\textbf{correl}
+generates a single output value indicating the degree of
+numerical similarity between two spines.
+A more valuable use of
+\textbf{correl}
+involves scanning a spine for portions that are similar to
+a brief excerpt or template.
+In this mode of operation, the input consists of a single
+input spine plus a separate template that represents a
+pattern being sought.
+
+\par 
+The
+\textbf{-f}
+option for
+\textbf{correl}
+allows the user to specify a file that acts as a template
+which is then scanned across some input.
+By way of example, suppose we are looking for motivic instances
+similar to the first four notes of
+\textit{Frère Jacques}.
+Our template file might look as follows:
+
+
+
+\texttt{**semits
+0
+2
+4
+0
+*-}
+
+We would like to scan an entire work looking for possible matches
+or similar passages.
+The following example shows a sample input and corresponding
+output -$\,$- given the above template.
+The left-most spine is the original input represented using the French
+\texttt{**solfg}
+scheme.
+The middle spine is the input (translated to
+\texttt{**semits})
+supplied to the
+\textbf{correl}
+command.
+The right-most spine was generated using the following command:
+
+\par 
+
+\texttt{**solfg**semits**correl
+=1=1=1
+do01.000
+re2-0.500
+mi4-0.866
+do00.866
+=2=2=2
+do01.000
+re2-0.500
+mi40.000
+do00.945
+=3=3=3
+mi40.982
+fa5-0.327
+so7-0.655
+=4=4=4
+mi40.982
+fa5.
+so7.
+*-*-*-}
+
+The similarity values generated by
+\textbf{correl}
+are output as a
+\texttt{**correl}
+spine.
+Each successive value in the output spine is matched with a data token
+in the target input file (\texttt{**semits}).
+For example, the initial output value (1.000) indicates that an exact
+positive correlation occurs between the template and the input.
+Another exact positive correlation occurs at the beginning of measure 2.
+More interesting, perhaps, are the high correlations (+0.982)
+at the beginning of measures 3 and 4.
+Although the semitone patterns differ (do, re, mi = +2 +2 semits;
+mi, fa, so = +1 +2 semits),
+the correlations remain high because of the approximate numerical
+similarity.
+This property gives
+\textbf{correl}
+a certain flexibility when searching for melodic similarity.
+
+\par 
+For more sophisticated melodic similarity searches,
+both pitch and rhythm might be considered.
+Two different correlations can be calculated -$\,$- one for
+semitone contour similarity and one for durational similarity.
+We can generate two \texttt{**correl} spines as follows.
+First generate \texttt{**semits} and \texttt{**dur} data
+so our inputs to
+\textbf{correl}
+are numerical.
+
+\par 
+
+\texttt{semits inputfile > temp.sem}
+\\
+\texttt{dur inputfile > temp.dur}
+
+
+\par 
+Generate independent \texttt{**correl} spines for the
+semitone pitch and duration data, and assemble the
+two spines together:
+
+\par 
+
+\texttt{correl -s \^{}= -f template.sem temp.sem > correl.sem}
+\\
+\texttt{correl -s \^{}= -f template.dur temp.dur > correl.dur}
+\\
+\texttt{assemble correl.sem correl.dur}
+
+
+\par 
+The resulting output consists of two \texttt{**correl} spines:
+one tracing the moment-by-moment pitch similarity,
+and the other tracing the moment-by-moment duration similarity.
+The output might appear as follows:
+\\\\
+
+\texttt{**correl**correl
+0.4380.284
+-0.1180.226
+0.487-0.008
+0.6060.377
+0.7330.648
+0.5140.400
+0.5550.013
+0.320-0.158
+-0.145-0.160}
+
+There are various ways of combining the pitch and duration
+data to create a composite similarity measure.
+For example, one might sum together the correlations on
+each line:
+passages that exhibit high pitch/duration similarity will
+tend to have a large positive summed score.
+Alternatively, one might set a threshold for both each of the
+pitch and duration correlation coefficients and use
+\textbf{recode}
+to mark promising points of high correlation.
+Values between +0.8 and +1.0 might be recoded as "similar";
+values between +0.5 and +0.8 might be recoded as "maybe";
+all other values might be recoded as null tokens.
+Assembling the recoded
+\texttt{**correl}
+spines, one could use
+\textbf{grep}
+to search for moments in the score that are suitable marked
+as "similar" for both pitch and duration.
+
+\par 
+Finally, a word of caution is in order regarding the use of the
+\textbf{correl}
+command.
+Correlation coefficients indicate only the magnitude of the association
+between two sets of data.
+High correlation values can occur purely by chance.
+In particular, the noteworthiness (statistical significance) of a correlation
+value depends on the number of input values given in the template.
+Longer templates reduce the likelihood of spurious positive correlations.
+However, longer templates can also reduce the likelihood of
+discovering points of true similarity.
+
+
+\subsection*{The \textit{simil} Command}
+
+\par 
+The problem of measuring similarity entails two questions:
+the
+\textit{criterion}
+of similarity and the
+\textit{metric}
+of similarity.
+
+\par 
+First, what is the criterion of similarity?
+A bassoon is similar to a
+\textit{cor anglais}
+in tone color, however a bassoon is more similar to a 'cello in pitch range.
+Moreover, the word "bassoon" is more similar in spelling
+to "baboon" than either "'cello" or "cor anglais."
+The second question is how do we characterize the "distance"
+between objects?
+How
+\textit{much}
+is the difference in pitch range between a 'cello and a bassoon?
+How
+\textit{much}
+is the difference in spelling between "bassoon" and "baboon"?
+
+\par 
+In the
+\textbf{correl}
+command, the criterion of similarity arises from the user's choice
+of input representations.
+If the input represents duration, then the results pertain to
+durational similarity.
+If the input represents frequency, then the results pertain to
+frequency similarity.
+The 
+\textit{metric}
+used by
+\textbf{correl}
+is a linear numerical correlation.
+Since
+\textbf{correl}
+can deal only with numerical data, it is referred to as
+"parametric" method for measuring similarity.
+However, we know that non-numerical data can also be similar.
+An "apple" is more similar to an "orange" than
+it is to a "bassoon."
+
+\par 
+The
+\textbf{simil}
+command is a "non-parametric" tool for characterizing similarity.
+Like \textbf{correl,} the criterion of similarity depends on the user's
+choice of input representations.
+If the input represents metric position,
+then the results pertain to metric-position similarity.
+If the input represents phonetic text,
+then the results pertain to phonetic similarity, etc.
+
+\par 
+The
+\textit{metric}
+used by
+\textbf{simil}
+is a so-called "edit distance" metric.
+The degree of similarity is characterized by how much modification
+would be required to transform one representation to another.
+By way of example, consider the spelling of the words "bassoon"
+and "baboon."
+Suppose we are allowed the following operations:
+(1) insertion of a character, (2) deletion of a character, and (3)
+substitution of a character.
+We can transform "bassoon" to "baboon" by deleting a
+letter `s' and substituting the letter `b' for the remaining letter `s'.
+If each edit operation was assigned a "penalty" value of 1.0,
+then we would say that the edit-distance between "bassoon"
+and "baboon" is 2.0.
+
+\par 
+Before we describe
+\textbf{simil}
+in detail, let's examine some sample inputs and outputs.
+Two inputs are required by
+\textbf{simil}
+-$\,$-  the
+\textit{source}
+and
+\textit{template}
+inputs.
+Both inputs must contain single columns of data;
+multi-column inputs are forbidden.
+The
+\textit{source}
+input must conform to the Humdrum syntax, however the
+\textit{template}
+should contain only data records.
+
+\par 
+Depending on the mode of operation,
+\textbf{simil}
+outputs either one or two spines of continuous information regarding
+the similarity of the two inputs.
+The length of \textbf{simil}'s output matches that of the
+\textit{source}
+file.
+
+\par 
+The following example illustrates the operation of
+\textbf{simil}.
+Like \textbf{correl},
+\textbf{simil}
+provides a template mode where a relatively short template is
+scanned over a source input.
+In the following example, the source input is given in the left-most
+spine (labelled \texttt{**foo}) and is held in a file named \texttt{source};
+the middle column consists of the letters A, B and C, and is held in
+a file named \texttt{template}.
+The following command:
+
+\par 
+
+\texttt{simil source template}
+
+
+\par 
+generates the third column (labelled
+\texttt{**simil}):
+\\\\
+
+(source(template(simil
+inputinput)output)
+\texttt{**fooA**simil
+XB0.51
+AC1.00
+B0.51
+C0.37
+D0.51
+A0.72
+B0.72
+B0.51
+C0.51
+B.
+A.
+*-*-}
+
+Each succesive value in the output spine is matched with a data
+token in the source input file.
+For example, the second value (1.00) in the \texttt{**simil} spine arises
+from an exact match of the (A,B,C) pattern beginning
+with the second data token in the source input.
+The second highest value (0.72) occurs in both the sixth and seventh
+\texttt{**simil} data records, indicating that fairly similar
+sequences occur beginning with the sixth and seventh data records
+in the source input.
+Specifically,
+\textbf{simil}
+has recognized that the sequence (A,B,B,C) is only one edit-operation
+(a deletion) different from the template (A,B,C).
+In the ensuing record,
+\textbf{simil}
+has recognized that the sequence (B,B,C) is also only one edit-operation
+(substitute  A for B) different from (A,B,C).
+Notice that the final value (0.51) indicates that the edit distance
+for (C,B,A) is less like the template.
+Also notice that the lowest value (0.37) corresponds to an input
+pattern (beginning D,D,A) that bears little resemblance to the template.
+
+\par 
+A musically more pertinent example is given below.
+Here our template consists of a harmonic pattern:
+\textit{I-IV-V-I}.
+\\\\
+
+(source(template(simil
+inputinput)output)
+\texttt{**harmI**simil
+IIV0.87
+viV0.87
+ii7I0.51
+V0.38
+V70.41
+I0.82
+r0.41
+V/V0.38
+V.
+iii.
+iiib.
+*-*-}
+
+It is important to understand that
+\textbf{simil}
+operates by comparing entire data tokens,
+so the token \texttt{V7} differs as much from \texttt{V} as the token \texttt{vi}.
+It is the user's responsibility to choose an input representation
+that facilitates recognition of interchangeable or equivalent data.
+For example, in the follow example, the harmonic data given above has been
+reclassified (using \textbf{humsed}) so that the number of distinct
+harmonic categories has been reduced.
+For example, the \texttt{ii7} chord has been classified as a form of
+\texttt{subdom}inant function.
+Notice how the
+\texttt{**simil}
+values better reflect the presumed harmonic similarity:
+\\\\
+
+(source(template(simil
+inputinput)output)
+\texttt{**Harmtonic**simil
+tonicsubdom0.92
+subdomdom0.90
+subdomtonic0.87
+dom0.44
+dom0.41
+tonic0.83
+r0.66
+secondary0.41
+dom.
+mediant.
+mediant.
+*-*-}
+
+
+\par 
+
+\subsection*{Defining Edit Penalties}
+
+\par 
+Technically, the
+\textbf{simil}
+command implements a Damerau-Levenshtein metric for edit distance
+(see Orpen \& Huron, 1992).
+Permissible edit operations include substitutions and deletions.
+Each edit action incurs a penalty, and the cumulative edit-distance
+determines the similarity.
+
+\par 
+In the default operation,
+\textbf{simil}
+assigns equivalent edit penalties (1.0) for deletions and
+substitutions.
+However, the user can explicitly define these penalties via an
+initialization file.
+The initialization file must be named \texttt{simil.rc} and be
+located in the current directory or the user's home directory.
+Arbitrary costs may be assigned to any of eight edit operations
+shown in Table 25.2.
+\\\\
+\textbf{Table 25.2}
+
+Name TagEdit Operation
+D1Delete a non-repeated token in String 1
+D2Delete a non-repeated token in String 2
+R1Delete a repeated token in String 1
+R2Delete a repeated token in String 2
+S0Substitute a token that is repeated in neither String 1 nor String 2
+S1Substitute a token that is repeated in String 1 only
+S2Substitute a token that is repeated in String 2 only
+S3Substitute a token that is repeated in String 1 and String 2
+
+
+\textit{Edit operations used by \textbf{simil}}.
+
+
+\par 
+In describing the edit operations, String 1 is the source string
+and String 2 is the template string.
+Notice that there is no overt edit operation for insertion:
+an insertion in String 1 is equivalent to a deletion in String 2.
+However, different edit penalties may be defined for deletions
+from String 1 (D1) compared with deletions from String 2 (D2).
+In musical applications defining such asymmetrical penalties
+may be important.
+For example, two inputs may represent a basic melody and an embellished
+variant of the melody.
+Using asymmetrical penalties allows the user to specify that the
+deletion of tones from the embellished version is less costly than
+deletion of tones from the basic melody.
+
+\par 
+Since repetition is a common form of musical variation,
+\textbf{simil}
+allows the user to distinguish between repeated and non-repeated tokens.
+A repeated token is defined as one that is immediately preceded by
+an identical token.
+Thus, in deleting a sequence of identical symbols in String 1, say,
+all deletions except the first occurrence are R1 operations,
+whereas the deletion of the first occurrence is a D1 operation.
+
+\par 
+Note that the minimum theoretical edit-distance for any set of penalty
+weightings can be determined empirically by providing
+\textbf{simil}
+with source and template strings that share no symbols in common.
+For example, the source input may consist entirely of numbers,
+whereas the template input consists entirely of alphabetic characters.
+In the case where all edit operations are assigned a penalty of +1.0,
+the minimum quantitative similarity between two strings is 0.37.
+
+\par 
+Some user-defined weightings may give rise to peculiar results -$\,$-
+such as negative costs -$\,$- but
+\textbf{simil}
+does not forbid this.
+\textbf{Simil}
+generates warning messages if the weightings seem illogical;
+for example, if the cost of R1 is more than that of D1.
+In addition,
+\textbf{simil}
+will abort operation if the defined edit penalties transgress
+the triangular inequality rule (see Orpen \& Huron, 1992).
+The default weighting for all operations is +1.0.
+
+\par 
+Below is a sample initialization file that defines the R1 substitution
+as having an edit penalty of 0.7, whereas the R2 substitution is given
+a penalty of 0.9.
+Edit penalties are defined by specifying the operation, followed by
+some spaces or tabs, followed by some real number.
+Since no other penalties are defined in this file, the remaining edit
+operations use the default edit penalty of +1.0.
+The user can effectively disable a given edit operation by defining
+an arbitrarily high edit penalty.
+
+\texttt{\# This is a comment.
+
+
+R10.7
+R20.9}
+
+Raw edit-distance scores are normally unreliable estimates of
+similarity, unless the length of the template is considered.
+For example, 3 editing operations constitutes a rather modest
+change for a template consisting of 20 elements.
+However, 3 edit operations is significant for a template
+consisting of only 5 elements.
+As a result, in the default operation,
+\textbf{simil}
+scales the edit-distance scores according to the length of the
+comparison template.
+This ensures that all similarity values remain between 0 and 1.
+
+\par 
+Now that we better understand the operation of
+\textit{simil},
+let's return to our analysis of the harmonic data illustrated above.
+It might be argued that
+\textit{changing}
+a chord function is more dissimilar than
+\textit{repeating}
+a chord function.
+In the following \texttt{simil.rc} file, an increased penalty has been
+assigned for dissimilar substitution, and decreased penalties have
+been assigned for repetition.
+\\\\
+
+\texttt{S01.6
+S10.7
+S30.7}
+
+Repeating the above command with this new \texttt{simil.rc} file
+produces the following results:
+\\\\
+
+(source(template(simil
+inputinput)output)
+\texttt{**Harmtonic**simil
+tonicsubdom0.94
+subdomdom0.91
+subdomtonic0.87
+dom0.45
+dom0.41
+tonic0.84
+r0.68
+secondary0.42
+dom.
+mediant.
+mediant.
+*-*-}
+
+Notice that the similarity measure for the pattern (tonic,
+subdom, subdom, dom, dom, tonic) has
+increased from 0.91 to 0.94.
+
+
+\par 
+The
+\textbf{simil}
+command can be used to characterize innumerable types of similarity.
+Suppose, for example, that we wanted to identify similar fingering
+patterns in music for guitar.
+Consider the following work by Ferdinando Carulli:
+\\\\
+
+\texttt{!!!COM: Carulli, Ferdinando
+\texttt{!!!OTL: Larghetto, Opus 124, No. 23
+
+
+\texttt{!! For guitar.
+\texttt{**fret
+\texttt{*ICstr
+\texttt{*Iguitr
+\texttt{*AT:E2
+\texttt{*RT:0:5:10:15:19:24
+\texttt{*MM60
+\texttt{: : : : |0M :
+\texttt{=1
+\texttt{|0P : : |1bI : |0A
+\texttt{: : : |1bI : |0A
+\texttt{|0P : : |2bI : |2bA
+\texttt{: : : |4dI : |4eA
+\texttt{: : : |2bI : |2bA
+\texttt{=2
+\texttt{|0P : : |1bI : |0A
+\texttt{: : : |1bI : |0A
+\texttt{|0 : : |2bI : |2bA
+\texttt{: : : |4dI : |4eA
+\texttt{: : : |2bI : |2bA
+\texttt{=3
+
+We might be interested in a fret-board fingering pattern
+that consists of the following successive finger combinations:
+
+\par 
+
+index finger
+\\
+index finger
+\\
+ring and little fingers
+\\
+index finger
+
+
+\par 
+In order to search for similar fingering patterns, we need
+to eliminate all but the relevant information from our representation.
+In the
+\texttt{**fret}
+scheme, fret-board fingerings are indicated
+by the lower-case letters \textit{a} to \textit{e} (\textit{a}=thumb,
+\textit{b}=index finger, \textit{c}=middle finger, etc.).
+The lower-case \textit{n} is used to explicitly indicate no finger
+(i.e. open string(s)).
+We can prepare our input using the following
+\textbf{humsed}
+command.
+We delete all barlines, and then eliminate all characters other
+than the letters \textit{a} to \textit{e}.
+Any resulting empty lines we replace by the letter \textit{n}.
+
+\par 
+
+\texttt{grep -v \^{}= carulli | humsed 's/[\^{}a-e]//g; s/\^{}\$/n/' carulli}
+
+
+\par 
+The corresponding output would be as follows:
+\\\\
+
+\texttt{!!!COM: Carulli, Ferdinando
+\texttt{!!!OTL: Larghetto, Opus 124, No. 23
+\texttt{!! For guitar.
+\texttt{**fret
+\texttt{*ICstr
+\texttt{*Iguitr
+\texttt{*AT:E2
+\texttt{*RT:0:5:10:15:19:24
+\texttt{*MM60
+\texttt{n
+\texttt{b
+\texttt{b
+\texttt{bb
+\texttt{de
+\texttt{bb
+\texttt{b
+\texttt{b
+\texttt{bb
+\texttt{de
+\texttt{bb
+
+The appropriate template file would contain the following finger
+successions:
+\\\\
+
+\texttt{b
+b
+de
+b}
+
+
+
+\subsection*{The \textit{accent} Command}
+
+\par 
+Both the
+\textbf{correl}
+and
+\textbf{simil}
+tools presume that all data tokens are equally important.
+In the case of \textbf{correl},
+each number is weighted equally in calculating the coefficient of
+correlation.
+In the case of \textbf{simil},
+each data token has the same potential for disrupting the
+similarity measure.
+
+\par 
+In musical circumstances, we are aware that not
+all notes are equally important.
+Some notes are more perceptually more noticeable.
+The effectiveness of both
+\textbf{correl}
+and
+\textbf{simil}
+can be increased significantly if we first "filter" our data
+-$\,$-  selecting only the most important -$\,$- s of data for consideration.
+
+\par 
+The
+\textbf{accent}
+command implements a sophisticated model of the perceptual salience
+or noticeability for various pitches.
+The command accepts only monophonic
+\texttt{**kern}
+input and outputs a spine containing
+numerical values estimating the noticeability of
+each note.
+Output accent values vary between 0 (minimum accent)
+and 1 (maximum accent).
+Input is limited to only a single \texttt{**kern} data spine.
+
+\par 
+The
+\textbf{accent}
+command takes into account seven factors: (1) the duration
+of notes (agogic stress),
+(2) the amount of melodic (or pitch-related) accent,
+(3) metric position,
+(4) position in scale-degree hierarchy,
+(5) primacy/recency contexts,
+(6) explicit accent/articulation marks, and
+(7) inner-voice or outer-voice position.
+No attempt is made to account for melodic expectancy,
+past experience, or other factors known to influence the perceptual
+salience of particular notes.
+
+\par 
+By way of illustration, consider the two passages shown in Example 25.1:
+from Wagner's
+\textit{Rienzi}
+opera, and the Scottish folksong \textbf{My Bonnie}.
+Two sample outputs from
+\textbf{accent}
+are given below.
+In both examples the left-most spine shows the input,
+and the right-most spine shows the corresponding output:
+\\\\
+\textbf{Example 25.1.}  Richard Wagner, \textit{Rienzi} Theme.  Anon. \textit{My Bonnie Lies Over the Ocean}.
+
+
+\\
+
+
+\texttt{!!!COM: Wagner, Richard
+\texttt{!!!OTL: Rienzi Overture
+
+
+\texttt{**kern\texttt{**accent
+\texttt{*M4/4\texttt{*M4/4
+\texttt{*D:\texttt{*D:
+\texttt{=1\texttt{=1
+\texttt{4.d\texttt{0.76 }*\texttt{
+\texttt{32c\#\texttt{0.48
+\texttt{32d\texttt{0.46
+\texttt{32e\texttt{0.47
+\texttt{32d\texttt{0.46
+\texttt{4.b\texttt{0.63 }*\texttt{
+\texttt{8a\texttt{0.52
+\texttt{=2\texttt{=2
+\texttt{4g\texttt{0.68 }*\texttt{
+\texttt{4e\texttt{0.62 }*\texttt{
+\texttt{4d\texttt{0.66 }*\texttt{
+\texttt{4A\texttt{0.65 }*\texttt{
+\texttt{*-\texttt{*-
+
+
+\texttt{!!!OTL: My Bonnie Lies Over the Ocean
+
+
+\texttt{**kern\texttt{**accent
+\texttt{*M3/4\texttt{*M3/4
+\texttt{*G:\texttt{*G:
+\texttt{4d\texttt{0.705 }*\texttt{
+\texttt{=1\texttt{=1
+\texttt{4.b\texttt{0.729 }*\texttt{
+\texttt{8a\texttt{0.513
+\texttt{4g\texttt{0.671 }*\texttt{
+\texttt{=2\texttt{=2
+\texttt{4a\texttt{0.676 }*\texttt{
+\texttt{4g\texttt{0.652 }*\texttt{
+\texttt{4e\texttt{0.633 }*\texttt{
+\texttt{=3\texttt{=3
+\texttt{4d\texttt{0.696 }*\texttt{
+\texttt{2B\texttt{0.659 }*\texttt{
+\texttt{*-\texttt{*-
+
+
+The similarity between these two passages is more evident
+when the perceptually more salient tones are considered alone.
+Using the
+\texttt{**accent}
+data, we might simplify one or both
+passages by extracting only those notes whose accent value
+exceeds some threshold.
+In the above examples, a threshold of 0.6 might be appropriate
+(marked with an asterisk).
+We can isolate these tones by using the
+\textbf{recode}
+and
+\textbf{yank}
+commands.
+First, we create an appropriate reassignment file for \textbf{recode}.
+In this case we have classified all notes as either primary,
+secondary, or tertiary:
+
+\par 
+
+\texttt{>=0.6	primary
+\\
+>=0.5	secondary
+\\
+else	tertiary}
+
+
+\par 
+Assuming this file is named \texttt{reassign}, we can pre-process
+our passage as follows:
+
+\par 
+
+\texttt{recode -f reassign -s \^{}= -i '**accent' inputfile $\backslash$
+
+| yank -m primary -r 0 | extract -i '**kern' > primary.krn}
+
+
+
+\par 
+The file \texttt{primary.krn} contains only those notes having
+the highest estimated accent values.
+Using this file, we can continue processing using either
+a parametric (\textbf{correl}) or non-parametric (\textbf{simil})
+similarity method.
+
+
+
+\subsection*{Reprise}
+
+\par 
+In this chapter we have introduced two types of similarity tools:
+\textbf{correl}
+and
+\textbf{simil}.
+For both tools, the criterion of similarity depends on the
+user's choice of input representation.
+For example, if the input represents fret-board finger patterns,
+then the similarity measures will reflect fret-board fingering
+similarity.
+Users need to choose carefully the type of pre-processing
+required to address the specific domain of interest.
+
+\par 
+In particular, we noted that the Humdrum
+\textbf{accent}
+provides a useful way of pre-processing passages so that only
+the structurally most important notes are considered during processing.
+
+\par 
+The
+\textbf{correl}
+command provides a way for measuring
+\textit{parametric}
+similarity -$\,$- where similarity is based on numerical resemblance.
+By contrast, the
+\textbf{simil}
+command provides a way for measuring
+\textit{non-parametric}
+similarity:
+similar inputs are ones that require the least editing in order for
+one input to be made equivalent to the other.
+We saw that
+\textbf{simil}
+allows the user to define the edit penalties associated with
+different kinds of modifications.
+This allows the user to tailor the similarity measures to better
+suit the type of data being considered.
+
+\par 
+The tools described in this chapter complement the pattern
+searching tools (such as
+\textbf{patt},
+\textbf{pattern}
+and
+\textbf{grep})
+described earlier.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

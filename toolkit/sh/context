@@ -1,0 +1,104 @@
+################################################################
+##					CONTEXT.KSH
+# Programmed by: Tim Racinsky       Date: May, 1994
+# Copyright (c) 1994 David Huron
+#
+# Modifications:
+#    Date:    Programmer:        Description:
+#
+#
+#	A korn shell script to parse commands for the context command
+#
+BOPTION=null
+EOPTION=null
+NOPTION=null
+BEGIN=null
+END=null
+DELIMITER=null
+IGNORE=null
+OMIT=null
+NUMBER=null
+PLACEMENT=null
+FILENAME=""
+HELP=""
+FLAG=""
+STNDIN=""
+#
+USAGE1="USAGE: context -h                   (Help Screen)"
+USAGE2="       context [-b regexp] [-d string] [-e regexp] [-i regexp]"
+USAGE3="               [-n n] [-o regexp] [-p n] [file ...]"
+#
+while getopts b:d:e:hi:n:o:p: arg
+do
+	case "$arg" in
+	b) 	BEGIN=${OPTARG}
+		BOPTION=b;;
+	d) 	DELIMITER=${OPTARG};;
+	e) 	END=${OPTARG}
+		EOPTION=e;;
+	i) 	IGNORE=${OPTARG};;
+	n) 	NUMBER=${OPTARG}
+		NOPTION=n;;
+	p) 	PLACEMENT=${OPTARG};;
+	o)	OMIT=${OPTARG};;
+	h) 	HELP="ON";;
+     [?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		echo "$USAGE3" 1>&2
+		exit ;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no options were specified, print a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/context.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/context.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# If none of the necessary options were specified, print an error
+if [ "$BOPTION" = null -a "$EOPTION" = null -a "$NOPTION" = null ]
+then
+	echo "context: ERROR: One of -b, -e, or -a needs to be specified." 1>&2
+	echo "" 1>&2
+	echo "$USAGE1" 1>&2
+	echo "$USAGE2" 1>&2
+	echo "$USAGE3" 1>&2
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Can only use '-' once for each command
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "context: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+$AWK_VER -f ${HUMDRUM}/bin/context.awk "DUMMY" "$BEGIN" "$DELIMITER" "$END" "$IGNORE" "$NUMBER" "$OMIT" "$PLACEMENT" $FILENAME

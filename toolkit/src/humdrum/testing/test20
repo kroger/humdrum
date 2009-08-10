@@ -1,0 +1,7 @@
+!! "humdrum: ERROR 20: Single join-path indicator found at end"
+!! "of interpretation record in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 20
+**ex	**ex	**ex
+*	*	*v
+*-	*-	*-

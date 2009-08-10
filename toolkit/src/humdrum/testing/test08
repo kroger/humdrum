@@ -1,0 +1,10 @@
+!! "humdrum: ERROR 8: Incorrect number of spines in interpretation"
+!! "record in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 8
+**ex	**ex	**ex
+!! Too many
+*1	*2	*3	*4
+!! Not enough
+*1	*2
+*-	*-	*-

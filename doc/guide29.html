@@ -1,0 +1,642 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 29</TITLE>
+<!-- Chapter 29 (Differences and Commonalities) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:16:15 EST 2000">
+<meta name="description" content="Chapter 29 (Differences and Commonalities) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<H1>Chapter29</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide28.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide30.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Differences and Commonalities</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+In
+<A HREF="guide25.html">Chapter 25</A>
+we introduced the problem of similarity
+via the Humdrum
+<A HREF="commands/simil.html"><b>simil</b></A>
+and
+<A HREF="commands/correl.html"><b>correl</b></A>
+commands.
+This chapter revisits the problem of similarity by focussing
+on differences and commonalities.
+Specifically, this chapter introduces three additional tools, the UNIX
+<b>cmp</b>,
+<b>diff</b>
+and
+<b>comm</b>
+commands.
+Although these commands are less sophisticated than the
+<b>simil</b>
+and
+<b>correl</b>
+commands, they nevertheless provide convenient tools for
+quickly determining the relationship between two or more inputs.
+</P>
+<A NAME="Comparing_Files_Using_cmp">
+<H2>Comparing Files Using <i>cmp</i></H2>
+</P>
+<P>
+The
+<b>cmp</b>
+command does a character-by-character comparison and indicates
+whether or not two files are identical.
+</P>
+<P>
+<blockquote>
+<code><big>cmp file1 file2</big></code>
+</blockquote>
+</P>
+<P>
+If the two files differ,
+<b>cmp</b>
+generates a message indicating the first point where the
+two files differ.
+E.g.,
+</P>
+<P>
+<blockquote>
+<code><big>file1 file2 differ: char 4, line 10</big></code>
+</blockquote>
+</P>
+<P>
+If the two files are identical,
+<b>cmp</b>
+simply outputs nothing ("silence is golden").
+</P>
+<P>
+Sometimes files differ in ways that may be uninteresting.
+For example, we may suspect that a single work has been
+attributed to two different composers.
+The encoded files may differ only in that the <code><big>!!!COM:</big></code> reference
+records are different.
+We can pre-process the files using
+<A HREF="commands/rid.html"><b>rid</b></A>
+in order to determine whether the scores are otherwise identical.
+</P>
+<P>
+<blockquote>
+<code><big>rid -G file1 > temp1</big></code>
+<br>
+<code><big>rid -G file2 > temp2</big></code>
+<br>
+<code><big>cmp temp1 temp2</big></code>
+</blockquote>
+</P>
+<P>
+Of course one of the works might be transposed with respect to
+the other.
+We can circumvent this problem by translating the data to some
+key-independent representation such as <code><big>solfa</big></code> or <code><big>deg</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>rid -GL file1 | solfa > temp1</big></code>
+<br>
+<code><big>rid -GL file2 | solfa > temp2</big></code>
+<br>
+<code><big>cmp temp1 temp2</big></code>
+</blockquote>
+</P>
+<A NAME="Identical_Lyrics">
+<P>
+Two songs might have different melodies but employ the same lyrics.
+We can test whether they are identical by extracting and comparing
+any text-related spines.
+Since there may be differences due to melismas,
+we might also use
+<b>rid -d</b>
+to eliminate null data records.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**silbe' file 1 | rid -GLd > temp1</big></code>
+<br>
+<code><big>extract -i '**silbe' file 2 | rid -GLd > temp2</big></code>
+<br>
+<code><big>cmp temp1 temp2</big></code>
+</blockquote>
+</P>
+<A NAME="Identical_Harmonies">
+<P>
+Similarly, two works might have identical harmonies:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**harm' file 1 | rid -GLd > temp1</big></code>
+<br>
+<code><big>extract -i '**harm' file 2 | rid -GLd > temp2</big></code>
+<br>
+<code><big>cmp temp1 temp2</big></code>
+</blockquote>
+</P>
+<P>
+By further reducing the inputs, we can focus on quite
+specific elements, such as whether two songs have the same rhythm.
+In the following script, we first eliminate bar numbers,
+and then eliminate all data except for durations and barlines.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**kern' file 1 | humsed '/=/s/[0-9]//; \
+<blockquote>
+s/[^0-9.=]//g' | rid -GLd > temp1</big></code>
+</blockquote>
+<br>
+<code><big>extract -i '**kern' file 1 | humsed '/=/s/[0-9]//; \
+<blockquote>
+s/[^0-9.=]//g' | rid -GLd > temp2</big></code>
+</blockquote>
+<br>
+<code><big>cmp temp1 temp2</big></code>
+</blockquote>
+</P>
+<P>
+For some tasks, we might focus on just a handful of records.
+For example, we might ask whether two works have
+the same changes of key.
+</P>
+<P>
+<blockquote>
+<code><big>grep '^*[a-gA-G][#-]*:'  file 1 > temp1</big></code>
+<br>
+<code><big>grep '^*[a-gA-G][#-]*:'  file 2 > temp2</big></code>
+<br>
+<code><big>cmp temp1 temp2</big></code>
+</blockquote>
+</P>
+<A NAME="Identical_Instrumentation">
+<P>
+In the extreme case, we might compare just
+a single line of information.
+For example, we might identify whether two works have
+identical instrumentation:
+</P>
+<P>
+<blockquote>
+<code><big>grep '^!!!AIN:'  file 1 > temp1</big></code>
+<br>
+<code><big>grep '^!!!AIN:'  file 2 > temp2</big></code>
+<br>
+<code><big>cmp temp1 temp2</big></code>
+</blockquote>
+</P>
+<A NAME="Comparing_Files_Using_diff">
+<H2>Comparing Files Using <i>diff</i></H2>
+</P>
+<P>
+The problem with
+<b>cmp</b>
+is that it is unable to distinguish whether the difference
+between two files is profound or superficial.
+A useful alternative to the
+<b>cmp</b>
+command is the UNIX
+<b>diff</b>
+command.
+The
+<b>diff</b>
+command attempts to determine the minimum set of changes
+needed to convert one file to another file.
+The output from
+<b>diff</b>
+entails editing commands reminiscent of the
+<b>ed</b>
+text editor.
+For example, two latin texts that differ at line 40,
+might generate the following output:
+</P>
+<P>
+<blockquote>
+<code><big>40c40
+<br>
+< es quiambulas
+<br>
+---
+<br>
+> es quisedes</big></code>
+</blockquote>
+</P>
+<A NAME="Text_Differences">
+<P>
+Let's consider again the question of whether
+two works have essentially the same lyrics.
+Many otherwise similar texts might differ in trivial ways.
+For example, texts may differ in punctuation or in
+the use of upper- and lower-case characters.
+The
+<b>diff</b>
+command provides a
+<b>-i</b>
+option that ignores
+distinctions between upper- and lower-case characters.
+Punctuation marks can be eliminated by adding a suitable
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+filter.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**silbe' file1 | text | humsed 's/[^a-zA-Z ]//g' \
+<blockquote>
+| rid -GLId > temp1
+</blockquote>
+extract -i '**silbe' file2 | text | humsed 's/[^a-zA-Z ]//g' \
+<blockquote>
+| rid -GLId > temp2
+</blockquote>
+diff -i file1 file2</big></code>
+</blockquote>
+</P>
+<P>
+Every time
+<b>diff</b>
+encounters a difference between the two files, it will output
+several lines identify the location of the difference and showing
+the conflicting lines in the two files.
+The
+<b>diff</b>
+command is line-oriented.
+Two lines need only differ by a single character in order for
+<b>diff</b>
+to generate an output.
+</P>
+<P>
+When there are more than a dozen or so differences, the output becomes
+cumbersome to read.
+A useful alternative is to avoid looking at the raw output from
+<b>diff</b>;
+instead, we might simply count the number of lines of output (using <b>wc -l</b>).
+When compared with the total length of the input,
+the number of output lines can provide a rough estimate of the magnitude of
+the differences between the two files.
+A suitable revision to the last line of the above script would be:
+</P>
+<P>
+<blockquote>
+<code><big>diff -i file1 file2 | wc -l</big></code>
+</blockquote>
+</P>
+<P>
+One problem with this approach is that it
+assumes that we know which two files we want to compare.
+A more common problem is looking for
+<i>any</i>
+work that is somewhat similar to some given work.
+We can automate this task by embedding the above script
+in a loop so that the comparison (second) file cycles through a series
+of possibilities.
+A simple
+<b>while</b>
+loop will enable us to do this.
+Since our script may process a large number of scores,
+we ought to format our output for ease of reading.
+The
+<b>echo</b>
+command in our script outputs each filename in turn with the
+a count of the number of output lines generated by <b>diff</b>.
+</P>
+<P>
+<blockquote>
+<br>
+<code><big>extract -i '**silbe' $1 | text | humsed 's/[^a-zA-Z ]//g' \
+<br>
+<blockquote>
+<br>
+| rid -GLId > temp1
+<br>
+</blockquote>
+<br>
+shift
+<br>
+while [ $# -ne 0 ]
+<br>
+do
+<br>
+<blockquote>
+<br>
+extract -i '**silbe' $1 | text | humsed 's/[^a-zA-Z ]//g' \
+<br>
+<blockquote>
+<br>
+| rid -GLId > temp2
+<br>
+</blockquote>
+<br>
+CHANGES=`diff -i temp1 temp2 | wc -l`
+<br>
+echo $1 ":	" $CHANGES
+<br>
+shift
+<br>
+</blockquote>
+<br>
+done
+<br>
+rm temp[12]</big></code>
+</blockquote>
+</P>
+<P>
+Of course this same approach may be applied to other musical aspects
+apart from musical texts.
+For example, with suitable changes in the processing, one could
+identify works that have similar rhythms, melodic contours,
+harmonies, rhyme schemes, and so on.
+</P>
+<A NAME="Comparing_Inventories--The_comm_Command">
+<H2>Comparing Inventories -- The <i>comm</i> Command</H2>
+</P>
+<P>
+The
+<b>diff</b>
+command is sensitive to the order of data.
+Suppose that texts for two songs differ only in that one song
+reverses the order of verses 3 and 4.
+Comparing the "wrong" verses will tend to exaggerate what
+are really minor differences between the two songs.
+In addition, the above approach is too sensitive to word or
+phrase repetition.
+Many works -- especially polyphonic vocal works -- 
+use extensive repetitions
+(e.g., "on the bank, on the bank, on the bank of the river").
+Short texts (such as for the <i>Kyrie</i> of the Latin mass) are especially
+prone to use highly distinctive repetition.
+How can we tell whether one work has pretty much the same lyrics
+as another?
+</P>
+<A NAME="Similar_Vocabularies">
+<P>
+Fortunately, most texts tend to have unique word inventories.
+Although words may be repeated or re-ordered, phrases interrupted,
+and verses re-arranged, the basic vocabulary for similar texts are
+often much the same.
+A useful technique is to focus on the similarity of the word
+inventories.
+In the following script, we simply create a list of words
+used in both the original and comparison files.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**silbe' file1 | text | humsed 's/[.,;:!?]//g' \
+<blockquote>
+| rid -GLId | tr A-Z a-z | sort -d > inventory1</big></code>
+</blockquote>
+<code><big>extract -i '**silbe' file2 | humsed 's/[.,;:!?]//g' | tr A-Z a-z | text \
+<blockquote>
+| rid -GLId | sort | uniq -c | sort -nr > inventory2</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Suppose that our two vocabulary inventories appear as follows:
+<blockquote><TABLE>
+<TR><TD><b>Inventory 1:</b></TD><TD><b>Inventory 2:</b></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>domine</TD><TD>a</TD></TR>
+<TR><TD>et</TD><TD>coronasti</TD></TR>
+<TR><TD>eum</TD><TD>domine</TD></TR>
+<TR><TD>filio</TD><TD>et</TD></TR>
+<TR><TD>gloria</TD><TD>eum</TD></TR>
+<TR><TD>in</TD><TD>filio</TD></TR>
+<TR><TD>jerusalem</TD><TD>gloria</TD></TR>
+<TR><TD>orietur</TD><TD>honore</TD></TR>
+<TR><TD>patri</TD><TD>manuum</TD></TR>
+<TR><TD>sancto</TD><TD>oper</TD></TR>
+<TR><TD>spiritui</TD><TD>patri</TD></TR>
+<TR><TD>super</TD><TD>sancto</TD></TR>
+<TR><TD>te</TD><TD>spiritui</TD></TR>
+<TR><TD>videbitur</TD><TD>super</TD></TR>
+<TR><TD></TD><TD>tuarum</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Notice that a number of words are present in both texts,
+such as <i>domine</i>, <i>et</i>, <i>eum</i>, <i>filio</i>, and so on.
+Identifying the common vocabulary items is easily done by the UNIX
+<b>comm</b>
+command;
+<b>comm</b>
+compares two sorted files and identifies which lines are
+shared in common and which lines are unique to one file or the other.
+</P>
+<P>
+The
+<b>comm</b>
+command outputs three columns:
+the first column identifies only those lines that are present in
+the first file,
+the second column identifies only those lines that are present in
+the second file,
+and the third column identifies those lines that are present in
+both files.
+In the case of our two Latin texts, the command:
+</P>
+<P>
+<blockquote>
+<code><big>comm inventory1 inventory2</big></code>
+</blockquote>
+</P>
+<P>
+will produce the following output.
+The first and second columns identify words unique to <code><big>inventory1</big></code>
+and <code><big>inventory1</big></code>, respectively.
+The third column identifies the common lines:
+<blockquote><TABLE>
+<TR><TD></TD><TD></TD><TD></TD><TD><code><big>a</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD>coronasti</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>domine</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>et</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>eum</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>filio</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>gloria</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD>honore</TD></TR>
+<TR><TD>in</TD></TR>
+<TR><TD>jerusalem</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD>manuum</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD>oper</TD></TR>
+<TR><TD>orietur</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>patri</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>sancto</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>spiritui</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>super</TD></TR>
+<TR><TD>te</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD>tuarum</TD></TR>
+<TR><TD>videbitur</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+In the above case, five words are unique to <code><big>inventory1</big></code>,
+six words are unique to <code><big>inventory2</big></code> and nine words
+are common to both.
+</P>
+<P>
+The
+<b>comm</b>
+command provides numbered options that suppress specified columns.
+For example, the command
+<b>comm -13</b>
+will suppress columns one and three (outputing column two).
+(Empty lines are also suppressed with these options.)
+A convenient measure of similarity is to express the shared vocabulary items
+as a percentage of the total combined vocabularies.
+We can do this using the word-count command, <b>wc</b>.
+The first command counts the total number of words and the second
+command counts the total number of shared words:
+</P>
+<P>
+<blockquote>
+<code><big>comm inventory1 inventory2 | wc -l</big></code>
+<br>
+<code><big>comm -3 inventory1 inventory2 | wc -l</big></code>
+</blockquote>
+</P>
+<P>
+An important point about
+<b>comm</b>
+is that the order of materials is important in the input files.
+If the word <i>filio</i> occurs near the beginning of <code><big>inventory1</code></big> but
+near the end of <code><big>inventory2</big></code> then
+<b>comm</b>
+will not consider the record common to both files.
+This is the reason why we used an alphabetical sort (<b>sort -d</b>)
+in our original processing.
+</P>
+<P>
+On the other hand, there are sometimes good reasons to order
+the vocabulary lists non-alphabetically.
+For example, suppose we created our inventories according to
+the frequency of occurrence of the words.
+That is, suppose we use
+<b>uniq -c | sort -nr</b>
+to generate a vocabulary list ordered by how common each word is.
+Our inventory files might now appear as follows:
+</P>
+<P>
+<blockquote>
+<b>Inventory 1:</b>
+<blockquote><TABLE>
+<TR><TD><code><big>3</TD><TD>et</TD></TR>
+<TR><TD>2</TD><TD>te</TD></TR>
+<TR><TD>2</TD><TD>gloria</TD></TR>
+<TR><TD>1</TD><TD>videbitur</TD></TR>
+<TR><TD>1</TD><TD>super</TD></TR>
+<TR><TD>1</TD><TD>spiritui</TD></TR>
+<TR><TD>1</TD><TD>sancto</TD></TR>
+<TR><TD>1</TD><TD>patri</TD></TR>
+<TR><TD>1</TD><TD>orietur</TD></TR>
+<TR><TD>1</TD><TD>jerusalem</TD></TR>
+<TR><TD>1</TD><TD>in</TD></TR>
+<TR><TD>1</TD><TD>filio</TD></TR>
+<TR><TD>1</TD><TD>eum</TD></TR>
+<TR><TD>1</TD><TD>domine</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+<b>Inventory 2:</b>
+<blockquote><TABLE>
+<TR><TD><code><big>4</TD><TD>et</TD></TR>
+<TR><TD>2</TD><TD>gloria</TD></TR>
+<TR><TD>2</TD><TD>eum</TD></TR>
+<TR><TD>1</TD><TD>tuarum</TD></TR>
+<TR><TD>1</TD><TD>super</TD></TR>
+<TR><TD>1</TD><TD>spiritui</TD></TR>
+<TR><TD>1</TD><TD>sancto</TD></TR>
+<TR><TD>1</TD><TD>patri</TD></TR>
+<TR><TD>1</TD><TD>oper</TD></TR>
+<TR><TD>1</TD><TD>manuum</TD></TR>
+<TR><TD>1</TD><TD>honore</TD></TR>
+<TR><TD>1</TD><TD>filio</TD></TR>
+<TR><TD>1</TD><TD>domine</TD></TR>
+<TR><TD>1</TD><TD>coronasti</TD></TR>
+<TR><TD>1</TD><TD>a</big></code></TD></TR>
+</TABLE></blockquote>
+</blockquote>
+</P>
+<P>
+Comparing these two inventories will produce little in common
+due to the presence of the numbers.
+For example, the records "<code><big>3    et</big></code>" and "<code><big>4    et</big></code>"
+will be deemed entirely different.
+However, we can eliminate the numbers using an appropriate
+<b>sed</b>
+command leaving us with vocabulary lists that are ordered according to the
+frequency of occurrence of the words.
+If we apply the
+<b>comm</b>
+command to these lists then the commonality measures
+will be sensitive to the relative frequency of words
+within the vocabularies.
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+In this chapter we have introduced the UNIX
+<b>cmp</b>, <b>diff</b> and
+<b>comm</b>
+commands.
+The
+<b>cmp</b>
+command determines whether two files as are the same or different.
+The
+<b>diff</b>
+command identifies how two files differ.
+The
+<b>comm</b>
+command identifies which (sorted) lines two files share in common;
+<b>comm</b>
+also allows us to identify which lines are unique
+to just one of the files.
+</P>
+<P>
+The value of these tools is amplified when the inputs
+are pre-processed to eliminate unwanted or distracting data,
+and when post-processing is done (using <b>wc</b>)
+to estimate the magnitude of the differences or commonalities.
+</P>
+<P>
+Together with the
+<A HREF="commands/simil.html"><b>simil</b></A>
+and
+<A HREF="commands/correl.html"><b>correl</b></A>
+commands discussed in
+<A HREF="guide25.html">Chapter 25,</A>
+these five tools provide
+a variety of means for characterizing differences,
+commonalities, and similarities.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide30.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide28.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

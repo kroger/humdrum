@@ -1,0 +1,89 @@
+###########################################################################
+# 						YDELTA
+# Programmed by: Tim Racinsky        Date: July, 1993
+# Copyright (c) 1993, 1998 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# June 7/94	Tim Racinsky	Modified to use getopts
+# Aug 25/98	David Huron	Added -o option
+#
+#
+#	This shell program receives input from the command line and after 
+# checking it, passes it to the program ydelta.awk.
+#
+INTERPRETATION=""
+REG_EXP=""
+ORIGIN=""
+HELP=""
+FILENAME=""
+FLAG=""
+STNDIN=""
+USAGE1="USAGE: ydelta -h                   (Help Screen)"
+USAGE2="       ydelta [-o] [-s reg_exp] -i interpretation [file ...]"
+# 
+while getopts hi:os: arg
+do
+	case "$arg" in
+	o) 	ORIGIN="o";;
+	s) 	REG_EXP="${OPTARG}";;
+	i) 	INTERPRETATION="${OPTARG}";;
+	h) 	HELP="ON";;
+     [?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If the help variable has been specified, print the help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/ydelta.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/ydelta.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+if [ "X$INTERPRETATION" = X ]
+then
+	echo "ydelta: ERROR: Missing interpretation." 1>&2
+	echo "" 1>&2
+	echo "$USAGE1" 1>&2
+	echo "$USAGE2" 1>&2
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' is allowed
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "ydelta: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+# Invoke ydelta.awk with the specified options.
+$AWK_VER -f ${HUMDRUM}/bin/ydelta.awk  "DUMMY" "${REG_EXP:-null}" "$INTERPRETATION" "{$ORIGIN:-null}" $FILENAME

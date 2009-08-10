@@ -1,0 +1,303 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Duration</TITLE>
+<!-- Documentation for the **dur Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **dur Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,duration,software,theory,analysis,systematic musicology,computer representation,**dur">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Duration</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**dur</b>  --  duration (time-span) representation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+</P>
+<P>
+The
+<b>**dur</b>
+representation can be used to encode a sequence
+of time-spans or successive durations.
+Units may be seconds, minutes, hours, days, months, and/or years.
+</P>
+<P>
+In the
+<b>**dur</b>
+representation, duration information is encoded according to the
+following basic syntax:
+</P>
+<P>
+<CENTER>
+<i>years<b>/</b>months<b>/</b>days<b>/</b>hours<b>:</b>minutes<b>:</b>seconds<b>.</b>decimal</i>
+</CENTER>
+</P>
+<P>
+Duration information may be encoded in full, or may consist of isolated elements
+or parts.
+The following table shows the most succinct ways of encoding single duration
+values within <b>**dur</b>:
+<blockquote>
+<TABLE>
+<TR><TD><code><big>.11</big></code></TD><TD>11 one-hundredths of a second</TD></TR>
+<TR><TD><code><big>11</big></code></TD><TD>11 seconds</TD></TR>
+<TR><TD><code><big>11:</big></code></TD><TD>11 minutes</TD></TR>
+<TR><TD><code><big>11::</big></code></TD><TD>11 hours</TD></TR>
+<TR><TD><code><big>11/</big></code></TD><TD>11 years</TD></TR>
+<TR><TD><code><big>/11</big></code></TD><TD>11 months</TD></TR>
+<TR><TD><code><big>//11</big></code></TD><TD>11 days</TD></TR>
+</TABLE>
+<CENTER>
+<i>Examples of <b>**dur</b> components</i>
+</CENTER>
+</blockquote>
+Notice that if a single numerical value appears, it is interpreted as
+<i>seconds</i>.
+For example, the data token
+<code><big>
+32
+</code></big>
+represents a duration of 32 seconds.
+If a single value appears followed by a slash, it is interpreted as the
+number of <i>years</i>;
+if a single value appears followed by a colon, it is interpreted as the
+number of <i>minutes</i>.
+Days and hours require two leading or two trailing delimiters
+respectively.
+In general, abbreviated forms of <b>**dur</b> representations
+tend to favor the two extremes of durations: in seconds and in years.
+</P>
+<P>
+The data token
+<code><big>
+1:15:10
+</code></big>
+represents a duration of one hour fifteen minutes and 10 seconds.
+It is also possible to encode such durations in seconds alone as in
+the equivalent --
+<code><big>
+4510.
+</code></big>
+If only a single colon is encountered, it is presumed to
+delineate minutes and seconds as in
+<code><big>
+5:33
+</code></big>
+(five minutes and 33 seconds).
+</P>
+<P>
+The data token
+<code><big>
+53/
+</code></big>
+means an elapsed duration of 53 years, whereas
+<code><big>
+/9//
+</code></big>
+means a duration of 9 months.
+The data token
+<code><big>
+//730/
+</code></big>
+means 730 days.
+</P>
+<P>
+The
+<b>**dur</b>
+representation provides a means for representing
+approximate durations.
+It also provides a means for representing
+uncertainty, as well as mechanisms for representing time boundaries
+(prior to ...; after ...).
+</P>
+<P>
+If a duration token is preceded by 
+the tilde (~) signifier, the entire data token is taken to be
+<i>approximate.</i>
+Hence, the token
+<code><big>
+~1/
+</code></big>
+signifies a duration of about 1 year and the token
+<code><big>
+~3
+</code></big>
+means a duration of about 3 seconds.
+</P>
+<P>
+If a duration token is preceded by
+the question mark (?), the duration is taken to be uncertain.
+Hence, the token
+<code><big>
+?3:
+</code></big>
+signifies a duration of perhaps 3 minutes.
+</P>
+<P>
+The
+<b>**dur</b>
+representation does not support the `x' and `z' signifies
+used by related representations such as
+<b>**date</b>
+and
+<b>**Zeit.</b>
+However,
+<b>**dur</b>
+is able to represent shorter-than (<) and longer-than (>) indications.
+For example, the data token
+<code><big>
+<1:
+</code></big>
+means a duration of less than one minute.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**dur</big></code>
+data should be given names with the distinguishing `.dur' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**dur</b>
+mappings of signifiers and
+signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>/</TD><TD>years-months, months-days and days-hours delimiter</TD></TR>
+<TR><TD>:</TD><TD>hours-minutes and minutes-seconds delimiter</TD></TR>
+<TR><TD>.</TD><TD>fractional second delimiter; null token</TD></TR>
+<TR><TD>?</TD><TD>duration uncertain</TD></TR>
+<TR><TD>~</TD><TD>duration approximate</TD></TR>
+<TR><TD><</TD><TD>duration shorter than</TD></TR>
+<TR><TD>></TD><TD>duration longer than</TD></TR>
+<TR><TD>=</TD><TD>barlines</TD></TR>
+<TR><TD>==</TD><TD>double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**dur</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! Gustav Holst</TD></TR>
+<TR><TD>**dur</TD></TR>
+<TR><TD>*M5/4</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>.3</TD></TR>
+<TR><TD>.3</TD></TR>
+<TR><TD>.3</TD></TR>
+<TR><TD>1</TD></TR>
+<TR><TD>1.</TD></TR>
+<TR><TD>0.5</TD></TR>
+<TR><TD>0.5</TD></TR>
+<TR><TD>1.0</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum command produces <b>**dur</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/dur.html"><b>dur</b></A></TD><TD>change canonical durations (<code><big>**recip</b>) to elapsed time in seconds</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**dur</b>:
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+<TR><TD>timebase</TD><TD><code><big>*tb32</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**dur</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="date.rep.html"><b>**date</b></A>,
+<A HREF="metpos.rep.html"><b>**metpos</b></A>,
+<A HREF="ordo.rep.html"><b>**ordo</b></A>,
+<A HREF="recip.rep.html"><b>**recip</b></A>,
+<A HREF="takt.rep.html"><b>**takt</b></A>,
+<A HREF="time.rep.html"><b>**time</b></A>,
+<A HREF="Zeit.rep.html"><b>**Zeit</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

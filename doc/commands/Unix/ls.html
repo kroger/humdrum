@@ -1,0 +1,123 @@
+<HTML>
+<HEAD>
+<TITLE>Unix Command Reference -- ls</TITLE>
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+</img src="logo.gif"><br>
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>ls</b>  --  list file and directory names, also list file/directory attributes
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+</P>
+<P>
+<code><big>
+<b>ls</b>   [<b>-aAbcCdfFgilmnopqrRstux1</b>]   [<i>pathname ...</i>] 
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>ls</b>
+command lists files and directories.
+If the <i>pathname</i> is a file, <b>ls</b>
+provides information according to the specified options.
+If <i>pathname</i> is a directory, <b>ls</b>
+lists the files and subdirectories contained in the
+specified directory.
+Information about the directory itself can be obtained
+using the <b>-d</b> option.
+</P>
+<P>
+If no <i>pathname</i> is provided, <b>ls</b>
+displays the files and directories in the current directory.
+</P>
+<P>
+The <b>ls</b> command behaves differently depending on
+whether its output is sent to the screen or to a pipe or file.
+In the latter case, <b>ls</b> displays only one file per line.
+In the former case, <b>ls</b> produces several columns,
+and so more than one file is typically listed per line.
+</P>
+<blockquote>
+<code><big><b>ls file1 file2</b></big></code>
+</blockquote>
+cause a copy of <i>file1</i> to be displayed on the screen
+followed by <i>file2</i>
+</P>
+<P>
+If `-' is given as one of the filenames, then
+<b>ls</b> will read the standard input.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>ls</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-a</b></TD><TD>list all entries, including names beginning with a period (.)</TD></TR>
+<TR><TD><b>-A</b></TD><TD>same as <b>-a</b> only the current directory (".") and
+parent directory ("..") are not listed</TD></TR>
+<TR><TD><b>-b</b></TD><TD>display unprintable characters using octal notation</TD></TR>
+<TR><TD><b>-C</b></TD><TD>output using column format (default behavior when <b>ls</b> outputs to screen)</TD></TR>
+<TR><TD><b>-c</b></TD><TD>sort output according to time of last modification of file or directory</TD></TR>
+<TR><TD><b>-d</b></TD><TD>display information about named directory, rather than directory contents</TD></TR>
+<TR><TD><b>-F</b></TD><TD>output a slash (/) after directory names</TD></TR>
+<TR><TD><b>-i</b></TD><TD>display inode numbers</TD></TR>
+<TR><TD><b>-L</b></TD><TD>list symbolic links</TD></TR>
+<TR><TD><b>-l</b></TD><TD>display long format information (owner, group, size, time filename, links, etc.)</TD></TR>
+<TR><TD><b>-m</b></TD><TD>display names in a single line, with commas separating names</TD></TR>
+<TR><TD><b>-n</b></TD><TD>indicate user-ID and group-ID numbers</TD></TR>
+<TR><TD><b>-o</b></TD><TD>do not display owner</TD></TR>
+<TR><TD><b>-p</b></TD><TD>appends '/' following directory names</TD></TR>
+<TR><TD><b>-q</b></TD><TD>display nongraphic characters as `?'</TD></TR>
+<TR><TD><b>-R</b></TD><TD>list subdirectories recursively</TD></TR>
+<TR><TD><b>-r</b></TD><TD>sort output in reverse order</TD></TR>
+<TR><TD><b>-s</b></TD><TD>indicate file size in blocks</TD></TR>
+<TR><TD><b>-t</b></TD><TD>sort output by modification time</TD></TR>
+<TR><TD><b>-u</b></TD><TD>sort by last access time</TD></TR>
+<TR><TD><b>-x</b></TD><TD>output order by row rather than by column</TD></TR>
+<TR><TD><b>-1</b></TD><TD>display output as a single column</TD></TR>
+<TR><TD><b>--help</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+All UNIX systems supporting the
+DOS 2.0 and up, with UWIN or MKS Toolkit.
+Apple OSX.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="lc.html">
+<b>lc</b></A> (UNIX),
+<A HREF="file.html">
+<b>file</b></A> (UNIX),
+<A HREF="find.html">
+<b>find</b></A> (UNIX)
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

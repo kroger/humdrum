@@ -1,0 +1,178 @@
+########################################################################
+# 						HUMSED
+# Programmed by: Tim Racinsky          Date: July, 1993
+# Copyright (c) 1993 David Huron
+#
+# Modifications:
+#    Date:     Programmer:         Description:
+# June 7/94	Tim Racinsky	Modified to use with getopts
+# July 21/95	David Huron	Modified tempfiles to use PID #s.
+#
+#
+#	This shell program allows the user to use the 'sed' command on a 
+# humdrum file without affecting comments and interpretations.
+#
+OPTIONS=""
+COMMAND=""
+FILENAME=""
+SCRIPTNAME=""
+INPUT=""
+HELP=""
+STNDIN=""
+USAGE1="USAGE: humsed -h               (Help Screen)"
+USAGE2="       humsed [-E] [-f scriptfile] ['sed_command'] [file ...]"
+#
+DUALCASE=1
+while getopts Ef:h arg
+do
+	case "${arg}" in
+		# The -E option is for extended regular expressions
+	E)	OPTIONS=${arg};;
+		# The -f option must be accompanied by a script file
+	f)	if [ -f "${OPTARG}" ]
+		then
+			SCRIPTNAME=${OPTARG}
+		else
+			echo "humsed: ERROR: Scriptfile not found for -f option: ${OPTARG}" 1>&2
+			echo "" 1>&2
+			echo "${USAGE1}" 1>&2
+			echo "${USAGE2}" 1>&2
+			exit
+		fi ;;
+	h) 	HELP="ON";;
+     [?]) echo "" 1>&2
+		echo "${USAGE1}" 1>&2
+		echo "${USAGE2}" 1>&2
+		exit ;;
+	esac
+done
+shift `expr ${OPTIND} - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "${HELP}" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/humsed.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/humsed.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Store the sed command in COMMAND
+if [ ! -f "$1" -a x"$1" != x- ]
+then
+	COMMAND="$1"
+	shift
+	if [ x"$1" = x-- ]
+	then
+		shift
+	fi
+fi
+if [ "$#" -ne 0 ]
+then
+	while [ "$#" -ne 0 ]
+	do
+		# For each valid file, perform the sed command on just
+		# the data records of that file.
+		if [ x"$1" = x- ]
+		then
+			if [ -z "${STNDIN}" ]
+			then
+				read INPUT
+				if [ $? -eq 0 ]
+				then
+					echo "${INPUT}" > ${TMPDIR}/$$.tmp
+					while read INPUT
+					do
+						echo "${INPUT}" >> ${TMPDIR}/$$.tmp
+					done
+				else
+					echo "${INPUT}" > ${TMPDIR}/$$.tmp
+				fi		
+				FILENAME=${TMPDIR}/$$.tmp
+				${AWK_VER} -f ${HUMDRUM}/bin/humsed.awk "DUMMY" ${FILENAME} > ${TMPDIR}/scr$$.txt
+				if [ -n "${COMMAND}" ]
+				then
+					echo "${COMMAND}" >> ${TMPDIR}/scr$$.txt
+				fi
+				if [ -n "${SCRIPTNAME}" ]
+				then
+					cat ${SCRIPTNAME} >> ${TMPDIR}/scr$$.txt
+				fi
+				if [ "X${OPTIONS}" = X ]
+				then
+					sed -f ${TMPDIR}/scr$$.txt ${FILENAME}
+				else
+					sed -E -f ${TMPDIR}/scr$$.txt ${FILENAME}
+				fi
+				STNDIN="ON"
+				shift
+			else
+				shift
+			fi
+		elif [ -f "$1" ]
+		then
+			${AWK_VER} -f ${HUMDRUM}/bin/humsed.awk "DUMMY" $1 > ${TMPDIR}/scr$$.txt
+			if [ -n "${COMMAND}" ]
+			then
+				echo "${COMMAND}" >> ${TMPDIR}/scr$$.txt
+			fi
+			if [ -n "${SCRIPTNAME}" ]
+			then
+				cat ${SCRIPTNAME} >> ${TMPDIR}/scr$$.txt
+			fi
+			if [ "X${OPTIONS}" = X ]
+			then
+				sed -f ${TMPDIR}/scr$$.txt $1
+			else
+				sed -E -f ${TMPDIR}/scr$$.txt $1
+			fi
+			shift
+		else
+			echo "humsed: ERROR: File not found: $1." 1>&2
+			shift
+		fi
+	done	
+# If there were no files specified, assume standard input
+else
+	read INPUT
+	if [ $? -eq 0 ]
+	then
+		echo "${INPUT}" > ${TMPDIR}/$$.tmp
+		while read INPUT
+		do
+			echo "${INPUT}" >> ${TMPDIR}/$$.tmp
+		done
+	else
+		echo "${INPUT}" > ${TMPDIR}/$$.tmp
+	fi		
+	FILENAME=${TMPDIR}/$$.tmp
+	# Determine which lines do not contain data records and place those
+	# lines in a script file so that sed will skip over them.
+	${AWK_VER} -f ${HUMDRUM}/bin/humsed.awk "DUMMY" ${FILENAME} > ${TMPDIR}/scr$$.txt
+	if [ -n "${COMMAND}" ]
+	then
+		echo "${COMMAND}" >> ${TMPDIR}/scr$$.txt
+	fi
+	if [ -n "${SCRIPTNAME}" ]
+	then
+		cat ${SCRIPTNAME} >> ${TMPDIR}/scr$$.txt
+	fi
+	# Perform the sed command on the stored file.
+	if [ "X${OPTIONS}" = X ]
+	then
+		sed -f ${TMPDIR}/scr$$.txt ${FILENAME}
+	else
+		sed -E -f ${TMPDIR}/scr$$.txt ${FILENAME}
+	fi
+fi
+# If a script file was created, remove it
+if [ -f "${TMPDIR}/scr$$.txt" ]
+then
+	rm ${TMPDIR}/scr$$.txt
+fi
+# If a tempfile was created, remove it
+if [ -f "${TMPDIR}/$$.tmp" ]
+then
+	rm ${TMPDIR}/$$.tmp
+fi

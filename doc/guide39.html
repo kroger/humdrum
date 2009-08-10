@@ -1,0 +1,518 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 39</TITLE>
+<!-- Chapter 39 (Trouble-Shooting) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:17:10 EST 2000">
+<meta name="description" content="Chapter 39 (Trouble-Shooting) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<H1>Chapter39</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide38.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide40.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Trouble-Shooting</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+Computers have an unbounded capacity to generate nonsense.
+Even when commands appear to execute correctly, there is
+no guarantee that the results are accurate or meaningful.
+In this chapter we will identify some of the many things
+that can go wrong when using the Humdrum Toolkit.
+We will also present a number of suggestions and tips that
+will help you avoid potential problems.
+</P>
+<P>
+Errors can arise from a number of sources including corrupt or
+error-prone input data, failure to anticipate special
+circumstances or exceptions, improper processing,
+software bugs, and incautious interpretations of results.
+</P>
+<A NAME="Encoding_Errors">
+<H2>Encoding Errors</H2>
+</P>
+<P>
+In the first instance, the accuracy of your results will depend
+on the accuracy of the input data.
+Humdrum data may originate from a variety of sources.
+Users may encode their own materials, or use existing
+data encoded by other individuals or available from
+institutional sources.
+Data quality can be highly variable and there may be no
+easy way to determine the accuracy of a given data set.
+</P>
+<P>
+It is important to spend time with a data set.
+Historical musicologists may spend a considerable amount of
+time becoming familiar with a manuscript,
+and the same practice is recommended for computational musicologists.
+Users should look at the data, listen to the data,
+compare the data to published sources, and generally
+browse and peruse it.
+Most data errors are discovered while processing the data --
+such as finding a suspicious major ninth melodic interval
+in a simple song.
+Over time, more and more errors are eventually discovered
+and corrected.
+Unfortunately, there is no magic flag that pops up to notify
+us when all errors have been eliminated from an encoded
+musical work.
+Only over time will the user gain confidence (or lose confidence)
+in a given data set.
+In working with a file, we are far more apt to discover
+something is wrong with the data than to learn that
+the data is a pristine encoding.
+</P>
+<P>
+Errors can be magnified by the type of processing that is applied.
+For example, consider the case of an encoded repertory
+that is known to have a pitch-related error rate of 1 percent.
+That is, roughly 1 out of every 100 notes has an incorrect
+pitch representation.
+If we were to do an inventory of pitches in this repertory,
+then our results would also exhibit a 1 percent error rate.
+For many applications, such errors are not a problem.
+</P>
+<P>
+However, consider what happens when we create an inventory
+of melodic intervals.
+One incorrect pitch will falsify
+<i>two</i>
+melodic intervals, hence the error rates for intervals is now
+2 percent.
+Similarly, if we are looking at four-note chords,
+a single wrong pitch will falsify an entire chord.
+So we  will have roughly a 4 percent error rate for
+chord identification.
+If we are investigating simple chord progressions,
+a single wrong note will now disrupt the identification
+of two successive chords.
+Thus we have an error rate of 8 percent for chord progressions.
+</P>
+<P>
+There are two general lessons that can be drawn from these
+observations.
+The first lesson is obvious.
+Always try to use the best quality data that is available.
+When encoding your own data, aim for total accuracy.
+The second lesson is more subtle.
+The more data that participates in identifying
+some pattern, the greater the likelihood that a single
+data error will cause a problem.
+Whenever possible try to restrict pattern searches to
+small or concise patterns.
+</P>
+<A NAME="Searching_Tips">
+<H2>Searching Tips</H2>
+</P>
+<P>
+Many of the problems in computer-based musicology are evident
+when searching for some pattern.
+In general, there are two types of searching errors:
+<i>false hits</i>
+and <i>misses</i>.
+A
+<i>false hit</i>
+occurs when the search returns something that is not intended.
+A
+<i>miss</i>
+occurs when the search fails to catch an instance that was
+intended to be a match.
+Unfortunately, efforts to reduce the number of false hits
+often tend to increase the number of misses.
+Similarly, efforts to avoid misses often tend to increase
+the number of false hits.
+Precision and caution are necessary.
+</P>
+<P>
+Search failures can arise from five sources:
+(1) corrupt or inaccurate data,
+(2) failure to search all of the intended data,
+(3) inaccurate or inappropriate definition of the search template,
+(4) failure to understand how a given search tool or option operates,
+(5) failure on the part of the user to form a clear idea
+of what is being sought.
+Let's deal with each of these problems in turn.
+</P>
+<P>
+<b>(1) No search can produce accurate results if the data</b>
+<b>to be searched is inaccurate.</b>
+You can increase the accuracy of your search by choosing
+high quality data and preparing the files in
+an appropriate manner.
+</P>
+<P>
+<b>Tips:</b>
+<ul>
+<li>
+Use the
+<A HREF="commands/humsed.html"><b>humdrum</b></A>
+command to ensure that the input data conforms to the Humdrum
+syntax.
+<li>
+Use the
+<A HREF="commands/humdrum.html"><b>humdrum</b></A> <b>-v</b>
+command to determine whether the kind of data (signifiers)
+you are interested in are truly present in all of the files
+to be searched.
+<li>
+Use the
+<A HREF="commands/proof.html"><b>proof</b></A>
+command to ensure that any
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+data is properly encoded.
+<li>
+Visually inspect sample passages from the input data.
+Do not rely solely on the
+<b>ms</b>
+command;
+instead, look at the actual ASCII text data using the
+<b>more</b>
+command.
+<li>
+Use the
+<A HREF="commands/midi.html"><b>midi</b></A>
+and
+<A HREF="commands/perform.html"><b>perform</b></A>
+commands to listen to sample passages;
+ensure that the data makes sense.
+<li>
+If you are uncertain of the quality of the data,
+try encoding a randomly selected subset and then
+use the UNIX
+<b>diff</b>
+command to identify any differences between the original
+data and the re-encoded data.
+<li>
+Always read any release notes or README files
+that accompany the data.
+<li>
+Use
+<b>grep</b>
+to search for
+<i>warning</i>
+and
+<i>Nota Bene</i>
+reference records (<code><big>!!!RWG:</big></code> and <code><big>!!!ONB:</big></code>).
+These records may contain important editorial notes or warnings.
+<li>
+Where appropriate, expand files to through-composed versions
+(using
+<A HREF="commands/thru.html"><b>thru</b></A>) before searching.
+If more than one editorial version is present in a document,
+select the most appropriate edition before processing.
+<li>
+Create an inventory of all the types of data tokens
+present in an input.
+Inspect the inventory list to determine whether any
+unexpected data are present.
+<li>
+If necessary, eliminate certain types of data that might
+confound or interfere with your search in some way.
+Use
+<A HREF="commands/rid.html"><b>rid</b></A>,
+<b>grep -v</b>,
+<A HREF="commands/extract.html"><b>extract</b></A> <b>-i</b>,
+<b>sed</b>
+and/or
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+to restrict the data.
+</ul>
+</P>
+<P>
+<b>(2) Ensure that you are searching all of the intended data:</b>
+<ul>
+<li>
+Use
+<b>grep</b>
+to search for titles, or composers, or opus numbers, etc.,
+in order to ensure that the file or files you are
+searching are the ones you want.
+Also check to ensure that you are not searching
+materials that don't belong in the input.
+<li>
+Be wary of searching duplicated materials.
+Create inventories of titles, opus numbers, etc.,
+and use
+<b>uniq -d</b>
+to identify unwanted duplicate copies of works or files.
+<li>
+Use the
+<b>ls -l</b>
+or
+<b>wc</b>
+commands to determine the size of the search data.
+Does the amount of input data seem unduly small
+or unduly large?
+<li>
+Use the
+<b>find</b>
+command to search the system for other files that
+ought to be included in the search task.
+</ul>
+</P>
+<P>
+<b>(3) One of the most common problems in searching arises</b>
+<b>from inaccurate or inappropriate search templates.</b>
+</P>
+<P>
+<b>Tips:</b>
+<ul>
+<li>
+Be careful when formulating regular expressions.
+Read aloud the meaning of the regular expression.
+<li>
+Do not use
+<i>extended</i>
+regular expressions with the
+<b>grep</b>
+command.
+Use
+<b>egrep</b>
+instead.
+<li>
+Ensure that you know which characters in your search
+template are meta-characters.
+<li>
+Execute your command from a shell script file so that
+you don't inadvertently make a typing error when
+entering the command.
+<li>
+Maintain a command history file so that you have a permanent
+record of what you did.
+Depending on the system settings, the UNIX
+<b>history</b>
+command will display the past 100 (or more) commands
+you have executed.
+Place this information in a permanent <code><big>record</big></code> file
+as follows:
+</P>
+<P>
+<blockquote>
+<code><big>history > record</big></code>
+</blockquote>
+</P>
+<P>
+In addition, keep records of the precise regular expressions
+used for a given project.
+These records will help you determine later whether you
+made a mistake.
+For added security, print-out these files and glue them
+into a lab book.
+<li>
+Create a test file containing different patterns, and test
+the ability of your regular expressions to catch all cases.
+Included "lures" in your test -- i.e., patterns
+that are close to what you want, but should be rejected.
+<li>
+Use extra caution when using "not" logic.
+For example, the
+<b>grep</b>
+expression "not-A" (i.e. <code><big>[^A]</big></code>)
+will still match records containing the letter <code><big>A</big></code>
+as long as one non-A letter is present.
+The commands
+<blockquote><TABLE>
+<TR><TD></TD><TD><code><big>grep [^A]</big></code></TD></TR>
+<TR><TD>and</TD><TD><code><big>grep -v A</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+are
+<i>not</i>
+the same.
+<li>
+Compare outputs from a search that you know ought to increase
+the number of false hits.
+Compare outputs from a search that you know ought to miss some
+sought patterns.
+<li>
+Translate the data to another representation and repeat the
+search using a different pattern tailored to the new representation.
+The results should be identical.
+<li>
+Maintain a file containing regular expressions you have tested
+so you can re-use them in later projects.
+<li>
+Visually inspect the ASCII output to ensure that the results
+are correct.
+Remember that visual inspection will only help you identify
+<i>false hits.</i>
+Visual inspection of the output will not help you identify
+<i>misses.</i>
+<li>
+Use the
+<A HREF="commands/midi.html"><b>midi</b></A>
+and
+<A HREF="commands/perform.html"><b>perform</b></A>
+commands to proof-listen to your output.
+Again remember that aural inspection will only help
+you identify
+<i>false hits.</i>
+<li>
+Ask whether the output makes sense.
+Given the amount of music searched, does it make
+sense to find the number of occurrences found?
+<li>
+Try making a slight modification to your pattern template
+--  a modification that you know should produce
+a different result.
+<li>
+Look for converging evidence.
+Try two or three contrasting approaches to ensure
+that the same answer arises for each approach.
+For example, try searching each part individually using the
+<A HREF="commands/extract.html"><b>extract</b></A>
+command.
+</ul>
+</P>
+<P>
+<b>(4) Ensure that you understand how a given search tool or option</b>
+<b>operates.</b>
+</P>
+<P>
+<b>Tips:</b>
+<ul>
+<li>
+Remember that
+<i>extended</i>
+regular expressions require the use of
+<b>egrep</b>
+rather than <b>grep</b>.
+<li>
+Re-read the documentation to ensure that each software
+tool does what you think it does.
+<li>
+Refer to the examples given in the
+<i>Humdrum Reference Manual</i>
+in order to ensure that you understand what a given option does.
+<li>
+Compare outputs using different options.
+Ensure that your selected option(s) is matching
+the correct pattern.
+<li>
+Use the
+<A HREF="commands/humver.html"><b>humver</b></A>
+command to determine which version of the Humdrum Toolkit
+you are using.
+Ensure that the documentation pertains to the correct version.
+<li>
+Read the "Release Notes" for the software you use.
+Known software bugs are often reported in such notes or in the
+documentation.
+<li>
+Report discovered bugs to the software's author.
+Even if the software is not revised, other users should
+be informed of the problem.
+</ul>
+</P>
+<P>
+<b>(5) Perhaps the most onerous problems in pattern searching</b>
+<b>arises when the user fails to have a clear understanding</b>
+<b>of what is being sought:</b>
+</P>
+<P>
+<b>Tips:</b>
+<ul>
+<li>
+Think carefully about the search problem.
+What precisely are you looking for?
+<li>
+Inspect the input to familiarize yourself with various
+contexts and possible variants.
+<li>
+Check your search by carrying out a manual search of
+a random subset of the data.
+</ul>
+</P>
+<P>
+Compared with manual research, computer searches are impressively fast.
+However, don't let yourself be caught-up by the speed of interaction.
+Take your time and reflect on the problem being addressed.
+Formulate a search strategy away from the computer so that
+you have time to consider possible confounds.
+</P>
+<A NAME="Pipeline_Tips">
+<H2>Pipeline Tips</H2>
+</P>
+<P>
+Apart from searching tasks, most Humdrum processing involves two or
+more software tools linked in a pipeline.
+Pipelines can obscure all sorts of processing errors.
+</P>
+<P>
+<b>Tips:</b>
+<ul>
+<li>
+Slowly assemble your pipeline by adding one software tool
+at a time.
+Visually inspect the output following the addition of each process.
+<li>
+Start with a small volume of input data.
+Once you have some confidence in your pipeline use a
+<i>different</i>
+sample of input data.
+Again add one software tool at a time while inspecting
+the results at each stage.
+<li>
+Use the UNIX
+<b>tee</b>
+command to generate files at intermediate points in the processing.
+Use the
+<A HREF="commands/assemble.html"><b>assemble</b></A>
+command to align inputs and outputs at various stages in
+the processing.
+<li>
+Execute your finalized pipeline from a shell script in order to
+avoid undetected typing errors.
+</ul>
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+In research-oriented activities, it is essential to exercise care when
+relying on computer-based methods.
+Computers have an unbounded capacity to generate false results.
+Unfortunately, computer outputs often seem deceptively authoritative.
+Take your time and develop a coherent strategy for solving
+a particular problem.
+Test your materials and processes, and maintain good records
+of what you have done.
+For critical tasks, always use two or more independent methods
+to ensure that the results agree.
+In general, cultivate a skeptical attitude;
+wise users are wary users.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide40.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide38.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

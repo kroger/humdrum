@@ -1,0 +1,311 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- ditto</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>ditto</b>   --  replace Humdrum null tokens with previous data token
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>ditto</b>  [<b>-c</b> <i>chars</i>]   [<b>-p</b>]  [<b>-s</b> <i>regexp</i>]  [<i>inputfile</i> ...]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>ditto</b>
+replaces Humdrum null tokens
+with the previous non-null data token in the same spine.
+Various options modify this basic behavior.
+</P>
+<P>
+Humdrum null-tokens are place-holders that do not themselves encode data.
+Null-tokens consist of a single period character (".")
+--  separated from other tokens by tabs, or appearing on a line by itself.
+The
+<b>ditto</b>
+command replaces occurrences of null-tokens with the most recent
+non-null data occurring in the same spine.
+When the
+<b>-p</b>
+option is invoked, the replacement data tokens are enclosed in
+parentheses ( ).
+If the initial data tokens in a spine are null-tokens, then null-tokens
+are output.
+</P>
+<P>
+In repeating previous data tokens, if the
+<b>-s</b>
+option is invoked,
+<b>ditto</b>
+skips over any data records matching <i>regexp.</i>
+For example, if <i>regexp</i> is the equals-sign
+(the "common system" barline),
+then barline data tokens will not be repeated in subsequent data records
+containing null tokens.
+Thus, if a data token `X' is followed by a token that matches
+the regular expression /=/, then subsequent null-tokens
+will be replaced by the token `X' rather than by the equals sign.
+</P>
+<P>
+The
+<b>ditto</b>
+command correctly handles spine path changes.
+In the case where two or more spines join together,
+<b>ditto</b>
+outputs a multiple-stop where necessary.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>ditto</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-c <i>chars</i></TD><TD>repeats only characters listed in <i>chars</i></TD></TR>
+<TR><TD><b>-p</b></TD><TD>place repeated data tokens in parentheses</TD></TR>
+<TR><TD><b>-s <i>regexp</i></TD><TD>skip data records matching <i>regexp</i></TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following inputs and outputs illustrate the operation of the
+<b>ditto</b>
+command.
+Consider the following input:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! Example 1</TD></TR>
+<TR><TD>**kern</TD><TD>**kern</TD></TR>
+<TR><TD>16e-</TD><TD>8r</TD></TR>
+<TR><TD>16d</TD><TD>.</TD></TR>
+<TR><TD>16e-</TD><TD>8gg</TD></TR>
+<TR><TD>16f</TD><TD>.</TD></TR>
+<TR><TD>16g</TD><TD>8cc</TD></TR>
+<TR><TD>16f</TD><TD>.</TD></TR>
+<TR><TD>16g</TD><TD>8gg</TD></TR>
+<TR><TD>16e-</TD><TD>.</TD></TR>
+<TR><TD>16a</TD><TD>[2aa</TD></TR>
+<TR><TD>16g</TD><TD>.</TD></TR>
+<TR><TD>16a</TD><TD>.</TD></TR>
+<TR><TD>16b-</TD><TD>.</TD></TR>
+<TR><TD>16cc</TD><TD>.</TD></TR>
+<TR><TD>16b-</TD><TD>.</TD></TR>
+<TR><TD>16cc</TD><TD>.</TD></TR>
+<TR><TD>16a</TD><TD>.</TD></TR>
+<TR><TD>=78</TD><TD>=78</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+Invoking the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+ditto input > output
+</code></big>
+</blockquote>
+</P>
+<P>
+produces the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! Example 1</TD></TR>
+<TR><TD>**kern</TD><TD>**kern</TD></TR>
+<TR><TD>16e-</TD><TD>8r</TD></TR>
+<TR><TD>16d</TD><TD>8r</TD></TR>
+<TR><TD>16e-</TD><TD>8gg</TD></TR>
+<TR><TD>16f</TD><TD>8gg</TD></TR>
+<TR><TD>16g</TD><TD>8cc</TD></TR>
+<TR><TD>16f</TD><TD>8cc</TD></TR>
+<TR><TD>16g</TD><TD>8gg</TD></TR>
+<TR><TD>16e-</TD><TD>8gg</TD></TR>
+<TR><TD>16a</TD><TD>[2aa</TD></TR>
+<TR><TD>16g</TD><TD>[2aa</TD></TR>
+<TR><TD>16a</TD><TD>[2aa</TD></TR>
+<TR><TD>16b-</TD><TD>[2aa</TD></TR>
+<TR><TD>16cc</TD><TD>[2aa</TD></TR>
+<TR><TD>16b-</TD><TD>[2aa</TD></TR>
+<TR><TD>16cc</TD><TD>[2aa</TD></TR>
+<TR><TD>16a</TD><TD>[2aa</TD></TR>
+<TR><TD>=78</TD><TD>=78</TD></TR>
+<TR><TD>=78</TD><TD>=78</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+Notice that all of the null tokens have been replaced by the preceding
+data token in the same spine.
+Notice also that the barline for measure 78 has been repeated.
+For many applications repeating of barlines will be inappropriate.
+</P>
+<P>
+The following, more complex example, illustrates the use of the
+<b>-p</b>
+and
+<b>-s</b>
+options.
+The input is shown on the left and the corresponding output is
+shown on the right.
+The output was produced by invoking the following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+ditto -p -s ^= input > output
+</code></big>
+</blockquote>
+</P>
+<P>
+<code><big>
+<blockquote><TABLE>
+<TR><TD><b>INPUT<code><big></TD><TD></TD><TD></TD><TD></TD><TD><b>OUTPUT<code><big></TD></TR>
+<TR><TD>!! Example 2</TD><TD></TD><TD></TD><TD></TD><TD>!! Example 2</TD></TR>
+<TR><TD>**foo</TD><TD>**foo</TD><TD>**bar</TD><TD></TD><TD></TD><TD></TD><TD>**foo</TD><TD>**foo</TD><TD>**bar</TD></TR>
+<TR><TD>a</TD><TD>xyz</TD><TD>. </TD><TD></TD><TD></TD><TD></TD><TD>a</TD><TD>xyz</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>23</TD><TD>(%&)</TD><TD></TD><TD></TD><TD></TD><TD>(a)</TD><TD>23</TD><TD>(%&)</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD></TD><TD></TD><TD></TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>. </TD><TD></TD><TD></TD><TD></TD><TD>(a)</TD><TD>(23)</TD><TD>((%&))</TD></TR>
+<TR><TD>!! A comment.</TD><TD></TD><TD></TD><TD></TD><TD>!! A comment.</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>49</TD><TD></TD><TD></TD><TD></TD><TD>(a)</TD><TD>(23)</TD><TD>49</TD></TR>
+<TR><TD>*x</TD><TD>*</TD><TD>*x</TD><TD></TD><TD></TD><TD></TD><TD>*x</TD><TD>*</TD><TD>*x</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>. </TD><TD></TD><TD></TD><TD></TD><TD>(49)</TD><TD>(23)</TD><TD>(a)</TD></TR>
+<TR><TD>*</TD><TD>*v</TD><TD>*v</TD><TD></TD><TD></TD><TD></TD><TD>*</TD><TD>*v</TD><TD>*v</TD></TR>
+<TR><TD>.</TD><TD>. </TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>(49)</TD><TD>(23 a)</TD></TR>
+<TR><TD>abc</TD><TD>XYZ</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>abc</TD><TD>XYZ</TD></TR>
+<TR><TD>*</TD><TD>*^</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>*</TD><TD>*^</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>. </TD><TD></TD><TD></TD><TD></TD><TD>(abc)</TD><TD>(XYZ)</TD><TD>(XYZ)</TD></TR>
+<TR><TD>.</TD><TD>1a</TD><TD>2b</TD><TD></TD><TD></TD><TD></TD><TD>(abc)</TD><TD>1a</TD><TD>2b</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD></TD><TD></TD><TD></TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>*-</TD><TD>*</TD><TD>*</TD><TD></TD><TD></TD><TD></TD><TD>*-</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>.</TD><TD>. </TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>(1a)</TD><TD>(2b)</TD></TR>
+<TR><TD>====</TD><TD>====</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>====</TD><TD>====</TD></TR>
+<TR><TD>*+</TD><TD>*</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>*+</TD><TD>*</TD></TR>
+<TR><TD>**foo</TD><TD>**foo</TD><TD>**bar</TD><TD></TD><TD></TD><TD></TD><TD>**foo</TD><TD>**foo</TD><TD>**bar</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>. </TD><TD></TD><TD></TD><TD></TD><TD>(1a)</TD><TD>.</TD><TD>(2b)</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD></TD><TD></TD><TD></TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+In order to avoid repeating the barlines, the skip option has been
+invoked with the regular expression "^=" -- meaning any equals sign
+at the beginning of a line.
+(See <b>regexp</b> in Section 6 of this manual for details concerning
+regular expression syntax.)
+In addition, the
+<b>-p</b>
+option has been invoked so that all repeated tokens are placed in parentheses.
+Notice that
+<b>ditto</b>
+adapts to changing spine-paths.
+Note especially the join-spine (*v) interpretations leading to the
+double-stop:<code><big>(23 a)</big></code>.
+</P>
+<P>
+A final example illustrates the use of the
+<b>-c</b>
+option.
+Once again, the input is shown on the left and the corresponding output
+is shown on the right.
+The output was produced by invoking the following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+ditto -c '[a-gA-G#-]' input > output
+</code></big>
+</blockquote>
+</P>
+<P>
+<code><big>
+<blockquote><TABLE>
+<TR><TD><b>INPUT</b></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD><b>OUTPUT</b></TD></TR>
+<TR><TD>**kern</TD><TD>**kern</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>**kern</TD><TD>**kern</TD></TR>
+<TR><TD>(4g</TD><TD>8b</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>(4g</TD><TD>8b</TD></TR>
+<TR><TD>.</TD><TD>8cc</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>g</TD><TD>8cc</TD></TR>
+<TR><TD>8f#</TD><TD>4dd</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>8f#</TD><TD>4dd</TD></TR>
+<TR><TD>4.g)</TD><TD>.</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>4g)</TD><TD>dd</TD></TR>
+<TR><TD>.</TD><TD>8cc</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>g</TD><TD>8cc</TD></TR>
+<TR><TD>.</TD><TD>8b</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>g</TD><TD>8b</TD></TR>
+<TR><TD>4d</TD><TD>4a</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>4d</TD><TD>4a</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>d</TD><TD>a</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+The effect of this command has been to propagate the <code><big>**kern</big></code>
+pitch signifiers, without propagating non-pitch information.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<A HREF="patt.html">
+<b>patt</b></A> (4),
+<A HREF="pattern.html">
+<b>pattern</b></A> (4),
+<A HREF="regexp.html">
+<b>regexp</b></A> (4),
+<b>regexp</b> (6),
+<A HREF="simil.html">
+<b>simil</b></A> (4)
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide15.html#Propagating_Data_Using_the_ditto_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

@@ -1,0 +1,302 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- pc</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>pc</b>  --  translate Humdrum semitone representation or pc to pitch-class
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>pc</b>  [<b>-atx</b>]  [<i>inputfile</i> ...]  [ > <i>outputfile.pc</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>pc</b>
+command transforms various pitch-related inputs to
+corresponding numerical pitch-class equivalents:
+C=0, C-sharp/D-flat=1, D=2, . . . B=11.
+It outputs one or more Humdrum <code><big>**pc</big></code>
+spines containing pitch-class values corresponding to
+each of the input pitch tokens.
+For example, the <code><big>**semits</big></code>
+token "-13" is transformed to 11 (pc).
+</P>
+<P>
+The
+<b>pc</b>
+command is able to translate any of the pitch-related
+representations listed below.
+In each case, a tuning standard of A4 equals 440 hertz is assumed.
+For descriptions of the input and output representations
+refer to Section 2
+<i>(Representation Reference)</i>
+of this reference manual.
+</P>
+<P>
+It is recommended that output files produced using the
+<b>pc</b>
+command should be given names with the distinguishing `.pc' extension.
+<blockquote><TABLE>
+<TR><TD><code><big>**cents</big></code></TD><TD>hundredths of a semitone with respect to middle C=0 (e.g. 1200 equals C5)</TD></TR>
+<TR><TD><code><big>**freq</big></code></TD><TD>fundamental frequency (in hertz)</TD></TR>
+<TR><TD><code><big>**kern</big></code></TD><TD>core pitch/duration representation</TD></TR>
+<TR><TD><code><big>**pc</big></code></TD><TD>pitch-class representation</TD></TR>
+<TR><TD><code><big>**pitch</big></code></TD><TD>American National Standards Institute pitch notation (e.g. "A#4")</TD></TR>
+<TR><TD><code><big>**semits</big></code></TD><TD>equal-tempered semitones with respect to middle C=0</TD></TR>
+<TR><TD><code><big>**solfg</big></code></TD><TD>French solf&#232ge system (fixed `doh')</TD></TR>
+<TR><TD><code><big>**specC</big></code></TD><TD>spectral centroid (in hertz)</TD></TR>
+<TR><TD><code><big>**Tonh</big></code></TD><TD>German pitch system</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Input representations processed by <b>pc</b>.</i>
+</CENTER>
+</P>
+<P>
+Note that the
+<b>pc</b>
+command is also able to reprocess pitch-class (<code><big>**pc</big></code>) inputs.
+This allows pitch-class representations to be translated from
+numeric-only (0,1,2,3 ... 9,10,11) to mixed alphanumeric
+(0,1,2,3 ... 9,A,B) or vice versa.
+(See documentation for <code><big>**pc (2)</big></code>.)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>pc</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-a</b></TD><TD>output alphanumeric representation (where A=10, B=11)</TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-t</b></TD><TD>suppresses printing of all but the first note of a group of tied <code><big>**kern</code></big> notes</TD></TR>
+<TR><TD><b>-x</b></TD><TD>suppresses printing of non-pitch-class data</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The
+<b>-a</b>
+option invokes an alternative (alphanumeric) form of the <code><big>**pc</big></code>
+output where the upper-case letters `A' and `B' are substituted for the
+pitch-class integers 10 and 11, respectively.
+In addition, the input alias values `T' (ten) and `E' (eleven) are transformed
+to `A' and `B'.
+Encodings using mixed alphanumeric values are often better
+suited to pattern-matching and searching tasks.
+Encodings using purely numeric values are especially useful when the
+representation is to be processed numerically.
+</P>
+<P>
+The
+<b>-t</b>
+option ensures that only a single output value is given for
+tied <code><big>**kern</big></code> notes;
+the output coincides with the first note of the tie.
+</P>
+<P>
+Note that
+<b>pc</b>
+will round-off frequencies and non-integer semitone input values
+to the nearest pitch-class.
+Hence, an input <code><big>**semits</big></code>
+data token of 5.6 will be rendered in the <code><big>**pc</big></code>
+output as the value 6.
+Similarly, the input <code><big>**freq</big></code> value 452.1 will be rendered in the
+<code><big>**pc</big></code> output as the value 9.
+</P>
+<P>
+In the default operation,
+<b>pc</b>
+outputs non-pitch-related signifiers in addition to the pitch-class value.
+For example, the <code><big>**semits</big></code> token "X15yz" will result in the output
+"X3yz" -- that is, after translating 15 to pitch-class 3,
+the "Xyz" signifiers are retained in the output.
+The
+<b>-x</b>
+option is useful for eliminating non-pitch-class-related signifiers
+from the output.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following example illustrates the use of
+<b>pc.</b>
+The input contains four spines -- one of which
+(<code><big>**foo</big></code>) cannot be processed by
+<b>pc.</b>
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `pc' example.</TD></TR>
+<TR><TD>**semits</TD><TD>**kern</TD><TD>**pc</TD><TD>**foo</TD></TR>
+<TR><TD>*M2/4</TD><TD>*M2/4</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>.</TD></TR>
+<TR><TD>8x</TD><TD>8ee-</TD><TD>abc9 xyz10</TD><TD>A</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>BCD</TD><TD>A</TD></TR>
+<TR><TD>#18@</TD><TD>8ff</TD><TD>.</TD><TD>B</TD></TR>
+<TR><TD>23.1 -16</TD><TD>8dd-</TD><TD>.</TD><TD>B</TD></TR>
+<TR><TD>(-2)</TD><TD>8d-</TD><TD>8 7.</TD><TD>C</TD></TR>
+<TR><TD>-12...</TD><TD>.</TD><TD>0.8</TD><TD>C</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>D</TD></TR>
+<TR><TD>[3.0abc19</TD><TD>[4a-</TD><TD>(2) 3</TD><TD>D</TD></TR>
+<TR><TD>&]</TD><TD>4a-]</TD><TD>6&?</TD><TD>E</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>E</TD></TR>
+<TR><TD>r</TD><TD>2r</TD><TD>5 4</TD><TD>.</TD></TR>
+<TR><TD>===</TD><TD>==</TD><TD>====</TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Executing the command
+</P>
+<P>
+<blockquote>
+<code><big>
+pc -xt input > output.pc
+</code></big>
+</blockquote>
+</P>
+<P>
+produces the following result:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `pc' example.</TD></TR>
+<TR><TD>**pc</TD><TD></TD><TD>**pc</TD><TD></TD><TD>**pc</TD><TD></TD><TD>**foo</TD></TR>
+<TR><TD>*M2/4</TD><TD></TD><TD>*M2/4</TD><TD></TD><TD>*</TD><TD></TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD></TD><TD>=1</TD><TD></TD><TD>=1</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>8</TD><TD></TD><TD>3</TD><TD></TD><TD>9 10</TD><TD></TD><TD>A</TD></TR>
+<TR><TD>.</TD><TD></TD><TD>.</TD><TD></TD><TD>B</TD><TD></TD><TD>A</TD></TR>
+<TR><TD>6</TD><TD></TD><TD>5</TD><TD></TD><TD>.</TD><TD></TD><TD>B</TD></TR>
+<TR><TD>11 8</TD><TD></TD><TD>1</TD><TD></TD><TD>.</TD><TD></TD><TD>B</TD></TR>
+<TR><TD>10</TD><TD></TD><TD>1</TD><TD></TD><TD>8 7</TD><TD></TD><TD>C</TD></TR>
+<TR><TD>0</TD><TD></TD><TD>.</TD><TD></TD><TD>0</TD><TD></TD><TD>C</TD></TR>
+<TR><TD>=2</TD><TD></TD><TD>=2</TD><TD></TD><TD>=2</TD><TD></TD><TD>D</TD></TR>
+<TR><TD>3</TD><TD></TD><TD>8</TD><TD></TD><TD>2 3</TD><TD></TD><TD>D</TD></TR>
+<TR><TD>.</TD><TD></TD><TD>.</TD><TD></TD><TD>6</TD><TD></TD><TD>E</TD></TR>
+<TR><TD>=3</TD><TD></TD><TD>=3</TD><TD></TD><TD>=3</TD><TD></TD><TD>E</TD></TR>
+<TR><TD>r</TD><TD></TD><TD>r</TD><TD></TD><TD>5 4</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>===</TD><TD></TD><TD>==</TD><TD></TD><TD>====</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD></TD><TD>*-</TD><TD></TD><TD>*-</TD><TD></TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Both processed and unprocessed spines are output.
+Notice that the <code><big>**pc</big></code>
+value `B' in the token `BCD' has been maintained in the first measure.
+Notice that for the data tokens in the first spine of measure 2,
+only the first numerical value in the input data tokens is processed.
+More than one numerical value is output only if the input token
+is truly a multiple-stop (as in the third spine of measure 1).
+Also notice that the tied note in the second spine at the beginning of measure 2
+has been rendered as a single value `8'
+(due to the
+<b>-t</b>
+option).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>FILES</H3></FONT>
+The file
+<i>x_option.awk</i>
+is used by this program when the
+<b>-x</b>
+option is invoked.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<b>**cents</b> (2),
+<A HREF="cents.html">
+<b>cents</b></A> (4),
+<b>**freq</b> (2),
+<A HREF="freq.html">
+<b>freq</b></A> (4),
+<b>**iv</b> (2),
+<A HREF="iv.html">
+<b>iv</b></A> (4),
+<b>**kern</b> (2),
+<A HREF="kern.html">
+<b>kern</b></A> (4),
+<b>**nf</b> (2),
+<A HREF="nf.html">
+<b>nf</b></A> (4),
+<b>**pc</b> (2),
+<b>**pcset</b> (2),
+<A HREF="pcset.html">
+<b>pcset</b></A> (4),
+<b>**pf</b> (2),
+<A HREF="pf.html">
+<b>pf</b></A> (4),
+<b>**pitch</b> (2),
+<A HREF="pitch.html">
+<b>pitch</b></A> (4),
+<b>**semits</b> (2),
+<A HREF="semits.html">
+<b>semits</b></A> (4),
+<b>**solfg</b> (2),
+<A HREF="solfg.html">
+<b>solfg</b></A> (4),
+<b>**specC</b> (2)
+<A HREF="specC.html">
+<b>specC</b></A> (4),
+<b>**Tonh</b> (2),
+<A HREF="tonh.html">
+<b>tonh</b></A> (4)
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide34.html#Pitch-Class_Representation">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

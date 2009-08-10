@@ -1,0 +1,88 @@
+################################################################
+##					REND.KSH
+# Programmed by: Tim Racinsky        Date: July, 1993
+# Copyright (c) 1993 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# July 19/94	Tim Racinsky	Added getopts feature and changed command line
+#
+#	A korn shell script to parse commands for the separate command
+#
+TARGET=""
+REASSIGN=""
+FILENAME=""
+OPTIONS=""
+HELP=""
+FLAG=""
+STNDIN=""
+#
+USAGE1="USAGE: rend -h                 (Help Screen)"
+USAGE2="       rend -f reassign -i '**target_interp' [-s] [file ...]"
+# 
+while getopts f:hi:s arg
+do
+	case "$arg" in
+	f) 	if [ ! -f "${OPTARG}" ]
+		then
+			echo "rend: ERROR: ${OPTARG} is not a valid file."
+			echo "" 1>&2
+			echo "$USAGE1" 1>&2
+			echo "$USAGE2" 1>&2
+			exit
+		else
+			REASSIGN=${OPTARG}
+		fi ;;
+	h) 	HELP="ON" ;;
+	i)	TARGET=${OPTARG} ;;
+	s)	OPTIONS="OPTIONS${arg}" ;;
+     [?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# 
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/rend.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/rend.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Allowed to use '-' only once
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "rend: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+# Invoke rend.awk with the specified options.
+$AWK_VER -f ${HUMDRUM}/bin/rend.awk "DUMMY" "${OPTIONS:-null}" "${TARGET:-null}" "${REASSIGN:-null}" $FILENAME

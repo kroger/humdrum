@@ -1,0 +1,941 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 21</TITLE>
+<!-- Chapter 21 (Searching for Patterns) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:15:22 EST 2000">
+<meta name="description" content="Chapter 21 (Searching for Patterns) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<H1>Chapter21</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide20.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide22.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Searching for Patterns</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+The
+<b>grep</b>
+and
+<b>egrep</b>
+commands are useful for identifying patterns that occur on
+single lines.
+As we saw in
+<A HREF="guide19.html">Chapter 19,</A>
+the
+<A HREF="commands/context.html"><b>context</b></A>
+command can be used to amalgamate groups of successive data tokens on a
+single line -- and so facilitate searching for sequential patterns using
+<b>grep</b>
+or <b>egrep</b>.
+For many tasks, the combination of
+<b>context</b>
+and
+<b>grep</b>
+provides the most convenient way to search for user-specified patterns.
+However, not all patterns can be conveniently identified
+using this approach.
+In this chapter we will introduce two additional tools that are intended
+to search directly for sequential patterns without having to use
+<b>context</b>
+to create pseudo-simultaneous collections.
+</P>
+<A NAME="The_patt_Command">
+<H2>The <i>patt</i> Command</H2>
+</P>
+<P>
+The
+<A HREF="commands/patt.html"><b>patt</b></A>
+command may be regarded as a two-dimensional version of <b>grep</b>.
+Like <b>grep</b>, <b>patt</b> searches for lines that match user-specified
+regular expressions.
+However, unlike <b>grep</b>, <b>patt</b> can search for a sequence of records
+that match a sequence of user-specified regular expressions.
+Specifically, <b>patt</b> will look for an input line that matches the
+first (of potential many) user-specified regular expression.
+Then <b>patt</b> will determine whether the following input line matches
+the second user-specified regular expression ... and so on,
+until the entire sequence of the user-specified regular expressions are exhausted.
+A pattern match is deemed to occur only if all of the successive
+regular expressions match a contiguous sequence of input lines.
+</P>
+<A NAME="DSCH">
+<P>
+The operation of
+<b>patt</b>
+is easier to describe through an example.
+Consider the following input using the German
+<i>Tonh&#246he</i> pitch designations described in
+<A HREF="guide04.html">Chapter 4.</A>
+Recall that the
+<A HREF="representations/Tonh.rep.html"><code><big>**Tonh</big></code></A>
+system of pitch names allows Bach to spell his name
+(B=B-flat; H=B-natural).
+Less well-known is the fact that Dmitri Shostakovich also used the
+German pitch system to create motives based on his name:
+D-S-C-H (S=Es=E-flat).
+(The German transliteration of the cyrillic is Schostakowitsch.)
+<blockquote><TABLE>
+<TR><TD><code><big>**Tonh</TD></TR>
+<TR><TD><code><big>D4</TD></TR>
+<TR><TD><code><big>Es4</TD></TR>
+<TR><TD><code><big>C4</TD></TR>
+<TR><TD><code><big>H3</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Suppose we were looking for possible instances of D-S-C-H.
+The
+<b>patt</b>
+command requires a template file that contains one or more
+successive regular expressions.
+A suitable template file (named <code><big>dmitri</big></code>) would be as follows:
+<blockquote><TABLE>
+<TR><TD><code><big>D</TD></TR>
+<TR><TD><code><big>Es</TD></TR>
+<TR><TD><code><big>C</TD></TR>
+<TR><TD><code><big>H</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+We would invoke the search as follows:
+</P>
+<P>
+<blockquote>
+<code><big>patt -f dmitri</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+The
+<b>-f</b>
+option is mandatory:
+it conveys to
+<b>patt</b>
+the name of the template file used in the search.
+</P>
+<P>
+In the default operation,
+<b>patt</b>
+simply outputs a global comment identifying the location of any
+matching segments.
+One global comment is output for each matching pattern.
+In the above case, the output would be as follows:
+</P>
+<P>
+<blockquote>
+<code><big>!! Pattern found at line 2 of file Tonh</big></code>
+</blockquote>
+</P>
+<P>
+The
+<A HREF="commands/patt.html"><b>patt</b></A>
+command will also identify any overlapping patterns.
+For example, suppose we had an input containing an
+ostinato figure in minor thirds:
+</P>
+<P>
+<b>Example 21.1.</b>  `DSCH' Ostinato.
+<blockquote>
+<img src="guide.figures/guide21.1.gif">
+<blockquote><TABLE>
+<TR><TD><code><big>**Tonh</TD><TD>**Tonh</TD></TR>
+<TR><TD><code><big>*k[b-e-]</TD><TD>*K[b-e-]</TD></TR>
+<TR><TD><code><big>*M9/8</TD><TD>*M9/8</TD></TR>
+<TR><TD><code><big>=1-</TD><TD>=1-</TD></TR>
+<TR><TD><code><big>C4</TD><TD>Es4</TD></TR>
+<TR><TD><code><big>C4</TD><TD>Es4</TD></TR>
+<TR><TD><code><big>H3</TD><TD>D4</TD></TR>
+<TR><TD><code><big>C4</TD><TD>Es4</TD></TR>
+<TR><TD><code><big>C4</TD><TD>Es4</TD></TR>
+<TR><TD><code><big>H3</TD><TD>D4</TD></TR>
+<TR><TD><code><big>C4</TD><TD>Es4</TD></TR>
+<TR><TD><code><big>C4</TD><TD>Es4</TD></TR>
+<TR><TD><code><big>H3</TD><TD>D4</TD></TR>
+<TR><TD><code><big>=</TD><TD>=</big></code></TD></TR>
+</TABLE></blockquote>
+</blockquote>
+</P>
+<P>
+If we applied the above
+<b>patt</b>
+command to this <code><big>ostinato</big></code> file, we would get the following output:
+</P>
+<P>
+<blockquote>
+<code><big>!! Pattern found at line 8 of file ostinato</big></code>
+<br>
+<code><big>!! Pattern found at line 11 of file ostinato</big></code>
+</blockquote>
+</P>
+<P>
+We can instruct
+<b>patt</b>
+to output specific instances of the pattern using the
+<b>-e</b>
+(echo) option.
+Consider the following command:
+</P>
+<P>
+<blockquote>
+<code><big>patt -f dmitri -e ostinato</big></code>
+</blockquote>
+</P>
+<P>
+The resulting output would be:
+<blockquote><TABLE>
+<TR><TD><code><big>!! Pattern found at line 4 of file ostinato</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>**Tonh</TD><TD><code><big>**Tonh</TD><TD></TD><TD></TD></TR>
+<TR><TD><code><big>H3</TD><TD><code><big>D4</TD><TD></TD><TD></TD></TR>
+<TR><TD><code><big>C4</TD><TD><code><big>Es4</TD><TD></TD><TD></TD></TR>
+<TR><TD><code><big>C4</TD><TD><code><big>Es4</TD><TD></TD><TD></TD></TR>
+<TR><TD><code><big>H3</TD><TD><code><big>D4</TD><TD></TD><TD></TD></TR>
+<TR><TD><code><big>*-</TD><TD><code><big>*-</TD><TD></TD><TD></TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>!! Pattern found at line 7 of file ostinato</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>**Tonh</TD><TD><code><big>**Tonh</TD><TD></TD><TD></TD></TR>
+<TR><TD><code><big>H3</TD><TD><code><big>D4</TD><TD></TD><TD></TD></TR>
+<TR><TD><code><big>C4</TD><TD><code><big>Es4</TD><TD></TD><TD></TD></TR>
+<TR><TD><code><big>C4</TD><TD><code><big>Es4</TD><TD></TD><TD></TD></TR>
+<TR><TD><code><big>H3</TD><TD><code><big>D4</TD><TD></TD><TD></TD></TR>
+<TR><TD><code><big>*-</TD><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Notice that each instance of the found pattern is output as a stand-alone
+humdrum "mini-encoding," complete with initial exclusive interpretations
+and terminating spine-path terminators.
+<br><br>
+<b>Example 21.2.</i>  J.S. Bach, <i>Well-Tempered Clavier</i>, Vol. 1, Fugue 2.
+<blockquote>
+<img src="guide.figures/guide21.2.gif">
+</blockquote>
+</P>
+<A NAME="Tierce_de_Picardie">
+<P>
+Most Baroque composers were fond of ending works written in minor keys
+on the tonic major chord -- the so-called <i>tierce de picardie</i>
+or Picardy Third.
+Example 21.2 shows a typical example from the final measures of Bach's
+second fugue from the <i>Well-Tempered Clavier</i>, vol. 1.
+Suppose that we wanted to identify all works in some repertory
+that end with a <i>tierce de picardie</i>.
+We need to search for a raised third scale degree in close
+proximity to the end of a work for those works in a minor key.
+First we might identify those works in minor keys.
+The following
+<b>grep</b>
+command will search all files in the current directory
+for a tandem interpretation indicating a minor key.
+Recall that minor keys are identified by an asterisk followed by
+a lower-case pitch-letter name, followed by an optional
+accidental, followed by the colon character.
+The
+<b>-l</b>
+option will list all files that containing a matching record:
+</P>
+<P>
+<blockquote>
+<code><big>grep -l '^\*[a-g][-#]*:' *</big></code>
+</blockquote>
+</P>
+<P>
+Recall that the
+<A HREF="commands/deg.html"><b>deg</b></A>
+command is mode sensitive, whereas the
+<A HREF="commands/solfa.html"><b>solfa</b></A>
+command is mode insensitive.
+That is, in the key of C major,
+<b>deg</b>
+will represent the pitch E as <code><big>3</big></code> and in C minor
+<b>deg</b>
+will represent the pitch E (natural) as <code><big>3+</big></code>.
+By contrast, the
+<b>solfa</b>
+command will represent E as `<code><big>mi</big></code>' whether
+the mode is major or minor.
+</P>
+<P>
+In order to locate picardy thirds, we can look
+for raised mediants in the
+<code><big>**deg</big></code>
+representation.
+Specifically, we can look for a raised mediant pitch
+immediately prior to a double barline.
+Our template file (dubbed "<code><big>picardy</big></code>") might look as follows:
+</P>
+<P>
+<blockquote>
+<code><big>3[+]
+<br>
+==</big></code>
+</blockquote>
+</P>
+<P>
+Notice that the plus sign has been placed in square brackets.
+The
+<b>patt</b>
+command accepts only
+<i>extended</i>
+regular expressions.
+The plus sign is a metacharacter that normally indicates
+"one or more instances."
+So placing it in square brackets causes the special meaning
+to be escaped.
+</P>
+<P>
+In order to search for such picardy thirds, we should translate each input file
+to the <code><big>**deg</big></code> representation, and then search for
+raised mediants immediately prior to a double bar:
+</P>
+<P>
+<blockquote>
+<code><big>deg <i>inputfile.krn</i> | patt -f picardy</code></big>
+</blockquote>
+</P>
+<P>
+A problem with this search strategy is that it assumes that the raised
+third will occur in the final sonority prior to the double barline.
+One possible confound might be the presence of one or more
+rests following the final chord.
+This situation is evident in Fugue No. 4 from the second volume of Bach's
+<i>Well-Tempered Clavier</i>:
+</P>
+<P>
+<b>Example 21.3.</i>  J.S. Bach, <i>Well-Tempered Clavier</i>, Vol. 2, Fugue 4.
+<blockquote>
+<img src="guide.figures/guide21.3.gif">
+<blockquote><TABLE>
+<TR><TD><code><big>!!!COM: Bach, Johann Sebastian</TD></TR>
+<TR><TD><code><big>!!!XEN: The Well-Tempered Clavier, Volume 2, Fugue 4.</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD><TD>**kern</TD></TR>
+<TR><TD><code><big>*clefF4</TD><TD>*clefG2</TD><TD>*clefG2</TD></TR>
+<TR><TD><code><big>*M12/16</TD><TD>*M12/16</TD><TD>*M12/16</TD></TR>
+<TR><TD><code><big>*k[f#c#g#d#]</TD><TD>*k[f#c#g#d#]</TD><TD>*k[f#c#g#d#]</TD></TR>
+<TR><TD><code><big>*c#:</TD><TD>*c#:</TD><TD>*c#:</TD></TR>
+<TR><TD><code><big>=70</TD><TD>=70</TD><TD>=70</TD></TR>
+<TR><TD><code><big>16E</TD><TD>8.f#]</TD><TD>8b#</TD></TR>
+<TR><TD><code><big>16D#</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>16E</TD><TD>.</TD><TD>16g#</TD></TR>
+<TR><TD><code><big>16FF##</TD><TD>8e</TD><TD>4.cc#</TD></TR>
+<TR><TD><code><big>16GG#</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>16AAn</TD><TD>16d#</TD><TD>.</TD></TR>
+<TR><TD><code><big>4.GG#</TD><TD>16e</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>16a</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>16g#</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>16f#</TD><TD>8.b#</TD></TR>
+<TR><TD><code><big>.</TD><TD>16e</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>16d#</TD><TD>.</TD></TR>
+<TR><TD><code><big>=71</TD><TD>=71</TD><TD>=71</TD></TR>
+<TR><TD><code><big>8.CC#</TD><TD>8.e#</TD><TD>8.cc#</TD></TR>
+<TR><TD><code><big>8.r</TD><TD>8.r</TD><TD>8.r</TD></TR>
+<TR><TD><code><big>4.r</TD><TD>4.r</TD><TD>4.r</TD></TR>
+<TR><TD><code><big>==</TD><TD>==</TD><TD>==</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</blockquote>
+</P>
+<P>
+The
+<b>patt</b>
+command provides a
+<b>-s</b>
+option that allows the user to skip or ignore certain records in the input.
+Any regular expression can be given as a parameter for the
+<b>-s</b>
+option.
+In the following pipeline, we have instruction
+<b>patt</b>
+to skip over any records matching the lower-case letter `<code><big>r</big></code>'
+(the <code><big>**kern</big></code> rest signifier):
+</P>
+<P>
+<blockquote>
+<code><big>deg </code></big><i>inputfile.krn</i><code><big> | patt -s r -f picardy</code></big>
+</blockquote>
+</P>
+<P>
+Even ignoring rests may not be sufficient to identify the
+raised third near the double barline.
+For example, if any other note from the tonic chord follows
+after the raised third, then the third will appear several
+records prior to the double barline.
+We can solve this problem by using the
+<A HREF="commands/ditto.html"><b>ditto</b></A>
+command discussed in
+<A HREF="guide15.html">Chapter 15;</A>
+<b>ditto</b>
+can be used to propagate the raised third through the
+sustained final chord.
+Our revised pipeline is:
+</P>
+<P>
+<blockquote>
+<code><big>deg bach.krn | ditto -s = | patt -s r -f picardy</big></code>
+</blockquote>
+</P>
+<A NAME="Consecutive_Fifths">
+<P>
+A similar approach can be used to identify consecutive fifths or
+octaves between two voices.
+A template file (dubbed <code><big>5ths</big></code>) might consist of the following pattern:
+</P>
+<P>
+<blockquote>
+<code><big>P5
+<br>
+P5</big></code>
+</blockquote>
+</P>
+<P>
+In order to identify consecutive fifths, we might extract two
+parts of interest, and then translate to the
+<A HREF="representations/hint.rep.html"><code><big>**hint</big></code></A>
+harmonic-interval representation.
+The
+<b>-c</b>
+option for
+<A HREF="commands/hint.html"><b>hint</b></A>
+collapses compound intervals to their non-compound equivalents so
+consecutive twelfths, nineteenths, etc. will also be identified.
+In the following command pipeline, notice the use of the
+<b>-s</b>
+option for
+<A HREF="commands/patt.html"><b>patt</b></A>
+in order to skip barlines.
+This ensures that crossing a barline does not result in a failure to
+identify a consecutive fifth.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*Ibass,*Itenor' Fux | hint -c | patt -s = -f 5ths</big></code>
+</blockquote>
+</P>
+<A NAME="Landini_cadences">
+<P>
+Sometimes patterns will tend to be obscured by the presence of other information.
+For example, suppose we want to identify possible Landini cadences
+such as the cadence shown in Example 21.4.
+Landini cadences are common in much 14th century polyphony including
+works by Machaut, Caserta, Dufay, Ciconia, as well as Landini.
+One characteristic of the Landini cadence is the distinctive three-note
+<i>ti -> la -> do</i> in the upper-most part.
+The submediant pitch is interposed between the leading-tone and the tonic.
+A second characteristic of the Landini cadence is the harmonic relationship
+between the highest and lowest voices.
+Three intervals are formed: <i>sixth -> fifth -> octave</i>.
+Either one or both of these characteristics might be used to help
+identify this distinctive cadential formula.
+<br><br>
+<b>Example 21.4.</b>  Francesco Landini, Excerpt from <i>Non avr&#224 ma' piet&#224</i>.
+<blockquote>
+<img src="guide.figures/guide21.4.gif">
+</blockquote>
+Below is a
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+encoding of the final two measures along with corresponding
+<A HREF="representations/hint.rep.html"><code><big>**hint</big></code></A>
+and
+<A HREF="representations/deg.rep.html"><code><big>**deg</big></code></A>
+spines.
+The **hint spine was generated using
+<A HREF="commands/hint.html"><b>hint</b></A>
+<b>-l</b>
+in order to generate intervals with respect to the lowest pitch.
+<blockquote><TABLE>
+<TR><TD><code><big>!!!COM: Landini, Francesco</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>**kern</TD><TD><code><big>**kern</TD><TD><code><big>**kern</TD><TD><code><big>**hint</TD><TD><code><big>**deg</TD><TD>**deg</TD><TD>**deg</TD></TR>
+<TR><TD><code><big>*clefF4</TD><TD><code><big>*clefG2</TD><TD><code><big>*clefG2</TD><TD><code><big>*</TD><TD><code><big>*</TD><TD><code><big>*</TD><TD><code><big>*</TD></TR>
+<TR><TD><code><big>*M3/4</TD><TD><code><big>*M3/4</TD><TD><code><big>*M3/4</TD><TD><code><big>*M3/4</TD><TD><code><big>*M3/4</TD><TD><code><big>*M3/4</TD><TD><code><big>*M3/4</TD></TR>
+<TR><TD><code><big>=</TD><TD><code><big>=</TD><TD><code><big>=</TD><TD><code><big>=</TD><TD><code><big>=</TD><TD><code><big>=</TD><TD><code><big>=</TD></TR>
+<TR><TD><code><big>4A</TD><TD><code><big>4e</TD><TD><code><big>8e</TD><TD><code><big>P5 P5</TD><TD><code><big>v2</TD><TD><code><big>v6</TD><TD><code><big>^6</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>8f</TD><TD><code><big>-</TD><TD>.</TD><TD>.</TD><TD><code><big>^7-</TD></TR>
+<TR><TD><code><big>4B-</TD><TD><code><big>4d</TD><TD><code><big>8g</TD><TD><code><big>M3 M6</TD><TD><code><big>^3-</TD><TD><code><big>v5</TD><TD>^1</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>4f#</TD><TD><code><big>-</TD><TD>.</TD><TD>.</TD><TD><code><big>v7</TD></TR>
+<TR><TD><code><big>4A</TD><TD><code><big>4c#</TD><TD><code><big>.</TD><TD><code><big>M3</TD><TD><code><big>v2</TD><TD><code><big>v4+</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>8e</TD><TD><code><big>-</TD><TD>.</TD><TD>.</TD><TD><code><big>v6</TD></TR>
+<TR><TD><code><big>=</TD><TD><code><big>=</TD><TD><code><big>=</TD><TD><code><big>=</TD><TD><code><big>=</TD><TD><code><big>=</TD><TD><code><big>=</TD></TR>
+<TR><TD><code><big>2.G</TD><TD><code><big>2.d</TD><TD><code><big>2.g</TD><TD><code><big>P5 P8</TD><TD><code><big>v1</TD><TD><code><big>^5</TD><TD><code><big>^1</TD></TR>
+<TR><TD><code><big>==</TD><TD><code><big>==</TD><TD><code><big>==</TD><TD><code><big>==</TD><TD>==</TD><TD>==</TD><TD>==</TD></TR>
+<TR><TD><code><big>*-</TD><TD><code><big>*-</TD><TD><code><big>*-</TD><TD><code><big>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Notice that
+<b>hint</b>
+has failed to generate the passing interval forming the perfect fifth between
+the E and the A.
+This can be remedied by using
+<b>ditto</b>
+to duplicate all of the pitches.
+This will cause
+<b>hint</b>
+to generate all of the passing harmonic intervals.
+The revised  **hint spine is given below.
+<blockquote><TABLE>
+<TR><TD><code><big>!!!COM: Landini, Francesco</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**hint</TD><TD>**deg</TD><TD>**deg</TD><TD>**deg</TD></TR>
+<TR><TD><code><big>*clefF4</TD><TD>*clefG2</TD><TD>*clefG2</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD><code><big>*M3/4</TD><TD>*M3/4</TD><TD>*M3/4</TD><TD>*M3/4</TD><TD>*M3/4</TD><TD>*M3/4</TD><TD>*M3/4</TD></TR>
+<TR><TD><code><big>=</TD><TD>=</TD><TD>=</TD><TD>=</TD><TD>=</TD><TD>=</TD><TD>=</TD></TR>
+<TR><TD><code><big>4A</TD><TD>4e</TD><TD>8e</TD><TD>P5 P5</TD><TD>v2</TD><TD>v6</TD><TD>^6</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>8f</TD><TD>P5 m6</TD><TD>.</TD><TD>.</TD><TD>^7-</TD></TR>
+<TR><TD><code><big>4B-</TD><TD>4d</TD><TD>8g</TD><TD>M3 M6</TD><TD>^3-</TD><TD>v5</TD><TD>^1</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>4f#</TD><TD>M3 A5</TD><TD>.</TD><TD>.</TD><TD>v7</TD></TR>
+<TR><TD><code><big>4A</TD><TD>4c#</TD><TD>.</TD><TD>M3 M6</TD><TD>v2</TD><TD>v4+</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>8e</TD><TD>M3 P5</TD><TD>.</TD><TD>.</TD><TD>v6</TD></TR>
+<TR><TD><code><big>=</TD><TD>=</TD><TD>=</TD><TD>=</TD><TD>=</TD><TD>=</TD><TD>=</TD></TR>
+<TR><TD><code><big>2.G</TD><TD>2.d</TD><TD>2.g</TD><TD>P5 P8</TD><TD>v1</TD><TD>^5</TD><TD>^1</TD></TR>
+<TR><TD><code><big>==</TD><TD>==</TD><TD>==</TD><TD>==</TD><TD>==</TD><TD>==</TD><TD>==</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+One way to identify Landini cadences is to use the following harmonic-interval template
+file (dubbed <code><big>LandCadence</big></code>):
+<blockquote><TABLE>
+<TR><TD><code><big>6</TD></TR>
+<TR><TD><code><big>5</TD></TR>
+<TR><TD><code><big>8</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Using this template, we can identify Landini cadences as follows.
+(Notice the use of <b>-s ^=</b> to skip barlines.)
+</P>
+<P>
+<blockquote>
+<code><big>ditto -s ^= input | hint -l | patt -s ^= -f LandCadence</big></code>
+</blockquote>
+</P>
+<P>
+It is possible that the 6-5-8 figured bass might arise in non-cadential
+situations, so a more circumspect template might also include some
+scale-degree movements as well.
+The following template file (dubbed <code><big>Landini-Cadence</big></code>) combines both the
+harmonic-interval and scale-degree data:
+</P>
+<P>
+<blockquote>
+<code><big>[Mm]6
+<br>
+P5.*v6
+<br>
+P8.*\^1</big></code>
+</blockquote>
+</P>
+<P>
+Using this more sophisticated pattern template,
+a suitable sequence of commands would be the following:
+</P>
+<P>
+<blockquote>
+<code><big>ditto -s ^= inputfile | hint -l > temp1
+<br>
+deg inputfile > temp2
+<br>
+assemble temp1 temp2 | patt -s ^= -f Landini-Cadence</big></code>
+</blockquote>
+</P>
+<P>
+In general,
+<b>patt</b>
+templates can be used to specify both concurrent conditions
+as well as dynamic or temporal conditions.
+This allows users to define patterns involving a multitude of conditions
+involving many different types of data.
+</P>
+<A NAME="Using_patt's_Tag_Option">
+<H2>Using <i>patt</i>'s Tag Option</H2>
+</P>
+<P>
+So far, we have seen that
+<A HREF="commands/patt.html"><b>patt</b></A>
+provides two kinds of output.
+In the default operation,
+<b>patt</b>
+outputs a simple global comment each time it finds a matching
+segment in the input.
+With the
+<b>-e</b>
+option,
+<b>patt</b>
+will also echo the specific passage(s) found.
+In addition,
+<b>patt</b>
+provides a third type of output using the
+<b>-t</b>
+option.
+</P>
+<P>
+When the
+<b>-t</b>
+option is invoked,
+<b>patt</b>
+will output the original input, plus an addition <code><big>**patt</big></code> spine.
+The <code><big>**patt</big></code> spine typically consists of mostly null tokens.
+However, each time the input matches the sought pattern, a user-defined
+"tag" will appear in the <code><big>**patt</big></code> spine.
+Consider the following example.
+</P>
+<A NAME="Deceptive_cadences">
+<P>
+Suppose we are interested in identifying deceptive cadences in
+Bach's chorale harmonizations.
+Imagine that we already have a
+<A HREF="representations/harm.rep.html"><code><big>**harm</big></code></A>
+spine containing
+a Roman numeral harmonic analysis.
+There are different ways of defining a deceptive cadence,
+but a frequent definition is that it involves a dominant
+chord followed by a submediant chord in a cadential context.
+In the case of Bach's chorale harmonizations, cadences
+are readily identified by the pause symbol.
+Our search template might look as follows:
+</P>
+<P>
+<blockquote>
+<code><big>^V([^I]|$)
+<br>
+(vi)|(VI);</big></code>
+</blockquote>
+</P>
+<P>
+This template means: "look for an upper-case letter <code><big>V</big></code>
+appearing at the beginning of a line that is followed
+by either the end of the line (<code><big>$</big></code>) or by a character
+other than the upper-case letter <code><big>I</big></code>.
+This record will be followed by a record containing
+either <code><big>vi</big></code> or <code><big>VI</big></code> followed by a semicolon."
+</P>
+<P>
+When invoking the
+<b>patt</b>
+command, we can specify our preferred output tag along with the
+<b>-t</b>
+option as follows:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '**harm' bwv269.krn | patt -f template -t deceptive</big></code>
+</blockquote>
+<blockquote><TABLE>
+<TR><TD><code><big>**harm</TD><TD>**patt</TD></TR>
+<TR><TD><code><big>I</TD><TD>.</TD></TR>
+<TR><TD><code><big>I</TD><TD>.</TD></TR>
+<TR><TD><code><big>ii7</TD><TD>.</TD></TR>
+<TR><TD><code><big>V</TD><TD>deceptive</TD></TR>
+<TR><TD><code><big>vi;</TD><TD>.</TD></TR>
+<TR><TD><code><big>V</TD><TD>.</TD></TR>
+<TR><TD><code><big>I</TD><TD>.</TD></TR>
+<TR><TD><code><big>IV</TD><TD>.</TD></TR>
+<TR><TD><code><big>IV</TD><TD>.</TD></TR>
+<TR><TD><code><big>I</TD><TD>.</TD></TR>
+<TR><TD><code><big>V;</TD><TD>.</big></code></TD></TR>
+<TR><TD>etc.</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+</blockquote>
+In
+<A HREF="guide26.html">Chapter 26</A>
+we will learn how to collapse several
+spines into a single spine.
+This will allow us to assemble the results from several "passes" using
+<b>patt</b>
+--  one pass for each type of cadence.
+For example, we could collapse several tagged outputs to produce a single
+spine that identifies all of the various types of cadences:
+<blockquote><TABLE>
+<TR><TD><code><big>**harm</TD><TD>**cadences</TD></TR>
+<TR><TD>I</TD><TD>.</TD></TR>
+<TR><TD>I</TD><TD>.</TD></TR>
+<TR><TD>ii7</TD><TD>.</TD></TR>
+<TR><TD>V</TD><TD>deceptive</TD></TR>
+<TR><TD>vi;</TD><TD>.</TD></TR>
+<TR><TD>V</TD><TD>.</TD></TR>
+<TR><TD>I</TD><TD>.</TD></TR>
+<TR><TD>IV</TD><TD>.</TD></TR>
+<TR><TD>IV</TD><TD>.</TD></TR>
+<TR><TD>I</TD><TD>half</TD></TR>
+<TR><TD>V;</TD><TD>.</big></code></TD></TR>
+<TR><TD>etc.</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+There are no restrictions as to the types of tags that can be generated by
+<b>patt</b>.
+A user might tag the beginning of motivic or thematic statements,
+various harmonic progressions, variation techniques,
+fingering patterns, quotations or allusions, stylistic clich&#233s,
+etc.
+In
+<A HREF="guide35.html">Chapter 35</A>
+we will use the
+<b>-t</b>
+option to label different set forms for statements of a twelve-tone row,
+such as primes, inversions, retrogrades, and retrograde inversions.
+We will use suitable tags to identify the specific transpositions:
+P0, I7, R11, RI8, etc.
+</P>
+<A NAME="Matching_Multiple_Records_Using_the_patt_Command">
+<H2>Matching Multiple Records Using the <i>patt</i> Command</H2>
+</P>
+<P>
+Twelve-tone music raises several special issues for sequential pattern matching.
+For example, it is common in serial music to collapse segments of a tone-row in order
+to create vertical chords.
+Consider the following excerpt from Ernst Krenek's suite for solo 'cello.
+The tone row consists of the ordered pitches:
+D, G-flat, F, D-flat, C, B, E-flat, A, B-flat, A-flat, E, G.
+<br><br>
+<b>Example 21.5.</i>  Ernst Krenek, Opus 84 <i>Suite for Violoncello</i>; mov. 1, measures 28-30.
+<blockquote>
+<img src="guide.figures/guide21.5.gif">
+</blockquote>
+Using a pitch-class representation we would search for the sequence:
+<blockquote><TABLE>
+<TR><TD><code><big>2</TD></TR>
+<TR><TD>6</TD></TR>
+<TR><TD>5</TD></TR>
+<TR><TD>1</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>11</TD></TR>
+<TR><TD>3</TD></TR>
+<TR><TD>9</TD></TR>
+<TR><TD>10</TD></TR>
+<TR><TD>8</TD></TR>
+<TR><TD>4</TD></TR>
+<TR><TD>7</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Due to the diads, however, the corresponding pitch-class representation
+for the above Krenek passage would be:
+<blockquote><TABLE>
+<TR><TD><code><big>**pc</TD></TR>
+<TR><TD>2</TD></TR>
+<TR><TD>6</TD></TR>
+<TR><TD>5 1</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>=</TD></TR>
+<TR><TD>3 11</TD></TR>
+<TR><TD>9</TD></TR>
+<TR><TD>10</TD></TR>
+<TR><TD>10 8</TD></TR>
+<TR><TD>=</TD></TR>
+<TR><TD>7 4</big></code></TD></TR>
+<TR><TD>etc.</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The 
+<b>-m</b>
+option for
+<A HREF="commands/patt.html"><b>patt</b></A>
+invokes a "multi-record matching" mode.
+In this mode,
+<b>patt</b>
+attempts to match as many successive regular expressions in the template
+file as possible for a given input record, before continuing with
+the next input and template records.
+In this way, several records in the template file 
+may possibly match a single input record.
+In the above case, the tone-row template will be matched and the `P0' tag
+issued if the following command is issued:
+</P>
+<P>
+<blockquote>
+<code><big>patt -f tonerow -t P0 -m Krenek</big></code>
+</blockquote>
+</P>
+<A NAME="The_pattern_Command">
+<H2>The <i>pattern</i> Command</H2>
+</P>
+<P>
+Not all patterns can be identified using <b>patt</b>.
+The Humdrum
+<A HREF="commands/pattern.html"><b>pattern</b></A>
+command permits an additional regular expression feature that is
+especially useful in musical applications.
+Specifically,
+<b>pattern</b>
+permits the defining of patterns spanning more than one line or record.
+Record-repetition operators are specified by following the
+regular expression with a tab -- followed by either <code><big>+</big></code>, <code><big>*</big></code>,
+or <code><big>?</big></code>.
+For example, consider the following Humdrum-extension regular expression:
+<blockquote><TABLE>
+<TR><TD><code><big>X</TD><TD></TD><TD></TD><TD>+</TD></TR>
+<TR><TD>Y</TD><TD></TD><TD></TD><TD>*</TD></TR>
+<TR><TD>Z</TD><TD></TD><TD></TD><TD>?</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+When the metacharacters <code><big>+</big></code>, <code><big>*</big></code>, or <code><big>?</big></code> appear at the end
+of a record, preceded by a tab character, they pertain to the number of records,
+rather than the number of repetitions of the expression within a record.
+The first record of the regular expression (<code><big>X</code></big><i><tab></i><code><big>+</code></big>) will
+match one or more successive lines each containing the letter `<code><big>X</big></code>'.
+The second record of the regular expression (<code><big>Y</code></big><i><tab></i><code><big>*</code></big>)
+will match zero or more subsequent lines containing the letter `<code><big>Y</big></code>'.
+The third record of the regular expression (<code><big>Z</code></big><i><tab></i><code><big>?</code></big>) will
+match zero or one line containing the letter `<code><big>Z</big></code>'.
+Hence, the above multi-record regular expression would match an
+input such as the following:
+three successive lines containing the letter `<code><big>X</big></code>', followed by eight
+successive lines containing the letter `<code><big>Y</big></code>', followed by a single line
+containing the letter `<code><big>Z</big></code>'.
+Similarly, the above regular expression would match an input containing
+one line containing the letter `<code><big>X</big></code>'.
+</P>
+<P>
+Record-repetition operators can be used in conjunction with all
+of the other regular expression features.
+For example, the following regular expression matches one or more
+successive
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+data records containing the pitch `<code><big>G</big></code>'
+(naturals only) followed optionally by a single `<code><big>G#</big></code>' followed by
+one or more records containing one or more pitches from an A major
+triad -- the last of which must end a phrase:
+</P>
+<P>
+<code><big>
+<blockquote>
+[Gg]+[^#-]	+
+<br>
+[Gg]+#[^#]	?
+<br>
+([Aa]+|([Cc]+#)|[Ee]+)[^#-]	*
+<br>
+(}.*([Aa]+|([Cc]+#)|[Ee]+)[^#-]))|(([Aa]+|([Cc]+#)|[Ee]+)[^#-].*})
+</blockquote>
+</code></big>
+</P>
+<A NAME="Patterns_of_Patterns">
+<H2>Patterns of Patterns</H2>
+</P>
+<P>
+Music often exhibits hierarchical structures where particular types of
+patterns may be embedded in other patterns, or where low-level patterns
+join together to form higher-level patterns.
+As we have seen, the
+<b>-t</b>
+(tag) option for the
+<b>patt</b>
+command allows a new output spine to be generated.
+This spine contains user-defined labels marking the beginning of each found pattern.
+The labels can contain any user-defined text string such as
+<code><big>authentic cadence</big></code>,
+<code><big>episode</big></code>,
+<code><big>Motive 3b</big></code>,
+<code><big>augmentation</big></code>,
+<code><big>triplet figuration</big></code>,
+or
+<code><big>prolongation</big></code>.
+</P>
+<P>
+As we will see in
+<A HREF="guide26.html">Chapter 26,</A>
+the contents of several spines can be amalgamated
+to form a single spine.
+This means that the results for several independent pattern searches can be
+assembled into a single "pattern" spine.
+Several pattern spines may be created that related to patterns found at
+different hierarchical levels, or patterns found using different search methods.
+Of course, these pattern-spines themselves can be used as input to further
+pattern searches thus providing unbounded possibilities for searching for
+patterns of patterns.
+</P>
+<P>
+Consider, for example, the following template for the
+<A HREF="commands/pattern.html"><b>pattern</b></A>
+command:
+<blockquote><TABLE>
+<TR><TD><code><big>Theme 1 (tonic)</TD><TD></TD><TD></TD><TD>+</TD></TR>
+<TR><TD>Bridge</TD><TD></TD><TD></TD><TD>*</TD></TR>
+<TR><TD>Theme 2 (tonic)</TD><TD></TD><TD></TD><TD>+</TD></TR>
+<TR><TD>Coda</TD><TD></TD><TD></TD><TD>?</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<A NAME="Possible_Recapitulation">
+<A NAME="Sonata_search">
+<P>
+The template reads "one or more instances of <code><big>Theme 1 (tonic)</big></code>,
+followed by zero or more instances of <code><big>Bridge</big></code>, followed by
+one or more instances of <code><big>Theme 2 (tonic)</big></code>, followed by zero or one
+instance of <code><big>Coda</big></code>."
+This template might be used by
+<b>pattern</b>
+to identify a Recapitulation.
+Together with outputs from parallel searches for `Exposition' and `Development'
+the results of a `Recapitulation' search might similarly be amalgamated and used
+as an input for a higher level search for works exhibiting a sonata-allegro structure.
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+In this chapter and previous chapters we have identified several search-related
+tools, including the UNIX <b>grep</b> and <b>egrep</b> commands as well
+as the Humdrum
+<A HREF="commands/patt.html"><b>patt</b></A>
+and
+<A HREF="commands/pattern.html"><b>pattern</b></A>
+commands.
+Each of these tools has different strengths and weaknesses and it is not always
+clear which tool is best for a given task.
+When searching, don't forget to consider how
+<A HREF="commands/context.html"><b>context</b></A>,
+<A HREF="commands/humsed.html"><b>humsed</b></A>,
+<A HREF="commands/rid.html"><b>rid</b></A>
+and other tools might facilitate the searching task.
+In future chapters will will consider how "similarity" tools such as
+<A HREF="commands/correl.html"><b>correl</b></A>
+and
+<A HREF="commands/simil.html"><b>simil</b></A>
+can contribute to more sophisticated pattern searches.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide22.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide20.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

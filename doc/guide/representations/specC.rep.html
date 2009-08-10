@@ -1,0 +1,206 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Spectral Centroid</TITLE>
+<!-- Documentation for the **specC Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **specC Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,spectral centroid,software,theory,analysis,systematic musicology,computer representation,**specC">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Spectral Centroid</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**specC</b>  --  spectral centroid representation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**specC</b>
+representation can be used to represent the frequency of the
+spectral centroid for pure or complex tones.
+Spectral centroid is the amplitude-weighted mean of several
+frequency components.
+For example, given three frequencies (200, 400, 900 Hz) of equal
+amplitude,
+the corresponding spectral centroid would be the arithmetic mean
+of the three frequencies (i.e. 750 Hz).
+For pure tones, the spectral centroid is equivalent to the
+frequency of the pure tone.
+For complex tones, the spectral centroid is higher when tones
+have greater energy (amplitudes) in the upper partials.
+Hence, spectral centroid provides a simple index for the
+<i>richness</i>
+or
+<i>brightness</i>
+of a tone or sonority.
+</P>
+<P>
+Spectral centroid tokens are numerical values in units of hertz.
+Frequencies may be specified as integer or real values (using a decimal).
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**specC</big></code>
+data should be given names with the distinguishing `.spc' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**specC</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>frequency (in hertz) specified as an integer</TD></TR>
+<TR><TD></TD><TD>     or real value</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**specC</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**specC</TD><TD>**specC</TD></TR>
+<TR><TD>*pure</TD><TD>*complex</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>1900</TD><TD>2730</TD></TR>
+<TR><TD>868.9</TD><TD>.</TD></TR>
+<TR><TD>1362</TD><TD>4402</TD></TR>
+<TR><TD>2263.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>3742</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>r</TD><TD>r</TD></TR>
+<TR><TD>==</TD><TD>==</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+</code></big>
+Notice that frequencies can be either real or integer values.
+Rests are represented by the single letter `r'.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum commands accept <b>**specC</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD><A HREF="../commands/cents.html"><b>cents</b></A></TD><TD>translates <b>**specC</b> to <b>**cents</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/deg.html"><b>deg</b></A></TD><TD>translate <b>**specC</b> to <b>**deg</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/degree.html"><b>degree</b></A></TD><TD>translate <b>**specC</b> to <b>**degree</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/freq.html"><b>freq</b></A></TD><TD>translate <b>**specC</b> to <b>**freq</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/kern.html"><b>kern</b></A></TD><TD>translates <b>**specC</b> to <b>**kern</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/pc.html"><b>pc</b></A></TD><TD>translate <b>**specC</b> pitch to <b>**pc</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/pitch.html"><b>pitch</b></A></TD><TD>translates <b>**specC</b> to <b>**pitch</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/semits.html"><b>semits</b></A></TD><TD>translate <b>**specC</b> to numerical <b>**semits</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/solfg.html"><b>solfg</b></A></TD><TD>translate <b>**specC</b> pitch to <b>**solfg</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/specc.html"><b>specc</b></A></TD><TD>change numerical precision of <b>**specC</b> values</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/tonh.html"><b>tonh</b></A></TD><TD>translate <b>**solfg</b> pitch to <b>**Tonh</b></TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+</blockquote>
+The following Humdrum command produces <b>**specC</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD><A HREF="../commands/specc.html"><b>specc</b></A></TD><TD>translates <b>**freq</b>, and <b>**specC</b> to <b>**specC</b></TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**specC</b>:
+<blockquote>
+<TABLE>
+<TR><TD>pure tones</TD><TD><code><big>*pure</big></code></TD></TR>
+<TR><TD>complex tones</TD><TD><code><big>*complex</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**specC</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="cents.rep.html"><b>**cents</b></A>,
+<A HREF="deg.rep.html"><b>**deg</b></A>,
+<A HREF="degree.rep.html"><b>**degree</b></A>,
+<A HREF="freq.rep.html"><b>**freq</b></A>,
+<A HREF="kern.rep.html"><b>**kern</b></A>,
+<A HREF="pc.rep.html"><b>**pc</b></A>,
+<A HREF="pitch.rep.html"><b>**pitch</b></A>,
+<A HREF="semits.rep.html"><b>**semits</b></A>,
+<A HREF="solfg.rep.html"><b>**solfg</b></A>,
+<A HREF="Tonh.rep.html"><b>**Tonh</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

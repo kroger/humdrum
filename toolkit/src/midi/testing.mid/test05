@@ -1,0 +1,8 @@
+!! midi Test #5
+!! **kern spines with only barlines should cause no problems.
+**kern
+=1
+=2
+=3a
+=3b
+*-

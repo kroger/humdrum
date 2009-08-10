@@ -1,0 +1,44 @@
+##########################################################
+#                          MSORDER
+#
+# Programmed by: David Huron        Date: January, 1997
+# Copyright (c) 1997 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+#
+#
+# This script ensures that phrase statements for a given
+# measure are all collected together so they are successive.
+# For example, the input:
+#    //phrase
+#    //lyrics
+#    //phrase
+#
+# will be reordered as:
+#
+#    //lyrics
+#    //phrase
+#    //phrase
+#
+awk '
+{
+	if ($0 ~ /phrase/)
+		{
+		phrase[x++] = $0
+		}
+	else if ($0 ~ /lyrics/)
+		{
+		if (x == 1)
+			{
+			lyrics = $0
+			}
+		else
+			{
+			print $0
+			for (i=1; i<x; i++) print phrase[i]
+			x = 1
+			}
+		}
+	else print $0
+}'

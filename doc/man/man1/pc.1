@@ -1,0 +1,258 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH pc 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +8
+.ti -8
+\fBpc\fR  --  translate Humdrum semitone representation or pc to pitch-class
+.in -8
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBpc\fR  [\fB-atx\fR]  [\fIinputfile\fR ...]  [ > \fIoutputfile.pc\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "pc"
+command transforms various pitch-related inputs to
+corresponding numerical pitch-class equivalents:
+C=0, C-sharp/D-flat=1, D=2, . . . B=11.
+It outputs one or more Humdrum \f(CR**pc\fR
+spines containing pitch-class values corresponding to
+each of the input pitch tokens.
+For example, the \f(CR**semits\fR
+token \(od\(mi13\(cd is transformed to 11 (pc).
+.sp 1
+.sp 1
+The
+.B "pc"
+command is able to translate any of the pitch-related
+representations listed below.
+In each case, a tuning standard of A4 equals 440 hertz is assumed.
+For descriptions of the input and output representations
+refer to Section 2
+.I "(Representation Reference)"
+of this reference manual.
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "pc"
+command should be given names with the distinguishing `.pc' extension.
+.sp 1
+.TS
+l l.
+\f(CR**cents\fR	hundredths of a semitone with respect to middle C=0
+	  (e.g. 1200 equals C5)
+\f(CR**freq\fR	fundamental frequency (in hertz)
+\f(CR**kern\fR	core pitch/duration representation
+\f(CR**pc\fR	pitch-class representation
+\f(CR**pitch\fR	American National Standards Institute pitch notation
+	  (e.g. \(odA#4\(cd)
+\f(CR**semits\fR	equal-tempered semitones with respect to middle C=0
+\f(CR**solfg\fR	French solf\o'e\(ga'ge system (fixed `doh')
+\f(CR**specC\fR	spectral centroid (in hertz)
+\f(CR**Tonh\fR	German pitch system
+.TE
+.sp 1
+.ce
+.I "Input representations processed by \fBpc\fR."
+Note that the
+.B "pc"
+command is also able to reprocess pitch-class (\f(CR**pc\fR) inputs.
+This allows pitch-class representations to be translated from
+numeric-only (0,1,2,3 ... 9,10,11) to mixed alphanumeric
+(0,1,2,3 ... 9,A,B) or vice versa.
+(See documentation for \f(CR**pc (2)\fR.)
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "pc"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-a\fR	output alphanumeric representation (where A=10, B=11)
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-t\fR	suppresses printing of all but the first note of a
+	  group of tied \f(CR**kern\fR notes
+\fB-x\fR	suppresses printing of non-pitch-class data
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The
+.B "-a"
+option invokes an alternative (alphanumeric) form of the \f(CR**pc\fR
+output where the upper-case letters `A' and `B' are substituted for the
+pitch-class integers 10 and 11, respectively.
+In addition, the input alias values `T' (ten) and `E' (eleven) are transformed
+to `A' and `B'.
+Encodings using mixed alphanumeric values are often better
+suited to pattern-matching and searching tasks.
+Encodings using purely numeric values are especially useful when the
+representation is to be processed numerically.
+.sp 1
+.sp 1
+The
+.B "-t"
+option ensures that only a single output value is given for
+tied \f(CR**kern\fR notes;
+the output coincides with the first note of the tie.
+.sp 1
+.sp 1
+Note that
+.B "pc"
+will round-off frequencies and non-integer semitone input values
+to the nearest pitch-class.
+Hence, an input \f(CR**semits\fR
+data token of 5.6 will be rendered in the \f(CR**pc\fR
+output as the value 6.
+Similarly, the input \f(CR**freq\fR value 452.1 will be rendered in the
+\f(CR**pc\fR output as the value 9.
+.sp 1
+.sp 1
+In the default operation,
+.B "pc"
+outputs non-pitch-related signifiers in addition to the pitch-class value.
+For example, the \f(CR**semits\fR token \(odX15yz\(cd will result in the output
+\(odX3yz\(cd -- that is, after translating 15 to pitch-class 3,
+the \(odXyz\(cd signifiers are retained in the output.
+The
+.B "-x"
+option is useful for eliminating non-pitch-class-related signifiers
+from the output.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following example illustrates the use of
+.B "pc."
+The input contains four spines -- one of which
+(\f(CR**foo\fR) cannot be processed by
+.B "pc."
+.sp 1
+.TS
+l s s l
+l l l l.
+!! `pc' example.
+**semits	**kern	**pc	**foo
+*M2/4	*M2/4	*	*
+\(eq1	\(eq1	\(eq1	.
+8x	8ee-	abc9 xyz10	A
+\.	.	BCD	A
+#18@	8ff	.	B
+23.1 -16	8dd-	.	B
+(-2)	8d-	8 7.	C
+-12...	.	0.8	C
+\(eq2	\(eq2	\(eq2	D
+[3.0abc19	[4a-	(2) 3	D
+&]	4a-]	6&?	E
+\(eq3	\(eq3	\(eq3	E
+r	2r	5 4	.
+===	==	====	.
+*-	*-	*-	*-
+.TE
+.sp 1
+Executing the command
+.sp 1
+.sp 1
+.in +2
+pc -xt input > output.pc
+.in -2
+.sp 1
+.sp 1
+produces the following result:
+.sp 1
+.TS
+l s s s l l l
+l l l l l l l.
+!! `pc' example.
+**pc		**pc		**pc		**foo
+*M2/4		*M2/4		*		*
+\(eq1		\(eq1		\(eq1		.
+8		3		9 10		A
+\.		.		B		A
+6		5		.		B
+11 8		1		.		B
+10		1		8 7		C
+0		.		0		C
+\(eq2		\(eq2		\(eq2		D
+3		8		2 3		D
+\.		.		6		E
+\(eq3		\(eq3		\(eq3		E
+r		r		5 4		.
+===		==		====		.
+*-		*-		*-		*-
+.TE
+.sp 1
+Both processed and unprocessed spines are output.
+Notice that the \f(CR**pc\fR
+value `B' in the token `BCD' has been maintained in the first measure.
+Notice that for the data tokens in the first spine of measure 2,
+only the first numerical value in the input data tokens is processed.
+More than one numerical value is output only if the input token
+is truly a multiple-stop (as in the third spine of measure 1).
+Also notice that the tied note in the second spine at the beginning of measure 2
+has been rendered as a single value `8'
+(due to the
+.B "-t"
+option).
+.in -2
+.sp 1
+.sp 1
+.SH "FILES"
+.in +2
+The file
+.I "x_option.awk"
+is used by this program when the
+.B "-x"
+option is invoked.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fB**cents\fR (2), \fBcents\fR (1),
+\fB**freq\fR (2), \fBfreq\fR (1),
+\fB**iv\fR (2), \fBiv\fR (1),
+\fB**kern\fR (2), \fBkern\fR (1),
+.br
+\fB**nf\fR (2), \fBnf\fR (1),
+\fB**pc\fR (2),
+\fB**pcset\fR (2), \fBpcset\fR (1),
+\fB**pf\fR (2), \fBpf\fR (1),
+\fB**pitch\fR (2), \fBpitch\fR (1),
+\fB**semits\fR (2), \fBsemits\fR (1),
+\fB**solfg\fR (2), \fBsolfg\fR (1),
+\fB**specC\fR (2) \fBspecC\fR (1),
+\fB**Tonh\fR (2), \fBtonh\fR (1)
+.in -2

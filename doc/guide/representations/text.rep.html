@@ -1,0 +1,413 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Vocal Text</TITLE>
+<!-- Documentation for the **text Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **text Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,vocal text,lyrics,software,theory,analysis,systematic musicology,computer representation,**text">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Vocal Text</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**text</b>  --  vocal text representation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**text</b>
+representation permits the representation of sung or spoken language.
+Only languages transcribable into the Roman alphabet can be represented using
+<b>**text</b>.
+For non-Roman alphabets and non-language vocables, refer to the
+<A HREF="IPA.rep.html"><b>**IPA</b></A>
+representation.
+</P>
+<P>
+The
+<b>**text</b>
+representation distinguishes three classes of data tokens:
+text-tokens, silence-tokens, and barlines.
+</P>
+<P>
+<i>Text-tokens</i>
+are of three types:
+syllabic, melismatic, and polysyllabic.
+A
+<i>syllabic</i>
+text-token means that a single syllable is associated with a single
+moment (such as a single pitch).
+A
+<i>melismatic</i>
+text-token means that a single syllable is associated with several
+successive moments (such as more than one pitch).
+A
+<i>polysyllabic</i>
+text-token means that several syllables are associated with a
+single moment (such as a single pitch).
+</P>
+<P>
+The simplest of these is the
+<i>melismatic</i>
+text-token -- which consist merely of a single vertical bar (|).
+By itself, the vertical bar means that the previous syllable is
+sustained through the current moment.
+Syllabic and polysyllabic text-tokens are more complicated.
+</P>
+<P>
+In the
+<b>**text</b>
+representation, text-tokens are syllable-oriented,
+so words must be broken-up into the component syllables.
+Words may be of three basic types: single-syllable words,
+multi-syllable words, and hyphenated words (e.g. the word "half-mast").
+As a result, four types of syllables are distinguished:
+(1) a single-syllable word, (2) a word-initiating syllable,
+(3) a word-completing syllable, and (4) a mid-word syllable.
+In
+<b>**text</b>
+the hyphen (<code><big>-</big></code>) is used to signify syllable boundaries;
+the tilde (<code><big>~</big></code>) is used to signify boundaries between hyphenated words
+(necessarily also a syllable boundary).
+The following table illustrates the how these signifiers are used:
+<blockquote>
+<TABLE>
+<TR><TD><i>text</i></TD><TD>a single-syllable word</TD></TR>
+<TR><TD><i>text</i>-</TD><TD>a word-initiating syllable</TD></TR>
+<TR><TD>-<i>text</i></TD><TD>a word-completing syllable</TD></TR>
+<TR><TD>-<i>text</i>-</TD><TD>-d-word syllable</TD></TR>
+<TR><TD><i>text</i>~</TD><TD>a single-syllable word beginning a hyphenated multi-word</TD></TR>
+<TR><TD>~<i>text</i></TD><TD>a single-syllable word completing a hyphenated multi-word</TD></TR>
+<TR><TD>~<i>text</i>~</TD><TD>a single-syllable word continuing a hyphenated multi-word</TD></TR>
+<TR><TD>~<i>text</i>-</TD><TD>a word-initating syllable completing a hyphenated multi-word</TD></TR>
+<TR><TD>-<i>text</i>~</TD><TD>a word-completing syllable -- part of a hyphenated multi-word</TD></TR>
+</TABLE>
+</blockquote>
+A
+<i>syllabic</i>
+text-token consists of any one of the above tokens.
+</P>
+<P>
+Occasionally, it is useful to encode several syllables or words
+for a single moment (or pitch) -- as in the case of
+<i>recitativo</i>
+passages.
+In the
+<b>**text</b>
+representation, such multi-word or polysyllabic text-tokens are encoded
+via Humdrum multiple-stops.
+That is, several words or syllables are encoded on the same data record,
+with each successive syllable separated by a space.
+The following encoding shows two syllables/words for each note:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**pitch</TD><TD>**text</TD></TR>
+<TR><TD>C4</TD><TD>I saw</TD></TR>
+<TR><TD>A4</TD><TD>a li-</TD></TR>
+<TR><TD>G4</TD><TD>-ly beau-</TD></TR>
+<TR><TD>F4</TD><TD>-ti- -ful ,</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+In the
+<b>**text</b>
+representation, punctuation marks -- such as commas, periods,
+and exclamation marks -- are segregated from the syllable texts
+by a space.
+The period character is represented by the asterisk (<code><big>*</big></code>)
+in order to avoid the illegal construction of a period (null token)
+in a multiple stop.
+Five remaining punctuation marks are represented literally in <b>**text</b>:
+comma (<code><big>,</big></code>), exclamation mark (<code><big>!</big></code>), question mark (<code><big>?</big></code>),
+colon (<code><big>:</big></code>), and the semicolon (<code><big>;</big></code>).
+When used in a melismatic context, an explicitly notated (printed)
+dash is represented by a double vertical bar (<code><big>||</big></code>).
+This signifies both the presence of a printed dash
+and the fact that the previous syllable continues to sound.
+In addition, double quotation marks (<code><big>"</big></code>) and parentheses (<code><big>()</big></code>)
+are also permitted.
+Once again, all such forms of punctuation must be segregated from
+the alphabetic text by the presence of a space.
+It is important to remember that periods are represented by asterisks.
+</P>
+<P>
+The
+<b>**text</b>
+representation is intended to represent canonical language
+information rather than verbatim transcriptions of a printed score.
+Textual abbreviations and printing conventions such as
+<i>"etc.," "#"</i>
+and
+<i>"$"</i>
+must be expanded as:
+<i>et ce- -te- -ra, num- -ber,</i>
+and
+<i>dol- -lar</i>
+respectively (depending on the language).
+(If the user wishes to represent
+<i>text as printed,</i>
+an explicit
+<b>**underlay</b>
+or
+<b>**overlay</b>
+representation would be more appropriate.)
+</P>
+<P>
+Where greater subtlety is required for pronunciation,
+refer to the
+<A HREF="IPA.rep.html"><b>**IPA</b></A>
+representation.
+</P>
+<P>
+The original ASCII character set is regrettably hostile to
+non-English languages, especially with regard to accents.
+With the extended (international) ASCII set, French, German, and other
+accents are properly handled, but for English users, a given computer
+system may prove inflexible for non-English materials.
+In such cases, the
+<b>**text</b>
+representation provides the following aliases to designate
+common accents.
+Accent signifiers are assumed to modify the immediately preceding Roman letter.
+<blockquote>
+<TABLE>
+<TR><TD>/</TD><TD>acute accent</TD></TR>
+<TR><TD>\</TD><TD>grave accent</TD></TR>
+<TR><TD>^</TD><TD>circumflex</TD></TR>
+<TR><TD>0</TD><TD>small superscript circle</TD></TR>
+<TR><TD>1</TD><TD>macron</TD></TR>
+<TR><TD>2</TD><TD>Umlaut</TD></TR>
+<TR><TD>5</TD><TD>cedilla</TD></TR>
+<TR><TD>6</TD><TD>hacek</TD></TR>
+<TR><TD>7</TD><TD>enya (tilde)</TD></TR>
+</TABLE>
+<CENTER>
+<i>Accent signifiers in <b>**text</b></i>
+</CENTER>
+</blockquote>
+Musical phrasing can be explicitly represented in
+<b>**text</b>
+via the open brace (<code><big>{</big></code>) and closed brace (<code><big>}</big></code>) for
+phrase-beginnings and phrase-endings respectively.
+Slurs can be represented via the open bracket (<code><big>[</big></code>) and closed
+bracket (<code><big>]</big></code>).
+Stressed and unstressed syllables can be explicitly denoted
+by prepending the plus sign (<code><big>+</big></code>) or the underscore (<code><big>_</big></code>)
+respectively -- at the beginning of the associated text.
+</P>
+<P>
+A handful of vocables can be represented via
+<b>**text</b>
+including humming (signified by the upper-case letter `M' by itself)
+and laughing (signified by the upper-case letter `L' by itself).
+Tandem interpretation also permit encoding of the depth of vibrato
+and the degree of ennunciation.
+For example, shallow vibrato is indicated by <code><big>*vibrato1</big></code>
+whereas deep vibrato is indicated by <code><big>*vibrato9</big></code>.
+Sloppy ennunciation is indicated by <code><big>*ennun1</big></code>
+whereas highly precise ennunciation is indicated by <code><big>*ennun9</big></code>.
+Intermediate values can be used as needed.
+</P>
+<P>
+Apart from text-tokens
+<b>**text</b>
+also permits the encoding of silence-tokens and barlines.
+Silence-tokens consist simply of the percent sign (<code><big>%</big></code>)
+appearing in isolation.
+This indicates the termination or absence of any vocal sound.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</P>
+<P>
+Much vocal music is strophic in form -- containing two or more
+"verses" sung to the same musical setting.
+Abbreviated representations may take advantage of the Humdrum
+<i>strophe</i>
+mechanism to avoid duplicate encoding of melodies, etc.
+See
+<A HREF="../commands/strophe.html"><b>strophe</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**text</big></code>
+data should be given names with the distinguishing `.txt' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The complete system of signifiers used by
+<b>**text</b>
+is summarized in the following table.
+<blockquote>
+<TABLE>
+<TR><TD>A-Z</TD><TD>upper-case letters A to Z</TD></TR>
+<TR><TD>a-z</TD><TD>lower-case letters a to z</TD></TR>
+<TR><TD>%</TD><TD>silence token (character by itself)</TD></TR>
+<TR><TD>L</TD><TD>laughing voice (character by itself)</TD></TR>
+<TR><TD>M</TD><TD>humming voice (character by itself)</TD></TR>
+<TR><TD>-</TD><TD>multi-syllable-word syllable boundary</TD></TR>
+<TR><TD>~</TD><TD>hyphenated-word word separator; printed dash</TD></TR>
+<TR><TD>|</TD><TD>melisma indicator (syllable sustain)</TD></TR>
+<TR><TD>||</TD><TD>printed hyphen indicating melisma</TD></TR>
+<TR><TD>.</TD><TD>null token (<b>not</b> period)</TD></TR>
+<TR><TD>*</TD><TD>period (must be preceded by a space)</TD></TR>
+<TR><TD>?</TD><TD>question mark (must be preceded by a space)</TD></TR>
+<TR><TD>:</TD><TD>colon (must be preceded by a space)</TD></TR>
+<TR><TD>;</TD><TD>semicolon (must be preceded by a space)</TD></TR>
+<TR><TD>!</TD><TD>exclamation mark (must be preceded by a space)</TD></TR>
+<TR><TD>(</TD><TD>open parenthesis</TD></TR>
+<TR><TD>)</TD><TD>closed parenthesis</TD></TR>
+<TR><TD>{</TD><TD>beginning of a phrase</TD></TR>
+<TR><TD>}</TD><TD>end of a phrase</TD></TR>
+<TR><TD>[</TD><TD>beginning of a slur</TD></TR>
+<TR><TD>]</TD><TD>end of a slur</TD></TR>
+<TR><TD>=</TD><TD>barline</TD></TR>
+<TR><TD>==</TD><TD>double barline</TD></TR>
+<TR><TD>/</TD><TD>acute accent</TD></TR>
+<TR><TD>\</TD><TD>grave accent</TD></TR>
+<TR><TD>^</TD><TD>circumflex</TD></TR>
+<TR><TD>0</TD><TD>small circle</TD></TR>
+<TR><TD>1</TD><TD>macron</TD></TR>
+<TR><TD>2</TD><TD>Umlaut</TD></TR>
+<TR><TD>5</TD><TD>cedilla</TD></TR>
+<TR><TD>6</TD><TD>hacek</TD></TR>
+<TR><TD>7</TD><TD>enya (tilde)</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**text</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**text</TD></TR>
+<TR><TD>*English</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>Once up-</TD></TR>
+<TR><TD>||</TD></TR>
+<TR><TD>-on a</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>time</TD></TR>
+<TR><TD>|</TD></TR>
+<TR><TD>there</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>was a</TD></TR>
+<TR><TD>lit- -tle</TD></TR>
+<TR><TD>girl</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>whose</TD></TR>
+<TR><TD>=3</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+Notice that the first measure contains two Humdrum double-stops
+(<code><big>Once up-</big></code> and <code><big>-on a</big></code>).
+The double vertical bar (<code><big>||</big></code>) indicates that the word "upon"
+is explicitly divided by a notated hyphen.
+The word <code><big>time</big></code> is melismatic -- spanning two time-events.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+Currently, no special-purpose Humdrum commands produce
+<b>**text</b>
+as output or process
+<b>**text</b>
+encoded data as input.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**text</b>:
+<blockquote>
+<TABLE>
+<TR><TD>language indicator</TD><TD><code><big>*Deutsch</big></code></TD></TR>
+<TR><TD>strophe indicator</TD><TD><code><big>*strophe</big></code></TD></TR>
+<TR><TD>verse number</TD><TD><code><big>*S/3</big></code></TD></TR>
+<TR><TD>choral text</TD><TD><code><big>*ensemble</big></code></TD></TR>
+<TR><TD>solo text</TD><TD><code><big>*solo</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>underlay position</TD><TD><code><big>*unter</big></code></TD></TR>
+<TR><TD>overlay position</TD><TD><code><big>*ueber</big></code></TD></TR>
+<TR><TD>vibrato depth</TD><TD><code><big>*vibrato7</big></code></TD></TR>
+<TR><TD>ennunciation</TD><TD><code><big>*ennun5</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**text</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="../commands/assemble.html"><b>assemble</b></A>,
+<A HREF="IPA.rep.html"><b>**IPA</b></A>,
+<A HREF="../commands/strophe.html"><b>strophe</b></A>,
+<A HREF="../commands/thru.html"><b>thru</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

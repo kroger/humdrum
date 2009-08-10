@@ -1,0 +1,383 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- kern</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>kern</b>  --  translate selected Humdrum pitch-related representations to <code><big>**kern</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>kern</b>  [<b>-x</b>]  [<i>inputfile</i> ...]  [> <i>outputfile.krn</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>kern</b>
+command transforms various pitch-related inputs to corresponding
+<A HREF="../representations/kern.html"><code><big>**kern</big></code> representation</A>s.
+For example, the <code><big>**pitch</big></code> token `<code><big>Ab2</big></code>' will be output as the
+<code><big>**kern</big></code> token `<code><big>AA-</big></code>'.
+Continuous pitch-related representations, such as frequency (<code><big>**freq</big></code>)
+and cents (<code><big>**cents</big></code>) are rounded-off to the nearest
+equally-tempered pitch.
+Hence, <code><big>**freq</big></code> values between 254.178 and 269.291 will be
+output as the <code><big>**kern</big></code> token for middle C -- `c'.
+</P>
+<P>
+<A HREF="../representations/kern.html#Pitch">Pitches in <code><big>**kern</big></code></A>
+are encoded as equally-tempered values at concert pitch.
+Kern is not able to represent pitch deviations from equal temperament.
+Diatonic pitch names are encoded using the letters A to G.
+Octaves are indicated by a system of upper- and lower-case
+letters, and by letter repetition.
+Middle C is represented by the single lower-case letter `c'.
+The C an octave above is represented by two lower-case letters: `cc' --
+with each successive octave adding another letter.
+The C an octave below middle C is represented by a single upper-case `C'.
+The C an octave lower yet is represented by two upper-case letters: `CC' --
+and so forth.
+Changes of octave are deemed to occur between the pitches B and C.
+Thus the B below middle `c' is rendered as a single upper-case `B';
+the B below `cc' is `b' and so forth.
+Sharps are indicated by the octothorpe sign (<code><big>#</big></code>)
+whereas flats are indicated by the minus sign (<code><big>-</big></code>).
+</P>
+<P>
+The
+<b>kern</b>
+command is able to translate any of the pitch-related
+representations listed below.
+In each case, a tuning standard of A4 equals 440 hertz is assumed.
+For descriptions of the various input representations
+(including <code><big>**kern</big></code>) refer to Section 2
+<i>(Representation Reference)</i>
+of this reference manual.
+<blockquote><TABLE>
+<TR><TD><code><big>**cents</big></code></TD><TD>hundredths of a semitone with respect to middle C=0</TD></TR>
+<TR><TD><code><big>**degree</big></code></TD><TD>scale degree including octave designation</TD></TR>
+<TR><TD><code><big>**freq</big></code></TD><TD>frequency in hertz (abbreviated Hz.)</TD></TR>
+<TR><TD><code><big>**fret</big></code></TD><TD>fretted-instrument pitch tablature</TD></TR>
+<TR><TD><code><big>**MIDI</big></code></TD><TD>Music Instrument Digital Interface key-press tablature</TD></TR>
+<TR><TD><code><big>**pitch</big></code></TD><TD>American National Standards Institute pitch notation (e.g. "A#4")</TD></TR>
+<TR><TD><code><big>**semits</big></code></TD><TD>equal-tempered semitones with respect to middle C=0</TD></TR>
+<TR><TD><code><big>**solfg</big></code></TD><TD>French solf&#232ge system (fixed `doh')</TD></TR>
+<TR><TD><code><big>**specC</big></code></TD><TD>spectral centroid (in hertz)</TD></TR>
+<TR><TD><code><big>**Tonh</big></code></TD><TD>German pitch system</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Input representations processed by <b>kern</b>.</i>
+</CENTER>
+</P>
+<P>
+For numerically-oriented inputs, such as
+<code><big>**cents, **freq, **MIDI, **semits</big></code>, and <code><big>**specC</big></code>,
+variant enharmonic spellings are selected for output according to the
+prevailing key signature or explicit key indication.
+(Refer to <b>key</b> and <b>key signatures</b> in Section 3
+<i>(Humdrum Tandem Interpretations).</i>
+Hence, in the key of G minor, F-sharp and E-flat spellings will be
+output rather than G-flat and D-sharp.
+Kern recognizes the presence of key, or key signature
+tandem interpretations.
+If no key or key signature is encountered in the input, a default
+key of C major is assumed.
+Kern is sensitive to both
+<i>pitch-class</i>
+and
+<i>pitch-height</i>
+key signatures.
+In the case of pitch-height key signatures, the user can specify
+complex spelling preferences, such as F#2 rather than Gb2, but Gb3
+rather than F#3, etc.
+See 
+<A HREF="#SAMPLE OUTPUTS">
+SAMPLE OUTPUT</A> below.
+</P>
+<P>
+It is recommended that output files produced using the
+<b>kern</b>
+command should be given names with the distinguishing `.krn' extension.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>kern</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-x</b></TD><TD>suppresses printing of non-pitch-related signifiers</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+In the default operation,
+<b>kern</b>
+outputs any non-pitch-related signifiers in addition to the kern value.
+For example, the <code><big>**pitch</big></code>
+token "A6zzz" will result in the output
+"aaazzz" -- that is, after translating A6 to "aaa",
+the "zzz" signifiers are retained in the output.
+For some applications, echoing non-pitch-related signifiers in the output
+is useful.
+However, in other situations, the result can prove confusing --
+especially, when the non-pitch-related signifiers are upper- or
+lower-case letters from A-G.
+Consider the case of the <code><big>**freq</big></code> token "aA#5";
+after translating "A#5" to "aa", the leading non-pitch-related
+signifier "a" will be prepended to the output, hence the value
+"aaa" -- which will undoubtedly cause confusion.
+The
+<b>-x</b>
+option is useful for eliminating non-pitch-related signifiers from the output.
+For most inputs, the
+<b>-x</b>
+option is recommended.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<A NAME="SAMPLE OUTPUTS">
+<FONT color="0000FF"><H3>SAMPLE OUTPUTS</H3></FONT>
+The following example illustrates the use of
+<b>kern.</b>
+The input contains six pitch-related spines -- two of which (<code><big>**deg</big></code>
+and <code><big>**cocho</big></code>) cannot be processed by
+<b>kern.</b>
+In addition, there are two non-pitch-related spines (<code><big>**embell</big></code>
+and <code><big>**metpos</big></code>).
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `kern' example #1</TD></TR>
+<TR><TD>**specC</TD><TD>**pitch</TD><TD>**MIDI</TD><TD>**deg</TD><TD>**metpos</TD><TD>**cocho</TD><TD>**Tonh</TD><TD>**embell</TD></TR>
+<TR><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*tb8</TD><TD>*</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>foo2000</TD><TD>G#4foo</TD><TD>/60/bar</TD><TD>1foo</TD><TD>1</TD><TD>r</TD><TD>Gis2</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-60/</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>2321</TD><TD>A3+20</TD><TD>/62/</TD><TD>2</TD><TD>3</TD><TD>9.89</TD><TD>H2</TD><TD>upt</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>48/-62/</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>1807</TD><TD>Ab3</TD><TD>0/70/64</TD><TD>1</TD><TD>2</TD><TD>7.07</TD><TD>B2</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>48/-70/</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>2487</TD><TD>C#4</TD><TD>/61/</TD><TD>6</TD><TD>3</TD><TD>7.135</TD><TD>Cis4</TD><TD>sus</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-61/</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>3323</TD><TD>r</TD><TD>.</TD><TD>5</TD><TD>1</TD><TD>r</TD><TD>r</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD><TD>7</TD><TD>3</TD><TD>5.5</TD><TD>Heses2</TD><TD>ct</TD></TR>
+<TR><TD>3471</TD><TD>D4-8</TD><TD>/48/ /52/</TD><TD>1</TD><TD>2</TD><TD>8.11</TD><TD>C3</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-48/</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>D4 F4</TD><TD>/-52/</TD><TD>2</TD><TD>3</TD><TD>7.33 6.4</TD><TD>C3 Es3</TD><TD>ct</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>r</TD><TD>G4</TD><TD>.</TD><TD>r</TD><TD>1</TD><TD>r</TD><TD>H2 D3</TD><TD>.</TD></TR>
+<TR><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Executing the command
+</P>
+<P>
+<blockquote>
+<code><big>
+kern -x input > output.krn
+</code></big>
+</blockquote>
+</P>
+<P>
+produces the following result:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `kern' example #1</TD></TR>
+<TR><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**deg</TD><TD>**metpos</TD><TD>**cocho</TD><TD>**kern</TD><TD>**embell</TD></TR>
+<TR><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*tb8</TD><TD>*</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>bbb</TD><TD>g#</TD><TD>c</TD><TD>1foo</TD><TD>1</TD><TD>r</TD><TD>GG#</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>dddd</TD><TD>A</TD><TD>d</TD><TD>2</TD><TD>3</TD><TD>9.89</TD><TD>BB</TD><TD>upt</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>aaa</TD><TD>A-</TD><TD>b-</TD><TD>1</TD><TD>2</TD><TD>7.07</TD><TD>BB-</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>eeee-</TD><TD>c#</TD><TD>d-</TD><TD>6</TD><TD>3</TD><TD>7.135</TD><TD>c#</TD><TD>sus</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>aaaa-</TD><TD>r</TD><TD>.</TD><TD>5</TD><TD>1</TD><TD>r</TD><TD>r</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD><TD>7</TD><TD>3</TD><TD>5.5</TD><TD>BB--</TD><TD>ct</TD></TR>
+<TR><TD>aaaa</TD><TD>d</TD><TD>C E</TD><TD>1</TD><TD>2</TD><TD>8.11</TD><TD>C</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>d f</TD><TD>.</TD><TD>2</TD><TD>3</TD><TD>7.33 6.4</TD><TD>C E-</TD><TD>ct</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>r</TD><TD>g</TD><TD>.</TD><TD>r</TD><TD>1</TD><TD>r</TD><TD>BB D</TD><TD>.</TD></TR>
+<TR><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Both processed and unprocessed spines are output.
+Also notice that the non-pitch-related signifiers (e.g. foo)
+in the first notes of the <code><big>**specC, **pitch</big></code>, and <code><big>**MIDI</big></code>,
+spines have been stripped away (due to the
+<b>-x</b>
+option).
+</P>
+<P>
+Key signature sensitivity is illustrated in the following example.
+The input contains a "pitch-height key signature" --
+where flats and sharps pertain to only a specific absolute pitch.
+For example, Bb3 is preferred to A#3, although A#4 is preferred to Bb4.
+Similarly, C#4 is preferred to Db4, although Db5 is preferred to C#5.
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `kern' example #2</TD></TR>
+<TR><TD>**semits</TD></TR>
+<TR><TD>*K[B3-C4#F4#A4#D5-]</TD></TR>
+<TR><TD>-2</TD></TR>
+<TR><TD>10</TD></TR>
+<TR><TD>1</TD></TR>
+<TR><TD>6</TD></TR>
+<TR><TD>13</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice in the corresponding output given below, that all pitches
+are rendered with the correct enharmonic spelling.
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `kern' example #2</TD></TR>
+<TR><TD>**kern</TD></TR>
+<TR><TD>*K[B3-C4#F4#A4#D5-]</TD></TR>
+<TR><TD>B-</TD></TR>
+<TR><TD>a#</TD></TR>
+<TR><TD>c#</TD></TR>
+<TR><TD>f#</TD></TR>
+<TR><TD>dd-</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>FILES</H3></FONT>
+The file <code><big>x_option.awk</big></code> is used by this program when the
+<b>-x</b>
+option is invoked.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<b>**cents</b> (2),
+<A HREF="cents.html">
+<b>cents</b></A> (4),
+<b>**degree</b> (2),
+<A HREF="degree.html">
+<b>degree</b></A> (4),
+<b>**freq</b> (2),
+<A HREF="freq.html">
+<b>freq</b></A> (4),
+<b>**fret</b> (2),
+<A HREF="hint.html">
+<b>hint</b></A> (4),
+<b>**kern</b> (2),
+<A HREF="mint.html">
+<b>mint</b></A> (4),
+<b>**MIDI</b> (2),
+<A HREF="midi.html">
+<b>midi</b></A> (4),
+<b>**pitch</b> (2),
+<A HREF="pitch.html">
+<b>pitch</b></A> (4),
+<A HREF="proof.html">
+<b>proof</b></A> (4),
+<b>**semits</b> (2),
+<A HREF="semits.html">
+<b>semits</b></A> (4),
+<b>**solfg</b> (2),
+<A HREF="solfg.html">
+<b>solfg</b></A> (4),
+<b>**specC</b> (2),
+<A HREF="specc.html">
+<b>specc</b></A> (4),
+<b>**Tonh</b> (2),
+<A HREF="tonh.html">
+<b>tonh</b></A> (4)
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>BUGS</H3></FONT>
+When translating <code><big>**pitch</big></code>, <code><big>**solfg</big></code>, or <code><big>**Tonh</big></code>,
+inputs,
+<b>kern</b>
+ignores cents deviation.
+Hence C#6+80 is rendered as `ccc#' rather than the nearest pitch `ddd'.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+Humdrum representations are expected to avoid context dependency
+insofar as possible.
+This can lead to unexpected results.
+For example, the letter `x' in <code><big>**pitch</big></code> is intended to signify the
+presence of a double sharp.
+Thus the <code><big>**pitch</big></code> input token `xyzC4' is correctly translated by
+<b>kern</b>
+as `yzc##'.
+Similarly, the <code><big>**pitch</big></code> input token `1yzC4' becomes `yzCCC4'.
+(The first numerical value is interpreted as the octave number and
+the trailing number 4 is interpreted as a non-pitch-related signifier.)
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide02.html">
+<B>Introductory description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../guide06.html">
+<B>Advanced description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

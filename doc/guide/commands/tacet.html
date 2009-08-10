@@ -1,0 +1,106 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- tacet</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>tacet</b>  -- reset MIDI channels to ensure silence
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>tacet</b>  [<b>-i</b> <i>hex</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>tacet</b>
+command resets the MIDI output.
+It sends "all-notes-off" commands on MIDI channels 1-16.
+The
+<b>tacet</b>
+command is useful if a MIDI application has terminated
+abnormally -- leaving one or more sounding notes ("ciphers")
+on a MIDI device.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>tacet</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-i <i>hex</i></TD><TD>assign MIDI input/output address to <i>hex</i></TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The
+<b>-i</b>
+option is used to specify the input/output address of the MIDI card.
+The default address is `330.'
+The address is specified as a hexadecimal number.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<A HREF="midreset.html">
+<b>midreset</b></A> (4),
+<A HREF="perform.html">
+<b>perform</b></A> (4),
+<A HREF="smf.html">
+<b>smf</b></A> (4)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>REFERENCES</H3></FONT>
+Use of the Music Quest Inc. MIDI library functions is gratefully
+acknowledged.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide07.html#The_tacet_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

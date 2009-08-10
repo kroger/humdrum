@@ -1,0 +1,160 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Decibels</TITLE>
+<!-- Documentation for the **dB Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **dB Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,decibels,software,theory,analysis,systematic musicology,computer representation,**dB">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Decibels</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**dB</b>  --  relative amplitude representation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**dB</b>
+representation is used to represent relative amplitude
+in decibels.
+The reference amplitude is deemed to be 0 dB.
+In a group of tones, normally the loudest tone is selected as the
+reference.
+Typically this means that other tones have negative decibel values.
+</P>
+<P>
+Relative amplitude values may be either integer or decimal values.
+Both positive and negative values are permissible.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**dB</big></code>
+data should be given names with the distinguishing `.db' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**dB</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>+</TD><TD>plus sign (optional)</TD></TR>
+<TR><TD>-</TD><TD>minus sign</TD></TR>
+<TR><TD>.</TD><TD>fractional second delimiter; null token</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**dB</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+The following sample document encodes the relative amplitudes
+for the first five harmonics of a tone pitched at middle C (C4).
+Notice the use of the *H tandem interpretations to indicate the
+harmonic number.
+In this example, all amplitudes have been given in decibels relative
+to the first harmonic.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**pitch</TD><TD>**dB</TD><TD>**dB</TD><TD>**dB</TD><TD>**dB</TD><TD>**dB</TD></TR>
+<TR><TD>*</TD><TD>*H01</TD><TD>*H02</TD><TD>*H03</TD><TD>*H04</TD><TD>*H05</TD></TR>
+<TR><TD>C4</TD><TD>0.0</TD><TD>-5.3</TD><TD>-24.3</TD><TD>-5.3</TD><TD>-23.7</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+</P>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum command accepts <b>**dB</b> encoded data as input:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/spect.html"><b>spect</b></A></TD><TD>convert notated sonority to instantaneous spectrum</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**dB:</b>
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>harmonic number</TD><TD><code><big>*H3</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**dB</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="dynam.rep.html"><b>**dynam</b></A>,
+<A HREF="spect.rep.html"><b>**spect</b></A>,
+<A HREF="../commands/spect.html"><b>spect</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

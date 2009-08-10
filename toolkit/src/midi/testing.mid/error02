@@ -1,0 +1,8 @@
+!! midi Error Test #2
+!! This file contains gives a non-kern spine -- spelled with extra
+!! letters (**xkern rather than **kern).  No MIDI output should occur.
+**xkern
+4f
+4g
+4a
+*-

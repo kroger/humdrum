@@ -1,0 +1,497 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH extract 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBextract\fR  --  get specified spines from a Humdrum input
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBextract\fR  \fB-f  \fIfield1,field2,...,$-1,$\fR  [\fIinputfile  ...\fR]
+.ti -7
+\fBextract\fR  \fB-i  \fIinterp1,interp2,...,interp\fRn  [\fIinputfile  ...\fR]
+.ti -7
+\fBextract\fR  \fB-p  \fIspine#\fRn  [\fIinputfile  ...\fR]
+.ti -7
+\fBextract\fR  \fB-t  \fIfield_trace_file.ftf\fR  [\fIinputfile  ...\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "extract"
+command allows the user to select one or more spines from a Humdrum input.
+The command is typically used to extract parts (such as a tuba part)
+from some multi-part score; however
+.B "extract"
+can be used to isolate dynamic markings, musical lyrics, or any other
+stream of information
+that has been encoded as a separate Humdrum spine.
+.sp 1
+.sp 1
+The
+.B "extract" 
+command has four distinct modes of operation:  (1) field mode
+.B "(-f),"
+(2) interpretation mode
+.B "(-i),"
+(3) spine-path mode
+.B "(-p),"
+and (4) field-trace mode
+.B "(-t)."
+The simplest mode is field mode;
+the most general-purpose mode is field-trace mode.
+.sp 1
+.sp 1
+In 
+.I "field mode,"
+the 
+.B "extract" 
+command operates in a manner similar to the \s-1UNIX\s+1
+cut
+command.
+The user may specify a given field (data column) or set of fields to
+be selected from the input stream. 
+For example, the command:
+.sp 1
+.sp 1
+.in +2
+extract -f 1,3,8
+.in -2
+.sp 1
+.sp 1
+will extract the first, third, and eighth spines from the input stream.
+In field mode, field specifications may also be made
+with respect to the right-most field.
+For example, the expression
+"$"
+refers to the right-most field in the input;
+the arithmetic expression
+"$-1"
+refers to the right-most field minus one, etc.
+By way of example, the command:
+.sp 1
+.sp 1
+.in +2
+extract -f '2,4-6,$' lassus
+.in -2
+.sp 1
+.sp 1
+will extract the second, fourth, fifth, sixth, and last (right-most)
+spines in the file \(odlassus.\(cd
+The
+extract -f
+command differs from the \s-1UNIX\s+1
+cut
+command in that Humdrum global comments are properly preserved
+in the output.
+.sp 1
+.sp 1
+In 
+.I "interpretation mode,"
+the 
+.B "extract"
+command outputs all spines containing the
+interpretation(s) specified by the user.
+By way of example, the command:
+.sp 1
+.sp 1
+.in +2
+extract -i '**semits,**MIDI' hildegard
+.in -2
+.sp 1
+.sp 1
+will extract all spines in the file \f(CRhildegard\fR
+containing \f(CR**semits\fR or \f(CR**MIDI\fR data.
+.sp 1
+.sp 1
+In 
+.I "spine-path mode,"
+the
+.B "extract" 
+command follows a given spine starting at the beginning of the file,
+and traces the course of that spine throughout the input stream.
+If spine-path changes are encountered in the input
+(such as spine-exchanges, spine-merges, or spine-splits)
+the output adapts accordingly.
+By way of example, if the \(odthird\(cd spine is selected,
+the output consists of the third spine and follows the path of that spine
+through the input until it is terminated or the end-of-file is encountered.
+What begins as the third column, may end up as
+some other column (or columns) in the input.
+.sp 1
+.sp 1
+In the 
+.I "field-trace mode,"
+the 
+.B "extract"
+command accepts a list of spine-column
+positions over the course of the file.
+In the 
+.I "field-trace"
+mode, the user provides a file containing a list
+specifying the precise selection of spines through the file
+at various line numbers.
+The first column in this list specifies the line (record) number
+at which the field selection is defined.
+The second column lists the spine or spines to be
+extracted beginning at the specified line.
+For example, the following
+.I "field-trace file"
+specifies that the first spine
+from line 1 should be output; beginning at line 2, spines 3, 4, and 5
+should be output; beginning at line 18, spines 1 and 4 should be output,
+and from line 78 to the end of the input, spine 9 should be output.
+.in +2
+.sp 1
+.TS
+l l.
+1	1
+2	3-5
+18	1,4
+78	9
+.TE
+.sp 1
+.in -2
+The
+.I "field-trace"
+mode allows the user to select virtually any combination of data tokens
+from the input stream.
+Note that using the
+.I "field-trace"
+mode may produce output that no longer conforms to the Humdrum syntax.
+(See EXAMPLES below.)
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "extract"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-f  \fIfieldlist\fR	select field mode
+\fB-h\fR	displays a help screen summarizing the
+	command syntax
+\fB-i  \fIinterplist\fR	select interpretation mode
+\fB-p  \fIspine#\fR	select spine-path mode
+\fB-t  \fIfieldtrace file\fR	select field-trace mode
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+A \fIfieldlist\fR consists of any set of integers separated by commas,
+or a range specification in which the lower and upper values are
+separated by a dash: e.g.\f(CR1,4-8,13\fR.
+With the exception of range specifications, the order of the integers
+in the list is unimportant, hence \f(CR13,1,4-8\fR
+is equivalent to \f(CR1,4-8,13\fR.
+The right-field anchor ($) can be used only with the
+.B "-f"
+option.
+.sp 1
+.sp 1
+An \fIinterplist\fR consists of any set of tandem or exclusive
+interpretations separated by commas, e.g.\f(CR'**kern,*C:'\fR
+Option arguments may require the use of quotation marks in order to prevent
+inadvertent expansion of shell metacharacter (*, ?, etc.).
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following examples illustrate how
+.B "extract"
+may be used.
+.sp 1
+.sp 1
+.in +2
+extract -f '1,3,$' holst
+.in -2
+.sp 1
+.sp 1
+outputs the first, third, and last columns from the file \f(CRholst\fR.
+.sp 1
+.sp 1
+.in +2
+extract -p 4 mossolov
+.in -2
+.sp 1
+.sp 1
+outputs the spine
+.I "beginning"
+(but not necessarily continuing) in the fourth
+column of the file \f(CRmossolov\fR.
+.sp 1
+.sp 1
+.in +2
+extract -t sibelius.fld sibelius
+.in -2
+.sp 1
+.sp 1
+outputs the spines specified in the file \f(CRsibelius.fld\fR for 
+the file \f(CRsibelius\fR.
+(See \s-1SAMPLE OUTPUTS\s+1 below.)
+.sp 1
+.sp 1
+.in +2
+extract -i '*F:,*f:' hendrix
+.in -2
+.sp 1
+.sp 1
+outputs all spines that contain the tandem interpretations *F: or *f:
+(i.e. in the keys of F major or F minor).
+.in -2
+.sp 1
+.sp 1
+.SH "SAMPLE OUTPUTS"
+.in +2
+The following examples illustrate the various
+.B "extract"
+options.
+Consider the following input file, dubbed \f(CRinput1\fR:
+.in +2
+.sp 1
+.TS
+l s s l l
+l l l l l.
+!! `extract' example #1
+**ABC	**xyz	**123	**ABC	**foo
+A	x	1	a	bar
+B	y	2	b	.
+C	z	3	c	#
+*-	*-	*-	*-	*-
+.TE
+.sp 1
+.in -2
+Executing either of the following commands:
+.sp 1
+.sp 1
+.in +2
+extract -f '1,3,$-1' input1 > output
+.in -2
+.sp 1
+.sp 1
+or
+.sp 1
+.sp 1
+.in +2
+extract -i '**ABC,**123' input1 > output
+.in -2
+.sp 1
+.sp 1
+would produce the following result:
+.in +2
+.sp 1
+.TS
+l s s
+l l l.
+!! `extract' example #1
+**ABC	**123	**ABC
+A	1	a
+B	2	b
+C	3	c
+*-	*-	*-
+.TE
+.sp 1
+.in -2
+Consider next the following sample input -- dubbed \f(CRinput2\fR:
+.in +2
+.sp 1
+.TS
+l s s l l l
+l l l l l l.
+!! `extract' example #2
+**ABC	**xyz	**123	**ABC	**foo
+A	x	1	a	%
+*	*	*^	*	*
+B	y	2a	2b	b	&
+C	z	3a	3b	c	#
+*	*x	*x	*	*	*
+A	4a	xyz	4b	d	%
+*-	*	*	*	*-	*
+5a	xyz	5b	&
+*	*x	*x	*
+6a	6b	xyz	#
+*v	*v	*	*
+7	xyz	%
+8	xyz	&
+*-	*-	*-
+.TE
+.sp 1
+.in -2
+Executing the command:
+.sp 1
+.sp 1
+.in +2
+extract -p 3 input2 > output
+.in -2
+.sp 1
+.sp 1
+would produce the following result:
+.in +2
+.sp 1
+.TS
+l s s l
+l l l l.
+!! `extract' example #2
+**123
+1
+*^
+2a	2b
+3a	3b
+*x	*
+4a	4b
+*	*
+5a	5b
+*	*x
+6a	6b
+*v	*v
+7
+8
+*-
+.TE
+.sp 1
+.in -2
+Notice that this output no longer conforms to the Humdrum syntax.
+(Output lines 7 and 11 contain only a single exchange-path interpretation.)
+.sp 1
+.sp 1
+For the `example #2' input file, the field-structure is as follows:
+.in +2
+.sp 1
+.TS
+l l l.
+1	1-1	# Line 1 must appear in the file.
+4	1-5	# *     *     *^     *     * ....
+5	1-6	# Line after path indicator record
+7	1-6	# *     *x     *x     *      ....
+8	1-6	# Line after path indicator record
+9	1-6	# *-     *     *     *     * ....
+10	1-4	# Line after path indicator record
+11	1-4	# *     *x     *x     *      ....
+12	1-4	# Line after path indicator record
+13	1-4	# *v     *v     *     *      ....
+14	1-3	# Line after path indicator record
+16	1-3	# *-     *-     *-           ....
+.TE
+.sp 1
+.in -2
+(The above file may be generated via the
+fields -s
+command.)
+On the basis of this information a user might create the following
+field-trace file, dubbed \f(CRtrace\fR:
+.in +2
+.sp 1
+.TS
+l l.
+1	1
+4	3
+5	3,5
+7	2,3
+8	3,2
+9	1,3
+10	4
+14	3
+15	2
+16	1
+.TE
+.sp 1
+.in -2
+Executing the following command:
+.sp 1
+.sp 1
+.in +2
+extract -t trace input2 > output
+.in -2
+.sp 1
+.sp 1
+would produce the following result:
+.in +2
+.sp 1
+.TS
+l s
+l l.
+!! `extract' example #2
+**ABC
+A
+*^
+2a	b
+3a	c
+*x	*x
+4a	xyz
+*-	*
+&
+*
+#
+*
+%
+xyz
+*-
+.TE
+.sp 1
+.in -2
+Notice that in this case, data tokens have been selected
+from a variety of input spines.
+.in -2
+.sp 1
+.sp 1
+.SH "DIAGNOSTICS"
+.in +2
+In
+.I "field-trace"
+mode, if the specified field-structure does not correspond
+to the actual input file, then an \s-1ERROR\s+1 message is issued.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+Note that only the
+.I "field"
+mode
+.B "(-f)"
+guarantees that the output will conform to the Humdrum syntax.
+.sp 1
+.sp 1
+In 
+.I "interpretation"
+mode, tandem interpretations may be specified in the command
+invocation, but mutually exclusive tandem interpretations
+(such as changes of key) will not force the program to stop
+outputting a specified spine.
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBassemble\fR (1), \fBcut\fR (\s-1UNIX\s+1), \fBfields\fR (1), \fByank\fR (1)
+.in -2

@@ -1,0 +1,98 @@
+!! midi Test #14
+!! C1 to C8 chromatic scale using enharmonic spellings --
+!! ...  double, triple, etc. ... sharps and flats.
+**kern
+!! C1 (low)
+32CCC
+32DDD-
+32EEE--
+32FFF--
+32EEE
+32EEE#
+32EEE##
+32EEE###
+32AAA-
+32AAA
+32AAA#
+32AAA##
+!! C2
+32CC
+32EE---
+32EE--
+32EE-
+32EE
+32FF
+32GG-
+32GG
+32AA-
+32C---
+32C--
+32C-
+!! C3
+32C
+32BB##
+32D
+32D#
+32F-
+32G--
+32G-
+32G
+32A-
+32c---
+32c--
+32c-
+!! C4 (middle C)
+32B#
+32B##
+32B###
+32e-
+32e
+32e#
+32e##
+32e###
+32e####
+32cc---
+32cc--
+32cc-
+!! C5
+32cc
+32cc#
+32cc##
+32cc###
+32cc####
+32cc#####
+32ccc------
+32ccc-----
+32ccc----
+32ccc---
+32ccc--
+32ccc-
+!! C6
+32ccc
+32ccc#
+32ccc##
+32ccc###
+32ccc####
+32ggg--
+32ggg-
+32ggg
+32cccc----
+32cccc---
+32cccc--
+32cccc-
+!! C7 (high)
+32cccc
+32dddd-
+32dddd
+32eeee-
+32eeee
+32ffff
+32gggg-
+32gggg
+32aaaa-
+32aaaa
+32bbbb-
+32bbbb
+!! C8 (very high)
+32ccccc
+*-

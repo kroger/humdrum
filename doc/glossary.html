@@ -1,0 +1,233 @@
+<!---------------------------------------------------------------------------->
+<html>
+<head>
+<title> Humdrum Toolkit - Glossary of Terminology </title>
+<meta name="Document-Owner" content="David Huron">
+<meta name="Creator" content="Craig Stuart Sapp (craig@ccrma.stanford.edu)">
+<meta name="Creation-Date" content=" Sun Jul 11 20:56:08 PDT 1999 ">
+<meta name="Revision-Date" content=" Sun Jul 11 20:56:16 PDT 1999 ">
+<meta name="description" content="Glossary of Humdrum Terminology">
+</head>
+<!---------------------------------------------------------------------------->
+<body bgcolor=#FFFFFF link=#FF0000 alink=#FF8O8O vlink=#008DDD>
+
+<br><br>
+<center> <H1>Glossary of Humdrum Terminology </H1> 
+[ <a href=#A> A </a> | <a href=#B> B </a> | <a href=#C> C </a> |
+  <a href=#D> D </a> | <a href=#E> E </a> | <a href=#F> F </a> |
+  <a href=#G> G </a> | <a href=#H> H </a> | <a href=#I> I </a> |
+  <a href=#J> J </a> | <a href=#K> K </a> | <a href=#L> L </a> |
+  <a href=#M> M </a> | <a href=#N> N </a> | <a href=#O> O </a> |
+  <a href=#P> P </a> | <a href=#Q> Q </a> | <a href=#R> R </a> |
+  <a href=#S> S </a> | <a href=#T> T </a> | <a href=#U> U </a> |
+  <a href=#V> V </a> | <a href=#W> W </a> | <a href=#X> X </a> |
+  <a href=#Y> Y </a> | <a href=#Z> Z </a> ]
+<hr noshade>
+</center>
+
+<dl>
+
+<!-- Notice that the comments like AAAAAA... are useful for moving
+     to a region of the glossary quickly when editing either
+     visually or by text search -->
+
+<a name="A"> </a> <!-- --- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA --- -->
+<a name="B"> </a> <!-- --- BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB --- -->
+<a name="C"> </a> <!-- --- CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC --- -->
+
+<a name="Comment"> </a>
+<dt> <B>Comment</B>
+<dd> Either a <a href="#Global Comment">global</a> or 
+     <a href="#Local Comment">local</a> comment.  Any 
+     <a href=#Record>record</a> beginning
+     with an exclamation mark (<tt><b>!</b></tt>).
+     <A HREF="guide02.html#Comment_Records"><b>Further information.</b>
+<br><br>
+
+<a name="D"> </a> <!-- --- DDDDDDDDDDDDDDDDDDDDDDDDDDDDDD --- -->
+
+<a name="Data Record"> </a>
+<dt> <B>Data record</B>
+<dd> Any record that is not a <a href=#Comment>comment</a> or 
+     an <a href=#Interpretation>interpretation</a>.  Must contain
+     the same number of tokens as the number of current 
+     <a href=#Spine>spines</a>.
+     <A HREF="guide05.html#Data_Records"><b>Further information.</b>
+<br><br>
+
+<a name="Data Token"> </a>
+<dt> <B>Data token</B>
+<dd> A "word" of data found in a <a href=#Data Record>data record</a>.
+     A token consists of any sequence of consecutive characters --
+     with the exception of the tab character (which is used to
+     separate successive tokens).  Another exception is the
+     isolated period character which indicates a
+     <a href="#Null Token">null token.
+     <A HREF="guide05.html#Data_Tokens_and_Null_Tokens"><b>Further information.</b>
+<br><br>
+
+<a name="E"> </a> <!-- --- EEEEEEEEEEEEEEEEEEEEEEEEEEEEEE --- -->
+
+<a name="Exclusive Interpretation"> </a>
+<dt> <B>Exclusive interpretation</B>
+<dd> Any record beginning with one or more asterisks
+     (<tt><b>*</b></tt>), where at
+     least one <a href=#Spine>spine</a> begins with two asterisks.
+<br><br>
+
+<a name="F"> </a> <!-- --- FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF --- -->
+<a name="G"> </a> <!-- --- GGGGGGGGGGGGGGGGGGGGGGGGGGGGGG --- -->
+
+<a name="Global Comment"> </a>
+<dt> <B>Global comment</B>
+<dd> Any record beginning with two exclamation marks (<tt><b>!!</b></tt>).
+<br><br>
+
+<a name="H"> </a> <!-- --- HHHHHHHHHHHHHHHHHHHHHHHHHHHHHH --- -->
+<a name="I"> </a> <!-- --- IIIIIIIIIIIIIIIIIIIIIIIIIIIIII --- -->
+
+<a name="Interpretation"> </a>
+<dt> <B>Interpretation</B>
+<dd> Either an <a href="#Exclusive Interpretation">exclusive</a> or 
+     <a href="#Tandem Interpretation">tandem interpretation</a>.  
+     Any record beginning with an asterisk (<tt><b>*</b></tt>).
+     <A HREF="guide05.html#Interpretation_Records"><b>Further information.</b>
+<br><br>
+
+<a name="J"> </a> <!-- --- JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ --- -->
+<a name="K"> </a> <!-- --- KKKKKKKKKKKKKKKKKKKKKKKKKKKKKK --- -->
+<a name="L"> </a> <!-- --- LLLLLLLLLLLLLLLLLLLLLLLLLLLLLL --- -->
+
+<a name="Local Comment"> </a>
+<dt> <B>Local comment</B>
+<dd> Any <a href=#Record>record</a> beginning with one and only one 
+     exclamation mark (<tt><b>!</b></tt>).
+     Every <a href=#Spine>spine</a> in that record must also begin 
+     with an exclamation mark.
+<br><br>
+
+<a name="M"> </a> <!-- --- MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM --- -->
+<a name="N"> </a> <!-- --- NNNNNNNNNNNNNNNNNNNNNNNNNNNNNN --- -->
+
+<a name="Null Comment"> </a>
+<dt> <B>Null comment</B>
+<dd> A <a href="#Comment">comment record</a> containing no commentary; 
+     only the appropriate exclamation mark(s) are present.
+<br><br>
+
+<a name="Null Data Record"> </a>
+<dt> <B>Null data record</B>
+<dd> A <a href="#Data Record">data record</a> consisting only of 
+     <a href="#Null Token">null tokens</a>.
+<br><br>
+
+<a name="Null Interpretation"> </a>
+<dt> <B>Null interpretation</B>
+<dd> An <a href=#Interpretation>interpretation</a> for a given spine or
+     spines consisting of just the
+     interpretation signifier (i.e., a single asterisk).
+<br><br>
+
+<a name="Null Token"> </a>
+<dt> <B>Null token</B>
+<dd> The period (<tt><b>.</b></tt>) either alone on a single record or 
+     separated from other characters by a tab.  Appears only in <a href="#Data
+     Record">data records</a>.
+     <A HREF="guide05.html#Data_Tokens_and_Null_Tokens"><b>Further information.</b>
+<br><br>
+
+<a name="O"> </a> <!-- --- OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO --- -->
+<a name="P"> </a> <!-- --- PPPPPPPPPPPPPPPPPPPPPPPPPPPPPP --- -->
+
+<a name="Path Indicator"> </a>
+<dt> <B>Path Indicator</B>
+<dd> One of five special <a href="#Tandem Interpretation">tandem 
+     interpretations</a>
+     <b><tt>*+</tt></b>,
+     <b><tt>*-</tt></b>,
+     <b><tt>*v</tt></b>,
+     <b><tt>*^</tt></b>, and
+     <b><tt>*x</tt></b>, found only in tandem interpretation records.
+     <A HREF="guide05.html#Spine_Paths"><b>Further information.</b>
+<br><br>
+
+<a name="Q"> </a> <!-- --- QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ --- -->
+<a name="R"> </a> <!-- --- RRRRRRRRRRRRRRRRRRRRRRRRRRRRRR --- -->
+
+<a name="Record"> </a>
+<dt> <B>Record</B>
+<dd> A line of text in a Humdrum file that ends with the new-line
+character.
+<br><br>
+
+<a name="Reference Record"> </a>
+<dt> <B>Reference Record</B>
+<dd> A type of <a href="#global comment"><b>global comment</b></A>
+     that is used to store formal bibliographic
+     information, such as composer's name, title of work, opus number,
+     etc.
+     Reference records begin with a three- or four-letter
+     special code used to indicate the type of information present.
+     For example, the code !!!AIN: is used to formally define
+     the instrumentation used in the work.
+     Over 100 reference codes are pre-defined in Humdrum.
+     <A HREF="guide02.html#Reference_Records"><b>Further information.</b>
+     <A HREF="guide.append1.html"><b>Complete listing.</b>
+<br><br>
+
+<a name="S"> </a> <!-- --- SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS --- -->
+
+<a name="Spine"> </a>
+<dt> <B>Spine</B>
+<dd> A column-like "path" of information -- including 
+     <a href="#Data Record">data records</a>,
+     <a href="#Local Comment">local comments</a>, and 
+     <a href=#Interpretation>interpretations</a>.
+<br><br>
+
+<a name="Spine Path Indicator"> </a>
+<dt> <B>Spine path indicator</B>
+<dd> Same as
+     <a href="#Path Indicator">path indicator</a>.
+<br><br>
+
+<a name="T"> </a> <!-- --- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT --- -->
+
+<a name="Tandem Interpretation"> </a>
+<dt> <B>Tandem interpretation</B>
+<dd> Any record beginning with a single asterisk (<tt><b>*</b></tt>) where 
+     none of the <a href=#Spine>spines</a> begin with two asterisks.
+<br><br>
+
+<a name="Terminator"> </a>
+<dt> <B>Terminator</B>
+<dd> One of five <a href="#Path Indicator">path indicators</a> 
+     used to indicate the end of a
+     <a href="#Spine">spine</a>.
+     Indicated by an asterisk followed by a minus sign
+     (<tt><b>*-</b></tt>).
+<br><br>
+
+<a name="U"> </a> <!-- --- UUUUUUUUUUUUUUUUUUUUUUUUUUUUUU --- -->
+<a name="V"> </a> <!-- --- VVVVVVVVVVVVVVVVVVVVVVVVVVVVVV --- -->
+<a name="W"> </a> <!-- --- WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW --- -->
+<a name="X"> </a> <!-- --- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX --- -->
+<a name="Y"> </a> <!-- --- YYYYYYYYYYYYYYYYYYYYYYYYYYYYYY --- -->
+<a name="Z"> </a> <!-- --- ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ --- -->
+
+
+</dl>
+
+<pre>
+
+
+
+
+</pre>
+
+<hr noshade>
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>
+
+

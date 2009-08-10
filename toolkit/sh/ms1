@@ -1,0 +1,131 @@
+###################################################################
+#                                 MS1
+#
+# Programmed by: David Huron        Date: December, 1996
+# Copyright (c) 1996 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+#
+#
+#       This shell program is used to invoke several ms-related
+#       scripts, including ms1a.awk, ms1b.awk, and ms1c.awk.
+#
+# These variables will be used in the shell script
+FILENAME=""
+OPTIONS=""
+HELP=""
+FLAG=""
+MUP_OUT=""
+STNDIN=""
+CHARSTRING=""
+SIZE=""
+STAFF=1
+INTERP=""
+#
+# Fill in the appropriate command usage here
+USAGE1="USAGE: ms1 -h                 (Help Screen)"
+USAGE2="       ms1 [-a charstring] [-efmz] [-i **interp1,...,**interp] [-p n] [-s n] [file ...]"
+# 
+while [ $# -gt 0 ]
+do
+	case "$1" in
+	-a) 	CHARSTRING="$2"
+		if [ "X$CHARSTRING" = X ]
+		then
+			echo "ms1: ERROR: Char,String argument must follow -a." 1>&2
+			echo "" 1>&2
+			echo "$USAGE1" 1>&2
+			echo "$USAGE2" 1>&2
+			exit
+		else
+		 	OPTIONS="$OPTIONS$1"
+		fi
+		shift 2
+		;;
+	-e)	OPTIONS="$OPTIONS$1"
+		shift
+		;;
+	-f)	OPTIONS="$OPTIONS$1"
+		shift
+		;;
+	-h) 	HELP="ON"
+		shift
+		;;
+	-i) 	OPTIONS="$OPTIONS$1"
+		INTERP="$2"
+		shift 2
+		;;
+	-m)	OPTIONS="$OPTIONS$1"
+		shift
+		;;
+	-p) 	OPTIONS="$OPTIONS$1"
+		SIZE="$2"
+		shift 2
+		;;
+	-s) 	OPTIONS="$OPTIONS$1"
+		STAFF="$2"
+		shift 2
+		;;
+	-z)	MUP_OUT="ON"
+		OPTIONS="$OPTIONS$1"
+		shift
+		;;
+	-*)
+		echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit
+		;;
+	*)	break
+		;;
+	esac
+done
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/ms1.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/ms1.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' may be used
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "ms1: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+
+if [ "X$MUP_OUT" = XON ]
+then
+	$AWK_VER -f $HUMDRUM/bin/ms1a.awk $FILENAME | context -e = | $AWK_VER -f $HUMDRUM/bin/ms1b.awk OPTIONS=$OPTIONS SIZE=$SIZE STAFF=$STAFF | $AWK_VER -f $HUMDRUM/bin/ms1c.awk
+else
+	$AWK_VER -f $HUMDRUM/bin/ms1a.awk $FILENAME | context -e = | $AWK_VER -f $HUMDRUM/bin/ms1b.awk OPTIONS=$OPTIONS SIZE=$SIZE STAFF=$STAFF | $AWK_VER -f $HUMDRUM/bin/ms1c.awk | mup -c 5
+fi

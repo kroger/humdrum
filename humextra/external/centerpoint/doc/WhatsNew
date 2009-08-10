@@ -1,0 +1,245 @@
+2.1.7 (2003-05-15)
+==================
+
+
+New Features:
+- DOM documents can now share a common name pool
+- The CXMLWriter class now uses the CXMLWriter2 class internally
+- Improved robustness of DOM event handling when the DOM document is
+  modified in an event handler
+- The VC++ project files include support for Unicode and DLL builds
+  
+  
+Bugfixes:
+- added a missing exception message
+- DOM: fixed a dangling pointer problem when a node is released and 
+  there are still references to its child nodes
+- SAX: fixed a bug in CAttributes::GetIndex
+
+
+2.1.3 (2002-09-27)
+==================
+
+
+Bugfixes:
+- added missing getElementByNameNS() and ~CDeclHandler() methods
+- changed assertion() macro to csl_assert(); added csl_check_ptr()
+  and csl_precondition() macros.
+
+
+2.1.2 (2002-04-05)
+==================
+
+
+Bugfixes:
+- fixed a bug in DOMBuilder constructor
+- fixed a compile error in SAX2Parser.cpp when compiling in UNICODE mode
+
+
+2.1.1 (2002-02-08)
+==================
+
+
+Bugfixes:
+- performance improvements in DOMBuilder
+- reduced DOM memory footprint
+- XMLWriter2 now writes empty elements the way they are meant to be written
+
+
+2.1.0 (2002-01-03)
+==================
+
+
+New Features:
+- added support for ISO 8859-1 encoding in DOM
+
+
+2.0.2 (2001-10-24)
+==================
+
+
+Bugfixes:
+- removed a problematic recursion in ContainerNode destructor.
+- fixed namespaces related bugs in XMLWriter2
+
+
+2.0.1 (2001-08-14)
+==================
+
+
+New Features:
+- performance improvements in XMLWriter2
+- fixed a bug with namespace support (default namespaces were
+  handled incorrectly) in XMLWriter2
+- fixed VC++ project file
+- updated samples
+
+
+2.0.0 (2001-08-11)
+==================
+
+
+New Features:
+- improved memory management
+  WARNING: The rules for duplicate()/release() have changed. See DOMObject.h.
+- improved performance & stability
+- fixed DOMBuilder namespace handling (broken in b1)
+
+
+2.0.0b1 (2001-06-06)
+====================
+
+
+New Features:
+- full SAX2 support
+- complete rewrite of DOM parser with support for DOM level 2
+- improved XML Writer
+
+
+1.7.3 (2001-02-02)
+==================
+
+
+New Features:
+- Greatly improved performance when parsing attribute lists
+  (re-implemented CAttributeListImp)
+
+
+1.7.2 (2001-01-15)
+==================
+
+
+Bugfixes:
+- fixed a bug in CXMLContainer::InsertChildBefore()
+
+
+1.7.1 (2000-11-22)
+==================
+
+
+Bugfixes:
+- CXMLWriter wrote bad character entity references for characters > ASCII 126.
+- Arguments to CSAXParserBase::HandleStartNamespace() and HandleEndNamespace() can be NULL.
+  This is now properly checked for before constructing an XMLString from them.
+
+
+1.7.0 (2000-10-06)
+==================
+
+
+New Features:
+- Classes CSAXDocumentParser and CSAXDOMParser for serializing
+  an XML document into SAX events.
+- Class CDOMWriter for serializing a DOM tree into an XML stream.
+- Improved CXMLWriter, now supports comments, CDATA sections,
+  pretty printing and better error checking.
+- New platforms supported
+- Updated to expat 1.2
+
+
+Bugfixes:
+- CXMLParserBase: expat's XML_Parse function is now correctly
+  called with isFinal==1 at the end of the input stream. This ensures
+  that malformed XML streams (i.e. missing end tags) result in
+  an exception.
+- Missing const qualifiers added to some methods.
+
+
+Misc:
+- Changed the names of the SAX parser's proprietary SAX2 properties to
+  "http://cpointc.com/xml/parser/DocumentBase" and
+  "http://cpointc.com/xml/parser/DefaultHandler"
+
+
+1.6.6 (2000-08-22)
+==================
+
+
+New Features:
+- Class and method names of the DOM interface are now
+  according to the W3C DOM specification.
+- added type DOMString, which is an alias for XMLString
+- Building without CenterPoint/Base is now the
+  default behaviour
+- moved some code out of DOMBuilder.cpp into new file
+  DOMImpl.cpp
+- Added sample code to build a DOM document from scratch
+  to DOMTest.cpp
+  
+
+Bugfixes:
+- Building a DOM document "from scratch" now works
+  (previously, due to a wrong precondition, it was not
+  possible to attach a document element to a document).
+
+
+1.6.5 (2000-08-09)
+==================
+
+
+New Features:
+- Standalone version compiles without CenterPoint/Base
+  (for open source release).
+  
+
+Bugfixes:
+- Fixed some inconsistencies with exception codes and exception
+  messages.
+  
+
+1.6.4 (2000-07-21)
+==================
+
+
+New Features:
+- Support for Unix (HP-UX and Linux)
+  
+
+1.6.3 (2000-06-19)
+==================
+
+
+New Features:
+- Replaced CXMLException::GetErrorText() with GetStaticErrorText()
+- Moved the implementation of CSAXException (and subclasses) and
+  CDOMException methods out of the header files.
+  
+
+1.6.2 (2000-06-07)
+==================
+
+
+New Features:
+- CXMLWriter::Characters() now writes hexadecimal character references
+  for characters < 32 or > 126.
+
+
+1.6.1 (2000-05-31)
+==================
+
+
+New Features:
+- Added documentation
+- CXMLWriter: new method DataElement()
+- CXMLDocument: element and attribute names are stored in a string
+  pool. This should reduce memory footprint of document trees built
+  from large XML files.
+  
+
+New Classes:
+- CXMLStringPool
+
+
+1.6.0 (2000-05-26)
+==================
+
+
+New Features:
+- XMLWriter: new methods StartFragment/EndFragment
+- improved exception handling
+
+
+--------------------------------------------------
+CenterPoint - Connective Software Engineering GmbH
+www.cpointc.com/XML                xml@cpointc.com
+--------------------------------------------------

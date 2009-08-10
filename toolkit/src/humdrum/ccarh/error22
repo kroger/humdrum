@@ -1,0 +1,7 @@
+!! "humdrum: ERROR 23: Exclusive interpretations do not match for"
+!! "designated join spines in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 23
+**ex1	**ex2
+*v	*v
+*-	*-

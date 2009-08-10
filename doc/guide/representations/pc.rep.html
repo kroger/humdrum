@@ -1,0 +1,318 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Pitch-Class</TITLE>
+<!-- Documentation for the **pc Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **pc Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,pitch-class,software,theory,analysis,systematic musicology,computer representation,**pc">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Pitch-Class</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**pc</b>  --  pitch-class representation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**pc</b>
+representation can be used to characterize
+<i>pitch-class</i>
+or
+<i>chroma</i>
+information.
+Two pitches are said to share the same pitch-class or chroma
+when they are octave equivalents.
+No distinction is made between enharmonic spellings.
+Hence C-sharp4 and D-flat7 belong to the same pitch-class.
+In traditional set theory, pitch-classes are identified
+by integer values between 0 and 11, where C=0, C-sharp/D-flat=1 ... B=11.
+</P>
+<P>
+Three types of data tokens are distinguished by <b>**pc</b>:
+pitch-class tokens, rest tokens, and barlines.
+</P>
+<P>
+Pitch-class tokens are encoded as either numeric,
+or mixed alphabetic and numeric values.
+Following traditional practice,
+<b>**pc</b>
+encodes pitch-classes using the integer values between 0 and 11,
+where C=0, C-sharp/D-flat=1 ... B=11.
+The
+<b>**pc</b>
+representation provides aliases for the integers 10 and 11
+(`A' and `B' respectively).
+(Encodings using purely numeric values are especially useful when the
+representation is to be processed numerically.
+Encodings using mixed alphanumeric values are often better
+suited to pattern matching and searching tasks.&#167)
+(&#167
+For example, where `10' and `11' are present in a stream of data,
+the regular expression to search for pitch-class `1'
+is <code><big>(^|[^1])1([^01]|$)</big></code>,
+whereas the corresponding regular expression for alphanumeric
+pitch-class data is simply <code><big>1</big></code>.)
+</P>
+<P>
+In addition to the basic pitch-class information,
+<b>**pc</b>
+also provides limited capabilities for representing articulation marks,
+ties, slurs, and phrasing.
+Slurs and phrase markings can be nested (slurs within slurs)
+and may also be elided.
+Nested markings mean that one slur or phrase is entirely subsumed
+within another slur or phrase.
+For example:  (   (   )    )
+means that a short slur has occurred within a longer slur.
+Elisions are overlaps, for example, where an existing phrase fails
+to end before a new phrase begins.
+In
+<b>**pc</b>
+the ampersand character is used to mark elided slurs or phrases.
+For example:  {   &{   }    &}
+means that a phrase begins, but does not end until after another
+phrase has begun.
+The ampersand is used to mark a matched pair of slur or phrases marks.
+Multiple levels of elisions are indicated by repeating the ampersand
+character.
+Both the beginning and ending must be marked by the same number of ampersands.
+For example, the following coding represents a series of elided phrases
+where three separate phrases begin before any of the phrases is terminated:
+{  &{  &&{  }  &&}  &}
+Notice that the second elided phrase terminates after third phrase has ended.
+</P>
+<P>
+Rests are represented by the single letter `r'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**pc</big></code>
+data should be given names with the distinguishing `.pc' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**pc</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>pitch-class values specified as integers</TD></TR>
+<TR><TD></TD><TD>     or as real values; measure numbers</TD></TR>
+<TR><TD>A</TD><TD>alias for pitch-class 10</TD></TR>
+<TR><TD>B</TD><TD>alias for pitch-class 11</TD></TR>
+<TR><TD>E</TD><TD>alias for pitch-class 11</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>I</TD><TD>generic articulation (unspecified articulation)</TD></TR>
+<TR><TD>O</TD><TD>generic ornament (unspecified ornament)</TD></TR>
+<TR><TD>T</TD><TD>alias for pitch-class 10</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>[</TD><TD>first note of a tie</TD></TR>
+<TR><TD>]</TD><TD>last note of a tie</TD></TR>
+<TR><TD>_</TD><TD>middle note(s) of a tie (underscore)</TD></TR>
+<TR><TD>(</TD><TD>slur start</TD></TR>
+<TR><TD>)</TD><TD>slur end</TD></TR>
+<TR><TD>{</TD><TD>phrase mark (start)</TD></TR>
+<TR><TD>}</TD><TD>phrase mark (end)</TD></TR>
+<TR><TD>;</TD><TD>pause sign</TD></TR>
+<TR><TD>'</TD><TD>staccato mark</TD></TR>
+<TR><TD>"</TD><TD>pizzicato mark</TD></TR>
+<TR><TD>`</TD><TD>attacka mark</TD></TR>
+<TR><TD>~</TD><TD>tenuto mark</TD></TR>
+<TR><TD>^</TD><TD>accent mark</TD></TR>
+<TR><TD>&</TD><TD>elision marker (for slurs or phases)</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**pc</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+The following sample document shows a pitch-class
+representation for the opening measures of Schoenberg's
+"Sommerm\o'u\(..'d" from
+<i>Three Songs,</i>
+opus 48.
+The left-most spine shows a mixed alphabetic and numeric encoding
+--  where pitch-class 11 is represented by the letter `B'.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! Arnold Schoenberg, "Sommermued" (1933)</TD></TR>
+<TR><TD>**pc</TD><TD>**pc</TD><TD>**pc</TD><TD>**text</TD></TR>
+<TR><TD>*Ipiano</TD><TD>*Ipiano</TD><TD>*Ivox</TD><TD>*Deutsch</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>*MM72</TD><TD>*MM72</TD><TD>*MM72</TD><TD>*MM72</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>r</TD><TD>r</TD><TD>r</TD><TD>.</TD></TR>
+<TR><TD>(7</TD><TD>(11</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>9^)</TD><TD>r</TD><TD>.</TD></TR>
+<TR><TD>8')</TD><TD>.</TD><TD>1</TD><TD>Wenn</TD></TR>
+<TR><TD>r</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>r</TD><TD>r</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>(9</TD><TD>(11</TD><TD>2</TD><TD>du</TD></TR>
+<TR><TD>.</TD><TD>7^)</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>8')</TD><TD>.</TD><TD>0</TD><TD>schon</TD></TR>
+<TR><TD>r</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>r</TD><TD>r</TD><TD>(0</TD><TD>glaubst ,</TD></TR>
+<TR><TD>9</TD><TD>(7</TD><TD>[6</TD><TD>|</TD></TR>
+<TR><TD>(9`</TD><TD>8</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>B)</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>r</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>r</TD><TD>7')</TD><TD>6])</TD><TD>|</TD></TR>
+<TR><TD>.</TD><TD>r</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>(9</TD><TD>3</TD><TD>es</TD></TR>
+<TR><TD>[B</TD><TD>.</TD><TD>3</TD><TD>ist</TD></TR>
+<TR><TD>.</TD><TD>8)</TD><TD>[5</TD><TD>e-</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</blockquote>
+</code></big>
+Note that pitch-class representations do not preserve pitch-height
+or contour information.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum commands accept <b>**pc</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD><A HREF="../commands/iv.html"><b>iv</b></A></TD><TD>determine interval vectors for vertical sonorities</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/nf.html"><b>nf</b></A></TD><TD>determine normal form for vertical sonorities</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/pc.html"><b>pc</b></A></TD><TD>convert between numerical and alphanumerical forms of <b>**pc</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/pcset.html"><b>pcset</b></A></TD><TD>convert to set-theoretic representations</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/pf.html"><b>pf</b></A></TD><TD>determine prime form for vertical sonorities</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/reihe.html"><b>reihe</b></A></TD><TD>output tone-row variant for a given prime row</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/vox.html"><b>vox</b></A></TD><TD>determine active and inactive voices in a Humdrum file</TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+</blockquote>
+The following Humdrum command produces <b>**pc</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD valign="top"><A HREF="../commands/pc.html"><b>pc</b></A></TD><TD>translates <b>**cents</b>, <b>**freq</b>, <b>**kern</b>, <b>**pc</b>, <b>**pitch</b>,
+<b>**Tonh</b>, <b>**semits</b>, <b>**solfg</b>, <b>**specC</b>, to <b>**pc</b></TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**pc</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+<TR><TD>timebase</TD><TD><code><big>*tb32</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**pc</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="cents.rep.html"><b>**cents</b></A>,
+<A HREF="freq.rep.html"><b>**freq</b></A>,
+<A HREF="iv.rep.html"><b>**iv</b></A>,
+<A HREF="../commands/iv.html"><b>iv</b></A>,
+<A HREF="kern.rep.html"><b>**kern</b></A>,
+<A HREF="nf.rep.html"><b>**nf</b></A>,
+<A HREF="../commands/nf.html"><b>nf</b></A>,
+<A HREF="../commands/pc.html"><b>pc</b></A>,
+<A HREF="pcset.rep.html"><b>**pcset</b></A>,
+<A HREF="../commands/pcset.html"><b>pcset</b></A>,
+<A HREF="pf.rep.html"><b>**pf</b></A>,
+<A HREF="../commands/pf.html"><b>pf</b></A>,
+<A HREF="pitch.rep.html"><b>**pitch</b></A>,
+<A HREF="../commands/reihe.html"><b>reihe</b></A>,
+<A HREF="semits.rep.html"><b>**semits</b></A>,
+<A HREF="solfg.rep.html"><b>**solfg</b></A>,
+<A HREF="specC.rep.html"><b>**specC</b></A>,
+<A HREF="Tonh.rep.html"><b>Tonh</b></A>
+</code></big>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>REFERENCES</H3></FONT>
+<blockquote>
+Forte, A.
+<i>The Structure of Atonal Music.</i>
+New Haven: Yale University Press, 1973.
+</P>
+<P>
+Rahn, J.
+<i>Basic Atonal Theory.</i>
+New York: Longman, 1980.
+</P>
+<P>
+Straus, J.
+<i>Introduction to Post-Tonal Theory.</i>
+Englewood Cliffs, N.J.: Prentice Hall, 1990.
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

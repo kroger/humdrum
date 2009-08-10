@@ -1,0 +1,22 @@
+
+COCHO     : Converts various pitch representations to cochlear coordinates.
+
+     This command translates frequency or critical-band-rate inputs
+     to cochlear coordinates (in millimeters from the apex).  This command
+     can also be used to change the precision for existing cocho data.
+
+Inputs processed:
+
+     **cbr,    **cocho,   **freq
+
+Syntax:
+
+     cocho [-p n] [-x] [inputfile ...]
+
+Options:
+
+     -p n   : set output precision to n decimal places
+     -x     : suppresses outputting of non-cocho data
+
+  Refer to reference manual for further details.
+

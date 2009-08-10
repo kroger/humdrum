@@ -1,0 +1,580 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 6</TITLE>
+<!-- Chapter 6 (Representing Music Using **kern) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:13:53 EST 2000">
+<meta name="description" content="Chapter 6 (Representing Music Using **kern) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<H1>Chapter6</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide05.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide07.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Representing Music Using <i>**kern</i>(II)</H1>
+</CENTER>
+<center><HR WIDTH=500></center>
+<P>
+In this chapter we return to consider several more advanced topics
+related to the <code><big>**kern</big></code> representation.
+</P>
+<H1>Tuplets</H1>
+<P>
+As we saw in
+<A HREF="guide02.html">Chapter 2,</A>
+<code><big>**kern</big></code> durations are represented
+using a reciprocal number notation.
+With the exception of the value zero, durations are represented by
+reciprocal numerical values corresponding to the American duration names:
+"1" for whole note, "8" for eighth, "32"
+for thirty-second, etc.
+The number zero (0) is reserved for the breve duration
+(a duration of twice the length of a whole note).
+</P>
+<P>
+Dotted durations are indicated by adding the period character (.)
+immediately following the numerical value, hence "<code><big>8.</big></code>"
+signifies a dotted eighth-note and "<code><big>2..</big></code>" signifies
+a doubly dotted half-note.
+Any number of augmentation dots may follow the duration integer.
+</P>
+<P>
+Triplet and other irregular durations are represented using the same
+reciprocal logic.  
+Consider, for example, the quarter-note triplet duration.
+Three quarter triplets occur in the time of four quarters
+or one whole duration.
+If we divide a whole duration ("<code><big>1</big></code>") into three equal parts,
+each part has a duration of one-third.
+The corresponding reciprocal integer for 1/3 is 3,
+hence <code><big>**kern</big></code> represents a quarter-note triplet as
+a "third-note", <code><big>3</big></code>.
+Similarly, eighth-note triplets are represented by the integer 6
+and sixteenth-note triplets are represented by the integer 12.
+Eighth-note quintuplets (5 in the time of 4) will be represented by the
+value 10 (a half duration divided by 5).
+</P>
+<P>
+In general, the way to determine the <code><big>**kern</big></code> equivalent of an
+arbitrary "tuplet" duration is to multiply the number of tuplets
+by the total duration which they occupy.
+If 7 notes of equal duration occupy the duration of a whole-note ("<code><big>1</big></code>"),
+then each septuplet is represented by the value 7 (i.e. 1 x 7).
+A more extreme example is 23 notes in the time of
+a doubly dotted quarter.
+The appropriate <code><big>**kern</big></code> duration can be found by multiplying
+4 by 23 (equals 92) and adding the appropriate augmentation dots.
+Thus "92.." is the correct <code><big>**kern</big></code> encoding for a note
+whose duration is 23 notes in the time of a doubly-dotted quarter.
+</P>
+<P>
+By way of illustration, example 6.1 shows an excerpt from
+Sigfrid Karg-Elert's
+<i>Caprices</i>
+Op. 107, No. 23 for solo flute.
+The work is in 3/4 meter.
+The last beat of the first measure has 9 notes in the time of a
+quarter duration.
+The reciprocal encoding is 9 x 4 or 36th notes.
+<br><br>
+<b>Example 6.1.</i>  Karg-Elert, <i>Caprices</i> Op. 107, No. 23.
+<blockquote>
+<img src="guide.figures/guide06.1a.gif">
+<img src="guide.figures/guide06.1b.gif">
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD>*clefG2</TD></TR>
+<TR><TD>*k[f#c#g#d#]</TD></TR>
+<TR><TD>*M3/4</TD></TR>
+<TR><TD>=</TD></TR>
+<TR><TD>(8f#</TD></TR>
+<TR><TD>8e#</TD></TR>
+<TR><TD>4en)</TD></TR>
+<TR><TD>(36d#</TD></TR>
+<TR><TD>36e#</TD></TR>
+<TR><TD>36c#</TD></TR>
+<TR><TD>36a</TD></TR>
+<TR><TD>36f##</TD></TR>
+<TR><TD>36g#</TD></TR>
+<TR><TD>36dd#</TD></TR>
+<TR><TD>36aa</TD></TR>
+<TR><TD>36cc#</TD></TR>
+<TR><TD>=</TD></TR>
+<TR><TD>8b~</TD></TR>
+<TR><TD>8a#~</TD></TR>
+<TR><TD>4an)</TD></TR>
+<TR><TD>(20gg#</TD></TR>
+<TR><TD>20ff#</TD></TR>
+<TR><TD>20dd#</TD></TR>
+<TR><TD>20cc#</TD></TR>
+<TR><TD>20a</TD></TR>
+<TR><TD>=</TD></TR>
+<TR><TD>8g#)</TD></TR>
+<TR><TD>(40b</TD></TR>
+<TR><TD>40a#</TD></TR>
+<TR><TD>40an</TD></TR>
+<TR><TD>40e</TD></TR>
+<TR><TD>40dd#</TD></TR>
+<TR><TD>8g#)</TD></TR>
+<TR><TD>(40b</TD></TR>
+<TR><TD>40a#</TD></TR>
+<TR><TD>40an</TD></TR>
+<TR><TD>40e</TD></TR>
+<TR><TD>40dd#</TD></TR>
+<TR><TD>20g#)</TD></TR>
+<TR><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</blockquote>
+</P>
+<P>
+Another set of tuplets appears in the last beat of the second measure.
+In this case, five notes are played in the time of a quarter,
+hence the reciprocal durations are 5 x 4 or 20th notes.
+</P>
+<P>
+In the last measure of the example, five notes are played in the
+time of an eighth-note: 5 x 8 or 40th notes.
+Note that the 40th notes are half the duration of the 20th notes
+in the previous measure.
+</P>
+<P>
+Other noteworthy observations regarding example 6.1:
+notice the tenuto markings (<code><big>~</big></code>) on the first two notes
+of the second measure.
+Also notice that the duration of the last note in the example is
+indeterminate.
+It could be a sixteenth note, a quintuplet sixteenth, or
+some other duration.
+</P>
+<A NAME="Grace_Notes,_Gruppetos_and_Appoggiaturas">
+<H2>Grace Notes, Gruppettos and Appoggiaturas</H2>
+</P>
+<P>
+The <code><big>**kern</big></code> representation also allows for the encoding
+of grace notes (acciaccaturas, non-canonical gruppettos,
+and appoggiaturas.
+</P>
+<P>
+Depending on the expected analytic application, one way to handle these
+notational devices is to encode the notes according to the manner in which
+they are typically performed.
+Alternatively, since the component notes of an expanded ornament are
+viewed as embellishments that hold potentially less analytic status,
+a special designation for these notes can be useful
+for certain types of studies.
+</P>
+<P>
+<i>Grace notes</i>
+(acciaccaturas) are visually rendered as miniature notes
+with a slash drawn through the stem.
+In the <code><big>**kern</big></code> representation these notes are treated
+as "durationless" notes and
+are designated by the lower-case letter "<code><big>q</big></code>".
+Hence, the token "<code><big>G#q</big></code>" denotes a G#3 grace note
+with an indeterminate duration.
+</P>
+<P>
+Non-canonical
+<i>gruppettos</i>
+are miniature (non-cue) notes (typically appearing in groups)
+whose stems do not contain a slash, and whose notated durations
+cause the total notated duration for the measure
+to exceed the prevailing meter.
+These gruppetto notes are encoded as notes retaining their notated
+durations, but all such notes are also designated by
+the upper-case letter "<code><big>Q</big></code>".
+Hence, a miniature sixteenth-note middle C would be encoded
+as "<code><big>16cQ</big></code>".
+</P>
+<P>
+When processed by various tools in the Humdrum Toolkit, these notes
+may be treated as equivalent to their notated durations.
+Alternatively, in some types of processing these notes may be discarded.
+For example, the Humdrum
+<A HREF="commands/timebase.html"><b>timebase</b></A>
+command (described in
+<A HREF="guide13.html">Chapter 13)</A>
+eliminates acciaccaturas and gruppetto notes.
+Note that data records containing acciaccaturas or gruppetto
+notes must
+<i>not</i>
+also include normal notes.
+</P>
+<P>
+In the case of
+<i>appoggiaturas,</i>
+<code><big>**kern</big></code> requires that they be encoded as performed.
+An appropriate duration is assigned to the appoggiatura
+according to common performance practice.
+The duration of the subsequent note is reduced by a corresponding amount.
+The status of the two notes forming the appoggiatura is nevertheless marked.
+The appoggiatura note itself is designated by the upper-case
+letter "<code><big>P</big></code>",
+whereas the subsequent note (whose notated duration has been shortened)
+is designated by the lower-case letter "<code><big>p</big></code>".
+</P>
+<A NAME="Multiple_Stops">
+<H2>Multiple Stops</H2>
+</P>
+<P>
+In the <code><big>**kern</big></code> representation, spines typically represent
+individual musical parts or voices.
+Occasionally, a nominally single "part" contains more
+than one concurrent note.
+A good example of such a situation occurs
+when a violin plays a double stop.
+</P>
+<P>
+The <code><big>**kern</big></code> representation provides three different ways of representing
+such situations: (1) multiple stops, (2) spine splitting and rejoining,
+and (3) introduction and retiring of a momentary "part".
+Each of these representation methods captures a different way
+of interpreting the music.
+The best representation will depend on the editorial or processing goal.
+</P>
+<P>
+First we will consider the generic Humdrum
+<i>subtoken.</i>
+A data token becomes a multiple stop when two or more subtokens
+are present, separated by single spaces.
+By way of illustration, the following <code><big>**kern</big></code> data represents a
+scale played in ascending thirds:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD>4c 4e</TD></TR>
+<TR><TD>8d 8f</TD></TR>
+<TR><TD>8e 8g</TD></TR>
+<TR><TD>8f 8a</TD></TR>
+<TR><TD>8g 8b</TD></TR>
+<TR><TD>8a 8cc</TD></TR>
+<TR><TD>8b 8dd</TD></TR>
+<TR><TD>4cc 4ee</TD></TR>
+<TR><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+An important restriction for multiple stops in the <code><big>**kern</big></code>
+representation is that they must encode notes of the same duration.
+In the above example, the left and right components of the multiple
+stop always share the same duration.
+(Note that this is a restriction of multiple stops in the <code><big>**kern</big></code>
+representation only, and does not necessarily apply to other
+Humdrum representations.)
+</P>
+<P>
+Notice that multiple stops are represented with a single spine (that is,
+there are no tabs present).
+</P>
+<P>
+Multiple stops may occur at any point in a <code><big>**kern</big></code> spine.
+For example, the following <code><big>**kern</big></code> data represents a scale
+that begins and ends with chords:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD>4c 4e 4g</TD></TR>
+<TR><TD>8d</TD></TR>
+<TR><TD>8e</TD></TR>
+<TR><TD>8f</TD></TR>
+<TR><TD>8g</TD></TR>
+<TR><TD>8a</TD></TR>
+<TR><TD>8b</TD></TR>
+<TR><TD>4cc 4ee 4gg 4ccc</TD></TR>
+<TR><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+The first chord has been encoded as a triple stop, whereas the
+last chord has been encoded as a quadruple stop.
+Notice once again that all of the notes within a multiple stop
+must have the same duration.
+If the durations of the concurrent notes differ,
+then one must use Humdrum spine path indicators (see below).
+</P>
+<P>
+Example 6.2 illustrates a musical context where multiple stops may
+be appropriate.
+The sample passage is from a keyboard work by Telemann.
+The work is almost entirely in two parts with only occasional chords.
+Since the chords always contain notes of equal duration,
+they can be encoded as double stops within a single part.
+</P>
+<P>
+<b>Example 6.2.</i>  Telemann, <i>Kleine Fantasien f&#252r Klavier</i> No. 7.
+<blockquote>
+<img src="guide.figures/guide06.2.gif">
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD></TR>
+<TR><TD>*clefF4</TD><TD>*clefG2</TD></TR>
+<TR><TD>*k[f#c#g#]</TD><TD>*k[f#c#g#]</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>!! Allegro</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>2r</TD><TD>12b</TD></TR>
+<TR><TD><code><big>.</TD><TD>12e</TD></TR>
+<TR><TD><code><big>.</TD><TD>12b</TD></TR>
+<TR><TD><code><big>.</TD><TD>12b</TD></TR>
+<TR><TD><code><big>.</TD><TD>12e</TD></TR>
+<TR><TD><code><big>.</TD><TD>12b</TD></TR>
+<TR><TD>4E 4G#</TD><TD>4b</TD></TR>
+<TR><TD>4AA 4A</TD><TD>4cc#</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>12C#</TD><TD>12ee</TD></TR>
+<TR><TD>12E</TD><TD>12cc#</TD></TR>
+<TR><TD>12A</TD><TD>12a</TD></TR>
+<TR><TD>12D</TD><TD>12ff#</TD></TR>
+<TR><TD>12F#</TD><TD>12dd</TD></TR>
+<TR><TD>12A</TD><TD>12a</TD></TR>
+<TR><TD>12C#</TD><TD>12ee</TD></TR>
+<TR><TD>12E</TD><TD>12cc#</TD></TR>
+<TR><TD>12A</TD><TD>12a</TD></TR>
+<TR><TD>12D</TD><TD>12ff#</TD></TR>
+<TR><TD>12F#</TD><TD>12dd</TD></TR>
+<TR><TD>12A</TD><TD>12a</TD></TR>
+<TR><TD>=4</TD><TD>=4</TD></TR>
+<TR><TD>6C#</TD><TD>12ee</TD></TR>
+<TR><TD><code><big>.</TD><TD>12dd</TD></TR>
+<TR><TD>12A</TD><TD>12cc#</TD></TR>
+<TR><TD>6BB</TD><TD>12dd</TD></TR>
+<TR><TD><code><big>.</TD><TD>12cc#</TD></TR>
+<TR><TD>12G#</TD><TD>12b</TD></TR>
+<TR><TD>4AA</TD><TD>12cc#</TD></TR>
+<TR><TD><code><big>.</TD><TD>12b</TD></TR>
+<TR><TD><code><big>.</TD><TD>12cc#</TD></TR>
+<TR><TD>6C#</TD><TD>12a</TD></TR>
+<TR><TD><code><big>.</TD><TD>12cc#</TD></TR>
+<TR><TD>12E</TD><TD>12b</TD></TR>
+<TR><TD>=5</TD><TD>=5</TD></TR>
+<TR><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</blockquote>
+</P>
+<P>
+When encoding multiple stops in the <code><big>**kern</big></code> representation,
+some note attributes should be encoded for each note
+in the multiple stop, whereas other markings should be encoded
+only once for the entire multiple stop.
+Note-related attributes such as articulation marks,
+stem directions, and ties should be encoded for each note in the multiple stop.
+By contrast, phrase marks, slurs, and beamings should be encoded
+once for the entire multiple stop.
+Example 6.3 provides a contrived example that illustrates these
+conventions.
+Notice that the first double stop encodes a single open phrase (i.e. `<code><big>{</big></code>')
+and the last double stop encodes a single close phrase (`<code><big>}</big></code>').
+Similarly, the slur in the middle of the phrase has been encoded
+once.
+However, the staccato markings have been encoded for both notes
+in each of the double stops.
+Similarly, separate ties have been encoded for both notes in
+the double stop.
+<br><br>
+<b>Example 6.3.</b>  Attribute encoding for <code><big>**kern</code></big> multiple stops.
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD>{4c 4e</TD></TR>
+<TR><TD>8dL 8f</TD></TR>
+<TR><TD>8eJ 8g</TD></TR>
+<TR><TD>(8f' 8a'</TD></TR>
+<TR><TD>8g' 8b')</TD></TR>
+<TR><TD>8.a 8.ccL</TD></TR>
+<TR><TD>16b 16ddk</TD></TR>
+<TR><TD>[4cc [4ee</TD></TR>
+<TR><TD>4cc] 4ee]}</TD></TR>
+<TR><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+<A NAME="Further_Examples">
+<H2>Further Examples</H2>
+</P>
+<P>
+Example 6.4 shows an excerpt from a Chopin <i>Etude</i>
+that illustrates a number of subtle features
+in the <code><big>**kern</big></code> representation.
+</P>
+<P>
+The opening measure consists solely of gruppetto notes;
+each has been designated by the upper-case letter `Q'.
+The double-barline has been indicated with two thin lines.
+Two tandem interpretations encode the meter signature (<code><big>*M3/4</big></code>)
+and the tempo (<code><big>*MM66</big></code>).
+Note that metronome markings using the <code><big>*MM</big></code> interpretation
+are always given in quarter-durations per minute.
+If the metronome marking had been given as half-note equals 48,
+then the tempo interpretation would be given as <code><big>*MM96</big></code> --
+i.e. quarter-note equals 96 beats per minute.
+</P>
+<P>
+Two grace-notes are evident in the passage.
+The first occurs just after the double-bar,
+and the second occurs three measures later.
+These notes have been encoded with duration values,
+but are designated by the lower-case letter `<code><big>q</big></code>'.
+Notice that grace-notes are always treated as "durationless"
+notes.
+Grace notes must always be encoded on a separate data record.
+Concurrent grace notes can be encoded on the same data record,
+but grace notes must never share the same data record with a
+regular note.
+Another peculiarity of grace notes is that they are always
+assumed to be slurred to the ensuing note (if there is a subsequent note).
+Thus slurs should not be encoded as part of the grace note.
+</P>
+<P>
+The grace-note E-natural coincides with the end of the first phrase
+and the beginning of the second phrase.
+The phrases are said to be "elided" (overlapping).
+Since <code><big>**kern</big></code> phrases are represented by open and close braces,
+the ampersand character is used to indicate elisions.
+</P>
+<P>
+Notice that the `inner' accompaniment chords have been encoded as
+double stops.
+This is possible because the notes in these double stops are all
+the same duration.
+</P>
+<P>
+Finally, notice how the triplet eighth-notes (encoded as duration `12')
+have been interleaved with the concurrent eighth-note figures
+so that the onsets are ordered in the correct temporal sequence.
+<br><br>
+<b>Example 6.4.</i>  Chopin, <i>Etude</i> Op. 27, No. 7.
+
+<blockquote>
+<blockquote><TABLE>
+<TR><TD><code><big>!! Lento</TD></TR>
+<TR><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD></TR>
+<TR><TD>*staff2</TD><TD>*staff1</TD><TD>*staff1</TD></TR>
+<TR><TD>*clefF4</TD><TD>*clefG2</TD><TD>*clefG2</TD></TR>
+<TR><TD>{4GG#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>4.D#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>8C#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>8C#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>8BB#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>4.AQ</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>8G#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16F##Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16G#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16AQ</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16G#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16BnQ</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16AQ</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16EQ</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16E#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16F#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16E#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16G#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16F#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16AQ</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16G#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16C#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16D#Q</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=||</TD><TD>=||</TD><TD>=||</TD></TR>
+<TR><TD>*MM66</TD><TD>*MM66</TD><TD>*MM66</TD></TR>
+<TR><TD>*M3/4</TD><TD>*M3/4</TD><TD>*M3/4</TD></TR>
+<TR><TD>&{(Enq}</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>2e)</TD><TD>8r</TD><TD>2.r</TD></TR>
+<TR><TD><code><big>.</TD><TD>8g# 8cc#</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>8g# 8cc#</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>8g# 8cc#</TD><TD>.</TD></TR>
+<TR><TD>8.d#</TD><TD>8g# 8cc#</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>8g# 8cc#</TD><TD>.</TD></TR>
+<TR><TD>16c#</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>4..cc#</TD><TD>8e 8a</TD><TD>{2ee</TD></TR>
+<TR><TD><code><big>.</TD><TD>8e 8a</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>8e 8a</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>8e 8a</TD><TD>.</TD></TR>
+<TR><TD>32d#</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>32c#</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>8e 8a</TD><TD>8.dd#</TD></TR>
+<TR><TD><code><big>.</TD><TD>8e 8a</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>16cc#</TD></TR>
+<TR><TD>=4</TD><TD>=4</TD><TD>=4</TD></TR>
+<TR><TD>[4A</TD><TD>8d# 8f#</TD><TD>4cc#</TD></TR>
+<TR><TD><code><big>.</TD><TD>8d# 8f#</TD><TD>.</TD></TR>
+<TR><TD>16A]</TD><TD>8d# 8f#</TD><TD>4b#</TD></TR>
+<TR><TD>16G#</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16F##</TD><TD>8d# 8f#</TD><TD>.</TD></TR>
+<TR><TD>16G#</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16Bn</TD><TD>8d# 8f#</TD><TD>4cc#</TD></TR>
+<TR><TD>16A</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16F#</TD><TD>8d# 8f#</TD><TD>.</TD></TR>
+<TR><TD>16D#</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=5</TD><TD>=5</TD><TD>=5</TD></TR>
+<TR><TD>4BB#}</TD><TD>8d# 8f#</TD><TD>4dd#</TD></TR>
+<TR><TD><code><big>.</TD><TD>8d# 8f#</TD><TD>.</TD></TR>
+<TR><TD>8r</TD><TD>8d# 8f#</TD><TD>4..g#}</TD></TR>
+<TR><TD>{16FF##^</TD><TD>8d# 8f#</TD><TD>.</TD></TR>
+<TR><TD>16GG#</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>BBnq</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16AA</TD><TD>8B# 8f#</TD><TD>.</TD></TR>
+<TR><TD>16GG#</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16C#</TD><TD>8B# 8f#</TD><TD>.</TD></TR>
+<TR><TD>16D#</TD><TD>.</TD><TD>{16g#</TD></TR>
+<TR><TD>=6</TD><TD>=6</TD><TD>=6</TD></TR>
+<TR><TD>4E</TD><TD>8r</TD><TD>4g#</TD></TR>
+<TR><TD><code><big>.</TD><TD>8c#</TD><TD>.</TD></TR>
+<TR><TD>4CC#}</TD><TD>8c# 8e</TD><TD>4cc#</TD></TR>
+<TR><TD><code><big>.</TD><TD>8c# 8e</TD><TD>.</TD></TR>
+<TR><TD>(8.G#</TD><TD>8c# 8e</TD><TD>4bn</TD></TR>
+<TR><TD><code><big>.</TD><TD>8c# 8e</TD><TD>.</TD></TR>
+<TR><TD>16.G#</TD></TR>
+<TR><TD>=7</TD><TD>=7</TD><TD>=7</TD></TR>
+<TR><TD>4G#)</TD><TD>8c# 8e</TD><TD>4b</TD></TR>
+<TR><TD><code><big>.</TD><TD>8c# 8e</TD><TD>.</TD></TR>
+<TR><TD>(12FF#</TD><TD>8c# 8e</TD><TD>4a</TD></TR>
+<TR><TD>12C#</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>8c# 8e</TD><TD>.</TD></TR>
+<TR><TD>12F#</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>12G#</TD><TD>8c# 8e</TD><TD>4g#</TD></TR>
+<TR><TD>12B</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>8c# 8e</TD><TD>.</TD></TR>
+<TR><TD>12A</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=8</TD><TD>=8</TD><TD>=8</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</blockquote>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+This chapter completes our survey of the <code><big>**kern</big></code>
+representation.
+We have noted an number of subtleties related to encoding
+tuplets, multiple stops, gruppettos, acciaccaturas,
+elided phrases, and spine path changes.
+</P>
+<P>
+A more complete description of the
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+representation may be found in the
+<i>Humdrum Reference Manual.</i>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide07.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide05.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

@@ -1,0 +1,258 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Embellishment Tones</TITLE>
+<!-- Documentation for the **embel Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **embel Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,embellishments,unessential notes,non-harmonic tones,software,theory,analysis,systematic musicology,computer representation,**embel">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Embellishment Tones</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**embel</b>  --  representation for embellishment tones
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**embel</b>
+representation is used to represent the harmonic status of individual
+pitches in a passage of Western tonal music.
+There are several different ways of defining and classifying embellishment
+tones.
+The
+<b>**embel</b>
+representation categorizes embellishment tones
+according to the following criteria:
+<ul>
+<li>
+whether or not the tone belongs to a given chord
+<li>
+whether or not the tone appears in a metrically accented position
+<li>
+whether or not the tone is approached by diatonic step
+<li>
+whether or not the tone is resolved or left by diatonic step.
+</ul>
+</P>
+<P>
+Although variations in nomenclature exist,
+music scholars have identified and defined
+many types of embellishment tones including:
+passing tones, neighbour tones, appoggiaturas, escape tones, anticipations,
+retardations, and suspensions.
+In addition to these non-chordal embellishment tones, there are
+also chordal embellishment tones, such as repetitions, and arpeggiations.
+The following table characterizes each of the various types of embellishment
+tones according to the criteria outlined above.
+</P>
+<P>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD><b>Non-Chordal Embellishments:</b></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD>Approach</TD><TD>Resolution</TD><TD>Metric position</TD><TD></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>Accented passing tone</TD><TD>step</TD><TD>step (in same direction)</TD><TD>accented</TD></TR>
+<TR><TD>Unaccented passing tone</TD><TD>step</TD><TD>step (in same direction)</TD><TD>unaccented</TD></TR>
+<TR><TD>Upper neighbor tone</TD><TD>ascending step</TD><TD>step (in opposite direction)</TD><TD>unaccented</TD></TR>
+<TR><TD>Lower neighbor tone</TD><TD>descending step</TD><TD>step (in opposite direction)</TD><TD>unaccented</TD></TR>
+<TR><TD>Accented upper neighbor</TD><TD>ascending step</TD><TD>step (in opposite direction)</TD><TD>unaccented</TD></TR>
+<TR><TD>Accented lower neighbor</TD><TD>descending step</TD><TD>step (in opposite direction)</TD><TD>unaccented</TD></TR>
+<TR><TD>Anticipation</TD><TD>step or leap</TD><TD>same pitch</TD><TD>unaccented</TD></TR>
+<TR><TD>Suspension</TD><TD>same pitch</TD><TD>descending step</TD><TD>accented</TD></TR>
+<TR><TD>Retardation</TD><TD>same pitch</TD><TD>ascending step</TD><TD>accented</TD></TR>
+<TR><TD>Escape tone</TD><TD>step</TD><TD>leap</TD><TD>unaccented</TD></TR>
+<TR><TD>Appoggiatura</TD><TD>leap</TD><TD>step</TD><TD>accented</TD></TR>
+<TR><TD>Changing tone</TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD></TR>
+<TR><TD>Pedal tone</TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><b>Chordal Embellishments:</b></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>Repeated chordal tone</TD><TD>same pitch</TD><TD>&#164</TD><TD>&#164</TD></TR>
+<TR><TD>Arpeggio tone</TD><TD>leap</TD><TD>step or leap</TD><TD>&#164</TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+<CENTER>
+<i>Types of Chordal and Non-chordal Embellishments</i>
+</CENTER>
+</P>
+<P>
+When the harmony changes while a pitch is sustained, it is possible
+for a chordal tone to be transformed into a non-chordal embellishment,
+such as a suspension.
+Whenever a tone changes function as an embellishment,
+at the appropriate point it is indicated by placing the
+<b>**embel</b>
+data token in square brackets.
+The square brackets indicate that the note is already sounding
+(no new note-onset), but has changed function.
+</P>
+<P>
+Embellishment tokens may be modified by the presence of additional signifiers.
+The open brace `{' denotes the beginning of a phrase.
+The closed brace `}' denotes the end of a phrase.
+The semicolon `;' denotes a pause.
+</P>
+<P>
+Rest tokens are denoted by the lower-case letter `r'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**embel</big></code>
+data should be given names with the distinguishing `.emb' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table provides a complete list of signifiers defined
+in <b>**embel</b>:
+<blockquote>
+<TABLE>
+<TR><TD>aln</TD><TD>accented lower neighbor tone</TD></TR>
+<TR><TD>ant</TD><TD>anticipation</TD></TR>
+<TR><TD>app</TD><TD>appoggiatura</TD></TR>
+<TR><TD>apt</TD><TD>accented passing tone</TD></TR>
+<TR><TD>arp</TD><TD>arpeggio tone (chordal tone)</TD></TR>
+<TR><TD>arp7</TD><TD>arpeggio tone (7th added to the chord)</TD></TR>
+<TR><TD>aun</TD><TD>accented upper neighbor tone</TD></TR>
+<TR><TD>chg</TD><TD>changing tone</TD></TR>
+<TR><TD>cln</TD><TD>chromatic lower neighbor tone</TD></TR>
+<TR><TD>ct</TD><TD>chordal tone (i.e. not an embellishment)</TD></TR>
+<TR><TD>ct7</TD><TD>chordal tone (7th added to the chord)</TD></TR>
+<TR><TD>cun</TD><TD>chromatic upper neighbor tone</TD></TR>
+<TR><TD>cup</TD><TD>chromatic unaccented passing tone</TD></TR>
+<TR><TD>et</TD><TD>escape tone</TD></TR>
+<TR><TD>ln</TD><TD>lower neighbor tone</TD></TR>
+<TR><TD>ped</TD><TD>pedal</TD></TR>
+<TR><TD>rep</TD><TD>repeated tone</TD></TR>
+<TR><TD>ret</TD><TD>retardation</TD></TR>
+<TR><TD>23ret</TD><TD>2-3 retardation</TD></TR>
+<TR><TD>78ret</TD><TD>7-8 retardation</TD></TR>
+<TR><TD>sus</TD><TD>suspension</TD></TR>
+<TR><TD>43sus</TD><TD>4-3 suspension</TD></TR>
+<TR><TD>98sus</TD><TD>9-8 suspension</TD></TR>
+<TR><TD>76sus</TD><TD>7-6 suspension</TD></TR>
+<TR><TD>un</TD><TD>upper neighbor tone</TD></TR>
+<TR><TD>un7</TD><TD>upper neighbor tone (7th added to the chord)</TD></TR>
+<TR><TD>upt</TD><TD>unaccented passing tone</TD></TR>
+<TR><TD>upt7</TD><TD>unaccented passing tone (7th added to the chord)</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**embel</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**kern</TD><TD>**embel</TD><TD>**harm</TD></TR>
+<TR><TD>*C:</TD><TD>*C:</TD><TD>*C:</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>4g</TD><TD>ct</TD><TD>I</TD></TR>
+<TR><TD>4cc</TD><TD>ct</TD><TD>Ib</TD></TR>
+<TR><TD>8ff</TD><TD>app</TD><TD>Ic</TD></TR>
+<TR><TD>[8ee</TD><TD>ct</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>2ee]</TD><TD>[sus]</TD><TD>V7</TD></TR>
+<TR><TD>4dd</TD><TD>ct</TD><TD>.</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>4cc</TD><TD>ct</TD><TD>I</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+Currently, no special-purpose Humdrum commands produce
+<b>**embel</b>
+as output, or process
+<b>**embel</b>
+encoded data as input.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**embel</b>:
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**embel</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="harm.rep.html"><b>**harm</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

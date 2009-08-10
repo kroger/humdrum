@@ -1,0 +1,123 @@
+//
+// Copyright 1998-2000 by Craig Stuart Sapp, All Rights Reserved.
+// Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
+// Creation Date: Mon Jun  8 00:38:46 PDT 1998
+// Last Modified: Tue Jun 23 14:00:23 PDT 1998
+// Last Modified: Fri May  5 12:17:08 PDT 2000 (added kernToMidiNoteNumber())
+// Last Modified: Wed Nov 29 12:28:00 PST 2000 (added base40ToMidiNoteNumber())
+// Last Modified: Wed Jan  2 12:19:07 PST 2002 (added kotoToDuration)
+// Last Modified: Wed Dec  1 01:36:29 PST 2004 (added base40ToIntervalAbbr())
+// Last Modified: Sun Jun  4 21:04:50 PDT 2006 (added base40ToPerfViz())
+// Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
+// Filename:      ...sig/include/sigInfo/Convert.h
+// Web Address:   http://sig.sapp.org/include/sigInfo/Convert.h
+// Syntax:        C++ 
+//
+// Description:   This class contains static function that can be used
+//                to convert from one data representation to another.
+//
+
+
+#ifndef _CONVERT_H_INCLUDED
+#define _CONVERT_H_INCLUDED
+
+#include "HumdrumEnumerations.h"
+#include "ChordQuality.h"
+#include "SigCollection.h"
+
+
+class Convert {
+   public: 
+ 
+   // enumeration databases
+
+      static EnumerationEI        exint;
+      static EnumerationCQT       chordType;
+      static EnumerationCQI       chordInversion;
+      static EnumerationCQR       kernPitchClass;
+      static EnumerationMPC       musePitchClass;
+      static EnumerationInterval  intervalNames;
+
+   // conversions dealing with humdrum data
+
+
+   // conversions dealing with **kern data
+
+      static int       kernToMidiNoteNumber      (const char* aKernString);
+      static char*     durationToKernRhythm      (char* output, double input, 
+                                                   int timebase = 1);
+      static double    kernToDuration            (const char* aKernString);
+      static double    kernTimeSignatureTop      (const char* aKernString);
+      static double    kernTimeSignatureBottomToDuration   
+                                                 (const char* aKernString);
+      static int       kernToDiatonicPitch       (const char* buffer);
+      static char*     musePitchToKernPitch      (char* kernOutput, const
+                                                    char* museInput);
+      static char*     museClefToKernClef        (char* kernOutput, 
+                                                    int museInput);
+      static int       kernKeyToNumber           (const char* aKernString);
+      static const char* keyNumberToKern         (int number);
+
+   // conversions dealing with **qual data
+
+      static ChordQuality chordQualityStringToValue (const char* aString);
+      static int       chordQualityToBaseNote    (const ChordQuality& aQuality);
+      static void      chordQualityToNoteSet     (SigCollection<int>& noteSet, 
+                                                  const ChordQuality& aQuality);
+      static int       chordQualityToInversion   (const char* aQuality);
+      static int       chordQualityToRoot        (const char* aQuality);
+      static int       chordQualityToType        (const char* aQuality);
+      static void      noteSetToChordQuality     (ChordQuality& cq, 
+                                                  const SigCollection<int>& aSet);
+
+   // conversions dealing with base 40 system of notation
+
+      static char*     base40ToKern               (char* output, int aPitch);
+      static char*     base40ToKernTranspose      (char* output, int transpose,
+                                                     int keysignature);
+      static int       base40ToMidiNoteNumber     (int base40value);
+      static int       base40ToAccidental         (int base40value);
+      static int       base40IntervalToLineOfFifths(int base40interval);
+      static int       kernToBase40               (const char* kernfield);
+      static int       kernToBase40Class          (const char* kernfield);
+      static int       kernNoteToBase40           (const char* name);
+      static SigCollection<int> keyToScaleDegrees (int aKey, int aMode);
+      static int       museToBase40               (const char* pitchString);
+      static int       base40ToScoreVPos          (int pitch, int clef);
+      static int       base40ToDiatonic           (int pitch);
+      static char*     base40ToIntervalAbbr       (char* output, 
+                                                   int base40value);
+      static char*     base40ToIntervalAbbr2      (char* output, 
+                                                   int base40value);
+      static char*     base40ToPerfViz            (char* output, 
+                                                   int base40value);
+
+   // conversions dealing with MIDI base-12 system 
+   
+      static char*     base12ToKern               (char* output, int aPitch);
+      static int       base12ToBase40             (int aPitch);
+
+   // conversions from frequency in hertz to MIDI note number
+      static int       freq2midi                  (double freq, 
+                                                   double a440 = 440.0);
+
+   // conversions dealing with **koto data
+      static double    kotoToDuration             (const char* aKotoString);
+
+   protected:
+
+      static int     calculateInversion         (int aType, int bassNote, 
+                                                    int root);
+      static int     checkChord                 (const SigCollection<int>& aSet);
+      static int     intcompare                 (const void* a, const void* b);
+      static void    rotatechord                (SigCollection<int>& aChord);
+
+
+};
+
+
+#endif /* _CONVERT_H_INCLUDED */
+
+
+
+// md5sum: 77d7b4adfff9e35c6cbd857dfa03ad7a Convert.h [20050403]

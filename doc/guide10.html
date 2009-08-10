@@ -1,0 +1,899 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 10</TITLE>
+<!-- Chapter 10 (Musical Uses of Regular Expressions) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:14:19 EST 2000">
+<meta name="description" content="Chapter 10 (Musical Uses of Regular Expressions) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<H1>Chapter10</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide09.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide11.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Musical Uses of Regular Expressions</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+Now that you have a better understanding of
+regular expressions, let's apply them.
+This chapter provides many examples of
+how regular expressions may be used to define musically useful patterns.
+In subsequent chapters, we'll make frequent use of regular expressions.
+</P>
+<A NAME="The_grep_Command_(Again)">
+<H2>The <i>grep</i> Command (Again)</H2>
+</P>
+<P>
+Although regular expressions are used in a number of Humdrum commands,
+they are most frequently used in conjunction with the
+<b>grep</b>
+command encountered in
+<A HREF="guide03.html">Chapter 3.</A>
+<b>grep</b>
+is a popular software tool that is available from a number of
+manufacturers and sources.
+Many versions of
+<b>grep</b>
+differ in the options provided.
+For example, the version of
+<b>grep</b>
+distributed by the GNU Software Foundation provides
+no fewer than 19 options.
+Some of the most common options for
+<b>grep</b>
+are identified in Table 10.1.
+<br><br>
+<b>Table 10.1</b>
+<blockquote><TABLE>
+<TR><TD>-c</TD><TD>count the number of lines matching the regular expression</TD></TR>
+<TR><TD>-f <i>file</i></TD><TD>search for patterns that are specified in <i>file</i></TD></TR>
+<TR><TD>-i</TD><TD>ignore differences of upper- and lower-case</TD></TR>
+<TR><TD>-l</TD><TD>just list the names of files containing a matching line</TD></TR>
+<TR><TD>-n</TD><TD>prefix each output line with its line number</TD></TR>
+<TR><TD>-h</TD><TD>suppress file-name prefixes (headers) in output when searching more than one file</TD></TR>
+<TR><TD>-v</TD><TD>display all lines <i>not</i> matching the regular expression</TD></TR>
+<TR><TD>-L</TD><TD>list names of files <i>not</i> containing the regular expression</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Common options for the <b>grep</b> command.</i>
+</CENTER>
+<P>
+Many of the predefined Humdrum representations make use of the
+"common system" for representing barlines.
+The following command counts the number of barlines in the
+file <code><big>czech37.krn</big></code>.
+Note that the caret anchor (<code><big>^</big></code>) is used to avoid inadvertent matches
+of the equals sign that might appear in Humdrum comments or interpretations.
+</P>
+<P>
+<blockquote>
+<code><big>grep -c ^= czech37.krn</big></code>
+</blockquote>
+</P>
+<P>
+Recall that the dollar sign (<code><big>$</big></code>) can be used to anchor
+an expression to the end of the line.
+The following command determines whether numbered measure 9 is present in the
+file <code><big>france12.krn</big></code>;
+the dollar sign ensures that measure 9 is not
+mistaken for measure 90, 930, etc.
+</P>
+<P>
+<blockquote>
+<code><big>grep ^=9$ france12.krn</big></code>
+</blockquote>
+</P>
+<P>
+The asterisk means "zero or more" instances of the preceding
+expression.
+For example, the following regular expression will match any
+reference record or global comment in the file <code><big>clara29</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>grep '^!!!*' clara29</big></code>
+</blockquote>
+</P>
+<P>
+Suppose we want to list all of the global comments for all files
+in the current directory:
+</P>
+<P>
+<blockquote>
+<code><big>grep '^!!!*' *</big></code>
+</blockquote>
+</P>
+<P>
+Notice that the two asterisks serve different functions in the
+above command.
+The first asterisk means "zero or more instances" and is
+part of the regular expression passed to <b>grep</b>.
+The second asterisk means "all files in the current directory"
+and is expanded by the shell.
+The first asterisk is `protected' from the shell by the single quotes.
+Otherwise, the first asterisk might be expanded by the shell to a list
+of all files in the current directory.
+</P>
+<P>
+In regular expressions, the period character (<code><big>.</big></code>) matches any single
+character.
+For example, the expression `<code><big>A.B</big></code>' will match strings such as
+`<code><big>AXB</big></code>' and `<code><big>AAB</big></code>' etc.
+The following command identifies all eighth-notes containing
+at least one flat, and whose pitch lies within an octave of middle C.
+</P>
+<P>
+<blockquote>
+<code><big>grep 8.- *.krn</big></code>
+</blockquote>
+</P>
+<P>
+Frequently it is necessary to turn off the special
+meanings for metacharacters such as ^, $, and *.
+Recall that this can be done by inserting a backslash (<code><big>\</big></code>)
+immediately prior to the metacharacter.
+In the
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+representation the caret signifies an accent.
+In a monophonic input, we might count the number of notes
+that have a notated accent as follows:
+</P>
+<P>
+<blockquote>
+<code><big>grep -c '\^' danmark3.krn</big></code>
+</blockquote>
+</P>
+<A NAME="9.8_Meter_Works">
+<P>
+In the following command we have used the backslash to escape
+the special meaning of the asterisk.
+The
+<b>-l</b>
+option causes
+<b>grep</b>
+to output only the names of any files that contain a line matching
+the pattern.
+Hence, the following command identifies those files in the
+current directory that encode music in 9/8 meter:
+</P>
+<P>
+<blockquote>
+<code><big>grep -l '^\*M9/8' *</big></code>
+</blockquote>
+</P>
+<A NAME="3.8_or_9.8_Meter_Works">
+<P>
+Recall that square brackets can be used to indicate character classes
+where any of the characters in the class can be used to match the
+expression.
+The following command identifies those files in the current directory
+that encode music in either 3/8 or 9/8 meter:
+</P>
+<P>
+<blockquote>
+<code><big>grep -l '\*M[39]/8' *</big></code>
+</blockquote>
+</P>
+<A NAME="Trumpet_Works">
+<P>
+One of the most frequently used regular expressions consists of the
+period followed by the asterisk (<code><big>.*</big></code>).
+Recall that this expression will match
+<i>any</i>
+string including the null string (i.e. nothing at all).
+This expression commonly appears between two other character strings.
+For example, we can identify all files in the current directory whose
+instrumentation includes a trumpet:
+</P>
+<P>
+<blockquote>
+<code><big>grep -l '!!!AIN.*tromp' *</big></code>
+</blockquote>
+The <code><big>.*</big></code> expression is needed since we don't know what other
+instruments might be listed following <code><big>AIN</big></code> and before <code><big>tromp</big></code>.
+<A NAME="Trumpet_and_Cornet_Works">
+Instrumentation reference records require that instrument
+codes appear in alphabetical order.
+This makes it easier to conduct searches for combinations of instruments.
+For example, we can identify all scores in the current directory
+whose instrumentation includes both trumpet and cornet as follows:
+</P>
+<P>
+<blockquote>
+<code><big>grep -l '!!!AIN.*cornt.*tromp' *</big></code>
+</blockquote>
+</P>
+<A NAME="Drei_Koenige_Works">
+<P>
+There are many variants on the use of the <code><big>.*</big></code> expression.
+The following command identifies all files that contain
+a record having the word <code><big>Drei</big></code> followed by the word
+"<code><big>Koenige</big></code>".
+(Notice the use of the
+<b>-i</b>
+option in order to ignore the case of the letters.)
+</P>
+<P>
+<blockquote>
+<code><big>grep -li 'Drei.*Koenige' *</big></code>
+</blockquote>
+</P>
+<P>
+This command will match such strings as:
+<i>Die Heiligen Drei Koenige</i>,
+<i>Drei Koenige,</i>
+<i>Dreikoenigslied,</i>
+etc.
+</P>
+<A NAME="Ballads">
+<P>
+The `<code><big>!!!AGN</big></code>' reference record is
+used to encode genre-related keywords.
+The following command lists all files that are ballads.
+</P>
+<P>
+<blockquote>
+<code><big>grep -l '!!!AGN.*Ballad' *</big></code>
+</blockquote>
+</P>
+<A NAME="Amour_Titles">
+<P>
+List all files that have the word <code><big>Amour</big></code> in the title:
+</P>
+<P>
+<blockquote>
+<code><big>grep -li '!!!OLT.*Amour' *</big></code>
+</blockquote>
+</P>
+<A NAME="Dedications">
+<P>
+List any works that bear a dedication:
+</P>
+<P>
+<blockquote>
+<code><big>grep -l '!!!ODE:' *</big></code>
+</blockquote>
+</P>
+<A NAME="Irregular_meter_works">
+<P>
+List those works that are in irregular meters:
+</P>
+<P>
+<blockquote>
+<code><big>grep -l '!!!AMT.*irregular' *</big></code>
+</blockquote>
+</P>
+<P>
+The
+<b>-L</b>
+option for
+<b>grep</b>
+causes the output to contain a list of files
+<i>not</i>
+containing the regular expression.
+For example, we could identify those works that don't bear any dedication:
+</P>
+<P>
+<blockquote>
+<code><big>grep -L '!!!ODE:' *</big></code>
+</blockquote>
+</P>
+<A NAME="Not_Schumann_Works">
+<P>
+List those works
+<i>not</i>
+composed by Schumann:
+</P>
+<P>
+<blockquote>
+<code><big>grep -L '!!!COM: Schumann' *</big></code>
+</blockquote>
+</P>
+<A NAME="Works_without_double_bars">
+<P>
+Identify any works that don't contain any double barlines:
+</P>
+<P>
+<blockquote>
+<code><big>grep -L '^==' *</big></code>
+</blockquote>
+</P>
+<A NAME="Simple_Triple_Works">
+<P>
+How many works in the current directory are in simple-triple meter?
+</P>
+<P>
+<blockquote>
+<code><big>grep -c '!!!AMT.*simple.*triple' *</big></code>
+</blockquote>
+</P>
+<A NAME="Liebe_Tod_Titles">
+<P>
+When searching for more complex patterns it may be necessary
+to use
+<b>grep</b>
+more than once.
+Consider, for example, the problem of identifying works
+whose titles contain both the words
+<code><big>Liebe</big></code> and <code><big>Tod</big></code>.
+The first of the following commands will identify only those titles
+that contain <code><big>Liebe</big></code> followed by <code><big>Tod</big></code>,
+whereas the second command will identify only those titles that contain
+<code><big>Tod</big></code> followed by <code><big>Liebe</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>grep '!!!OTL.*Liebe.*Tod' *</big></code>
+<br>
+<code><big>grep '!!!OTL.*Tod.*Liebe' *</big></code>
+</blockquote>
+</P>
+<P>
+A better solution is to pipe the output between two
+<b>grep</b>
+commands.
+Recall that the vertical bar (`|') conveyes or "pipes" the output
+from one command to the input of a subsequent command.
+The following command passes all opus-title records
+(<code><big>OTL</code></big>) containing the word <code><big>Liebe</code></big> to a second <b>grep</b>,
+which passes only those records also containing the word <code><big>Tod</big></code>.
+Since both
+<b>grep</b>
+commands process the entire input line,
+it does not matter whether the word <code><big>Tod</big></code>
+precedes or follows the word <code><big>Liebe</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>grep '!!!OTL.*Liebe' * | grep 'Tod'</big></code>
+</blockquote>
+</P>
+<P>
+The
+<b>-v</b>
+option for
+<b>grep</b>
+causes a "reverse" or "negative" output.
+Instead of outputting all records that
+<i>match</i>
+the specified regular expression, the
+<b>-v</b>
+option causes only those records to be output that do
+<i>not</i>
+match the given regular expression.
+For example, the following command eliminates all comments
+from the file <code><big>polska24.krn</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>grep -v '^!' polska24.krn</big></code>
+</blockquote>
+</P>
+<P>
+Similarly, the following command eliminates all whole-note rests:
+</P>
+<P>
+<blockquote>
+<code><big>grep -v 1r *</big></code>
+</blockquote>
+</P>
+<A NAME="Cornet_but_not_Trumpet">
+<P>
+The
+<b>-v</b>
+option is especially convenient in pipelines.
+For example, the following command identifies all those files
+whose instrumentation includes a cornet but not a trumpet:
+</P>
+<P>
+<blockquote>
+<code><big>grep '!!!AIN.*cornt' * | grep -v 'tromp'</big></code>
+</blockquote>
+</P>
+<A NAME="Compound_Works_not_Quadruple">
+<P>
+The following command identifies those works in compound meters
+that are not also quadruple meters:
+</P>
+<P>
+<blockquote>
+<code><big>grep '!!!AMT.*compound' * | grep -v 'quadruple'</big></code>
+</blockquote>
+</P>
+<A NAME="Phrase_begins_not_rests">
+<P>
+Similarly, the following command identifies those notes that
+begin a phrase, but are not rests.
+</P>
+<P>
+<blockquote>
+<code><big>grep '^{' * | grep -v r</big></code>
+</blockquote>
+</P>
+<A NAME="German,_French,_Italian,_and_Neapolitan_Sixths">
+<H2>German, French, Italian, and Neapolitan Sixths</H2>
+</P>
+<P>
+In conjunction with the
+<A HREF="commands/solfa.html"><b>solfa</b></A>
+command,
+<b>grep</b>
+can be used to search for various types of special chords.
+Suppose, for example, that we wanted to identify occurrences of
+augmented sixth chords.
+An augmented sixth chord is characterized by an augmented sixth
+interval occurring between the lowered sixth scale-degree and
+the raised fourth scale-degree.
+In
+<A HREF="guide04.html">Chapter 4,</A>
+we saw that the
+<b>solfa</b>
+command represents pitches with respect to an encoded tonic pitch.
+In the
+<A HREF="representations/solfa.rep.html"><code><big>**solfa</big></code></A>
+representation, the lowered sixth and raised fourth
+degrees will be represented as <code><big>6-</big></code> and <code><big>4+</big></code> respectively.
+First we translate the input to the
+<code><big>**solfa</big></code>
+representation,
+and then we search for records matching the appropriate regular expression:
+</P>
+<P>
+<blockquote>
+<code><big>solfa input | grep '6-.*4+'</big></code>
+</blockquote>
+</P>
+<P>
+Notice that the expression `<code><big>6-.*4+</big></code>' presumes that
+the lowered sixth degree is lower in pitch than the raised fourth degree.
+For augmented sixth chords, this is a reasonable presumption.
+In the unlikely situation that the raised fourth degree is
+lower in pitch than the lowered sixth degree, we would need to also search
+for the expression `<code><big>4+.*6-</big></code>'.
+Alternatively, we could use two separate
+<b>grep</b>
+commands, eliminating the constraint of order:
+</P>
+<P>
+<blockquote>
+<code><big>solfa input | grep '6-' | grep '4+'</big></code>
+</blockquote>
+</P>
+<P>
+Augmented sixth chords can be further classified as either
+German, French, or Italian sixths.
+The German sixth contains the lowered mediant whereas the French sixth
+contains the supertonic pitch;
+the Italian sixth contains neither:
+</P>
+<P>
+<blockquote>
+<code><big>solfa input | grep '6-.*4+' | grep '3-'</big></code>		# German sixth
+<br>
+<code><big>solfa input | grep '6-.*4+' | grep '2'</big></code>		# French sixth
+<br>
+<code><big>solfa input | grep '6-.*4+' | grep -v '[23]'</big></code>	# Italian sixth
+</blockquote>
+</P>
+<P>
+A similar approach can be used to identify Neapolitan sixth chords.
+These chords are based on the lowered supertonic with the
+third of the chord (unaltered subdominant) in the bass.
+</P>
+<A NAME="Neapolitan_Sixth">
+<P>
+<blockquote>
+<code><big>solfa input | grep '4[^-+].*2-' | grep '6-'</big></code>	# Neapolitan sixth
+</blockquote>
+</P>
+<P>
+Depending on the key, Neapolitan chords are sometimes
+notated enharmonically as a raised tonic chord.
+Suppose we were looking for such enharmonically spelled Neapolitan chords:
+</P>
+<P>
+<blockquote>
+<code><big>solfa input | grep '3+.*1+' | grep '5+'</big></code>
+</blockquote>
+</P>
+<A NAME="Incomplete_Neapolitan_Sixth">
+<P>
+Occassionally, Neapolitan chords are missing the fifth of the chord
+(the lowered sixth degree of the scale).
+We might search for an example of such a chord:
+</P>
+<P>
+<blockquote>
+<code><big>solfa input | grep '2-' | grep '4' | grep -v '6-'</big></code>
+</blockquote>
+</P>
+<A NAME="AND-Searches_Using_the_xargs_Command">
+<H2>AND-Searches Using the <i>xargs</i> Command</H2>
+</P>
+<P>
+In some cases, we want to identify those files that match
+two entirely different patterns (in different records).
+Recall that the
+<b>-l</b>
+option causes
+<b>grep</b>
+to output the
+<i>filename</i>
+rather than the matching record.
+If we could pass along these file names to another
+<b>grep</b>
+command, we could search those same files for yet another pattern.
+</P>
+<A NAME="Liebe_phrase_counts">
+<P>
+The UNIX
+<b>xargs</b>
+command provides a useful way of transferring the output from one
+command to be used as final arguments
+for a subsequent command.
+For example, the following command takes each file whose opus title
+contains the word <code><big>Liebe</big></code> and counts the number of phrases.
+</P>
+<P>
+<blockquote>
+<code><big>grep -l '!!!OTL:.*Liebe' * | xargs grep -c '^{'</big></code>
+</blockquote>
+</P>
+<P>
+In this case the
+<b>grep -l</b>
+command outputs a list of names of files containing the string
+<code><big>Liebe</big></code> in an OTL reference record.
+The
+<b>xargs</b>
+command causes these filenames to be appended to the end of the following
+<b>grep</b>
+command.
+The
+<b>grep -c</b>
+command will thus be applied only to those files already identified by
+the previous
+<b>grep</b>
+as containing <code><big>Liebe</big></code> in the title.
+</P>
+<A NAME="Drinking_Songs_in_Triple_Meter">
+<P>
+A set of such pipelines can be used to answer more sophisticated
+questions.
+For example, are drinking songs more apt to be in triple meter?
+</P>
+<P>
+<blockquote>
+<code><big>grep -l '!!!AMT.*triple'  *   | xargs grep -l '!!!AGN.*Trinklied'</big></code>
+<br>
+<code><big>grep -l '!!!AMT.*duple'   *   | xargs grep -l '!!!AGN.*Trinklied'</big></code>
+<br>
+<code><big>grep -l '!!!AMT.*quadruple' * | xargs grep -l '!!!AGN.*Trinklied'</big></code>
+</blockquote>
+</P>
+<A NAME="Death_in_minor_keys">
+<P>
+Similarly, the following commands determine whether files whose
+titles contain the word
+<i>death</i>
+are more apt to be in minor keys:
+</P>
+<P>
+<blockquote>
+<code><big>grep -li '!!!OTL.*death' * | xargs grep -c '^\*[a-g][#-]*:'</big></code>
+<br>
+<code><big>grep -li '!!!OTL.*death' * | xargs grep -c '^\*[A-G][#-]*:'</big></code>
+</blockquote>
+</P>
+<A NAME="Africa_key_signatures">
+<P>
+Note that the
+<b>xargs</b>
+command can be used again and again to
+continue propagating file names as arguments to subsequent searches.
+For example, the following command outputs the key signatures
+for all works originating from Africa that are written
+in 3/4 meter:
+</P>
+<P>
+<blockquote>
+<code><big>grep -l '!!!ARE.*Africa' * | xargs grep -l '^\*M3/4' \
+<blockquote>
+| xargs grep '^\*k\['</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="17th_organ_in_6.8">
+<P>
+Similarly, the following command outputs the names of all files in
+the current directory that encode 17th century organ works containing
+passages in 6/8 meter:
+</P>
+<P>
+<blockquote>
+<code><big>grep -l '!!!ODT.*16[0-9][0-9]/' | xargs grep -l \
+<blockquote>
+ '!!!AIN.*organ' | xargs grep -l '\*M6/8'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="17th_organ_not_in_6.8">
+<P>
+Using the
+<b>-L</b>
+option allows us to form even more complex criteria by excluding
+certain works.
+For example, the following variation of the above command outputs the
+names of all files in the current directory that encode 17th century organ
+works that do not contain passages in 6/8 meter:
+</P>
+<P>
+<blockquote>
+<code><big>grep -l '!!!ODT.*16[0-9][0-9]/' | xargs grep -l \
+<blockquote>
+ '!!!AIN.*organ' | xargs grep -L '\*M6/8'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="OR-Searches_Using_the_grep_-f_Command">
+<H2>OR-Searches Using the <i>grep -f</i> Command</H2>
+</P>
+<P>
+In effect, the above pipelines provide logical <b>AND</b>
+structures:
+e.g. identify works composed in the 17th century AND written for organ AND
+containing a passage in 6/8 meter.
+The
+<b>-f</b>
+option for
+<b>grep</b>
+provides a way of creating logical <b>OR</b> searches.
+With the
+<b>-f</b>
+option, we specify a file containing the patterns being sought.
+For example, we might create a file called <code><big>criteria</big></code>
+containing the following three regular expressions:
+</P>
+<P>
+<blockquote>
+<code><big>!!!ODT.*16[0-9][0-9]/
+<br>
+!!!AIN.*organ
+<br>
+\*M6/8</big></code>
+</blockquote>
+</P>
+<A NAME="17thC_OR_organ_OR_6.8"
+<P>
+We would invoke
+<b>grep</b>
+as follows:
+</P>
+<P>
+<blockquote>
+<code><big>grep -l -f criteria *</big></code>
+</blockquote>
+</P>
+<P>
+The
+<b>-f</b>
+option tells
+<b>grep</b>
+to fetch the file <code><big>criteria</big></code> and use the records in this
+file as regular expressions.
+A match is made if any of the regular expressions is found.
+</P>
+<A NAME="D_major_triads">
+<P>
+The output would consist of a list of all files in the current directory
+that encode works composed in the 17th century OR written for organ OR
+in 6/8 meter.
+The
+<b>-f</b>
+option is more typically used to specify several variations of the
+same idea.
+For example, suppose we were searching for D major
+triads in
+<A HREF="representations/pitch.rep.html"><code><big>**pitch</big></code></A>
+data.
+We could use a file containing the following regular expressions:
+</P>
+<P>
+<blockquote>
+<code><big>[Dd].*[Ff]#.*[Aa]
+<br>
+[Dd].*[Aa].* [Ff]#
+<br>
+[Ff]#.*[Aa].*[Dd]
+<br>
+[Ff]#.*[Dd].*[Aa]
+<br>
+[Aa].*[Dd].*[Ff]#
+<br>
+[Aa].*[Ff]#.*[Dd]</big></code>
+</blockquote>
+</P>
+<P>
+Depending on the application,
+it may be easier to construct such pattern files than to use a
+lengthy pipeline.
+That is:
+</P>
+<P>
+<blockquote>
+<code><big>grep -f Dmajor *</big></code>
+</blockquote>
+</P>
+<P>
+may be less cumbersome than:
+</P>
+<P>
+<blockquote>
+<code><big>grep [Dd] * | grep [Ff]# | grep [Aa]</big></code>
+</blockquote>
+</P>
+<P>
+The
+<b>-f</b>
+option can be combined with
+<b>-L</b>.
+For example, suppose we wanted to identify all works in the current
+directory that are not in the keys of C major, G major, B-flat major
+or D minor.
+Our regular expression file would contain the following regular expressions:
+</P>
+<P>
+<blockquote>
+<code><big>^\*[CGd]:</big></code>
+<br>
+<code><big>^\*B-:</big></code>
+</blockquote>
+</P>
+<P>
+The corresponding command would be:
+</P>
+<P>
+<blockquote>
+<code><big>grep -L -f criteria *</big></code>
+</blockquote>
+</P>
+<A NAME="Whole_Tone_Sets">
+<P>
+Another way of thinking of the
+<b>-f</b>
+option is that it allows us to define equivalences.
+Consider, for example, the task of counting all of the notes in a
+<code><big>**kern</big></code> melody that belong to a particular whole-tone pitch set.
+Let's create two files, one called <code><big>whole1</big></code> and the
+other called <code><big>whole2</big></code>.
+The file <code><big>whole1</big></code> might contain the following regular expressions:
+</P>
+<P>
+<blockquote>
+<br>
+<code><big>[Cc]([^-#Cc]|$)
+<br>
+[Dd]([^-#Dd]|$)
+<br>
+[Ee]([^-#Ee]|$)
+<br>
+[Ff]#([^#]|$)
+<br>
+[Gg]-([^-]|$)
+<br>
+[Gg]#([^#]|$)
+<br>
+[Aa]-([^-]|$)
+<br>
+[Aa]#([^#]|$)
+<br>
+[Bb]-([^-]|$)</big></code>
+</blockquote>
+</P>
+<P>
+Notice that the regular expressions have been carefully defined.
+The first regular expression defines a pattern consisting of
+either an upper- or lower-case letter `C' followed either by
+a character that is neither a sharp (#) nor a flat (-) nor another letter `C',
+nor is followed by the end of the line ($).
+</P>
+<P>
+Recall that parenthesis grouping (...) is part of the
+<i>extended</i>
+regular expression syntax.
+Therefore, we should use the
+<b>egrep</b>
+rather than the
+<b>grep</b>
+command with the above expressions.
+We can count the number of notes in a monophonic <code><big>**kern</big></code>
+input that belong to this whole-tone set:
+</P>
+<P>
+<blockquote>
+<code><big>egrep -c -f whole1 debussy</big></code>
+</blockquote>
+</P>
+<P>
+If the file <code><big>whole2</big></code> contains regular expressions for the
+complementary pitch set, we could similarly count the number of
+pitches that belong to this alternative set:
+</P>
+<P>
+<blockquote>
+<code><big>egrep -c -f whole2 debussy</big></code>
+</blockquote>
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+The
+<b>grep</b>
+command is usually thought of as a way to find particular patterns
+in a file or input stream.
+However, the various options for
+<b>grep</b>
+(such as -v, -l, and -L) allow
+<b>grep</b>
+to be used for other purposes.
+It can be used to isolate data, to count occurrences of patterns,
+to eliminate unwanted lines, to identify files for processing,
+and to avoid files that contain certain information.
+</P>
+<P>
+We have seen how the
+<b>xargs</b>
+command can be used to carry out <b>AND</b>-searches where
+each work must conform to multiple criteria.
+We have also seen how the
+<b>-f</b>
+option for
+<b>grep</b>
+can be used to permit <b>OR</b>-searches where a work needs to
+conform only to one of a set of possible criteria.
+</P>
+<P>
+Although this chapter has focussed principally on the
+<b>grep</b>
+command, the ensuing chapters will show that regular expressions
+are used by a wide variety of commands.
+In
+<A HREF="guide33.html">Chapter 33,</A>
+many more powerful examples will be discussed in
+conjunction with the
+<b>find</b>
+command.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide11.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide09.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

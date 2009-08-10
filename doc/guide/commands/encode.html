@@ -1,0 +1,906 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- encode</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>encode</b>  -- interactive Humdrum encoding from MIDI input
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>encode</b> [<b>-r</b> <i>controlfile.rc</i>] [<i>editfile</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>encode</b>
+command provides an interactive editor for capturing Humdrum
+data from a MIDI input device.
+The operation of
+<b>encode</b>
+can be tailored by the user to generate a wide range of Humdrum
+representations -- including representations designed by the user.
+</P>
+<P>
+The
+<b>encode</b>
+command is limited to encoding information one spine at a time.
+A typical use of
+<b>encode</b>
+might be to encode individual musical "parts" or "voices"
+in a representation such as <code><big>**kern</big></code>;
+the user might then use the Humdrum
+<b>timebase</b>
+and
+<b>assemble</b>
+commands to construct a full score from the encoded parts.
+The user must have access to an appropriate MIDI controller connected
+via a Roland MPU-401 (or compatible) MIDI controller card.
+Currently,
+<b>encode</b>
+is available only for IBM PC or compatible hardware running under
+the DOS operating system.
+</P>
+<P>
+The
+<b>encode</b>
+command implements a full-screen interactive text editor
+--  similar to the
+<b>vi</b>
+text editor.
+When invoked, the screen is divided into three display regions: a
+<i>status window,</i>
+a
+<i>command window,</i>
+and a larger
+<i>text window.</i>
+The
+<i>status window</i>
+displays various pieces of information,
+including the name of the file being edited, the current size of the file
+(in bytes), the run-control (<code><big>.rc</big></code>) file used to configure the editor,
+the number of beats per measure, the output signifier assigned to each beat,
+the current metronome rate, and mode.
+The
+<i>command window</i>
+is used to construct and execute general-purpose
+commands.
+The
+<i>text window</i>
+is used to display and edit the encoded Humdrum text.
+</P>
+<P>
+The editor has four modes of operation:
+<i>edit mode,</i>
+<i>input mode,</i>
+<i>MIDI input mode,</i>
+and
+<i>command mode.</i>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EDIT MODE</H3></FONT>
+When
+<b>encode</b>
+is first invoked, the editor is placed in
+<i>edit mode.</i>
+If an edit-file has been specified in the command-line,
+then the beginning of any existing text is displayed in the text window.
+Edit mode allows the user to move to particular locations in the text
+and execute certain types of text manipulation instructions.
+Movement through the text can be achieved by either scrolling the
+display, or by relative cursor motions within the text window.
+The cursor position is indicated by a pulsing underscore character.
+</P>
+<P>
+Four scrolling commands are available.
+<b>Control-F</b> is used to scroll forward in the document by one page.
+<b>Control-B</b> is used to scroll backward by one page.
+<b>Control-D</b> is used to scroll down by half a page.
+<b>Control-U</b> is used to scroll up by half a page.
+The <b>page-down</b> and <b>page-up</b> keys can be used instead of CTRL-F
+and CTRL-B respectively.
+If any of these commands is preceded by a typed
+<i>number,</i>
+then the action is repeated
+<i>number</i>
+times.
+Hence <code><big>5<i><page-down></i></code></big> will cause the display to advance five pages.
+</P>
+<P>
+Movement to specific line numbers can be achieved using the
+upper-case `<b>G</b>' command preceded by the desired line number.
+If no line number is specified, the <b>G</b> command causes the cursor to
+be moved to the end of the file.
+</P>
+<P>
+Vertical motions of the cursor relative to the displayed text can be
+controlled by a variety of means.
+The up and down cursor-control keys move the cursor
+up one line or down one line respectively.
+Alternatively, the lower-case letters `<b>k</b>' and `<b>j</b>' may be used
+for up and down movements -- as in the
+<b>vi</b>
+text editor.
+If the cursor is at the bottom or top of the screen,
+cursor movement down or up a line (respectively) will cause the
+screen to scroll one line as needed.
+The carriage return or <b>ENTER</b> key will cause the cursor
+to move to the beginning of the next line.
+Once again, if any of these commands is preceded by a typed
+<i>number,</i>
+then the action is repeated
+<i>number</i>
+times.
+</P>
+<P>
+The upper-case letter `<b>H</b>' positions the cursor at the highest line
+displayed on the screen, whereas the upper-case letter `<b>L</b>' positions
+the cursor at the lowest line displayed on the current screen.
+Alternatively, the `<b>home</b>' and `<b>end</b>' keys can be used to move
+the cursor to the top and bottom respectively.
+The upper-case letter `<b>M</b>' positions the cursor in the middle
+of the current screen.
+In all of these commands, the cursor is positioned at the horizontal
+beginning of the appropriate line.
+</P>
+<P>
+Horizontal motions of the cursor within a line can be carried out using
+the left (<b><-</b>) and right (<b>-></b>) arrow keys.
+Alternatively, the lower-case `<b>h</b>' and `<b>l</b>' keys can be used
+as aliases for the left and right cursor motions -- as in the
+<b>vi</b>
+text editor.
+The <b>space</b> bar can also be used to move the cursor to the right.
+The dollar sign (<b>$</b>) causes the cursor to move to the end of the
+current line.
+The number zero (<b>0</b>) or the caret (<b>^</b>) causes the cursor to
+move to the beginning of the current line.
+</P>
+<P>
+Horizontal cursor movements may also be defined by context.
+Where multiple data tokens are encoded on a single line,
+the `<b>w</b>' command causes the cursor to move forward word-by-word,
+whereas the `<b>b</b>' command causes backward movement word-by-word.
+A
+<i>word</i>
+is defined as any character string separated by spaces (or by new lines).
+In both the `<b>w</b>' and `<b>b</b>' commands the cursor is placed at
+the beginning of the appropriate word.
+</P>
+<P>
+Three forms of simple text deletions are possible in
+<i>edit mode.</i>
+The character corresponding to the current cursor position
+can be deleted by typing the lower-case letter `<b>x</b>'.
+The character immediately before the current cursor position
+can be deleted by typing the upper-case letter `<b>X</b>'.
+The lower-case letter `<b>d</b>' will cause the current line to
+be deleted;
+line deletions may also be achieved by typing the `<b>Del</b>' key.
+Preceding any of these commands by a typed
+<i>number</i>
+causes the action to be repeated
+<i>number</i>
+times.
+The most recent deletion can be restored or "undone" by typing
+the lower-case letter `<b>u</b>'.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>INPUT MODE</H3></FONT>
+The
+<i>input mode</i>
+allows the manual inputting of typed characters into the text file.
+This mode is invoked from the
+<i>edit mode</i>
+by typing either `<b>a</b>', `<b>i</b>', `<b>o</b>', or `<b>O</b>'.
+When any of these commands is invoked, the cursor increases in size
+and the status window reports the new mode.
+Typing the letter `<b>i</b>' will cause all subsequently typed material to be
+<i>inserted</i>
+immediately prior to the current cursor position.
+Typing the letter `<b>a</b>' will cause all subsequently typed material to be
+<i>appended</i>
+following the current cursor position.
+This can also be achieved by typing the `<b>Ins</b>'
+or `<b>INSERT</b>' key.
+Typing the letter `<b>o</b>' will cause a new line to be
+<i>opened</i>
+following the current line;
+subsequently typed material will begin on this new line.
+Typing the upper-case letter `<b>O</b>' will cause a new line to be
+opened immediately
+<i>prior</i>
+to the current line.
+</P>
+<P>
+Once the input mode is invoked, typed ASCII characters
+will be added at the current cursor position until the ESCape or TAB
+key is pressed.
+Pressing ESCape or TAB will return
+<b>encode</b>
+to the
+<i>edit mode.</i>
+Tabs are explicitly forbidden as input in order to reduce
+the possibility of creating text that does not conform to the Humdrum syntax.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>MIDI INPUT MODE</H3></FONT>
+The most characteristic feature of
+<b>encode</b>
+is the
+<i>MIDI input mode.</i>
+The MIDI input mode can be invoked from
+<i>edit mode</i>
+by typing either of the upper-case letters `<b>A</b>' or `<b>I</b>'.
+The letter `<b>I</b>' will cause all subsequent MIDI-driven input to be
+<i>inserted</i>
+immediately prior to the current line.
+The letter `<b>A</b>' will cause all subsequent MIDI-driven input to be
+<i>appended</i>
+immediately following the current line.
+</P>
+<P>
+In the
+<i>MIDI input mode,</i>
+data is entered into the current document according to user-defined
+mappings between
+<i>MIDI events</i>
+(such as caused by playing on a MIDI keyboard)
+and ASCII character strings.
+Predefined mappings are specified in a
+<i>run-time control</i>
+(<code><big>.rc</big></code>) file.
+When the
+<b>encode</b>
+command is invoked, it must have access to a<code><big> .rc</big></code> file containing
+configuration information.
+The user can identify a specific<code><big> .rc</big></code> file on the command line
+via the
+<b>-r</b>
+option (see <A HREF="#OPTIONS">OPTIONS</A>).
+Alternatively,
+<b>encode</b>
+will seek a default<code><big> .rc</big></code> file (named <code><big>encode.rc</big></code>) residing in the
+the current directory, or if absent, in the <code><big>$HUMDRUM/etc</big></code> directory.
+The run-time control file is essential to the operation of
+<b>encode,</b>
+and inability to locate a <code><big> .rc</big></code> file will cause
+<b>encode</b>
+to abort (see discussion in <A HREF="#OPTIONS">OPTIONS</A> below).
+</P>
+<P>
+The run-control file contains a series of definitions mapping
+MIDI events to output strings.
+Three classes of MIDI events can be mapped:
+<i>key number</i>
+(<code><big>KEY</big></code>),
+<i>delta-time</i>
+(<code><big>DEL</big></code>), and
+<i>key velocity</i>
+(<code><big>VEL</big></code>).
+Normally, a<code><big> .rc</big></code> file contains a number of definitions
+for each class of event, although some events may not appear at all
+in some<code><big> .rc</big></code> files.
+</P>
+<P>
+By way of example, the run-control instruction:
+</P>
+<P>
+<blockquote>
+<code><big>
+KEY 60 middle-C
+</code></big>
+</blockquote>
+</P>
+<P>
+assigns the key-on event for MIDI key #60 to the
+string <code><big>middle-C</big></code>.
+When in
+<i>MIDI input mode,</i>
+each key-on event for key #60 will cause the string <code><big>middle-C</big></code> to be
+prepared for insertion into the text window.
+Typically, a number of <code><big>KEY</big></code> definitions will appear in
+a given run-control file -- often one definition for
+each MIDI key (0 to 127).
+</P>
+<P>
+A second class of MIDI events is key-down velocity (<code><big>VEL</big></code>).
+Key velocities can range between 0 (low key velocity)
+and 127 (high key velocity).
+Each <code><big>VEL</big></code> mapping specifies a range of values for which a given string
+will be output.
+By way of example, the following assignment maps key velocity
+values between 90 and 127 to a string consisting merely of
+the apostrophe (the <code><big>**kern</big></code> signifier for a staccato note):
+</P>
+<P>
+<blockquote>
+<code><big>
+VEL 90 127 '
+</i></b></code></big>
+</blockquote>
+</P>
+<P>
+Given this mapping, key-down velocities within the specified
+range will cause the apostrophe character to be prepared for
+insertion into the text window.
+</P>
+<P>
+A third class of MIDI events is delta-time (<code><big>DEL</big></code>).
+When determing the "duration" of a performed note,
+the durations of individual key-presses are confound by the articulation.
+In general, performing musicians are less concerned by the
+<i>duration</i>
+of individual key-presses, than by the keypress-to-keypress time spans;
+the elapsed time between one key-onset and the next
+key-onset provides a better estimate of the nominal musical
+duration of a note than the actual held duration.
+The variable <code><big>DEL</big></code> contains the
+<i>difference between successive key-onset times</i>
+--  expressed in MIDI clock ticks.
+Values of <code><big>DEL</big></code> may range from 0 upward.
+For a tempo of 60 beats per minute,
+inter-onset durations of one second correspond to
+<code><big>DEL</big></code> values of about 100.
+</P>
+<P>
+The following sample<code><big> .rc</big></code> file illustrates a simple run-control file.
+Notice that a series of <code><big>DEL</big></code> ranges have been defined and
+mapped to <code><big>**kern</big></code>- or <code><big>**recip</big></code>-type durations.
+For example, inter-onset times lying between 48 and 80 clock ticks
+generate the output string `<code><big>8</big></code>';
+values between 113 and 160 generate the string `<code><big>4</big></code>' and so on.
+Notice that this file restricts the number of possible output "durations"
+to just five.
+<code><big>
+<blockquote><TABLE>
+<TR><TD># Sample .rc file</TD></TR>
+<TR><TD>KEY 60 c</TD></TR>
+<TR><TD>KEY 62 d</TD></TR>
+<TR><TD>KEY 64 e</TD></TR>
+<TR><TD>KEY 65 f</TD></TR>
+<TR><TD>KEY 67 g</TD></TR>
+<TR><TD>KEY 69 a</TD></TR>
+<TR><TD>KEY 71 b</TD></TR>
+<TR><TD>KEY 72 cc</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>DEL 48 80 8</TD></TR>
+<TR><TD>DEL 81 112 8.</TD></TR>
+<TR><TD>DEL* 113 160 4</TD></TR>
+<TR><TD>DEL 161 224 4.</TD></TR>
+<TR><TD>DEL 225 320 2</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>VEL 90 127 '</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>ORDER DEL KEY VEL</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Any records in the run-control file beginning with a <b>#</b> character are
+treated as comments.
+Empty lines are ignored.
+</P>
+<P>
+The effect of the above run-control file can be illustrated by example.
+Imagine that
+<b>encode</b>
+received two key-on events (key #60 followed by key #62),
+where the first key exhibited a velocity value of 94 and the inter-onset time
+(<code><big>DEL</big></code>) was 100.
+The first key (#60) would be mapped to the string `<code><big>c</big></code>';
+the delta-time would be mapped to the string `<code><big>8.</big></code>';
+and the key-velocity (<code><big>VEL</big></code>) would be mapped to the apostrophe.
+At the moment of the key-onset for key #62, these three
+strings would be amalgamated according to the <code><big>ORDER</big></code> instruction
+(<code><big>DEL</big></code> first, <code><big>KEY</big></code> second, and <code><big>VEL</big></code> third) --
+producing the output string: <code><big>8.c'</big></code>
+</P>
+<P>
+Notice that
+<b>encode</b>
+outputs assembled strings only when the
+<i>next</i>
+key-on event occurs.
+This means that the text display is always one "note"
+behind the performer.
+Note that if musical durations are based on key inter-onset times,
+it is impossible to output a note prior to the onset of the next note.
+The last note in a buffer can be flushed by typing the ESCape key.
+(The timing of the last note is based on the <code><big>DEL</big></code> between key-onset
+and the moment of pressing ESCape.)
+</P>
+<P>
+In addition to mapping velocities, inter-onset times,
+and key numbers, run-control files can define a number of other
+attributes.
+The MIDI channel number attended to by
+<b>encode</b>
+can be set by the <code><big>RECEIVE</big></code> instruction.
+Any one of 16 channels (1-16) can be selected.
+A default channel 1 is assumed if no <code><big>RECEIVE</big></code> instruction is present
+in the run-control file.
+</P>
+<P>
+The
+<b>encode</b>
+command has a built-in metronome for assisting real-time encoding.
+The metronome sends commands to the MIDI instrument
+generating metronome tones.
+Two types of tones are generated -- tones marking each beat,
+and tones marking the beginning of each measure.
+The metronome rate (in beats per minute) is set by the TEMPO command.
+The beat is specified in two ways.
+The default beat is indicated by the presence of an asterisk following
+<i>one</i>
+of the DEL instructions.
+In the above example, the signifier `4' is assigned to the default beat.
+Apart from the default beat, the beat may also be explicitly assigned
+using the BEAT instruction.
+This instruction is followed by a single argument identifying the output
+<i>signifier</i>
+intended to coincide with each metronome beat.
+For example, <code><big>BEAT 4.</big></code> would set the beat in the above example to
+the dotted quarter, rather than the quarter.
+Note that the specified signifier in the BEAT command must correspond to
+one of the existing signifiers defined using a DEL instruction.
+</P>
+<P>
+The following table lists all of the types of instructions
+permitted in a run-control file.
+<blockquote><TABLE>
+<TR><TD><b># <i>text</i></TD><TD>unexecutable comment</TD></TR>
+<TR><TD><b>BEAT <i>string</i></TD><TD>set beat to <b>DEL</i> whose output signifier is <i>string</i></TD></TR>
+<TR><TD></TD><TD>beat</TD></TR>
+<TR><TD><b>BUFFER <i>n text</i></TD><TD>define (potentially multi-line) text buffer # <i>in</i></TD></TR>
+<TR><TD></TD><TD>(0-9)</TD></TR>
+<TR><TD><b>DEL <i>min max string</i></TD><TD>key inter-onset times between <i>min</i> and <i>max</i></TD></TR>
+<TR><TD></TD><TD>clock ticks cause <i>string</i> to be output</TD></TR>
+<TR><TD><b>KEY <i>n string</i></TD><TD>MIDI key-on #<i>n</i> causes <i>string</i> to be output</TD></TR>
+<TR><TD><b>METER <i>n</i></TD><TD>define number of beats per measure as <i>n</i></TD></TR>
+<TR><TD><b>METRE <i>n</i></TD><TD>same as <b>METER</i></TD></TR>
+<TR><TD><b>MM <i>on|off</i></TD><TD>switch metronome <i>on</i> or <i>off</i>; default is <i>on</i></TD></TR>
+<TR><TD><b>ORDER <i>codeword1 codeword2 ...</i></TD><TD>define order of string outputs, where codewords are</TD></TR>
+<TR><TD></TD><TD>selected from: BUFFER, DEL, KEY, SRING, VEL</TD></TR>
+<TR><TD><b>RECEIVE <i>n</i></TD><TD>define the MIDI channel from which data is</TD></TR>
+<TR><TD></TD><TD>accepted</TD></TR>
+<TR><TD><b>STRING <i>n text</i></TD><TD>define string constant # <i>in</i> (0-9)</TD></TR>
+<TR><TD><b>TEMPO <i>n</i></TD><TD>set metronome to <i>n</i> beats per minute</TD></TR>
+<TR><TD><b>VEL <i>min max string</i></TD><TD>key-down velocities between <i>min</i> and <i>max</i></TD></TR>
+<TR><TD></TD><TD>cause <i>string</i> to be output</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Definition types for <b>encode</b></i>
+</CENTER>
+</P>
+<P>
+The <code><big>BUFFER</big></code>, <code><big>DEL</big></code>, <code><big>KEY</big></code>, <code><big>STRING</big></code>,
+and <code><big>VEL</big></code> instructions
+can be repeated multiple times within the <code><big>.rc</big></code> file.
+All other instructions (<code><big>BEAT</big></code>, <code><big>METER</big></code>, <code><big>MM</big></code>,
+<code><big>TEMPO</big></code>, <code><big>ORDER</big></code> and <code><big>RECEIVE</big></code>)
+should appear only once in the <code><big>.rc</big></code> file.
+The <code><big>BEAT</big></code> and <code><big>TEMPO</big></code> instructions cannot appear in
+the <code><big>.rc</big></code> file until after the default beat (<code><big>DEL*</big></code>)
+has been defined.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND MODE</H3></FONT>
+The
+<b>encode</b>
+<i>command mode</i>
+allows a number of general-purpose commands to be executed --
+such as editing a specified file, changing a default mapping,
+or auditioning the encoded material.
+The
+<i>command mode</i>
+can be invoked from the
+<b>encode</b>
+<i>edit mode</i>
+by typing the colon character (:).
+</P>
+<P>
+Each command is formulated in the
+<i>command window</i>
+and launched by pressing the ENTER key.
+After execution,
+<b>encode</b>
+is returned to
+<i>edit mode.</i>
+</P>
+<P>
+Most commands consist of a single character;
+some commands require one or more parameters.
+</P>
+<P>
+The `<b>w</b>' command causes the current text to be written to disk.
+If there is currently no active filename, then an error is
+displayed indicating that
+<b>encode</b>
+is unable to write a file without knowledge of the filename.
+The command `<b>w <i>filename</i></i>' will cause the current contents
+to be written to the file <i>filename</i>.
+If
+<b>encode</b>
+was invoked with a specified filename, then that filename is
+active throughout the session.
+</P>
+<P>
+If the user attempts to write to an existing file (that was not specified
+when
+<b>encode</b>
+was invoked), then an error message is issued.
+Overwriting an existing file can be achieved by appending an exclamation
+mark following the write instruction -- as in `<b>w! <i>filename</i></b>.'
+</P>
+<P>
+The `<b>q</b>' command causes
+<b>encode</b>
+to terminate.
+If the current file has been modified without writing to disk,
+then a warning will be displayed and the quit instruction ignored.
+Appending an exclamation mark (`<b>q!</b>') will cause
+<b>encode</b>
+to terminate without saving any recent modifications.
+</P>
+<P>
+Note that the
+<i>quit</i>
+and
+<i>write</i>
+commands can be combined as a single instruction
+--  `<b>wq</b>'.
+</P>
+<P>
+The `<b>r <i>filename</i></b>' command causes
+<b>encode</b>
+to read the file <i>filename</i> into the text, beginning at
+the line following the current cursor position.
+</P>
+<P>
+The `<b>v</b>' command causes
+<b>encode</b>
+to spawn a
+<b>vi</b>
+text editing session -- importing the current
+<b>encode</b>
+text.
+The
+<b>vi</b>
+text editor provides text manipulation capabilities, including
+searching, substitution, and macro-instruction facilities not available in
+<b>encode.</b>
+(Refer to the UNIX
+<b>vi</b>
+reference document for further information.)
+When the
+<b>vi</b>
+session is closed,
+the edited text file is returned to the
+<b>encode</b>
+session.
+</P>
+<P>
+The `<b>m</b>' command invokes a Humdrum pipeline that is suitable for
+auditioning text data conforming to either the <code><big>**kern</big></code>
+or <code><big>**MIDI</big></code> representation formats.
+Specifically, `<b>m</b>' causes the current text to be passed to the
+Humdrum pipeline: <code><big>midi -c | perform</big></code>.
+Any <code><big>**kern</big></code> data will be translated to <code><big>**MIDI</big></code>
+data and sent to the <code><big>perform</big></code> command.
+The user can then interactively proof-listen or audition
+the encoded data.
+Refer to the
+<b>perform (4)</b>
+for information regarding the types of
+interactive commands available during proof-listening.
+The
+<b>perform</b>
+command is terminated when the end-of-file is reached,
+or if the user presses either the ESCape key or the letter `q'.
+In either case, control is returned to
+<b>encode.</b>
+</P>
+<P>
+The `<b>b</b>' command is used to read buffer text defined in the<code><big> .rc</code></big>
+file.
+Up to ten numbered buffers (0-9) can be defined.
+The command:
+</P>
+<P>
+<blockquote>
+<code><big>
+b 1
+</code></big>
+</blockquote>
+</P>
+<P>
+will cause any text denoted <code><big>BUFFER 1</big></code> to be output following
+the current cursor position.
+Use of the upper-case `<b>B</b>' rather than `<b>b</b>' causes the
+buffer contents to be inserted prior to the current line rather
+than following the current line.
+</P>
+<P>
+Buffer zero (0) has a special status.
+When the
+<b>encode</b>
+command is invoked, if the current text is empty
+(i.e. empty file or no filename specified),
+then the contents of <code><big>BUFFER 0</big></code> are automatically inserted into
+the text.
+This provides a convenient way to import header information
+for a newly encoded file.
+</P>
+<P>
+The `<b>rc <i>filename</i></b>' command causes
+<b>encode</b>
+to use a different run-control file <i>filename</i>.
+This allows the
+<b>encode</b>
+environment to be entirely reconfigured without
+interrupting the encoding session.
+This command can prove useful, for example, when the music being
+encoded changes key.
+</P>
+<P>
+The <b>set</b> command can be used to define (or redefine) any parameters
+permitted in a <code><big>.rc</big></code> file.
+For example, the tempo may be changed, the metronome turned-off,
+the metronome beat redefined, a string variable assigned,
+or a specific key re-mapped, e.g.
+</P>
+<P>
+<blockquote>
+<code><big>
+set TEMPO 92
+<br>
+set MM off
+<br>
+set BEAT 4.
+<br>
+set STRING 3 !! Variation No. ...
+<br>
+set KEY 60 C4
+</code></big>
+</blockquote>
+</P>
+<P>
+For the <code><big>BUFFER</big></code> command,
+<b>set</b>
+defines an
+<i>additional</i>
+buffer record, rather than replacing any existing buffer definitions.
+</P>
+<P>
+Note that run-control keywords, such as <code><big>TEMPO</big></code>,
+may be spelled using either upper-case or lower-case.
+</P>
+<P>
+Note that due to the small size of the command window,
+especially long command lines may wrap around within the window.
+This wrap-around has no affect on the command operation.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SUMMARY</H3></FONT>
+The various built-in commands in
+<b>encode</b>
+are summarized in the following table.
+<blockquote><TABLE>
+<TR><TD><b>EDIT MODE</b></TD></TR>
+<TR><TD>CTRL-F</TD><TD>scroll forward one page</TD></TR>
+<TR><TD>CTRL-B</TD><TD>scroll backward one page</TD></TR>
+<TR><TD>CTRL-D</TD><TD>scroll down by half a page</TD></TR>
+<TR><TD>CTRL-U</TD><TD>scroll up by half a page</TD></TR>
+<TR><TD><PAGE-DOWN></TD><TD>scroll forward one page</TD></TR>
+<TR><TD><PAGE-UP></TD><TD>scroll backward one page</TD></TR>
+<TR><TD></TD><TD>move cursor down one line</TD></TR>
+<TR><TD></TD><TD>move cursor up one line</TD></TR>
+<TR><TD>j</TD><TD>move cursor down one line</TD></TR>
+<TR><TD>k</TD><TD>move cursor up one line</TD></TR>
+<TR><TD><ENTER></TD><TD>move cursor to the beginning of the next line</TD></TR>
+<TR><TD>H</TD><TD>move cursor to the top of the display</TD></TR>
+<TR><TD>M</TD><TD>move cursor to the middle of the display</TD></TR>
+<TR><TD>L</TD><TD>move cursor to the bottom of the display</TD></TR>
+<TR><TD><HOME></TD><TD>move cursor to the top of the display</TD></TR>
+<TR><TD><END></TD><TD>move cursor to the bottom of the display</TD></TR>
+<TR><TD>-></TD><TD>move cursor one character to the right</TD></TR>
+<TR><TD><-</TD><TD>move cursor one character to the left</TD></TR>
+<TR><TD>l</TD><TD>move cursor one character to the right</TD></TR>
+<TR><TD>h</TD><TD>move cursor one character to the left</TD></TR>
+<TR><TD><SPACE></TD><TD>move cursor one character to the right</TD></TR>
+<TR><TD>x</TD><TD>delete character at current cursor position</TD></TR>
+<TR><TD>X</TD><TD>delete character immediately preceding currrent cursor position</TD></TR>
+<TR><TD>d</TD><TD>delete current line</TD></TR>
+<TR><TD>u</TD><TD>undo most recent deletion or insertion command</TD></TR>
+<TR><TD><INSERT></TD><TD>insert text prior to current cursor position (invoke INPUT MODE)</TD></TR>
+<TR><TD>i</TD><TD>insert text prior to current cursor position (invoke INPUT MODE)</TD></TR>
+<TR><TD>a</TD><TD>insert text after to current cursor position (invoke INPUT MODE)</TD></TR>
+<TR><TD>o</TD><TD>insert text beginning with the next line (invoke INPUT MODE)</TD></TR>
+<TR><TD>O</TD><TD>insert text beginning with the previous line (invoke INPUT MODE)</TD></TR>
+<TR><TD>A</TD><TD>invoke MIDI INPUT MODE; insert data beginning with the next line</TD></TR>
+<TR><TD>I</TD><TD>invoke MIDI INPUT MODE; insert data beginning with the previous line</TD></TR>
+<TR><TD><<i>number</i>></TD><TD>repeat ensuing command <<i>number</i>> times</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><b>INPUT MODE</b></TD></TR>
+<TR><TD>ESC</TD><TD>return to EDIT MODE</TD></TR>
+<TR><TD><TAB></TD><TD>return to EDIT MODE</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><b>MIDI INPUT MODE</b></TD></TR>
+<TR><TD>ESC</TD><TD>complete last MIDI event and return to EDIT MODE</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><b>COMMAND MODE</b></TD></TR>
+<TR><TD>b <i>n</i></TD><TD>append run-control buffer number <i>n</i> following current cursor position</TD></TR>
+<TR><TD>B <i>n</i></TD><TD>insert run-control buffer number <i>n</i> before current cursor position</TD></TR>
+<TR><TD>m</TD><TD>invoke interactive proof-listening for <code><big>**kern</big></code> or <code><big>**MIDI</big></code> text</TD></TR>
+<TR><TD>set <i>rc-command</i></TD><TD>set or reset a <code><big>.rc</i> mapping</TD></TR>
+<TR><TD>q</TD><TD>quit <b>encode</b></TD></TR>
+<TR><TD>q!</TD><TD>quit <b>encode</b> without saving modifications since last write</TD></TR>
+<TR><TD>r <i>filename</i></TD><TD>read input file <i>filename</i> at current cursor position</TD></TR>
+<TR><TD>rc <i>controlfile</i></TD><TD>use run-control file <i>controlfile</i> rather than current <code><big>.rc</i> file</TD></TR>
+<TR><TD>s <i>n</i></TD><TD>append run-control string number <i>n</i> following current cursor position</TD></TR>
+<TR><TD>S <i>n</i></TD><TD>insert run-control string number <i>n</i> before current cursor position</TD></TR>
+<TR><TD>v</TD><TD>spawn <b>vi</b> text editing session using current text</TD></TR>
+<TR><TD>w [<i>filename</i>]</TD><TD>write file <i>filename</i> to disk; default filename is current file</TD></TR>
+<TR><TD>w! <i>filename</i></TD><TD>overwrite existing file <i>filename</i></TD></TR>
+<TR><TD>wq</TD><TD>write current file and quit</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<A NAME="OPTIONS">
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>encode</b>
+command provides the following options:
+<blockquote>
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-r <i>file.rc</i></TD><TD>invoke using the run-control file <i>file.rc</i></TD></TR>
+</TABLE></blockquote>
+</blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The
+<b>-r</b>
+option permits the user to identify a specific run-control file
+to configure the
+<b>encode</b>
+editor.
+If this option is omitted,
+<b>encode</b>
+will seek a default run-control file named <code><big>encode.rc</big></code>
+in the current directory, or in the directory <code><big>$HUMDRUM/etc</big></code>
+if not present in the current directory.
+If the option is specified,
+<b>encode</b>
+will search the current directory for the specified run-control file.
+If this search fails to locate the file,
+<b>encode</b>
+will search <code><big>$HUMDRUM/etc</big></code>.
+If this fails,
+<b>encode</b>
+will treat the input filename as an absolute file path.
+If this fails, encode will issue an error message indicating
+that it failed to locate the specified run-control file.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>FILES</H3></FONT>
+A number of predefined <code><big>.rc</big></code> files are maintained
+in the <code><big>$HUMDRUM/etc</big></code> directory.
+Exploration is encouraged.
+The default file is <code><big>$HUMDRUM/etc/encode.rc</big></code>.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up.
+An appropriate MIDI controller (such as a keyboard synthesizer)
+connected via a Roland MPU-401 (or compatible) MIDI controller card.
+The <code><big>vi</big></code> text editor must be available in order to invoke
+the `v' edit command.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+Unlike the UNIX
+<b>vi</b>
+text editor, only a single `<b>d</b>' is required in edit mode to delete a line
+(rather than two \fRd\fR's).
+Experienced
+<b>vi</b>
+users should be careful when deleting lines.
+</P>
+<P>
+Note that the <code><big>BEAT</big></code> and <code><big>TEMPO</big></code> instructions cannot appear in
+the <code><big>.rc</big></code> file until after the default beat (<code><big>DEL*</big></code>)
+has been defined.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+</P>
+<P>
+<A HREF="assemble.html">
+<b>assemble</b></A> (4),
+<A HREF="cleave.html">
+<b>cleave</b></A> (4),
+<b>encode.rc</b> (5),
+<A HREF="humdrum.html">
+<b>humdrum</b></A> (4),
+<b>**kern</b> (2),
+<b>**MIDI</b> (2),
+<A HREF="midi.html">
+<b>midi</b></A> (4),
+<A HREF="num.html">
+<b>num</b></A> (4),
+<A HREF="perform.html">
+<b>perform</b></A> (4),
+<A HREF="proof.html">
+<b>proof</b></A> (4),
+<A HREF="record.html">
+<b>record</b></A> (4),
+<A HREF="timebase.html">
+<b>timebase</b></A> (4),
+<b>vi</b> (UNIX)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>REFERENCES</H3></FONT>
+Use the the Music Quest Inc. MIDI library functions is gratefully
+acknowledged.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>NOTE</H3></FONT>
+Especially long input lines may exceed the size of the text window.
+Although the characters to the right of the text screen may not be
+visible, they remain encoded in the file.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide30.html#The_encode_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

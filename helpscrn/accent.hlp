@@ -1,0 +1,26 @@
+
+ACCENT  : Estimate accent values for successive notes
+
+     The "accent" command accepts monophonic **kern input and outputs a
+     series of numerical values estimating the perceived accent associated
+     with each note.  Output accent values vary between 0 (minimum accent)
+     and 1 (maximum accent).  Input is limited to only a single **kern
+     data spine.
+
+     The "accent" command takes into account seven factors: (1) the duration
+     of notes (agogic stress), (2) the amount of melodic (or pitch-related)
+     accent, (3) metric position, (4) position in scale-degree hierarchy,
+     (5) primacy/recency contexts, (6) explicit accent marks, and
+     (7) inner-voice or outer-voice position.
+
+Syntax:
+
+     accent [-i] [inputfile ...]
+
+Options:
+
+     -h    : output this help screen
+     -i    : input is an "inner-voice" part
+
+  Refer to reference manual for further details.
+

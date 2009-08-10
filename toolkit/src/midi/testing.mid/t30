@@ -1,0 +1,161 @@
+!! midi Test #30
+!! Test of spine-path adds (*+) and spine-path terminators (*-).
+**MIDI
+*Ch1
+!!abstime: 0, last printed: 0, note_on_line: 0
+*M2/4
+!!abstime: 0, last printed: 0, note_on_line: 0
+*C:
+!!abstime: 0, last printed: 0, note_on_line: 0
+=1
+!!abstime: 0, last printed: 0, note_on_line: 0
+0/36/64
+!!abstime: 72, last printed: 0, note_on_line: 1
+72/-36/64 72/38/64
+!!abstime: 144, last printed: 72, note_on_line: 1
+=2
+!!abstime: 144, last printed: 72, note_on_line: 0
+*+
+!!abstime: 144, last printed: 72, note_on_line: 0
+*	**MIDI
+*Ch1	*Ch1
+!!abstime: 144, last printed: 72, note_on_line: 0
+72/-38/64 72/40/64	.
+!!abstime: 216, last printed: 144, note_on_line: 1
+72/-40/64 72/41/64	.
+!!abstime: 288, last printed: 216, note_on_line: 1
+=3	=3
+!!abstime: 288, last printed: 216, note_on_line: 0
+72/-41/64	72/43/64
+!!abstime: 360, last printed: 288, note_on_line: 1
+.	72/-43/64
+*	*-
+!!abstime: 288, last printed: 288, note_on_line: 1
+0/45/64
+!!abstime: 360, last printed: 288, note_on_line: 1
+=4
+!!abstime: 360, last printed: 288, note_on_line: 0
+72/-45/64 72/47/64
+!!abstime: 432, last printed: 360, note_on_line: 1
+*+
+!!abstime: 432, last printed: 360, note_on_line: 0
+*	**MIDI
+*Ch1	*Ch1
+!!abstime: 432, last printed: 360, note_on_line: 0
+72/-47/64	72/48/64
+!!abstime: 504, last printed: 432, note_on_line: 1
+=5	=5
+!!abstime: 504, last printed: 432, note_on_line: 0
+*	*+
+!!abstime: 504, last printed: 432, note_on_line: 0
+*	*	**MIDI
+*Ch1	*Ch1	*Ch1
+!!abstime: 504, last printed: 432, note_on_line: 0
+.	72/-48/64 72/50/64	.
+!!abstime: 576, last printed: 504, note_on_line: 1
+.	72/-50/64	72/52/64
+!!abstime: 648, last printed: 576, note_on_line: 1
+=6	=6	=6
+!!abstime: 648, last printed: 576, note_on_line: 0
+72/53/64	.	72/-52/64
+!!abstime: 720, last printed: 648, note_on_line: 1
+.	.	.
+*	*-	*
+!!abstime: 720, last printed: 648, note_on_line: 0
+72/-53/64	72/55/64
+!!abstime: 792, last printed: 720, note_on_line: 1
+=7	=7
+!!abstime: 792, last printed: 720, note_on_line: 0
+*+	*
+!!abstime: 792, last printed: 720, note_on_line: 0
+*	**MIDI	*
+*Ch1	*Ch1	*Ch1
+!!abstime: 792, last printed: 720, note_on_line: 0
+.	.	72/-55/64 72/57/64
+!!abstime: 864, last printed: 792, note_on_line: 1
+.	72/59/64	72/-57/64
+!!abstime: 936, last printed: 864, note_on_line: 1
+=8	=8	=8
+!!abstime: 936, last printed: 864, note_on_line: 0
+.	.	.
+*-	*	*-
+!!abstime: 936, last printed: 864, note_on_line: 0
+72/-59/64 72/60/64
+!!abstime: 1008, last printed: 936, note_on_line: 1
+72/-60/64 72/62/64
+!!abstime: 1080, last printed: 1008, note_on_line: 1
+*+
+!!abstime: 1080, last printed: 1008, note_on_line: 0
+*	**MIDI
+*Ch1	*Ch1
+!!abstime: 1080, last printed: 1008, note_on_line: 0
+=9	=9
+!!abstime: 1080, last printed: 1008, note_on_line: 0
+72/-62/64	72/64/64
+!!abstime: 1152, last printed: 1080, note_on_line: 1
+*+	*+
+!!abstime: 1152, last printed: 1080, note_on_line: 0
+*	**MIDI	*	**MIDI
+*Ch1	*Ch1	*Ch1	*Ch1
+!!abstime: 1152, last printed: 1080, note_on_line: 0
+.	.	72/-64/64	72/65/64
+!!abstime: 1224, last printed: 1152, note_on_line: 1
+=10	=10	=10	=10
+!!abstime: 1224, last printed: 1152, note_on_line: 0
+.	72/67/64	.	72/-65/64
+!!abstime: 1296, last printed: 1224, note_on_line: 1
+.	.	.	.
+*-	*	*	*-
+!!abstime: 1296, last printed: 1224, note_on_line: 0
+72/-67/64	72/69/64
+!!abstime: 1368, last printed: 1296, note_on_line: 1
+*	*+
+!!abstime: 1368, last printed: 1296, note_on_line: 0
+*	*	**foo
+!!abstime: 1368, last printed: 1296, note_on_line: 0
+=11	=11	not=11
+!!abstime: 1368, last printed: 1296, note_on_line: 0
+72/71/64	72/-69/64	not4C#
+!!abstime: 1440, last printed: 1368, note_on_line: 1
+72/-71/64	72/72/64	not4b-
+!!abstime: 1512, last printed: 1440, note_on_line: 1
+=12	=12	.
+!!abstime: 1512, last printed: 1440, note_on_line: 0
+.	.	.
+*-	*	*
+!!abstime: 1512, last printed: 1440, note_on_line: 0
+72/-72/64 72/74/64	not4d#
+!!abstime: 1584, last printed: 1512, note_on_line: 1
+72/-74/64	.
+*-	*+
+!!abstime: 1512, last printed: 1512, note_on_line: 1
+*	**MIDI
+*	*Ch1
+!!abstime: 1512, last printed: 1512, note_on_line: 0
+not4c#	0/76/64
+!!abstime: 1584, last printed: 1512, note_on_line: 1
+.	=13
+!!abstime: 1584, last printed: 1512, note_on_line: 0
+.	72/-76/64 72/77/64
+!!abstime: 1656, last printed: 1584, note_on_line: 1
+*	*+
+!!abstime: 1656, last printed: 1584, note_on_line: 0
+*	*	**bar
+!!abstime: 1656, last printed: 1584, note_on_line: 0
+.	72/-77/64 72/79/64	not16e-
+!!abstime: 1728, last printed: 1656, note_on_line: 1
+not16e	=14	not a barline
+!!abstime: 1728, last printed: 1656, note_on_line: 0
+not4d#	72/-79/64 72/81/64	not16a-
+!!abstime: 1800, last printed: 1728, note_on_line: 1
+.	72/-81/64 72/83/64	not16gg-
+!!abstime: 1872, last printed: 1800, note_on_line: 1
+.	=15	not16dd#
+!!abstime: 1872, last printed: 1800, note_on_line: 0
+.	72/-83/64 72/84/64	not16cc#
+!!abstime: 2016, last printed: 1872, note_on_line: 1
+====	====	====
+!!abstime: 2016, last printed: 1872, note_on_line: 0
+.	144/-84/64	.
+*-	*-	*-
+!!abstime: 1872, last printed: 1872, note_on_line: 1

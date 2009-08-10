@@ -1,0 +1,626 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 7</TITLE>
+<!-- Chapter 7 (MIDI Output Tools) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:13:59 EST 2000">
+<meta name="description" content="Chapter 7 (MIDI Output Tools) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<H1>Chapter7</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide06.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide08.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>MIDI Output Tools</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+MIDI is a standard method for exchanging information
+between sound synthesizers and controlling computers.
+Humdrum provides a number of MIDI-related tools that allow
+MIDI data to be input and output.
+In this chapter we will discuss the output-related tools:
+<A HREF="commands/midi.html"><b>midi</b></A>,
+<A HREF="commands/perform.html"><b>perform</b></A>,
+<A HREF="commands/smf.html"><b>smf</b></A>
+and
+<A HREF="commands/tacet.html"><b>tacet</b></A>.
+MIDI input tools are discussed in
+<A HREF="guide30.html">Chapter 30.</A>
+</P>
+<A NAME="The_**MIDI_Representation">
+<H2>The <i>**MIDI</i> Representation</H2>
+</P>
+<P>
+Humdrum provides a
+<A HREF="representations/MIDI.rep.html"><code><big>**MIDI</big></code></A>
+representation that closely
+parallels the commercial MIDI specification but conforms
+to the Humdrum data format.
+This representation provides an intermediate format;
+using Humdrum commands such as
+<A HREF="commands/perform.html"><b>perform</b></A>
+and
+<A HREF="commands/perform.html"><b>smf</b>,</A>
+true MIDI data can be generated.
+However, since the <code><big>**MIDI</big></code> representation conforms to the
+Humdrum syntax, the data can be manipulated, modified and searched
+in the same way as other Humdrum data.
+For example, we can use
+<b>grep</b>
+to search MIDI data, etc.
+</P>
+<P>
+MIDI is a type of "tablature" notation.
+It describes a set of performance actions rather than specifying
+either the sounded result or the analytic notation.
+MIDI represents note-related events for
+various "channels."
+MIDI events include note-on, note-off, key-velocity,
+after-touch, control codes, and system-exclusive codes.
+The original commercial MIDI standard is unable to represent
+many other musically pertinent signifiers
+such as pitch spelling (e.g., F-sharp versus G-flat),
+stem directions, ties, slurs, phrasing, etc.
+In addition, MIDI does not represent rests.
+</P>
+<P>
+A simple
+<A HREF="representations/MIDI.rep.html"><code><big>**MIDI</big></code></A>
+example is given below.
+It consists just a single note (middle C):
+<blockquote><TABLE>
+<TR><TD><code><big>!! A single MIDI note.</TD></TR>
+<TR><TD><code><big>**MIDI</TD></TR>
+<TR><TD><code><big>*Ch1</TD></TR>
+<TR><TD><code><big>54/60/64</TD></TR>
+<TR><TD><code><big>80/-60/64</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Notice that there are two <code><big>**MIDI</big></code> data tokens:
+one to specify note-on and one to specify note-off events.
+Each <code><big>**MIDI</big></code> data token consists of three elements or components,
+delimited by a slash character (/).
+The first element in the data token represents the number of clock
+ticks before the current event is to occur.
+The absolute duration of a single clock tick is determined by the
+<code><big>**MIDI</big></code> clock speed, which is variable.
+In our example, 54 clock ticks elapse before the note is turned on,
+and another 80 clock ticks elapse before the note is turned off.
+The initial pause before the first note begins is not necessary;
+however, many MIDI cards introduce a brief delay before beginning to send
+the first data in a stream.
+The leading pause prevents a "rushed" burst of initial notes.
+</P>
+<P>
+The second element in a data token represents the
+<code><big>**MIDI</big></code> key number.
+Successive numbers refer to semitone pitches where middle C
+is designated key <code><big>60</big></code>.
+Key-off events are represented by negative integers, so <code><big>-60</big></code>
+means turn off key <code><big>60</big></code>.
+Key numbers range between 1 and 127.
+</P>
+<P>
+The third element in a data token represents the
+<code><big>**MIDI</big></code> key velocity.
+MIDI instruments normally interpret key velocity as
+dynamic or accent information.
+Higher key-velocity values are associated with accented notes.
+In the case of key-off events, the key-velocity component represents
+the key-up velocity.
+</P>
+<P>
+Unlike most other Humdrum representations, the
+<A HREF="representations/MIDI.rep.html"><code><big>**MIDI</big></code></A>
+format requires two data tokens for each note.
+The following example shows a three note C-major triad.
+The
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+data is shown in the left spine
+with the corresponding <code><big>**MIDI</big></code> data in the right spine.
+Notice that each data token consists of three subtokens,
+one for each note:
+<blockquote><TABLE>
+<TR><TD><code><big>!! A C-major</TD><TD>triad.</TD></TR>
+<TR><TD><code><big>**kern</TD><TD>**MIDI</TD></TR>
+<TR><TD><code><big>*</TD><TD>*Ch1</TD></TR>
+<TR><TD><code><big>2c 2e 2g</TD><TD>72/60/64 72/64/64 72/67/64</TD></TR>
+<TR><TD><code><big>.</TD><TD>144/-60/64 144/-64/64 144/-67/64</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Middle C corresponds to MIDI key 60;
+The pitches E4 and G4 correspond to MIDI keys 64 and 67
+respectively.
+The half-note durations result in a delay of 144 clock ticks
+before the key-off commands are executed.
+Notice that all key-off events occur simultaneously.
+</P>
+<P>
+Suppose we add a second chord consisting of the dyad D4 and F4.
+The dyad begins at the same time that the C major triad ends.
+This results in five subtokens in the corresponding <code><big>**MIDI</big></code>
+data record.
+Three key-off events are synchronous with two key-on events:
+<blockquote><TABLE>
+<TR><TD><code><big>!! Two chords.</TD></TR>
+<TR><TD><code><big>**kern</TD><TD></TD><TD>**MIDI</TD></TR>
+<TR><TD><code><big>*</TD><TD></TD><TD>*Ch1</TD></TR>
+<TR><TD><code><big>2c 2e 2g</TD><TD></TD><TD>72/60/64 72/64/64 72/67/64</TD></TR>
+<TR><TD><code><big>4d 4f</TD><TD></TD><TD>144/-60/64 144/-64/64 144/-67/64 144/62/64 144/65/64</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>72/-62/64 72/-65/64</TD></TR>
+<TR><TD><code><big>*-</TD><TD></TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Notice that the difference in duration between the half-notes
+and quarter-notes is reflected when the notes are
+turned <i>off</i> rather than when the notes are turned <i>on</i>.
+</P>
+<P>
+Example 7.1 illustrates a slightly more complex excerpt from the beginning
+of Darius Milhaud's <i>Touches Blanches</i>.
+<br><br>
+<b>Example 7.1</i>  Excerpt from Darius Milhaud's <i>Touches Blanches</i>
+<blockquote>
+<img src="guide.figures/guide07.1.gif">
+</blockquote>
+
+<blockquote><TABLE>
+<TR><TD><code><big>!!!: Milhaud, D.</TD></TR>
+<TR><TD><code><big>!!!OTL: Touches</TD><TD>Blanches</TD></TR>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD><TD></TD><TD>**MIDI</TD><TD></TD><TD></TD><TD>**MIDI</TD></TR>
+<TR><TD><code><big>*staff2</TD><TD>*staff1</TD><TD></TD><TD>*Ch1</TD><TD></TD><TD></TD><TD>*Ch1</TD></TR>
+<TR><TD><code><big>*clefF4</TD><TD>*clefG2</TD><TD></TD><TD>*clefF4</TD><TD></TD><TD></TD><TD>*clefG2</TD></TR>
+<TR><TD><code><big>*k[]</TD><TD>*k[]</TD><TD></TD><TD>*k[]</TD><TD></TD><TD></TD><TD>*k[]</TD></TR>
+<TR><TD><code><big>*M3/4</TD><TD>*M3/4</TD><TD></TD><TD>*M3/4</TD><TD></TD><TD></TD><TD>*M3/4</TD></TR>
+<TR><TD><code><big>=1-</TD><TD>=1-</TD><TD></TD><TD>=1-</TD><TD></TD><TD></TD><TD>=1-</TD></TR>
+<TR><TD><code><big>4e</TD><TD>(4g</TD><TD></TD><TD>72/64/64</TD><TD></TD><TD></TD><TD>72/67/64</TD></TR>
+<TR><TD><code><big>4c</TD><TD>2a)</TD><TD></TD><TD>72/-64/64 72/60/64</TD><TD></TD><TD></TD><TD>72/-67/64 72/69/64</TD></TR>
+<TR><TD><code><big>4F</TD><TD>.</TD><TD></TD><TD>72/-60/64 72/53/64</TD><TD></TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>=2</TD><TD>=2</TD><TD></TD><TD>=2</TD><TD></TD><TD></TD><TD>=2</TD></TR>
+<TR><TD><code><big>4f</TD><TD>(8a</TD><TD></TD><TD>72/-53/64 72/65/64</TD><TD></TD><TD></TD><TD>72/-69/64 72/69/64</TD></TR>
+<TR><TD><code><big>.</TD><TD>8b</TD><TD></TD><TD>.</TD><TD></TD><TD></TD><TD>36/-69/64 36/71/64</TD></TR>
+<TR><TD><code><big>4d</TD><TD>2g)</TD><TD></TD><TD>36/-65/64 36/62/64</TD><TD></TD><TD></TD><TD>36/-71/64 36/67/64</TD></TR>
+<TR><TD><code><big>4G</TD><TD>.</TD><TD></TD><TD>72/-62/64 72/55/64</TD><TD></TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>=3</TD><TD>=3</TD><TD></TD><TD>=3</TD><TD></TD><TD></TD><TD>=3</TD></TR>
+<TR><TD><code><big>4e</TD><TD>(4g</TD><TD></TD><TD>72/-55/64 72/64/64</TD><TD></TD><TD></TD><TD>72/-67/64 72/67/64</TD></TR>
+<TR><TD><code><big>4c</TD><TD>2a)</TD><TD></TD><TD>72/-64/64 72/60/64</TD><TD></TD><TD></TD><TD>72/-67/64 72/69/64</TD></TR>
+<TR><TD><code><big>4F</TD><TD>.</TD><TD></TD><TD>72/-60/64 72/53/64</TD><TD></TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>=4</TD><TD>=4</TD><TD></TD><TD>=4</TD><TD></TD><TD></TD><TD>=4</TD></TR>
+<TR><TD><code><big>4f</TD><TD>(8a</TD><TD></TD><TD>72/-53/64 72/65/64</TD><TD></TD><TD></TD><TD>72/-69/64 72/69/64</TD></TR>
+<TR><TD><code><big>.</TD><TD>8b</TD><TD></TD><TD>.</TD><TD></TD><TD></TD><TD>36/-69/64 36/71/64</TD></TR>
+<TR><TD><code><big>4d</TD><TD>2g)</TD><TD></TD><TD>36/-65/64 36/62/64</TD><TD></TD><TD></TD><TD>36/-71/64 36/67/64</TD></TR>
+<TR><TD><code><big>4G</TD><TD>.</TD><TD></TD><TD>72/-62/64 72/55/64</TD><TD></TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD></TD><TD>72/-55/64</TD><TD></TD><TD></TD><TD>72/-67/64</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD></TD><TD>*-</TD><TD></TD><TD></TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+The
+<A HREF="representations/MIDI.rep.html"><code><big>**MIDI</big></code></A>
+representation always expects a tandem interpretation
+indicating the MIDI channel assignment.
+In Example 7.1 both parts have been assigned to channel 1.
+Once again, simultaneous key-on and key-off events often appear as double-stops.
+Also notice that an additional data record is required at the end
+of the passage in order to turn off the final notes.
+</P>
+<A NAME="The_midi_Command">
+<H2>The <i>midi</i> Command</H2>
+</P>
+<P>
+The
+<A HREF="commands/midi.html"><b>midi</b></A>
+command converts Humdrum
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+data into Humdrum <code><big>**MIDI</big></code> data.
+By way of example, the above <code><big>**MIDI</big></code> data can be generated
+as follows:
+</P>
+<P>
+<blockquote>
+<code><big>midi inven05.krn > inven05.hmd</big></code>
+</blockquote>
+</P>
+<P>
+The <code><big>.hmd</big></code> filename extension is a common way of designating
+Humdrum <code><big>MIDI</big></code> data.
+</P>
+<P>
+Since the <code><big>**kern</big></code> representation does not encode key-velocity
+information, the
+<b>midi</b>
+command assumes a default key velocity of 64
+(from a range of 1 to 127).
+If the input is monophonic,
+<b>midi</b>
+will also allow the user to set a fixed note duration using the
+<b>-d</b>
+option.
+This is useful for auditing notes that do not have duration values.
+For example, a Gregorian chant might be represented without durations.
+The following command takes a file containing a 12-tone row (pitch information only)
+and produces a <code><big>**MIDI</big></code> output where all notes assigned to a
+quarter duration:
+</P>
+<P>
+<blockquote>
+<code><big>midi -d 4 tonerow > tonerow.hmd</big></code>
+</blockquote>
+</P>
+<P>
+The most common use of <code><big>**MIDI</big></code> data is to create a
+standard MIDI file using the
+<b>smf</b>
+command, or to listen to the output using the
+<b>perform</b>
+command.
+In some cases, it is useful to carry out
+processing of <code><big>**MIDI</big></code> data itself.
+</P>
+<A NAME="The_perform_Command">
+<H2>The <i>perform</i> Command</H2>
+</P>
+<P>
+The
+<A HREF="commands/perform.html"><b>perform</b></A>
+command allows the user to listen to synthesized performances of
+<code><big>**MIDI</big></code>-format input.
+When invoked,
+<b>perform</b>
+provides a simple interactive environment suitable for
+proof-listening and other audition tasks.
+</P>
+<P>
+The
+<b>perform</b>
+command accepts any Humdrum input; however,
+only
+<A HREF="representations/MIDI.rep.html"><code><big>**MIDI</big></code></A>
+spines present in the input stream are performed.
+Non-MIDI spines are simply ignored and do not affect the sound output.
+The
+<b>perform</b>
+command generates serial MIDI data which are sent directly to a
+MIDI controller card or on-board sound-card.
+</P>
+<P>
+The
+<b>perform</b>
+command is typically the last command in a pipe preceded by the
+<b>midi</b>
+command.
+For example, a <code><big>**kern</big></code>-format score can be heard
+using the following command:
+</P>
+<P>
+<blockquote>
+<code><big>midi clara.krn | perform</big></code>
+</blockquote>
+</P>
+<P>
+When invoked, the
+<b>perform</b>
+command reads in the entire input into memory.
+This allows the user to move freely both forward and backward
+through the MIDI score.
+</P>
+<P>
+The
+<b>perform</b>
+command provides a set of interactive commands that allow the user
+to pause and resume playback, to change tempo,
+to move to any measure by absolute or relative reference,
+and to search forward or backward for commented markers.
+The
+<b>perform</b>
+command remains active until either the end of the score is reached
+or the user terminates performance by typing the letter `q'
+or the escape key (ESC).
+</P>
+<P>
+Playback can be paused by typing the space-bar
+and resumed by typing any key.
+Typing the carriage return by itself will return to the beginning of the score
+and re-initiate playback.
+If a number is typed before pressing the carriage return then
+<b>perform</b>
+will search for a corresponding measure number and initiate playback
+from that measure.
+Other commands are provided that allow moving forward or
+backward a specified number of measures.
+</P>
+<P>
+In the default operation,
+<b>perform</b>
+echoes all global comments on the screen as the comments are
+encountered in the input.
+For inputs containing appropriate annotations, the echoing of comments
+can provide useful visual markers or reminders of particular
+moments in the sound output.
+Whether or not global comments are echoed on the standard output,
+users can use the
+<b>perform</b>
+forward-search (<code><big>/</big></code>) or backward-search (<code><big>?</big></code>) commands
+to move directly
+to a particular commented point in the score.
+For example, if an input contains a global comment containing
+the character string "<code><big>Second theme</big></code>,"
+then the user can move immediately to this position in the input by
+entering the following command:
+</P>
+<P>
+<blockquote>
+<code><big>/Second theme</big></code>
+</blockquote>
+</P>
+<P>
+Similarly, backward searches can be carried out by typing the
+question mark (<code><big>?</big></code>) rather than the slash.
+If the search is successful, playback continues immediately from
+the new score position.
+</P>
+<A NAME="Data_Scrolling_During_Playback">
+<H2>Data Scrolling During Playback</H2>
+</P>
+<P>
+The
+<b>midi</b>
+command provides a useful
+<b>-c</b>
+option that causes each data record to be repeated as a comment.
+For example, when the
+<b>-c</b>
+option is used a sequence of data records such as the following:
+<blockquote><TABLE>
+<TR><TD><code><big>4C</TD><TD>4E</TD><TD>4G</TD><TD>4c</TD></TR>
+<TR><TD><code><big>4D</TD><TD>4F</TD><TD>4G</TD><TD>4B</TD></TR>
+<TR><TD><code><big>4AA</TD><TD>4E</TD><TD>4A</TD><TD>4c</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+is transformed to:
+<blockquote><TABLE>
+<TR><TD><code><big>4C</TD><TD>4E</TD><TD>4G</TD><TD>4c</TD></TR>
+<TR><TD><code><big>!!4C</TD><TD>4E</TD><TD>4G</TD><TD>4c</TD></TR>
+<TR><TD><code><big>4D</TD><TD>4F</TD><TD>4G</TD><TD>4B</TD></TR>
+<TR><TD><code><big>!!4D</TD><TD>4F</TD><TD>4G</TD><TD>4B</TD></TR>
+<TR><TD><code><big>4AA</TD><TD>4E</TD><TD>4A</TD><TD>4c</TD></TR>
+<TR><TD><code><big>!!4AA</TD><TD>4E</TD><TD>4A</TD><TD>4c</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<A NAME="Play_from_Pause">
+<P>
+Since, by default, the
+<b>perform</b>
+command echoes all global comments on the screen during playback,
+this means that the Humdrum data will also appear on the screen
+as it is being played.
+In addition, the commented data records are accessible to the
+forward- and backward-search commands.
+For example, in the
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+representation, pauses
+are indicated by a semicolon;
+hence the user might search for the next pause symbol by typing:
+</P>
+<P>
+<blockquote>
+<code><big>/;</big></code>
+</blockquote>
+</P>
+<A NAME="Play_from_G_sharp">
+<P>
+Similarly, the user could search for a particular pitch, e.g.
+</P>
+<P>
+<blockquote>
+<code><big>/gg#</big></code>
+</blockquote>
+</P>
+<A NAME="Diminished_Octave">
+<P>
+Since the
+<b>perform</b>
+command accepts any Humdrum input, other Humdrum data may be
+used for searching.
+For example, the input data might contain melodic interval data
+(see
+<A HREF="guide11.html">Chapter 11</A>),
+allowing the user to search for a
+particular interval such as a diminished octave:
+</P>
+<P>
+<blockquote>
+<code><big>/d8</big></code>
+</blockquote>
+</P>
+<P>
+If the string pattern is found in the input,
+<b>perform</b>
+will move immediately forward (or backward) to the next occurrence
+and begin playing from that point.
+</P>
+<A NAME="Changing_Tempo">
+<H2>Changing Tempo</H2>
+</P>
+<A NAME="Play_Half_Tempo">
+<P>
+During playback, the tempo can be modified by typing the
+greater-than (>) and less-than (<) signs
+to increase or decrease the tempo respectively.
+In addition to modifying the tempo interactively,
+the performance tempo may be specified either in the command line
+or in the input Humdrum representation.
+The tempo may be specified on the command line by using the
+<b>-t</b>
+option.
+For example, the following command causes the file <code><big>Andean</big></code>
+to be performed at half tempo:
+</P>
+<P>
+<blockquote>
+<code><big>midi Andean | perform -t 0.5</big></code>
+</blockquote>
+</P>
+<P>
+Performing at fast speeds can often be useful when scanning
+for a particular passage.
+</P>
+<P>
+Tempo specifications may be present in the input data
+via  the tandem interpretation for metronome marking (e.g. <code><big>*MM96</big></code>).
+If no tempo information is available,
+<b>perform</b>
+uses a default tempo of 66 quarter-notes per minute.
+</P>
+<A NAME="The_tacet_Command">
+<H2>The <i>tacet</i> Command</H2>
+</P>
+<P>
+In rare circumstances, ciphers (stuck notes) can occur during MIDI
+performances;
+for instance, an intermittently functioning MIDI cable may
+fail to convey a "note-off" instruction to an active synthesizer.
+The
+<b>p</b>
+command ("panic") turns off all active notes.
+Should a cipher remain after terminating the
+<b>perform</b>
+command, the Humdrum
+<A HREF="commands/tacet.html"><b>tacet</b></A>
+command can be used to send
+"all-notoff" commands on all MIDI channels.
+</P>
+<P>
+In
+<A HREF="guide12.html">Chapter 12,</A>
+we will see how
+<b>perform</b>
+can be used in conjunction with other commands (such as
+<A HREF="commands/extract.html"><b>extract</b></A>
+and
+<A HREF="commands/yank.html"><b>yank</b></A>)
+to listen selectively to specific parts or passages.
+In
+<A HREF="guide21.html">Chapter 21</A>
+we will use
+<b>perform</b>
+in conjunction with the
+<A HREF="commands/patt.html"><b>patt</b></A>
+command to listen to patterns (such as harmonic, rhythmic and melodic
+patterns) found in some repertory.
+</P>
+<A NAME="The_smf_Command">
+<H2>The <i>smf</i> Command</H2>
+</P>
+<P>
+Another MIDI-related tool is the
+<A HREF="commands/smf.html"><b>smf</b></A>
+command.
+This command allows the user to create "standard MIDI
+files" from Humdrum <code><big>**MIDI</big></code>-format files.
+Standard MIDI files are industry-standard binary files that
+can be imported by a variety of MIDI applications software packages
+on many different platforms,
+including sequencer programs and most music notation packages.
+</P>
+<P>
+The
+<b>smf</b>
+command translates only <code><big>**MIDI</big></code> input spines;
+all non-<code><big>**MIDI</big></code> spines are simply ignored.
+Suppose we begin with a <code><big>**kern</big></code>-format file named <code><big>joplin</big></code>.
+We can create a standard MIDI file as follows:
+</P>
+<P>
+<blockquote>
+<code><big>midi joplin | smf > joplin.smf</big></code>
+</blockquote>
+</P>
+<P>
+The
+<b>smf</b>
+command provides two options.
+The
+<b>-t</b>
+option allows the user to set the tempo,
+whereas the
+<b>-v</b>
+option allows the user to specify a default MIDI key velocity.
+See the
+<i>Humdrum Reference Manual</i>
+for details.
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+In this chapter we have learned how Humdrum data can be output
+as MIDI data.
+Humdrum provides a <code><big>**MIDI</big></code> representation that closely
+parallels MIDI but remains in conformity with the Humdrum syntax.
+This means that the data can still be processed with other
+Humdrum tools (as we will see in later chapters).
+</P>
+<P>
+The
+<A HREF="commands/midi.html"><b>midi</b></A>
+command can translate
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+data to
+<A HREF="representations/MIDI.rep.html"><code><big>**MIDI</big></code></A>
+and the
+<A HREF="commands/perform.html"><b>perform</b></A>
+and
+<A HREF="commands/smf.html"><b>smf</b></A>
+commands can be used to generate true MIDI data
+for listening.
+The
+<b>perform</b>
+command provides a simple interactive command-line sequencer
+for playing whatever input is provided.
+The
+<b>smf</b>
+command generates standard MIDI files that can be
+used to transport MIDI data to a vast array of
+commercial and non-commerical applications software.
+In
+<A HREF="guide30.html">Chapter 30</A>
+we will explore some of the Humdrum tools for
+inputting MIDI data into Humdrum.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide08.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide06.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

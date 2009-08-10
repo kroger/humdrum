@@ -1,0 +1,359 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH perform 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBperform\fR  -- play Humdrum \f(CR**MIDI\fR files
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBperform\fR  [\fB-g\fR]  [\fB-i \fIhex\fR]  [\fB-t \fIn.n\fR]  [\fB-v \fIn\fR]  [\fIinputfile.hmd\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "perform"
+command allows the user to listen to synthesized performances of
+Humdrum \f(CR**MIDI\fR-format input.
+When invoked,
+.B "perform"
+provides an interactive environment suitable for
+proof-listening and other audition tasks.
+.sp 1
+.sp 1
+The
+.B "perform"
+command accepts as input Humdrum inputs containing \f(CR**MIDI\fR
+representations.
+The command generates serial MIDI data which are sent directly to a
+MIDI controller card.
+The user must have an appropriate MIDI synthesizer connected via
+a Roland MPU-401 (or compatible) MIDI controller card.
+All \f(CR**MIDI\fR spines present in the input stream are performed.
+Non-MIDI spines are ignored and do not affect the sound output.
+.sp 1
+.sp 1
+When first invoked, the
+.B "perform"
+command reads in the entire input into memory.
+By loading the complete input into memory,
+random data access is possible and so
+the user can move freely both forward and backward through the MIDI score.
+(Note that the size of any input is limited by the available memory.)
+While the data is being loaded into memory, a tally of the number of
+bytes loaded is reported.
+Once the data is loaded, MIDI performance commences immediately.
+.sp 1
+.sp 1
+The
+.B "perform"
+command provides a set of interactive commands that allow the user
+to pause and resume playback, to change tempo,
+to move to any measure by absolute or relative reference,
+and to search forward or backward for commented markers.
+Editing of MIDI data is not available using
+.B "perform."
+.sp 1
+.sp 1
+Playback can be suspended by typing the space-bar;
+typing any key will resume playback.
+By itself, typing ENTER will return to the beginning of the score
+and re-initiate playback.
+If a number is typed before pressing ENTER,
+.B "perform"
+will search for a corresponding measure number and continue playback
+from the beginning of the specified measure.
+Where more than one measure matches the inputted measure-number,
+.B "perform"
+will find the nearest matching measure, without going backward through
+\(odmeasure zero.\(cd
+Typing a
+.I "number"
+followed by the plus sign (\f(CR+\fR) will move to the numbered
+measure corresponding to the current measure plus <\fInumber\fR>,
+and continue playback from the beginning of that measure.
+Typing a
+.I "number"
+followed by the minus sign (\f(CR-\fR) will move to the numbered
+measure corresponding to the current measure minus <\fInumber\fR>,
+and continue playback from the beginning of that measure.
+The
+.B "perform"
+commands for moving forward and backward should be avoided when
+inputs contain unnumbered measures or highly unusual orderings
+-- such as reverse-order measure numbers.
+.sp 1
+.sp 1
+The tempo can be modified interactively by using the
+greater-than (\f(CR>\fR) and less-than (\f(CR<\fR) signs to increase or
+decrease the tempo respectively.
+The less-than sign reduces the tempo whereas the greater-than sign
+increases the tempo.
+Tempo changes are in increments of 6 quarter-note durations per minute.
+A minimum tempo of 8, and a maximum tempo of 250 quarter-notes per minute
+are permitted.
+The current tempo is displayed whenever a change of tempo is made.
+.sp 1
+.sp 1
+In the default operation,
+.B "perform"
+echoes all global comments on the screen as the comments are
+encountered in the input.
+For inputs containing appropriate annotations, the echoing of comments
+can provide useful visual markers or reminders of particular
+moments in the sound output.
+Whether or not global comments are echoed on the standard output,
+users can use the
+.B "perform"
+forward-search (\f(CR/\fR) and backward-search (\f(CR?\fR) commands
+to move directly
+to a particular commented point in the score.
+For example, if an input contains a global comment containing
+the character string \(odSecond theme,\(cd
+the user can move immediately to this position in the input by
+entering the following command:
+.sp 1
+.sp 1
+.in +2
+/Second theme
+.in -2
+.sp 1
+.sp 1
+followed by a carriage return <cr> (or ENTER).
+(The search string need only contain sufficient characters to distinguish
+uniquely the appropriate point of interest.)
+Similarly, the user can search backward for this character string
+by entering:
+.sp 1
+.sp 1
+.in +2
+?Second theme
+.in -2
+.sp 1
+.sp 1
+If the search is successful, playback continues immediately from
+the new score position.
+If the search is unsuccessful, playback continues from the current
+score position.
+.sp 1
+.sp 1
+In rare circumstances, ciphers (stuck notes) can occur in MIDI tasks --
+such as where an intermittent MIDI cable fails to convey a \(odnote-off\(cd
+instruction to an active synthesizer.
+The
+.B "p"
+command (\(odpanic\(cd) turns off all active notes.
+In addition, a \(odpower panic\(cd command (upper-case letter \fBP\fR)
+is provided;
+this command sends \(odall-notes-off\(cd commands on MIDI channels 1-16.
+See also the
+.B "tacet"
+command.
+.sp 1
+.sp 1
+The
+.B "f"
+command will flag a current measure by echoing the measure number
+on the screen.
+This can be useful for chronicling various events without having
+to pause or interrupt playback.
+.sp 1
+.sp 1
+The
+.B "perform"
+command is terminated by typing either \fBq\fR or \fBQ\fR,
+or by pressing the escape key (ESC).
+.sp 1
+.sp 1
+The following table summarizes the interactive commands
+provided by
+.B "perform."
+A summary of these commands can be displayed from within
+.B "perform"
+by typing the
+.B "h"
+(help) command.
+.sp 1
+.TS
+l l.
+<space>	pause; suspend playback; strike any key to continue
+<	reduce tempo
+>	increase tempo
+\(mi	go back to the beginning of the previous measure
+	  and continue performing
+\fIinteger\fR-	go back \fIinteger\fR measures and continue
+	  performing from the beginning of that measure
++	go forward to the beginning of the next measure
+	  and continue performing
+\fIinteger\fR+	go forward \fIinteger\fR measures and continue
+	  performing from the beginning of that measure
+<cr>	by itself the carriage return moves to the beginning
+	  of the score and continues performing
+/\fIstring\fR<cr>	search forward from the current position for the
+	  next global comment containing \fIstring\fR and continue
+	  performing
+?\fIstring\fR<cr>	search backward from the current position for the
+	  nearest global comment containing \fIstring\fR and
+	  continue performing
+\fIinteger\fR<cr>	go to numbered measure \fIinteger\fR; where more than
+	  one measure shares the same numerical label go
+	  to the next (forward) measure matching \fIinteger\fR
+h	display command summary help screen
+p	panic; turn off all active notes
+p	power panic; reset all notes off on all MIDI channels
+q	same as \fBq\fR
+Q	terminate the perform command
+<ESC>	same as \fBq\fR
+.TE
+.sp 1
+.ce
+.I "Interactive commands in \fBperform\fR."
+In order to facilitate user interaction, a number of keyboard `aliases'
+are provided.
+For example, the comma (\f(CR,\fR) and the period (\f(CR.\fR) are valid
+aliases for the less-than (\f(CR<\fR) and greater-than (\f(CR>\fR) signs;
+these aliases normally share the same keys on ASCII keyboards
+and so avoid the need to use the shift-key.
+For similar reasons, the equals-sign (\f(CR=\fR) and the underscore
+(\f(CR_\fR) are valid aliases for the plus and minus signs respectively.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "perform"
+command provides the following command-line options:
+.sp 1
+.TS
+l l.
+\fB-g\fR	suppress the echoing of global comments on the
+	  standard output
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-i \fIhex\fR	assign MIDI input/output address to \fIhex\fR
+\fB-t \fIn.n\fR	set initial tempo to \fIn.n\fR times the default tempo
+\fB-v \fIn\fR	specify default MIDI key-velocity value (0-127)
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+In addition to modifying the tempo interactively while performing,
+the performance tempo may be specified either in the command line
+or in the input Humdrum representation.
+The tempo may be specified on the command line by using the
+.B "-t"
+option.
+The
+.B "-t"
+must be followed by an integer or real value between 0.13 and 3.80.
+A value of 1.0 corresponds to the default tempo of 66 quarter-notes
+per minute.
+A value of 2.0 doubles the tempo, whereas a value of 0.5 halves
+the tempo.
+Alternatively, tempo may be specified using the \f(CR**MIDI\fR tandem
+interpretation for metronome marking (e.g. \f(CR*MM96\fR).
+Tempos found in the input representation take precedence over
+any tempo specified on the command line.
+If no tempo information is available,
+.B "perform"
+uses the default tempo of 66 quarter-notes per minute.
+.sp 1
+.sp 1
+The
+.B "-v"
+option allows the user to specify a key-velocity default.
+MIDI instruments normally treat key-velocity data as
+dynamic or accent information --
+thus higher key-velocity values are associated with accented notes.
+Permissible key-velocity values range between 0 and 127.
+The
+.B "-v"
+option can be used to set the default key-velocity for
+key-on commands with unspecified key-velocities.
+In the absence of the
+.B "-v"
+option, the default key-velocity value is 64.
+.sp 1
+.sp 1
+In normal operation,
+.B "perform"
+echoes all global comments on the standard output.
+This feature may be defeated by invoking the
+.B "-g"
+option.
+.sp 1
+.sp 1
+The
+.B "-i"
+option is used to specify the input/output address of the MIDI card.
+The default address is `330.'
+The address is specified as a hexadecimal number.
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+When using Microsoft
+.I "Windows,
+the
+.B "perform"
+command requires the use of \(odstandard mode;\(cd
+.B "perform"
+is unable to work in \(od386 enhanced mode.\(cd
+.sp 1
+.sp 1
+Improper termination of
+.B "perform"
+may leave the MIDI card active, and so possibly to hang the machine.
+Proper termination of
+.B "perform"
+is achieved via the letters \fBq\fR or \fBQ\fR, or via the escape key (ESC).
+In the event of improper termination, the
+.B "midreset"
+command should be used.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up.
+Microsoft
+.I "Windows,
+in \(odstandard mode\(cd only.
+.in -2
+.sp 1
+.sp 1
+.SH "PROPOSED MODIFICATIONS"
+.in +2
+The program should be modified to allow inputs to contain
+MIDI control codes and MIDI system exclusive codes.
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.sp 1
+.sp 1
+.in +2
+\fBencode\fR (1), \fBencode.rc\fR (5), \fB**MIDI\fR (2),
+\fBmidi\fR (1), \fBmidreset\fR (1),
+\fBrecord\fR (1), \fBsmf\fR (1), \fBtacet\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "REFERENCES"
+.in +2
+Use of the Music Quest Inc. MIDI library functions is gratefully
+acknowledged.
+.in -2

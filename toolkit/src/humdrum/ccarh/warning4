@@ -1,0 +1,7 @@
+!! "humdrum: WARNING 4: Data token may be mistaken for exclusive"
+!! "interpretation in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for warning number 4
+**ex	**ex	**ex
+data	more data	**exclusive
+*-	*-	*-

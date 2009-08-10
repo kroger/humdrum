@@ -1,0 +1,751 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Core Music Notation</TITLE>
+<!-- Documentation for the **kern Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **kern Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,core notation,software,theory,analysis,systematic musicology,computer representation,**kern">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Basic Notated Music</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**kern</b>  --  core pitch/duration representation for common practice music notation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**kern</b>
+scheme can be used to represent basic or core information
+for period-of-common-practice Western music.
+The
+<b>**kern</b>
+representation allows pitch and canonical duration information to be encoded.
+In addition,
+<b>**kern</b>
+also provides limited capabilities for representing accidentals,
+articulation, ornamentation, ties, slurs, phrasing, barlines,
+stem-direction and beaming.
+In general,
+<b>**kern</b>
+is intended to represent the underlying semantic information implied
+by a musical score rather than the visual or orthographic
+information embodied by a given printed rendition;
+<b>**kern</b>
+is designed to facilitate analytic applications rather than
+music printing or sound generation.
+Other Humdrum representations should be used for these latter purposes.
+</P>
+<P>
+Three types of data tokens are distinguished in <b>**kern</b>:
+notes, rests, and barlines.
+</P>
+<P>
+Notes can encode a variety of attributes including
+absolute pitch, accidental, canonical duration, articulation,
+ornamentation, ties, slurs, phrasing, stem-direction and beaming.
+</P>
+<P>
+Pitches in
+<b>**kern</b>
+are encoded as "nominally" equally-tempered values.
+Transposing instruments are represented at concert pitch
+with a tandem interpretation indicating the nature of the transposition.
+Pitch information is encoded through a scheme of upper- and lower-case letters.
+Middle C (C4) is represented using the single lower-case letter <code><big>c</big></code>.
+Successive octaves are designated by letter repetition,
+thus C5 is represented by <code><big>cc</big></code>, C6 by <code><big>ccc</big></code> and so on.
+For pitches below C4, upper-case letters are used:
+<code><big>C</big></code> for C3, <code><big>CC</big></code> for C2, and so on.
+This same scheme is used for other pitch letter-names.
+Changes of octave are deemed to occur between B and C.
+Thus the B below middle <code><big>c</big></code> is represented as <code><big>B</big></code>;
+the B below <code><big>CC</big></code> is represented as <code><big>BBB</big></code>, and so on.
+</P>
+<P>
+Accidentals are encoded using the octothorpe (<code><big>#</big></code>)
+for sharps, the minus sign (<code><big>-</big></code>) for flats,
+and the lower-case letter <code><big>n</big></code> for naturals.
+Accidentals are encoded immediately following the diatonic pitch
+information.
+Double-sharps and double-flats have no special representations in
+<b>**kern</b>
+and are simply denoted by repetition <code><big>(##)</big></code> and <code><big>(--)</big></code>.
+Triple- and quadruple accidentals are similarly encoded by repetition.
+Sharps, flats, and naturals are mutually exclusive in
+<b>**kern,</b>
+so tokens such as <code><big>cc#n</big></code> and <code><big>GG-#</big></code> are illegal.
+In addition, natural signs may not be repeated (i.e. <code><big>nn</big></code>).
+</P>
+<P>
+In
+<b>**kern,</b>
+all pitches are encoded as contextually independent absolute values.
+Pitches must be encoded with the appropriate accidental,
+even if the accidental is specified in a key-signature,
+or is present earlier in the same measure.
+Transposing instruments must be notated at (sounding) concert pitch
+(although see the tandem interpretation <b>transposition (3)</b>).
+</P>
+<P>
+Note tokens may be modified by the presence of additional signifiers.
+</P>
+<P>
+The
+<b>**kern</b>
+representation provides no generic means for representing "curved
+lines" found in printed scores.
+Lines must be explicitly interpreted as ties, slurs or phrases.
+The open brace <code><big>{</big></code> denotes the beginning of a phrase.
+The closed brace <code><big>}</big></code> denotes the end of a phrase.
+The open parenthesis <code><big>(</big></code> and closed parenthesis <code><big>)</big></code> signify
+the beginning and end of a slur respectively.
+The semicolon <code><big>;</big></code> denotes a pause.
+The open square bracket <code><big>[</big></code> denotes the first note of a tie.
+The closed square bracket <code><big>]</big></code> denotes the last note of a tie.
+The underscore character <code><big>_</big></code> denotes middle notes of a tie.
+</P>
+<P>
+Additional signifiers are provided for denoting articulation marks
+and ornaments.
+The letters <code><big>T</big></code> and <code><big>t</big></code> are used to signify whole-tone and semitone
+trills, respectively.
+Whole-tone and semitone mordents are signified by the letters <code><big>M</big></code>
+and <code><big>m</big></code>.
+Inverted mordents are signified by <code><big>W</big></code> (whole-tone)
+and <code><big>w</big></code> (semitone).
+(Note that trills, mordents, and inverted mordents wider than two
+semitones in size are also denoted by the upper-case signifier.)
+The letter <code><big>S</big></code> signifies a turn, whereas the dollar sign (<code><big>$</big></code>)
+signifies an inverted (or Wagnerian) turn.
+When a concluding turn is appended to the end of an ornament (such as a trill),
+the upper-case letter <code><big>R</big></code> is added to the ornament signifier
+(as in <code><big>tR</big></code> and <code><big>TR</big></code>).
+In addition to these ornaments,
+<b>**kern</b>
+provides a signifier for (multi-note) arpeggiation (<code><big>:</big></code>).
+The presence of ornaments other than trills, mordents, inverted mordents,
+and turns types can be indicated by the generic ornament symbol (<code><big>O</big></code>).
+</P>
+<P>
+Articulation marks include the apostrophe (<code><big>'</big></code>) for staccato,
+the double-quote (<code><big>"</big></code>) for pizzicato, the greve (<code><big>`</big></code>) for staccatissimo or attacca,
+the tilde (<code><big>~</big></code>) for tenuto, and the caret (<code><big>^</big></code>)
+for all note-related accents (including < and >).
+In addition,
+<b>**kern</b>
+provides signifiers for up-bow (<code><big>v</big></code>) and down-bow (<code><big>u</big></code>).
+The presence of other articulation types can be indicated by the
+generic articulation symbol (<code><big>I</big></code>).
+</P>
+<P>
+As noted, the
+<b>**kern</b>
+scheme is intended for analytic applications rather than as a means
+for representing visual renderings of notation.
+Nevertheless,
+<b>**kern</b>
+distinguishes up-stems, down-stems, and beamings in order to
+assist in analytic tasks such as the determination of voicings and
+in order to facilitate the parsing of note-groupings.
+Up-stems and down-stems are indicated by the slash (<code><big>/</big></code>) and
+backslash characters (<code><big>\</big></code>) respectively.
+The beginning and ends of beams are signified by the upper-case letters
+<code><big>L</big></code> and <code><big>J</big></code>.
+Multiple beams are indicated via letter repetition,
+e.g. <code><big>LL <--> JJ</big></code> and <code><big>LLL <--> JJJ</big></code> for double- and
+triple-beams respectively.
+Partial beams may extend to the right (<code><big>K</big></code>) or left (<code><big>k</big></code>).
+Again, multiple partial beams are indicated via letter repetition.
+By way of example, a doubly-dotted sixteenth note beamed to a thirty-second
+note can be represented as:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>16..LL</TD></TR>
+<TR><TD>32JJkk</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+Slurs and phrase markings can be nested (e.g. slurs within slurs)
+and may also be elided (e.g. overlapping phrases).
+Nested markings mean that one slur or phrase is entirely subsumed
+under another slur or phrase.
+For example:  <code><big>(   (   )    )</big></code>
+means that a short slur has occurred within a longer slur.
+Elisions are overlaps, for example, where an existing phrase fails
+to end while a new phrase begins.
+In
+<b>**kern</b>
+the ampersand character is used to mark elided slurs or phrases.
+For example:  <code><big>{   &{   }    &}</big></code>
+means that two phrases overlap -- the initial phrase ending after
+second phrase has begun.
+Multiple levels of elisions are indicated by repeating the ampersand
+character.
+Both the beginning and ending must be marked by the same number of ampersands.
+For example, the following coding represents a series of elided phrases
+where three separate phrases begin before any of the phrases is terminated:
+{  &{  &&{  }  &&}  &}
+Notice that the second elided phrase terminates after third phrase has ended.
+</P>
+<P>
+<i>Durations</i>
+are encoded in a manner identical to the
+<A HREF="recip.rep.html"><b>**recip</b></A>
+representation.
+Durations are encoded as nominal proportions using integer numbers and
+the period character.
+With the exception of the value zero, durations are represented by
+reciprocal numerical values corresponding to the American duration names:
+<code><big>1</big></code> for whole note, <code><big>8</big></code> for eighth, <code><big>32</big></code> for
+thirty-second, etc.
+The number zero (<code><big>0</big></code>) is reserved for the
+<i>breve</i>
+duration (i.e. a duration of twice the length of a whole note).
+Dotted durations are indicated by adding the period character (<code><big>.</big></code>)
+immediately following the numerical value --
+hence <code><big>8.</big></code> signifies a dotted-eighth note
+and <code><big>2..</big></code> signifies a doubly-dotted half note.
+Any number of augmentation dots may follow the duration integer.
+</P>
+<P>
+Triplet and other irregular durations are represented using the
+same reciprocal logic.
+Three quarter triplets in the time of four quarters
+(a whole duration) are signified by the value <code><big>3</big></code>
+(i.e. "third notes").
+Eighth-note quintuplets (5 in the time of 4)
+are represented by the value <code><big>10</big></code> (a half duration divided by 5).
+See
+<A HREF="recip.rep.html"><b>**recip</b></A>
+for further details.
+</P>
+<P>
+The
+<b>**kern</b>
+representation also allows for the encoding of acciaccaturas,
+non-canonical groupettos, and appoggiaturas.
+Depending on the expected analytic application,
+one way to handle these notational devices is to encode
+the notes according to the manner in which they are typically performed.
+Alternatively, since these notes are viewed as embellishment notes
+and hold potentially less analytic status, a special
+designation for these notes can be useful for certain types of
+studies.
+</P>
+<P>
+Acciaccaturas (grace notes) are visually represented as minature
+notes denoted by a slash mark through the stem.
+In
+<b>**kern</b>
+these notes are treated as "durationless" notes and
+are designated by the lower-case letter <code><big>q</big></code>.
+Hence, the token <code><big>G#q</big></code> denotes a G#3 acciaccatura.
+Non-canonical groupettos are minature (non-cue) notes (typically in groups)
+whose stems do not contain a slash, and whose notated durations cause
+the total notated duration for the measure to exceed the prevailing meter.
+These groupetto notes are encoded as notes having their notated durations,
+but are also designated by the upper-case letter <code><big>Q</big></code>.
+Hence, a minature sixteenth-note middle C would be encoded as <code><big>16cQ</big></code>.
+Depending on the analytic task, these notes may be treated as
+equivalent to their notated durations, or they may be discarded.
+For example, the
+<A HREF="../commands/timebase.html"><b>timebase</b></A>
+command eliminates these notes.
+Note that data records containing acciaccaturas or groupettos notes must not
+include normal notes.
+</P>
+<P>
+In the case of appoggiaturas,
+<b>**kern</b>
+requires that they be encoded as performed.
+An appropriate duration is assigned to the appoggiatura according to
+common performance practice.
+The duration of the subsequent note is reduced by a corresponding amount.
+The status of the two notes forming the appoggiatura is nevertheless marked.
+The appoggiatura itself is designated by the upper-case letter <code><big>P</big></code>,
+whereas the subsequent note (whose notated duration has been shorted)
+is designated by the lower-case letter <code><big>p</big></code>.
+</P>
+<P>
+Rest tokens are denoted by the lower-case letter <code><big>r</big></code>
+along with a numerical duration signifier.
+Rests may also have the attributes of stem-direction, beaming, slur,
+and phrase, but rests cannot be assigned articulation
+or ornamentation attributes.
+In many meters, a full measure of rest is indicated by a whole rest,
+even if the actual duration of the measure differs from four quarters.
+The actual duration of the rest is encoded, however, repetition of
+the <code><big>r</big></code>
+is used to indicate that the visual rendering of the rest is
+as a whole rest.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+A barline is denoted by the occurrence of an equals sign (<code><big>=</big></code>)
+at the beginning of the token -- followed by an optional measure number
+(integer) followed by an optional letter (single lower-case alphabetic
+character), followed by an optional pause marking (<code><big>;</big></code>).
+Double-barlines are represented by the occurrence of two or more equals
+signs (<code><big>==</big></code>) at the beginning of the token -- followed by an
+optional pause marking (<code><big>;</big></code>).
+</P>
+<P>
+In representing any work, editorial interpretations are inevitable.
+It may be necessary to make explicit certain implicit information
+in a score (such as expanding abbreviations),
+or it may be necessary to estimate missing or unreadable information.
+Interpreting the voicings (that is, making explicit the degree
+of connectedness between successive pitches) is an important
+editorial function in
+<b>**kern</b>
+representations.
+The
+<b>**kern</b>
+representation provides several special-purpose signifiers to help
+make explicit various classes of editorial amendments, interpretations,
+or commentaries.
+Five types of editorial signifiers are made available:
+(1)
+<i>sic</i>
+(information is encoded literally, but is questionable)
+signified by <code><big>Y</big></code>;
+(2)
+<i>invisible symbol</i>
+(unprinted note, rest or barline, but logically implied)
+signified by <code><big>y</big></code>;
+(3)
+<i>editorial interpretation,</i>
+(a "modest" editorial act of interpretation -- such as
+the interpretation of accidentals in <i>musica ficta</i>)
+signified by <code><big>x</big></code>;
+(4)
+<i>editorial intervention</i>
+(a "significant" editorial intervention)
+signified by <code><big>X</big></code>;
+(5)
+<i>footnote</i>
+(accompanying local or global comment provides a text commentary pertaining
+to a specified data token)
+signified by <code><big>?</big></code>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**kern</big></code>
+data should be given names with the distinguishing `.krn' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**kern</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0</TD><TD>breve duration</TD></TR>
+<TR><TD>1</TD><TD>whole duration</TD></TR>
+<TR><TD>2</TD><TD>half duration</TD></TR>
+<TR><TD>3</TD><TD>half-note triplet duration</TD></TR>
+<TR><TD>4</TD><TD>quarter duration</TD></TR>
+<TR><TD>6</TD><TD>quarter-note triplet duration</TD></TR>
+<TR><TD>8</TD><TD>eighth duration</TD></TR>
+<TR><TD>12</TD><TD>eighth-note triplet duration</TD></TR>
+<TR><TD>16</TD><TD>sixteenth duration</TD></TR>
+<TR><TD>24</TD><TD>sixteenth-note triplet duration</TD></TR>
+<TR><TD>32</TD><TD>thirty-second duration</TD></TR>
+<TR><TD>64</TD><TD>sixty-fourth duration</TD></TR>
+<TR><TD>128</TD><TD>one-hundred and twenty-eighth duration</TD></TR>
+<TR><TD>.</TD><TD>duration augmentation dot</TD></TR>
+<TR><TD></TD><TD>     (must follow a number)</TD></TR>
+<TR><TD>-</TD><TD>flat sign-nus character)</TD></TR>
+<TR><TD>- -</TD><TD>double-flat (two successiv-nus characters)</TD></TR>
+<TR><TD>a-g</TD><TD>absolute pitches above middle C</TD></TR>
+<TR><TD>A-G</TD><TD>absolute pitches below middle C</TD></TR>
+<TR><TD>#</TD><TD>sharp</TD></TR>
+<TR><TD>##</TD><TD>double sharp</TD></TR>
+<TR><TD>h</TD><TD>end glissando</TD></TR>
+<TR><TD>i</TD><TD>undefined;
+<A HREF="../guide.append1.html#RDF">user assignable</A></TD></TR>
+<TR><TD>j</TD><TD>undefined;
+<A HREF="../guide.append1.html#RDF">user assignable</A></TD></TR>
+<TR><TD>k</TD><TD>partial beam extending leftward</TD></TR>
+<TR><TD>kk</TD><TD>two partial beams extending leftward</TD></TR>
+<TR><TD>l</TD><TD>undefined;
+<A HREF="../guide.append1.html#RDF">user assignable</A></TD></TR>
+<TR><TD>m</TD><TD>mordent (semitone)</TD></TR>
+<TR><TD>n</TD><TD>natural sign</TD></TR>
+<TR><TD>o</TD><TD>harmonic</TD></TR>
+<TR><TD>p</TD><TD>designator of a note subsequent to an appoggiatura</TD></TR>
+<TR><TD>q</TD><TD>acciaccatura (grace note signifier; in lieu of duration)</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>rr</TD><TD>any duration rest that is visually rendered as whole duration</TD></TR>
+<TR><TD>t</TD><TD>trill (semitone)</TD></TR>
+<TR><TD>u</TD><TD>down-bow</TD></TR>
+<TR><TD>v</TD><TD>up-bow</TD></TR>
+<TR><TD>w</TD><TD>inverted mordent (semitone)</TD></TR>
+<TR><TD>x</TD><TD>editorial interpretation; immediately preceding signifier is interpreted</TD></TR>
+<TR><TD>xx</TD><TD>editorial interpretation; entire data token is interpreted</TD></TR>
+<TR><TD>y</TD><TD>editorial mark:  invisible symbol; unprinted note, rest, or</TD></TR>
+<TR><TD>z</TD><TD>sforzando</TD></TR>
+<TR><TD></TD><TD>  barline, but logically implied</TD></TR>
+<TR><TD>H</TD><TD>begin glissando</TD></TR>
+<TR><TD>I</TD><TD>generic articulation (unspecified articulation)</TD></TR>
+<TR><TD>J</TD><TD>end beam</TD></TR>
+<TR><TD>JJ</TD><TD>end two beams</TD></TR>
+<TR><TD>K</TD><TD>partial beam extending rightward</TD></TR>
+<TR><TD>KK</TD><TD>two partial beams extending rightward</TD></TR>
+<TR><TD>L</TD><TD>start beam</TD></TR>
+<TR><TD>LL</TD><TD>start two beams</TD></TR>
+<TR><TD>M</TD><TD>mordent (whole tone)</TD></TR>
+<TR><TD>N</TD><TD>undefined;
+<A HREF="../guide.append1.html#RDF">user assignable</A></TD></TR>
+<TR><TD>O</TD><TD>generic ornament (unspecified ornament)</TD></TR>
+<TR><TD>P</TD><TD>appoggiatura note designator</TD></TR>
+<TR><TD>Q</TD><TD>groupetto note designator</TD></TR>
+<TR><TD>R</TD><TD>signified ornament ends with a turn</TD></TR>
+<TR><TD>S</TD><TD>turn</TD></TR>
+<TR><TD>$</TD><TD>Wagnerian turn</TD></TR>
+<TR><TD>T</TD><TD>trill (whole tone)</TD></TR>
+<TR><TD>U</TD><TD>con sordino; muted note</TD></TR>
+<TR><TD>V</TD><TD>undefined;
+<A HREF="../guide.append1.html#RDF">user assignable</A></TD></TR>
+<TR><TD>W</TD><TD>inverted mordent (whole tone)</TD></TR>
+<TR><TD>X</TD><TD>editorial intervention; immediately preceding signifier is an</TD></TR>
+<TR><TD></TD><TD>  editorial addition; see also <b>x</b></TD></TR>
+<TR><TD>XX</TD><TD>editorial intervention; entire data token is an editorial addition</TD></TR>
+<TR><TD>Y</TD><TD>editorial mark:  <i>sic</i> marking; information is encoded</TD></TR>
+<TR><TD>Z</TD><TD>undefined;
+<A HREF="../guide.append1.html#RDF">user assignable</A></TD></TR>
+<TR><TD></TD><TD>  literally, but is questionable</TD></TR>
+<TR><TD><space> </TD><TD>(space character) multiple-stop conjunction -- indicates</TD></TR>
+<TR><TD></TD><TD>  joint note-tokens</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>[</TD><TD>first note of a tie</TD></TR>
+<TR><TD>]</TD><TD>last note of a tie</TD></TR>
+<TR><TD>_</TD><TD>middle note(s) of a tie (underscore)</TD></TR>
+<TR><TD>(</TD><TD>slur start</TD></TR>
+<TR><TD>)</TD><TD>slur end</TD></TR>
+<TR><TD>{</TD><TD>phrase mark (start)</TD></TR>
+<TR><TD>}</TD><TD>phrase mark (end)</TD></TR>
+<TR><TD>;</TD><TD>pause sign</TD></TR>
+<TR><TD>'</TD><TD>staccato mark</TD></TR>
+<TR><TD>s</TD><TD>spiccato</TD></TR>
+<TR><TD>"</TD><TD>pizzicato mark</TD></TR>
+<TR><TD>`</TD><TD>staccatissimo mark; attacca mark; martellato mark, (heavy wedge)</TD></TR>
+<TR><TD>~</TD><TD>tenuto mark</TD></TR>
+<TR><TD>^</TD><TD>accent mark</TD></TR>
+<TR><TD>:</TD><TD>arpeggiation (of multi-note chord)</TD></TR>
+<TR><TD>|</TD><TD>in barline -- thin line designator</TD></TR>
+<TR><TD>!</TD><TD>in barline -- thick line designator</TD></TR>
+<TR><TD>,</TD><TD>breath mark</TD></TR>
+<TR><TD>/</TD><TD>up-stem</TD></TR>
+<TR><TD>\</TD><TD>down-stem</TD></TR>
+<TR><TD>&</TD><TD>elision marker (for slurs or phrases)</TD></TR>
+<TR><TD>?</TD><TD>editorial mark:  immediately preceding signifier has accompanying</TD></TR>
+<TR><TD></TD><TD>  editorial footnote in an ensuing comment</TD></TR>
+<TR><TD>??</TD><TD>editorial mark:  entire preceding data token has accompanying</TD></TR>
+<TR><TD></TD><TD>  editorial footnote in an ensuing comment</TD></TR>
+<TR><TD>@ % + | &lt; &gt;</TD><TD>undefined;
+<A HREF="../guide.append1.html#RDF">user assignable</A></TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**kern</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>CONTEXT DEPENDENCIES</H3></FONT>
+<blockquote>
+In general, signifiers in the
+<b>**kern</b>
+representation are intended to be context independent.
+This means, for example, that the data tokens <code><big>{(16ff#/'</big></code>
+and <code><big>/ff#16'({</big></code> are equivalent.
+A few exceptions to this principle are necessary in order to
+maintain the meaning of multiple-character signifiers.
+</P>
+<P>
+Numbers encoding a duration must be contiguous.
+That is, a sixteenth note may be encoded as <code><big>16ff#</big></code>
+or <code><big>ff#16</big></code> but not as <code><big>1ff#6</big></code>.
+Augmentation dots (signified by the period) must follow
+immediately after the associated duration numerals.
+Thus <code><big>16.ff#</big></code> is acceptable, but not <code><big>16ff#.</big></code> or <code><big>.16ff#</big></code>.
+Sharps, flats, and naturals must follow immediately after the
+corresponding alphabetic pitch signifiers (<code><big>16ff#</big></code> but not <code><big>16#ff</big></code>).
+Signifiers that can be repeated must be contiguous.
+This include pp, PP, LL, JJ, XX, xx, ??, ##, --, and ..
+</P>
+<P>
+The elision marker (<code><big>&</big></code>) must immediately precede the associated
+slur (<code><big>&{ ... &}</big></code>) or slur (<code><big>&( ... &)</big></code>).
+</P>
+<P>
+Barlines follow a strict contextual syntax.
+Barlines must begin with one or more equals-signs,
+followed by an optional measure number, followed by an optional
+lower-case letter, followed by an optional pause signifier.
+</P>
+<P>
+In certain applications, it may be necessary to have a
+canonical ordering of the signifiers within
+<b>**kern</b>
+data tokens.
+For example, when comparing two ostensibly identical
+<b>**kern</b>
+files, trivial differences of signifier orderings will cause UNIX
+commands such as
+<b>cmp</b>
+and
+<b>diff</b>
+to declare the files to be "different."
+In this case, it is useful to adopt a standard order of signifiers so
+that direct file comparisons may be made.
+Similarly, differences in signifier orderings can cause problems
+for pattern matching tasks.
+For example, in searching for a sixteenth-note F-sharp,
+it is convenient to define a simple regular expression -- such as
+<code><big>16f#</big></code> rather than having to define a regular expression
+that handles all possible contextual orderings -- such as
+<code><big>(16.*f#)|(f#.*16)</big></code>.
+For this reason, a canonical ordering of the
+<b>**kern</b>
+signifiers is given in the following table.
+<TABLE>
+<TR><TD><b>signified</b></TD><TD><b>signifier(s)</b></TD><TD><b>comments</b></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>1. open phrase elision indicator</TD><TD><b>&</b></TD><TD>must precede <b>{</b></TD></TR>
+<TR><TD>2. open phrase mark</TD><TD><b>{</b></TD></TR>
+<TR><TD>3. open slur elision indicator</TD><TD><b>&</b></TD><TD>must precede <b>(</b></TD></TR>
+<TR><TD>4. open slur</TD><TD><b>(</b></TD></TR>
+<TR><TD>5. open tie</TD><TD><b>[</b></TD></TR>
+<TR><TD>6. duration</TD><TD><b>0123456789</b></TD><TD>any combination; signifiers</TD></TR>
+<TR><TD></TD><TD></TD><TD>may be repeated</TD></TR>
+<TR><TD>7. augmentation dot(s)</TD><TD><b>.</b></TD><TD>signifier may be repeated</TD></TR>
+<TR><TD>8. pitch or rest</TD><TD><b>abcdefgrABCDEFG</b></TD><TD>only one of; signifier may</TD></TR>
+<TR><TD></TD><TD></TD><TD>be repeated</TD></TR>
+<TR><TD>9. accidental</TD><TD><b>-</b> or <b>#</b> or <b>n</b></TD><TD><b>-</b> and <b>#</b> may be repeated</TD></TR>
+<TR><TD>10. glissando</TD><TD><b>h</b> or <b>H</b></TD></TR>
+<TR><TD>11. harmonic</TD><TD><b>o</b></TD></TR>
+<TR><TD>12. pause</TD><TD><b>;</b></TD></TR>
+<TR><TD>13. ornament</TD><TD><b>MmS$TtWwR</b> or <b>O</b></TD><TD><b>O</b> precludes others; no</TD></TR>
+<TR><TD></TD><TD></TD><TD>repetition of a given signifier;</TD></TR>
+<TR><TD></TD><TD></TD><TD>must appear in order given</TD></TR>
+<TR><TD>14. appoggiatura designator</TD><TD><b>p</b> or <b>P</b></TD></TR>
+<TR><TD>15. acciaccatura designator</TD><TD><b>q</b></TD></TR>
+<TR><TD>16. groupetto designator</TD><TD><b>Q</b></TD></TR>
+<TR><TD>17. articulation</TD><TD><b>Usz ' " ` ~ ^ :</b> or <b>I</b></TD><TD><b>I</b> precludes others; no</TD></TR>
+<TR><TD></TD><TD></TD><TD>repetition of a given signifier;</TD></TR>
+<TR><TD></TD><TD></TD><TD>must appear in order given</TD></TR>
+<TR><TD>18. bowing</TD><TD><b>u</b> or <b>v</b></TD><TD>only one of</TD></TR>
+<TR><TD>19. stem-direction</TD><TD><b>/</b> or <b>\</b> </TD><TD>o</b>nly one of</TD></TR>
+<TR><TD>20. beaming</TD><TD><b>L</b> or <b>J</b></TD><TD>signifiers may be repeated</TD></TR>
+<TR><TD>21. partial beaming</TD><TD><b>k</b> or <b>K</b></TD><TD>signifiers may be repeated</TD></TR>
+<TR><TD>22. user-defined marks</TD><TD><b>ijl</b></TD><TD>one or more of;</TD></TR>
+<TR><TD></TD><TD><b>NVZ</b></TD><TD>may be repeated but</TD></TR>
+<TR><TD></TD><TD><b>@ % + | &lt; &gt;  </b></TD><TD>must be in order given</TD></TR>
+<TR><TD>23. closed or continuing tie</TD><TD><b>]</b> or <b>_</b></TD></TR>
+<TR><TD>24. closed slur elision indicator</TD><TD><b>&</b></TD><TD>must precede <b>)</b></TD></TR>
+<TR><TD>25. closed slur</TD><TD><b>)</b></TD></TR>
+<TR><TD>26. closed phrase elision indicator</TD><TD><b>&</b></TD><TD>must precede <b>}</b></TD></TR>
+<TR><TD>27. closed phrase mark</TD><TD><b>}</b></TD></TR>
+<TR><TD>28. breath mark</TD><TD><b>,</b></TD></TR>
+<TR><TD>29. editorial marks</TD><TD><b>xx</b> or <b>XX</b></TD></TR>
+</TABLE>
+<CENTER>
+<i>Canonical Ordering of Signifiers in <b>**kern</b> Note Tokens</i>
+</CENTER>
+<br><br>
+Note that the editorial signifiers <code><big>?, y,</big></code> and <code><big>Y</big></code>,
+as well as the single editorial signifiers <code><big>x</big></code> and <code><big>X</big></code>
+(as opposed to <code><big>xx</big></code> and <code><big>XX</big></code>) can appear anywhere in
+a data token, except as the first character.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! J.S. Bach, Fugue 2 WTC Book I</TD></TR>
+<TR><TD>!! (3 parts), in c minor; BWV 847b</TD></TR>
+<TR><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>*MM72</TD><TD>*MM72</TD><TD>*MM72</TD></TR>
+<TR><TD>*k[b-e-a-]</TD><TD>*k[b-e-a-]</TD><TD>*k[b-e-a-]</TD></TR>
+<TR><TD>*c:</TD><TD>*c:</TD><TD>*c:</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>1r</TD><TD>8r</TD><TD>1r</TD></TR>
+<TR><TD>.</TD><TD>16cc</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>16bn</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>8cc</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>8g</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>8a-</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>16cc</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>16b</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>8cc</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>8dd</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>1r</TD><TD>8g</TD><TD>1r</TD></TR>
+<TR><TD>.</TD><TD>16cc</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>16bn</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>8cc</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>8dd</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>16f</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>16g</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>4a-</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>16g</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>16f</TD><TD>.</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>1r</TD><TD>16e-</TD><TD>8r</TD></TR>
+<TR><TD>.</TD><TD>16cc</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>16bn</TD><TD>16gg</TD></TR>
+<TR><TD>.</TD><TD>16an</TD><TD>16ff#</TD></TR>
+<TR><TD>.</TD><TD>16g</TD><TD>8gg</TD></TR>
+<TR><TD>.</TD><TD>16fn</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>16e-</TD><TD>8cc</TD></TR>
+<TR><TD>.</TD><TD>16d</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>8c</TD><TD>8ee-</TD></TR>
+<TR><TD>.</TD><TD>8ee-</TD><TD>16gg</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>16ff#</TD></TR>
+<TR><TD>.</TD><TD>8dd</TD><TD>8gg</TD></TR>
+<TR><TD>.</TD><TD>8cc</TD><TD>8aan</TD></TR>
+<TR><TD>=4</TD><TD>=4</TD><TD>=4</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum commands accept <b>**kern</b> encoded data as inputs:
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/census.html"><b>census</b> -k</A></TD><TD>determine general characteristics of a <b>**kern</b> file</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/cents.html"><b>cents</b></A></TD><TD>translates <b>**kern</b> to <b>**cents</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/deg.html"><b>deg</b></A></TD><TD>translates <b>**kern</b> to <b>**deg</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/degree.html"><b>degree</b></A></TD><TD>translates <b>**kern</b> to <b>**degree</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/freq.html"><b>freq</b></A></TD><TD>translates <b>**kern</b> to <b>**freq</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/hint.html"><b>hint</b></A></TD><TD>calculate harmonic intervals from <b>**kern</b> input</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/key.html"><b>key</b></A></TD><TD>estimate the key of a <b>**kern</b> input</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/mint.html"><b>mint</b></A></TD><TD>calculate melodic intervals from <b>**kern</b> input</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/pc.html"><b>pc</b></A></TD><TD>translates <b>**kern</b> to <b>**pc</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/pitch.html"><b>pitch</b></A></TD><TD>translates <b>**kern</b> to <b>**pitch</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/proof.html"><b>proof</b></A></TD><TD>check for errors in <b>**kern</b> encoded file</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/semits.html"><b>semits</b></A></TD><TD>translate <b>**kern</b> to numerical <b>**semits</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/solfa.html"><b>solfa</b></A></TD><TD>translate <b>**kern</b> to numerical <b>**solfa</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/solfg.html"><b>solfg</b></A></TD><TD>translate <b>**kern</b> to numerical <b>**solfg</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/synco.html"><b>synco</b></A></TD><TD>measure degree of metric syncopation</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/timebase.html"><b>timebase</b></A></TD><TD>reformat <b>**kern</b> score with constant timebase</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/tonh.html"><b>tonh</b></A></TD><TD>translate <b>**kern</b> to numerical <b>**Tonh</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/trans.html"><b>trans</b></A></TD><TD>transpose <b>**kern</b> score</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/urrhythm.html"><b>urrhythm</b></A></TD><TD>characterize the rhythmic prototypes in a passage</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/vox.html"><b>vox</b></A></TD><TD>determine active and inactive voices in a Humdrum file</TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+The following Humdrum commands produce <b>**kern</b> data as outputs:
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD valign="top"><A HREF="../commands/kern.html"><b>kern</b></A></TD><TD>translates <b>**cents</b>, <b>**degree</b>, <b>**freq</b>, <b>**fret</b>,
+<b>**MIDI</b>, <b>**pitch</b>, <b>**semits</b>, <b>**solfg</b>, <b>**specC</b>,
+and <b>**Tonh</b> to <b>**kern</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/timebase.html"><b>timebase</b></A></TD><TD>reformat <b>**kern</b> score with constant timebase</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/trans.html"><b>trans</b></A></TD><TD>transpose <b>**kern</b> score</TD></TR>
+</TABLE>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction
+with <b>**kern</b>:
+<blockquote>
+<TABLE>
+<TR><TD>clef</TD><TD><code><big>*clefG2</big></code></TD></TR>
+<TR><TD>instrument</TD><TD><code><big>*I</big></code></TD></TR>
+<TR><TD>instrument class</TD><TD><code><big>*IC</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+<TR><TD>timebase</TD><TD><code><big>*tb32</big></code></TD></TR>
+<TR><TD>transposing instrument</TD><TD><code><big>*ITr</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**kern</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="cents.rep.html"><b>**cents</b></A>,
+<A HREF="degree.rep.html"><b>**degree</b></A>,
+<A HREF="freq.rep.html"><b>**freq</b></A>,
+<A HREF="fret.rep.html"><b>**fret</b></A>,
+<A HREF="MIDI.rep.html"><b>**MIDI</b></A>,
+<A HREF="mint.rep.html"><b>**mint</b></A>,
+<A HREF="pc.rep.html"><b>**pc</b></A>,
+<A HREF="pitch.rep.html"><b>**pitch</b></A>,
+<A HREF="recip.rep.html"><b>**recip</b></A>,
+<A HREF="semits.rep.html"><b>**semits</b></A>,
+<A HREF="solfg.rep.html"><b>**solfg</b></A>,
+<A HREF="specC.rep.html"><b>**specC</b></A>,
+<A HREF="Tonh.rep.html"><b>**Tonh</b></A>
+</code></big>
+</blockquote>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

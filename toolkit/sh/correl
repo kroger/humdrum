@@ -1,0 +1,86 @@
+###################################################################
+# 						CORREL
+# Programmed by: Tim Racinsky        Date: June, 1994
+# Copyright (c) 1994 David Huron
+#
+# Modifications:
+#    Date:     Programmer:        	Description:
+#
+# 	This shell program is used to invoke the awk program correl.awk.
+#
+FILENAME=""
+OPTIONS=""
+PRECISION=""
+REGEXP=""
+TEMPLATE=""
+HELP=""
+FLAG=""
+STNDIN=""
+USAGE1="USAGE: correl -h                (Help Screen)"
+USAGE2="       correl [-f templatefile] [-m] [-p n] [-s reg_exp] [file]"
+while getopts f:hmp:s: arg
+do
+	case "$arg" in
+     f)	if [ ! -f "${OPTARG}" ]
+		then
+			echo "correl: ERROR: Invalid filename specified with -f." 1>&2
+			echo "" 1>&2
+			echo "$USAGE1" 1>&2
+			echo "$USAGE2" 1>&2
+			exit
+		else
+			TEMPLATE="${OPTARG}"
+		fi;;
+	h) 	HELP="ON";;
+	m)	OPTIONS="$OPTIONS${arg}";;
+	p)	PRECISION="${OPTARG}";;
+	s)	REGEXP="${OPTARG}";;
+	[?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/correl.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/correl.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' may be used
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "correl: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+$AWK_VER -f ${HUMDRUM}/bin/correl.awk "DUMMY" "${OPTIONS:-null}" "${PRECISION:-null}" "${REGEXP:-null}" "${TEMPLATE:-null}" $FILENAME

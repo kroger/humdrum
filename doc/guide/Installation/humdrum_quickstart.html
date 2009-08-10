@@ -1,0 +1,383 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.76 [en] (X11; U; Linux 2.2.17-14 i686) [Netscape]">
+   <title>Humdrum Toolkit Quick-Start Tutorial</title>
+   <link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+<h1>
+Humdrum Quick-Start Tutorial</h1></center>
+
+<h2>
+
+<hr></h2>
+Having installed the Humdrum Toolkit,
+you will be eager to see Humdrum in action.
+Begin by changing directories to the Humdrum demonstration directory.
+This is located in the subdirectory
+<i>demo</i> under the directory where
+you installed Humdrum.
+In most cases, you can change directories by typing the command:
+<blockquote><tt>cd /humdrum/demo</tt></blockquote>
+This directory holds a number of tutorial files, and also includes a subdirectory
+containing a selection of musical scores encoded in various Humdrum formats.
+<p>Begin by typing:
+<blockquote><tt>demo</tt></blockquote>
+This demonstration will first ask you whether you have an appropriate MIDI
+set-up. Answer `yes' only if your system runs Windows 95/98/NT, DOS or
+OS/2 and has a Roland MPU-401-compatible MIDI card with a MIDI synthesizer
+connected for sound output. (Answering `no' will restrict the demonstration
+to outputs that don't involve sound.)
+<p>The Humdrum <tt>demo</tt> will provide a menu of
+ten sample problems. Each problem will pose and answer some analytic question
+in real-time. (On older machines, some of the sample calculations may take
+several minutes to execute.) You can stop the demo at any time by typing
+one or more control-Cs.
+<p>If your system is configured for MIDI output, you might also try changing
+directories to the <tt>scores</tt> subdirectory and
+playing one of the scores. A MIDI version of the first movement of Haydn's
+string quartet Opus 76, No. 3, is encoded in the file <tt>haydn76.hmd</tt>.
+
+<p>Begin by typing the command:
+<blockquote><tt>
+<A HREF="../commands/perform.html">perform</a>
+misc/haydn76.hmd</tt></blockquote>
+If your MIDI system is properly configured,
+you should hear a deadpan performance
+of the work.
+Try typing various numbers followed by&nbsp;<enter>.
+This will move the performance immediately to the
+corresponding numbered measure.
+(If you enter a number greater than the total number of measures, playback
+will terminate.) Type plus (+) or minus (-) to move ahead or backward one
+measure at a time. Press the space-bar to interrupt play. Also try typing
+`&lt;' and `>' to slow-down or speed-up the tempo. (Notice that you don't
+have to use the shift-key when typing `&lt;', `>' or `+'.) You might also
+want to explore the search commands. Try typing a slash (/) followed by
+the word `Development', followed by&nbsp;<enter>. To search backward from
+the current score position, use the question mark (?) rather than the slash
+-- as in `?Exposition'&nbsp;<enter>. To end, type the escape key&nbsp;<ESC>.
+If your MIDI instrument continues to sound after the
+<b><A HREF="../commands/perform.html">perform</a></b>
+program has ended, type:
+<blockquote><b><tt>
+<A HREF="../commands/tacet.html">tacet</a></tt></b></blockquote>
+This will turn-off any sounding tones.
+<p>You may want to view the accompanying videocassette in order to further
+familiarize yourself with the capabilities of the Humdrum Toolkit. Ultimately,
+you will need to begin reading the Humdrum
+<i>Users' Guide</i> and start
+working through the tutorial exercises. As with the study of a musical
+instrument, practice is essential to developing a skill.
+<br><a NAME="HOW_WORKS"></a>
+<hr>
+<h2>
+How HUMDRUM Works</h2>
+Some users may be interested in gaining a basic understanding how the Humdrum
+tools work. The following description provides a general outline of the
+operation of the Humdrum tools.
+<p>The Humdrum tools were developed with several criteria in mind. The
+foremost criterion was that the tools needed to be easy to program. Most
+of the tools are written in the AWK programming language -- a "fast prototyping
+language" whose syntax is very similar to that of the C programming language.
+AWK was developed by Alfred Aho, Brian Kernighan, and Peter Weinberger
+(hence the name AWK). AWK is especially well suited to musical applications
+since AWK provides extensive, yet simple-to-use facilities for matching
+and manipulating strings patterns.
+<p>Since AWK is an interpreted language, AWK programs must invoke the AWK
+interpreter each time they are executed. The command-line syntax for invoking
+AWK programs is cumbersome. In order to simplify the command-line syntax,
+special-purpose "shell scripts" have been used to massage the command invocation,
+to parse the options, and to provide help screens where appropriate.
+<p>Most Humdrum commands cause a shell-script to be executed. Each script
+invokes the AWK interpreter and calls the appropriate AWK program. The
+shell-scripts were written in the well-known UNIX
+<i>Kornshell.</i> On
+Windows 95/98/NT, DOS and OS/2 these scripts are held in files designated
+by the
+<i>.ksh</i> extension. These scripts can also be executed from the
+<i>Bourne</i>
+shell, but they are not compatible with the UNIX
+<i>C</i> shell.
+<p>A typical Humdrum command, such as the
+<b><A HREF="../commands/kern.html">kern</a></b>
+command, is associated with two files:
+<i>kern.ksh</i> (or just
+<i>kern</i>
+on UNIX) and
+<i>kern.awk.</i> The <tt>.awk</tt> script
+acts as both the "source" code and the "executable" code. Both<tt>
+.ksh</tt> and <tt>.awk</tt> files are ordinary
+ASCII files, and so can be examined and (potentially) modified by the user.
+<p>Some more complicated Humdrum commands have been partitioned into several
+subprograms.
+For example, the Humdrum
+<b><A HREF="../commands/extract.html">extract</a></b>
+command consists of four separate programs,
+<i>extract1.awk, extract2.awk,</i>
+and so on. The associated shell script
+<i>(extract.ksh)</i> determines
+which of the
+<b>extract</b> programs should be invoked, on the basis of
+the user-selected options.
+<p>More computationally intensive programs have been written in the C programming
+language. These include Humdrum commands such as
+<b><A HREF="../commands/perform.html">perform</a></b>
+and
+<b><A HREF="../commands/simil.html">simil.</a></b> On Windows 95/98/NT,
+DOS, the <tt>perform.exe, simil.exe,</tt> ... files
+are executable files, compiled from C programs. The Humdrum distribution
+disks include the complete source code (.c files) for all of these commands.
+<p>In order to be able to execute Humdrum commands, several conditions
+need to be satisfied. First, either the
+<i>Kornshell</i> or
+<i>Bourne</i>
+shell command interpreter must be available. Second, the <i>AWK</i> language
+interpreter must be available. Third, four pieces of information must be
+accessible to the shell: (1) the shell must know where to find the Humdrum
+commands, (2) it must know where to find the AWK interpreter, (3) it must
+know where it can store temporary files, and (4) it must be told where
+to direct standard error outputs (on UNIX normally <tt>/dev/tty</tt>;
+on Windows 95/98/NT, DOS this is <tt>con</tt>. Each
+of these four pieces of information need to be stored in shell "environment"
+variables. The variables are named PATH, AWK_VER, TMP, and CON.
+<p>When you boot your system, these variables need to be assigned properly,
+otherwise the installed Humdrum tools will fail to work.
+<br><a NAME="TIPS"></a>
+<hr>
+<h2>
+Trouble-Shooting Tips</h2>
+The table below lists some common errors associated with faulty or incomplete
+installation of the Humdrum Toolkit.
+<b><A HREF="../humdrum.problems.html">Further
+information</a></b> is available to help with trouble-shooting. .cs I 18
+<blockquote>&nbsp;
+<table>
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td><b>Error</b></td>
+
+<td><b>Possible cause</b></td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td>=</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td><tt>Bad command or file name</tt></td>
+
+<td>Kornshell has not been installed or PATH</td>
+</tr>
+
+<tr>
+<td></td>
+
+<td>has not been properly set.</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td><tt>glob: EXEC error</tt></td>
+
+<td>Install invoked from Windows without</td>
+</tr>
+
+<tr>
+<td></td>
+
+<td>opening a shell.</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td><program><i><tt>not found</tt></i></td>
+
+<td>PATH not set correctly or command has</td>
+</tr>
+
+<tr>
+<td></td>
+
+<td>not been copied into the Humdrum directory.</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td><progname><number><i><tt>: -f: not found</tt></i></td>
+
+<td>AWK_VER shell variable not set.</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td><progname><number><i><tt>: awk: not found</tt></i></td>
+
+<td>"awk" not in current PATH (DOS/OS2).</td>
+</tr>
+
+<tr>
+<td><progname><number><i><tt>: nawk: not found</tt></i></td>
+
+<td>"nawk" not in current PATH (UNIX).</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td><tt>awk: script file "&lt;<i>progname.awk>":</i></tt></td>
+
+<td>HUMDRUM shell variable not set, or PATH</td>
+</tr>
+
+<tr>
+<td><tt>no such file or directory</tt></td>
+
+<td>not set correctly.</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td><tt>_main: memory allocation failure</tt></td>
+
+<td>Input file(s) too big to handle; try breaking</td>
+</tr>
+
+<tr>
+<td></td>
+
+<td>the input into smaller segments (using</td>
+</tr>
+
+<tr>
+<td></td>
+
+<td>`<i>yank</i>'), and process each segment separately.</td>
+</tr>
+
+<tr>
+<td></td>
+
+<td>Assemble back together by using `<i>cat</i>'.</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td><tt>pc: compiler error ...</tt></td>
+
+<td>Humdrum `pc' command conflicts with a</td>
+</tr>
+
+<tr>
+<td></td>
+
+<td>Pascal language compiler named `pc'.</td>
+</tr>
+
+<tr>
+<td></td>
+
+<td>Rename Humdrum `pc.ksh' and `pc.awk' files.</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+</table>
+</blockquote>
+
+<hr>
+<ul>
+<li>
+<b><A HREF="../index.html">Humdrum Toolkit Home Page</a></b></li>
+</ul>
+
+<center>Copyright &copy; 1993, 1999 David Huron</center>
+
+<p><br>
+<blockquote>UNIX is a registered trademark of Unix System
+Laboratories Incorporated. PC-DOS and OS/2 are registered trademarks of
+IBM Corporation. MS-DOS, Windows, Windows 95, Windows 98, and Windows NT
+are registered trademarks of Microsoft Corporation. Macintosh, Classic,
+Quadra, Power Mac, Powerbook, and G3 are registered trademarks of Apple
+Computers Incorporated. MKS and MKS Toolkit are registered trademarks of
+Mortice Kern Systems Incorporated.</blockquote>
+
+</body>
+</html>

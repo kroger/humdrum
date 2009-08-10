@@ -1,0 +1,196 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Reference Manual - Music Software Development</TITLE>
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+<BODY>
+
+<table id="header" width="100%" border="0" cellspacing="0">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<H1><i>Development Reference</i></H1>
+<center><HR WIDTH=500></center>
+</P>
+<CENTER>
+<H1>Humdrum Software Development</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+
+<P>
+The Humdrum Toolkit is necessarily limited in scope and there are many
+functions that users will wish to add.
+In developing adjunct software tools, it is imperative
+that the software conform to the following design conventions:
+<ol>
+<li>
+Programs should be general-purpose and adapt to a
+wide variety of input circumstances.
+<li>
+If possible, programs should be able to process any Humdrum input
+rather than be limited to a given type of input interpretation.
+<li>
+Command names should be limited to 8 characters in length in order
+to ensure portability to DOS systems.
+<li>
+Command names should preferably be the same as the output
+interpretation produced by the command.
+<li>
+Command names should not be unduly abbreviated
+since infrequently used software is less easily
+remembered than frequently used system commands.
+<li>
+The command syntax should conform to standard POSIX conventions.
+<li>
+Errors and warnings should be prefaced by giving
+the name of the program or command which issues the error message.  e.g.
+<blockquote>
+<code>
+vox: ERROR: voice 3 begins with a null token.
+</code>
+</blockquote>
+<li>
+Errors messages should be sent to "stderr" rather than to the
+standard output.
+<li>
+Wherever possible, `filter' programs should produce outputs that
+are identical in structure to the input.
+More specifically, input line numbers should correspond to output
+line numbers -- where appropriate.
+<li>
+Comments, interpretations, barlines, and double barlines should
+be echoed in the output as the default condition
+(except in the case of formatted non-Humdrum outputs).
+<li>
+For many programs,
+the user should be able to skip the processing of certain types of
+tokens (such as barlines) by specifying a
+.B "-s"
+flag -- followed by a user-defined regular expression.
+Tokens matching the regular expression should be echoed
+unprocessed in the output stream.
+<li>
+Programs should handle spine-path changes in a fashion
+appropriate to the nature of the command.
+<li>
+Comments and interpretations should be identified by explicitly matching
+the exclamation mark or asterisk in the
+<i>first</i>
+column of the input data token.
+Exclamation marks and asterisks are legitimate data signifiers
+when not occurring in the first column of an input token.
+<li>
+Where possible, outputs should
+<i>not</i>
+be formatted with descriptive labels etc.
+The preferred output format is to have all outputs
+conform to the Humdrum syntax.
+This ensures that all outputs can themselves be used as inputs to
+other Humdrum programs.
+<li>
+Programs should generally avoid assumptions
+concerning context-dependent inputs.
+Inputs should be assumed to be context-free.
+<li>
+Programs should be able to handle inputs
+with unexpected user extensions or representational addenda
+-- such as the presence of spurious or unknown characters.
+<li>
+Programs that search or examine inputs for certain features, properties,
+or errors should return a
+<i>null</i>
+output if nothing is found.
+Messages indicating that `nothing was found' should be avoided.
+"Silence is golden."
+</ol>
+</P>
+<H1>Standard Program Skeleton</H1>
+<P>
+Much of the Humdrum software was originally developed using the
+AWK programming language.
+AWK was designed by
+<A HREF="manual.bibliog.html#Aho">Alfred Aho, Brian Kernighan, and Peter Weinberger.</A>
+It is syntactically very similar to the C programming language,
+but is easier to use and promotes better software productivity.
+AWK provides powerful text manipulation features that make it
+admirably suited to the creation of Humdrum software.
+AWK is also a very easy language to learn,
+and is an excellent first language for novice programmers.
+</P>
+<P>
+The Humdrum Toolkit includes programing skeletons that may provide a
+useful starting place for software development using AWK.
+Two skeleton files are provided with the toolkit:
+<A HREF="skeleton.ksh"><b>skeleton.ksh</b></A>
+and
+<A HREF="skeleton.awk"><b>skeleton.awk</b></A>.
+The kornshell file (<b>.ksh</b>) parses the command line,
+issues appropriate error messages if the command is improperly invoked,
+displays a help screen if necessary, and assembles the command
+parameters to invoke an awk script for the command (<b>.awk</b>).
+</P>
+<P>
+The <A HREF="skeleton.awk"><b>skeleton.awk</b></A> skeleton contains a main loop that
+is normally executed for each record of input.
+A series of useful functions are included in the AWK skeleton program.
+These functions include:
+<ol>
+<li> <b>Parse_command.</b>
+This function checks that the input passed from the
+corresponding kornshell script for the command.
+The Parse_command function contains a list of valid options and
+assigns the passed parameters to the appropriate option variables.
+<li> <b>Store_indicators.</b>
+This function allows the spine-path indicators for the 
+current record to be stored in the array <b>path_indicator</b>
+so that they may be used later.
+<li> <b>Store_new_interps.</b>
+This function stores the new interpretations found in an
+interpretation record for each spine.
+<li> <b>Process_indicators.</b>
+This function takes the spine-path indicators that were stored
+in the array 'path_indicator' in the function 'store_indicators'
+and manipulates the arrays 'path_indicator' and 'current_interp'
+according to the contents of the array 'path_indicator'.
+<li> <b>Ins_array_pos.</b>
+This function inserts new positions in the
+arrays 'path_indicator', 'current_interp', and 'current_key' and
+copies elements so that everything is preserved
+<li> <b>Del_array_pos.</b>
+Performs the opposite of function 'ins_array_pos'.
+<li> <b>Exchange_spines.</b>
+This function exhanges two spines by exchanging the corresponding
+elements in current_interp.
+</ol>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="index.html">
+<B>Humdrum Toolkit Main Page</B></A>
+<li>
+<A HREF="manual07.html">
+<B>Developer's Guide Main Page</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Humdrum Toolkit User Guide</B></A>
+<li>
+<A HREF="commands.toc.html">
+<B>Humdrum Toolkit Command Documentation</B></A>
+</BODY>
+</HTML>
+
+
+<br><br>

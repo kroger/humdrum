@@ -1,0 +1,25 @@
+
+NUM       : Number selected records according to user-defined criteria.
+
+Syntax:
+    num [-efT] [-a **interp] [-i n] [-n regexp] [-o n] [-O n]
+        [-p regexp] [-P regexp] [-r regexp] [-R regexp] [-s regexp]
+        [-S regexp] [-x regexp] [-z regexp] [-Z regexp] [inputfile ...]
+Options:
+     -a **interp : append a new output spine containing numbered data
+     -e          : place numbers at end of tokens (rather than at beginning)
+     -f          : number all spines (all fields) in the input
+     -i n        : set increment value to n
+     -n regexp   : number only those records matching regexp
+     -o n        : set initial offset value to n
+     -O n        : set offset value to n after a reset
+     -p regexp   : position number following first match of regexp on line
+     -P regexp   : position number just before first match of regexp on line
+     -r regexp   : resume numbering records when regexp is matched
+     -R regexp   : resume numbering records AFTER regexp is matched
+     -s regexp   : suspend numbering records when regexp is matched
+     -S regexp   : suspend numbering records AFTER regexp is matched
+     -T          : reset counter when all spines have exclusive interpretations
+     -x regexp   : exclude numbering those records matching regexp
+     -z regexp   : reset counter when record matches regexp
+     -Z regexp   : reset counter AFTER record matches regexp

@@ -1,0 +1,657 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 8</TITLE>
+<!-- Chapter 8 (The Shell) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:14:05 EST 2000">
+<meta name="description" content="Chapter 8 (The Shell) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<body>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<br>
+
+<H1>Chapter8</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide07.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide09.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>The Shell (I)</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+When you type commands, they are interpreted by a command
+<i>shell.</i>
+The shell is a program that interprets user commands
+before passing them along to be executed.
+Command shells are quite sophisticated and provide a
+number of useful features.
+Although there is a lot to learn about shells,
+we will explore only those features that facilitate
+use of Humdrum.
+This chapter is the first of four chapters scattered throughout
+this book where we will pause and examine some
+of the more pertinent and valuable features of the shell.
+</P>
+<P>
+In UNIX environments, many different shells
+have been developed over the years.
+The original UNIX shell was the <i>C-shell</i> --
+a shell whose syntax is similar to the C programming language.
+A later shell was developed by Stephen Bourne and is known as the
+<i>Bourne shell.</i>
+Subsequent improvements by David Korn resulted in the
+<i>Korn shell.</i>
+The Bourne shell was improved in light of many features
+introduced in the Korn shell, and resulted in the
+<i>Bourne Again Shell</i>
+--  known as <i>Bash</i>.
+The Korn and Bash shells are the most popular and powerful of the
+current generation of shells.
+Although they were originally developed for the UNIX operating
+system, these shells are also available for DOS, Macintosh,
+Windows, Windows 98 and many other operating systems.
+</P>
+<P>
+Shells themselves are advanced programming languages that
+provide complex control structures.
+When you type a command, you are already writing a program --
+although most of your programs are just one line in length.
+</P>
+<A NAME="Shell_Special_Characters">
+<H2>Shell Special Characters</H2>
+</P>
+<P>
+The shell interprets a number of characters in a special manner.
+When you type a command, you should know that most shells treat
+the following characters as having a special meaning:
+the octothorpe (#), the dollar-sign ($), the semicolon (;),
+the ampersand (&), the verticule (|), the asterisk (*),
+the apostrophe ('), the greve (`), the greater-than sign (>),
+the less-than sign (<), the question-mark (?),
+the double-quote ("), and the backslash (\).
+We'll consider the function of each of these characters one at a time.
+</P>
+<A NAME="File_Redirection">
+<H2>File Redirection (>)</H2>
+</P>
+<P>
+Some of the special shell characters have already been discussed.
+The greater-than-sign (>) is a
+<i>file redirection operator.</i>
+It must be followed by a user-specified filename;
+any output from the preceding command is placed in the specified file.
+For example, the following command sorts the file <code><big>inputfile</big></code>
+and places the sorted result in the file named <code><big>outputfile</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>sort inputfile > outputfile</big></code>
+</blockquote>
+</P>
+<P>
+If the file <code><big>outputfile</big></code> already existed, its contents
+will be destroyed and over-written with the new output.
+Be careful not to assign the output to the same file as the input,
+since this will destroy the original input file.
+</P>
+<P>
+Sometimes it is useful to
+<i>add</i>
+the results of an operation to some already existing file.
+The double greater-than-sign (>>) causes the new output to be
+appended to any data already in the named file.
+For example, the following command sorts the file <code><big>inputfile</big></code>
+and adds the sorted lines to the end of the file named <code><big>outputfile</big></code>.
+If the <code><big>outputfile</big></code> does not already exist,
+the command will create it.
+</P>
+<P>
+<blockquote>
+<code><big>sort inputfile >> outputfile</big></code>
+</blockquote>
+</P>
+<A NAME="Pipe_(|)">
+<H2>Pipe (|)</H2>
+</P>
+<P>
+The vertical bar (|) is interpreted by the shell as a `pipe.'
+Pipes are used to join the output of one command to the input
+of a subsequent command.
+For example, in the following construction, the output of <code><big>command1</big></code>
+is routed as the input to <code><big>command2</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>command1 | command2</big></code>
+</blockquote>
+</P>
+<P>
+There is no practical limit to the length of a pipeline.
+Several pipes can be used to connect successive outputs
+to ensuing commands:
+</P>
+<P>
+<blockquote>
+<code><big>command1 | command2 | command3 | command4</big></code>
+</blockquote>
+</P>
+<A NAME="Shell_Wildcard_(*)">
+<H2>Shell Wildcard (*)</H2>
+</P>
+<P>
+The asterisk is interpreted by the shell as a "filename wildcard."
+When it appears by itself, the asterisk is `expanded' by the shell to
+a list of all files in the current directory (in alphabetical order).
+For example, if the current directory contained just three files:
+<code><big>alice</big></code>, <code><big>barry</big></code> and <code><big>chris</big></code> -- then the following
+command would be applied to all three files in consecutive order:
+</P>
+<P>
+<blockquote>
+<code><big>command * > people</big></code>
+</blockquote>
+</P>
+<P>
+The file expansion occurs at the moment when the command is invoked.
+So although the file <code><big>people</big></code> is added to the current directory,
+it is not included as its own input.
+However, if the above command was executed a second time,
+then the file expansion would include <code><big>people</big></code> -- even
+as the file itself is over-written to receive the output.
+Including the output file as input is never a good idea.
+</P>
+<A NAME="Comment_(octothorpe)">
+<H2>Comment (#)</H2>
+</P>
+<P>
+The octothorpe character (#) indicates a shell <i>comment</i>.
+Any characters following the # (up to the end of the line)
+are simply ignored by the shell.
+The following is not a command:
+</P>
+<P>
+<blockquote>
+<code><big>#grep OTL: filename</big></code>
+</blockquote>
+</P>
+<P>
+The comment can begin anywhere in the line.
+Here the comment begins after the filename:
+</P>
+<P>
+<blockquote>
+<code><big>grep OTL: filename   # (Search for Humdrum titles.)</big></code>
+</blockquote>
+</P>
+<H2>Escape Character (\)</H2>
+</P>
+<P>
+Sometimes we would like to have a special character treated literally.
+For example, suppose we wanted to search for records containing
+sharps in a
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+file.
+The following command will not work because the shell will
+insist on interpreting the octothorpe as beginning a comment:
+</P>
+<P>
+<blockquote>
+<code><big>grep # filename</big></code>
+</blockquote>
+</P>
+<P>
+There are several ways to "turn off" the special meaning
+of a character.
+The simplest way is to precede the character by a backslash (\)
+as in the following command:
+</P>
+<P>
+<blockquote>
+<code><big>grep \# filename</big></code>
+</blockquote>
+</P>
+<P>
+The backslash character itself can be treated literally by
+preceding it with another backslash.
+For example, the following command searches for down-stems
+in a <code><big>**kern</big></code> file:
+</P>
+<P>
+<blockquote>
+<code><big>grep \\ filename</big></code>
+</blockquote>
+</P>
+<H2>Escape Quotations (<code><big>'...</code></big>')</H2>
+<P>
+Another way of escaping the special meaning of shell characters
+is to place the material in single quotes.
+For example, we can escape the meaning of the octothorpe (#)
+by preceding and following it by single quotes:
+</P>
+<P>
+<blockquote>
+<code><big>grep '#' filename</big></code>
+</blockquote>
+</P>
+<A NAME="Lennon">
+<A NAME="McCartney">
+<P>
+Single quotes are especially useful for binding spaces.
+For example, the following command searches for the phrase
+"Lennon and McCartney" in a file named <code><big>beatles</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>grep 'Lennon and McCartney' beatles</big></code>
+</blockquote>
+</P>
+<P>
+If the single quotes are omitted, the command means something
+completely different.
+The following command searches for the string "Lennon"
+in three files named <code><big>and</big></code>,  <code><big>McCartney</big></code> and <code><big>beatles</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>grep Lennon and McCartney beatles</big></code>
+</blockquote>
+</P>
+<P>
+A common mistake is to fail to match quotation marks in a command.
+The shell will assume that the command is incomplete until
+all quotation marks are matched (both single quotes and double quotes).
+In the following example, we have failed to match the quotation mark.
+When we press the return key, the shell responds with a change of
+prompt indicating that it is waiting for us to complete the command.
+</P>
+<P>
+<blockquote>
+<code><big>grep '# inputfile > outputfile
+<br>
+></big></code>
+</blockquote>
+</P>
+<P>
+<A NAME="Command_Delimiter_(;)">
+<H2>Command Delimiter (;)</H2>
+</P>
+<P>
+The semicolon (;) indicates the end of a command.
+Its presence allows more than one command to be typed on a single line.
+For example, the following line:
+</P>
+<P>
+<blockquote>
+<code><big>command1 ; command2</big></code>
+</blockquote>
+</P>
+<P>
+is logically identical to:
+</P>
+<P>
+<blockquote>
+<code><big>command1</big></code>
+<br>
+<code><big>command2</big></code>
+</blockquote>
+</P>
+<P>
+When both commands appear on the same line, they are still executed
+sequentially, so the second command doesn't begin until the first
+is completed.
+Although the ability to place two or more commands on a single line
+may seem redundant, there are a number of circumstances where this
+feature proves useful.
+</P>
+<A NAME="Background_Command_(&)">
+<H2>Background Command (&)</H2>
+</P>
+<P>
+After typing a command, the command begins executing as soon as
+you type the carriage return or "enter" key.
+When the command has finished executing, the shell will display
+a new command prompt.
+Sometimes a command can take a long time to execute so it will be
+awhile before the prompt is displayed again.
+Unfortunately, you must wait for the prompt before you can type
+a new command.
+On multitasking systems it is possible for the computer to
+execute more than one command concurrently.
+The ampersand (&) can be used to execute a command as a
+<i>background process</i>.
+When a command is ended by an ampersand, the shell creates an
+independent process to handle the command, and the shell immediately
+returns with a prompt for a new command from the user.
+UNIX systems provide sophisticated mechanisms for controlling
+concurrent processing of commands.
+For further information concerning these features,
+refer to a UNIX reference book.
+</P>
+<A NAME="Shell_Command_Syntax">
+<H2>Shell Command Syntax</H2>
+</P>
+<P>
+Shell commands follow a special syntax.
+There are six possible components to a common command:
+<ul>
+<li>
+the command name,
+<li>
+one or more options,
+<li>
+one or more option parameters,
+<li>
+a command argument,
+<li>
+one or more input file names,
+<li>
+output redirection.
+</ul>
+</P>
+<P>
+Each of these components is separated by `blank space' (tabs or spaces).
+A command begins with the command name -- such as
+<b>uniq</b>, <b>sort</b>, or
+<A HREF="commands/pitch.html"><b>pitch</b>.</A>
+A command argument is a special requirement of only some commands.
+A good example of a command argument is the search pattern given
+to the
+<b>grep</b>
+command.
+In the following command,
+<b>grep</b>
+is the command name, "Lennon" is the command argument
+and <code><big>beatles</big></code> is the input file name:
+</P>
+<P>
+<blockquote>
+<code><big>grep Lennon beatles</big></code>
+</blockquote>
+</P>
+<P>
+For most commands, it is possible to process more than one
+input file.
+These files are simply listed at the end of the command.
+For example, the following
+<b>grep</b>
+command searches for the string "McCartney" in the file
+<code><big>beatles</big></code> and in the file <code><big>wings</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>grep McCartney beatles wings</big></code>
+</blockquote>
+</P>
+<P>
+Most commands provide
+<i>options</i>
+that modify the behavior of the command in some way.
+Command options are designated by a leading dash character.
+The specific option is usually indicated by a single alphabetic letter,
+such as the
+<b>-b</b>
+option (spoken: "dash-B" option).
+In the
+<b>uniq</b>
+command, the
+<b>-c</b>
+option causes a count to be prepended to each output line.
+In the following command,
+<b>uniq</b>
+is the command name,
+<b>-c</b>
+is the option, and <code><big>ghana32</big></code> is the name of the input file:
+</P>
+<P>
+<blockquote>
+<code><big>uniq -c ghana32</big></code>
+</blockquote>
+</P>
+<P>
+In many cases, the option is followed by a <i>parameter</i> that
+specifies further information pertaining to the invoked option.
+In the following command,
+<A HREF="commands/recode.html"><b>recode</b></A>
+is the command name,
+<b>-f</b>
+is the option, <b>reassign</b> is the parameter used by the
+<b>-f</b>
+option, and <b>gagaku</b> is the name of the input file:
+</P>
+<P>
+<blockquote>
+<code><big>recode -f reassign gagaku</big></code>
+</blockquote>
+</P>
+<P>
+Options and their accompanying parameters must be separated by
+blank space (i.e. one or more spaces and/or tabs).
+If more than one option is invoked, and none of the invoked options
+require a parameter, then the option-letters may be combined.
+For example, the
+<b>-a</b>
+and
+<b>-b</b>
+options might be invoked as
+<b>-ab</b>
+(or as
+<b>-ba)</b>
+--  provided neither option requires a parameter.
+</P>
+<P>
+Whenever an option requires a parameter,
+the option must be specified alone and followed immediately
+by the appropriate parameter.
+For example, in the following command,
+the command name is
+<A HREF="commands/trans.html"><b>trans</b>,</A>
+the
+<b>-d</b>
+option is followed by the numerical parameter <b>3</b>;
+the parameter for the
+<b>-c</b>
+option is the number <b>4</b> and the input file is named <b>gambia21</b>.
+</P>
+<P>
+<blockquote>
+<code><big>trans -d 3 -c 4 gambia21</big></code>
+</blockquote>
+</P>
+<P>
+Since numerical parameters can sometimes be negative,
+it can be difficult to discern whether a negative number
+is a parameter or another option.
+In the following example, the
+<b>-3</b>
+is a parameter to the
+<b>-d</b>
+option rather than an option by itself.
+</P>
+<P>
+<blockquote>
+<code><big>trans -d -3 -c 2 gambia21</big></code>
+</blockquote>
+</P>
+<A NAME="Output_Redirection">
+<H2>Output Redirection</H2>
+</P>
+<P>
+Most commands support several input and output modes.
+Input to a command may come from three sources.
+In many cases the input will come from one or more existing files.
+Apart from existing files, input may also come from text typed manually
+at the terminal, or from the output of preceding commands.
+When input text is entered manually it must be
+terminated with an end-of-file character (control-D) on a separate line.
+(On Microsoft operating systems the end-of-file character
+is control-Z.)
+When input is received from preceding commands, the output is
+sent via a UNIX pipe (`|') as discussed above.
+</P>
+<P>
+The different ways of providing input to a command are illustrated in
+the following examples.
+In the first example, the input (if any) is taken from the
+terminal (keyboard).
+In the second example, the input is <i>explicitly</i> taken from a file named
+<code><big>input</big></code>.
+In the third example, the input is <i>implicitly</i> taken from a file named
+<code><big>input</big></code>.
+In the fourth example, the input to
+<b>command2</b>
+comes from the output of
+<b>command1</b>.
+</P>
+<P>
+<blockquote>
+<code><big>command</big></code>
+<br>
+<code><big>command < input</big></code>
+<br>
+<code><big>command input</big></code>
+<br>
+<code><big>command1 | command2</big></code>
+</blockquote>
+</P>
+<P>
+Outputs produced by commands may similarly be directed to a variety
+of locations.
+The default output from most commands is sent to the terminal screen.
+Alternatively, the output can be sent to another process (i.e. another command)
+using a pipe (|).
+Output can also be stored in a file using file redirection operator (`>') or
+<i>added</i>
+to the end of a (potentially) existing file using the file-append
+operator (`>>').
+In the first example below, the output is sent to the screen.
+In the second example, the output is sent to the file <code><big>outfile</big></code>;
+if the file <code><big>outfile</big></code>
+already exists, its contents will be overwritten.
+In the third example, the output is appended to the end of the file
+<code><big>outfile</big></code>;
+if the file <code><big>outfile</big></code> does not already exist, it will be created.
+In the fourth example, the output is sent as input to the command
+<b>command2</b>.
+</P>
+<P>
+<blockquote>
+<code><big>command
+<br>
+command > outfile
+<br>
+command >> outfile
+<br>
+command1 | command2</big></code>
+</blockquote>
+</P>
+<P>
+When two or more commands have their inputs and outputs linked together
+using the pipe operator (<code><big>|</big></code>), the entire command line is known as a
+<i>pipeline.</i>
+Pipelines occur frequently in Humdrum applications.
+</P>
+<A NAME="Tee">
+<H2>Tee</H2>
+</P>
+<P>
+A special shell command known as <b>tee</b> can be used to clone
+a copy of some output, so that two identical output streams are generated.
+In the first example below, the output is piped to <b>tee</b> which
+writes one copy of the output to the file
+<code><big>outfile</big></code>
+and the second copy appears on the screen.
+In the second example, the output from
+<b>command1</b>
+is split:
+one copy is piped to
+<b>command2</b>
+for further processing, while an identical copy is stored in the file
+<code><big>outfile1</big></code>;
+if the file <code><big>outfile1</big></code> already exists, its contents will be overwritten.
+In the third example, the append option (<b>-a</b>) for <b>tee</b>
+has been invoked -- meaning that the output from <code><big>command</big></code>
+will be added to the end of any existing data in the file
+<code><big>outfile</big></code>.
+If the file <code><big>outfile</big></code> does not already exist, it will be created.
+</P>
+<P>
+<blockquote>
+<code><big>command | tee outfile
+<br>
+command1 | tee outfile1 | command2 > outfile2
+<br>
+command | tee -a outfile</big></code>
+</blockquote>
+</P>
+<P>
+The
+<b>tee</b>
+command is a useful way of recording or diverting
+some intermediate data in the middle of a pipeline.
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+In this chapter we have noted that the shell interprets
+certain characters in a special way.
+We learned about the octothorpe (#),
+the ampersand (&), the verticule (|), the asterisk (*),
+the apostrophe ('), the greater-than sign (>),
+the semicolon (;), and the backslash (\).
+In a later chapter we'll discuss the remaining
+special characters:
+the dollar-sign ($), the apostrophe ('), the less-than sign (<),
+the question-mark (?), and the double-quote ("),
+</P>
+<P>
+We have also reviewed the syntax for UNIX commands.
+Commands can include components such as the
+<i>command name</i>, <i>options</i>, <i>parameters</i>,
+<i>command arguments</i>, <i>input files</i> and
+<i>output redirection</i>.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide09.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide07.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

@@ -1,0 +1,124 @@
+###################################################################
+# 						SCRAMBLE
+# Programmed by: Tim Racinsky        Date: July, 1993
+# Copyright (c) 1993 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# June 7/94	Tim Racinsky	Modified to use getopts
+# July 20/94	Tim Racinsky	Added -r, -t, and -m options
+#
+#
+# 	This shell program is used to invoke the awk program scramble.awk.
+#
+FILENAME=""
+OPTION=""
+MOPTION=""
+FILE_COUNT="0"
+REGEXP=""
+HELP=""
+FLAG=""
+STNDIN=""
+USAGE1="USAGE: scramble -h                (Help Screen)"
+USAGE2="       scramble -r [-s reg_exp] file"
+USAGE3="       scramble -t [-m] [-s reg_exp] file"
+# 
+while getopts hmrs:t arg
+do
+	case "$arg" in
+	m)	MOPTION="${arg}" ;;
+	r)	if [ -n "${OPTION}" ]
+		then
+			echo "scramble: ERROR: Can only specify one of -r or -t options." 1>&2
+			echo "" 1>&2
+			echo "$USAGE1" 1>&2
+			echo "$USAGE2" 1>&2
+			echo "$USAGE3" 1>&2
+			exit
+		else
+			OPTION="${arg}"
+		fi ;;
+	s)	REGEXP="${OPTARG}" ;;
+	t)	if [ -n "${OPTION}" ]
+		then
+			echo "scramble: ERROR: Can only specify one of -r or -t options." 1>&2
+			echo "" 1>&2
+			echo "$USAGE1" 1>&2
+			echo "$USAGE2" 1>&2
+			echo "$USAGE3" 1>&2
+			exit
+		else
+			OPTION="${arg}"
+		fi ;;
+	h) 	HELP="ON" ;;
+     [?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		echo "$USAGE3" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/scramble.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/scramble.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+if [ -z "${OPTION}" ]
+then
+	echo "Must specify one of -r or -t options." 1>&2
+	echo "" 1>&2
+	echo "$USAGE1" 1>&2
+	echo "$USAGE2" 1>&2
+	echo "$USAGE3" 1>&2
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' may be used
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			FILE_COUNT=`expr $FILE_COUNT + 1`
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		FILE_COUNT=`expr $FILE_COUNT + 1`
+		shift
+	else
+		echo "scramble: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+# Only one file is allowed
+if [ $FILE_COUNT -ne 1 ]
+then
+	echo "scramble: ERROR: Can specify only one file." 1>&2
+	echo "" 1>&2
+	echo "$USAGE1" 1>&2
+	echo "$USAGE2" 1>&2
+	echo "$USAGE3" 1>&2
+	exit
+fi
+$AWK_VER -f ${HUMDRUM}/bin/scramble.awk "DUMMY" "${OPTION}" "${REGEXP:-null}" "${MOPTION:-null}" $FILENAME

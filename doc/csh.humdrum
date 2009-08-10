@@ -1,0 +1,15 @@
+#
+# A Humdrum setup script for users of the csh or tcsh shells.
+# By Craig Stuart Sapp <craig@ccrma.stanford.edu>
+#
+# If your are in the csh or tcsh shells, you would type the
+# following commands at the command prompt.
+#
+
+setenv HUMDRUM /user/local/bin/humdrum
+setenv AWK_VER awk
+setenv CON /dev/tty
+setenv TMPDIR /tmp
+
+set path=($path $HUMDRUM/bin)
+

@@ -1,0 +1,24 @@
+
+EXTRACT   : Get specified spines from a Humdrum input.
+
+     This command isolates specified spines according to the field (-f), the
+     type of interpretation (-i), the initial spine position (-p), or accord-
+     ing to a detailed trace of fields (-t).
+
+Syntax:
+
+     extract -f field_list [inputfile ...]
+     extract -t tracefile [inputfile ...]
+     extract -i interp_list [inputfile ...]
+     extract -p init_spine [inputfile ...]
+
+Options:
+
+     -f field_list  : extract fields listed in field_list
+     -t tracefile   : specify a file of line numbers and fields to extract
+                      (tracefile is usually created using the FIELDS command)
+     -i interp_list : extract spines whose interpretations are listed
+     -p init_spine  : follow spines beginning at fields listed in init_spine
+
+  Refer to reference manual for further details.
+

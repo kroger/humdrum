@@ -1,0 +1,170 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- melac</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>melac</b>  --  calculate melodic accent values for successive pitches in a Humdrum input
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>melac</b>  [<i>inputfile.sem</i> ...]  [> <i>outputfile.tac</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>melac</b>
+command accepts as input Humdrum
+<code><big>
+**semits
+</i></b></code></big>
+</i></b></code></big>
+data and outputs a series of values representing the degree of melodic
+accent associated with each note.
+Melodic accent values vary between 0 (no accent)
+and 1 (maximum accent).
+Input is limited to only a single
+<code><big>
+**semits
+</i></b></code></big>
+</i></b></code></big>
+data spine.
+</P>
+<P>
+The
+<b>melac</b>
+command implements a model of melodic accent developed by Joseph Thomassen
+(see
+<A HREF="#REFERENCES">REFERENCES</A>).
+Thomassen's model is sensitive to pitch contour only -- distinguishing
+just three types of melodic motion:
+ascending, descending, and unison.
+The model calculates tonal accent values according to a moving 3-pitch window.
+</P>
+<P>
+It is recommended that output files produced using the
+<b>melac</b>
+command should be given names with the distinguishing `.mac' extension.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>melac</b>
+command provides only a help option:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following example illustrates the output of the
+<b>melac</b>
+command.
+The <code><big>**semits</big></code> spine is the input, and the <code><big>**melac</big></code>
+spine is the corresponding output.
+(A <code><big>**kern</big></code> equivalent to <code><big>**semits</big></code> has been added
+to increase the readability.)
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**kern</TD><TD>**semits</TD><TD>**melac</TD></TR>
+<TR><TD>16ee</TD><TD>16</TD><TD>1</TD></TR>
+<TR><TD>16cc</TD><TD>12</TD><TD>0.5</TD></TR>
+<TR><TD>16b</TD><TD>11</TD><TD>0.355</TD></TR>
+<TR><TD>16cc</TD><TD>12</TD><TD>0.2407</TD></TR>
+<TR><TD>16g</TD><TD>7</TD><TD>0.1207</TD></TR>
+<TR><TD>16cc</TD><TD>12</TD><TD>0.2407</TD></TR>
+<TR><TD>16b</TD><TD>11</TD><TD>0.1207</TD></TR>
+<TR><TD>16cc</TD><TD>12</TD><TD>0.0957</TD></TR>
+<TR><TD>16ff</TD><TD>17</TD><TD>0.5561</TD></TR>
+<TR><TD>16cc</TD><TD>12</TD><TD>0.085</TD></TR>
+<TR><TD>16b</TD><TD>11</TD><TD>0.355</TD></TR>
+<TR><TD>16cc</TD><TD>12</TD><TD>0.2407</TD></TR>
+<TR><TD>16a</TD><TD>9</TD><TD>0.1207</TD></TR>
+<TR><TD>16cc</TD><TD>12</TD><TD>0.2407</TD></TR>
+<TR><TD>16b</TD><TD>11</TD><TD>0.1207</TD></TR>
+<TR><TD>16cc</TD><TD>12</TD><TD>0.29</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>LIMITS</H3></FONT>
+This command is currently able to handle only a single (monophonic)
+input stream.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<A NAME="REFERENCES">
+<FONT color="0000FF"><H3>REFERENCES</H3></FONT>
+Thomassen, J.
+"Melodic accent: Experiments and a tentative model,"
+<i>Journal of the Acoustical Society of America,</i>
+Vol. 71, No. 6 (1982) pp.1598-1605;
+see also, Erratum,
+<i>Journal of the Acoustical Society of America,</i>
+Vol. 73, No. 1 (1983) p.373.
+</P>
+<P>
+<A HREF="../../Huron/publications.html">Huron, D. & Royal, M.</A>
+"What is melodic accent?
+Converging evidence from musical practice."
+<i>Music Perception,</i>
+Vol. 13, No. 4 (1996) pp. 489-516.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

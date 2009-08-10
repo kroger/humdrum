@@ -1,0 +1,86 @@
+###################################################################
+#                           TEXT
+# Programmed by: David Huron        Date: July 11, 1995
+# Copyright (c) 1995 David Huron
+#
+# Modifications:
+#    Date:     Programmer:        	Description:
+#
+# This script extracts a **text spine from the input, and reformats
+# the output as ordinary printed text.
+#
+FILENAME=""
+FIELD=""
+HELP=""
+FLAG=""
+STNDIN=""
+USAGE1="USAGE: text -h                (Help Screen)"
+USAGE2="       text [-p] [-s reg_exp] [-c chars] [file ...]"
+USAGE2="       text [-f n] [file ...]"
+while getopts :hf: arg
+do
+	case "$arg" in
+	f)	FIELD="${OPTARG}";;
+	h) 	HELP="ON";;
+	[?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/text.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/text.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' may be used
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "text: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi
+if [ "X$FIELD" = X ]
+then
+	FIELD="1"
+fi
+
+# Extract all **silbe spines.  Extract the first spine (to avoid more than one).
+# Delete lines containing **silbe rests (%) and graphic hyphens (|).
+# Eliminate leading and trailing hyphens.
+# Eliminate Humdrum comments, interpretations and null data.
+# Then format the resulting text.
+sh extract -i '**silbe' $FILENAME | sh extract -f $FIELD \
+  | sed '/^%$/d; /^|$/d; s/\*\*silbe/**text/g' \
+  | sed 's/^-\(.*\)-$/\1/; s/^-\(.*\)\([^-]\)$/\1\2+/' \
+  | sh context -b '-' -e '+' -o '=' | sh humsed 's/[- /+]//g; /=/d'

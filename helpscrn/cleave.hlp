@@ -1,0 +1,24 @@
+
+CLEAVE    : Join tokens from two or more spines into a single output spine.
+
+     This command joins concurrent data tokens in two or more specified
+     spines into a single data token, and outputs the amalgamated token in a
+     single new spine.  The -i option identifies those interpretations in the
+     input whose data tokens are to be joined.  The -o option identifies the
+     name of the resulting output interpretation.  The -d option is used to
+     specify an arbitrary string that is inserted between each component part
+     forming the assembled output token (default: null string).
+
+Syntax:
+
+     cleave [-r] [-d delim] -i '**intp1[,**intp2...]' -o '**out_intp' [file ...]
+
+Options:
+
+     -d delim        : interpose the string <delim> between amalgamated tokens
+     -i '**intrp'    : ordered list of input interpretations to be processed
+     -o '**out_intp' : specify output interpretation named '**out_intp'
+     -r              : suppress outputting of duplicate (repeated) signifiers
+
+  Refer to reference manual for further details.
+

@@ -1,0 +1,6 @@
+!! "humdrum: ERROR 7: Null exclusive interpretation found in line"
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number7
+**ex	**ex	**ex
+**ex2	**ex2	**
+*-	*-	*-

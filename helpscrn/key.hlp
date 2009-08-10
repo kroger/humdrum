@@ -1,0 +1,24 @@
+
+KEY       : Estimate the key (tonic and mode) of a passage.
+
+     This command estimates the key of a given passage according to the
+     Krumhansl and Kessler algorithm.  This command is of interest pri-
+     marily to perceptual researchers, and is not intended to be an
+     optimum method for estimating the key of a passage.
+
+Inputs processed:
+
+     **kern,    **semits
+
+Syntax:
+
+     key [-af] [file ...]
+
+Options:
+
+     -a : shows correlation coefficients for all 24 (enharmonically
+          equivalent) major and minor keys
+     -f : outputs relative frequencies for each of the twelve pitch classes
+
+  Refer to reference manual for further details.
+

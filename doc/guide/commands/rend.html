@@ -1,0 +1,383 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- rend</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>rend</b>  --  split data tokens from specified Humdrum spines into component sub-tokens
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>rend</b>  [<b>-s</b>]  <b>-i</b>  '<i>target_interp</i>'  <b>-f</b>  <i>reassign-file</i>  [<i>inputfile ...</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>rend</b>
+command breaks apart data tokens from selected input spines into 
+one or more sub-tokens distributed across one or more newly created
+output spines.
+The user specifies which input spine or spines are to be split.
+The manner in which the signifiers are to be distributed is specified
+in a separate
+<i>reassignment</i>
+file.
+</P>
+<P>
+Humdrum data tokens often contain more than one type of information
+or type of signfier.
+For example, the
+<code><big>
+**pitch
+</code></big>
+representation consists of three parts
+(not including cents deviation):
+the pitch letter name, the accidental, and the octave number (e.g. A#4).
+In some tasks it may be useful to split such information into separate spines.
+For example, a user may wish to reformat the following spine:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**pitch</TD></TR>
+<TR><TD>Ab3</TD></TR>
+<TR><TD>Eb4</TD></TR>
+<TR><TD>F#4</TD></TR>
+<TR><TD>C5</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+as three independent spines:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**octave</TD><TD>**note</TD><TD>**accidental</TD></TR>
+<TR><TD>3</TD><TD>Ab</TD><TD>b</TD></TR>
+<TR><TD>4</TD><TD>Eb</TD><TD>b</TD></TR>
+<TR><TD>4</TD><TD>F#</TD><TD>#</TD></TR>
+<TR><TD>5</TD><TD>C</TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+The
+<b>rend</b>
+command allows each occurrence of a target exclusive interpretation to be
+replaced by specified output spines.
+The user selects how the signfiers (characters) in the
+input spines are to be distributed to the replacement output spines.
+Signifiers (ASCII characters) are identified using UNIX
+regular expression syntax (see <b>regexp (6)</b>).
+</P>
+<P>
+The above transformation may be achieved by invoking the following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+rend -i '**pitch' -f reassign
+</code></big>
+</blockquote>
+</P>
+<P>
+The <b>-i</b> option specifies the target input interpretation, i.e.,
+the input spine(s) to be processed.
+The <b>-f</b> option specifies a reassignment-file
+(named <code><big>reassign</big></code>) containing the following records:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**octave</TD><TD>[0-9]</TD></TR>
+<TR><TD>**note</TD><TD>[A-Gb#x]+</TD></TR>
+<TR><TD>**accidental</TD><TD>[b#x]+</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+Reassignment files consist of one or more records, each containing two
+strings separated by a tab.
+The left-most string identifies the name of the new spine to be generated.
+The right-most string defines an associated regular expression.
+Any input signifiers matching the regular expression will be echoed as output
+in the associated spine.
+In the above case, all numbers are echoed in the first spine
+(<code><big>**octave</big></code>),
+all letters plus the sharp (#) and flat (b) signs are echoed in the
+second spine (<code><big>**note</big></code>), whereas only sharp and flat signs are
+echoed in the third spine (<code><big>**accidental</big></code>).
+The order of the output spines preserves the order of the assignments
+in the reassignment file.
+In the above case, for example, the order of the output spines will be
+<code><big>
+**octave, **note, **accidental
+</i></b></code></big>
+</i></b></code></big>
+for each input spine labelled
+<code><big>
+**pitch.
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>rend</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-f <i>reassign</i></TD><TD>maps input tokens to output tokens according to definitions given in the</TD></TR>
+<TR><TD></TD><TD>file <i>reassign</i></TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-i <i>target_interp</i></TD><TD>process all input spines whose exclusive interpretations are labelled</TD></TR>
+<TR><TD></TD><TD><i>target_interp</i></TD></TR>
+<TR><TD><b>-s</b></TD><TD>matches a single instance of the given pattern rather than all instances</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+</P>
+<P>
+Consider the following example:
+</P>
+<P>
+<blockquote>
+<code><big>
+rend -i '**kern' -f noterest song01
+</code></big>
+</blockquote>
+</P>
+<P>
+and the associated reassignment file named <code><big>noterest</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>
+**notes	[]A-Ga-g[#-]+|^=+[0-9]*
+<br>
+**rests	[\\.0-9r]+|^=+[0-9]*
+</code></big>
+</blockquote>
+</P>
+<P>
+This command specifies that each
+<code><big>
+**kern
+</i></b></code></big>
+</i></b></code></big>
+spine in the file
+<code><big>
+song01
+</i></b></code></big>
+</i></b></code></big>
+is to be split into two new spines dubbed
+<code><big>
+**notes
+</i></b></code></big>
+</i></b></code></big>
+and
+<code><big>
+**rests.
+</i></b></code></big>
+</i></b></code></big>
+The first regular expression -- <code><big>'[]A-Ga-g[#-]+|^=+[0-9]*'</big></code> --
+indicates that the following strings should be echoed in the
+data records for <code><big>**notes</big></code>:
+the upper-case letters <code><big>A</big></code> to <code><big>G</big></code>
+and the lower-case letters <code><big>a</big></code> to <code><big>g</big></code>,
+plus the characters <code><big>[, ], #</big></code>, and <code><big>-</big></code>.
+Alternatively,
+<b>rend</b>
+will echo any data token beginning with one or more equals-signs,
+followed by zero or more numbers.
+</P>
+<P>
+Similarly, the second
+<code><big>
+**rests
+</i></b></code></big>
+</i></b></code></big>
+spine will contain characters that match the regular
+expression '[\\.0-9r]+|^+=[0-9]*'.
+This includes the period (.), all numbers (0-9), plus the letter
+<i>r.</i>
+Alternatively,
+<b>rend</b>
+will echo any data token beginning with one or more equals-signs,
+followed by zero or more numbers.
+</P>
+<P>
+Given this command, the following input:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**kern</TD><TD>**lyrics</TD><TD>**kern</TD></TR>
+<TR><TD>!! Commented input.</TD></TR>
+<TR><TD>8.G</TD><TD>Hi-</TD><TD>4r</TD></TR>
+<TR><TD>16G#</TD><TD>de-</TD><TD>.</TD></TR>
+<TR><TD>=23</TD><TD>=23</TD><TD>=23</TD></TR>
+<TR><TD>8A</TD><TD>ho-</TD><TD>2r</TD></TR>
+<TR><TD>[8c</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>8c]</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16r</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>16A</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=24</TD><TD>=24</TD><TD>=24</TD></TR>
+<TR><TD>2C 2E</TD><TD>hum.</TD><TD>2r</TD></TR>
+<TR><TD>===</TD><TD>===</TD><TD>===</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+will produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**notes</TD><TD>**rests</TD><TD>**lyrics</TD><TD>**notes</TD><TD>**rests</TD></TR>
+<TR><TD>!! Commented input.</TD></TR>
+<TR><TD>G</TD><TD>8.</TD><TD>Hi-</TD><TD>.</TD><TD>4r</TD></TR>
+<TR><TD>G#</TD><TD>16</TD><TD>de-</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=23</TD><TD>=23</TD><TD>=23</TD><TD>=23</TD><TD>=23</TD></TR>
+<TR><TD>A</TD><TD>8</TD><TD>ho-</TD><TD>.</TD><TD>2r</TD></TR>
+<TR><TD>[c</TD><TD>8</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>c]</TD><TD>8</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>16r</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>A</TD><TD>16</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=24</TD><TD>=24</TD><TD>=24</TD><TD>=24</TD><TD>=24</TD></TR>
+<TR><TD>C E</TD><TD>2 2</TD><TD>hum.</TD><TD>.</TD><TD>2r</TD></TR>
+<TR><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD><TD>===</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice that
+<b>rend</b>
+correctly handles Humdrum multiple-stops (such as <code><big>2C 2E</big></code>).
+Notice also that if no match is made, a null token (.) is output.
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="cleave.html">
+<b>cleave</b></A> (4),
+<A HREF="extract.html">
+<b>extract</b></A> (4),
+<A HREF="humsed.html">
+<b>humsed</b></A> (4),
+<A HREF="recode.html">
+<b>recode</b></A> (4),
+<A HREF="regexp.html">
+<b>regexp</b></A> (4),
+<b>regexp</b> (6)
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+Note that, apart from spine-path terminators, no other spine-path
+indicators are permitted in spines containing
+the target interpretation.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>BUGS</H3></FONT>
+</P>
+<P>
+If the interpretation targetted for processing appears in a
+spine starting with a different interpretation, the output will
+fail to generate the proper spine terminator and add-spine
+path indicators.
+The result is a non-Humdrum file.
+Consider the following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+rend -i '**ex1' -f reassign input
+</code></big>
+</blockquote>
+</P>
+<P>
+and the associate reassignment file (<code><big>reassign</big></code>):
+</P>
+<P>
+<code><big>
+**let	[a-z]
+<br>
+**num	[0-9]
+</i></b></code></big>
+</i></b></code></big>
+</P>
+<P>
+Given the following input:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**ex1</TD><TD>**ex2</TD></TR>
+<TR><TD>a1</TD><TD>b2</TD></TR>
+<TR><TD>*tand1</TD><TD>*tand2</TD></TR>
+<TR><TD>c3</TD><TD>d4</TD></TR>
+<TR><TD>*</TD><TD>**ex1</TD></TR>
+<TR><TD>e5</TD><TD>f6</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+the corresponding output is given below.
+Note the absence of appropriate spine-path indicators
+between lines 4 and 5 (hence the output is non-Humdrum).
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**let</TD><TD>**num</TD><TD>**ex2</TD></TR>
+<TR><TD>a</TD><TD>1</TD><TD>b2</TD></TR>
+<TR><TD>*tand1</TD><TD>*tand1</TD><TD>*tand2</TD></TR>
+<TR><TD>c</TD><TD>3</TD><TD>d4</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>**let</TD><TD>**num</TD></TR>
+<TR><TD>e</TD><TD>5</TD><TD>f</TD><TD>6</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide26.html#The_rend_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

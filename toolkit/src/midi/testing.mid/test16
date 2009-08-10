@@ -1,0 +1,97 @@
+!! midi Test #16
+!! C1 to C8 chromatic scale:  non-pitch and non-duration signfiers mixed-in
+**kern
+!! C1 (low)
+@CCC32
+$32DDD-
+%EEE--32
+^FFF--32
+&EEE32
+(EEE#32
+)EEE##32
++32EEE###
+AAA-=32
+|AAA32
+AAA#*32
+\32AAA##
+!! C2
+/CC32
+?EE---32
+<EE--32
+>EE-32
+~EE32
+`FF32
+'32GG-
+"GG32
+qAA-32
+wC---32
+tC--32
+yC-32
+!! C3
+uC32
+iBB##32
+oD32
+p32D#
+{F-32
+}G--32
+sG-32
+h32G
+jA-32
+kc---32
+lc--32
+;c-32
+!! C4 (middle C)
+:B#32
+zB##32
+x32B###
+ve-32
+en32
+me#32
+,e##32
+32!@$%^&*()e###
+e####~`MqYtT32sS
+ccQ---32
+Rcc--32
+Wcc-32Y
+!! C5
+I32ccO
+Pcc#32S
+Hcc##32J
+Kcc###L32:;
+Zcc####32X
+Vcc#####N32M
+/////ccc------32
+&&&&&32!!!!!ccc-----~~~~~
+ccc----32
+XYZccc---^^^^^32*****
++++++ccc--32
+ccc-=======32=======
+!! C6
+@@@@@@@ccc32
+ccc#32
+@@@@@@ccc##@@@@@@32
+^$^$^$^$^$32ccc###()
+||||||||ccc####32:::::::
+ggg--32
+ggg-32
+QWTYggg32qwty
+cccc----32
+32cccc---
+"""""""cccc--32
+cccc-32
+!! C7 (high)
+<<<<<<<<cccc32>>>>>>>
+dddd-32
+dddd32
+eeee-32
+eeee32
+ffff32
+gggg-32
+32gggg
+aaaa-32
+aaaa32
+bbbb-32
+bbbb32
+!! C8 (very high)
+ccccc32
+*-

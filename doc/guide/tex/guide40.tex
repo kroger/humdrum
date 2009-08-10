@@ -1,0 +1,418 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter40}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+
+
+\section*{Conclusion}
+
+
+
+In
+Chapter 1,
+we noted that computers are quite limited in what
+they are able to do.
+We noted in particular that computers are not good at
+\textit{interpreting}
+data.
+Because so much music scholarship hinges on interpretations,
+this would seem to preclude computers from being of much use.
+However, as we have seen, there are some things that computers do well,
+and when a skilled user intervenes to make a few crucial interpretations,
+the resulting computer/human interaction can lead to pretty sophisticated
+results.
+
+\par 
+The lucid use of Humdrum depends on understanding how each of the
+tools works and how it is possible to connect the tools to perform
+particular tasks.
+The power and creativity of Humdrum truly lies in the hands
+of the user.
+
+\par 
+As we've seen, there are two parts to Humdrum: the
+\textit{Humdrum syntax}
+and the
+\textit{Humdrum toolkit.}
+The Humdrum syntax simply provides a formal framework for
+representing any kind of sequential symbolic data.
+A number of representation schemes are pre-defined in Humdrum,
+but you are free to construct your own representations as
+demanded by the tasks.
+In several of the tutorial examples in the previous chapters
+we saw various
+\textit{ad hoc}
+representations that were concocted as temporary or
+intermediate representations.
+You should now feel comfortable with the possibilities of
+devising your own representations to assist you in whatever
+task you are interested.
+
+\par 
+The
+\textit{Humdrum Toolkit}
+is a set of inter-related software tools.
+These tools manipulate text data conforming to the Humdrum syntax.
+If the data represents music-related information,
+then we can say that the Humdrum tools manipulate music-related information.
+Each Humdrum tool carries out a fairly modest process.
+
+\par 
+By way of review, we can group the various Humdrum (and UNIX)
+tools according to the type of operation.
+There are roughly a dozen or so classes of tasks:
+\begin{itemize}
+\item 
+\textbf{\textit{Displaying things.}}
+The
+\textbf{ms}
+command can be used to print or display musical notation.
+\item 
+\textbf{\textit{Auditing.}}
+MIDI sound output can be generated using the
+\textbf{midi}
+and
+\textbf{perform}
+commands.
+\item 
+\textbf{\textit{Searching for things.}}
+When searching for things within specified files, appropriate
+commands include: \textbf{grep}, \textbf{egrep},
+\textbf{yank -m},
+\textbf{patt},
+\textbf{pattern},
+\textbf{correl},
+\textbf{simil}
+and
+\textbf{humdrum -v}.
+When searching for files that meet certain conditions,
+appropriate commands include
+\textbf{grep -l}, \textbf{egrep -l} and \textbf{find}.
+Most of these search tools rely extensively on regular
+expressions to define patterns of characters.
+\item 
+\textbf{\textit{Counting things.}}
+Appropriate commands include: \textbf{wc}, \textbf{wc -l}, \textbf{grep -c},
+\textbf{egrep -c},
+\textbf{census}
+and \textbf{census -k}.
+Eliminating unnecessary or confounding information can be achieved
+using
+\textbf{rid},
+\textbf{extract},
+\textbf{grep -v}, \textbf{sed} and
+\textbf{humsed}.
+\item 
+\textbf{\textit{Editing things.}}
+Manual editing may be done using any text editor, such as \textbf{emacs}
+or \textbf{vi}.
+Automated (or "stream") editing may be done
+using \textbf{sed} and
+\textbf{humsed}.
+\item 
+\textbf{\textit{Editorializing.}}
+E.g., add an editorial footnote to a specified note or passage;
+indicate that a passage differs from the composer's autograph.
+\item 
+\textbf{\textit{Transforming or translating between representations.}}
+Appropriate commands include:
+\textbf{cents},
+\textbf{deg},
+\textbf{degree},
+\textbf{dur},
+\textbf{freq},
+\textbf{hint},
+\textbf{humsed},
+\textbf{iv},
+\textbf{kern},
+\textbf{mint},
+\textbf{pc},
+\textbf{pf},
+\textbf{pitch},
+\textbf{reihe},
+\textbf{semits},
+\textbf{solfa},
+\textbf{solfg},
+\textbf{text},
+\textbf{tonh},
+\textbf{trans}
+and
+\textbf{vox}.
+\item 
+\textbf{\textit{Arithmetic transformations of representations.}}
+Manipulating numerical values can be done using
+\textbf{xdelta},
+\textbf{ydelta},
+\textbf{recode}
+and \textbf{awk}.
+\item 
+\textbf{\textit{Extracting or selecting information.}}
+Appropriate commands include:
+\textbf{extract},
+\textbf{yank},
+\textbf{grep}, \textbf{egrep},
+\textbf{yank -m},
+\textbf{thru},
+\textbf{strophe},
+\textbf{rend}
+and \textbf{csplit}.
+\item 
+\textbf{\textit{Linking or joining information.}}
+Appropriate commands include:
+\textbf{assemble},
+\textbf{cat},
+\textbf{cleave},
+\textbf{timebase},
+\textbf{context},
+\textbf{ditto}
+and
+\textbf{join}.
+\item 
+\textbf{\textit{Generating inventories of things.}}
+Appropriate commands include:
+\textbf{sort} and \textbf{uniq}.
+Once again, unnecessary or confounding information can be eliminated
+using
+\textbf{rid},
+\textbf{extract},
+\textbf{grep -v},
+\textbf{yank -m},
+\textbf{sed} or
+\textbf{humsed}.
+\item 
+\textbf{\textit{Classifying things.}}
+Numerical values can be classified using
+\textbf{recode};
+non-numerical data can be classified using
+\textbf{humsed}.
+\item 
+\textbf{\textit{Labelling things.}}
+Appropriate commands include:
+\textbf{patt -t},
+\textbf{recode},
+\textbf{humsed}
+and
+\textbf{timebase}.
+\item 
+\textbf{\textit{Comparing whether things are the same or similar.}}
+Appropriate commands include:
+\textbf{diff}, \textbf{diff3}, \textbf{cmp},
+\textbf{correl}
+and
+\textbf{simil}.
+\item 
+\textbf{\textit{Capturing data.}}
+MIDI data can be input via
+\textbf{encode}
+and
+\textbf{record.}
+\item 
+\textbf{\textit{Trouble-shooting.}}
+Appropriate commands include:
+\textbf{humdrum},
+\textbf{humdrum -v},
+\textbf{proof},
+\textbf{proof -k},
+\textbf{veritas},
+\textbf{midi}
+and
+\textbf{perform}.
+\end{itemize}
+
+\par 
+Not all of the existing Humdrum Tools were covered in this book.
+Nor were all of the available options described for all of the tools
+discussed.
+Exploring the
+\textit{Humdrum Reference Manual}
+is recommended for readers interested in continuing to develop
+facility with Humdrum.
+
+
+\subsection*{Pursuing a Project with Humdrum}
+
+\par 
+If you have made it this far in the book, you will now have a fairly
+sophisticated knowledge of Humdrum.
+With this background, we might review some general principles
+and specific tips for making effective use of Humdrum
+when pursuing some musicological project.
+The following seven questions provide useful guidelines:
+\begin{itemize}
+\item 
+\textit{What do I want my final output to look like?}
+\\
+Do I want a count or inventory?
+
+\par 
+
+\texttt{115 instances of ...
+\\
+28 instances of ...}
+
+
+\par 
+Do I want to output a found pattern?
+
+\par 
+
+\texttt{pattern found in line ...
+\\
+pattern not found ...}
+
+
+\par 
+Do I want a comparison?
+
+\par 
+
+\texttt{file X is the same as file Y
+\\
+X is similar to Y
+\\
+X and Y are different}
+
+
+\par 
+\item 
+\textit{What materials are available for processing?}
+
+\par 
+
+Use
+\textbf{find}
+and
+\textbf{grep}
+to locate useful materials.
+
+
+\par 
+\item 
+\textit{What materials do I need to create?}
+
+\par 
+
+Use
+\textbf{encode}
+to create new data.
+Use
+\textbf{humdrum}
+and
+\textbf{proof}
+to check the data.
+If necessary, define your own Humdrum representation for a given purpose.
+
+
+\par 
+\item 
+\textit{How do I transform my data so it is easier to process?}
+
+\par 
+
+Use
+\textbf{recode}
+and
+\textbf{humsed}
+to classify data into various classes -$\,$- such as
+\textit{up}, \textit{down}, \textit{leap}, \textit{long}, \textit{short}, \textit{difficult},
+\textit{easy}, \textit{clarion register}, \textit{dominant},
+etc.
+
+\par 
+Use translating/transforming commands such as
+\textbf{mint},
+\textbf{ydelta},
+\textbf{pcset},
+etc to translate
+the data to a different representation.
+
+
+\par 
+\item 
+\textit{What data should I eliminate?}
+
+\par 
+
+Use
+\textbf{rid},
+\textbf{extract},
+\textbf{yank},
+\textbf{sed},
+\textbf{humsed},
+\textbf{uniq},
+\textbf{uniq -d}
+and \textbf{grep -v}
+to eliminate selective materials.
+
+
+\par 
+\item 
+\textit{What data do I need to coordinate?}
+
+\par 
+
+Use
+\textbf{context}
+to generate contextual information.
+Use
+\textbf{assemble},
+\textbf{rend}
+and
+\textbf{cleave}
+to link information together.
+
+
+\par 
+\item 
+\textit{How do I know my results are worthwhile?}
+
+\par 
+
+Use comparative tests whenever you can.
+Use
+\textbf{scramble} -r,
+\textbf{scramble -t},
+\textbf{tac} and
+\textbf{reihe} -s
+to generate control groups.
+
+\end{itemize}
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

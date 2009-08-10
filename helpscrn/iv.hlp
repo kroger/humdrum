@@ -1,0 +1,23 @@
+
+IV        : Converts pitch or set-theory information to interval vectors.
+
+     This command determines the "interval vector" for any of five set-theory
+     related inputs (see below).  An interval vector is a six-element
+     numerical list that indicates the abundance of various interval-classes
+     (from 1 semitone to 6 semitones) for some pitch or pitch-class set.
+
+     When given **pc or **semits input, each data record is treated as
+     an separate pitch set.
+
+Inputs processed:
+
+     **nf,      **pc,      **pcset,   **pf,      **semits
+
+Syntax:
+
+     iv [inputfile ...]
+
+Options:  None.
+
+  Refer to reference manual for further details.
+

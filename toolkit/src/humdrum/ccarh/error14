@@ -1,0 +1,7 @@
+!! "humdrum: ERROR 15: All spines have not been properly"
+!! "terminated at line 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 15
+**ex	**ex	**ex	**ex
+a	b	c	d
+*-	*-	*-	*

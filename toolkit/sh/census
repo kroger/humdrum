@@ -1,0 +1,75 @@
+###################################################################
+# 						CENSUS
+# Programmed by: Tim Racinsky        Date: July, 1993
+# Copyright (c) 1993 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# June 7/94	Tim Racinsky	Modified to use getopts
+# June 22/94	Tim Racinsky	Changed name from snoop to census
+#
+#
+# 	This shell program is used to invoke the awk program census.awk.
+#
+FILENAME=""
+OPTIONS=""
+HELP=""
+FLAG=""
+STNDIN=""
+USAGE1="USAGE: census -h                 (Help Screen)"
+USAGE2="       census [-k] [file ...]"
+# 
+while getopts hk arg
+do
+	case "$arg" in
+	h) 	HELP="ON";;
+     k)	OPTIONS="$OPTIONS${arg}";;
+	[?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/census.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/census.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' may be used
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "census: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+$AWK_VER -f ${HUMDRUM}/bin/census.awk "DUMMY" "${OPTIONS:-null}" $FILENAME

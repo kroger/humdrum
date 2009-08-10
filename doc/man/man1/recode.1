@@ -1,0 +1,386 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH recode 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +12
+.ti -12
+\fBrecode\fR  --  recode numeric tokens in selected Humdrum spines
+.in -12
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBrecode\fR  -f  \fIreassign-file\fR  \fB-i  '\fI**interpretation\fB'  [\fB-s \fIregexp\fR]  [\fB-x\fR]  [\fIinputfile\fR ...]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "recode"
+command is used to recode numeric components of data tokens in
+selected input spines.
+Typically,
+.B "recode"
+is used to reassign a range of numerical values into a finite set of classes
+or categories.
+For example,
+.B "recode"
+could be used to reassign all numerical values less than zero to the value -1,
+and to assign all values greater than or equal to zero to the value +1.
+A typical use of
+.B "recode"
+might be to reassign melodic intervals (represented in semitones) to one of
+five categories: (1) unison [0 semits],
+(2) up step [plus 1 or 2 semits], (3) up leap [plus 3 or more semits],
+(4) down step [minus 1 or 2 semits], (5) down leap [minus 3 or more semits].
+Similarly, duration information might be rhythmically \(odjustified\(cd
+so that all durations near 0.5 seconds are recoded as precisely 0.5 seconds.
+.sp 1
+.sp 1
+Note that
+.B "recode"
+will modify only those input spines matching the exclusive interpretation
+specified in the command line.
+.sp 1
+.sp 1
+The manner by which numeric values are reassigned is specified by
+the user in a separate
+.I "reassignment file."
+Reassignment files consist of one or more reassignment records;
+each record specifies a
+.I "condition"
+and a resulting replacement
+.I "string."
+When the condition is satisfied, the numerical data is replaced by
+the associated string.
+A simple reassignment file is:
+.in +2
+.sp 1
+.TS
+l l.
+==0	zero
+!=0	other
+.TE
+.sp 1
+.in -2
+This file contains two reassignment records.
+.I "Conditions"
+are given in the left column and the associated replacement
+.I "strings"
+are given in the right column.
+Conditions and strings are separated by a single tab.
+Given the above reassignment, when a numerical value in an input token
+is equal to zero, the output replaces the input number by the
+alphabetic string \(od\f(CRzero\fR.\(cd
+The second condition (!= means not-equals) indicates that if a
+numerical value not equal to zero is encountered in an input token,
+the output replaces the number by the alphabetic string
+\(od\f(CRother\fR.\(cd
+.sp 1
+.sp 1
+Permissible relational operators are listed in the following table.
+.sp 1
+.sp 1
+.sp 1
+.TS
+l l.
+==	equals
+!=	not equals
+<	less than
+<=	less than or equal
+>	greater than
+>=	greater than or equal
+else	default relation
+.TE
+.sp 1
+.ce
+.I "Relational operators for \fBrecode\fI"
+Permissible replacement strings include any combination of printable ASCII
+characters with the exception of the tab.
+.sp 1
+.sp 1
+Conditions are tested in the order given in the reassignment file.
+Thus if a numeric value satisfies more than one condition,
+only the first string replacement is made.
+Consider, for example, the following reassignment file:
+.in +2
+.sp 1
+.TS
+l l.
+<=0	LOW
+>100	HIGH
+>0	MEDIUM
+.TE
+.sp 1
+.in -2
+In this case, all numeric values are replaced by one of three strings:
+HIGH, MEDIUM,
+or
+LOW.
+The order of specification is important in the above file.
+If the \f(CRMEDIUM\fR condition was specified prior to the \f(CRHIGH\fR
+condition, then all values greater than one hundred would be categorized
+as \f(CRMEDIUM\fR rather than as \f(CRHIGH\fR.
+.sp 1
+.sp 1
+The
+.I "else"
+relation can be used to specify the default string output for
+numeric input values that satisfy none of the preceding conditions
+in the reassignment file.
+If no
+.I "else"
+condition is specified and none of the other conditions are satisfied,
+.B "recode"
+outputs the original input token without any modification.
+.sp 1
+.sp 1
+Substitutions are made even when a number
+is embedded in non-numeric data.
+For example, given the above reassignment file, an input token
+\f(CRfoo200bar\fR would be output as \f(CRfooHIGHbar\fR.
+That is, the numeric portion of the input string (200) would be
+deemed to satisfy the condition (>100) and so would be replaced by
+the string ("HIGH").
+.sp 1
+.sp 1
+An important property of the
+.B "recode"
+command is that string replacements are limited to the
+.B "first"
+occurrence of numeric data within each data token.
+Subsequent numeric data within the token remains untouched.
+Thus, using the above reassignment file, the input token
+\f(CRfoo200bar300\fR
+would be output as
+\f(CRfooHIGHbar300\fR.
+.sp 1
+.sp 1
+In the case of multiple-stops (data tokens having two or more parts
+separated by spaces),
+.B "recode"
+processes the first occurrence of numeric data for each part of the token.
+For example, the double-stop token \f(CRfoo200 bar300\fR
+would be output as \f(CRfooHIGH barHIGH\fR.
+.sp 1
+.sp 1
+The
+.B "recode"
+command provides options to identify which data tokens may be excluded
+(skipped) in processing
+.B "(-s),"
+plus an option that suppresses the echoing of unprocessed signifiers
+in the output
+.B "(-x)."
+See OPTIONS for further information.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "recode"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-f \fIreassign\fR	use reassignments given in file \fIreassign\fR
+\fB-h\fR	displays a help screen summarizing the
+	  command syntax
+\fB-i \fI'**interp'\fR	process only \fI**interp\fR spines
+\fB-s \fIregexp\fR	skip; completely ignore tokens matching
+	  \fIregexp\fR; (echo in output only)
+\fB-x\fR	(exclude) do not echo unprocessed data
+	  signifiers in the output
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The user can suppress the echoing of non-numeric data within a token
+by specifying the
+.B "-x"
+option on the command line.
+When this exclude option is selected, only the replacement strings are output.
+For example, given the following reassignment file:
+.in +2
+.sp 1
+.TS
+l l.
+<=0	LOW
+>100	HIGH
+>0	MEDIUM
+.TE
+.sp 1
+.in -2
+The input token
+foo200bar
+would be output as
+\f(CRHIGH\fR.
+If a data token contains no numeric component, then the
+.B "-x"
+option causes a null token to be output.
+.sp 1
+.sp 1
+The
+.B "-x"
+option also suppresses the echoing of unprocessed numerical components.
+(Recall that string replacements made by
+.B "recode"
+are limited to the first occurrence of numerica data within a data token.)
+For example, with the
+.B "-x"
+option, the input data token
+foo200bar17
+would be output as
+\f(CRHIGH\fR.
+.sp 1
+.sp 1
+Processing of certain types of data tokens may be avoided by invoking the
+.B "-s"
+(skip) option.
+This option must be accompanied by a user-define regular-expression
+(see \fBregexp (6)\fR).
+Input data tokens matching this expression are not processed
+and are simply echoed in the output.
+This option may be useful, for example, in avoiding the processing
+of barlines, or other types of data.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The operation of the
+.B "recode"
+command can be illustrated by referring to the following hypothetical
+Humdrum file named \f(CRpatrie\fR.
+.sp 1
+.sp 1
+.in +2
+.sp 1
+.TS
+l l.
+**kern	**abc
+16g	0
+8.g	00
+16g	1
+\(eq1	\(eq1
+4cc	2.0
+4cc	+3.
+4ee	4
+4ee	-1
+\(eq2	\(eq2
+4.gg	22.
+8ee	1.1
+8.cc	.1
+16cc	x1X
+8.ee	x1x2x
+16cc	1 2
+\(eq3	\(eq3
+4a	.
+4r	r
+*-	*-
+.TE
+.sp 1
+.in -2
+Consider also the following \(odreassignment\(cd file, named \f(CRreassign\fR.
+.in +2
+.sp 1
+.TS
+l l.
+==0	zero
+==1	one
+==2	two
+<0	negative
+<=3	<=3
+>4	>4
+else	???
+.TE
+.sp 1
+.in -2
+The command:
+.sp 1
+.sp 1
+.in +2
+recode -s = -i '**abc' -f reassign patrie
+.in -2
+.sp 1
+.sp 1
+would produce the following output:
+.in +2
+.sp 1
+.TS
+l l.
+**kern	**abc
+16g	zero
+8.g	zero
+16g	one
+\(eq1	\(eq1
+4cc	two
+4cc	<=3
+4ee	???
+4ee	negative
+\(eq2	\(eq2
+4.gg	>4
+8ee	<=3
+8.cc	<=3
+16cc	xoneX
+8.ee	xonex2x
+16cc	one two
+\(eq3	\(eq3
+4a	.
+4r	r
+*-	*-
+.TE
+.sp 1
+.in -2
+Notice the following:
+(1) the measure numbers \f(CR1\fR and \f(CR2\fR have remained
+unchanged due to the skip option \f(CR-s =\fR,
+(2) the input \f(CRx1X\fR has been replaced by the output string
+xoneX
+(non-numeric data remain in the same relative position),
+(3) the input \f(CRx1x2x\fR has been replaced by the output string
+xonex2x
+(only the first numerical value in each token is modified),
+(4) the double-stop input \f(CR1 2\fR has been replaced by the output string
+one two,
+and (5) both the null token (.) and the non-numeric token (\f(CRr\fR)
+have been echoed in the input unchanged.
+.sp 1
+.sp 1
+Note that with the
+.B "-x"
+option, all of the non-numeric signifiers in
+**abc
+spine would be suppressed in the output.
+The single non-numeric token (\f(CRr\fR) would be output as a null token.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBhumsed\fR (1), \fBrend\fR (1), \fBregexp\fR (1),
+\fBsed\fR (\s-1UNIX\s+1)
+.in -2

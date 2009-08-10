@@ -1,0 +1,272 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- hum2fin</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>hum2fin</b>  --  convert a humdrum file into a Finale enigma-format file (.etf)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>hum2fin</b>  <i>inputfile</i>  [<i>outputfile</i>] [<i>-p</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The <b>hum2fin</b> command provides the means to viewing humdrum files in the "Finale" 
+graphical music notation editor by converting the Humdrum file into a Finale 
+readable file. It takes a humdrum file as input and outputs a file with the 
+same musical data represented in Finale's enigma transportable file format 
+(.etf). The enigma format is an ASCII-based file format developed by CodaMusic 
+Technology, developer of Finale, which allows finale data to be read by both 
+Macs and PCs.
+</P>
+<P>
+As of April 2000, <b>hum2fin</b> supports the following Humdrum data:
+</P>
+<P>
+1. **kern representation
+<b>hum2fin</b> supports most **kern signifiers, including:
+</P>
+<P>
+0, 1, 2, 4, ... 128, '.', 
+note duration
+-, #
+accdientals
+a-g, A-g, r
+pitches
+' z ^ ; ~ , ` : W M S u v q
+articulations and ornaments
+J, L
+beaming
+[ ] -
+tie
+( )
+slur
+{ }
+phrase
+/, \\
+stemming
+* Supported kern signifiers
+</P>
+<P>
+2. **dynam representation
+<b>hum2fin</b> supports the following **dynam signifiers:
+
+< > ( ) [ ]  X x r
+
+<b>hum2fin</b> assumes that a **dynam spine is always specific to ONE **kern spine and 
+it is always specific to the closest **kern spine to its right. Also, only ONE 
+**dynam spine can be related to a **kern spine. The **dynam spine closest to 
+the **kern spine gets the connection. For example, in the humdrum file below, 
+</P>
+<P>
+<TABLE>
+<TR><TD>**kern</TD><TD>**dynam</TD><TD>**dynam</TD><TD>**silbe</TD><TD>**kern</TD><TD>**kern</TD></TR>
+<TR><TD>4r</TD><TD>f</TD><TD>p</TD><TD>I</TD><TD>4d</TD><TD>4f#</TD></TR>
+<TR><TD>4r</TD><TD>.</TD><TD>.</TD><TD>am</TD><TD>4e</TD><TD>4g</TD></TR>
+</TABLE>
+</P>
+<P>
+the **dynam spine with the piano marking is linked with the second **kern spine 
+(fifth spine from the left). The **dynam spine containing the forte marking is 
+ignored. Meanwhile, the **dynam spine (third spine from the left) is specific 
+to the fifth spine from the left, but not the first spine nor the last one.	
+</P>
+<P>
+3. **silbe representation
+<b>hum2fin</b> can process the **silbe representation. 
+Similar to the **dynam representation, <b>hum2fin</b> assumes that a **silbe spine is 
+always specific to ONE **kern spine and it is always specific to the closest 
+**kern spine to its right. Also, only ONE **silbe spine can be related to a 
+kern spine. <b>hum2fin</b> assumes that the humdrum file adopts a through-composed 
+humdrum format, so <b>hum2fin</b> does not recognize the *strophe tandem 
+interpretation. 
+</P>
+<P>
+4. Reference record
+<b>hum2fin</b> reads the reference record !!!OTL and puts the text as the title of the 
+music in the enigma file.
+</P>
+<P>
+5. Humdrum's barline scheme
+<b>hum2fin</b> recognizes and translates the following barline signifiers:
+==|!, ==:!|, ==:|!, ==, =!, =", =-, =', = and = with measure number.
+</P>
+<P>
+6. Spine paths
+<b>hum2fin</b> only recognizes the exchange spine signifier *x. 
+</P>
+<P>
+7. Tandem interpretations
+<b>hum2fin</b> supports the following tandem interpretations: clefs, key signature, 
+key, time signature, and instrument. 
+</P>
+<P>
+Please note that <b>hum2fin</b> depends heavily on the **kern representation, which 
+provides it with most of the essential musical data Finale needs.  Because 
+Finale is unable to display notations such as slurs or dynamics alone without 
+the actual notes themselves, there MUST be **kern spines in the Humdrum input 
+file. All the non-kern spines should also be specific to particular **kern 
+spines respectively. The linkage maybe suggested through the use of the tandem 
+representaion *staff. For example, should <b>hum2fin</b> support the **harm 
+representation in the future, the humdrum file
+</P>
+<P>
+<TABLE>
+<TR><TD>**kern</TD><TD>**harm</TD><TD>**kern</TD></TR>
+<TR><TD>*staff1</TD><TD>*staff1</TD><TD>*</TD></TR>
+<TR><TD>4d</TD><TD>.</TD><TD>4c</TD></TR>
+<TR><TD>4f</TD><TD>IV</TD><TD>4a</TD></TR>
+</TABLE>
+</P>
+<P>
+indicates that the **harm spine is related to the **kern spine to its left, but 
+not the one to its right.
+</P>
+<P>
+If no relationship is suggested, <b>hum2fin</b> assumes a relationship between the non-
+kern spine and its closest kern spine to the right, as can be seen in the 
+treatment of the **silbe and **dynam spines.
+</P>
+<P>
+Recall that Humdrum representation are organized aas though the notated score 
+has been rotated clockwise 90 degrees. This means that the upper-most part is 
+typically represented by the right-most spine. <b>hum2fin</b> interprets the inputs 
+according to this arrangement.
+ </P>
+
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+
+-p (output unprocessed spines as textual underlay -not working)
+</P>
+<P>
+<b>hum2fin</b> has the option of processing the non-supported spines as **silbe 
+spines. This would enable users to view some spine's data as lyrics in Finale 
+even if <b>hum2fin</b> has yet to support the spine's particular representation. To 
+enable this option, append to the command line"-p".
+</P>
+<P>
+Please be very aware of the way <b>hum2fin</b> process these non-supported spines when 
+enabling this option. <b>hum2fin</b> will process the non-supported spine the same way 
+as it processes the silbe spines. <b>hum2fin</b> will assume the non-supported spine 
+to be related to some specific kern spine. Please read the "*silbe 
+representation" part in the Description section for more details.
+</P>
+
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="fin2hum.html">
+<b>fin2hum</b></A> (4),
+<A HREF="ms.html">
+<b>ms</b></A> (4)
+</i></b></code></big>
+</P>
+
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>FILES</H3></FONT>
+
+<b>hum2fin</b> (or hum2fin.exe in MSDOS), artic.txt, barline.txt, dynam.txt, 
+etfBegin.txt
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>LIMITS</H3></FONT>
+
+Duplets
+<b>hum2fin</b> does not display duplets with the conventional    2    sign. It 
+displays duplets as dotted notes instead.
+</P>
+<P>
+Natural Sign
+<b>hum2fin</b> recognizes the need of accidentals through the kern signifiers "-", 
+"#", and "n". In the **kern representation, it is possible to have a note 
+requiring an accidental but does not have the above signifiers. For example, in 
+the key of F major, if the note is b natural, in Finale a natural sign is 
+needed, but in **kern, only a "b" is needed to show that it is a b natural. In 
+such a case, <b>hum2fin</b> will fail to recognize the "b" as a b-natural but treat it 
+as a b-flat.
+</P>
+<P>
+Measure 1 Label
+<b>hum2fin</b> assumes the first measure in score is measure one and labels it as 
+measure one (even if it is a pickup).
+</P>
+<P>
+There are also limitations in how <b>hum2fin</b> process the **dynam and **silbe 
+representations. Please refer to the corresponding parts in the Description 
+section in this document.
+</P>
+
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+
+There are <b>hum2fin</b> versions both for unix/linux and MSDOS. 
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>ERRORS</H3></FONT>
+</P>
+<P>
+<b>hum2fin</b> has error messages when there are errors with reading input and output 
+files. <b>hum2fin</b> also requires the files "barline.txt", "artic.txt", "dynam.txt" 
+and "etfBegin.txt" for outputting the enigma file and if there are problems 
+reading these files, error messages would be issued.
+</P>
+<P>
+If the program unexpectedly aborts, without any warnings or error messages, 
+please check to see if the humdrum input file complies with the format or 
+restrictions specified in the descriptions section of this document.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>AUTHORSHIP</H3></FONT>
+The original translation program was written by Robert Gjerdingen
+in the awk programming language.
+The program was re-written and extended by Po-yan Tsang in C++.
+</P>
+
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

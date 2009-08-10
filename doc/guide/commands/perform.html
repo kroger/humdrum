@@ -1,0 +1,397 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- perform</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>perform</b>  -- play Humdrum <code><big>**MIDI</code></big> files
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>perform</b>  [<b>-g</b>]  [<b>-i</b> <i>hex</i>]  [<b>-t</b> <i>n.n</i>]  [<b>-v</b> <i>n</i>]  [<i>inputfile.hmd</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>perform</b>
+command allows the user to listen to synthesized performances of
+Humdrum <code><big>**MIDI</big></code>-format input.
+When invoked,
+<b>perform</b>
+provides an interactive environment suitable for
+proof-listening and other audition tasks.
+</P>
+<P>
+The
+<b>perform</b>
+command accepts as input Humdrum inputs containing <code><big>**MIDI</big></code>
+representations.
+The command generates serial MIDI data which are sent directly to a
+MIDI controller card.
+The user must have an appropriate MIDI synthesizer connected via
+a Roland MPU-401 (or compatible) MIDI controller card.
+All <code><big>**MIDI</big></code> spines present in the input stream are performed.
+Non-MIDI spines are ignored and do not affect the sound output.
+</P>
+<P>
+When first invoked, the
+<b>perform</b>
+command reads in the entire input into memory.
+By loading the complete input into memory,
+random data access is possible and so
+the user can move freely both forward and backward through the MIDI score.
+(Note that the size of any input is limited by the available memory.)
+While the data is being loaded into memory, a tally of the number of
+bytes loaded is reported.
+Once the data is loaded, MIDI performance commences immediately.
+</P>
+<P>
+The
+<b>perform</b>
+command provides a set of interactive commands that allow the user
+to pause and resume playback, to change tempo,
+to move to any measure by absolute or relative reference,
+and to search forward or backward for commented markers.
+Editing of MIDI data is not available using
+<b>perform.</b>
+</P>
+<P>
+Playback can be suspended by typing the space-bar;
+typing any key will resume playback.
+By itself, typing ENTER will return to the beginning of the score
+and re-initiate playback.
+If a number is typed before pressing ENTER,
+<b>perform</b>
+will search for a corresponding measure number and continue playback
+from the beginning of the specified measure.
+Where more than one measure matches the inputted measure-number,
+<b>perform</b>
+will find the nearest matching measure, without going backward through
+"measure zero."
+Typing a
+<i>number</i>
+followed by the plus sign (<code><big>+</big></code>) will move to the numbered
+measure corresponding to the current measure plus <<i>number</i>>,
+and continue playback from the beginning of that measure.
+Typing a
+<i>number</i>
+followed by the minus sign (<code><big>-</big></code>) will move to the numbered
+measure corresponding to the current measure minus <<i>number</i>>,
+and continue playback from the beginning of that measure.
+The
+<b>perform</b>
+commands for moving forward and backward should be avoided when
+inputs contain unnumbered measures or highly unusual orderings
+--  such as reverse-order measure numbers.
+</P>
+<P>
+The tempo can be modified interactively by using the
+greater-than (<code><big>></big></code>) and less-than (<code><big><</big></code>) signs to increase or
+decrease the tempo respectively.
+The less-than sign reduces the tempo whereas the greater-than sign
+increases the tempo.
+Tempo changes are in increments of 6 quarter-note durations per minute.
+A minimum tempo of 8, and a maximum tempo of 250 quarter-notes per minute
+are permitted.
+The current tempo is displayed whenever a change of tempo is made.
+</P>
+<P>
+In the default operation,
+<b>perform</b>
+echoes all global comments on the screen as the comments are
+encountered in the input.
+For inputs containing appropriate annotations, the echoing of comments
+can provide useful visual markers or reminders of particular
+moments in the sound output.
+Whether or not global comments are echoed on the standard output,
+users can use the
+<b>perform</b>
+forward-search (<code><big>/</big></code>) and backward-search (<code><big>?</big></code>) commands
+to move directly
+to a particular commented point in the score.
+For example, if an input contains a global comment containing
+the character string "Second theme,"
+the user can move immediately to this position in the input by
+entering the following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+/Second theme
+</code></big>
+</blockquote>
+</P>
+<P>
+followed by a carriage return <cr> (or ENTER).
+(The search string need only contain sufficient characters to distinguish
+uniquely the appropriate point of interest.)
+Similarly, the user can search backward for this character string
+by entering:
+</P>
+<P>
+<blockquote>
+<code><big>
+?Second theme
+</code></big>
+</blockquote>
+</P>
+<P>
+If the search is successful, playback continues immediately from
+the new score position.
+If the search is unsuccessful, playback continues from the current
+score position.
+</P>
+<P>
+In rare circumstances, ciphers (stuck notes) can occur in MIDI tasks --
+such as where an intermittent MIDI cable fails to convey a "note-off"
+instruction to an active synthesizer.
+The
+<b>p</b>
+command ("panic") turns off all active notes.
+In addition, a "power panic" command (upper-case letter <b>P</b>)
+is provided;
+this command sends "all-notes-off" commands on MIDI channels 1-16.
+See also the
+<b>tacet</b>
+command.
+</P>
+<P>
+The
+<b>f</b>
+command will flag a current measure by echoing the measure number
+on the screen.
+This can be useful for chronicling various events without having
+to pause or interrupt playback.
+</P>
+<P>
+The
+<b>perform</b>
+command is terminated by typing either <b>q</b> or <b>Q</b>,
+or by pressing the escape key (ESC).
+</P>
+<P>
+The following table summarizes the interactive commands
+provided by
+<b>perform.</b>
+A summary of these commands can be displayed from within
+<b>perform</b>
+by typing the
+<b>h</b>
+(help) command.
+<blockquote><TABLE>
+<TR><TD><space></TD><TD>pause; suspend playback; strike any key to continue</TD></TR>
+<TR><TD><</TD><TD>reduce tempo</TD></TR>
+<TR><TD>></TD><TD>increase tempo</TD></TR>
+<TR><TD>-</TD><TD>go back to the beginning of the previous measure</TD></TR>
+<TR><TD></TD><TD>  and continue performing</TD></TR>
+<TR><TD><i>integer</i>-</TD><TD>go back <i>integer</i> measures and continue performing</TD></TR>
+<TR><TD></TD><TD>  from the beginning of that measure</TD></TR>
+<TR><TD>+</TD><TD>go forward to the beginning of the next measure</TD></TR>
+<TR><TD></TD><TD>  and continue performing</TD></TR>
+<TR><TD><i>integer</i>+</TD><TD>go forward <i>integer</i> measures and continue performing</TD></TR>
+<TR><TD></TD><TD>  from the beginning of that measure</TD></TR>
+<TR><TD><cr></TD><TD>by itself the carriage return moves to the beginning</TD></TR>
+<TR><TD></TD><TD>  of the score and continues performing</TD></TR>
+<TR><TD>/<i>string</i><cr></TD><TD>search forward from the current position for the</TD></TR>
+<TR><TD></TD><TD>  next global comment containing <i>string</i> and continue</TD></TR>
+<TR><TD></TD><TD>  performing</TD></TR>
+<TR><TD>?<i>string</i><cr></TD><TD>search backward from the current position for the</TD></TR>
+<TR><TD></TD><TD>  nearest global comment containing <i>string</i> and continue</TD></TR>
+<TR><TD></TD><TD>  performing</TD></TR>
+<TR><TD><i>integer</i><cr></TD><TD>go to numbered measure <i>integer</i>; where more than</TD></TR>
+<TR><TD></TD><TD>  one measure shares the same numerical label go to the</TD></TR>
+<TR><TD></TD><TD>  next (forward) measure matching <i>integer</i></TD></TR>
+<TR><TD>h</TD><TD>display command summary help screen</TD></TR>
+<TR><TD>p</TD><TD>panic; turn off all active notes</TD></TR>
+<TR><TD>p</TD><TD>power panic; reset all notes off on all MIDI channels</TD></TR>
+<TR><TD>q</TD><TD>same as <b>q</b></TD></TR>
+<TR><TD>Q</TD><TD>terminate the perform command</TD></TR>
+<TR><TD><ESC></TD><TD>same as <b>q</b></TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Interactive commands in <b>perform</b>.</i>
+</CENTER>
+</P>
+<P>
+In order to facilitate user interaction, a number of keyboard `aliases'
+are provided.
+For example, the comma (<code><big>,</big></code>) and the period (<code><big>.</big></code>) are valid
+aliases for the less-than (<code><big><</big></code>) and greater-than (<code><big>></big></code>) signs;
+these aliases normally share the same keys on ASCII keyboards
+and so avoid the need to use the shift-key.
+For similar reasons, the equals-sign (<code><big>=</big></code>) and the underscore
+(<code><big>_</big></code>) are valid aliases for the plus and minus signs respectively.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>perform</b>
+command provides the following command-line options:
+<blockquote><TABLE>
+<TR><TD><b>-g</b></TD><TD>suppress the echoing of global comments on the standard output</TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-i <i>hex</i></TD><TD>assign MIDI input/output address to <i>hex</i></TD></TR>
+<TR><TD><b>-t <i>n.n</i></TD><TD>set initial tempo to <i>n.n</i> times the default tempo</TD></TR>
+<TR><TD><b>-v <i>n</i></TD><TD>specify default MIDI key-velocity value (0-127)</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+In addition to modifying the tempo interactively while performing,
+the performance tempo may be specified either in the command line
+or in the input Humdrum representation.
+The tempo may be specified on the command line by using the
+<b>-t</b>
+option.
+The
+<b>-t</b>
+must be followed by an integer or real value between 0.13 and 3.80.
+A value of 1.0 corresponds to the default tempo of 66 quarter-notes
+per minute.
+A value of 2.0 doubles the tempo, whereas a value of 0.5 halves
+the tempo.
+Alternatively, tempo may be specified using the <code><big>**MIDI</big></code> tandem
+interpretation for metronome marking (e.g. <code><big>*MM96</big></code>).
+Tempos found in the input representation take precedence over
+any tempo specified on the command line.
+If no tempo information is available,
+<b>perform</b>
+uses the default tempo of 66 quarter-notes per minute.
+</P>
+<P>
+The
+<b>-v</b>
+option allows the user to specify a key-velocity default.
+MIDI instruments normally treat key-velocity data as
+dynamic or accent information --
+thus higher key-velocity values are associated with accented notes.
+Permissible key-velocity values range between 0 and 127.
+The
+<b>-v</b>
+option can be used to set the default key-velocity for
+key-on commands with unspecified key-velocities.
+In the absence of the
+<b>-v</b>
+option, the default key-velocity value is 64.
+</P>
+<P>
+In normal operation,
+<b>perform</b>
+echoes all global comments on the standard output.
+This feature may be defeated by invoking the
+<b>-g</b>
+option.
+</P>
+<P>
+The
+<b>-i</b>
+option is used to specify the input/output address of the MIDI card.
+The default address is `330.'
+The address is specified as a hexadecimal number.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+When using Microsoft
+<i>Windows,</i>
+the
+<b>perform</b>
+command requires the use of "standard mode;"
+<b>perform</b>
+is unable to work in "386 enhanced mode."
+</P>
+<P>
+Improper termination of
+<b>perform</b>
+may leave the MIDI card active, and so possibly to hang the machine.
+Proper termination of
+<b>perform</b>
+is achieved via the letters <b>q</b> or <b>Q</b>, or via the escape key (ESC).
+In the event of improper termination, the
+<b>midreset</b>
+command should be used.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up.
+Microsoft
+<i>Windows,</i>
+in "standard mode" only.
+Linux version adapted by Craig Sapp.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PROPOSED MODIFICATIONS</H3></FONT>
+The program should be modified to allow inputs to contain
+MIDI control codes and MIDI system exclusive codes.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+</P>
+<P>
+<A HREF="encode.html">
+<b>encode</b></A> (4),
+<b>encode.rc</b> (5),
+<b>**MIDI</b> (2),
+<A HREF="midi.html">
+<b>midi</b></A> (4),
+<A HREF="midreset.html">
+<b>midreset</b></A> (4),
+<A HREF="record.html">
+<b>record</b></A> (4),
+<A HREF="smf.html">
+<b>smf</b></A> (4),
+<A HREF="tacet.html">
+<b>tacet</b></A> (4)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>REFERENCES</H3></FONT>
+Use of the Music Quest Inc. MIDI library functions is gratefully
+acknowledged.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide07.html#The_perform_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

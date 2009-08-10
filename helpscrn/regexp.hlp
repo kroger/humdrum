@@ -1,0 +1,24 @@
+
+REGEXP    : Interactive regular-expression tester.
+
+     This command invokes an interactive pattern-matcher that allows the
+     user to test interactively various regular expressions using a sample
+     text.  If no sample text is supplied by the user then a short default
+     text is used.  REGEXP is terminated by typing an end-of-file marker:
+     control-D (on UNIX), or control-Z (on DOS or OS/2).
+
+     Once invoked, the user may input a regular expression followed by a
+     carriage return.  The sample text is scanned for occurrences of the
+     defining regular expression, and any text lines containing the matched
+     expression are displayed on the screen; the matched text is marked.
+
+Syntax:
+
+     regexp [textfile]
+
+Options:
+
+     [textfile] : optional text file for testing regular expressions
+
+  Refer to reference manual for further details.
+

@@ -1,0 +1,24 @@
+
+RECODE    : Recode numeric tokens in selected Humdrum spines.
+
+     This command is used to recode numerical components of data tokens in
+     selected input spines.  Typically, RECODE is used to reassign a range
+     of numerical values into a finite set of classes or categories, such
+     as all numbers less than zero replaced by the string "negative".
+
+     Recode instructions (such as: `<0     negative') are stored in a separate
+     "reassignment" file.  Instruction types:  ==   !=   <   >   <=   >=  else.
+
+Syntax:
+
+     recode -f reassign -i **interpretation [-s reg_exp] [-x] [inputfile ...]
+
+Options:
+
+     -f reassign         : file containing recode information
+     -i **interpretation : exclusive interpretation to key on
+     -s reg_exp          : skip lines containing given regular expression
+     -x                  : suppress output of non-processed data signifiers
+
+  Refer to reference manual for further details.
+

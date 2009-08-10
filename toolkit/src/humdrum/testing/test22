@@ -1,0 +1,7 @@
+!! "humdrum: ERROR 22: Exclusive interpretations do not match for"
+!! "designated join spines in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 22
+**ex1	**ex2
+*v	*v
+*-	*-

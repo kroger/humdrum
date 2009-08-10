@@ -1,0 +1,252 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- record</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>record</b>  --  record live MIDI input in Humdrum <code><big>**MIDI</code></big> data format
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>record</b>  [<b>-i</b> <i>hex</i>]  [<b>-q</b> <i>n</i>]  [ > <i>outputfile.hmd</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>record</b>
+command captures a stream of input MIDI data and translates this data into
+a simple Humdrum <code><big>**MIDI</big></code> representation.
+Input MIDI data is obtained through a Roland MPU-401 (or compatible)
+interface -- usually connected in turn to a MIDI synthesizer.
+The obtained <code><big>**MIDI</big></code> data can be manipulated using several Humdrum tools,
+or it can be played-back using the
+<A HREF="perform.html"><b>perform</b></A>
+command.
+</P>
+<P>
+Recording commences as soon as the command is invoked.
+Recording ceases when any ASCII key is pressed -- with the exception
+of the space bar.
+Only MIDI key-press activity (including after-touch) information is recorded.
+MIDI system-exclusive instructions and other non-key-press data
+are not recorded.
+</P>
+<P>
+Each MIDI channel is represented using a separate Humdrum spine.
+New spines are added automatically during the recording -- in response
+to additional activity on new MIDI channels.
+Once a MIDI channel becomes active, the corresponding Humdrum spine continues
+to be output until the recording is terminated.
+</P>
+<P>
+At any time during the recording process, pressing the space bar
+will insert a <code><big>**MIDI</big></code> barline data token in the output stream.
+Measure numbers are incremented automatically beginning with measure 1.
+</P>
+<P>
+It is recommended that output files produced using the
+<b>record</b>
+command should be given names with the distinguishing `.hmd' extension.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>record</b>
+command provides the following option:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-i <i>hex</i></TD><TD>assign MIDI interface input/output address to <i>hex</i></TD></TR>
+<TR><TD><b>-q <i>n</i></TD><TD>invokes quantizing using a temporal window of <i>n</i> clock ticks</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The
+<b>-q</b>
+option invokes a quantizing function where timing information is
+rounded-off to a specified level of resolution.
+This option may be used to eliminate expressive timing information
+and assist in producing a canonical duration representation.
+The degree of quantizing is specified by the <i>n</i> argument to the
+<b>-q</b>
+option,
+where <i>n</i> represents the quantizing window in MIDI clock ticks.
+Recorded events occurring within this window are deemed to be
+simultaneous, and are recorded as Humdrum double-stops in the output.
+</P>
+<P>
+The
+<b>-i</b>
+option is used to specify the input/output address of the MIDI card.
+The default address is `330.'
+The address is specified as a hexadecimal number.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SAMPLE OUTPUT</H3></FONT>
+The following examples illustrate how
+<b>record</b>
+may be used.
+A simple command invocation is:
+</P>
+<P>
+<blockquote>
+<code><big>
+record
+</code></big>
+</blockquote>
+</P>
+<P>
+Output <code><big>**MIDI</big></code> data may appears as follows:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! Data from the MPU-401 MIDI card.</TD></TR>
+<TR><TD>**MIDI</TD></TR>
+<TR><TD>*Ch1</TD></TR>
+<TR><TD>236/67/64</TD></TR>
+<TR><TD>12/-67/64</TD></TR>
+<TR><TD>10/67/66</TD></TR>
+<TR><TD>11/-67/64</TD></TR>
+<TR><TD>13/67/51</TD></TR>
+<TR><TD>12/-67/64</TD></TR>
+<TR><TD>14/63/72</TD></TR>
+<TR><TD>263/-63/64</TD></TR>
+<TR><TD>84/65/61</TD></TR>
+<TR><TD>15/-65/64</TD></TR>
+<TR><TD>10/65/55</TD></TR>
+<TR><TD>15/-65/64</TD></TR>
+<TR><TD>11/65/51</TD></TR>
+<TR><TD>23/-65/64</TD></TR>
+<TR><TD>12/62/58</TD></TR>
+<TR><TD>171/-62/64</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+Using the quantizing option:
+</P>
+<P>
+<blockquote>
+<code><big>
+record -q 10
+</code></big>
+</blockquote>
+</P>
+<P>
+might produce output such as the following <code><big>**MIDI</big></code> data.
+Notice the frequent occurrence of multiple-stops
+(more than one note-instruction in the spine).
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! Data from the MPU-401 MIDI card.</TD></TR>
+<TR><TD>!! Quantizing set at 10 clock ticks.</TD></TR>
+<TR><TD>**MIDI</TD></TR>
+<TR><TD>*Ch1</TD></TR>
+<TR><TD>303/50/39</TD></TR>
+<TR><TD>13/-50/64 13/74/55</TD></TR>
+<TR><TD>23/76/43</TD></TR>
+<TR><TD>15/-74/64 15/78/58 15/-76/64</TD></TR>
+<TR><TD>22/69/35 22/-78/64 22/62/43</TD></TR>
+<TR><TD>18/-62/64 18/78/43 18/-69/64</TD></TR>
+<TR><TD>22/76/35</TD></TR>
+<TR><TD>14/-78/64 14/74/58</TD></TR>
+<TR><TD>15/-76/64 15/-74/64</TD></TR>
+<TR><TD>12/81/48 12/54/77</TD></TR>
+<TR><TD>17/-54/64 17/74/69 17/-81/64</TD></TR>
+<TR><TD>23/76/48</TD></TR>
+<TR><TD>19/78/66 19/-74/64 19/-76/64</TD></TR>
+<TR><TD>21/62/43 21/69/69 21/-78/64</TD></TR>
+<TR><TD>14/-62/64 14/78/51 14/-69/64</TD></TR>
+<TR><TD>25/76/58</TD></TR>
+<TR><TD>17/-78/64 17/74/74 17/-76/64</TD></TR>
+<TR><TD>15/-74/64</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DIAGNOSTICS</H3></FONT>
+The program is implemented as a four-state finite state machine.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with a Roland MPU-401 or compatible MIDI interface.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="cents.html">
+<b>cents</b></A> (4),
+<A HREF="encode.html">
+<b>encode</b></A> (4),
+<b>encode.rc</b> (5),
+<A HREF="kern.html">
+<b>kern</b></A> (4),
+<b>**MIDI</b> (2),
+<A HREF="midi.html">
+<b>midi</b></A> (4),
+<A HREF="perform.html">
+<b>perform</b></A> (4),
+<A HREF="pitch.html">
+<b>pitch</b></A> (4),
+<A HREF="semits.html">
+<b>semits</b></A> (4),
+<A HREF="smf.html">
+<b>smf</b></A> (4),
+<A HREF="solfg.html">
+<b>solfg</b></A> (4),
+<A HREF="tonh.html">
+<b>tonh</b></A> (4)
+</i></b></code></big>
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>REFERENCES</H3></FONT>
+Use of the Music Quest Inc. MIDI library functions is gratefully
+acknowledged.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide30.html#The_record_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

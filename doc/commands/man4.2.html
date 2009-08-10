@@ -1,0 +1,258 @@
+# MAN4.2.HTML
+#
+# This script attempts to translate GROFF documents to HTML.
+#
+# 
+cat html.head
+awk	'{
+	line = $0
+
+	# Eliminate certain input records.
+	if (line ~ /OUTTAKES/) exit
+	if (line ~ /OUTLINE/) exit
+	if (line ~ /^\.hl/) next
+	if (line ~ /^\\D/) next
+	if (line ~ /^\.po /) next
+	if (line ~ /^\.ll /) next
+	if (line ~ /^\.pl /) next
+	if (line ~ /^\.pn /) next
+	if (line ~ /^\.if /) next
+	if (line ~ /^\.in /) next
+	if (line ~ /^\.ti /) next
+	if (line ~ /^\.tm /) next
+	if (line ~ /^\.OH /) next
+	if (line ~ /^\.EH /) next
+	if (line ~ /^\.PH /) next
+	if (line ~ /^\.DS/) {print "<blockquote>"; next}
+	if (line ~ /^\.DE/) {print "</blockquote>"; next}
+	if (line ~ /^\\fR/) {print "</i></b></code></big>"; next}
+	if (line ~ /^\..* TR/) {print "</i></b></code></big>"; next}
+	if (line ~ /^\\\"/) next
+	if (line ~ /^\\\}/) next
+	if (line ~ /^\.S 24/) {chaptertitle="ON"; next}
+	if (line ~ /^\.S [0-9]/) next
+	if (line ~ /^[lcr]\.$/) next	# Table format statements.
+	if (line ~ /^[lcr]$/) next
+	if (line ~ /^[lcr] [|lcrs].*\.$/) next
+	if (line ~ /^[lcr] [|lcrs].*$/) next
+	if (line ~ /^_$/) next
+	if (line ~ /^center;/) next
+	if (line ~ /^center, box;/) next
+	if (line ~ /^center box;/) next
+	if (line ~ /^box center;/) next
+	if (line ~ /^\.sp [5-9]/) {print ""; next}
+
+	# Process no-fills.
+	if (line ~ /^\.nf/) {NOFILL="yes"; next}
+	if (line ~ /^\.fi/) {NOFILL=""; next}
+	if (NOFILL == "yes") {print "<br>"}
+
+	# Process adjusts.
+	if (line ~ /^\.na/) {next}
+	if (line ~ /^\.ad/) {next}
+
+	# Change groff breaks to html breaks.
+	if (line ~ /^\.br/) {print "<br>"; next}
+
+	# Change page-breaks to spaces.
+	if (line ~ /^\.bp/) line = ".sp 2"
+
+	# Translate left and right quotes:
+	if (line ~ /..lq/) {gsub("..lq","\"",line)}
+	if (line ~ /..rq/) {gsub("..rq","\"",line)}
+
+	# Translate special characters:
+	if (line ~ /\\.dg/) {gsub("..dg","\\&#167",line)}
+	if (line ~ /\\.da/) {gsub("..da","",line)}
+	if (line ~ /\\.eq/) {gsub("..eq","=",line)}
+	if (line ~ /\\.mi/) {gsub("..mi","-",line)}
+	if (line ~ /\\.mu/) {gsub("..mu","x",line)}
+	if (line ~ /\\.bu/) {gsub("..bu","\\&#164",line)}
+	if (line ~ /\\o.e\\.ga/) {gsub(".o.a..ga.","\\&#224",line)}	# A grave accent
+	if (line ~ /\\o.e\\.aa/) {gsub(".o.a..aa.","\\&#225",line)}	# A accute accent
+	if (line ~ /\\o.e\\.ga/) {gsub(".o.e..ga.","\\&#232",line)}	# E grave accent
+	if (line ~ /\\o.e\\.aa/) {gsub(".o.e..aa.","\\&#233",line)}	# E accute accent
+	if (line ~ /\\o.o\\.ga/) {gsub(".o.o..ga.","\\&#242",line)}	# O grave accent
+	if (line ~ /\\o.o\\.aa/) {gsub(".o.o..aa.","\\&#243",line)}	# O accute accent
+	if (line ~ /\\.:a/) {gsub("..:a","\\&#228",line)}			# A umlaut accent
+	if (line ~ /\\.:o/) {gsub("..:o","\\&#246",line)}			# O umlaut accent
+	if (line ~ /\\.:u/) {gsub("..:u","\\&#252",line)}			# U umlaut accent
+	if (line ~ /..->/) {gsub("..->","->",line)}			# right arrow
+	if (line ~ /..<-/) {gsub("..<-","<-",line)}			# left arrow
+
+	# Eliminate the leading backslash for escaped periods at
+	# beginnings of lines.
+	if (line ~ /^\\\./) {gsub("^.","",line)}
+	
+	# Translate em-dashes:
+	if (line ~ / [^A-Za-z][^A-Za-z]em /) {gsub(" ..em "," -- ",line)}
+	if (line ~ / [^A-Za-z][^A-Za-z]em/) {gsub(" ..em"," --",line)}
+	if (line ~ /[^A-Za-z][^A-Za-z]em /) {gsub("..em","-- ",line)}
+
+	# Process whole-line font changes:
+	if (line ~ /^\.ft CR$/) {print "<code><big>"; next}
+	if (line ~ /^\.ft TR$/) {print "</code></big>"; next}
+	if (line ~ /^\.cs [A-Z][A-Z]/) {next}
+
+	# Eliminate in-line font sizes:
+	if (line ~ /.s[-+][1-9]/) {gsub(".s[-+][0-9]*","",line)}
+
+	# Process headings.
+	if (line ~ /^\.HU/)
+		{
+		heading = line
+		gsub("^.HU ","",heading)
+		gsub("\"","",heading)
+		print "<center><HR WIDTH=500></center>"
+		print "<FONT color=\"0000FF\"><H3>" heading "</H3></FONT>"
+
+		# Test for SEE ALSO
+		if (line ~ /^\.HU / && SEE_ALSO == "yes") SEE_ALSO = ""
+		if (line ~ /SEE ALSO/) SEE_ALSO = "yes"
+		next
+		}
+
+	# Process lists.
+	if (line ~ /\.LI/) {print "<li>"; next}
+	if (line == ".AL") {title="OFF"; print "<ul>"; next}
+	if (line == ".LE") {print "</ul>"; next}
+
+	# Process tables.
+	if (line ~ /\.TS/) {title="OFF"; print "<blockquote><TABLE>"; table="ON"; next}
+	if (line ~ /\.TE/) {title="OFF"; print "</TABLE></blockquote>"; table="OFF"; next}
+	if (line ~ /\.T\&/) {next}
+
+	# Process centerings.
+	if (line ~ /\.ce$/) {print "<CENTER>"; center="ON"; next}
+
+	# Process paragraphs.
+	if (line ~ /^\.sp 2$/) {print "</P>"; next}
+	if (line ~ /^\.sp 1$/)
+		{
+		print "</P>"
+		print "<P>"
+		next
+		}
+
+	# Process Single-record Bold.
+	if (line ~ /^.B "/)
+		{
+		gsub("\.B \"","",line)
+		gsub("\"$","",line)
+		if (chaptertitle == "ON")
+			{
+			print "<H1>" line "</H1>"
+			chaptertitle = "OFF"
+			title = "OFF"
+			print "<center><HR WIDTH=500></center>"
+			if (center == "ON") {print "</CENTER>"; center="OFF"}
+			next
+			}
+		if (title == "ON")
+			{
+			print "<H2>" line "</H2>"
+			title = "OFF"
+			}
+		else print "<b>" line "</b>"
+		if (center == "ON") {print "</CENTER>"; center="OFF"}
+		next
+		}
+
+	# Process Single-record Italics.
+	if (line ~ /^.I "/)
+		{
+		gsub("\.I \"","",line)
+		gsub("\"$","",line)
+		print "<i>" line "</i>"; next
+		}
+	# Process Font Size Changes
+	if (line ~ /^.S +/) {title = "ON"; next}
+	if (line ~ /^.S -/) {title = "OFF"; next}
+
+	# TRANSFORM AND OUTPUT THE CURRENT LINE.
+
+	# If the current line is non-empty and does not start with Bold,
+	# then turn off the title variable:
+	if (line !~/^$/ && line !~/^\.B /) title="OFF"
+
+	#### Eliminate Bold-Italics.
+	###if (line ~ /f.BI/) gsub(".f.BI","",line)
+	# Translate Bold-Italics.
+	if (line ~ /f.BI/) gsub(".f.BI","<b><i>",line)
+
+	# Translate in-line font changes.
+	if (line ~ /\\fI/)
+		{
+		gsub(".fI","<i>",line)
+		italic = "ON"
+		}
+	if (line ~ /\\fB/)
+		{
+		gsub(".fB","<b>",line)
+		bold = "ON"
+		}
+	if (line ~ /\\f.CR/)
+		{
+		gsub(".f.CR","<code><big>",line)
+		courier = "ON"
+		}
+	if (line ~ /\\fR/)
+		{
+		if (italic == "ON")
+			{
+			gsub(".fR","</i>",line)
+			italic = "OFF"
+			}
+		if (bold == "ON")
+			{
+			gsub(".fR","</b>",line)
+			bold = "OFF"
+			}
+		if (courier == "ON")
+			{
+			gsub(".fR","</big></code>",line)
+			courier = "OFF"
+			}
+		}
+	if (table == "ON")
+		{
+		gsub("^","<TR><TD>",line)
+		gsub("$","</TD></TR>",line)
+		gsub("	","</TD><TD>",line)
+		}
+	
+	# Process SEE ALSO links
+	if (SEE_ALSO == "yes")
+		{
+		for (i=1; i<=NF; i++)
+			{
+			token=$i
+			gsub(".fB","",token)
+			gsub(".fR","",token)
+			if (token !~/([34])/)
+				print "<A HREF=\"" token ".html\">" token "</A>"
+			}
+		}
+	 
+	print line
+	}
+END	{
+	print "<hr>"
+	print "<br>"
+	print "<ul>"
+	print "<li>"
+	print "<A HREF=\"../guide01.html\">"
+	print "<B>Pertinent description in the Humdrum User Guide</B></A>"
+	print "<li>"
+	print "<A HREF=\"../commands.toc.html\">"
+	print "<B>Index to Humdrum Commands</B></A>"
+	print "<li>"
+	print "<A HREF=\"../guide.toc.html\">"
+	print "<B>Table for Contents for Humdrum User Guide</B></A>"
+	print "</ul>"
+	print "<br><br>"
+	print ""
+	print "</BODY>"
+	print "</HTML>"
+	}' $1
+

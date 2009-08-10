@@ -1,0 +1,988 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 15</TITLE>
+<!-- Chapter 15 (Harmonic Intervals) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:14:48 EST 2000">
+<meta name="description" content="Chapter 15 (Harmonic Intervals) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<body>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<br>
+
+<H1>Chapter15</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide14.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide16.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Harmonic Intervals</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+In
+<A HREF="guide11.html">Chapter 11</A>
+we examined Humdrum tools related to
+melodic pitch intervals.
+This chapter returns to the discussion of intervals by focussing on
+two tools pertaining to characterizing harmonic intervals:
+the
+<A HREF="commands/hint.html"><b>hint</b></A>
+and
+<A HREF="commands/ydelta.html"><b>ydelta</b></A>
+commands.
+</P>
+<A NAME="Types_of_Harmonic_Intervals">
+<H2>Types of Harmonic Intervals</H2>
+</P>
+<P>
+Harmonic intervals identify pitch distances between nominally
+concurrently-sounding notes.
+Example 15.1 illustrates five types of harmonic intervals.
+The most obvious harmonic intervals are those that occur between
+pitches that have concurrent onsets.
+We might call these
+<i>explicit harmonic intervals.</i>
+An example of an explicit harmonic interval is the perfect octave
+in the first sonority of Example 15.1
+<br><br>
+<b>Example 15.1</b>  Types of harmonic intervals.
+<blockquote>
+<img src="guide.figures/guide15.1.gif">
+</blockquote>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD></TR>
+<TR><TD><code><big>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD><code><big>=1-</TD><TD>=1-</TD></TR>
+<TR><TD><code><big>8c</TD><TD>2cc</TD></TR>
+<TR><TD><code><big>8d</TD><TD>.</TD></TR>
+<TR><TD><code><big>4e</TD><TD>.</TD></TR>
+<TR><TD><code><big>8f</TD><TD>8r</TD></TR>
+<TR><TD><code><big>8r</TD><TD>8a</TD></TR>
+<TR><TD><code><big>8d</TD><TD>8r</TD></TR>
+<TR><TD><code><big>8r</TD><TD>8b</TD></TR>
+<TR><TD><code><big>=2</TD><TD>=2</TD></TR>
+<TR><TD><code><big>2.c 2.e</TD><TD>2.g 2.cc</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Less obvious harmonic intervals arise when tone onsets are
+not synchronous -- yet both pitches are sustained simultaneously
+for a period of time.
+We might call these
+<i>passing harmonic intervals.</i>
+Two examples are evident in Example 15.1:
+the minor seventh between the D and the sustained C,
+and the minor sixth between E and C.
+Most music theorists would argue that the minor sixth
+interval is more important than the minor seventh.
+Compared with the D, the following E has a longer duration and coincides
+with a stronger metrical position.
+Hence the interval of the minor sixth is likely to be more
+perceptually salient than the minor seventh interval.
+We might call these intervals
+<i>strong passing intervals</i>
+and
+<i>weak passing intervals</i>
+respectively.
+</P>
+<A NAME="Implicit_Intervals">
+<P>
+Another type of harmonic interval may be deemed to occur
+even when there are no concurrently sounding pitches.
+In Example 15.1, the alternating F->A and D->B imply
+subdominant and dominant harmonic functions and so suggest
+the intervals of a major third followed by a major sixth.
+We might call these intervals
+<i>implicit harmonic intervals.</i>
+The harmonic status of the pitch sequence A->D is more contentious;
+many theorists would argue that no harmonic interval is implied
+either because of the weak->strong metric relationship
+or because the harmonic interval is less stereotypic of the
+given the cadential clich&#233.
+Once again, implicit harmonic intervals might be distinguished
+as weak or strong.
+</P>
+<P>
+A further complication in identifying harmonic intervals
+arises when there are more than two pitches involved.
+In the final four-note chord of Example 15.1, what harmonic intervals
+are implied?
+Example 15.2 shows three possible break-downs of the harmonic relationships.
+<i>Stacked harmonic intervals</i>
+include only the intervals between successive pitches ordered from
+low to high.
+Four pitches thus generate three intervals.
+<i>Bass-related harmonic intervals</i>
+include all intervals calculated with respect to the lowest pitch.
+Four pitches again leads to three (different) intervals.
+This latter way of characterizing intervals is the most similar
+to figured bass notation.
+<i>Permuted harmonic intervals</i>
+include all intervals that can be calculated between all notes
+of a sonority.
+Four pitches leads to six intervals.
+</P>
+<br><br>
+<b>Example 15.2</b>  Interpreting Interval Content in Chords
+<br>
+<img src="guide.figures/guide15.2.gif">
+<br>
+<blockquote><TABLE>
+<TR><TD>Stacked Intervals</TD><TD></TD><TD></TD><TD>Bass-related Intervals</TD><TD></TD><TD></TD><TD>Permuted Intervals</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+A final issue in characterizing harmonic intervals is whether or not the
+presence of unisons is important.
+In most applications (such as figured bass) the presence of unisons
+is unimportant.
+In other applications (such as tabulating instrument doubling in orchestration)
+the occurrence of unisons is noteworthy.
+</P>
+<P>
+By way of summary, we have distinguished five types
+of harmonic intervals, and three measurement methods:
+explicit harmonic intervals, implicit harmonic intervals (both strong and weak),
+plus passing harmonic intervals (again both strong and weak varieties).
+Measurement methods include (1) stacked harmonic intervals,
+(2) bass-related harmonic intervals, and (3) permuted harmonic intervals.
+</P>
+<P>
+As in the case of melodic intervals, harmonic intervals can be
+calculated according to a variety of units -- including diatonic intervals,
+semitones, cents, frequency, and even cochlear coordinates.
+We will consider just two tools for calculating harmonic intervals:
+<b>hint</b>
+and
+<b>ydelta.</b>
+</P>
+<A NAME="Harmonic_Intervals_Using_the_hint_Command">
+<H2>Harmonic Intervals Using the <i>hint</i> Command</H2>
+</P>
+<P>
+The Humdrum
+<A HREF="commands/hint.html"><b>hint</b></A>
+command calculates harmonic intervals for pitch-related representations
+such as
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>,
+<A HREF="representations/pitch.rep.html"><code><big>**pitch</big></code></A>,
+<A HREF="representations/solfg.rep.html"><code><big>**solfg</big></code></A>,
+and
+<A HREF="representations/Tonh.rep.html"><code><big>**Tonh</big></code></A>.
+As in the case of the
+<b>mint</b>
+command, output intervals are expressed as a combination of diatonic
+interval size plus interval quality (such as `perfect fourth'
+and `minor ninth').
+</P>
+<P>
+In the default operation,
+<b>hint</b>
+calculates only explicit harmonic intervals;
+for sonorities containing more than two pitches,
+only stacked harmonic intervals are calculated.
+The output from the
+<b>hint</b>
+command always consists of a single
+<A HREF="representations/hint.rep.html"><code><big>**hint</big></code></A>
+spine.
+Any number of spines may be present in the input,
+but only pitch-related spines are processed.
+Given the default invocation, the output corresponding to Example 15.1
+is as follows:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**hint</TD></TR>
+<TR><TD><code><big>*M4/4</TD></TR>
+<TR><TD><code><big>=1-</TD></TR>
+<TR><TD><code><big>P8</TD></TR>
+<TR><TD><code><big>-</TD></TR>
+<TR><TD><code><big>-</TD></TR>
+<TR><TD><code><big>-</TD></TR>
+<TR><TD><code><big>-</TD></TR>
+<TR><TD><code><big>-</TD></TR>
+<TR><TD><code><big>-</TD></TR>
+<TR><TD><code><big>=2</TD></TR>
+<TR><TD><code><big>M3 m3 P4</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Notice that sonorities that contain only a single pitch result in
+the outputting of a hyphen (<code><big>-</big></code>).
+The hyphen indicates that pitched material is present, but there
+are no explicit harmonic intervals.
+Input records that contain no pitch tokens result in the outputting
+of a null token (.).
+If a single duplicated pitch is present, then the output will
+indicate a perfect unison (P1).
+<A NAME="Ignore_Unisons">
+Unisons can be suppressed from the output via the
+<b>-u</b>
+option for <b>hint</b>.
+</P>
+<A NAME="Permuted_Harmonic_Intervals">
+<P>
+When more than two pitches are present in a sonority,
+<i>permuted harmonic intervals</i>
+can be calculated by invoking the
+<b>-a</b>
+option (i.e.
+<i>all</i>
+intervals).
+For example, with the
+<b>-a</b>
+option, the final chord in Example 15.1 would produce the
+following output:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**hint</TD></TR>
+<TR><TD><code><big>*all</TD></TR>
+<TR><TD><code><big>M3 P5 P8 m3 m6 P4</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Notice the presence of the <code><big>*all</big></code> tandem interpretation in
+the above output.
+This interpretation is added to the output in order to  warn
+users that the representation should not be
+interpreted as stacked intervals.
+</P>
+<P>
+<i>Bass-related harmonic intervals</i>
+can be calculated with the
+<b>-l</b>
+option.
+In this case, harmonic intervals are calculated with respect to
+the lowest pitch in the sonority.
+This option is helpful in determining figured bass.
+For the final chord in Example 12.1 the corresponding output
+would be
+</P>
+</P>
+<P>
+<blockquote>
+<code><big>**hint
+<br>
+M3 P5 P8
+<br>
+*-</big></code>
+</blockquote>
+</P>
+<P>
+Two further options for
+<b>hint</b>
+allow the user to tailor how the intervals are represented.
+The
+<b>-c</b>
+option causes compound intervals such as a minor tenth (m10)
+to be output as non-compound equivalents (m3).
+This means that the interval of an octave (P8) will be rendered
+as a unison (P1).
+The
+<b>-d</b>
+option suppresses the outputting of interval qualities and results
+in only diatonic interval sizes being output.
+Again, this option is helpful in determining figured bass.
+The command:
+</P>
+<P>
+<blockquote>
+<code><big>hint -clud</big></code>
+</blockquote>
+</P>
+<P>
+will produce the following output for the final major chord
+in Example 12.1:
+</P>
+<P>
+<blockquote>
+<code><big>**hint
+<br>
+3 5
+<br>
+*-</big></code>
+</blockquote>
+</P>
+<A NAME="Propagating_Data_Using_the_ditto_Command">
+<H2>Propagating Data Using the <i>ditto</i> Command</H2>
+</P>
+<P>
+In the default operation,
+<b>hint</b>
+calculates intervals only between pitches that are explicitly
+present in an input data record.
+This means that passing intervals are not calculated.
+</P>
+<P>
+In order to generate passing intervals,
+we will make use of the Humdrum
+<A HREF="commands/ditto.html"><b>ditto</b></A>
+command.
+The
+<b>ditto</b>
+command replaces null tokens with the
+previous non-null data token in the same spine.
+Suppose we had an arbitrary input such as the following:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**flip</TD><TD>**flop</TD></TR>
+<TR><TD><code><big>A</TD><TD>xyz</TD></TR>
+<TR><TD><code><big>.</TD><TD>jkl</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>B</TD><TD>abc</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>C</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+The effect of
+<b>ditto</b>
+would be the following:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**flip</TD><TD>**flop</TD></TR>
+<TR><TD><code><big>A</TD><TD>xyz</TD></TR>
+<TR><TD><code><big>A</TD><TD>jkl</TD></TR>
+<TR><TD><code><big>A</TD><TD>jkl</TD></TR>
+<TR><TD><code><big>B</TD><TD>abc</TD></TR>
+<TR><TD><code><big>B</TD><TD>abc</TD></TR>
+<TR><TD><code><big>C</TD><TD>abc</TD></TR>
+<TR><TD><code><big>C</TD><TD>abc</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Each null token has been replaced by the preceding data token
+within the spine.
+</P>
+<P>
+Consider the effect of
+<b>ditto</b>
+on the <code><big>**kern</big></code> data in Example 15.1:
+</P>
+<P>
+<blockquote>
+<code><big>ditto -p example15.1</big></code>
+</blockquote>
+</P>
+<P>
+The following output results:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD></TR>
+<TR><TD><code><big>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD><code><big>=1-</TD><TD>=1-</TD></TR>
+<TR><TD><code><big>8c</TD><TD>2cc</TD></TR>
+<TR><TD><code><big>8d</TD><TD>(2cc)</TD></TR>
+<TR><TD><code><big>4e</TD><TD>(2cc)</TD></TR>
+<TR><TD><code><big>8f</TD><TD>8r</TD></TR>
+<TR><TD><code><big>8r</TD><TD>8a</TD></TR>
+<TR><TD><code><big>8d</TD><TD>8r</TD></TR>
+<TR><TD><code><big>8r</TD><TD>8b</TD></TR>
+<TR><TD><code><big>=2</TD><TD>=2</TD></TR>
+<TR><TD><code><big>2.c 2.e</TD><TD>2.g 2.cc</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Notice that the half-note C5 has been repeated.
+The
+<b>-p</b>
+option has caused each repetition of the data token to be placed in
+parentheses so they can be easily recognized.
+By using
+<b>ditto,</b>
+we have transformed previously passing intervals into explicit
+sonorities whose intervals can now be identified by
+<b>hint.</b>
+We can combine the two commands in a single pipeline:
+</P>
+<P>
+<blockquote>
+<code><big>ditto example15.1 | hint</big></code>
+</blockquote>
+</P>
+<P>
+The resulting output for Example 15.1 includes the
+two passing intervals (m7 and m6) in the first measure:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**hint</TD></TR>
+<TR><TD><code><big>*M4/4</TD></TR>
+<TR><TD><code><big>=1-</TD></TR>
+<TR><TD><code><big>P8</TD></TR>
+<TR><TD><code><big>m7</TD></TR>
+<TR><TD><code><big>m6</TD></TR>
+<TR><TD><code><big>-</TD></TR>
+<TR><TD><code><big>-</TD></TR>
+<TR><TD><code><big>-</TD></TR>
+<TR><TD><code><big>-</TD></TR>
+<TR><TD><code><big>=2</TD></TR>
+<TR><TD><code><big>M3 m3 P4</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+The
+<A HREF="commands/ditto.html"><b>ditto</b>,</A>
+command provides two additional options that are worthy
+of note: the
+<b>-s</b>
+and
+<b>-c</b>
+options.
+The
+<b>-s</b>
+option allows
+<b>ditto</b>
+to skip or ignore the presence of certain data records.
+Suppose, for example, that we had a barline in the
+midst of some null tokens:
+<br><br>
+<blockquote><TABLE>
+<TR><TD>A</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>=</TD></TR>
+<TR><TD>.</TD></TR>
+</TABLE></blockquote>
+Often, we would like to propagate certain data tokens
+<i>around</i>
+some other types of data tokens, so the result might be:
+<br><br>
+<blockquote><TABLE>
+<TR><TD>A</TD></TR>
+<TR><TD>A</TD></TR>
+<TR><TD>=</TD></TR>
+<TR><TD>A</TD></TR>
+</TABLE></blockquote>
+By providing
+<b>ditto</b>
+with a suitable regular expression, we can have the data token `A'
+skip over the barline:
+</P>
+<P>
+<blockquote>
+<code><big>ditto -s ^=</big></code>
+</blockquote>
+</P>
+<P>
+Without this option, the final data token in the above example
+would be an equals-sign rather than the token `A'.
+</P>
+<P>
+The
+<b>-c</b>
+option for
+<b>ditto</b>
+allows the user to selectively identify which characters are
+propagated.
+For example, the following command will cause only the lower-case
+letters `a' and `b' to be propagated:
+</P>
+<P>
+<blockquote>
+<code><big>ditto -c ab</big></code>
+</blockquote>
+</P>
+<P>
+This feature allows users to replicate only certain kinds of data --
+such as pitches, durations, dynamic marks, etc.
+</P>
+<P>
+As we will see in future chapters, the
+<b>ditto</b>
+command proves useful in a wide variety of situations
+apart from calculating intervals.
+</P>
+<A NAME="Using_the_ditto_and_hint_Commands">
+<H2>Using the <i>ditto</i> and <i>hint</i> Commands</H2>
+<A NAME="Find_A6_in_Bach">
+<P>
+Let's pause and consider some of the ways we might
+use the
+<b>ditto</b>
+and
+<b>hint</b>
+commands.
+First, let's determine if some input contains a
+particular interval.
+Are there any augmented sixth intervals in Bach's two-part
+inventions?
+The following commands look for explicit and passing
+sixths respectively.
+Notice the use of the
+<b>-c</b>
+option so octave equivalents will also be identified:
+</P>
+<P>
+<blockquote>
+<code><big>hint -c inventio* | grep A6</big></code>
+<br>
+<code><big>ditto -s ^= inventio* | hint -c | grep A6</big></code>
+</blockquote>
+</P>
+<A NAME="Diminished_Octaves">
+<P>
+Are there any diminished octave intervals between any
+two concurrent notes in any of Beethoven's piano sonatas?
+</P>
+<P>
+<blockquote>
+<code><big>ditto -s ^= sonatas* | hint -a | grep d8</big></code>
+</blockquote>
+</P>
+<P>
+In orchestral works, some pairs of instruments are more
+likely than others to double each other at the unison or octave.
+What proportion of the intervals formed by the oboe and flute
+notes are doubled?
+Since we are looking for a proportion, we need to make two
+counts: the total number of (explicit) intervals formed by the oboe and
+flute, and the number of those intervals that are octave equivalents.
+(We will assume that there is only one oboe and one flute part in the
+file <code><big>Rimsky-K</big></code>:)
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*Ioboe,*Iflts' Rimsky-K | hint -c | rid -GLId \
+<blockquote>
+| grep -c P1</big></code>
+</blockquote>
+<br>
+<code><big>extract -i '*Ioboe,*Iflts' Rimsky-K | hint -c | rid -GLId \
+<blockquote>
+| grep -c [MmPAd]</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+The second
+<b>grep</b>
+counts the total number of intervals by looking for all of the
+interval qualities (major, minor, perfect, etc.)
+</P>
+<P>
+Suppose we have extracted two horn parts from an orchestral score.
+Are octave intervals between the horns more likely to occur on the
+dominant pitch or the tonic pitch?
+</P>
+<P>
+<blockquote>
+<code><big>solfa horns > temp1</big></code>
+<br>
+<code><big>hint horns > temp2</big></code>
+<br>
+<code><big>assemble temp1 temp2 | grep -c ^do.*P8</big></code>
+<br>
+<code><big>assemble temp1 temp2 | grep -c ^so.*P8</big></code>
+</blockquote>
+</P>
+<A NAME="Determining_Implicit_Harmonic_Intervals">
+<H2>Determining Implicit Harmonic Intervals</H2>
+</P>
+<P>
+Recall that
+<i>implicit harmonic intervals</i>
+may be deemed to occur between tones that don't actually
+sound at the same time.
+This arises when one part has a rest while the other part
+is sounding.
+Note that if we could eliminate rest tokens, then we could use
+<b>ditto</b>
+to repeat previous pitch tokens in place of the rests and so
+generate implicit harmonic intervals.
+</P>
+<P>
+The
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+command (described in
+<A HREF="guide14.html">Chapter 14</A>)
+is well suited to this task.
+We want to transform any data token containing the letter `r'
+to a null token.
+Consider the following substitution:
+</P>
+<P>
+<blockquote>
+<code><big>humsed 's/.*r.*/.    ./' example15.1</big></code>
+</blockquote>
+</P>
+<P>
+Unfortunately, this isn't quite right.
+The above substitution will find any data record containing the letter `r'
+and transform the entire record to a single null data record.
+We need to address individual data tokens.
+In this example, rest tokens may be in two possible positions:
+the first token in the record or the last token in the record.
+We need two different regular expressions to address each
+of these conditions.
+First, a regular expression to identify rests in the first token:
+</P>
+<P>
+<blockquote>
+<code><big>/^[^   ]*r[^   ]*   /</big></code>
+</blockquote>
+</P>
+<P>
+(That is, the beginning of the record (^), followed by zero or more
+instances of any character other than a tab ([^   ]*),
+followed by the letter `r', followed by zero or more instances
+of any character other than a tab ([^   ]*), followed by a tab.)
+</P>
+<P>
+Similarly, our second regular expression identifies rests in the last token:
+</P>
+<P>
+<blockquote>
+<code><big>/   [^   ]*r[^   ]*$/</big></code>
+</blockquote>
+</P>
+<P>
+Now we can eliminate rest tokens using the following two
+substitution commands within a single invocation of <b>humsed</b>:
+</P>
+<P>
+<blockquote>
+<code><big>humsed 's/^[^  ]*r[^  ]*  /.  /; s/  [^  ]*r[^  ]*$/  ./' example15.1</big></code>
+</blockquote>
+</P>
+<P>
+The following output results:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD></TR>
+<TR><TD><code><big>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD><code><big>=1-</TD><TD>=1-</TD></TR>
+<TR><TD><code><big>8c</TD><TD>2cc</TD></TR>
+<TR><TD><code><big>8d</TD><TD>.</TD></TR>
+<TR><TD><code><big>4e</TD><TD>.</TD></TR>
+<TR><TD><code><big>8f</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>8a</TD></TR>
+<TR><TD><code><big>8d</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>8b</TD></TR>
+<TR><TD><code><big>=2</TD><TD>=2</TD></TR>
+<TR><TD><code><big>2.c 2.e</TD><TD>2.g 2.cc</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+If we now apply
+<A HREF="commands/ditto.html"><b>ditto</b></A>
+and recalculate the intervals, the resulting output will identify
+some implicit intervals as well:
+</P>
+<P>
+<blockquote>
+<code><big>humsed 's/^[^  ]*r[^  ]*  /.  /; s/  [^  ]*r[^  ]*$/  ./' example15.1 \
+<blockquote>
+| ditto -p</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Below we see the output assembled with the output from the corresponding
+<A HREF="commands/hint.html"><b>hint</b></A>
+command:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD><TD>**hint</TD></TR>
+<TR><TD><code><big>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD><code><big>=1-</TD><TD>=1-</TD><TD>=1-</TD></TR>
+<TR><TD><code><big>8c</TD><TD>2cc</TD><TD>P8</TD></TR>
+<TR><TD><code><big>8d</TD><TD>(2cc)</TD><TD>m7</TD></TR>
+<TR><TD><code><big>4e</TD><TD>(2cc)</TD><TD>m6</TD></TR>
+<TR><TD><code><big>8f</TD><TD>(2cc)</TD><TD>P5</TD></TR>
+<TR><TD><code><big>(8f)</TD><TD>8a</TD><TD>M3</TD></TR>
+<TR><TD><code><big>8d</TD><TD>(8a)</TD><TD>P5</TD></TR>
+<TR><TD><code><big>(8d)</TD><TD>8b</TD><TD>M6</TD></TR>
+<TR><TD><code><big>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD><code><big>2.c 2.e</TD><TD>2.g 2.cc</TD><TD>M3 m3 P4</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+<A NAME="The_ydelta_Command">
+<H2>The <i>ydelta</i> Command</H2>
+</P>
+<A NAME="semits_command">
+<P>
+Often it is useful to represent intervals by the number of
+semitones (or some other numerical value).
+We might begin by using the
+<b>semits</b>
+command to translate Example 15.1 to a
+<A HREF="representations/semits.rep.html"><code><big>**semits</big></code></A>
+representation.
+</P>
+<P>
+<blockquote>
+<code><big>semits example15.1</big></code>
+</blockquote>
+</P>
+<P>
+The resulting output would be as follows:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**semits</TD><TD>**semits</TD></TR>
+<TR><TD><code><big>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD><code><big>=1-</TD><TD>=1-</TD></TR>
+<TR><TD><code><big>0</TD><TD>12</TD></TR>
+<TR><TD><code><big>2</TD><TD>.</TD></TR>
+<TR><TD><code><big>4</TD><TD>.</TD></TR>
+<TR><TD><code><big>5</TD><TD>r</TD></TR>
+<TR><TD><code><big>r</TD><TD>9</TD></TR>
+<TR><TD><code><big>2</TD><TD>r</TD></TR>
+<TR><TD><code><big>r</TD><TD>11</TD></TR>
+<TR><TD><code><big>=2</TD><TD>=2</TD></TR>
+<TR><TD><code><big>0 4</TD><TD>7 12</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Numerical differences for values on a single data record
+can be computed using the
+<A HREF="commands/ydelta.html"><b>ydelta</b></A>
+command.
+The
+<b>ydelta</b>
+command is comparable to
+<A HREF="commands/xdelta.html"><b>xdelta</b>,</A>
+however, numerical differences are calculated between simultaneous numerical
+values (delta-<i>y</i>) rather than between successive numerical
+values (delta-<i>x</i>).
+</P>
+<P>
+Like the
+<A HREF="commands/hint.html"><b>hint</b></A>
+command,
+<b>ydelta</b>
+always outputs a single spine.
+The user must specify which input spines are to be processed using the
+<b>-i</b>
+option.
+In the following command, only **semits input is to be processed:
+</P>
+<P>
+<blockquote>
+<code><big>semits example15.1 | ydelta -s = -i '**semits'</big></code>
+</blockquote>
+</P>
+<P>
+The
+<b>-s</b>
+option allows the user to identify data records to be
+<i>skipped</i>
+while processing.
+In this case, the regular expression `=' is used to identify barlines,
+so measure numbers will be excluded when processing the numerical data.
+</P>
+<P>
+The above command yields the following output:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**Ysemits</TD></TR>
+<TR><TD><code><big>*</TD></TR>
+<TR><TD><code><big>=1-</TD></TR>
+<TR><TD><code><big>12</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>=2</TD></TR>
+<TR><TD><code><big>4 7 12</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Notice that
+<b>ydelta</b>
+prepends the upper-case letter `Y' to the given input interpretation.
+All output values are calculated with respect to the lowest value
+in the current data record.
+Hence, the `<code><big>4 7 12</big></code> in the last data record means that there
+are pitches 4 semitones above the lowest note, 7 semitones above
+the lowest note, and 12 semitones above the lowest note.
+(If necessary, the lowest or offset value for each record can be
+output in square brackets using the
+<b>-o</b>
+option.)
+</P>
+<P>
+Like the
+<b>hint</b>
+command,
+<b>ydelta</b>
+calculates numerical intervals only when more than one value is
+present on a given input data record.
+As in the case of
+<b>hint,</b>
+we might use the
+<b>ditto</b>
+command to propagate pitch values -- replacing all the null data tokens.
+A suitable command would be:
+</P>
+<P>
+<blockquote>
+<code><big>semits example15.1 | ditto -s = | ydelta -s = -i '**semits'</big></code>
+</blockquote>
+</P>
+<P>
+The resulting output would be:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**Ysemits</TD></TR>
+<TR><TD><code><big>*</TD></TR>
+<TR><TD><code><big>=1-</TD></TR>
+<TR><TD><code><big>12</TD></TR>
+<TR><TD><code><big>10</TD></TR>
+<TR><TD><code><big>8</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>=2</TD></TR>
+<TR><TD><code><big>4 7 12</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<A NAME="More_Examples_Using_the_ydelta_Command">
+<H2>More Examples Using the <i>ydelta</i> Command</H2>
+</P>
+<P>
+What is the average semitone distance between the cantus and
+altus voices in Lassus motets?
+We can answer this question by first extracting the appropriate
+voices and translating to a semitone representation.
+</P>
+<P>
+<blockquote>
+<code><big>extract -f 1,2 motet* | semits > temp1</big></code>
+</blockquote>
+</P>
+<P>
+Using
+<b>ditto</b>
+we can expand the pitched material so that concurrently-sounding
+tones will generate explicit intervals.
+We then use
+<b>ydelta</b>
+to calculate the actual semitone interval distances.
+The
+<A HREF="commands/rid.html"><b>rid</b></A>
+command can be used to eliminate non-data records, and the
+<b>grep -v</b>
+command can be used to further eliminate barlines.
+Finally, we can calculate the mean interval distance using the
+<b>stats</b>
+command:
+</P>
+<P>
+<blockquote>
+<code><big>ditto -s = temp1 | ydelta -s = -i '**semits' | rid -GLId \
+<blockquote>
+| grep -v = | stats</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Suppose we have a two-part input.
+Are there tritone intervals (explicit and passing) that are not
+spelled as either an augmented fourth or diminished fifth?
+We can answer this question by using both
+<b>hint</b>
+and
+<b>ydelta</b>
+and a suitable sequence of
+<b>grep</b>
+commands.
+The
+<b>ditto</b>
+command is used to ensure that both explicit and passing intervals
+are generated.
+</P>
+<P>
+<blockquote>
+<code><big>ditto -s = 2part | semits | ydelta -s = -i '**semits' > temp1</big></code>
+<br>
+<code><big>ditto -s = 2part | hint > temp2</big></code>
+<br>
+<code><big>assemble temp1 temp2 | rid -GLId | grep ^6 | grep -v A4 \
+<blockquote>
+| grep -v d5</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Notice the use of
+<b>grep -v</b>
+to first exclude any records that match an augmented fourth,
+and then to exclude any remaining records that match a diminished fifth.
+</P>
+<P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+Harmonic intervals can be measured in a variety of ways.
+They can be characterized as diatonic qualities such
+as minor sevenths or augmented sixths.
+They can be measured in terms of semitone distance -- or
+even in cents or hertz (frequency difference).
+Only the diatonic size may be of interest (e.g., "a fifth"),
+and compound intervals (e.g., major tenth) can be expressed
+by their non-compound equivalents (major third).
+</P>
+<P>
+At least five types of harmonic intervals can be distinguished including
+<i>explicit harmonic intervals</i>,
+<i>strong passing intervals</i>,
+<i>weak passing intervals</i>,
+<i>strong implicit harmonic intervals</i>
+and
+<i>weak implicit harmonic intervals</i>.
+In addition, we distinguished three different ways of characterizing
+harmonic intervals:
+<i>stacked harmonic intervals</i>,
+<i>bass-related harmonic intervals</i>
+and
+<i>permuted harmonic intervals</i>.
+</P>
+<P>
+In this chapter we have seen how to use the
+<A HREF="commands/hint.html"><b>hint</b></A>
+command to calculate these various kinds of intervals.
+We have also seen how
+<A HREF="commands/ydelta.html"><b>ydelta</b></A>
+can be used to measure purely numerical distances between concurrent values.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide16.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide14.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

@@ -1,0 +1,6 @@
+humdrum: ERROR 22: Exclusive interpretations do not match for designated
+                   join spines in line 6, file test22.
+humdrum: ERROR 8: Incorrect number of spines in interpretation
+                  record in line 7, file test22.
+humdrum: ERROR 14: All spines have not been properly terminated
+                   in line 8, file test22.

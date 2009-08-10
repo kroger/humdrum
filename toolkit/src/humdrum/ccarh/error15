@@ -1,0 +1,6 @@
+!! "humdrum: ERROR 16: First exclusive interpretation record contains"
+!! "a null interpretation in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 16
+**ex	*	**ex	**ex
+*-	*-	*-	*-

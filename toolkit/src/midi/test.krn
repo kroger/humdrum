@@ -1,0 +1,17 @@
+!! Test of tied chord across a barline
+**kern	**kern	**kern
+4d	4f	4g
+[4c	[4e	[4g
+=1	=1	=1
+]2c	]2e	]2g
+4d	4g	4b
+4r	4r	4r
+.	eeeq .
+=2	=2	=2
+4r	4r	4r
+4r	4r	4r
+.	16gQ	16bQ
+.	16gQ	16bQ
+=3	=3	=3
+1c	1e	1cc
+*-	*-	*-

@@ -1,0 +1,23 @@
+
+
+CBR       : Converts various pitch representations to critical band rate.
+
+     This command translates frequency and/or cochlear coordinate repre-
+     sentations to critical band rate.  CBR can also reprocess its own
+     representation in order to change the precision (using -p option).
+
+Inputs processed:
+
+     **cbr,  **cocho,  **freq
+
+Syntax:
+
+     cbr [-p n] [-x] [file ...]
+
+Options:
+
+  -p n        : set output precision to n decimal places
+  -x          : suppresses outputting of non-cbr data
+
+  Refer to reference manual for further details.
+

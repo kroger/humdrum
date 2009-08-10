@@ -1,0 +1,293 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH solfa 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBsolfa\fR  --  translate selected Humdrum pitch-related representations to tonic solfa syllables (\f(CR**solfa\fR)
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBsolfa\fR  [\fB-tx\fR]  [\fIinputfile\fR ...]  [> \fIoutputfile.sol\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "solfa"
+command transforms various pitch-related inputs to the corresponding
+tonic solfa syllables.
+The command outputs one or more Humdrum \f(CR**solfa\fR
+spines -- where pitches are designated by the syllables
+.I "do, re, mi, fa, so, la,"
+and \fIti\fR -- or their chromatic alterations:
+.I "di, da, ri, ra,"
+etc. (see below).
+Tonic solfa syllables can be determined only with reference to some
+prevailing key.
+For example, the pitch C is the tonic (\f(CRdo\fR) in the key of C major,
+but the mediant (\f(CRmi\fR) in the key of A-flat major.
+The
+.B "solfa"
+command expects a tandem interpretation indicating the key of the input passage;
+.B "solfa"
+will adapt to specified changes of key within an input stream.
+If no key information is provided prior to the first pitch-related data,
+.B "solfa"
+issues an error message and terminates.
+.sp 1
+.sp 1
+There are various systems for extending the tonic solfa syllables
+in order to representing chromatic alterations.
+The system used by
+.B "solfa"
+is tabulated below.
+(Pronunciations are indicated in parentheses.)
+.in -2
+.sp 1
+.TS
+center;
+l l l.
+\fBbasic	\fBraised	\fBlowered\fR
+
+do (\fIdoe\fR)	di (\fIdee\fR)	de (\fIday\fR)
+re (\fIray\fR)	ri (\fIree\fR)	ra (\fIraw\fR)
+mi (\fIme\fR)	my (\fImy\fR)	me (\fImay\fR)
+fa (\fIfah\fR)	fi (\fIfee\fR)	fe (\fIfay\fR)
+so (\fIso\fR)	si (\fIsee\fR)	se (\fIsay\fR)
+la (\fIla\fR)	li (\fIlee\fR)	le (\fIlay\fR)
+ti (\fItee\fR)	ty (\fItie\fR)	te (\fItay\fR)
+.TE
+.sp 1
+.ce
+.I "Summary of \fBsolfa\fI Signifiers"
+.in +2
+.sp 1
+.sp 1
+The
+.B "solfa"
+command differs from the
+.B "deg"
+and
+.B "degree"
+commands in that pitches are represented without regard to major or minor
+.I "mode."
+For example,
+in the key of C major,
+.B "deg"
+and
+.B "degree"
+will characterize A-flat as a lowered sixth scale degree,
+whereas the same pitch will be a normal sixth scale degree in the
+key of C minor.
+In the case of \fBBsolfa\fR, the A-flat will be characterized as \f(CRle\fR
+-- whether or not the key is C major or C minor.
+As in the case of
+.B "deg"
+and
+\fBdegree\fR,
+the amount of chromatic alteration is not represented;
+once a pitch is \(odraised,\(cd raising it further will not
+change the output representation.
+For example, where the tonic pitch is B-flat, both B-natural
+and B-sharp are represented by \f(CRdi\fR.
+.sp 1
+.sp 1
+The
+.B "solfa"
+command is able to translate any of the pitch-related
+representations listed below.
+For descriptions of the various input representations
+(including \f(CR**solfa\fR) refer to Section 2
+.I "(Representation Reference)"
+of this reference manual.
+.sp 1
+.sp 1
+It is recommended that output files produced by the
+.B "solfa"
+command should be given names with the distinguishing .sol extension.
+.sp 1
+.TS
+l l.
+\f(CR**kern\fR	core pitch/duration representation
+\f(CR**pitch\fR	American National Standards Institute pitch notation
+	  (e.g. \(odA#4\(cd)
+\f(CR**solfg\fR	French solf\o'e\(ga'ge system (fixed `doh')
+\f(CR**Tonh\fR	German pitch system
+.TE
+.sp 1
+.ce
+.I "Input representations processed by \fBsolfa\fR."
+.sp 1
+.sp 1
+.in -2
+.SH "OPTIONS"
+.in +2
+The
+.B "solfa"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-t\fR	suppresses printing of all but the first note of a
+	  group of tied notes
+\fB-x\fR	suppresses printing of non-\f(CR**solfa\fR signifiers
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The
+.B "-t"
+option ensures that only a single output value is given for tied notes;
+the output coincides with the first note of the tie.
+.sp 1
+.sp 1
+In the default operation,
+.B "solfa"
+outputs non-pitch-related signifiers in addition to the degree value.
+For example, in the key of D, the \f(CR**kern\fR
+token \(od4Gz\(cd
+will result in the output \(od4faz\(cd -- that is, after translating
+G to fa, the \(od4...z\(cd signifiers are retained in the output.
+For some applications, echoing non-pitch-related signifiers in the output
+is useful.
+However, in other situations, the result can prove confusing.
+The
+.B "-x"
+option is useful for eliminating non-pitch-related signifiers from the output.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following example illustrates the use of
+.B "solfa."
+The input contains four pitch-related spines -- one of which (\f(CR**MIDI\fR)
+cannot be processed by
+.B "solfa."
+In addition, there is one non-pitch-related spines (\f(CR**embell\fR).
+.sp 1
+.TS
+l s s l l l
+l l l l l l.
+!! `solfa' example.
+**kern	**Tonh	**MIDI	**solfg	**pitch	**embell
+*M2/4	*M2/4	*M2/4	*M2/4	*M2/4	*M2/4
+*C:	*d:	*G#:	*a:	*F:	*F:
+\(eq1	\(eq1	\(eq1	\(eq1	\(eq1	\(eq1
+8ee-	Gis2	/60/	do3	F4foo	ct
+\.	.	/-60/	.	.	.
+8f	H2	/62/	fa3	G4bar	upt
+\.	.	/-62/	.	.	.
+8dd-	B2	/70/	mi3	E4	ct
+\.	.	/-70/	.	.	.
+8d--	Cis4	/61/	r	F4	sus
+\.	.	/-61/	.	.	.
+\(eq2	\(eq2	\(eq2	\(eq2	\(eq2	\(eq2
+[4a-	r	.	mi_b3	F4 A4	.
+\.	Heses2	.	re3	G4 Bb4	ct
+4a-]	C3	/48/ /52/	do3	E4 C5	ct
+\.	.	/-48/	.	.	.
+\.	H2 E3	/-52/	la3	G4	ct
+\(eq3	\(eq3	\(eq3	\(eq3	\(eq3	\(eq3
+r	A2 F3	.	r	F4	.
+==	==	==	==	==	==
+*-	*-	*-	*-	*-	*-
+.TE
+.sp 1
+Executing the command:
+.sp 1
+.sp 1
+.in +2
+solfa -tx input > output
+.in -2
+.sp 1
+.sp 1
+produces the following result:
+.sp 1
+.TS
+l s s l l l
+l l l l l l.
+!! `solfa' example.
+**solfa	**solfa	**MIDI	**solfa	**solfa	**embell
+*M2/4	*M2/4	*M2/4	*M2/4	*M2/4	*M2/4
+*C:	*d:	*G#:	*a:	*F:	*F:
+\(eq1	\(eq1	\(eq1	\(eq1	\(eq1	\(eq1
+me	fi	/60/	me	do	ct
+\.	.	/-60/	.	.	.
+fa	la	/62/	le	r	upt
+\.	.	/-62/	.	.	.
+ra	le	/70/	so	ti	ct
+\.	.	/-70/	.	.	.
+ra	ti	/61/	r	do	sus
+\.	.	/-61/	.	.	.
+\(eq2	\(eq2	\(eq2	\(eq2	\(eq2	\(eq2
+le	r	.	so	do mi	.
+\.	le	.	fa	re fa	ct
+\.	te	/48/ /52/	me	ti so	ct
+\.	.	/-48/	.	.	.
+\.	la re	/-52/	do	re	ct
+\(eq3	\(eq3	\(eq3	\(eq3	\(eq3	\(eq3
+r	so me	.	r	do	.
+==	==	==	==	==	==
+*-	*-	*-	*-	*-	*-
+.TE
+.sp 1
+Both processed and unprocessed spines are output.
+Notice that the tied note at the beginning of measure 2 in the \f(CR**kern\fR
+spine has been rendered as a single note rather than as two notes
+(due to the
+.B "-t"
+option).
+Also notice that the non-pitch-related signifiers (e.g. foo)
+in the first notes of the \f(CR**pitch\fR spine have been
+stripped away (due to the
+.B "-x"
+option).
+.in -2
+.sp 1
+.sp 1
+.SH "FILES"
+.in +2
+The file \f(CRx_option.awk\fR
+is used by this program when the
+.B "-x"
+option is invoked.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fB**deg\fR (2), \fBdeg\fR (1),
+\fB**degree\fR (2), \fBdegree\fR (1),
+\fB**kern\fR (2), \fBkern\fR (1),
+\fB**pitch\fR (2), \fBpitch\fR (1),
+\fB**solfa\fR (2),
+\fB**solfg\fR (2), \fBsolfg\fR (1),
+\fB**Tonh\fR (2), \fBtonh\fR (1)
+.in -2

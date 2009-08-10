@@ -1,0 +1,950 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter14}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Stream Editing}
+
+
+
+Most computer users are familiar with editing an electronic document using an
+interactive word-processor or text editor.
+\textit{Stream editors}
+are non-interactive editors that automatically process
+a given input according to a user-specified set of editing instructions.
+A stream editor can be used, for example, to automatically transform a
+document from British spelling to American spelling.
+Stream editors are especially useful when processing large numbers of
+documents -$\,$- such as a series of files encoding some musical repertory.
+In this chapter we will introduce two stream editors:
+\textbf{sed}
+and
+\textbf{humsed}.
+
+
+\subsection*{The \textit{sed} and \textit{humsed} Commands}
+
+\par 
+The
+\textbf{humsed}
+command is simply a Humdrum version of the UNIX
+\textbf{sed}
+stream editor.
+The syntax and operation of
+\textbf{sed}
+and
+\textbf{humsed}
+are virtually identical.
+However,
+\textbf{humsed}
+will modify only Humdrum data records,
+whereas
+\textbf{sed}
+will modify any type of record, including Humdrum comments and
+interpretations.
+Both stream editors provide operations for
+\textit{substitution},
+\textit{insertion},
+\textit{deletion},
+\textit{transliteration},
+\textit{file-read} and
+\textit{file-write}.
+When used in combination, these operations can completely
+transform an input stream or document.
+
+
+\subsection*{Simple Substitutions}
+
+\par 
+The most frequently used stream-editing operation is substitution.
+Both
+\textbf{humsed}
+and
+\textbf{sed}
+designate substitutions by the lower-case letter \texttt{s}.
+Substitutions require two strings: the
+\textit{target string}
+to be replaced, and the
+\textit{replacement string}
+to be introduced.
+The syntax for substitutions is as follows:
+
+\par 
+
+\textbf{s}\textit{}
+
+
+\par 
+No spaces are permitted between these elements.
+The delimiter can be any character;
+however, the same delimiter character
+must be used throughout the operation.
+The following substitution command causes occurrences of the letter `A'
+to be replaced by the letter `B':
+
+\par 
+
+\texttt{s/A/B/}
+
+
+\par 
+Since the slash character (/) appears immediately following the \texttt{s},
+it becomes the delimiter for the rest of the operation.
+In this case no option has been given at the end of the substitution.
+Since the delimiter can be any character, the above command is functionally
+identical to the following:
+
+\par 
+
+\texttt{sxAxBx}
+
+
+\par 
+If it is necessary to use the delimiter character (as a literal)
+within either the target string or the replacement string it can be
+escaped using the backslash character.
+
+\par 
+There are two ways to execute a substition operation such as given above.
+One way is to give the substitution as a command-line argument to
+\textbf{sed} or \textbf{humsed}:
+
+\par 
+
+\texttt{humsed s\%A\%B\% filename}
+
+
+\par 
+Alternatively, the operation can be placed in a file
+(for example, named \texttt{revise}):
+
+\par 
+
+\texttt{s\%A\%B\%}
+
+
+\par 
+Then the stream editor can be invoked to execute the operations
+contained in this file using the
+\textbf{-f}
+option:
+
+\par 
+
+\texttt{humsed -f revise }\textit{inputfile}
+
+
+\par 
+By default the output will be displayed on the screen.
+Using file-redirection (>) the output can be placed in
+some other file.
+Note that you should never redirect the output to the same file
+as the input -$\,$- this will destroy the original input file.
+If necessary, send the output to a temporary file, and then use
+the UNIX
+\textbf{mv}
+command to rename the output.
+
+
+\par 
+Suppose that you had encoded a musical work in the \texttt{**kern}
+representation.
+Having finished the encoding, you realize that what you thought were
+\textit{pizzicato}
+marks are really
+\textit{spiccato}
+marks.
+In the
+\texttt{**kern}
+representation, pizzicatos are indicated by
+the double quote (\texttt{"}) whereas spiccatos are represented by
+the lower-case letter \texttt{s}.
+We can change all pizzicato marks to spiccato marks using the following
+command:
+
+\par 
+
+\texttt{humsed 's/"/s/g'} \textit{inputfile}
+
+
+\par 
+Since the double quote is interpreted as a special character
+by the UNIX shell, we have escaped the entire substitution
+operation by placing it in single quotes.
+(Alternatively, we could place a backslash immediately before the
+double-quote character.)
+Note also the presence of the \texttt{g} option at the end of
+the string.
+Permissible options include any positive integer or the letter \texttt{g}.
+Without any option, the
+\textbf{sed}
+and
+\textbf{humsed}
+substitute (s) operation will replace only the
+\textit{first}
+occurrence of the string in each data record.
+The \texttt{g} option specifies a "global" substitution,
+in that all occurrences on a given data record are replaced.
+If the option consisted of the number `3', then only the
+third instance of the target string would be replaced on each line.
+
+
+\subsection*{Selective Elimination of Data}
+
+\par 
+The
+\textit{target string}
+in substitution operations is actually a regular expression.
+This means that we can specify patterns using the full power
+of regular expression syntax.
+Frequently, it is useful to eliminate certain kinds of information
+from a file.
+For example, we can eliminate all sharps and flats from
+a \texttt{**kern}-format file as follows:
+
+\par 
+
+\texttt{humsed s/[\#-]//g} \textit{inputfile}
+
+
+\par 
+
+\par 
+Suppose we wanted to eliminate all beaming information in a score.
+In the \texttt{**kern} representation, open and closed beams
+are represented by \texttt{L} and \texttt{J} respectively;
+partial beams are represented by \texttt{K} and \texttt{k}.
+
+\par 
+
+\texttt{humsed s/[JLkK]//g} \textit{inputfile}
+
+
+
+\par 
+Alternatively, we might want to eliminate all data except
+for the beaming information:
+
+\par 
+
+\texttt{humsed s/[\^{}JLkK]//g} \textit{inputfile}
+
+
+
+\par 
+Sometimes we need to restrict the circumstances where the
+data are eliminated.
+For example, we might want to eliminate all measure numbers.
+Eliminating all numbers from a \texttt{**kern} file will have
+the undesirable consequence of eliminating all note durations as well.
+Most
+\textbf{humsed}
+operations can be
+\textit{preceded}
+by a regular expression delineated by slashes.
+This tells
+\textbf{humsed}
+to execute this substitution only if the data record matches
+the leading regular expression.
+For example, the following command eliminates measure numbers
+but not note durations:
+
+\par 
+
+\texttt{humsed /\^{}=/sX[0-9]*XXg} \textit{inputfile}
+
+
+\par 
+The operation may be interpreted as follows:
+look for lines that match a pattern where the first character
+in the line is an equals sign;
+if you find this pattern look for zero or more instances of
+any number between zero and nine, and replace that by an
+empty string; do this substitution for all numbers on the
+current data record.
+
+
+\par 
+Incidentally, Humdrum provides a
+\textbf{num}
+command that can be used to insert numbers in data records.
+The
+\textbf{num}
+command supports an elaborate set of options, but is not
+used often, so we won't describe it here.
+The following command renumbers all of the barlines in an input so
+that the first measure begins with the number 72.
+(Refer to the
+\textit{Humdrum Reference Manual}
+for details regarding \textbf{num}.)
+
+\par 
+
+\texttt{humsed /\^{}=/sX=[0-9]*X=Xg} \textit{inputfile}\texttt{ | num -n \^{}= -x == -p = -o 72}
+
+
+\par 
+Suppose we wanted to eliminate all octave numbers from a
+\texttt{**pitch}
+representation.
+In this case we want to delete all numbers except when they
+occur in conjunction with a barline.
+Our substitution should occur only when the current
+record does not match a leading equals sign:
+
+\par 
+
+\texttt{humsed /\^{}[\^{}=]/s\%[0-9]\%\%g} \textit{inputfile}
+
+
+
+\par 
+Suppose we wanted to determine which of two MIDI performances
+exhibits more dynamic range -$\,$- that is, which performance has a
+greater variability in key-down velocities.
+Recall from
+Chapter 7
+that MIDI data tokens consist of three
+elements separated by slashes (/).
+The third element is the key velocity.
+First, we want to eliminate key-up data tokens.
+These tokens can be distinguished by the minus sign associated with
+the second data element.
+An appropriate substutition is:
+
+\par 
+
+\texttt{s\%[0-9][0-9]*/-[0-9][0-9]*/[0-9]* *\%\%g}
+
+
+\par 
+(That is, replace by nothing any data that matches the following:
+a numerical digit followed by zero or more digits, followed by
+a slash, followed by a minus sign, followed by a digit, followed by
+zero or more digits, followed by a slash, followed by zero or
+more digits, followed by zero or more spaces.)
+
+\par 
+Having isolated only the key-down data tokens, we now need to
+eliminate everything but the third data element,
+the MIDI key-down velocities:
+
+\par 
+
+\texttt{s\%[0-9][0-9]*/[0-9][0-9]*/\%\%g}
+
+
+
+\subsection*{The \textit{stats} Command}
+
+\par 
+We can determine the range or variance of these velocity values by
+piping the output to the
+\textbf{stats}
+command.
+The
+\textbf{stats}
+command calculates basic statistical information for any input
+consisting of a column of numbers.
+A sample output from
+\textbf{stats}
+might appear as follows:
+
+\texttt{n:124
+total:5700
+mean:45.9677
+min:9
+max:102
+S.D.:232.37}
+
+
+\par 
+The value \texttt{n} indicates the total number of numerical values
+found in the input;
+the \texttt{total} specifies the sum of these numbers;
+the \texttt{mean} identifies the average;
+the \texttt{min} and \texttt{max} report the minimum and maximum
+values encountered, and the \texttt{S.D.} represents the standard deviation.
+The standard deviation provides a useful way of characterizing
+which performance has greater variability in key-down velocities.
+
+\par 
+Assuming that the above two stream-editing substitutions are kept in a file
+called \texttt{revise} we can compare the dynamic range for the
+two performances as follows:
+
+\par 
+
+\texttt{extract -i '**MIDI' perform1 | grep -v \^{}= | humsed -r revise $\backslash$
+
+| rid -GLId | stats}
+
+\\
+\texttt{extract -i '**MIDI' perform2 | grep -v \^{}= | humsed -r revise $\backslash$
+
+| rid -GLId | stats}
+
+
+
+\par 
+The
+\textbf{extract}
+command has been added to ensure that we only process
+\texttt{**MIDI}
+data;
+the
+\textbf{grep}
+command ensures that possible barlines are eliminated,
+and the
+\textbf{rid}
+command eliminates comments and interpretations prior to passing
+the data to the
+\textbf{stats}
+command.
+
+
+\subsection*{Eliminate Everything But ...}
+
+\par 
+A common use for
+\textbf{humsed}
+is to eliminate signifiers that are not of interest.
+Stream editors like
+\textbf{sed}
+and
+\textbf{humsed}
+can be used to dramatically simplify a representation.
+
+\par 
+Did Monteverdi use equivalent numbers of sharps and flats?
+Or did he favor one accidental over the other?
+A simple way to determine this is to throw away everything
+but the sharps and flats.
+We can generate an inventory of just sharps and flats:
+
+\par 
+
+\texttt{humsed 's/[\^{}\#-]//g' montev* | rid -GLId | sort | uniq -c}
+
+
+\par 
+In some tasks, we might wish to transform a \texttt{**kern}-format file so that
+only pitch-related information is preserved:
+
+\par 
+
+\texttt{humsed 's/[\^{}a-gA-G\#-]//g'} \textit{inputfile}
+
+
+\par 
+In extreme cases, we may wish to eliminate all Humdrum data from an input.
+The following command replaces all data tokens by null tokens:
+
+\par 
+
+\texttt{humsed 's/[\^{}     ][\^{}     ]*/./g'} \textit{inputfile}
+
+
+\par 
+(That is, globally substitute all instances of the string
+not-a-tab followed by zero or more instances of not-a-tab
+characters, by a single period character.)
+This sort of command can be useful in generating a file that
+maintains the
+\textit{structure}
+but not the
+\textit{content}
+of some document.
+Incidentally, neither the
+\textbf{sed}
+nor the
+\textbf{humsed}
+commands support extended regular expressions, so we are not able
+to use the \texttt{+} metacharacter in the above substitution.
+
+
+\subsection*{Deleting Data Records}
+
+\par 
+Sometimes it is useful to delete entire data records rather than
+simply eliminating certain kinds of information.
+The \texttt{d} operation causes lines to be deleted.
+Normally, it is preceded by a regular expression that
+identifies which records should be eliminated.
+Deleting barlines can be done using the following command:
+
+\par 
+
+\texttt{humsed /\^{}=/d} \textit{inputfile}
+
+
+\par 
+Note that this is functionally equivalent to:
+
+\par 
+
+\texttt{grep -v \^{}=} \textit{inputfile}
+
+
+\par 
+In the general case,
+\textbf{humsed /.../d}
+is preferable to \textbf{grep -v}.
+Remember that
+\textbf{humsed}
+only manipulates Humdrum data records;
+it never touches comments or interpretations.
+The
+\textbf{grep}
+command has no such restriction.
+Consider, for example, the following command to eliminate
+grace notes (acciaccaturas) from a \texttt{**kern}-format file.
+
+\par 
+
+\texttt{humsed '/q/d'} \textit{inputfile}
+
+
+\par 
+By contrast, the command:
+
+\par 
+
+\texttt{grep -v q} \textit{inputfile}
+
+
+\par 
+would also eliminate any comments or interpretation records
+containing the letter `q'.
+
+
+\par 
+Suppose that we wanted to know whether a melody still evokes
+a certain key perception even if we eliminate all the tonic pitches.
+First we translate the representation to scale degree
+and assemble this file with the original \texttt{**kern}
+representation for the melody.
+
+\par 
+
+\texttt{deg} \textit{input}\texttt{ > temp}
+\\
+\texttt{assemble} \textit{input}\texttt{ temp | humsed '/1\$/d' | midi | perform}
+
+
+
+\par 
+Of course deleting all of the tonic notes will disrupt the
+original rhythm.
+An alternative is to replace all tonic pitches by rests:
+
+\par 
+
+\texttt{deg }\textit{input}\texttt{ > temp}
+\\
+\texttt{assemble} \textit{input}\texttt{ temp | humsed '/1\$/s\%[A-Ga-g\#-]*\%r\%' | midi $\backslash$
+
+| perform}
+
+
+
+
+\par 
+Perhaps we might want to eliminate all the pitch information,
+and simply listen to the rhythmic structure of a work.
+That is, we might change all of the pitches in a work to
+a single pitch -$\,$- in the following case, middle C:
+
+\par 
+
+\texttt{humsed 's/[A-Ga-g\#-]*/c/' | midi | perform}
+
+
+
+\subsection*{Adding Information}
+
+\par 
+The substitute command can also be used to add information
+to points in a Humdrum input.
+For example, we might wish to add an explicit breath-mark (\texttt{,})
+to the end of each phrase in a \texttt{**kern}-format input:
+
+\par 
+
+\texttt{humsed s/\}/\},/g} \textit{inputfile}
+
+
+\par 
+Any occurrence of the ampersand (\texttt{\&}) in the replacement string
+of a substitution is a standard stream-editing convention which means
+"the matched string."
+Suppose we want to add a tenuto mark to every quarter-note in a work.
+The following substitution seeks the number `4' followed by
+any character that is not a digit or period.
+This pattern is replaced by itself (\&) followed by a tilde (~),
+the
+\texttt{**kern}
+signifier for a tenuto mark:
+
+\par 
+
+\texttt{humsed s/4[\^{}0-9.]/\&~/g} \textit{inputfile}
+
+
+
+\subsection*{Multiple Substitutions}
+
+\par 
+Some tasks may require more than one substitution command.
+Multiple operations can be invoked by separating each
+operation by a semicolon.
+In the following example, we change all \texttt{**kern} quarter-notes
+to eighth-note durations:
+
+\par 
+
+\texttt{humsed 's/4[A-Ga-g]/8\&/g; s/84/8/g'} \textit{inputfile}
+
+
+\par 
+The first substitution finds strings that match the number `4'
+followed by an upper- or lower-case letter from A to G.
+The matched string is then output preceded by the number `8'.
+This operation will change all quarter notes and rests
+to eighty-fourth durations.
+The ensuing substitution operation changes `84' to `8'
+and so completes the transformation.
+
+
+\subsection*{Switching Signifiers}
+
+\par 
+In some situations, we will want to switch two or more
+signifiers -$\,$- make all A's B's and all B's A's.
+These sorts of tasks require three substitutions and
+involve creating a unique temporary string.
+For example, the following command
+changes all
+\texttt{**kern}
+up-bows to down-bows and vice versa.
+
+\par 
+
+\texttt{humsed 's/u/ABC/g; s/v/u/g; s/ABC/v/g'} \textit{inputfile}
+
+
+\par 
+The first substitution changes down-bows (`\texttt{u}') to the
+unique temporary string \texttt{ABC}.
+(In the \texttt{**kern} representation \texttt{ABC} is an illegal
+pitch representation, so it is bound to be a unique character string.)
+The second substitution changes up-bows (\texttt{v}) to down-bows.
+The third substitution changes occurrences of the temporary
+string \texttt{ABC} to up-bows.
+
+
+\subsection*{Executing from a File}
+
+\par 
+When several instructions are involved in stream editing,
+it can be inconvenient to type multiple operations on the command line.
+It is easier to place the editing instructions in a file,
+and use the
+\textbf{-f}
+option (with either \textbf{sed} or
+\textbf{humsed})
+to execute
+from the file.
+Consider, for example, the task of rhythmic diminution,
+where the durations of notes are halved.
+We might create a file called \texttt{diminute} containing the
+following operations:
+
+\par 
+
+\texttt{s/[0-9][0-9]$\backslash$*/\&XXX/g
+\\
+s/64XXX/128/g
+\\
+s/32XXX/64/g
+\\
+s/16XXX/32/g
+\\
+s/8XXX/16/g
+\\
+s/4XXX/8/g
+\\
+s/2XXX/4/g
+\\
+s/1XXX/2/g
+\\
+s/0XXX/1/g}
+
+
+\par 
+Each substitution command is applied (in order) to every line or
+data record in the file.
+The first substitution adds the unique string \texttt{XXX} to
+every number.
+The ensuing substitutions transform these numbers to appropriate
+diminution values.
+We can execute these commands as follows:
+
+\par 
+
+\texttt{humsed -f diminute} \textit{inputfile}
+
+
+
+\subsection*{Writing to a File}
+
+\par 
+A useful feature of
+\textbf{humsed}
+is the "write" or \texttt{w} operation.
+This operation causes a line to be written to the end of a specified file.
+Suppose, for example, we wanted to collect all seventh chords
+into a separate file called \texttt{sevenths}.
+With a
+\texttt{**harm}-format
+input, the appropriate command would be:
+
+\par 
+
+\texttt{humsed '/7/w sevenths'} \textit{inputfile.hrm}
+
+
+\par 
+Each line containing the number 7 wll be written to a file named
+\texttt{sevenths}.
+
+\par 
+Similarly, we could copy all sonorities containing pauses to
+the file \texttt{pauses}.
+
+\par 
+
+\texttt{humsed '/;/w pauses'} \textit{inputfile}
+
+
+\par 
+Of course there are other ways of achieving the same goal:
+
+\par 
+
+\texttt{yank -m ';' 0} \textit{inputfile}\texttt{ > pauses}
+
+
+\par 
+Or even:
+
+\par 
+
+\texttt{grep ';'} \textit{inputfile}\texttt{ | grep -v '\^{}[!*]' > pauses}
+
+
+
+
+\par 
+In some cases, a stream editor can be used to eliminate or modify data
+that will confound subsequent processing.
+For example, suppose we wanted to count the number of phrases that
+begin on the subdominant and the number of phrases that end on the subdominant.
+The
+\textbf{deg}
+command will allow us to identify subdominant pitches (via the number `4').
+Since we would like to maintain the phrase indicators, we will
+avoid the
+\textbf{-x}
+option for \textbf{deg}.
+However, the
+\textbf{-x}
+option will pass
+\textit{all}
+of the non-pitch related signifiers,
+including the duration data which encodes numbers.
+Hence, we will not be able to distinguish the subdominant (`4') pitch
+from a \texttt{**kern} quarter-note (`4').
+The problem is resolved by first eliminating all of the duration
+information (numbers) from the original input:
+
+\par 
+
+\texttt{humsed 's/[0-9.]//g' input.krn | deg | egrep -c '(\{.*4)|4.*\{)'}
+\\
+\texttt{humsed 's/[0-9.]//g' input.krn | deg | egrep -c '(\}.*4)|4.*\})'}
+
+
+
+\par 
+In texts for vocal works, identify the number of notes per syllable.
+
+\par 
+
+\texttt{extract -i '**kern'} \textit{input}\texttt{ | humsed 's/X//g' > tune}
+\\
+\texttt{extract -i '**silbe'} \textit{input}\texttt{ | humsed 's/[a-zA-Z]*/X/' > lyrics}
+\\
+\texttt{assemble tune lyrics | cleave -i '**kern,**silbe' -o '**new' $\backslash$
+
+> combined}
+
+\texttt{context -b X -o '[r=]' combined | rid -GLId | awk '\{print NF\}'}
+
+
+
+\par 
+Identify the number of notes per word rather than per syllable.
+
+\par 
+
+\texttt{extract -i '**kern'} \textit{input}\texttt{ > tune}
+\\
+\texttt{extract -i '**silbe'} \textit{input}\texttt{ | humsed 's/\^{}[\^{}-].*[\^{}-]\$/BEGIN\_END/; s/-.*[\^{}-]\$/END/; s/\^{}[\^{}-].*-/BEGIN/' > lyrics}
+\\
+\texttt{assemble tune lyrics | cleave -i '**kern,**silbe' -o '**new' $\backslash$
+
+> combined}
+
+\texttt{context -b BEGIN -e END -o '[r=]' combined | rid -GLId $\backslash$
+
+| awk '\{print NF\}'}
+
+
+
+
+\subsection*{Reading a File as Input}
+
+\par 
+Another useful feature is the
+\textbf{humsed}
+"read" or \texttt{r} operation.
+Whenever a leading regular expression is matched,
+a file is read in at that point.
+Suppose, for example, that we want to annotate a file with Humdrum
+comments identifying the presence of cadential 6-4 chords.
+First, we might create a file -$\,$- \texttt{comment.6-4} -$\,$-
+containing the following Humdrum comment:
+
+\par 
+
+\texttt{!! A likely cadential 6-4 progression.}
+
+
+\par 
+We can use the Humdrum
+\textbf{pattern}
+command (to be described in
+Chapter 21),
+as follows:
+
+\par 
+File \texttt{template}:
+
+\texttt{
+ .*}
+\\
+\texttt{Ic}
+\\
+\texttt{\^{}$\backslash$.	*}
+\\
+\texttt{=	*}
+\\
+\texttt{V[\^{}I]}
+
+
+\par 
+Command:
+
+\par 
+
+\texttt{pattern -f template} \textit{inputfile}\texttt{ > output}
+\\
+\texttt{humsed 'cadential-64/r comment.6-4' output > commented.output}
+
+
+\par 
+
+
+
+\subsection*{Reprise}
+
+\par 
+The
+\textbf{sed}
+and
+\textbf{humsed}
+commands provide stream editors that can automatically edit
+a data stream.
+We've seen that multiple operations can be carried out,
+either from the command line or from a file containing
+editing instructions.
+It should be noted that the
+\textbf{sed}
+and
+\textbf{humsed}
+commands provide many more editing facilities than those
+discussed in this chapter.
+Some 25 operations are provided by
+\textbf{sed}
+and \textbf{humsed}.
+For example, segments of text can be stored in various buffers,
+the contents of these buffers modified, and the results placed anywhere
+in the output text.
+Markers can be set at particular points and conditional branch
+statements executed.
+Stream-editing scripts have been written to execute programs
+of considerable complexity.
+However, for most tasks, the simple substitute (\textbf{s}) and delete (\textbf{d})
+operations are the most useful.
+For further information about stream editing using
+\textbf{sed}, refer to the book on
+\textbf{sed}
+and
+\textbf{awk}
+written by Dale Dougherty
+(listed in the bibliography).
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

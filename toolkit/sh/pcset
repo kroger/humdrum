@@ -1,0 +1,76 @@
+###################################################################
+# 					  PCSET.KSH
+# Programmed by: David Huron          Date: 1993 September 4
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# June 23/94	Tim Racinsky	Added getopts functionality, etc.
+#
+#
+# 	This shell program is used to invoke the awk program pcset.awk.
+#
+OPTIONS=""
+FILENAME=""
+HELP=""
+FLAG=""
+STNDIN=""
+#
+USAGE1="USAGE: pcset -h                   (Help Screen)"
+USAGE2="       pcset [-c] [-n|-p|-v] [file ...]"
+#
+while getopts chnpv arg
+do
+	case "$arg" in
+	h) 	HELP="ON";;
+     [cnpv])
+		OPTIONS="$OPTIONS${arg}";;
+	[?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no options were specified, print a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/pcset.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/pcset.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Can only use '-' once for each command
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "pcset: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+# Invoke pcset.awk with the specified options.
+$AWK_VER -f ${HUMDRUM}/bin/pcset.awk "DUMMY" "${OPTIONS:-null}" $FILENAME

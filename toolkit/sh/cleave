@@ -1,0 +1,95 @@
+#########################################################################
+# 						CLEAVE
+# Programmed by: Tim Racinsky         Date: May, 1994
+# Copyright (c) 1994 David Huron
+#
+# Modifications:
+#    Date:   Programmer:         	Description:
+# June 7/94	Tim Racinsky	Added getopts usage
+#
+#
+# This shell program is used to invoke the awk program cleave.awk with
+# the appropriate options that were specified on the command line.
+#
+OPTIONS=""
+DELIMETER=""
+IN_INTERP=""
+OUT_INTERP=""
+FILENAME=""
+HELP=""
+FLAG=""
+STNDIN=""
+#
+USAGE1="USAGE: cleave -h               (Help Screen)"
+USAGE2="       cleave [-r] [-d delim] -i '**in_interp1,**in_interp2,...'"
+USAGE3="              -o '**out_interp' [file ...]"
+while getopts i:d:ho:r arg
+do
+	case "$arg" in
+	d) 	DELIMITER=${OPTARG};;
+	i)	IN_INTERP=${OPTARG};;	
+	o) 	OUT_INTERP=${OPTARG};;	
+	h) 	HELP="ON";;
+     r)	OPTIONS="$OPTIONS${arg}";;
+	[?])
+		echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		echo "$USAGE3" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/cleave.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/cleave.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# If no option has been specified, give an error.
+if [ "X$IN_INTERP" = X -o "X$OUT_INTERP" = X ]
+then
+	echo "cleave: ERROR: Input or output interpretations have not been specified." 1>&2
+	echo "" 1>&2
+	echo "$USAGE1" 1>&2
+	echo "$USAGE2" 1>&2
+	echo "$USAGE3" 1>&2
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Allowed to use '-' only once
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "cleave: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+# Invoke cleave.awk with the specified options.
+$AWK_VER -f ${HUMDRUM}/bin/cleave.awk "DUMMY" "${OPTIONS:-null}" "${DELIMITER:-null}" "${IN_INTERP:-null}" "${OUT_INTERP:-null}" $FILENAME

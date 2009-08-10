@@ -1,0 +1,24 @@
+
+SMF       : Generate Standard MIDI File (SMF) from Humdrum **MIDI input.
+
+     This command translates Humdrum **MIDI data to a "standard MIDI file"
+     (SMF).  SMF files are industry-standard binary files that can be
+     imported by a variety of MIDI applications software packages, including
+     sequencer programs and several music notation packages.  Note that any
+     non-**MIDI spines in the input are ignored by SMF.
+
+Inputs processed:
+
+     **MIDI
+
+Syntax:
+
+     smf [-t n.n] [-v n] inputfile.hmd > outputfile.smf
+
+Options:
+
+     -t n.n   : set initial tempo to n.n times the default tempo
+     -v n     : specify default MIDI key-velocity (value between 0 and 127)
+
+  Refer to reference manual for further details.
+

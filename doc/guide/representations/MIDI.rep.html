@@ -1,0 +1,236 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - MIDI</TITLE>
+<!-- Documentation for the **MIDI Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **MIDI Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer representation,**MIDI">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for MIDI</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**MIDI</b>  --  Musical Instrument Digital Interface notation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**MIDI</b>
+representation is a Humdrum version of the well-known MIDI
+standard.
+MIDI is an industry standard used to exchange information
+between sound synthesizers.
+MIDI is also used in various software applications such as
+some music printing software.
+MIDI is a type of "tablature" notation.
+It describes a set of performance actions rather than
+specifying the sounded result.
+MIDI represents note-on, note-off, information, for various "channels."
+MIDI events include note-on, note-off, key-velocity, after-touch,
+control codes, and system-exclusive codes.
+MIDI does not represent many other musically-pertinent signifiers,
+such as ties, slurs, phrasings, ornaments, etc.
+MIDI does not represent rests.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**MIDI</big></code>
+data should be given names with the distinguishing `.hmd' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**MIDI</b>
+mappings of signifiers and signifieds.
+</P>
+<P>
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>/</TD><TD>value delimiter</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>-</TD><TD>note off</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**MIDI</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! C-major scale.</TD></TR>
+<TR><TD>**MIDI</TD></TR>
+<TR><TD>*Ch8</TD></TR>
+<TR><TD>72/60/64</TD></TR>
+<TR><TD>72/-60/64 72/62/64</TD></TR>
+<TR><TD>36/-62/64 36/64/64</TD></TR>
+<TR><TD>36/-64/64 36/65/64</TD></TR>
+<TR><TD>36/-65/64 36/67/64</TD></TR>
+<TR><TD>36/-67/64 36/69/64</TD></TR>
+<TR><TD>36/-69/64 36/71/64</TD></TR>
+<TR><TD>36/-71/64 36/72/64</TD></TR>
+<TR><TD>72/-72/64</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+Each
+<b>**MIDI</b>
+data token consist of three elements or components.
+Each element is an integer value;
+elements within a data token are delimited by the slash character (/).
+</P>
+<P>
+The first element in a data token represents the number of clock ticks
+(since the previous event) before the event is to occur.
+The absolute duration of a single clock tick is determined by the
+MIDI clock speed, which is variable.
+</P>
+<P>
+The second --ent in a data token represents the MIDI key number --
+that is, the address of the key event.
+Key events can be either
+<i>key-on</i>
+or
+<i>key-off.</i>
+Key-on events are represented by positive integers, whereas
+key-off events are represented by negative integers.
+For example, -60 means to turn-off key 60.
+</P>
+<P>
+The third element in a data token represents the MIDI key-velocity value.
+MIDI instruments normally interpret key-velocity as dynamic or accent
+information.
+Higher key-velocity values are associated with accented notes.
+Permissible key-velocity values range between 0 and 127.
+encodings.
+In the case of key-off events, the key-velocity component
+represents the after-touch.
+</P>
+<P>
+Note that the key-velocity component of a data token is optional
+and need not appear.
+However, both the clock-tick value and the key-event values must
+be present in each
+<b>**MIDI</b>
+data token.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum commands accept <b>**MIDI</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD><A HREF="../commands/cents.html"><b>cents</b></A></TD><TD>translates <b>**MIDI</b> to <b>**cents</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/fade.html"><b>fade</b></A></TD><TD>fade-in or fade-out <b>**MIDI</b> data</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/freq.html"><b>freq</b></A></TD><TD>translates <b>**MIDI</b> to <b>**freq</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/kern.html"><b>kern</b></A></TD><TD>translates <b>**MIDI</b> to <b>**kern</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/perform.html"><b>perform</b></A></TD><TD>play Humdrum <b>**MIDI</b> files</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/pitch.html"><b>pitch</b></A></TD><TD>translates <b>**MIDI</b> to <b>**pitch</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/semits.html"><b>semits</b></A></TD><TD>translates <b>**MIDI</b> to <b>**semits</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/smf.html"><b>smf</b></A></TD><TD>generate standard MIDI file</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/solfg.html"><b>solfg</b></A></TD><TD>translates <b>**MIDI</b> to <b>**solfg</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/tonh.html"><b>tonh</b></A></TD><TD>translates <b>**MIDI</b> to <b>**Tonh</b></TD></TR>
+</TABLE>
+</blockquote>
+The following Humdrum commands produce <b>**MIDI</b> data as outputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD><A HREF="../commands/midi.html"><b>midi</b></A></TD><TD>produces <b>**MIDI</b> output from <b>**kern</b> input</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/record.html"><b>record</b></A></TD><TD>records <b>**MIDI</b> data from a MIDI input</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**MIDI</b>:
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**MIDI</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="cents.rep.html"><b>**cents</b></A>,
+<A HREF="freq.rep.html"><b>**freq</b></A>,
+<A HREF="kern.rep.html"><b>**kern</b></A>,
+<A HREF="pitch.rep.html"><b>**pitch</b></A>,
+<A HREF="semits.rep.html"><b>**semits</b></A>,
+<A HREF="specC.rep.html"><b>**specC</b></A>,
+<A HREF="Tonh.rep.html"><b>**Tonh</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide07.html#The_**MIDI_Representation">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

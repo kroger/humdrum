@@ -1,0 +1,24 @@
+
+FIELDS    : List spine/field structure of a Humdrum input.
+
+     This command chronicles changes in the number of spines throughout an
+     input.  Each output record identifies a line number, the number of
+     spines active at that line, and comments the beginning of the record
+     at that line.
+
+     The FIELDS command is normally used in conjunction with EXTRACT -t.
+
+Syntax:
+
+     fields [-gils] [-r regexpr] [file ...]
+
+Options:
+
+     -g           : identify lines with global comments
+     -i           : identify any interpretation record
+     -l           : identify lines with local commens
+     -r <regexpr> : identify all lines matching the given regular expression
+     -s           : identify lines with spine-path indicators
+
+  Refer to reference manual for further details.
+

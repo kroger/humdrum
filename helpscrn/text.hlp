@@ -1,0 +1,25 @@
+
+TEXT      : Reformat lyrics/text as ordinary displayed text.
+
+     This command reformats a specified **text spine so that syllables
+     are amalgamated into words, and the output formatted as ordinary
+     text output.  The text is formatted to a screen width of 65 characters.
+
+     Where more than one **text spine is present in an input, the -f
+     option can be used to select a specified **text field.  Only
+     one field can be reformatted at a time.
+
+Inputs processed:
+
+     **text
+
+Syntax:
+
+     text [-f n] [file ...]
+
+Options:
+
+     -f : selects the nth **text spine for processing
+
+  Refer to reference manual for further details.
+

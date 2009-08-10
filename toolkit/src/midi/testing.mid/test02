@@ -1,0 +1,4 @@
+!! midi Test #2
+!! A file without data records should cause no problems.
+**foo	**bar
+*-	*-

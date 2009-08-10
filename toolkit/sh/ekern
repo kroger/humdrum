@@ -1,0 +1,72 @@
+#########################################################################
+#                                 EKERN
+# Programmed by: David Huron        Date: June, 1995
+# Copyright (c) 1995 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+#
+#
+#	This shell program receives input from the command line and after 
+# checking it, passes it to the program ekern1.awk followed by ekern2.awk.
+#
+FILENAME=""
+HELP=""
+FLAG=""
+STNDING=""
+USAGE1="USAGE: ekern -h                 (Help Screen)"
+USAGE2="       ekern ESAC-file"
+#
+while getopts h arg
+do
+	case "$arg" in
+	h) 	HELP="ON";;
+     [?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit ;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If the help variable has been specified, print the help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/ekern.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/ekern.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' is allowed
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "ekern: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ -z "$FILENAME" -a -n "$FLAG" ]
+then
+	exit
+fi	
+${HUMDRUM}/bin/ekern1.sed $FILENAME | $AWK_VER -f ${HUMDRUM}/bin/ekern2.awk | $AWK_VER -f ${HUMDRUM}/bin/ekern3.awk

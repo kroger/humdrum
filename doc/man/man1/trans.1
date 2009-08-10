@@ -1,0 +1,375 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH trans 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBtrans\fR  --  transpose selected Humdrum pitch representations
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +9
+.ti -9
+\fBtrans  \fB-d\fR  [\fI\(+-\fR]\fIn\fR  [\fB-c\fR  [\fI\(+-\fR]\fIn\fR]  [\fIinputfile ...\fR]  [ > \fIoutputfile\fR]
+.in -9
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "trans"
+command is used to transpose various Humdrum pitch representations.
+Transposed outputs maintain proper pitch-interval spellings,
+except in modal transposition;
+.B "trans"
+might be used to transpose a work up a perfect fourth, or
+down an augmented third, or from major mode to Phrygian.
+A \(odtransposition interpretation\(cd is appended to the output
+to mark the score as having been transposed.
+.sp 1
+.sp 1
+The
+.B "trans"
+command is able to process those pitch-related representations listed below.
+All other inputs are simply echoed in the output.
+For descriptions of the various input representations
+refer to Section 2
+.I "(Representation Reference)"
+of this reference manual.
+.sp 1
+.TS
+l l.
+\f(CR**kern\fR	core absolute pitch representation
+\f(CR**pitch\fR	American National Standards Institute pitch notation
+	  (e.g. \(odA#4\(cd)
+\f(CR**solfg\fR	French solf\o'e\(ga'ge system (fixed `doh')
+\f(CR**Tonh\fR	German pitch system
+.TE
+.sp 1
+.ce
+.I "Input representations processed by \fBtrans\fR."
+.sp 1
+.sp 1
+Transpositions are transformations that shift all
+pitch-signifier values up or down by some amount.
+Transpositions are specified by defining a
+.I "diatonic offset"
+and a
+.I "chromatic offset."
+The diatonic offset affects only the pitch-letter name used to spell a note.
+The chromatic offset affects only the number of semitones shifted from
+the original pitch height.
+.sp 1
+.sp 1
+For typical transpositions, both diatonic and chromatic offsets will need
+to be specified.
+For example, in transposing up a minor third (e.g. from C to E-flat),
+the diatonic offset is `up two pitch-letter names,' and the chromatic offset
+is `up three semitones.'
+The appropriate command invocation would be:
+.sp 1
+.sp 1
+.in +2
+trans -d +2 -c +3 input > output
+.in -2
+.sp 1
+.sp 1
+The plus signs above are optional; in their absence,
+.B "trans"
+assumes an upward transposition.
+Note that negative offsets can be mixed with positive offsets.
+For example,
+trans -d -1 -c +1
+will transpose the pitch C to B double-sharp, and F flat to E sharp, etc.
+(i.e. down one letter name, yet up one semitone).
+.sp 1
+.sp 1
+Modal transpositions are invoked by simply omitting the chromatic
+offset information.
+(See EXAMPLES below.)
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "trans"
+command should be given names with the distinguishing `.tr' extension.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "trans"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-c \fR[\fI\(+-\fR]\fIn\fR	transpose up(+) or down (-) \fIn\fR semitones
+\fB-d \fR[\fI\(+-\fR]\fIn\fR	transpose up(+) or down (-) \fIn\fR diatonic letter names
+\fB-h\fR	displays a help screen summarizing the command syntax
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+Note that the \fB-d\fR \(odoption\(cd is manditory rather than optional.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following examples illustrate the use of
+.B "trans."
+.sp 1
+.sp 1
+Transposition up a minor third differs from transposition up an augmented
+second:
+.sp 1
+.sp 1
+.in +2
+trans -d +2 -c +3 milhaud
+.br
+trans -d +1 -c +3 milhaud
+.in -2
+.sp 1
+.sp 1
+Enharmonic transpositions can be accomplished by defining the
+chromatic offset as zero semitones.
+For example, the following command transposes up a diminished second.
+It might be used to transpose from the key of C-sharp to the key of D-flat.
+.sp 1
+.sp 1
+.in +2
+trans -d +1 -c 0 moonlight
+.in -2
+.sp 1
+.sp 1
+Transposition up or down an octave requires both a diatonic offset
+and a corresponding chromatic offset of plus or minus 12 semitones. e.g.
+.sp 1
+.sp 1
+.in +2
+trans -d -7 -c -12 guitar
+.in -2
+.sp 1
+.sp 1
+In addition to exact pitch transpositions,
+.B "trans"
+can also perform
+.I "modal"
+transpositions.
+Modal transpositions arise when the pitch letter names are modified
+without regard for the precise semitone offset.
+To invoke a modal transposition, simply omit the chromatic offset
+specification.
+The following transposition changes diatonic pitch-letter names (down by two
+pitch-letters) so that the pitch C will become A, etc.
+.sp 1
+.sp 1
+.in +2
+trans -d -2 major > aeolian
+.in -2
+.sp 1
+.sp 1
+For inputs in major keys, the corresponding outputs will be in Aeolian mode.
+.sp 1
+.sp 1
+For some applications, two or more successive transpositions may be necessary.
+For example, the following pipeline modifies inputs
+in major keys so that they are in the tonic Dorian mode.
+.sp 1
+.sp 1
+.in +2
+trans -d +1 major | trans -d -1 -c -2 > dorian
+.in -2
+.sp 1
+.sp 1
+The first
+.B "trans"
+carries out a modal transposition -- up the interval of a diatonic second.
+Thus, a work in D major would be placed in E Dorian.
+The second
+.B "trans"
+returns the score down the precise interval of a major second.
+Together, both transpositions would cause
+an input in F major to be transformed to F Dorian;
+an input in B-flat major would be transformed to B-flat Dorian, etc.
+.sp 1
+.sp 1
+Whenever
+.B "trans"
+is invoked, it adds a tandem interpretation to the output indicating
+that the output representation has been transposed and is no longer
+at the original pitch.
+.I "Transposition tandem interpretations"
+are similar in syntax to the
+.B "trans"
+command itself.
+For example, the following tandem interpretation indicates that
+the score has been transposed up a major second.
+.sp 1
+.sp 1
+.in +2
+*Trd1c2
+.in -2
+.sp 1
+.sp 1
+The tandem interpretation in effect echoes the operation
+of the original transposition.
+If a score has undergone more than one transposition,
+the associated tandem interpretations will be ordered beginning with the most
+recent transposition.
+For example, a work that was transposed down a perfect
+fourth, followed by up a diminished second:
+.sp 1
+.sp 1
+.in +2
+trans -d -3 -c -5
+.br
+trans -d +1 -c 0
+.in -2
+.sp 1
+.sp 1
+would contain the tandem interpretation:
+.sp 1
+.sp 1
+.in +2
+*Trd1c0
+.br
+*Trd-3c-5
+.in -2
+.in -2
+.sp 1
+.sp 1
+.SH "SAMPLE OUTPUT"
+.in +2
+The following example illustrates the operation of
+.B "trans."
+Given the following input:
+.in +2
+.sp 1
+.TS
+l l l l l.
+**kern	**pitch	**Tonh	**solfg	**foo
+\(eq1	\(eq1	\(eq1	\(eq1	.
+c	C4	C4	do4	abc
+c#	C#4	Cis4	do~d4	.
+d-	Db4	Des4	re~b4	xyz
+r	r	r	r	.
+\(eq2	\(eq2	\(eq2	\(eq2	.
+B-	Bb3	B3	si~b3	.
+B--	Bbb3	Heses3	si~bb3	.
+\(eq3	\(eq3	\(eq3	\(eq3	.
+*-	*-	*-	*-	*-
+.TE
+.sp 1
+.in -2
+the command
+.sp 1
+.sp 1
+.in +2
+trans -d 1 -c 2
+.in -2
+.sp 1
+.sp 1
+would produce the following output:
+.in +2
+.sp 1
+.TS
+l l l l l.
+**kern	**pitch	**Tonh	**solfg	**foo
+*Trd1c2	*Trd1c2	*Trd1c2	*Trd1c2	*
+\(eq1	\(eq1	\(eq1	\(eq1	.
+d	D4	D4	re4	abc
+d#	D#4	Dis4	re~d4	.
+e-	Eb4	Es4	mi~b4	xyz
+r	r	r	r	.
+\(eq2	\(eq2	\(eq2	\(eq2	.
+c	C4	C4	do4	.
+c-	Cb4	Ces4	do~b4	.
+\(eq3	\(eq3	\(eq3	\(eq3	.
+*-	*-	*-	*-	*-
+.TE
+.sp 1
+.in -2
+.in -2
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBhumsed\fR (1), \fB**kern\fR (2), \fBkern\fR (1),
+\fB**pitch\fR (2), \fBpitch\fR (1),
+\fBrecode\fR (1),
+\fB**solfg\fR (2),
+.br
+\fBsolfg\fR (1),
+\fB**Tonh\fR (2), \fBtonh\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+It is important not to confused transposed scores with notations of
+music for transposing instruments
+(such as the horn in F or the clarinet in B-flat).
+The \f(CR**pitch, **kern, **Tonh\fR, and \f(CR**solfg\fR representations
+are intended to represent absolute or concert pitch;
+transposed scores are deviate from this convention.
+The
+.I "transpose tandem interpretation"
+should not be used to indicate that an encoding is for a
+transposing instrument.
+A special tandem interpretation -- beginning
+*ITr
+-- is reserved for such designations.
+The interpretation
+*Tr
+means that the encoding no longer represents absolute or concert pitch.
+By contrast, the interpretation
+*ITr
+means that the instrumentalist reads from a score whose pitches are
+notated differently from concert pitch;
+nevertheless, the ensuing data is encoded at concert pitch.
+For example, a trumpet in B-flat plays a B-flat by fingering the pitch C.
+The absolute pitch (B-flat) is the proper \f(CR**kern, **pitch, **solfg\fR,
+or \f(CR**Tonh\fR encoding.
+Since the instrumentalist's
+.I "notation"
+is transposed up 1 diatonic letter-name and 2 chromatic semitones from
+the absolute or concert pitch, the encoded score will contain the instrument's
+transposition tandem interpretation
+.sp 1
+.sp 1
+.in +2
+*ITrd1c2
+.in -2
+.sp 1
+.sp 1
+(even though the encoded data is at concert pitch).
+Note that it is possible subsequently to transpose such a score using the
+.B "trans"
+command.
+.sp 1
+.sp 1
+Note also that key and key signature tandem interpretations are not modified by
+.B "trans"
+since \f(CR**pitch, **kern, **solfg\fR, and \f(CR**Tonh\fR,
+intended to encode the original key and key signature at absolute pitch.
+.in -2

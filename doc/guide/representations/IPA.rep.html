@@ -1,0 +1,355 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Phonetic Sounds</TITLE>
+<!-- Documentation for the **IPA Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **IPA Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,International Phonetic Alphabet,software,theory,analysis,systematic musicology,computer representation,**IPA">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+<CENTER>
+<H1>Humdrum Representation for Phonetic Sounds</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**IPA</b>  --  representation for International Phonetic Alphabet
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**IPA</b>
+scheme provides a means for representing
+phonetic information based on the International Phonetic Alphabet (IPA).
+This representation is a Humdrum adaptation of the ASCII
+transliteration scheme for IPA developed by Evan Kirshenbaum.
+The
+<b>**IPA</b>
+representation permits the encoding of the basic phonetic
+constituents of spoken or sung utterances for several languages.
+</P>
+<P>
+Two types of data tokens are distinguished in <b>**IPA</b>:
+phonetic segments and silences.
+</P>
+<P>
+Spans of silence are represented by the percent sign (%)
+appearing as an isolated token.
+</P>
+<P>
+Phonetic segment tokens typically encode syllables or single-syllable words.
+Each syllable consists of one or more successive phonemes,
+where each phoneme is signified by a single character with an optional
+modifier.
+The beginning of the token may include one of three stress indicators.
+A stressed syllable is signified by the apostrophe (').
+A less stressed syllable is signified by the comma (,).
+The absence of either the apostrophe or the comma indicates an
+unstressed syllable.
+</P>
+<P>
+In the case of tonally inflected languages (such as all Chinese dialects),
+numbers may follow indicating the type of tonal inflection.
+For example, in Mandarin, the number 1 indicates a high tone,
+the number 2 indicates a rising tone, the number 3 indicates a falling-rising
+tone, and the number 4 indicates a falling tone.
+</P>
+<P>
+Individual phonemes are represented according to the signifiers
+listed in the table given below.
+For example, the upper-case letter `A' signifies the `aw' vowel
+as in the standard American pronunciation of
+<i>l\o'a\(ul'\o'w\(ul', c\o'o\(ul't</i> and <i>b\o'o\(ul'ther</i>.
+Any vowel or diphthong signifier can be modified by the
+subsequent presence of a tilde;
+the modified vowel is pronounced with open nasal passages -- as in the French
+"un bon vin blanc," which is encoded as:
+<br><br>
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**IPA</TD></TR>
+<TR><TD>W~</TD></TR>
+<TR><TD>bo~</TD></TR>
+<TR><TD>va~</TD></TR>
+<TR><TD>blA~</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+In the case of consonants, two modifiers are possible.
+Any consonant signifier that is followed by a semicolon indicates that
+the front of the tongue is positioned as at the beginning of the word
+<i>yacht.</i>
+Any consonant signifier that is followed by a dash indicates that the
+consonant and the preceding
+<i>schwa</i>
+(see below)
+are pronounced as an independent syllable -- as in the case of the words
+<i>batt\o'l\(ul'\o'e\(ul', mitt\o'e\(ul'\o'n\(ul'</i>
+and <i>eat\o'e\(ul'\o'n\(ul'</i>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**IPA</big></code>
+data should be given names with the distinguishing `.ipa' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**IPA</b>
+mappings of signifiers and signifieds.
+(&#167; All footnotes appear at the end of this table.)
+<br><br>
+<TABLE>
+<TR><TD>@</TD><TD><b>schwa</i>&#167; as in (unaccented) <i>b\o'a\(ul'nan\o'a\(ul', c\o'o\(ul'llide, \o'a\(ul'lone</i></TD></TR>
+<TR><TD>V</TD><TD>(IPA symbol: \(an); as in <i>h\o'u\(ul't</i> or <i>h\o'u\(ul'mdr\o'u\(ul'm</i></TD></TR>
+<TR><TD>R</TD><TD><b>R</i>\(dd; as in <i>b\o'u\(ul'rn, op\o'e\(ul'\o'r\(ul'ation, d\o'i\(ul'\o'r\(ul't, \o'u\(ul'\o'r\(ul'gent</i></TD></TR>
+<TR><TD>&</TD><TD>short <b>a</i> (IPA symbol: \(ae); as in <i>m\o'a\(ul't, m\o'a\(ul'p, m\o'a\(ul'd, g\o'a\(ul'g, sn\o'a\(ul'p, p\o'a\(ul'tch</i></TD></TR>
+<TR><TD>A</TD><TD><b>\o'a\(..'</i> (IPA symbol: <i>a</i>); as in <i>b\o'o\(ul'ther, c\o'o\(ul't</i>, and, with most American speakers,</TD></TR>
+<TR><TD></TD><TD><i>f\o'a\(ul'ther, c\o'a\(ul'rt</i></TD></TR>
+<TR><TD>a</TD><TD><b>\o'a\(de'</i>; <i>f\o'a\(ul'ther</i> as pronounced by speakers who do not rhyme it with <i>bother</i>.</TD></TR>
+<TR><TD>E</TD><TD>short <b>e</i> (IPA symbol: \(*e or E); as in <i>g\o'e\(ul't, b\o'e\(ul'd, p\o'e\(ul'ck, \o'e\(ul'dge</i></TD></TR>
+<TR><TD>i</TD><TD>long <b>e</i> (IPA symbol: \o'i'); as in <i>b\o'e\(ul'\o'a\(ul't, gr\o'e\(ul'\o'e\(ul'd, \o'e\(ul'venl\o'y\(ul', \o'e\(ul'\o'a\(ul's\o'y\(ul'</i></TD></TR>
+<TR><TD>I</TD><TD>short <b>i</i> (IPA symbol: I or \(*i); as in <i>t\o'i\(ul'p, ban\o'i\(ul'sh, act\o'i\(ul've</i></TD></TR>
+<TR><TD>O</TD><TD><b>\o'o\(de'</i> (IPA symbol: backward `c'); as in <i>l\o'a\(ul'\o'w\(ul', \o'a\(ul'll, sh\o'a\(ul'\o'w\(ul'm</i></TD></TR>
+<TR><TD>W</TD><TD><b>oe</i> digraph (IPA symbol: \(oe); as in the French <i>b\o'o\(ul'\o'e\(ul'\o'u\(ul'f</i>, German <i>H\o'o\(..\(ul'lle</i></TD></TR>
+<TR><TD>o</TD><TD><b>\o'o/'</i> digraph; as in the French <i>b\o'o\(ul'\o'e\(ul'\o'u\(ul'fs</i>, <i>d\o'e\(ul'\o'u\(ul'x,  German <i>fl\o'o\(..\(ul'te</i></TD></TR>
+<TR><TD>u</TD><TD><b>\o'u\(..'</i>; as in <i>r\o'u\(ul'le, y\o'o\(ul'\o'u\(ul'th, f\o'e\(ul'\o'w\(ul', \o'o\(ul'\o'o\(ul'ze</i></TD></TR>
+<TR><TD>H</TD><TD><b>\o'u\(..'</i> (IPA symbol: upside & backwards `h'); as in French <i>n\o'u\(ul'ance</i>, <i>l\o'u\(ul'i</i></TD></TR>
+<TR><TD>U</TD><TD><b>\o'u\(de'</i> (IPA symbol: \(*u or U or \(*w);  as in <i>p\o'u\(ul'll, w\o'o\(ul'\o'o\(ul'd, b\o'o\(ul'\o'o\(ul'k</i></TD></TR>
+<TR><TD>y</TD><TD><b>ue</i>; as in the German <i>f\o'u\(..\(ul'hren</i>, <i>\o'U\(..\(ul'bung</i></TD></TR>
+<TR><TD>Y</TD><TD><b>UE</i>; as in the German <i>Gl\o'u\(..\(ul'ck</i>, <i>klavierst\o'u\(..\(ul'ck</i></TD></TR>
+<TR><TD><i>vowel</i>~</TD><TD>following a vowel* indicates a vowel or diphthong pronounced withopen</TD></TR>
+<TR><TD></TD><TD>nasal passages; as in the French "un bon vin blanc" (<code><big>W~ bo~ va~ blA~</big></code>)</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>b</TD><TD><b>b</i>; as in <i>\o'b\(ul'a\o'b\(ul'y, ca\o'b\(ul'in, ro\o'b\(ul'</i></TD></TR>
+<TR><TD>d</TD><TD><b>d</i>; as in <i>\o'd\(ul'ee\o'd\(ul', \o'd\(ul'ulcimer, a\o'dd\(ul'er</i></TD></TR>
+<TR><TD>f</TD><TD><b>f</i>; as in <i>\o'f\(ul'eel, cu\o'f\(ul'\o'f\(ul'</i>, \o'f\(ul'orte</TD></TR>
+<TR><TD>g</TD><TD><b>g</i>; as in <i>\o'g\(ul'o, ba\o'g\(ul', \o'g\(ul'ift</i></TD></TR>
+<TR><TD>h</TD><TD><b>h</i>; as in <i>\o'h\(ul'ear, a\o'h\(ul'ead, \o'h\(ul'orn</i></TD></TR>
+<TR><TD>k</TD><TD><b>k</i>; as in <i>\o'c\(ul'oo\o'k\(ul', ta\o'k\(ul'\o'e\(ul', a\o'c\(ul'\o'h\(ul'\o'e\(ul'</i></TD></TR>
+<TR><TD>x</TD><TD><b>K</i> (IPA symbol: \o'x\(ul'); as in the German <i>i\o'c\(ul'\o'h\(ul', Ba\o'c\(ul'\o'h\(ul'</i></TD></TR>
+<TR><TD>C</TD><TD>as in the German <i>i\o'c\(ul'\o'h\(ul', trauri\o'g\(ul'</i></TD></TR>
+<TR><TD>l</TD><TD><b>l</i>; as in <i>\o'l\(ul'ibretto, \o'l\(ul'i\o'l\(ul'y, poo\o'l\(ul'</i></TD></TR>
+<TR><TD>L</TD><TD><b>gl</i> (IPA symbol lambda); as in the Italian <i>passaca\o'g\(ul'\o'l\(ul'ia, a\o'g\(ul'\o'l\(ul'io</i></TD></TR>
+<TR><TD>m</TD><TD><b>m</i>; as in <i>\o'm\(ul'usic, li\o'm\(ul'\o'b\(ul', ny\o'm\(ul'ph</i></TD></TR>
+<TR><TD>n</TD><TD><b>n</i>; as in <i>i\o'n\(ul'o, \o'n\(ul'strument, ow\o'n\(ul'</i></TD></TR>
+<TR><TD>N</TD><TD><b>eng</i> (IPA symbol: `n' with a tail); as in <i>si\o'n\(ul'\o'g\(ul', fi\o'n\(ul'\o'g\(ul'er, i\o'n\(ul'k</i></TD></TR>
+<TR><TD>J</TD><TD><b>enya</i>; as in the Italian <i>Lasa\o'g\(ul'\o'n\(ul'e, French <i>a\o'g\(ul'\o'n\(ul'eau, Dordo\o'g\(ul'\o'n\(ul'e</i></TD></TR>
+<TR><TD>p</TD><TD><b>p</i>; as in <i>\o'p\(ul'iano, bee\o'p\(ul'er, li\o'p\(ul'</i></TD></TR>
+<TR><TD>r</TD><TD><b>r</i>; as in <i>\o'r\(ul'eed, o\o'r\(ul'gan, ca\o'r\(ul'</i></TD></TR>
+<TR><TD>s</TD><TD><b>s</i>; as in <i>\o's\(ul'eek, \o's\(ul'our\o'c\(ul'\o'e\(ul', ba\o's\(ul'\o's\(ul'</i></TD></TR>
+<TR><TD>S</TD><TD><b>sh</i> ["esh"] (IPA symbol: \o'\(It\(Im\(Ib'); as in <i>\o's\(ul'\o'h\(ul'y, cre\o's\(ul'\o'c\(ul'endo, spe\o'c\(ul'\o'i\(ul'al</i></TD></TR>
+<TR><TD>t</TD><TD><b>t</i>; as in <i>\o't\(ul'empo, \o't\(ul'ie, a\o't\(ul'\o't\(ul'acca</i></TD></TR>
+<TR><TD>T</TD><TD><b>th</i> ["theta"] (IPA symbol: \(*h); as in <i>\o't\(ul'\o'h\(ul'in, pa\o't\(ul'\o'h\(ul', e\o't\(ul'\o'h\(ul'er</i></TD></TR>
+<TR><TD>D</TD><TD><b>\o't\(ul'\o'h\(ul'</i> ["eth"] (IPA symbol: <i>\o'd~') as in <i>\o't\(ul'\o'h\(ul'en, ei\o't\(ul'\o'h\(ul'er, smoo\o't\(ul'\o'h\(ul'</i></TD></TR>
+<TR><TD>v</TD><TD><b>v</i>; as in <i>\o'v\(ul'oice, \o'v\(ul'i\o'v\(ul'id, li\o'v\(ul'\o'e\(ul'</i></TD></TR>
+<TR><TD>w</TD><TD><b>w</i>; as in <i>\o'w\(ul'e, a\o'w\(ul'ay</i></TD></TR>
+<TR><TD>j</TD><TD><b>j</i>; as in <i>\o'y\(ul'es, \o'y\(ul'oung, c\o'u\(ul'e, on\o'i\(ul'\o'o\(ul'n</i></TD></TR>
+<TR><TD>z</TD><TD><b>z</i>; as in <i>\o'z\(ul'one, rai\o's\(ul'\o'e\(ul', \o'x\(ul'ylophone</i></TD></TR>
+<TR><TD>Z</TD><TD><b>zh</i> ["yogh"\(sc]; as in <i>mea\o's\(ul'ure, vi\o's\(ul'\o'i\(ul'on, a\o'z\(ul'ure</i></TD></TR>
+<TR><TD><i>consonant</i>-</TD><TD>following a consonant (l-, n-, m-, or N-)** indicates a consonant preceded</TD></TR>
+<TR><TD></TD><TD>by a <i>schwa</i> that is pronounced as an independent syllable; as in <i>batt\o'l\(ul'\o'e\(ul',</TD></TR>
+<TR><TD></TD><TD>mitt\o'e\(ul'\o'n\(ul', eat\o'e\(ul'\o'n\(ul'\fR</TD></TR>
+<TR><TD><i>consonant</i>;</TD><TD>following a consonant,&#167&#167 indicates that the front of the tongue is</TD></TR>
+<TR><TD></TD><TD>positioned as in the beginning of the word `yard'</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>\'</TD><TD>primary stress (should precede stressed sound)</TD></TR>
+<TR><TD>,</TD><TD>secondary stress (should precede stressed sound)</TD></TR>
+<TR><TD>%</TD><TD>silence signifier</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**IPA</b> Signifiers</i>
+</CENTER>
+</P>
+<P>
+<ul>
+<li>
+The IPA <i>schwa</i> is notated as an upside-down `e'.
+<li>
+The IPA symbol consists of a <i>schwa</i> with a hook.
+<li>
+The IPA <i>yogh</i> is written like a flat-topped number `3' that has
+been lowered in height.
+<li>
+In IPA such vowels are marked by the presence of a tilde
+above the vowel.
+<li>
+In IPA such consonants are marked by the presence of
+a vertical bar below the consonant.
+<li>
+The IPA symbol consists of a superscript letter `j' either following or
+hooked beneath the consonant.
+</ul>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+Sample syllables and their corresponding
+<b>**IPA</b>
+encodings are given below:
+</P>
+<P>
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**text</TD><TD>**IPA</TD></TR>
+<TR><TD>book</TD><TD>bUk</TD></TR>
+<TR><TD>sing</TD><TD>sIN</TD></TR>
+<TR><TD>tag</TD><TD>t&g</TD></TR>
+<TR><TD>now</TD><TD>nAU</TD></TR>
+<TR><TD>loud</TD><TD>lAUd</TD></TR>
+<TR><TD>out</TD><TD>AUt</TD></TR>
+<TR><TD>site</TD><TD>saIt</TD></TR>
+<TR><TD>side</TD><TD>saId</TD></TR>
+<TR><TD>buy</TD><TD>baI</TD></TR>
+<TR><TD>job</TD><TD>dZAb</TD></TR>
+<TR><TD>gem</TD><TD>dZEm</TD></TR>
+<TR><TD>edge</TD><TD>EdZ</TD></TR>
+<TR><TD>join</TD><TD>dZOin</TD></TR>
+<TR><TD>judge</TD><TD>dZ@dZ</TD></TR>
+<TR><TD>day</TD><TD>deI</TD></TR>
+<TR><TD>fade</TD><TD>feId</TD></TR>
+<TR><TD>date</TD><TD>deIt</TD></TR>
+<TR><TD>cape</TD><TD>keIp</TD></TR>
+<TR><TD>youth</TD><TD>juT</TD></TR>
+<TR><TD>few</TD><TD>fju</TD></TR>
+<TR><TD>mute</TD><TD>mjut</TD></TR>
+<TR><TD>cue</TD><TD>kju</TD></TR>
+<TR><TD>cure</TD><TD>kjUr</TD></TR>
+<TR><TD>coin</TD><TD>kOin</TD></TR>
+<TR><TD>troy</TD><TD>trOi</TD></TR>
+<TR><TD>bone</TD><TD>boUn</TD></TR>
+<TR><TD>know</TD><TD>noU</TD></TR>
+<TR><TD>beau</TD><TD>boU</TD></TR>
+<TR><TD>chin</TD><TD>tSIn</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+The following example encodes a sentence as might be spoken by
+American and British speakers.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**text</TD><TD>**IPA</TD><TD>**IPA</TD></TR>
+<TR><TD>*</TD><TD>*American</TD><TD>*British</TD></TR>
+<TR><TD>I</TD><TD>aI</TD><TD>aI</TD></TR>
+<TR><TD>hear</TD><TD>hir</TD><TD>hiV</TD></TR>
+<TR><TD>the</TD><TD>D@</TD><TD>DI</TD></TR>
+<TR><TD>sec-</TD><TD>'sEk</TD><TD>'sEk</TD></TR>
+<TR><TD>-re-</TD><TD>rI</TD><TD>r^</TD></TR>
+<TR><TD>-ta-</TD><TD>,t&</TD><TD>tri</TD></TR>
+<TR><TD>-ry</TD><TD>ri</TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum commands accept <b>**IPA</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>formant</b></TD><TD>identifies first two formant frequencies for common vowels</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction
+with <b>**IPA</b>:
+<blockquote>
+<TABLE>
+<TR><TD>instrument</TD><TD>*I</TD></TR>
+<TR><TD>instrument class</TD><TD>*IC</TD></TR>
+<TR><TD>meter signatures</TD><TD>*M6/8</TD></TR>
+<TR><TD>tempo</TD><TD>*MM96.3</TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**IPA</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<b>formant</b> (4)
+</code></big>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>LIMITS</H3></FONT>
+<blockquote>
+The International Phonetic Alphabet itself is not well suited to
+the representation of clicks commonly found in African languages,
+and this limitation is evident in the
+<b>**IPA</b>
+representation.
+A more precise phonetic representation also developed by
+Evan Kirshenbaum might be adapted as the basis for a
+more refined Humdrum representation.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>REFERENCES</H3></FONT>
+<blockquote>
+This representation is a Humdrum adaptation of the ASCII
+transliteration scheme for IPA developed by Evan Kirshenbaum.
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

@@ -1,0 +1,286 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 35</TITLE>
+<!-- Chapter 35 (Layers) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:16:48 EST 2000">
+<meta name="description" content="Chapter 35 (Layers) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<H1>Chapter35</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide34.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide36.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Layers</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+In
+<A HREF="guide11.html">Chapters 11</A>
+and
+<A HREF="guide15.html">15</A>
+we examined different kinds of intervals,
+including both harmonic and melodic intervals.
+A number of different types of intervals were distinguished
+and we learned how to calculate such intervals.
+One type of melodic interval mentioned in
+<A HREF="guide11.html">Chapter 11</A>
+is the
+<i>distance interval</i>
+--  an interval between pitches which are separated by
+intervening musical materials.
+In this chapter we consider more sophisticated ways of determining
+distance intervals.
+These types of intervals are the foundation of various notions
+of hierarchies or "layers" of pitch analysis.
+</P>
+<P>
+This chapter also visits a related issue of implied harmony.
+Many melodic passages outline clear harmonic progressions
+which are also implicated in layer-related analyses.
+</P>
+<A NAME="Implied_Harmony">
+<H2>Implied Harmony</H2>
+</P>
+<P>
+Example 35.1 shows a two-phrase trumpet solo from Aaron Copland's
+<i>El Salon Mexico</i>.
+Harmonic progressions may be evident only when arpeggiated figures
+are collapsed.
+In this case, an implicit harmony may is evident
+where a G major chord is followed by a D dominant seventh chord.
+The barlines provide convenient ways of parsing the harmonies.
+</P>
+<P>
+<b>Example 35.1</i>  Aaron Copland, <i>El Salon Mexico</i>.
+<blockquote>
+<img src="guide.figures/guide35.4.gif">
+</blockquote>
+A
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+encoding of the passage is given below:
+<blockquote><TABLE>
+<TR><TD><code><big>!!!COM: Copland, A.</TD></TR>
+<TR><TD><code><big>!!!OTL: El Salon Mexico</TD></TR>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD><code><big>*Itromp</TD></TR>
+<TR><TD><code><big>*clefG2</TD></TR>
+<TR><TD><code><big>*k[]</TD></TR>
+<TR><TD><code><big>*M4/4</TD></TR>
+<TR><TD><code><big>=29</TD></TR>
+<TR><TD><code><big>2r</TD></TR>
+<TR><TD><code><big>8r</TD></TR>
+<TR><TD><code><big>{8d</TD></TR>
+<TR><TD><code><big>8g</TD></TR>
+<TR><TD><code><big>8b</TD></TR>
+<TR><TD><code><big>=30</TD></TR>
+<TR><TD><code><big>28dd</TD></TR>
+<TR><TD><code><big>28b</TD></TR>
+<TR><TD><code><big>28dd</TD></TR>
+<TR><TD><code><big>28b</TD></TR>
+<TR><TD><code><big>28dd</TD></TR>
+<TR><TD><code><big>28b</TD></TR>
+<TR><TD><code><big>28dd</TD></TR>
+<TR><TD><code><big>8b</TD></TR>
+<TR><TD><code><big>8dd</TD></TR>
+<TR><TD><code><big>8gg</TD></TR>
+<TR><TD><code><big>8dd</TD></TR>
+<TR><TD><code><big>8b</TD></TR>
+<TR><TD><code><big>8g</TD></TR>
+<TR><TD><code><big>=31</TD></TR>
+<TR><TD><code><big>8cc</TD></TR>
+<TR><TD><code><big>[4.a</TD></TR>
+<TR><TD><code><big>8a]}</TD></TR>
+<TR><TD><code><big>{8d</TD></TR>
+<TR><TD><code><big>8f#</TD></TR>
+<TR><TD><code><big>8a</TD></TR>
+<TR><TD><code><big>=32</TD></TR>
+<TR><TD><code><big>4cc</TD></TR>
+<TR><TD><code><big>8a</TD></TR>
+<TR><TD><code><big>8f#</TD></TR>
+<TR><TD><code><big>8d</TD></TR>
+<TR><TD><code><big>4dd</TD></TR>
+<TR><TD><code><big>8dd</TD></TR>
+<TR><TD><code><big>=33</TD></TR>
+<TR><TD><code><big>8ff#}~</TD></TR>
+<TR><TD><code><big>8r</TD></TR>
+<TR><TD><code><big>4r</TD></TR>
+<TR><TD><code><big>2r;</TD></TR>
+<TR><TD><code><big>=</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+We can collapse the arpeggiated chords using the
+<b>context</b>
+command:
+</P>
+<P>
+<blockquote>
+<code><big>context -b = -o = copland</big></code>
+</blockquote>
+</P>
+<P>
+Identify the chords is facilitated by using the pitch-class
+(<A HREF="representations/pc.rep.html"><code><big>**pc</big></code></A>)
+representation described in
+<A HREF="guide34.html">Chapter 34.</A>
+</P>
+<P>
+<blockquote>
+<code><big>context -b = -o = copland | pc -a | rid -d</big></code>
+</blockquote>
+</P>
+<P>
+The corresponding output is:
+</P>
+<P>
+<blockquote><TABLE>
+<TR><TD><code><big>!!!COM: Copland, A.</TD></TR>
+<TR><TD><code><big>!!!OTL: El Salon Mexico</TD></TR>
+<TR><TD><code><big>**pc</TD></TR>
+<TR><TD><code><big>*Itromp</TD></TR>
+<TR><TD><code><big>*clefG2</TD></TR>
+<TR><TD><code><big>*k[]</TD></TR>
+<TR><TD><code><big>*M4/4</TD></TR>
+<TR><TD><code><big>2 B 2 B 2 B 2 B 2 7 2 B 7</TD></TR>
+<TR><TD><code><big>0 9 9 2 6 9</TD></TR>
+<TR><TD><code><big>0 9 6 2 2 2</TD></TR>
+<TR><TD><code><big>6 r r r</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+In order to identify these as G major and D dominant chords
+it would be convenient to reduce the sets to (2,7,B)
+and (0,2,6,9) respectively.
+For this task, we can use a
+The following awk script eliminates repeated tokens within a record:
+(huniq:
+We might call this script
+<b>huniq</b>
+since it acts like a horizontal version of the
+<b>uniq</b>
+command:
+</P>
+<P>
+<blockquote>
+<code><big>awk '{
+<blockquote>
+# A script to eliminate repeated tokens within a record.
+<br>
+if ($0 ~ /^[!*]/) {print $0; next}
+<br>
+else
+<blockquote>
+{
+array[$1] = line = $1
+<br>
+for (i=2; i<=NF; i++)
+<blockquote>
+{
+<br>
+if (array[$i] == "") {array[$i]=$i; line = line " " $i}
+<br>
+}
+</blockquote>
+print line
+<br>
+for (i in array) delete array[i]
+<br>
+}
+</blockquote>
+}' $1</big></code>
+</blockquote>
+</blockquote>
+Applying this script to our output
+
+!!!COM: Copland, A.
+!!!OTL: El Salon Mexico
+**pc
+*Itromp
+*clefG2
+*k[]
+*M4/4
+r 2 7 B
+2 B 7
+0 9 2 6
+0 9 6 2
+6 r
+*-
+
+Identifying implicit harmonic intervals can be a little
+more taxing.
+Let's begin by considering a monophonic passage that
+exhibits a pseudo-polyphonic or compound melodic tendency.
+A passage from Bach's "Gigue" from the solo 'cello
+<i>Suite No. 3</i>
+is shown in Example 35.1.
+<br><br>
+<b>Example 35.1</i>  J.S. Bach, "Gigue" from <i>Suite No. 3</i> for solo 'cello (excerpt).
+<blockquote>
+<img src="guide.figures/guide35.1.gif">
+</blockquote>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD><code><big>*M3/8</TD></TR>
+<TR><TD><code><big>=88</TD></TR>
+<TR><TD><code><big>(16F#</TD></TR>
+<TR><TD><code><big>16c)</TD></TR>
+<TR><TD><code><big>(16E</TD></TR>
+<TR><TD><code><big>16c)</TD></TR>
+<TR><TD><code><big>(16D</TD></TR>
+<TR><TD><code><big>16c)</TD></TR>
+<TR><TD><code><big>=89</TD></TR>
+<TR><TD><code><big>(16B</TD></TR>
+<TR><TD><code><big>16D)</TD></TR>
+<TR><TD><code><big>(16A</TD></TR>
+<TR><TD><code><big>16D)</TD></TR>
+<TR><TD><code><big>(16B</TD></TR>
+<TR><TD><code><big>16D)</TD></TR>
+<TR><TD><code><big>=90</TD></TR>
+<TR><TD><code><big>(16c</TD></TR>
+<TR><TD><code><big>16D)</TD></TR>
+<TR><TD><code><big>(16B</TD></TR>
+<TR><TD><code><big>16D)</TD></TR>
+<TR><TD><code><big>(16A</TD></TR>
+<TR><TD><code><big>16D)</TD></TR>
+<TR><TD><code><big>=91</TD></TR>
+<TR><TD><code><big>(16B</TD></TR>
+<TR><TD><code><big>16D)</big></code></TD></TR>
+</TABLE></blockquote>
+<blockquote>
+<img src="guide.figures/guide35.2.gif">
+</blockquote>
+<blockquote>
+<img src="guide.figures/guide35.3.gif">
+</blockquote>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide36.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide34.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

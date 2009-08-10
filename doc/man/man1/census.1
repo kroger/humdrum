@@ -1,0 +1,118 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH census 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +12
+.ti -12
+\fBcensus\fR  --  determine general properties of a Humdrum input
+.in -12
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+\fBcensus\fR  [\fB-k\fR]  [\fIinputfile\fR ...]
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "census"
+command provides a summary of seven gross features of any Humdrum input.
+It provides counts of the total number of records (lines),
+the number of unique interpretations encountered,
+the number of comments, the number of data records,
+the number of data tokens, null tokens, and multiple-stops.
+.sp 1
+.sp 1
+When the
+.B "-k"
+option is invoked,
+.B "census"
+provides a summary of a further ten features pertaining to \f(CR**kern\fR
+inputs.
+This summary includes the number of single and double barline records,
+the maximum number of concurrent notes, the total number of notes,
+the total number of rests, the number of untied notes, as well
+as the longest, shortest, highest, and lowest notes encountered.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "census"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-k\fR	also output information regarding \f(CR**kern\fR-related data
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The
+.B "-k"
+option pertains to \f(CR**kern\fR inputs only.
+This option adds \f(CR**kern\fR-related information to the output.
+.in -2
+.sp 1
+.sp 1
+.SH "SAMPLE OUTPUT"
+.in +2
+The following is a sample output where the
+.B "-k"
+option has been invoked.
+Without the
+.B "-k"
+option, the \(od\s-1KERN DATA\s+1\(cd would be absent from the output.
+.in +2
+.sp 1
+.TS
+l l.
+HUMDRUM DATA
+Number of data tokens:	33
+Number of null tokens:	9
+Number of multiple-stops:	1
+Number of data records:	11
+Number of interpretations:	2
+Number of records:	14
+
+KERN DATA
+Number of notes:	8
+Number of untied notes:	7
+Longest note:	2
+Shortest note:	16
+Highest note:	cc
+Lowest note:	C
+Number of rests:	4
+Maximum concurrent notes:	2
+Number of single barlines:	2
+Number of double barlines:	1
+.TE
+.sp 1
+.in -2
+.in -2
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fB**kern\fR (2), \fBhumdrum\fR (1), \fBproof\fR (1)
+.in -2

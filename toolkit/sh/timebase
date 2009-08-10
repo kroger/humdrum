@@ -1,0 +1,92 @@
+#########################################################################
+#                                 TIMEBASE
+# Programmed by: Tim Racinsky        Date: July, 1993
+# Copyright (c) 1993 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# June 7/94     Tim Racinsky    Modified to work with getopts
+# May 10/96     David Huron     Added the -m option.
+#
+#
+# This shell program is used to invoke the awk program timebase.awk with
+# the appropriate options that were specified on the command line.
+#
+OPTIONS=""
+TOPTION=""
+MOPTION=""
+mOPTION=""
+FILENAME=""
+HELP=""
+FLAG=""
+STNDIN=""
+USAGE1="USAGE: timebase -h                 (Help Screen)"
+USAGE2="       timebase [-x] [-M pre-marker] [-m post-marker] -t N [file ...]"
+# 
+while getopts hm:M:t:x arg
+do
+	case "$arg" in
+	m) 	mOPTION="${OPTARG}";;
+	M) 	MOPTION="${OPTARG}";;
+	t) 	TOPTION="${OPTARG}";;
+	h) 	HELP="ON";;
+     x)	OPTIONS="$OPTIONS${arg}";;
+	[?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/timebase.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/timebase.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# If the -t option has not been specified, give an error.
+if [ "X$TOPTION" = X ]
+then
+	echo "timebase: ERROR: Timebase option has not been specified." 1>&2
+	echo "" 1>&2
+	echo "$USAGE1" 1>&2
+	echo "$USAGE2" 1>&2
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' is allowed
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "timebase: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+# Invoke timebase.awk with the specified options.
+$AWK_VER -f ${HUMDRUM}/bin/timebase.awk "DUMMY" "${OPTIONS:-null}" "$TOPTION" "$MOPTION" "$mOPTION" $FILENAME

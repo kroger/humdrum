@@ -1,0 +1,15 @@
+To install humdrum type
+
+  make
+
+and as root
+
+  make install
+
+then, put the following lines in your ~/.bashrc
+
+export PATH="/usr/local/humdrum/bin:$PATH"
+export AWK_VER=gawk
+export HUMDRUM=/usr/local/humdrum/
+export TMPDIR=/tmp
+export CON=/dev/tty

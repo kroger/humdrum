@@ -1,0 +1,104 @@
+###################################################################
+# 					    PATT.KSH
+# Programmed by: David Huron          Date: Nov., 1989
+# Copyright (c) 1993 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# 1993 Aug.5   David Huron     Added spine-path indicators
+# 1993 Aug.19  David Huron     Added **patt output
+# May 17/94	Tim Racinsky	Solidified options to -- c, e, s, f, and t
+# June 7/94	Tim Racinsky	Modified to use getopts command
+# June 20/94	Tim Racinsky	Added -m option (multi-record matching)
+#
+# 	This shell program is used to invoke the awk program patt.awk.
+#
+# These variables will be used in the shell script
+FILENAME=""
+OPTIONS=""
+SKIP_REG=""
+OUTPUT_TAG=""
+TEMPLATE=""
+HELP=""
+FLAG=""
+STNDIN=""
+#
+# Fill in the appropriate command usage here
+USAGE1="USAGE: patt -h                   (Help Screen)"
+USAGE2="       patt [-cem] [-t output_tag] [-s skip_reg] -f template [file ...]"
+while getopts cef:ht:s:m arg
+do
+	case "$arg" in
+	t) 	OUTPUT_TAG="${OPTARG}";;
+	s)	SKIP_REG="${OPTARG}";;
+	f)	if [ ! -f "${OPTARG}" ]
+		then
+			echo "patt: ERROR: Must specify a valid file name with -f." 1>&2
+			echo "" 1>&2
+			echo "$USAGE1" 1>&2
+			echo "$USAGE2" 1>&2
+			exit
+		else
+			TEMPLATE="${OPTARG}"
+		fi ;;
+	h) 	HELP="ON";;
+     [cem])
+		OPTIONS="$OPTIONS${arg}";;
+	[?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/patt.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/patt.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Must specify a template file
+if [ X"$TEMPLATE" = X ]
+then
+	echo "patt: ERROR: Must specify a template file." 1>&2
+	echo "" 1>&2
+	echo "$USAGE1" 1>&2
+	echo "$USAGE2" 1>&2
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' may be used
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "patt: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+$AWK_VER -f ${HUMDRUM}/bin/patt.awk "DUMMY" "${OPTIONS:-null}" "${SKIP_REG:-null}" "${OUTPUT_TAG:-null}" "${TEMPLATE:-null}" $FILENAME

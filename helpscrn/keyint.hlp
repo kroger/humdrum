@@ -1,0 +1,23 @@
+
+KEYINT    : Estimate the key (tonic and mode) of a passage.
+
+     This command estimates the key of a given passage according to a
+     "rare interval" algorithm.  This command is of interest pri-
+     marily to perceptual researchers, and is not intended to be an
+     optimum method for estimating the key of a passage.
+
+Inputs processed:
+
+     **kern,    **semits
+
+Syntax:
+
+     keyint [-a] [file ...]
+
+Options:
+
+     -a : shows probability values for all 24 (enharmonically
+          equivalent) major and minor keys
+
+  Refer to reference manual for further details.
+

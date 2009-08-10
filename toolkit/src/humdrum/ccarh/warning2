@@ -1,0 +1,7 @@
+!! "humdrum: WARNING 2: Data token may be mistaken for global "
+!! "comment in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for warning number 2
+**ex	**ex	**ex
+data	!!comment	more data
+*-	*-	*-

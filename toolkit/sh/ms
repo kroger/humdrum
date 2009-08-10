@@ -1,0 +1,150 @@
+######################################################################
+#                                MS
+#
+# Programmed by: David Huron        Date: January, 1997
+# Copyright (c) 1997 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+#
+#
+#       This shell program is the multi-spine version of the "ms1"
+#	command.  It simply calls "ms1" for each spine in the input,
+#	and combines the outputs into a single Mup output.
+#
+# These variables will be used in the shell script
+#
+MAX=""
+MIN=""
+NUM=""
+HELP=""
+INTERP=""
+SPINES=""
+OPTIONS=""
+MUP_OUT=""
+CHARSTRING=""
+#
+# Command usage:
+USAGE1="USAGE: ms -h                 (Help Screen)"
+USAGE2="       ms [-a charstring] [-efmz] [-i **interp1,...,**interp] [-p n] [-s n] [file ...]"
+# 
+# Process the command-line options.
+while [ $# -gt 0 ]
+do
+	case "$1" in
+	-a) 	CHARSTRING="$2"
+		if [ "X$CHARSTRING" = X ]
+		then
+			echo "ms: ERROR: Char,String argument must follow -a." 1>&2
+			echo "" 1>&2
+			echo "$USAGE1" 1>&2
+			echo "$USAGE2" 1>&2
+			exit
+		else
+		 	OPTIONS="$OPTIONS $1"
+		fi
+		shift 2
+		;;
+	-e)	OPTIONS="$OPTIONS $1"
+		shift
+		;;
+	-f)	OPTIONS="$OPTIONS $1"
+		shift
+		;;
+	-h) 	HELP="ON"
+		shift
+		;;
+	-i) 	OPTIONS="$OPTIONS $1"
+		INTERP="$2"
+		shift 2
+		;;
+	-m)	OPTIONS="$OPTIONS $1"
+		shift
+		;;
+	-p) 	OPTIONS="$OPTIONS $1"
+		SIZE="$2"
+		shift 2
+		;;
+	-s) 	OPTIONS="$OPTIONS $1"
+		STAFF="$2"
+		shift 2
+		;;
+	-z)	MUP_OUT="ON"
+		OPTIONS="$OPTIONS $1"
+		shift
+		;;
+	-*)
+		echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit
+		;;
+	*)	break
+		;;
+	esac
+done
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/ms.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/ms.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Do some preprocessing and store in a temporary file.
+
+$AWK_VER -f $HUMDRUM/bin/ms.awk $1 > $TMPDIR/$$X.ms
+
+# Check to ensure that the Humdrum input is "rectangular" -- with a
+# consistent number of spines throughout.
+SPINES=`humdrum -v $TMPDIR/$$X.ms | grep 'concurrent spines'`
+MAX=`echo $SPINES | sed 's/.Minimum.*$//; s/.*: //'`
+MIN=`echo $SPINES | sed 's/.*: //'`
+if [ X$MAX != X$MIN ]
+then
+	echo "ms: ERROR: Input must have consistent number of spines throughout." 1>&2
+	rm $TMPDIR/$$X.ms
+	exit
+fi
+
+##############################
+
+# Determine the "staffs" present and arrange in numerical order.
+
+STAFFS=`grep '\*staff' $TMPDIR/$$X.ms | awk '{if (NR==1) {gsub(".staff","",$0); for (i=1;i<=NF;i++) print $i}}' | sort -n | uniq | awk '{str=str","$0}END{print str}'`
+
+# Revise the staff assignments.
+
+$AWK_VER -f $HUMDRUM/bin/msstaff staffs=$STAFFS $TMPDIR/$$X.ms > $TMPDIR/$$Y.ms
+
+
+##############################
+
+# Now extract each staff separately and process.
+
+# Count the number of staves in the input.
+
+NUM_STAFFS=`grep '\*staff' $TMPDIR/$$Y.ms | awk '{if (NR==1) {gsub(".staff","",$0); for (i=1;i<=NF;i++) print $i}}' | sort -n | uniq | awk '{str=$0}END{print str}'`
+
+STR="*staff"
+
+while [ $NUM_STAFFS -ne 0 ]
+do
+	extract -i $STR$NUM_STAFFS $TMPDIR/$$Y.ms | $AWK_VER -f $HUMDRUM/bin/msjoin.awk | ms1 -z -s $NUM_STAFFS $OPTIONS | $HUMDRUM/bin/msphrase > $TMPDIR/$$.$NUM_STAFFS
+	let NUM_STAFFS=$NUM_STAFFS-1
+done
+
+# Paste together all of the individual staves and create an aggregate Mup output.
+
+if [ "X$MUP_OUT" = XON ]
+then
+	$HUMDRUM/bin/mspaste $TMPDIR/$$.*
+else
+	$HUMDRUM/bin/mspaste $TMPDIR/$$.* | mup -c 5
+fi
+
+# Eliminate temporary files.
+rm $TMPDIR/$$*

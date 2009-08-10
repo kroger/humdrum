@@ -1,0 +1,286 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH fill 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBfill\fR   --  replace Humdrum null tokens with previous data token
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+\fBfill\fR  [\fB-c \fIchars\fR]   [\fB-p\fR]  [\fB-s \fIregexp\fR]  [\fIinputfile\fR ...]
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "fill"
+replaces Humdrum null tokens
+with the previous non-null data token in the same spine.
+Various options modify this basic behavior.
+.sp 1
+.sp 1
+Humdrum null-tokens are place-holders that do not themselves encode data.
+Null-tokens consist of a single period character (\(od.\(cd)
+-- separated from other tokens by tabs, or appearing on a line by itself.
+The
+.B "fill"
+command replaces occurrences of null-tokens with the most recent
+non-null data occurring in the same spine.
+When the
+.B "-p"
+option is invoked, the replacement data tokens are enclosed in
+parentheses ( ).
+If the initial data tokens in a spine are null-tokens, then null-tokens
+are output.
+.sp 1
+.sp 1
+In repeating previous data tokens, if the
+.B "-s"
+option is invoked,
+.B "fill"
+skips over any data records matching \fIregexp.\fR
+For example, if \fIregexp\fR is the equals-sign
+(the \(odcommon system\(cd barline),
+then barline data tokens will not be repeated in subsequent data records
+containing null tokens.
+Thus, if a data token `X' is followed by a token that matches
+the regular expression /=/, then subsequent null-tokens
+will be replaced by the token `X' rather than by the equals sign.
+.sp 1
+.sp 1
+The
+.B "fill"
+command correctly handles spine path changes.
+In the case where two or more spines join together,
+.B "fill"
+outputs a multiple-stop where necessary.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "fill"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-c \fIchars\fR	repeats only characters listed in \fIchars\fR
+\fB-p\fR	place repeated data tokens in parentheses
+\fB-s \fIregexp\fR	skip data records matching \fIregexp\fR
+.TE
+.sp 1
+Options are specified in the command line.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following inputs and outputs illustrate the operation of the
+.B "fill"
+command.
+Consider the following input:
+.in +2
+.sp 1
+.TS
+l s
+l l.
+!! Example 1
+**kern	**kern
+16e-	8r
+16d	.
+16e-	8gg
+16f	.
+16g	8cc
+16f	.
+16g	8gg
+16e-	.
+16a	[2aa
+16g	.
+16a	.
+16b-	.
+16cc	.
+16b-	.
+16cc	.
+16a	.
+\(eq78	\(eq78
+\.	.
+*-	*-
+.TE
+.sp 1
+.in -2
+Invoking the command:
+.sp 1
+.sp 1
+.in +2
+fill input > output
+.in -2
+.sp 1
+.sp 1
+produces the following output:
+.in +2
+.sp 1
+.TS
+l s
+l l.
+!! Example 1
+**kern	**kern
+16e-	8r
+16d	8r
+16e-	8gg
+16f	8gg
+16g	8cc
+16f	8cc
+16g	8gg
+16e-	8gg
+16a	[2aa
+16g	[2aa
+16a	[2aa
+16b-	[2aa
+16cc	[2aa
+16b-	[2aa
+16cc	[2aa
+16a	[2aa
+\(eq78	\(eq78
+\(eq78	\(eq78
+*-	*-
+.TE
+.sp 1
+.in -2
+Notice that all of the null tokens have been replaced by the preceding
+data token in the same spine.
+Notice also that the barline for measure 78 has been repeated.
+For many applications repeating of barlines will be inappropriate.
+.sp 1
+.sp 1
+The following, more complex example, illustrates the use of the
+.B "-p"
+and
+.B "-s"
+options.
+The input is shown on the left and the corresponding output is
+shown on the right.
+The output was produced by invoking the following command:
+.sp 1
+.sp 1
+.in +2
+fill -p -s ^= input > output
+.in -2
+.sp 1
+.sp 1
+.in +2
+.sp 1
+.TS
+c s s l l l c s s
+l s s l l l l s s
+l l l l l l l l l.
+\fBINPUT\f(CR				\fBOUTPUT\f(CR
+!! Example 2				!! Example 2
+**foo	**foo	**bar				**foo	**foo	**bar
+a	xyz	. 				a	xyz	.
+\.	23	(%&)				(a)	23	(%&)
+\(eq2	\(eq2	\(eq2				\(eq2	\(eq2	\(eq2
+\.	.	. 				(a)	(23)	((%&))
+.T&
+l s s l l l l s s
+l l l l l l l l l.
+!! A comment.				!! A comment.
+\.	.	49				(a)	(23)	49
+*x	*	*x				*x	*	*x
+\.	.	. 				(49)	(23)	(a)
+*	*v	*v				*	*v	*v
+\.	. 					(49)	(23 a)
+abc	XYZ					abc	XYZ
+*	*^					*	*^
+\.	.	. 				(abc)	(XYZ)	(XYZ)
+\.	1a	2b				(abc)	1a	2b
+\(eq3	\(eq3	\(eq3				\(eq3	\(eq3	\(eq3
+*-	*	*				*-	*	*
+\.	. 					(1a)	(2b)
+====	====					====	====
+*+	*					*+	*
+**foo	**foo	**bar				**foo	**foo	**bar
+\.	.	. 				(1a)	.	(2b)
+*-	*-	*-				*-	*-	*-
+.TE
+.sp 1
+.in -2
+In order to avoid repeating the barlines, the skip option has been
+invoked with the regular expression "^=" -- meaning any equals sign
+at the beginning of a line.
+(See \fBregexp\fR in Section 6 of this manual for details concerning
+regular expression syntax.)
+In addition, the
+.B "-p"
+option has been invoked so that all repeated tokens are placed in parentheses.
+Notice that
+.B "fill"
+adapts to changing spine-paths.
+Note especially the join-spine (*v) interpretations leading to the
+double-stop:\f(CR(23 a)\fR.
+.sp 1
+.sp 1
+A final example illustrates the use of the
+.B "-c"
+option.
+Once again, the input is shown on the left and the corresponding output
+is shown on the right.
+The output was produced by invoking the following command:
+.sp 1
+.sp 1
+.in +2
+fill -c '[a-gA-G#-]' input > output
+.in -2
+.sp 1
+.sp 1
+.in +2
+.sp 1
+.TS
+c s l l l l l c s
+l l l l l l l l l.
+\fBINPUT\fR						\fBOUTPUT\fR
+**kern	**kern						**kern	**kern
+(4g	8b						(4g	8b
+\.	8cc						g	8cc
+8f#	4dd						8f#	4dd
+4.g)	.						4g)	dd
+\.	8cc						g	8cc
+\.	8b						g	8b
+4d	4a						4d	4a
+\.	.						d	a
+*-	*-						*-	*-
+.TE
+.sp 1
+.in -2
+The effect of this command has been to propagate the \f(CR**kern\fR
+pitch signifiers, without propagating non-pitch information.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBpatt\fR (1), \fBpattern\fR (1),
+\fBregexp\fR (1), \fBsimil\fR (1)
+.in -2

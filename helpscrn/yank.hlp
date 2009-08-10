@@ -1,0 +1,23 @@
+
+YANK      : Extract specified passages from a Humdrum input.
+
+     This command selectively extracts segments or passages from an input.
+
+Syntax:
+     yank -l -r range [-c] [inputfile ...]
+     yank -m regexp -r range [-c] [inputfile ...]
+     yank -n regexp -r range [-c] [inputfile ...]
+     yank -o regexp [-e regexp] -r range [-c] [inputfile ...]
+     yank -s section -r range [-c] [inputfile ...]
+
+Options:
+     -c           : echo all comments prior to extracted material
+     -e <regexp>  : define <regexp> as segment end delineator (used with -o)
+     -l           : output line numbers specified by -r <range> 
+     -m <regexp>  : yank <range> lines following each line matching <regexp>
+     -n <regexp>  : output specified numbered material delineated by <regexp>
+     -o <regexp>  : output specified ordinal material delineated <regexp>
+     -s <section> : yank section labelled <section> according to -r <range>
+     -r <range>   : yank section in <range> (used with -l -m -n -o -s)
+
+  Refer to reference manual for further details.

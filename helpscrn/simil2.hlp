@@ -1,0 +1,24 @@
+
+SIMIL     : Measure non-numerical similarity between two single-spines inputs.
+
+     This command measures the edit-distance similarity between two single-
+     spine inputs (source & template).  The template must contain only data
+     records.  The command outputs one or (with -x) two spines:  **simil values
+     range from 0 to 1 (max similarity); with -x, **simxrf values indicate the
+     record number for patterns in the template file showing the greatest simil-
+     arity to the source.  Non-default penalties for edit operations may be
+     specified in a "simil.rc" file.  The template file may be longer than the
+     source file only if the -x option is specified.
+
+Syntax:
+
+     simil [-nr] [-x LENGTH] sourcefile [templatefile]
+
+Options:
+
+  -n        : set output precision to n decimal places
+  -r        : reverse the default assignment of primary and secondary inputs
+  -x LENGTH : invoke moving template mode; make cross references for all possi-
+              ble target strings of length LENGTH from the secondary input
+Refer to reference manual for more details.
+

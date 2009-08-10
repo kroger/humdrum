@@ -1,0 +1,34 @@
+											                                           May 18,1993
+
+
+Eleanor,
+
+	My name is Tim Racinsky and I'm writing to you on behalf of 
+David Huron.  David is away at some conferences now and he wanted me 
+to send some information to you that might be of assistance in encoding 
+musical scores.  I have included a small part of the revised documentation 
+as well as a disk containing some important files.
+
+	The documentation contains information on humdrum syntax and 
+kern syntax.  The documentation for the humdrum command has also been 
+included since the humdrum program is on the accompanying disk.  The file 
+'humdrum.exe' can be found on the disk and is to be used as a humdrum syntax 
+checker.  Any humdrum related encoding errors should be located by using 
+this program.  Along with this program I have included a series of small 
+test files which provide an example of all possible error messages produced 
+by the humdrum program.  These files are labelled error1 to error22.  Five 
+warning files are also included.  These warnings are not humdrum errors 
+but the given humdrum file may become invalid when used with other humdrum 
+programs.
+
+	The humdrum program may be invoked with 'humdrum [option=v] filename'.
+(Note that this is slightly different than the accompanying command
+documentation for reasons I will not go into right now).
+
+	I hope this will be of some assistance to you.  If you have 
+any questions please feel free to e-mail us at: 
+		kldawkins@undergrad.math.uwaterloo.ca
+
+
+
+							Tim

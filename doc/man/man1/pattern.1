@@ -1,0 +1,388 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH pattern 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +13
+.ti -13
+\fBpattern\fR  --  exhaustively locate and count user-defined patterns in a Humdrum input
+.in -13
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +9
+.ti -9
+\fBpattern\fR  [\fB-ciy\fR]  \fB-f \fItemplatefile\fR  [\fB-s \fIregexp\fR]  [\fIinputfile\fR ...]
+.in -9
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "pattern"
+command is used to locate all occurrences of
+a user-defined pattern in some Humdrum input.
+The patterns sought may span innumerable data records.
+Occurrences of the pattern are identified in the output by line number.
+.sp 1
+.sp 1
+The pattern sought must be defined as a separate \(odtemplate\(cd file.
+The template file is identified using the
+.B "-f"
+command option.
+.sp 1
+.sp 1
+Pattern templates consist of one or more records.
+Each record specifies a standard \s-1UNIX\s+1 regular expression --
+followed by an optional \(odrecord-count metacharacter.\(cd
+The input is scanned from beginning to end, in order to
+find passages that match the defined template.
+In the simplest case, a match is deemed to take place when successive records
+in the input stream match the regular expressions given in each of
+the corresponding records of the template.
+However, the number of records in the matching input need not be the
+same as the number of records in the template.
+.sp 1
+.sp 1
+Consider, first, a simple example where the template consists of
+the numbers 1, 2, 3 -- each on a separate line:
+.sp 1
+.sp 1
+.na
+.in +2
+.nf
+1
+2
+3
+.fi
+.in -2
+.SA
+.sp 1
+.sp 1
+This template will match inputs such as the following:
+.sp 1
+.sp 1
+.in +2
+1
+.br
+112
+.br
+43.9
+.in -2
+.sp 1
+.sp 1
+or even
+.in +2
+0x.=%&1*
+.br
+Figure 32
+.br
+abc(...32...)
+.in -2
+A more circumspect regular expression template might look like this:
+.sp 1
+.sp 1
+.na
+.in +2
+.nf
+^1$
+^2$
+^3$
+.fi
+.in -2
+.SA
+.sp 1
+.sp 1
+(The caret (^) and dollar sign ($) are regular expression
+.I "anchors"
+that indicate the beginning of the record and end of the record
+respectively.)
+.sp 1
+.sp 1
+Standard regular expression syntax provides three \(odcounting\(cd
+metacharacters that can be used to specify the number of occurrences
+of a given pattern on a single line.
+The counting metacharacters are +  *  and  ?.
+If
+.I "p"
+is a regular expression pattern, then (\fIp\fR)+ will match
+one or more consecutive instances of
+.I "p."
+Similarly, (\fIp\fR)* will match zero or more consecutive instances of
+.I "p,"
+whereas (\fIp\fR)? will match zero or one instance of
+.I "p."
+The use of these metacharacters is illustrated below:
+.sp 1
+.TS
+l l.
+X+	matches X, XX, XXX, etc.
+X*	matches X, XX, XXX, etc. as well as the null string
+X?	matches X or the null string
+XX	matches XX
+(XX)+	matches XX, XXXX, XXXXXX, etc.
+.TE
+.sp 1
+.ce
+.I "Regular expression counting metacharacters"
+These metacharacters can be used in conjunction with other regular
+expression operators and anchors to specify complex patterns.
+See
+.B "regexp (6)"
+for further details.
+.sp 1
+.sp 1
+In the
+.B "pattern"
+command, the regular expression counting metacharacters may
+.I "also"
+be used to specify the
+.I "number of successive records"
+that match the regular expression.
+We refer to this use as \(odrecord-count metacharacters.\(cd
+Record-count metacharacters are specified by following the regular expression
+with a tab -- followed by either +, *, or ?.
+For example, consider the following
+.B "pattern"
+template:
+.in +2
+.sp 1
+.TS
+l l.
+X	+
+Y	*
+Z	?
+.TE
+.sp 1
+.in -2
+The intervening tab characters are important here.
+They indicate that the metacharacters refer to the number of records
+rather than to the number of patterns in a given record.
+The first template record (X\fI<tab>\fR+) will match one or more lines
+containing the letter X.
+The second template record (Y\fI<tab>\fR*) will match zero or more lines
+containing the letter Y.
+The third template record (Z\fI<tab>\fR?) will match zero or one line
+containing the letter Z.
+The above template would match an input such as the following:
+three successive lines containing the letter X,
+followed by eight successive lines containing the letter Y,
+followed by a single line containing the letter Z.
+Similarly, the above template would also match a one-line input
+containing the letter X.
+.sp 1
+.sp 1
+Note that the strings \fI<tab>\fR+ \fI<tab>\fR*,
+and \fI<tab>\fR?, are recognized by
+.B "pattern"
+as record-count metacharacters
+.I "only"
+if they appear at the end of a regular expression.
+.sp 1
+.sp 1
+The
+.B "pattern"
+command will identify
+.I "all"
+possible matching patterns beginning at each point in the input.
+Consider, by way of example, the following template file
+(named \f(CRtemplate\fR):
+.in +2
+.sp 1
+.TS
+l l.
+1	+
+2	+
+3	+
+4	+
+5	+
+.TE
+.sp 1
+.in -2
+The following Humdrum input file is named \f(CRexample1\fR:
+.in +2
+.sp 1
+.TS
+l l.
+**num	**num
+1	1
+2	2
+3	2
+4	3
+5	4
+5	5
+6	6
+*-	*-
+.TE
+.sp 1
+.in -2
+Given the command:
+.sp 1
+.sp 1
+.in +2
+pattern -f template example1
+.in -2
+.sp 1
+.sp 1
+the
+.B "pattern"
+command will produce the following output:
+.sp 1
+.sp 1
+.in +2
+4 patterns found from line 2 to line 7 of file example1
+.br
+1 pattern found from line 2 to line 6 of file example1
+.in -2
+.sp 1
+.sp 1
+The patterns are: 1-2-3-4-5, 1-2-2-3-4-5, 1-2-3-3-4-5, 1-2-3-4-4-5 and
+1-2-3-4-5-5.
+Note that the entire input line is used for matching purposes.
+It doesn't matter, for example, whether the number \(od2\(cd is matched
+in the left spine or the right spine -- only that the number \(od2\(cd
+is present on a given line.
+This feature is useful for identifying
+.I "Klangfarbenmelodie"
+and other \(odthreaded\(cd or \(oddiagonal\(cd patterns that can be
+traced between spines.
+If the user wishes to avoid such diagonal patterns, individual spines
+should be extracted separately before invoking the
+.B "pattern"
+command.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "pattern"
+command supports the following options:
+.sp 1
+.TS
+l l.
+\fB-c\fR	makes pattern-matching sensitive to comments
+\fB-h\fR	displays a help screen summarizing the command
+	  syntax
+\fB-i\fR	makes pattern-matching sensitive to interpretations
+\fB-s \fIregexp\fR	skip (ignore) data records containing the defined
+	  regular expression
+\fB-y\fR	outputs appropriate `yank' commands in place of
+	  regular output
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+By default, the
+.B "pattern"
+command is insensitive to the presence or absence of
+Humdrum comments and interpretations.
+Pattern searches may be made sensitive to occurrences of comments
+(defined in the template) by specifying the
+.B "-c"
+option.
+Similarly, pattern searches may be made sensitive to occurrences of
+interpretations by specifying the
+.B "-i"
+option.
+.sp 1
+.sp 1
+Certain types of data records may be ignored in the pattern-search
+by invoking the
+.B "-s"
+(skip) option.
+This option must be accompanied by a user-define regular expression.
+All input data records matching the regular expression are ignored.
+This option is useful, for example, in skipping null data tokens,
+barlines, marked embellishment tones, or other types of data.
+.sp 1
+.sp 1
+The
+.B "pattern"
+command does not directly implement an \(odecho\(cd option
+-- such as provided by the related
+.B "patt"
+command.
+With the
+.B "-y"
+option, however,
+.B "pattern"
+will produce an output suitable for use with the Humdrum
+.B "yank"
+command.
+This permits the user to extract the appropriate matching passages
+from the input.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+For additional examples pertinent to the
+.B "pattern"
+command, refer to the \s-1EXAMPLES\s+1 section in the documentation for the
+related
+.B "patt"
+command.
+.sp 1
+.sp 1
+Note that in the above example, the extensive capabilities
+for defining complex regular expressions have not been used.
+Refer to \fBregexp (6)\fR for further pertinent information.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBgrep\fR (\s-1UNIX\s+1), \fBegrep\fR (\s-1UNIX\s+1),
+\fBpatt\fR (1), \fBregexp\fR (1),
+\fBsimil\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+If a comment is present in the template pattern,
+failing to specify the
+.B "-c"
+option will make pattern matching a logically impossibility.
+.in -2
+.sp 1
+.sp 1
+.SH "NOTE"
+.in +2
+The
+.B "pattern"
+command differs from the related
+.B "patt"
+command in the following ways:
+(1)
+.B "patt"
+always produces output conforming to the Humdrum syntax whereas
+.B "pattern"
+never produces Humdrum output.
+(2)
+.B "patt"
+does not support multi-record `wild cards' in the template file,
+and so limits the sophistication of the regular expressions.
+(3) The
+.B "patt"
+command provides \(odecho\(cd and \(odtag\(cd options.
+.in -2

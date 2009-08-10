@@ -1,0 +1,24 @@
+
+TONH      : Converts various pitch representations to German Tonhoehe.
+
+     This command translates frequency, pitch, semits and other pitch-
+     related units to the **Tonh German system of pitch designations
+     (e.g. B = B-flat, S = E-flat, H = B natural, etc.).
+
+Inputs processed:
+
+     **cents,   **degree,  **freq,    **fret,    **kern,
+     **MIDI,    **pitch,   **semits,  **solfg,   **specC
+
+Syntax:
+
+     tonh [-tx] [inputfile ...]
+
+Options:
+
+     -t     : suppress outputting of all but first note for groups
+              of tied notes
+     -x     : suppress outputting of non-Tonh data
+
+  Refer to reference manual for further details.
+

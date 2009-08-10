@@ -1,0 +1,822 @@
+<HTML>
+<HEAD>
+<TITLE>The Humdrum Toolkit: Some Sample Commands and Scripts</TITLE>
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0F0F" alink="8D8D8D" vlink="FF8D00">
+<br>
+<br>
+<br>
+<center><HR WIDTH=500></center>
+<XXXimg src="muscog_icon.gif" ALIGN=RIGHT> <br>
+<center><H1>Some Sample Commands and Scripts  Using the Humdrum Toolkit</H1></center>
+<center><HR WIDTH=500></center>
+
+<br>
+<P>
+The following sample commands and scripts illustrate how Humdrum is
+commonly used to carry out various music-related tasks.
+</P>
+
+<ol>
+<li>
+Extract the figured bass for measures 12 to 18:
+
+<blockquote>
+<code>yank -n '^=' 12-18 <i>inputfile</i> | extract -i '**B-num'</code>
+</blockquote>
+<li>
+Select the Erk editorial changes for the work <i>inputfile</i>:
+
+<blockquote>
+<code>strophe -x Erk <i>inputfile</i></code>
+</blockquote>
+<li>
+Identify all scores whose instrumentation
+includes a flute but not a trumpet.
+
+<blockquote>
+<code>grep -sl '!!!AIN.*flt' * | grep -v 'tromp'</code>
+</blockquote>
+<li>
+If present, extract the shamisen and shakuhachi parts.
+
+<blockquote>
+<code>extract -i '*Ishami,*Ishaku' <i>inputfile</i></code>
+</blockquote>
+<li>
+On average, how far up the neck of the guitar does Jimi Hendrix tend to play?
+
+<blockquote>
+<code>extract -i '**fret' <i>inputfile</i> | humsed '/=/d; s/[^0-9]/ /g; 
+s/ */ /g; s/^ *//' | rid -GLId | stats </code>
+</blockquote>
+<li>
+Extract the first four measures from the trio section.
+
+<blockquote>
+<code>yank -s '*>Trio' <i>inputfile</i> | yank -o '^=' 1-4</code>
+</blockquote>
+<li>
+Calculate the average listener heart-rate for measures 18-24.
+
+<blockquote>
+<code>extract -i '**HR' <i>inputfile</i> | yank -o '^=' 18-24 | rid -GLId | stats</code>
+</blockquote>
+<li>
+Extract the first phrase from sections
+labelled "Exposition" and "Recapitulation."
+
+<blockquote>
+<code>yank -s '*>Exposition' <i>inputfile</i> | yank -o { -e } -r 1 > output</code>
+<br>
+<code>yank -s '*>Recapitulation' <i>inputfile</i> | yank -o { -e } -r 1 >> output</code>
+</blockquote>
+<li>
+Extract the lyrics for the third phrase of a song.
+
+<blockquote>
+<code>yank -o { -e } -r 3 <i>inputfile</i> | extract -i '**text'</code>
+</blockquote>
+<li>
+Extract verses 2 through 4.
+
+<blockquote>
+<code>thru <i>inputfile</i> | strophe -s 2-4</code>
+</blockquote>
+<li>
+Identify all the differences between the Erk and Reimenschneider
+editions of the same work.
+
+<blockquote>
+<code>strophe -x Erk <i>inputfile</i> > temp1</code>
+<br>
+<code>strophe -x Reimenschneider <i>inputfile</i> > temp2</code>
+<br>
+<code>diff temp1 temp2</code>
+</blockquote>
+<li>
+Identify all scores that were composed in Spain.
+
+<blockquote>
+<code>grep 'sli '!!!OCY.*Espana' *</code>
+</blockquote>
+<li>
+Identify all scores that are in minor keys.
+
+<blockquote>
+<code>egrep -sl '\*[a-g][#-]*:' *</code>
+</blockquote>
+<li>
+Are lower-neighbour tones more common in the alto voice or in the tenor voice?
+
+<blockquote>
+<code>extract -i '**embel' works* | extract -i '**alto' | rid -GLI 
+    | grep -c 'lnt'</code>
+<br>
+<code>extract -i '**embel' works* | extract -i '**tenor' | rid -GLI
+    | grep -c 'lnt'</code>
+</blockquote>
+<li>
+Identify all scores that have passages in triple meter.
+
+<blockquote>
+<code>egrep -sl '\*M[39]/' *</code>
+</blockquote>
+<li>
+Search all score files for works composed between 1805 and 1809:
+
+<blockquote>
+<code>find /scores -exec grep -l '!!!ODT.*180[5-9]' "{}" ";"</code>
+</blockquote>
+<li>
+Identifies all files in the path <code>/corelli</code> that
+contain a change of meter signature:
+
+<blockquote>
+<code>find /corelli -name '*' | xargs grep -c '^\*M[0-9]' 
+    | grep -v '[2-9]$'</code>
+</blockquote>
+<li>
+Assemble individual woodwind and brass parts into a full score.
+
+<blockquote>
+<code>timebase -t 32 woodwind > woodwind.tb</code>
+<br>
+<code>timebase -t 32 brass > brass.tb</code>
+<br>
+<code>assemble woodwind.tb brass.tb | rid -d > full.score</code>
+</blockquote>
+<li>
+Transpose the accompaniment part(s) up an augmented second.
+
+<blockquote>
+<code>extract -i '*IGacmp' <i>inputfile</i> | trans -d +1 -c +3</code>
+</blockquote>
+<li>
+Transpose from Ionian to Dorian mode and play as MIDI data.
+
+<blockquote>
+<code>trans -d +1 <i>inputfile</i> | midi | perform</code>
+</blockquote>
+<li>
+Play the first and last measures from a section marked "Development"
+at half the notated tempo.
+
+<blockquote>
+<code>yank -s '*>Development' <i>inputfile</i> | yank -o '^=' 1,$ | midi 
+    | perform -t 0.5</code>
+</blockquote>
+<li>
+Change all pizzicato marks to spiccato marks.
+
+<blockquote>
+<code>humsed 's/s/"/g' <i>inputfile</i></code>
+</blockquote>
+<li>
+In African melodies, do most minor second intervals descend or ascend?
+
+<blockquote>
+<code>mint *.krn | grep -c '+m2';    mint *.krn | grep -c '\-m2'</code>
+</blockquote>
+<li>
+In Ojibwa melodies, what interval most commonly follows an ascending
+major second?
+
+<blockquote>
+<code>extract -i '**kern' <i>inputfile</i> | mint | context -n 2 -o ^= \
+    | grep '^+M2' | sort | uniq -c </code>
+</blockquote>
+<li>
+Identify any melodic intervals that are enharmonic tritones -- but
+not spelled as augmented fourths or diminished fifths.
+
+<blockquote>
+<code>mint <i>inputfile</i> > temp1</code>
+<br>
+<code>xdelta -s = -b 'r' <i>inputfile</i> > temp2</code>
+<br>
+<code>assemble temp1 temp2 | grep '^[^!*].*6.*((d5)|A4))'</code>
+</blockquote>
+<li>
+Determine how many tritone intervals resolve "outward" (to 6th)
+rather than "inward" (to 3rd).
+<TABLE>
+<TR>
+<TD>Template file <code>inward</code>:</TD><TD>Template file <code>outward</code>:</TD>
+</TR>
+<TR>
+<TD><code>A4</code></TD><TD><code>d5</code></TD>
+</TR>
+<TR>
+<TD><code>= *</code></TD><TD><code>= *</code></TD>
+</TR>
+<TR>
+<TD><code>[Mm]6</code></TD><TD><code>[Mm]6</code></TD>
+</TR>
+</TABLE>
+
+<blockquote>
+Commands:
+<br>
+<blockquote>
+<code>hint -c <i>inputfile</i> | rid -d | patt -f inward  | wc</code>
+<br>
+<code>hint -c <i>inputfile</i> | rid -d | patt -f outward | wc</code>
+</blockquote>
+</blockquote>
+<li>
+Calculate melodic intervals in critical band rate for
+complex-tone fundamentals.
+
+<blockquote>
+<code>cbr <i>inputfile</i> | xdelta -s = -b 'r'</code>
+</blockquote>
+<li>
+Calculate harmonic intervals in cents.
+
+<blockquote>
+<code>cents <i>inputfile</i> | ydelta -s =</code>
+</blockquote>
+<li>
+Expand the repeats in a Da Capo movement and renumber the measures.
+
+<blockquote>
+<code>thru <i>inputfile</i> | humsed '/^=/s/=[0-9]*/=/g' | num -n '^=' -x == -p = </code>
+</blockquote>
+<li>
+Identify those works in a given repertoire that are written in unique keys.
+
+<blockquote>
+<code>grep -n '^\*[a-gA-G][#-]*:' * | sed 's/.*[0-9]://;s/	.*//' \
+<br>
+    | sort | uniq -u > keyfile</code>
+<br>
+<code>grep -l -f keyfile *</code>
+</blockquote>
+<li>
+Characterize the key according to the Krumhansl and Kessler key profiles.
+
+<blockquote>
+<code>key <i>inputfile</i></code>
+</blockquote>
+<li>
+Estimate the sensory dissonance according to the Kameoka and Kuriyagawa
+perceptual model.
+
+<blockquote>
+<code>extract -i '**freq' <i>inputfile</i> | diss</code>
+</blockquote>
+<li>
+In the music of Stravinsky, are strong metric positions more
+or less dissonant than weak metric positions?
+
+<blockquote>
+<code>timebase -t 8 <i>input</i> | metpos | ditto | freq | harmonics > temp1</code>
+<br>
+<code>yank -m '1$' -r 0 temp1 | extract -i '**spect' | diss | stats</code>
+<br>
+<code>yank -m '4$' -r 0 temp1 | extract -i '**spect' | diss | stats</code>
+</blockquote>
+<li>
+Characterize the melodic accents according to Thomassen's perceptual model.
+
+<blockquote>
+<code>melac <i>inputfile</i></code>
+</blockquote>
+<li>
+Characterize the rhythmic prototypes according to Johnson-Laird's
+perceptual model.
+
+<blockquote>
+<code>timebase -t 64 <i>inputfile</i> | metpos | rid -d | urrhym</code>
+</blockquote>
+<li>
+Capture MIDI input data and represent as lute tablatures.
+
+<blockquote>
+<code>encode -r lute.rc</code>
+</blockquote>
+<li>
+Determine the highest and lowest 32nd notes in the horn part.
+
+<blockquote>
+<code>extract -i '*Icor' <i>inputfile</i> | egrep '^[!*]|32' | census -k 
+    | egrep 'Highest|Lowest'</code>
+</blockquote>
+<li>
+Identify the longest and shortest notes in the fourth phrase.
+
+<blockquote>
+<code>yank -b { -e } -r 4 <i>inputfile</i> | census -k | egrep 'Longest|Shortest'</code>
+</blockquote>
+<li>
+Identify augmented sixth chords.
+
+<blockquote>
+<code>solfa -x <i>input</i> | extract -i '**solfa' | ditto -s = 
+    | grep '.*6-.*4+'</code>
+</blockquote>
+<li>
+Distinguish augmented sixth chords as either German, French, or Italian sixths.
+
+<blockquote>
+<code>solfa -x <i>input</i> | ditto -s = | grep '.*6-.*4+' | grep '3-'    [Gr.]</code>
+<br>
+<code>solfa -x <i>input</i> | ditto -s = | grep '.*6-.*4+' | grep '2'     [Fr.]</code>
+<br>
+<code>solfa -x <i>input</i> | ditto -s = | grep '.*6-.*4+' | grep '[^23]' [It.]</code>
+</blockquote>
+<li>
+Identify Neapolitan sixth chords, but also include enharmonic
+spellings based on a raised tonic degree:
+
+<blockquote>
+<code>solfa -ax <i>input</i> | ditto -s = | grep '4.*1+' | grep '5+'</code>
+</blockquote>
+<li>
+Identify Neapolitan chords that are missing the fifth of the chord.
+
+<blockquote>
+<code>solfa -ax <i>input</i> | ditto -s = | grep '1+' | grep '4' | grep -v '5+'</code>
+</blockquote>
+<li>
+Identify properly spelled Neapolitan sixth chords where the subdominant
+pitch precedes the sounding of the other pitches:
+
+<blockquote>
+<code>solfa -x <i>input</i> | ditto -p -s = | grep '(4)' | grep '[^(]2-' 
+    | grep '[^(]6-'</code>
+</blockquote>
+<li>
+Count the number of phrases that begin on the subdominant.
+Count the number of phrases that end on the subdominant.
+
+<blockquote>
+<code>humsed 's/[0-9.]//g' input.krn | deg | egrep -c '({.*4)|4.*{)'</code>
+<br>
+<code>humsed 's/[0-9.]//g' input.krn | deg | egrep -c '(}.*4)|4.*})'</code>
+</blockquote>
+<li>
+Identify the number of pitches in a passage that belong to
+a specified whole-tone set.
+
+<blockquote>
+Template file <code>whole</code>:
+<blockquote>
+<code>[Cc]([^-#]|$)</code>
+<br>
+<code>[Dd]([^-#]|$)</code>
+<br>
+<code>[Ee]([^-#]|$)</code>
+<br>
+<code>[Ff]#([^#]|$)</code>
+<br>
+<code>[Gg]-([^-]|$)</code>
+<br>
+<code>[Gg]#([^#]|$)</code>
+<br>
+<code>[Aa]-([^-]|$)</code>
+<br>
+<code>[Aa]#([^#]|$)</code>
+<br>
+<code>[Bb]-([^-]|$)</code>
+</blockquote>
+</blockquote>
+
+<blockquote>
+Command:
+<br>
+<blockquote>
+<code>extract -i '**kern' melody | egrep -f whole</code>
+</blockquote>
+</blockquote>
+<li>
+Locate any parallel fifths.
+
+<blockquote>
+Template file <code>paral.5th</code>:
+<blockquote>
+<code>P5</code>
+<code>=	*</code>
+<code>P5</code>
+</blockquote>
+</blockquote>
+
+<blockquote>
+Command:
+<blockquote>
+<code>extract -i '*bass,*alto' file | hint -c | pattern -s '=' paral.5th</code>
+</blockquote>
+</blockquote>
+<li>
+Extract any embellishment information from the file "chorale"
+and count the number of suspensions.
+
+<blockquote>
+<code>extract -i '**embel' chorale | rid -GLI | grep -c 'sus'</code>
+</blockquote>
+<li>
+Play the 10th and 12th measures.
+
+<blockquote>
+<code>yank -o '^=' 10,12 pergolesi | midi | perform</code>
+</blockquote>
+<li>
+Play passages matching a specific pattern.
+
+<blockquote>
+<code>patt -e -f template corelli | midi | perform</code>
+</blockquote>
+<li>
+Compare the durational-rhythmic similarity between bass and soprano parts.
+
+<blockquote>
+<code>extract -i '*bass' <i>input</i> | humsed 's/[^0-9.]//g' | rid -d > bass</code>
+<br>
+<code>extract -i '*soprano' <i>input</i> | humsed 's/[^0-9.]//g' | rid -d > sop</code>
+<br>
+<code>simil bass sop</code>
+</blockquote>
+<li>
+Classify chords as "open" or "close" depending on whether the
+the interval separating the soprano and tenor voices is greater than
+an octave.
+Test the claim that close position chords are more common than
+open position.
+
+<blockquote>
+Recode file <code>reassign</code>:
+
+<blockquote>
+<code><=12	close</code>
+<br>
+<code>>12	open</code>
+</blockquote>
+
+Commands:
+<blockquote>
+<code>extract -i '*tenor,*soprano' <i>inputfile</i> | semits -x | ditto > temp1</code>
+<br>
+<code>ydelta -s = -i '**semits' temp1 | sed 's/\[.*\]//' > temp2</code>
+<br>
+<code>recode -f reassign -i '**Ysemits' -s = temp2 > temp3</code>
+<br>
+<code>grep -c 'open' temp3</code>
+<br>
+<code>grep -c 'close' temp3</code>
+</blockquote>
+</blockquote>
+<li>
+Count the total number of measures in a passage that contain
+at least one ornament.
+
+<blockquote>
+<code>context -b = <i>inputfile</i> | rid -GLI | grep -c '[OTtWwMm]'</code>
+</blockquote>
+<li>
+How many notes occur in each phrase?
+
+<blockquote>
+<code>context -b { -e } -o '[r=]' <i>inputfile</i> | rid -GLI | awk '{print NF}'</code>
+</blockquote>
+<li>
+Are there any beams that cross over phrase boundaries?
+
+<blockquote>
+<code>context -b L -e J <i>inputfile</i> | grep -n '}.*{'</code>
+</blockquote>
+<li>
+In texts for vocal works, identify the number of notes per syllable.
+
+<blockquote>
+<code>extract -i '**kern' <i>inputfile</i> | humsed 's/X//g' > melody</code>
+<br>
+<code>extract -i '**text' <i>inputfile</i> | humsed 's/[a-zA-Z]*/X/' > lyrics</code>
+<br>
+<code>assemble melody lyrics | cleave -i '**kern,**text' -o '**new' 
+    > combined</code>
+<br>
+<code>context -b X -o '[r=]' combined | rid -GLId | awk '{print NF}'</code>
+</blockquote>
+<li>
+Given a <code>**harm</code> input,
+identify by measure number those measures that contain a <i>iii-V</i>
+progression.
+
+<blockquote>
+<code>extract -i '**harm' <i>inputfile</i> | context -b = | grep 'iii V' \
+<br>
+    | sed 's/ .*//; s/=//'</code>
+
+</blockquote>
+<li>
+In the <i>IV-V</i> progression, what chord function tends to precede the <i>IV</i>?
+
+<blockquote>
+<code>extract -i '**harm' inputfile | context -n 3 -o '[=r]' \
+<br>
+    | grep 'IV V$' | sort | uniq -c | sort -n</code>
+
+</blockquote>
+<li>
+Given a monophonic scale-degree (<code>**deg</code>) input, identify those
+phrases that have leading-tones that are not followed by the tonic pitch.
+
+<blockquote>
+<code>context -b { <i>inputfile</i> | grep '7 [^1]'</code>
+</blockquote>
+<li>
+Locate all sonorities in the music of Scarlatti where
+the seventh scale degree has been doubled.
+
+<blockquote>
+<code>deg -xt scarlatti* | grep -n '7[^-+].*7'</code>
+</blockquote>
+<li>
+Locate any exposed or hidden octaves.
+
+<blockquote>
+<code>hint -c <i>inputfile</i> > spine1</code>
+<br>
+<code>extract -f 1 <i>inputfile</i> | deg =x > spine2</code>
+<br>
+<code>extract -f 2 <i>inputfile</i> | deg =x > spine3</code>
+<br>
+<code>extract -f 1 <i>inputfile</i> | mint | humsed 's/.*[3-9].*/leap/' > spine4</code>
+<br>
+<code>extract -f 2 <i>inputfile</i> | mint | humsed 's/.*[3-9].*/leap/' > spine5</code>
+<br>
+<code>assemble spine* | egrep -n 'P1.*\^.*\^.*leap.*leap|P1.*v.*v.*leap.*leap'</code>
+</blockquote>
+<li>
+Are melodies by Gershwin more syncopated than those by Foster?
+
+<blockquote>
+<code>timebase -t 32 gersh* | metpos | synco -e | extract -f 3 \
+<br>
+    | rid -GLI | stats | grep 'mean'</code>
+<br>
+<code>timebase -t 32 fostr* | metpos | synco -e | extract -f 3 \
+<br>
+    | rid -GLI | stats | grep 'mean'</code>
+</blockquote>
+<li>
+Does Liszt use a greater variety of harmonies/sonorities than Chopin?
+
+<blockquote>
+<code>extract -i '**harm' liszt* | rid -GLId | sort | uniq | wc -l</code>
+<br>
+<code>extract -i '**harm' chopin* | rid -GLId | sort | uniq | wc -l</code>
+</blockquote>
+<li>
+What is the most frequently used dynamic marking in Beethoven,
+and how does Beethoven's practice compare with that of Brahms?
+
+<blockquote>
+<code>extract -i '**dynam' beeth* | rid -GLId | sort | uniq 
+    | sort -r | head -l</code>
+<br>
+<code>extract -i '**dynam' brahm* | rid -GLId | sort | uniq \
+    | sort -r | head -l</code>
+</blockquote>
+<li>
+Dynamic "swells" (crescendo-diminuendos) are more common than
+dynamic "dips" (diminuendos-crescendos).
+Is this discrepancy greater in Grieg compared to Nielsen?
+
+<blockquote>
+</blockquote>
+<li>
+Find any occurrences of the B-A-C-H pitch-pattern in a work.
+
+<blockquote>
+Pattern file <code>template</code>:
+<blockquote>
+<code>[Bb]+[-][^-]	+</code>
+<br>
+<code>[Aa]+[^#-]	+</code>
+<br>
+<code>[Cc]+[^#-]	+</code>
+<br>
+<code>[Bb]+[^#-]	+</code>
+</blockquote>
+</blockquote>
+
+<blockquote>
+Command:
+<blockquote>
+<code>ditto <i>inputfile</i> | pattern -s = -f template</code>
+</blockquote>
+</blockquote>
+<li>
+Measure the correlation between pitch height and dynamic level
+in Wagner's vocal parts.
+
+<blockquote>
+<code>extract -i '**Ivox' <i>inputfile</i> | semits > temp1</code>
+<br>
+<code>extract -i '**dynam' <i>inputfile</i> | db > temp2</code>
+<br>
+<code>assemble temp1 temp2 <i>inputfile</i> | correl -s ^= -m</code>
+</blockquote>
+<li>
+In the concluding moments prior to a final cadence,
+is Bach more likely to introduce chromatic tones from the dominant
+or from the subdominant side of the circle of fifths?
+
+<blockquote>
+</blockquote>
+<li>
+Did Bartok's preferred articulation marks change over his lifetime?
+
+<blockquote>
+<code>extract -i '**kern' early | humsed 's/[^"`~^:I]//g' \
+<br>
+    | rid -GLId | sort | uniq -c</code>
+<br>
+<code>extract -i '**kern' late  | humsed 's/[^"`~^:I]//g' \
+<br>
+    | rid -GLId | sort | uniq -c</code>
+</blockquote>
+<li>
+Is there a tendency to use the subdominant pitch less often in pop
+melodies than in (say) French chanson?
+
+<blockquote>
+<code>deg -xt pop*     | grep -c '4'</code>
+<br>
+<code>deg -xt chanson* | grep -c '4'</code>
+</blockquote>
+<li>
+How frequent are light-related words such as "lumen" or "lumine"
+in the different monastic offices for Thomas of Canterbury?
+
+<blockquote>
+<code>extract -i '*Latin' office* | egrep -ic 'lum.+n[e]*$'</code>
+</blockquote>
+<li>
+Is it true that 90 percent of the notes in a given work by Bach use just
+two durations (such as eighths and sixteenths, or eighths and quarters)?
+
+<blockquote>
+<code>humsed 's/[^0-9.]//g' bach | rid -GLId | sort | uniq -c</code>
+</blockquote>
+<li>
+Isolate any sonorities in Machaut where parts cross.
+
+<blockquote>
+<code>semits -x Machaut | ditto -s = | rid -GLId | awk '$1>$2'</code>
+</blockquote>
+<li>
+Identify intervals greater than an octave between the
+alto and tenor voices.
+
+<blockquote>
+<code>extract -i '*Itenor,*Icalto' <i>inputfile</i> | semits -x | ydelta -s [r=] | humsed 's/\[.*\] //'</code>
+</blockquote>
+<li>
+What are the most frequent combinations of
+instruments used in a work by Musogsky?
+
+<blockquote>
+</blockquote>
+<li>
+In a given orchestral work, for each instrument, identify what other
+instrument is least likely to be active at the same time.
+
+<blockquote>
+</blockquote>
+<li>
+In a given orchestral work, which pairs of instruments show the greatest
+tendency to double each other?
+
+<blockquote>
+</blockquote>
+<li>
+Identify any rhyme schemes for phrase endings in a vocal text.
+
+<blockquote>
+</blockquote>
+<li>
+Determine the set-forms present in Debussy's Syrinx when the
+melodic line is segmented according to either groups of slurred-notes,
+or notes separated by rests, or groups of notes bounded by notes longer
+than a half-note.
+
+<blockquote>
+</blockquote>
+<li>
+In Webern's Concerto Opus 24, is there any tendency to follow
+one set-type by another (e.g. primes tend to be followed by retrograde
+more than by inversions).
+
+<blockquote>
+</blockquote>
+<li>
+Extract all vocal parts from an orchestral score.
+
+<blockquote>
+<code>extract -i '*ICvox' <i>inputfile</i></code>
+</blockquote>
+<li>
+Identify all tritones including compound (octave) equivalents:
+
+<blockquote>
+<code>mint -c <i>inputfile</i> | grep '^[^!*].*((d5)|(A4))'</code>
+</blockquote>
+<li>
+Determine whether there are any transposing instruments in a score.
+
+<blockquote>
+<code>grep '\*ITr' <i>inputfile</i></code>
+</blockquote>
+<li>
+Add a tenuto-mark to each quarter-note in measures 24-32.
+
+<blockquote>
+<code>humsed 's/4[^0-9]*/&~/g' <i>inputfile</i></code>
+</blockquote>
+<li>
+Annotate a file with comments identifying the presence of cadential 6-4 chords.
+
+<blockquote>
+Comment file comment.6-4:
+<blockquote>
+<code>!! A likely cadential 6-4 progression.</code>
+</blockquote>
+</blockquote>
+
+<blockquote>
+File <code>template</code>:
+<blockquote>
+<code> .*</code>
+<br>
+<code> Ic</code>
+<br>
+<code> ^\.	*</code>
+<br>
+<code> =	*</code>
+<br>
+<code> V[^I]</code>
+</blockquote>
+</blockquote>
+
+<blockquote>
+Command:
+<blockquote>
+<code>pattern -f template <i>inputfile</i> > output</code>
+<br>
+<code>humsed 'cadential-64/r comment.6-4' output > commented.output</code>
+</blockquote>
+</blockquote>
+<li>
+Transpose down a diminished second (e.g. C to B#).
+
+<blockquote>
+<code>trans -d -1 -c +0 <i>inputfile</i></code>
+</blockquote>
+<li>
+Copy all seventh chords to a separate file called "sevenths."
+
+<blockquote>
+<code>humsed '/7/w sevenths' <i>inputfile</i>.hrm</code>
+</blockquote>
+<li>
+Add an explicit breath-mark to the end of each phrase.
+
+<blockquote>
+<code>humsed 's/}/},/g' <i>inputfile</i></code>
+</blockquote>
+<li>
+Transform a score so that the rhythm is in diminution.
+
+<blockquote>
+<code>humsed 's/[0-9][0-9]/*/&tag/g' <i>inputfile</i> | \ </code>
+</blockquote>
+<li>
+Capture live MIDI input data and represents this data as a
+simple Humdrum **MIDI representation.
+
+<blockquote>
+<code>record > <i>inputfile</i></code>
+</blockquote>
+<li>
+Identify any scores that end with a "Tierce de Picardie."
+
+<blockquote>
+</blockquote>
+<li>
+Identify any so-called "feminine" cadences.
+</ol>
+<hr>
+</FONT>
+<br>
+<br>
+<A HREF="index.html"><B>Humdrum Toolkit Home Page</B></A>
+<br>
+<br>
+
+</BODY>
+</HTML>
+
+

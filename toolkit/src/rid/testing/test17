@@ -1,0 +1,11 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! A test of -T option
+**kern	**kern	**kern
+c	c	c
+*tand1	*tand2	*
+*x	*x	*^
+*	*tand1	*	*tand4
+*	*tand2	*tand2	*
+*-	*-	*x	*x
+*tand0	*tand1
+*-	*-

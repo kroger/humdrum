@@ -1,0 +1,163 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Correlations</TITLE>
+<!-- Documentation for the **correl Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **correl Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,correlation,software,theory,analysis,systematic musicology,computer representation,**correl">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Statistical Correlations</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**correl</b>  --  statistical correlation representation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**correl</b>
+representation is used to characterize the degree of statistical
+correlation for successive moments.
+Data tokens for
+<b>**correl</b>
+decimal values ranging between -1
+(perfect negative correlation) and 1 (perfect positive correlation).
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**correl</big></code>
+data should be given names with the distinguishing `.cor' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**correl</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>correlation values specified as integer or real value</TD></TR>
+<TR><TD>.</TD><TD>decimal point; null token</TD></TR>
+<TR><TD>+</TD><TD>plus sign (optional)</TD></TR>
+<TR><TD>-</TD><TD>minus sign</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**correl</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**correl</TD></TR>
+<TR><TD>*C:</TD></TR>
+<TR><TD>*M4/4</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>0.0</TD></TR>
+<TR><TD>+0.3037</TD></TR>
+<TR><TD>+.52</TD></TR>
+<TR><TD>0.6</TD></TR>
+<TR><TD>0.211</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>-.241</TD></TR>
+<TR><TD>-0.17</TD></TR>
+<TR><TD>-1</TD></TR>
+<TR><TD>0.221</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</blockquote>
+</code></big>
+Notice that melodic accent values can be either real or integer values.
+Rests are represented by the single letter `r'.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum command produces <b>**correl</b> data as output:
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/correl.html"><b>correl</b></A></TD><TD>calculate numerical correlation between two spines</TD></TR>
+</TABLE>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**correl:</b>
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**correl</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="../commands/correl.html"><b>correl</b></A>,
+<A HREF="simil.rep.html"><b>**simil</b></A>,
+<A HREF="../commands/simil.html"><b>simil</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide25.html#The_correl_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

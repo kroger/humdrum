@@ -1,0 +1,4386 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference</TITLE>
+<!-- Documentation for the **melac Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **melac Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,melodic accent,software,theory,analysis,systematic musicology,computer representation,**melac">
+<meta name="robots" content="all">
+
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Melodic Accent</H1>
+</CENTER>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**melac</b>  --  melodic accent representation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**melac</b>
+representation is used to characterize the degree of pitch-related stress
+(melodic accent) for successive moments.
+Three types of tokens are recognized by
+<b>**melac</b>:
+stress-tokens, rests, and barlines.
+Stress-tokens encode decimal values ranging between 0 (no stress)
+and 1 (maximum stress).
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**melac</big></code>
+data should be given names with the distinguishing `.mac' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**melac</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>melodic accent values specified as integer</TD></TR>
+<TR><TD></TD><TD>     or real value; measure numbers</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>=;</TD><TD>barline with pause sign</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**melac</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+The following sample document shows a single spine of
+<b>**melac</b>
+data for the bass line of J. S. Bach's two-part keyboard Invention No. 1.
+The corresponding
+<b>**kern</b>
+and
+<b>**semits</b>
+representations are also shown:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! J.S. Bach, Two-part Invention 1 (BWV 772)</TD></TR>
+<TR><TD>**kern</TD><TD>**semits</TD><TD>**melac</TD></TR>
+<TR><TD>*C:</TD><TD>*C:</TD><TD>*C:</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>2r</TD><TD>r</TD><TD>r</TD></TR>
+<TR><TD>16r</TD><TD>r</TD><TD>r</TD></TR>
+<TR><TD>16C</TD><TD>-12</TD><TD>1</TD></TR>
+<TR><TD>16D</TD><TD>-10</TD><TD>0.33</TD></TR>
+<TR><TD>16E</TD><TD>-8</TD><TD>0.221</TD></TR>
+<TR><TD>16F</TD><TD>-7</TD><TD>0.556</TD></TR>
+<TR><TD>16D</TD><TD>-10</TD><TD>0.121</TD></TR>
+<TR><TD>16E</TD><TD>-8</TD><TD>0.241</TD></TR>
+<TR><TD>16C</TD><TD>-12</TD><TD>0.121</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>8G</TD><TD>-5</TD><TD>0.241</TD></TR>
+<TR><TD>8GG</TD><TD>-17</TD><TD>0.17</TD></TR>
+<TR><TD>4r</TD><TD>r</TD><TD>r</TD></TR>
+<TR><TD>16r</TD><TD>r</TD><TD>r</TD></TR>
+<TR><TD>16G</TD><TD>-5</TD><TD>1</TD></TR>
+<TR><TD>16A</TD><TD>-3</TD><TD>0.33</TD></TR>
+<TR><TD>16B</TD><TD>-1</TD><TD>0.221</TD></TR>
+<TR><TD>16c</TD><TD>0</TD><TD>0.556</TD></TR>
+<TR><TD>16A</TD><TD>-3</TD><TD>0.121</TD></TR>
+<TR><TD>16B</TD><TD>-1</TD><TD>0.241</TD></TR>
+<TR><TD>16G</TD><TD>-5</TD><TD>0.121</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</blockquote>
+</code></big>
+Notice that melodic accent values can be either real or integer values.
+Rests are represented by the single letter `r'.
+</blockquote>
+</P>
+<P>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum command produces <b>**melac</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>melac</b></TD><TD>calculate melodic accent values for successive pitches</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**melac</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**melac</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2), <b>melac</b> (4),
+<b>**semits</b> (2), <b>semits</b> (4)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**metpos</b>  --  position in metric hierarchy
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**metpos</b>
+representation consists of simply a set of numerical
+values indicating the order of events.
+Normally, a
+<b>**metpos</b>
+spine simply encodes a set of ascending integers
+marking the succession of events:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**metpos</TD></TR>
+<TR><TD>1</TD></TR>
+<TR><TD>2</TD></TR>
+<TR><TD>3</TD></TR>
+<TR><TD>4</TD></TR>
+<TR><TD>5</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+The
+<b>**metpos</b>
+representation also recognizes <b>**kern</b>-like barlines.
+The presence of an equals-sign
+<code><big>
+(=)
+</code></big>
+in the first column of a
+<b>**metpos</b>
+spine is used to denote a barline.
+Immediately after the equals sign there may follow an optional integer value
+indicating the measure number (e.g.
+<code><big>
+=107
+</code></big>
+--  for measure 107).
+In addition, a lower-case alphabetic character may be appended to the measure
+number -- as in:
+<code><big>
+=14b.
+</code></big>
+This convention permits the user to distinguish measure numbers for
+first and second endings.
+Measure numbers refer to the information immediately
+following the barline, thus the token
+<code><big>
+=23
+</code></big>
+occurs just prior to the encoded beats for measure 23.
+</P>
+<P>
+Double barlines are indicated by using two or more successive equals signs
+<code><big>
+(==).
+</code></big>
+Several consecutive equals signs may be encoded
+in order to enhance readability (e.g.
+<code><big>
+=======).
+</code></big>
+An additional attribute for barlines is the
+<i>pause</i>
+--  which is represented by the-- icolon (;).
+Thus the token
+<code><big>
+=4;
+</code></big>
+means that the barline starting measure number 4 has a
+pause written above or below it, while the token
+<code><big>
+=====;
+</code></big>
+means that a double barline contains a pause indication.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**metpos</big></code>
+data should be given names with the distinguishing `.mtp' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**metpos</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>.</TD><TD>fractional delimiter; null token</TD></TR>
+<TR><TD>=</TD><TD>barlines</TD></TR>
+<TR><TD>==</TD><TD>double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**metpos</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**kern</TD><TD>**metpos</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>*tb16</TD><TD>*tb16</TD></TR>
+<TR><TD>*c:</TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>8r</TD><TD>1</TD></TR>
+<TR><TD>.</TD><TD>5</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD></TR>
+<TR><TD>16bn</TD><TD>5</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD></TR>
+<TR><TD>.</TD><TD>5</TD></TR>
+<TR><TD>8g</TD><TD>4</TD></TR>
+<TR><TD>.</TD><TD>5</TD></TR>
+<TR><TD>8a-</TD><TD>2</TD></TR>
+<TR><TD>.</TD><TD>5</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD></TR>
+<TR><TD>16b</TD><TD>5</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD></TR>
+<TR><TD>.</TD><TD>5</TD></TR>
+<TR><TD>8dd</TD><TD>4</TD></TR>
+<TR><TD>.</TD><TD>5</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum commands accept <b>**metpos</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>synco</b></TD><TD>measure degree of metric syncopation</TD></TR>
+<TR><TD></TD><TD><b>urrhythm</b></TD><TD>characterize the rhythmic prototypes in a passage</TD></TR>
+<TR><TD></TD></TR>
+</blockquote>
+The following Humdrum command produces <b>**metpos</b> data as output:
+<blockquote>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>metpos</b></TD><TD>generate metric position values for timebase-formatted</TD></TR>
+<TR><TD></TD><TD></TD><TD><b>**kern</b> or <b>**recip</b> inputs</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**metpos</b>:
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+<TR><TD>timebase</TD><TD><code><big>*tb32</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**metpos</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**date</b> (2), <b>**dur</b> (2), <b>**kern</b> (2), <b>kern</b> (4),
+<b>metpos</b> (4), <b>**ordo</b> (2),
+<b>**recip</b> (2),
+<b>**takt</b> (2), <b>**time</b> (2), <b>timebase</b> (4), <b>**Zeit</b> (2)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**MIDI</b>  --  Musical Instrument Digital Interface notation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**MIDI</b>
+representation is a Humdrum version of the well-known MIDI
+standard.
+MIDI is an industry standard used to exchange information
+between sound synthesizers.
+MIDI is also used in various software applications such as
+some music printing software.
+MIDI is a type of "tablature" notation.
+It describes a set of performance actions rather than
+specifying the sounded result.
+MIDI represents note-on, note-off, information, for various "channels."
+MIDI events include note-on, note-off, key-velocity, after-touch,
+control codes, and system-exclusive codes.
+MIDI does not represent many other musically-pertinent signifiers,
+such as ties, slurs, phrasings, ornaments, etc.
+MIDI does not represent rests.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**MIDI</big></code>
+data should be given names with the distinguishing `.hmd' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**MIDI</b>
+mappings of signifiers and signifieds.
+</P>
+<P>
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>/</TD><TD>value delimiter</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>-</TD><TD>note off</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**MIDI</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! C-major scale.</TD></TR>
+<TR><TD>**MIDI</TD></TR>
+<TR><TD>*Ch8</TD></TR>
+<TR><TD>72/60/64</TD></TR>
+<TR><TD>72/-60/64 72/62/64</TD></TR>
+<TR><TD>36/-62/64 36/64/64</TD></TR>
+<TR><TD>36/-64/64 36/65/64</TD></TR>
+<TR><TD>36/-65/64 36/67/64</TD></TR>
+<TR><TD>36/-67/64 36/69/64</TD></TR>
+<TR><TD>36/-69/64 36/71/64</TD></TR>
+<TR><TD>36/-71/64 36/72/64</TD></TR>
+<TR><TD>72/-72/64</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+Each
+<b>**MIDI</b>
+data token consist of three elements or components.
+Each element is an integer value;
+elements within a data token are delimited by the slash character (/).
+</P>
+<P>
+The first element in a data token represents the number of clock ticks
+(since the previous event) before the event is to occur.
+The absolute duration of a single clock tick is determined by the
+MIDI clock speed, which is variable.
+</P>
+<P>
+The second --ent in a data token represents the MIDI key number --
+that is, the address of the key event.
+Key events can be either
+<i>key-on</i>
+or
+<i>key-off.</i>
+Key-on events are represented by positive integers, whereas
+key-off events are represented by negative integers.
+For example, -60 means to turn-off key 60.
+</P>
+<P>
+The third element in a data token represents the MIDI key-velocity value.
+MIDI instruments normally interpret key-velocity as dynamic or accent
+information.
+Higher key-velocity values are associated with accented notes.
+Permissible key-velocity values range between 0 and 127.
+encodings.
+In the case of key-off events, the key-velocity component
+represents the after-touch.
+</P>
+<P>
+Note that the key-velocity component of a data token is optional
+and need not appear.
+However, both the clock-tick value and the key-event values must
+be present in each
+<b>**MIDI</b>
+data token.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum commands accept <b>**MIDI</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>cents</b></TD><TD>translates <b>**MIDI</b> to <b>**cents</b></TD></TR>
+<TR><TD></TD><TD><b>fade</b></TD><TD>fade-in or fade-out <b>**MIDI</b> data</TD></TR>
+<TR><TD></TD><TD><b>freq</b></TD><TD>translates <b>**MIDI</b> to <b>**freq</b></TD></TR>
+<TR><TD></TD><TD><b>kern</b></TD><TD>translates <b>**MIDI</b> to <b>**kern</b></TD></TR>
+<TR><TD></TD><TD><b>perform</b></TD><TD>play Humdrum <b>**MIDI</b> files</TD></TR>
+<TR><TD></TD><TD><b>pitch</b></TD><TD>translates <b>**MIDI</b> to <b>**pitch</b></TD></TR>
+<TR><TD></TD><TD><b>semits</b></TD><TD>translates <b>**MIDI</b> to <b>**semits</b></TD></TR>
+<TR><TD></TD><TD><b>smf</b></TD><TD>generate standard MIDI file</TD></TR>
+<TR><TD></TD><TD><b>solfg</b></TD><TD>translates <b>**MIDI</b> to <b>**solfg</b></TD></TR>
+<TR><TD></TD><TD><b>tonh</b></TD><TD>translates <b>**MIDI</b> to <b>**Tonh</b></TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+</blockquote>
+The following Humdrum commands produce <b>**MIDI</b> data as outputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>midi</b></TD><TD>produces <b>**MIDI</b> output from <b>**kern</b> input</TD></TR>
+<TR><TD></TD><TD><b>record</b></TD><TD>records <b>**MIDI</b> data from a MIDI input</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**MIDI</b>:
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**MIDI</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**cents</b> (2),
+<b>**freq</b> (2), <b>**kern</b> (2),
+<b>**pitch</b> (2),
+<b>**semits</b> (2), <b>**specC</b> (2),
+<b>**Tonh</b> (2)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**mint</b>  --  melodic interval representation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**mint</b>
+representation provides a means for characterizing sequential
+(melodic) pitch distances.
+The
+<b>**mint</b>
+representation permits the encoding of four types of data tokens:
+interval tokens, pitch offsets, rests, and barlines.
+</P>
+<P>
+Interval tokens consist of up to three component parts:
+(1) interval direction, (2) diatonic interval size, and (3) interval quality.
+The interval direction is signified by a leading plus sign (+)
+for ascending motion, or a leading minus sign (-) for descending motion.
+No special signifier is provided to denote unison motion.
+Note that interval direction information is optional, and so is
+not a mandatory aspect of the
+<b>**mint</b>
+representation.
+</P>
+<P>
+The diatonic interval size is signified by integer values --
+1 for unison, 2 for second, 3 for third, 11 for eleventh, and so on.
+</P>
+<P>
+Interval qualities are signified as follows:
+the upper-case letter `M' for major intervals,
+lower-case `m' for minor intervals,
+upper-case `P' for perfect,
+lower-case 'd' for diminished,
+upper-case `A' for augmented.
+Doubly-diminished and doubly-augmented intervals are represented
+by `dd' and `AA' respectively.
+Triply- and quadruply- diminished or augmented intervals are
+similarly represented by character repetition, e.g. `AAA'.
+Note that interval quality information is optional, and so is not
+a mandatory aspect of the
+<b>**mint</b>
+representation.
+</P>
+<P>
+The normal or canonical order for data elements in a
+<b>**mint</b>
+interval token is as follows:
+(1) direction of interval motion, (2) diatonic interval size,
+(3) interval quality.
+Note that more than one interval token may appear within Humdrum
+multiple-stops.
+</P>
+<P>
+Pitch offsets indicate initial or starting absolute pitches from
+which successive pitch intervals arise.
+Pitch offsets are optional and need not appear in a
+<b>**mint</b>
+representation.
+Pitch offsets are distinguished by square brackets.
+Within the square brackets appears a pitch designation using
+any one of the following pitch-related representations:
+<b>**kern</b>, <b>**pitch</b>, <b>**solfg</b> or <b>**Tonh</b>.
+For example, the following
+<b>**mint</b>
+pitch offsets are considered equivalent: `b' (<b>**kern</b>), `B5'
+(<b>**pitch</b>), `si5' (<b>**solfg</b>), `H5' (<b>**Tonh</b>).
+Where necessary, several pitch offsets may appear as a Humdrum multiple-stop.
+</P>
+<P>
+Rests are denoted by the lower-case letter `r'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**mint</big></code>
+data should be given names with the distinguishing `.mnt' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**mint</b>
+mappings of signifiers and signifieds.
+</P>
+<P>
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>interval size signifiers; measure numbers</TD></TR>
+<TR><TD>A</TD><TD>augmented interval quality</TD></TR>
+<TR><TD>d</TD><TD>diminished interval quality</TD></TR>
+<TR><TD>M</TD><TD>major interval quality</TD></TR>
+<TR><TD>m</TD><TD>minor interval quality</TD></TR>
+<TR><TD>P</TD><TD>perfect interval quality</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>-</TD><TD>descending interval</TD></TR>
+<TR><TD>+</TD><TD>ascending interval</TD></TR>
+<TR><TD>;</TD><TD>measure pause</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**mint</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+The following example shows a <code><big>**pitch</big></code> spine on the left
+and a corresponding <code><big>**mint</big></code> spine on the right.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD><b>INPUT</b></TD><TD></TD><TD></TD><TD><b>OUTPUT</b></TD></TR>
+<TR><TD>!! Wagner, Tristan Prelude</TD><TD></TD><TD></TD><TD>!! Wagner, Tristan Prelude</TD></TR>
+<TR><TD>**pitch</TD><TD></TD><TD></TD><TD>**mint</TD></TR>
+<TR><TD>*M6/8</TD><TD></TD><TD></TD><TD>*M6/8</TD></TR>
+<TR><TD>A3</TD><TD></TD><TD></TD><TD>[A3]</TD></TR>
+<TR><TD>=1</TD><TD></TD><TD></TD><TD>=1</TD></TR>
+<TR><TD>F4</TD><TD></TD><TD></TD><TD>+m6</TD></TR>
+<TR><TD>.</TD><TD></TD><TD></TD><TD>.</TD></TR>
+<TR><TD>E4</TD><TD></TD><TD></TD><TD>-m2</TD></TR>
+<TR><TD>=2</TD><TD></TD><TD></TD><TD>=2</TD></TR>
+<TR><TD>F3 B3 D#4 G#4</TD><TD></TD><TD></TD><TD>-M7 -P4 -m2 +M3</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum command produces <b>**mint</b> data as outputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>mint</b></TD><TD>produces <b>**mint</b> output from <b>**pitch</b>, <b>**kern</b>, <b>**solfg</b>,</TD></TR>
+<TR><TD></TD><TD></TD><TD>or <b>**Tonh</b> input</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**mint</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**mint</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**hint</b> (2), <b>hint</b> (4),
+<b>kern</b> (2), <b>mint</b> (4),
+<b>solfg</b> (2), <b>**Tonh</b> (2),
+<b>xdelta</b> (4), <b>ydelta</b> (4)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**ordo</b>  --  sequential order of events representation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**ordo</b>
+representation consists of a set of numerical
+values indicating the order of events.
+An
+<b>**ordo</b>
+spine simply encodes a series of ascending integers
+marking the succession of events:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**ordo</TD></TR>
+<TR><TD>1</TD></TR>
+<TR><TD>2</TD></TR>
+<TR><TD>3</TD></TR>
+<TR><TD>4</TD></TR>
+<TR><TD>5</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+The
+<b>**ordo</b>
+representation recognizes "common system" barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**ordo</big></code>
+data should be given names with the distinguishing `.ord' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**ordo</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>.</TD><TD>null token</TD></TR>
+<TR><TD>=</TD><TD>barlines</TD></TR>
+<TR><TD>==</TD><TD>double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**ordo</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**ordo</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>1</TD></TR>
+<TR><TD>2</TD></TR>
+<TR><TD>3</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>4</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>5</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum command produces <b>**ordo</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>num</b></TD><TD>number selected Humdrum data records</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**ordo</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+<TR><TD>timebase</TD><TD><code><big>*tb32</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**ordo</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**date</b> (2), <b>**dur</b> (2),
+<b>**metpos</b> (2), <b>**recip</b> (2),
+<b>scramble</b> (4),
+<b>**takt</b> (2), <b>**time</b> (2), <b>**Zeit</b> (2)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**pc</b>  --  pitch-class representation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**pc</b>
+representation can be used to characterize
+<i>pitch-class</i>
+or
+<i>chroma</i>
+information.
+Two pitches are said to share the same pitch-class or chroma
+when they are octave equivalents.
+No distinction is made between enharmonic spellings.
+Hence C-sharp4 and D-flat7 belong to the same pitch-class.
+In traditional set theory, pitch-classes are identified
+by integer values between 0 and 11, where C=0, C-sharp/D-flat=1 ... B=11.
+</P>
+<P>
+Three types of data tokens are distinguished by <b>**pc</b>:
+pitch-class tokens, rest tokens, and barlines.
+</P>
+<P>
+Pitch-class tokens are encoded as either numeric,
+or mixed alphabetic and numeric values.
+Following traditional practice,
+<b>**pc</b>
+encodes pitch-classes using the integer values between 0 and 11,
+where C=0, C-sharp/D-flat=1 ... B=11.
+The
+<b>**pc</b>
+representation provides aliases for the integers 10 and 11
+(`A' and `B' respectively).
+(Encodings using purely numeric values are especially useful when the
+representation is to be processed numerically.
+Encodings using mixed alphanumeric values are often better
+suited to pattern matching and searching tasks.&#167)
+(&#167
+For example, where `10' and `11' are present in a stream of data,
+the regular expression to search for pitch-class `1'
+is <code><big>(^|[^1])1([^01]|$)</big></code>,
+whereas the corresponding regular expression for alphanumeric
+pitch-class data is simply <code><big>1</big></code>.)
+</P>
+<P>
+In addition to the basic pitch-class information,
+<b>**pc</b>
+also provides limited capabilities for representing articulation marks,
+ties, slurs, and phrasing.
+Slurs and phrase markings can be nested (slurs within slurs)
+and may also be elided to a single depth.
+Nested markings mean that one slur or phrase is entirely subsumed
+within another slur or phrase.
+For example:  (   (   )    )
+means that a short slur has occurred within a longer slur.
+Elisions are overlaps, for example, where an existing phrase fails
+to end before a new phrase begins.
+In
+<b>**pc</b>
+the ampersand character is used to mark elided slurs or phrases.
+For example:  {   &{   }    &}
+means that a phrase begins, but does not end until after another
+phrase has begun.
+The ampersand is used to mark a matched pair of slur or phrases marks.
+</P>
+<P>
+Rests are represented by the single letter `r'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**pc</big></code>
+data should be given names with the distinguishing `.pc' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**pc</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>pitch-class values specified as integers</TD></TR>
+<TR><TD></TD><TD>     or as real values; measure numbers</TD></TR>
+<TR><TD>A</TD><TD>alias for pitch-class 10</TD></TR>
+<TR><TD>B</TD><TD>alias for pitch-class 11</TD></TR>
+<TR><TD>E</TD><TD>alias for pitch-class 11</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>I</TD><TD>generic articulation (unspecified articulation)</TD></TR>
+<TR><TD>O</TD><TD>generic ornament (unspecified ornament)</TD></TR>
+<TR><TD>T</TD><TD>alias for pitch-class 10</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>[</TD><TD>first note of a tie</TD></TR>
+<TR><TD>]</TD><TD>last note of a tie</TD></TR>
+<TR><TD>_</TD><TD>middle note(s) of a tie (underscore)</TD></TR>
+<TR><TD>(</TD><TD>slur start</TD></TR>
+<TR><TD>)</TD><TD>slur end</TD></TR>
+<TR><TD>{</TD><TD>phrase mark (start)</TD></TR>
+<TR><TD>}</TD><TD>phrase mark (end)</TD></TR>
+<TR><TD>;</TD><TD>pause sign</TD></TR>
+<TR><TD>'</TD><TD>staccato mark</TD></TR>
+<TR><TD>"</TD><TD>pizzicato mark</TD></TR>
+<TR><TD>`</TD><TD>attacka mark</TD></TR>
+<TR><TD>~</TD><TD>tenuto mark</TD></TR>
+<TR><TD>^</TD><TD>accent mark</TD></TR>
+<TR><TD>&</TD><TD>elision marker (for slurs or phases)</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**pc</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+The following sample document shows a pitch-class
+representation for the opening measures of Schoenberg's
+"Sommerm\o'u\(..'d" from
+<i>Three Songs,</i>
+opus 48.
+The left-most spine shows a mixed alphabetic and numeric encoding
+--  where pitch-class 11 is represented by the letter `B'.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! Arnold Schoenberg, "Sommermued" (1933)</TD></TR>
+<TR><TD>**pc</TD><TD>**pc</TD><TD>**pc</TD><TD>**text</TD></TR>
+<TR><TD>*Ipiano</TD><TD>*Ipiano</TD><TD>*Ivox</TD><TD>*Deutsch</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>*MM72</TD><TD>*MM72</TD><TD>*MM72</TD><TD>*MM72</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>r</TD><TD>r</TD><TD>r</TD><TD>.</TD></TR>
+<TR><TD>(7</TD><TD>(11</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>9^)</TD><TD>r</TD><TD>.</TD></TR>
+<TR><TD>8')</TD><TD>.</TD><TD>1</TD><TD>Wenn</TD></TR>
+<TR><TD>r</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>r</TD><TD>r</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>(9</TD><TD>(11</TD><TD>2</TD><TD>du</TD></TR>
+<TR><TD>.</TD><TD>7^)</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>8')</TD><TD>.</TD><TD>0</TD><TD>schon</TD></TR>
+<TR><TD>r</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>r</TD><TD>r</TD><TD>(0</TD><TD>glaubst ,</TD></TR>
+<TR><TD>9</TD><TD>(7</TD><TD>[6</TD><TD>|</TD></TR>
+<TR><TD>(9`</TD><TD>8</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>B)</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>r</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>r</TD><TD>7')</TD><TD>6])</TD><TD>|</TD></TR>
+<TR><TD>.</TD><TD>r</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>(9</TD><TD>3</TD><TD>es</TD></TR>
+<TR><TD>[B</TD><TD>.</TD><TD>3</TD><TD>ist</TD></TR>
+<TR><TD>.</TD><TD>8)</TD><TD>[5</TD><TD>e-</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</blockquote>
+</code></big>
+Note that pitch-class representations do not preserve pitch-height
+or contour information.
+</blockquote>
+</P>
+<P>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum commands accept <b>**pc</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>iv</b></TD><TD>determine interval vectors for vertical sonorities</TD></TR>
+<TR><TD></TD><TD><b>nf</b></TD><TD>determine normal form for vertical sonorities</TD></TR>
+<TR><TD></TD><TD><b>pc</b></TD><TD>convert between numerical and alphanumerical forms of <b>**pc</b></TD></TR>
+<TR><TD></TD><TD><b>pcset</b></TD><TD>convert to set-theoretic representations</TD></TR>
+<TR><TD></TD><TD><b>pf</b></TD><TD>determine prime form for vertical sonorities</TD></TR>
+<TR><TD></TD><TD><b>reihe</b></TD><TD>output tone-row variant for a given prime row</TD></TR>
+<TR><TD></TD><TD><b>vox</b></TD><TD>determine active and inactive voices in a Humdrum file</TD></TR>
+<TR><TD></TD></TR>
+</blockquote>
+The following Humdrum command produces <b>**pc</b> data as output:
+<blockquote>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>pc</b></TD><TD>translates <b>**cents</b>, <b>**freq</b>, <b>**kern</b>, <b>**pc</b>, <b>**pitch</b>,</TD></TR>
+<TR><TD></TD><TD></TD><TD><b>**Tonh</b>, <b>**semits</b>, <b>**solfg</b>, <b>**specC</b>, to <b>**pc</b></TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**pc</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+<TR><TD>timebase</TD><TD><code><big>*tb32</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**pc</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2), <b>**cents</b> (2), <b>**freq</b> (2),
+<b>**iv</b> (2), <b>iv</b> (4), <b>**kern</b> (2),
+<b>**nf</b> (2), <b>nf</b> (4),
+<b>pc</b> (4),
+<b>**pcset</b> (2), <b>pcset</b> (4),
+<b>**pf</b> (2), <b>pf</b> (4),
+<b>**pitch</b> (2),
+<b>reihe</b> (4),
+<b>**semits</b> (2),
+<b>**solfg</b> (2), <b>**specC</b> (2),
+<b>**Tonh</b> (2)
+</code></big>
+</blockquote>
+</P>
+<P>
+<H3>REFERENCES</H3>
+<blockquote>
+Forte, A.
+<i>The Structure of Atonal Music.</i>
+New Haven: Yale University Press, 1973.
+</P>
+<P>
+Rahn, J.
+<i>Basic Atonal Theory.</i>
+New York: Longman, 1980.
+</P>
+<P>
+Straus, J.
+<i>Introduction to Post-Tonal Theory.</i>
+Englewood Cliffs, N.J.: Prentice Hall, 1990.
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**pcset</b>  --  Fortean pitch-class set representation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<i>**pcset</i>
+representation provides a means for indicating pitch-class sets.
+The representation is based on a simple extension of the system
+devised by Allen Forte (see REFERENCE).
+Fortean set names consist of two numbers separated by a dash,
+with an optional up-case letter `Z' preceding the second number.
+The first number indicates the pitch-class
+<i>cardinality</i>
+--  that is, the number of unique pitch-classes in the set.
+For example, all major and minor chords have a cardinality of `3'
+since all such chords consist of three unique pitch-classes.
+(Inversionally-related pitch-class sets have the same set designation.)
+</P>
+<P>
+The number following the dash simply distinguishes different pitch-class
+sets having the same cardinality.
+The letter `Z' is used to indicate that the set shares the same
+interval-class content as some other set.
+(said to be Z-related sets).
+For example, sets 4-Z15 and 4-Z29 are said to be Z-related since
+they both exhibit the same interval-class content.
+(See <code><big>**iv</big></code> representation.)
+</P>
+<P>
+Barlines are represented using the "common system"
+barlines described in Section 2 of this
+<i>Reference Manual.</i>
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**pcs</big></code>
+data should be given names with the distinguishing `.pcs' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<i>**pcset</i>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>pitch-class set labels; measure numbers</TD></TR>
+<TR><TD>.</TD><TD>null token</TD></TR>
+<TR><TD>-</TD><TD>dash; separates cardinality for set number</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of **pcset Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+The following sample document shows a pitch-class
+representation for the opening measures of Schoenberg's
+"Sommerm\o'u\(..'d" from
+<i>Three Songs,</i>
+Opus 48.
+The right-most spine shows a <code><big>**pcset</big></code> representation
+identifying the pitch-class content of each sonority.
+(The <code><big>**pcset</big></code> spine might be generated using the
+<b>pcset</b>
+command, after the <code><big>**pc</big></code> pitch-class spines are
+<i>filled-out</i>
+using the
+<b>fill</b>
+command.)
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! Arnold Schoenberg, "Sommermued" (1933)</TD></TR>
+<TR><TD>**pc</TD><TD>**pc</TD><TD>**pc</TD><TD>**text</TD><TD>**pcset</TD></TR>
+<TR><TD>*Ipiano</TD><TD>*Ipiano</TD><TD>*Ivoice</TD><TD>*Deutsch</TD><TD>*</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD><TD>*</TD></TR>
+<TR><TD>*MM72</TD><TD>*MM72</TD><TD>*MM72</TD><TD>*MM72</TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>r</TD><TD>r</TD><TD>r</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>(7</TD><TD>(11</TD><TD>.</TD><TD>.</TD><TD>2-4</TD></TR>
+<TR><TD>.</TD><TD>9^)</TD><TD>r</TD><TD>.</TD><TD>2-2</TD></TR>
+<TR><TD>8')</TD><TD>.</TD><TD>1</TD><TD>Wenn</TD><TD>3-4</TD></TR>
+<TR><TD>r</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>2-4</TD></TR>
+<TR><TD>r</TD><TD>r</TD><TD>.</TD><TD>.</TD><TD>1-1</TD></TR>
+<TR><TD>(9</TD><TD>(11</TD><TD>2</TD><TD>du</TD><TD>3-7</TD></TR>
+<TR><TD>.</TD><TD>7^)</TD><TD>.</TD><TD>.</TD><TD>3-9</TD></TR>
+<TR><TD>8')</TD><TD>.</TD><TD>0</TD><TD>schon</TD><TD>3-4</TD></TR>
+<TR><TD>r</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>2-5</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>r</TD><TD>r</TD><TD>(0</TD><TD>glaubst ,</TD><TD>1-1</TD></TR>
+<TR><TD>9</TD><TD>(7</TD><TD>[6</TD><TD>|</TD><TD>3-2</TD></TR>
+<TR><TD>(9`</TD><TD>8</TD><TD>.</TD><TD>.</TD><TD>3-2</TD></TR>
+<TR><TD>11)</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>3-7</TD></TR>
+<TR><TD>r</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>2-2</TD></TR>
+<TR><TD>r</TD><TD>7')</TD><TD>6])</TD><TD>|</TD><TD>2-1</TD></TR>
+<TR><TD>.</TD><TD>r</TD><TD>.</TD><TD>.</TD><TD>1-1</TD></TR>
+<TR><TD>.</TD><TD>(9</TD><TD>3</TD><TD>es</TD><TD>2-6</TD></TR>
+<TR><TD>[11</TD><TD>.</TD><TD>3</TD><TD>ist</TD><TD>3-8</TD></TR>
+<TR><TD>.</TD><TD>8)</TD><TD>[5</TD><TD>e-</TD><TD>3-10</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</blockquote>
+</code></big>
+</blockquote>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following humdrum commands accept <i>**pcset</i> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>iv</b></TD><TD>determine interval vectors for successive vertical sonorities</TD></TR>
+<TR><TD></TD><TD><b>nf</b></TD><TD>determine normal form for successive vertical sonorities</TD></TR>
+<TR><TD></TD><TD><b>pcset</b></TD><TD>convert pitch and pitch-class information to set-theoretic representations</TD></TR>
+<TR><TD></TD><TD><b>pf</b></TD><TD>prime form representation</TD></TR>
+<TR><TD></TD></TR>
+</blockquote>
+The following Humdrum command produces <i>**pcset</i> data as output:
+<blockquote>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>pcset</b></TD><TD>convert pitch and pitch-class information to set-theoretic representations</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<i>**pcset:</i>
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD>*M6/8</TD></TR>
+<TR><TD>key signatures</TD><TD>*k[  ]</TD></TR>
+<TR><TD>key</TD><TD>*c#:</TD></TR>
+<TR><TD>tempo</TD><TD>*MM96.3</TD></TR>
+<TR><TD>timebase</TD><TD>*tb32</TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**pcset</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**iv</b> (2), <b>iv</b> (4),
+<b>**nf</b> (2), <b>nf</b> (4),
+<b>**pc</b> (2), <b>pc</b> (4),
+<b>pcset</b> (4),
+<b>**pf</b> (2), <b>pf</b> (4),
+<b>reihe</b> (4),
+<b>**semits</b> (2), <b>semits</b> (4)
+</code></big>
+</blockquote>
+</P>
+<P>
+<H3>REFERENCES</H3>
+<blockquote>
+Forte, A.
+<i>The Structure of Atonal Music.</i>
+New Haven: Yale University Press, 1973.
+</blockquote>
+</P>
+<P>
+<H3>APPENDIX</H3>
+<blockquote>
+The following table provides an extended list of all possible Fortean-type
+pitch-class set names.
+The corresponding pitch-class set and interval vectors are also shown.
+<TABLE>
+<TR><TD><b>Fortean</TD><TD>pitch-class</TD><TD>interval</TD><TD></TD><TD></TD><TD></TD><TD>Fortean</TD><TD>pitch-class</TD><TD>interval</b></TD></TR>
+<TR><TD><b>set-name</TD><TD>set</TD><TD>vector</TD><TD></TD><TD></TD><TD></TD><TD>set-name</TD><TD>set</TD><TD>vector</b></TD></TR>
+<TR><TD>0-0</TD><TD>(empty)</TD><TD><000000></TD><TD></TD><TD></TD><TD></TD><TD>12-1</TD><TD>(0,1,2,3,4,5,6,7,8,9,10,11)</TD><TD><12,12,12,12,12,12></TD></TR>
+<TR><TD>1-1</TD><TD>(0)</TD><TD><000000></TD><TD></TD><TD></TD><TD></TD><TD>11-1</TD><TD>(0,1,2,3,4,5,6,7,8,9,10)</TD><TD><10,10,10,10,10,10></TD></TR>
+<TR><TD>2-1</TD><TD>(0,1)</TD><TD><100000></TD><TD></TD><TD></TD><TD></TD><TD>10-1</TD><TD>(0,1,2,3,4,5,6,7,8,9)</TD><TD><988888></TD></TR>
+<TR><TD>2-2</TD><TD>(0,2)</TD><TD><010000></TD><TD></TD><TD></TD><TD></TD><TD>10-2</TD><TD>(0,1,2,3,4,5,6,7,8,A)</TD><TD><898888></TD></TR>
+<TR><TD>2-3</TD><TD>(0,3)</TD><TD><001000></TD><TD></TD><TD></TD><TD></TD><TD>10-3</TD><TD>(0,1,2,3,4,5,6,7,9,A)</TD><TD><889888></TD></TR>
+<TR><TD>2-4</TD><TD>(0,4)</TD><TD><000100></TD><TD></TD><TD></TD><TD></TD><TD>10-4</TD><TD>(0,1,2,3,4,5,6,8,9,A)</TD><TD><888988></TD></TR>
+<TR><TD>2-5</TD><TD>(0,5)</TD><TD><000010></TD><TD></TD><TD></TD><TD></TD><TD>10-5</TD><TD>(0,1,2,3,4,5,7,8,9,A)</TD><TD><888898></TD></TR>
+<TR><TD>2-6</TD><TD>(0,6)</TD><TD><000001></TD><TD></TD><TD></TD><TD></TD><TD>10-6</TD><TD>(0,1,2,3,4,6,7,8,9,A)</TD><TD><888889></TD></TR>
+<TR><TD>3-1</TD><TD>(0,1,2)</TD><TD><210000></TD><TD></TD><TD></TD><TD></TD><TD>9-1</TD><TD>(0,1,2,3,4,5,6,7,8)</TD><TD><876663></TD></TR>
+<TR><TD>3-2</TD><TD>(0,1,3)</TD><TD><111000></TD><TD></TD><TD></TD><TD></TD><TD>9-2</TD><TD>(0,1,2,3,4,5,6,7,9)</TD><TD><777663></TD></TR>
+<TR><TD>3-3</TD><TD>(0,1,4)</TD><TD><101100></TD><TD></TD><TD></TD><TD></TD><TD>9-3</TD><TD>(0,1,2,3,4,5,6,8,9)</TD><TD><767763></TD></TR>
+<TR><TD>3-4</TD><TD>(0,1,5)</TD><TD><100110></TD><TD></TD><TD></TD><TD></TD><TD>9-4</TD><TD>(0,1,2,3,4,5,7,8,9)</TD><TD><766773></TD></TR>
+<TR><TD>3-5</TD><TD>(0,1,6)</TD><TD><100011></TD><TD></TD><TD></TD><TD></TD><TD>9-5</TD><TD>(0,1,2,3,4,6,7,8,9)</TD><TD><766674></TD></TR>
+<TR><TD>3-6</TD><TD>(0,2,4)</TD><TD><020100></TD><TD></TD><TD></TD><TD></TD><TD>9-6</TD><TD>(0,1,2,3,4,5,6,8,10)</TD><TD><686763></TD></TR>
+<TR><TD>3-7</TD><TD>(0,2,5)</TD><TD><011010></TD><TD></TD><TD></TD><TD></TD><TD>9-7</TD><TD>(0,1,2,3,4,5,7,8,10)</TD><TD><677673></TD></TR>
+<TR><TD>3-8</TD><TD>(0,2,6)</TD><TD><010101></TD><TD></TD><TD></TD><TD></TD><TD>9-8</TD><TD>(0,1,2,3,4,6,7,8,10)</TD><TD><676764></TD></TR>
+<TR><TD>3-9</TD><TD>(0,2,7)</TD><TD><010020></TD><TD></TD><TD></TD><TD></TD><TD>9-9</TD><TD>(0,1,2,3,5,6,7,8,10)</TD><TD><676683></TD></TR>
+<TR><TD>3-10</TD><TD>(0,3,6)</TD><TD><002001></TD><TD></TD><TD></TD><TD></TD><TD>9-10</TD><TD>(0,1,2,3,4,6,7,9,10)</TD><TD><668664></TD></TR>
+<TR><TD>3-11</TD><TD>(0,3,7)</TD><TD><001110></TD><TD></TD><TD></TD><TD></TD><TD>9-11</TD><TD>(0,1,2,3,5,6,7,9,10)</TD><TD><667773></TD></TR>
+<TR><TD>3-12</TD><TD>(0,4,8)</TD><TD><000300></TD><TD></TD><TD></TD><TD></TD><TD>9-12</TD><TD>(0,1,2,4,5,6,8,9,10)</TD><TD><666963></TD></TR>
+<TR><TD>4-1</TD><TD>(0,1,2,3)</TD><TD><321000></TD><TD></TD><TD></TD><TD></TD><TD>8-1</TD><TD>(0,1,2,3,4,5,6,7)</TD><TD><765442></TD></TR>
+<TR><TD>4-2</TD><TD>(0,1,2,4)</TD><TD><221100></TD><TD></TD><TD></TD><TD></TD><TD>8-2</TD><TD>(0,1,2,3,4,5,6,8)</TD><TD><665542></TD></TR>
+<TR><TD>4-3</TD><TD>(0,1,3,4)</TD><TD><212100></TD><TD></TD><TD></TD><TD></TD><TD>8-3</TD><TD>(0,1,2,3,4,5,6,9)</TD><TD><656542></TD></TR>
+<TR><TD>4-4</TD><TD>(0,1,2,5)</TD><TD><211110></TD><TD></TD><TD></TD><TD></TD><TD>8-4</TD><TD>(0,1,2,3,4,5,7,8)</TD><TD><655552></TD></TR>
+<TR><TD>4-5</TD><TD>(0,1,2,6)</TD><TD><210111></TD><TD></TD><TD></TD><TD></TD><TD>8-5</TD><TD>(0,1,2,3,4,6,7,8)</TD><TD><654553></TD></TR>
+<TR><TD>4-6</TD><TD>(0,1,2,7)</TD><TD><210021></TD><TD></TD><TD></TD><TD></TD><TD>8-6</TD><TD>(0,1,2,3,5,6,7,8)</TD><TD><654463></TD></TR>
+<TR><TD>4-7</TD><TD>(0,1,4,5)</TD><TD><201210></TD><TD></TD><TD></TD><TD></TD><TD>8-7</TD><TD>(0,1,2,3,4,5,8,9)</TD><TD><645652></TD></TR>
+<TR><TD>4-8</TD><TD>(0,1,5,6)</TD><TD><200121></TD><TD></TD><TD></TD><TD></TD><TD>8-8</TD><TD>(0,1,2,3,4,7,8,9)</TD><TD><644563></TD></TR>
+<TR><TD>4-9</TD><TD>(0,1,6,7)</TD><TD><200022></TD><TD></TD><TD></TD><TD></TD><TD>8-9</TD><TD>(0,1,2,3,6,7,8,9)</TD><TD><644464></TD></TR>
+<TR><TD>4-10</TD><TD>(0,2,3,5)</TD><TD><122010></TD><TD></TD><TD></TD><TD></TD><TD>8-10</TD><TD>(0,2,3,4,5,6,7,9)</TD><TD><566452></TD></TR>
+<TR><TD>4-11</TD><TD>(0,1,3,5)</TD><TD><121110></TD><TD></TD><TD></TD><TD></TD><TD>8-11</TD><TD>(0,1,2,3,4,5,7,9)</TD><TD><565552></TD></TR>
+<TR><TD>4-12</TD><TD>(0,2,3,6)</TD><TD><112101></TD><TD></TD><TD></TD><TD></TD><TD>8-12</TD><TD>(0,1,3,4,5,6,7,9)</TD><TD><556543></TD></TR>
+<TR><TD>4-13</TD><TD>(0,1,3,6)</TD><TD><112011></TD><TD></TD><TD></TD><TD></TD><TD>8-13</TD><TD>(0,1,2,3,4,6,7,9)</TD><TD><556453></TD></TR>
+<TR><TD>4-14</TD><TD>(0,2,3,7)</TD><TD><111120></TD><TD></TD><TD></TD><TD></TD><TD>8-14</TD><TD>(0,1,2,4,5,6,7,9)</TD><TD><555562></TD></TR>
+<TR><TD>4-Z15</TD><TD>(0,1,4,6)</TD><TD><111111></TD><TD></TD><TD></TD><TD></TD><TD>8-Z15</TD><TD>(0,1,2,3,4,6,8,9)</TD><TD><555553></TD></TR>
+<TR><TD>4-16</TD><TD>(0,1,5,7)</TD><TD><110121></TD><TD></TD><TD></TD><TD></TD><TD>8-16</TD><TD>(0,1,2,3,5,7,8,9)</TD><TD><554563></TD></TR>
+<TR><TD>4-17</TD><TD>(0,3,4,7)</TD><TD><102210></TD><TD></TD><TD></TD><TD></TD><TD>8-17</TD><TD>(0,1,3,4,5,6,8,9)</TD><TD><546652></TD></TR>
+<TR><TD>4-18</TD><TD>(0,1,4,7)</TD><TD><102111></TD><TD></TD><TD></TD><TD></TD><TD>8-18</TD><TD>(0,1,2,3,5,6,8,9)</TD><TD><546553></TD></TR>
+<TR><TD>4-19</TD><TD>(0,1,4,8)</TD><TD><101310></TD><TD></TD><TD></TD><TD></TD><TD>8-19</TD><TD>(0,1,2,4,5,6,8,9)</TD><TD><545752></TD></TR>
+<TR><TD>4-20</TD><TD>(0,1,5,8)</TD><TD><101220></TD><TD></TD><TD></TD><TD></TD><TD>8-20</TD><TD>(0,1,2,4,5,7,8,9)</TD><TD><545662></TD></TR>
+<TR><TD>4-21</TD><TD>(0,2,4,6)</TD><TD><030201></TD><TD></TD><TD></TD><TD></TD><TD>8-21</TD><TD>(0,1,2,3,4,6,8,10)</TD><TD><474643></TD></TR>
+<TR><TD>4-22</TD><TD>(0,2,4,7)</TD><TD><021120></TD><TD></TD><TD></TD><TD></TD><TD>8-22</TD><TD>(0,1,2,3,5,6,8,10)</TD><TD><465562></TD></TR>
+<TR><TD>4-23</TD><TD>(0,2,5,7)</TD><TD><021030></TD><TD></TD><TD></TD><TD></TD><TD>8-23</TD><TD>(0,1,2,3,5,7,8,10)</TD><TD><465472></TD></TR>
+<TR><TD>4-24</TD><TD>(0,2,4,8)</TD><TD><020301></TD><TD></TD><TD></TD><TD></TD><TD>8-24</TD><TD>(0,1,2,4,5,6,8,10)</TD><TD><464743></TD></TR>
+<TR><TD>4-25</TD><TD>(0,2,6,8)</TD><TD><020202></TD><TD></TD><TD></TD><TD></TD><TD>8-25</TD><TD>(0,1,2,4,6,7,8,10)</TD><TD><464644></TD></TR>
+<TR><TD>4-26</TD><TD>(0,3,5,8)</TD><TD><012120></TD><TD></TD><TD></TD><TD></TD><TD>8-26</TD><TD>(0,1,2,4,5,7,9,10)</TD><TD><456562></TD></TR>
+<TR><TD>4-27</TD><TD>(0,2,5,8)</TD><TD><012111></TD><TD></TD><TD></TD><TD></TD><TD>8-27</TD><TD>(0,1,2,4,5,7,8,10)</TD><TD><456553></TD></TR>
+<TR><TD>4-28</TD><TD>(0,3,6,9)</TD><TD><004002></TD><TD></TD><TD></TD><TD></TD><TD>8-28</TD><TD>(0,1,3,4,6,7,9,10)</TD><TD><448444></TD></TR>
+<TR><TD>4-Z29</TD><TD>(0,1,3,7)</TD><TD><111111></TD><TD></TD><TD></TD><TD></TD><TD>8-Z29</TD><TD>(0,1,2,3,5,6,7,9)</TD><TD><555553></TD></TR>
+<TR><TD>5-1</TD><TD>(0,1,2,3,4)</TD><TD><432100></TD><TD></TD><TD></TD><TD></TD><TD>7-1</TD><TD>(0,1,2,3,4,5,6)</TD><TD><654321></TD></TR>
+<TR><TD>5-2</TD><TD>(0,1,2,3,5)</TD><TD><332110></TD><TD></TD><TD></TD><TD></TD><TD>7-2</TD><TD>(0,1,2,3,4,5,7)</TD><TD><554331></TD></TR>
+<TR><TD>5-3</TD><TD>(0,1,2,4,5)</TD><TD><322210></TD><TD></TD><TD></TD><TD></TD><TD>7-3</TD><TD>(0,1,2,3,4,5,8)</TD><TD><544431></TD></TR>
+<TR><TD>5-4</TD><TD>(0,1,2,3,6)</TD><TD><322111></TD><TD></TD><TD></TD><TD></TD><TD>7-4</TD><TD>(0,1,2,3,4,6,7)</TD><TD><544332></TD></TR>
+<TR><TD>5-5</TD><TD>(0,1,2,3,7)</TD><TD><321121></TD><TD></TD><TD></TD><TD></TD><TD>7-5</TD><TD>(0,1,2,3,5,6,7)</TD><TD><543342></TD></TR>
+<TR><TD>5-6</TD><TD>(0,1,2,5,6)</TD><TD><311221></TD><TD></TD><TD></TD><TD></TD><TD>7-6</TD><TD>(0,1,2,3,4,7,8)</TD><TD><533442></TD></TR>
+<TR><TD>5-7</TD><TD>(0,1,2,6,7)</TD><TD><310132></TD><TD></TD><TD></TD><TD></TD><TD>7-7</TD><TD>(0,1,2,3,6,7,8)</TD><TD><532353></TD></TR>
+<TR><TD>5-8</TD><TD>(0,2,3,4,6)</TD><TD><232201></TD><TD></TD><TD></TD><TD></TD><TD>7-8</TD><TD>(0,2,3,4,5,6,8)</TD><TD><454422></TD></TR>
+<TR><TD>5-9</TD><TD>(0,1,2,4,6)</TD><TD><231211></TD><TD></TD><TD></TD><TD></TD><TD>7-9</TD><TD>(0,1,2,3,4,6,8)</TD><TD><453432></TD></TR>
+<TR><TD>5-10</TD><TD>(0,1,3,4,6)</TD><TD><223111></TD><TD></TD><TD></TD><TD></TD><TD>7-10</TD><TD>(0,1,2,3,4,6,9)</TD><TD><445332></TD></TR>
+<TR><TD>5-11</TD><TD>(0,2,3,4,7)</TD><TD><222220></TD><TD></TD><TD></TD><TD></TD><TD>7-11</TD><TD>(0,1,3,4,5,6,8)</TD><TD><444441></TD></TR>
+<TR><TD>5-Z12</TD><TD>(0,1,3,5,6)</TD><TD><222121></TD><TD></TD><TD></TD><TD></TD><TD>7-Z12</TD><TD>(0,1,2,3,4,7,9)</TD><TD><444342></TD></TR>
+<TR><TD>5-13</TD><TD>(0,1,2,4,8)</TD><TD><221311></TD><TD></TD><TD></TD><TD></TD><TD>7-13</TD><TD>(0,1,2,4,5,6,8)</TD><TD><443532></TD></TR>
+<TR><TD>5-14</TD><TD>(0,1,2,5,7)</TD><TD><221131></TD><TD></TD><TD></TD><TD></TD><TD>7-14</TD><TD>(0,1,2,3,5,7,8)</TD><TD><443352></TD></TR>
+<TR><TD>5-15</TD><TD>(0,1,2,6,8)</TD><TD><220222></TD><TD></TD><TD></TD><TD></TD><TD>7-15</TD><TD>(0,1,2,4,6,7,8)</TD><TD><442443></TD></TR>
+<TR><TD>5-16</TD><TD>(0,1,3,4,7)</TD><TD><213211></TD><TD></TD><TD></TD><TD></TD><TD>7-16</TD><TD>(0,1,2,3,5,6,9)</TD><TD><435432></TD></TR>
+<TR><TD>5-Z17</TD><TD>(0,1,3,4,8)</TD><TD><212320></TD><TD></TD><TD></TD><TD></TD><TD>7-Z17</TD><TD>(0,1,2,4,5,6,9)</TD><TD><434541></TD></TR>
+<TR><TD>5-Z18</TD><TD>(0,1,4,5,7)</TD><TD><212221></TD><TD></TD><TD></TD><TD></TD><TD>7-Z18</TD><TD>(0,1,2,3,5,8,9)</TD><TD><434442></TD></TR>
+<TR><TD>5-19</TD><TD>(0,1,3,6,7)</TD><TD><212122></TD><TD></TD><TD></TD><TD></TD><TD>7-19</TD><TD>(0,1,2,3,6,7,9)</TD><TD><434343></TD></TR>
+<TR><TD>5-20</TD><TD>(0,1,3,7,8)</TD><TD><211231></TD><TD></TD><TD></TD><TD></TD><TD>7-20</TD><TD>(0,1,2,4,7,8,9)</TD><TD><433452></TD></TR>
+<TR><TD>5-21</TD><TD>(0,1,4,5,8)</TD><TD><202420></TD><TD></TD><TD></TD><TD></TD><TD>7-21</TD><TD>(0,1,2,4,5,8,9)</TD><TD><424641></TD></TR>
+<TR><TD>5-22</TD><TD>(0,1,4,7,8)</TD><TD><202321></TD><TD></TD><TD></TD><TD></TD><TD>7-22</TD><TD>(0,1,2,5,6,8,9)</TD><TD><424542></TD></TR>
+<TR><TD>5-23</TD><TD>(0,2,3,5,7)</TD><TD><132130></TD><TD></TD><TD></TD><TD></TD><TD>7-23</TD><TD>(0,2,3,4,5,7,9)</TD><TD><354351></TD></TR>
+<TR><TD>5-24</TD><TD>(0,1,3,5,7)</TD><TD><131221></TD><TD></TD><TD></TD><TD></TD><TD>7-24</TD><TD>(0,1,2,3,5,7,9)</TD><TD><353442></TD></TR>
+<TR><TD>5-25</TD><TD>(0,2,3,5,8)</TD><TD><123121></TD><TD></TD><TD></TD><TD></TD><TD>7-25</TD><TD>(0,2,3,4,6,7,9)</TD><TD><345342></TD></TR>
+<TR><TD>5-26</TD><TD>(0,2,4,5,8)</TD><TD><122311></TD><TD></TD><TD></TD><TD></TD><TD>7-26</TD><TD>(0,1,3,4,5,7,9)</TD><TD><344532></TD></TR>
+<TR><TD>5-27</TD><TD>(0,1,3,5,8)</TD><TD><122230></TD><TD></TD><TD></TD><TD></TD><TD>7-27</TD><TD>(0,1,2,4,5,7,9)</TD><TD><344451></TD></TR>
+<TR><TD>5-28</TD><TD>(0,2,3,6,8)</TD><TD><122212></TD><TD></TD><TD></TD><TD></TD><TD>7-28</TD><TD>(0,1,3,5,6,7,9)</TD><TD><344433></TD></TR>
+<TR><TD>5-29</TD><TD>(0,1,3,6,8)</TD><TD><122131></TD><TD></TD><TD></TD><TD></TD><TD>7-29</TD><TD>(0,1,2,4,6,7,9)</TD><TD><344352></TD></TR>
+<TR><TD>5-30</TD><TD>(0,1,4,6,8)</TD><TD><121321></TD><TD></TD><TD></TD><TD></TD><TD>7-30</TD><TD>(0,1,2,4,6,8,9)</TD><TD><343542></TD></TR>
+<TR><TD>5-31</TD><TD>(0,1,3,6,9)</TD><TD><114112></TD><TD></TD><TD></TD><TD></TD><TD>7-31</TD><TD>(0,1,3,4,6,7,9)</TD><TD><336333></TD></TR>
+<TR><TD>5-32</TD><TD>(0,1,4,6,9)</TD><TD><113221></TD><TD></TD><TD></TD><TD></TD><TD>7-32</TD><TD>(0,1,3,4,6,8,9)</TD><TD><335442></TD></TR>
+<TR><TD>5-33</TD><TD>(0,2,4,6,8)</TD><TD><040402></TD><TD></TD><TD></TD><TD></TD><TD>7-33</TD><TD>(0,1,2,4,6,8,10)</TD><TD><262623></TD></TR>
+<TR><TD>5-34</TD><TD>(0,2,4,6,9)</TD><TD><032221></TD><TD></TD><TD></TD><TD></TD><TD>7-34</TD><TD>(0,1,3,4,6,8,10)</TD><TD><254442></TD></TR>
+<TR><TD>5-35</TD><TD>(0,2,4,7,9)</TD><TD><032140></TD><TD></TD><TD></TD><TD></TD><TD>7-35</TD><TD>(0,1,3,5,6,8,10)</TD><TD><254361></TD></TR>
+<TR><TD>5-Z36</TD><TD>(0,1,2,4,7)</TD><TD><222121></TD><TD></TD><TD></TD><TD></TD><TD>7-Z36</TD><TD>(0,1,2,3,5,6,8)</TD><TD><444342></TD></TR>
+<TR><TD>5-Z37</TD><TD>(0,3,4,5,8)</TD><TD><212320></TD><TD></TD><TD></TD><TD></TD><TD>7-Z37</TD><TD>(0,1,3,4,5,7,8)</TD><TD><434541></TD></TR>
+<TR><TD>5-Z38</TD><TD>(0,1,2,5,8)</TD><TD><212221></TD><TD></TD><TD></TD><TD></TD><TD>7-Z38</TD><TD>(0,1,2,4,5,7,8)</TD><TD><434442></TD></TR>
+<TR><TD>6-1</TD><TD>(0,1,2,3,4,5)</TD><TD><543210></TD><TD></TD><TD></TD><TD></TD><TD>6-Z26</TD><TD>(0,1,3,5,7,8)</TD><TD><232341></TD></TR>
+<TR><TD>6-2</TD><TD>(0,1,2,3,4,6)</TD><TD><443211></TD><TD></TD><TD></TD><TD></TD><TD>6-27</TD><TD>(0,1,3,4,6,9)</TD><TD><225222></TD></TR>
+<TR><TD>6-Z3</TD><TD>(0,1,2,3,5,6)</TD><TD><433221></TD><TD></TD><TD></TD><TD></TD><TD>6-Z28</TD><TD>(0,1,3,5,6,9)</TD><TD><224322></TD></TR>
+<TR><TD>6-Z4</TD><TD>(0,1,2,4,5,6)</TD><TD><432321></TD><TD></TD><TD></TD><TD></TD><TD>6-Z29</TD><TD>(0,1,3,6,8,9)</TD><TD><224232></TD></TR>
+<TR><TD>6-5</TD><TD>(0,1,2,3,6,7)</TD><TD><422232></TD><TD></TD><TD></TD><TD></TD><TD>6-30</TD><TD>(0,1,3,6,7,9)</TD><TD><224223></TD></TR>
+<TR><TD>6-Z6</TD><TD>(0,1,2,5,6,7)</TD><TD><421242></TD><TD></TD><TD></TD><TD></TD><TD>6-31</TD><TD>(0,1,3,5,8,9)</TD><TD><223431></TD></TR>
+<TR><TD>6-7</TD><TD>(0,1,2,6,7,8)</TD><TD><420243></TD><TD></TD><TD></TD><TD></TD><TD>6-32</TD><TD>(0,2,4,5,7,9)</TD><TD><143250></TD></TR>
+<TR><TD>6-8</TD><TD>(0,2,3,4,5,7)</TD><TD><343230></TD><TD></TD><TD></TD><TD></TD><TD>6-33</TD><TD>(0,2,3,5,7,9)</TD><TD><143241></TD></TR>
+<TR><TD>6-9</TD><TD>(0,1,2,3,5,7)</TD><TD><342231></TD><TD></TD><TD></TD><TD></TD><TD>6-34</TD><TD>(0,1,3,5,7,9)</TD><TD><142422></TD></TR>
+<TR><TD>6-Z10</TD><TD>(0,1,3,4,5,7)</TD><TD><333321></TD><TD></TD><TD></TD><TD></TD><TD>6-35</TD><TD>(0,2,4,6,8,10)</TD><TD><060603></TD></TR>
+<TR><TD>6-Z11</TD><TD>(0,1,2,4,5,7)</TD><TD><333231></TD><TD></TD><TD></TD><TD></TD><TD>6-Z36</TD><TD>(0,1,2,3,4,7)</TD><TD><433221></TD></TR>
+<TR><TD>6-Z12</TD><TD>(0,1,2,4,6,7)</TD><TD><332232></TD><TD></TD><TD></TD><TD></TD><TD>6-Z37</TD><TD>(0,1,2,3,4,8)</TD><TD><432321></TD></TR>
+<TR><TD>6-Z13</TD><TD>(0,1,3,4,6,7)</TD><TD><324222></TD><TD></TD><TD></TD><TD></TD><TD>6-Z38</TD><TD>(0,1,2,3,7,8)</TD><TD><421242></TD></TR>
+<TR><TD>6-14</TD><TD>(0,1,3,4,5,8)</TD><TD><323430></TD><TD></TD><TD></TD><TD></TD><TD>6-Z39</TD><TD>(0,2,3,4,5,8)</TD><TD><333321></TD></TR>
+<TR><TD>6-15</TD><TD>(0,1,2,4,5,8)</TD><TD><323421></TD><TD></TD><TD></TD><TD></TD><TD>6-Z40</TD><TD>(0,1,2,3,5,8)</TD><TD><333231></TD></TR>
+<TR><TD>6-16</TD><TD>(0,1,4,5,6,8)</TD><TD><322431></TD><TD></TD><TD></TD><TD></TD><TD>6-Z41</TD><TD>(0,1,2,3,6,8)</TD><TD><332232></TD></TR>
+<TR><TD>6-Z17</TD><TD>(0,1,2,4,7,8)</TD><TD><322332></TD><TD></TD><TD></TD><TD></TD><TD>6-Z42</TD><TD>(0,1,2,3,6,9)</TD><TD><324222></TD></TR>
+<TR><TD>6-18</TD><TD>(0,1,2,5,7,8)</TD><TD><322242></TD><TD></TD><TD></TD><TD></TD><TD>6-Z43</TD><TD>(0,1,2,5,6,8)</TD><TD><322332></TD></TR>
+<TR><TD>6-Z19</TD><TD>(0,1,3,4,7,8)</TD><TD><313431></TD><TD></TD><TD></TD><TD></TD><TD>6-Z44</TD><TD>(0,1,2,5,6,9)</TD><TD><313431></TD></TR>
+<TR><TD>6-20</TD><TD>(0,1,4,5,8,9)</TD><TD><303630></TD><TD></TD><TD></TD><TD></TD><TD>6-Z45</TD><TD>(0,2,3,4,6,9)</TD><TD><234222></TD></TR>
+<TR><TD>6-21</TD><TD>(0,2,3,4,6,8)</TD><TD><242412></TD><TD></TD><TD></TD><TD></TD><TD>6-Z46</TD><TD>(0,1,2,4,6,9)</TD><TD><233331></TD></TR>
+<TR><TD>6-22</TD><TD>(0,1,2,4,6,8)</TD><TD><241422></TD><TD></TD><TD></TD><TD></TD><TD>6-Z47</TD><TD>(0,1,2,4,7,9)</TD><TD><233241></TD></TR>
+<TR><TD>6-Z23</TD><TD>(0,2,3,5,6,8)</TD><TD><234222></TD><TD></TD><TD></TD><TD></TD><TD>6-Z48</TD><TD>(0,1,2,5,7,9)</TD><TD><232341></TD></TR>
+<TR><TD>6-Z24</TD><TD>(0,1,3,4,6,8)</TD><TD><233331></TD><TD></TD><TD></TD><TD></TD><TD>6-Z49</TD><TD>(0,1,3,4,7,9)</TD><TD><224322></TD></TR>
+<TR><TD>6-Z25</TD><TD>(0,1,3,5,6,8)</TD><TD><233241></TD><TD></TD><TD></TD><TD></TD><TD>6-Z50</TD><TD>(0,1,4,6,7,9)</TD><TD><224232></TD></TR>
+</TABLE>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**pitch</b>  --  American National Standards Institute pitch notation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**pitch</b>
+representation permits the encoding of Western musical pitches using the
+standard system for pitch designations adopted by the
+American National Standards Institute
+(e.g. `G#4').
+</P>
+<P>
+The
+<b>**pitch</b>
+representation distinguishes three types of data tokens:
+pitches, rests, and barlines.
+Pitches may be encoded using pitch letter-name, accidental, octave
+designation, and pitch deviation (in cents).
+In addition,
+<b>**pitch</b>
+provides limited capabilities for representing phrasing and slurs.
+</P>
+<P>
+Pitch tokens consist of up to four logical parts -- without
+any intervening spaces.
+The first part is the pitch letter-name;
+only the upper-case letters A, B, C, D, E, F, and G are permitted.
+The second part is an optional accidental: the octothorpe (#) for sharp,
+the small letter `b' for flat, the small letter `x' for double-sharp,
+and two successive small letter `b's for double-flats.
+Triple and quadruple sharps (x#, xx, etc.) and flats (bbb, bbbb, etc.)
+are permissible, however a given pitch token may not be modified
+by sharps and flats concurrently.
+</P>
+<P>
+The third part of a pitch token is the octave designation.
+The number 4 is used to designate all pitches between middle C
+and the B a major seventh above, inclusive.
+Octave numbers are incremented by one for each successively higher octave,
+and are decremented by one for each successively lower octave.
+Negative octave numbers are not permitted, so the lowest
+pitch in the
+<b>**pitch</b>
+representation is C0 (16.35 Hz).
+Only a single octave digit is permitted, so the highest
+<b>**pitch</b>
+pitch is B9 (15,804 Hz).
+</P>
+<P>
+If a given pitch deviates from equal temperament,
+a fourth part is added to a
+<b>**pitch</b>
+pitch token denoting the cents deviation from equal temperament.
+This consists of an integer value preceded by either a plus or minus sign.
+</P>
+<P>
+By way of example, the following
+<b>**pitch</b>
+token encodes a note 19 cents flat from A440
+(in this case A435 Hz):
+</P>
+<P>
+<blockquote>
+<code><big>
+A4-19
+</code></big>
+</blockquote>
+</P>
+<P>
+Once again, no intervening spaces are permitted within a single note.
+Notice that the order of signifiers is important for pitch encodings.
+Pitch letter-name is followed by one or more accidentals (if appropriate),
+followed by an octave designation, followed by cents deviation (if appropriate)
+--  where cents deviation is an integer preceded by the plus or
+minus sign.
+</P>
+<P>
+Several notes may be encoded concurrently in a single spine by using
+the Humdrum multiple-stop convention:
+notes within multiple-stops are separated by single spaces.
+The following example encodes a C-minor chord as four pitches in two
+<b>**pitch</b>
+spines -- each spine containing a double-stop.
+<blockquote>
+<TABLE>
+<code><big>
+<TR><TD>**pitch</TD><TD>**pitch</TD></TR>
+<TR><TD>C4 Eb4</TD><TD>G4 C5</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</code></big>
+</TABLE>
+</blockquote>
+Pitch tokens may be modified by the presence of additional signifiers.
+The open brace `{' denotes the beginning of a phrase.
+The closed brace `}' denotes the end of a phrase.
+The open parenthesis `(' denotes the beginning of a slur.
+The closed parenthesis `)' denotes the end of a slur.
+The semicolon `;' denotes a pause.
+</P>
+<P>
+Rest tokens are denoted by the lower-case letter `r'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**pit</big></code>
+data should be given names with the distinguishing `.pit' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**pitch</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>A-G</TD><TD>absolute pitches letter name</TD></TR>
+<TR><TD>0-9</TD><TD>octave designation, where C4 equals middle C;</TD></TR>
+<TR><TD></TD><TD>     also cents deviation (when preceded by minus or plus sign)</TD></TR>
+<TR><TD>b</TD><TD>flat</TD></TR>
+<TR><TD>bb</TD><TD>double flat</TD></TR>
+<TR><TD>bbb</TD><TD>triple flat</TD></TR>
+<TR><TD>#</TD><TD>sharp</TD></TR>
+<TR><TD>x</TD><TD>double sharp</TD></TR>
+<TR><TD>x#</TD><TD>triple sharp</TD></TR>
+<TR><TD>xx</TD><TD>quadruple sharp</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>(</TD><TD>slur start</TD></TR>
+<TR><TD>)</TD><TD>slur end</TD></TR>
+<TR><TD>{</TD><TD>phrase mark (start)</TD></TR>
+<TR><TD>}</TD><TD>phrase mark (end)</TD></TR>
+<TR><TD>;</TD><TD>pause sign</TD></TR>
+<TR><TD>-</TD><TD>negative cents deviation-nus sign)</TD></TR>
+<TR><TD>+</TD><TD>positive cents deviation</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**pitch</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**pitch</TD><TD>**pitch</TD></TR>
+<TR><TD>*pelog</TD><TD>*slendro</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>A#4+20</TD><TD>Bb4-80</TD></TR>
+<TR><TD>A4</TD><TD>.</TD></TR>
+<TR><TD>A4</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>A4</TD><TD>{(G3+5</TD></TR>
+<TR><TD>r</TD><TD>G3+73</TD></TR>
+<TR><TD>.</TD><TD>G#3-2)</TD></TR>
+<TR><TD>r</TD><TD>r</TD></TR>
+<TR><TD>r</TD><TD>Db4+18</TD></TR>
+<TR><TD>Db4</TD><TD>Db4+77}</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+</P>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum commands accept <b>**pitch</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>cents</b></TD><TD>translates <b>**pitch</b> to <b>**cents</b></TD></TR>
+<TR><TD></TD><TD><b>deg</b></TD><TD>translate <b>**pitch</b> to <b>**deg</b></TD></TR>
+<TR><TD></TD><TD><b>degree</b></TD><TD>translate <b>**pitch</b> to <b>**degree</b></TD></TR>
+<TR><TD></TD><TD><b>freq</b></TD><TD>translates <b>**pitch</b> to <b>**freq</b></TD></TR>
+<TR><TD></TD><TD><b>hint</b></TD><TD>calculate harmonic intervals from <b>**pitch</b> input</TD></TR>
+<TR><TD></TD><TD><b>kern</b></TD><TD>translates <b>**pitch</b> to <b>**kern</b></TD></TR>
+<TR><TD></TD><TD><b>mint</b></TD><TD>calculate melodic intervals from <b>**pitch</b> input</TD></TR>
+<TR><TD></TD><TD><b>pc</b></TD><TD>translate <b>**pitch</b> pitch to <b>**pc</b></TD></TR>
+<TR><TD></TD><TD><b>semits</b></TD><TD>translate <b>**pitch</b> pitch to numerical <b>**semits</b></TD></TR>
+<TR><TD></TD><TD><b>solfa</b></TD><TD>translate <b>**pitch</b> pitch to <b>**solfa</b></TD></TR>
+<TR><TD></TD><TD><b>solfg</b></TD><TD>translate <b>**pitch</b> pitch to <b>**solfg</b></TD></TR>
+<TR><TD></TD><TD><b>tonh</b></TD><TD>translate <b>**pitch</b> pitch to <b>**Tonh</b></TD></TR>
+<TR><TD></TD><TD><b>trans</b></TD><TD>transpose <b>**pitch</b> score</TD></TR>
+<TR><TD></TD><TD><b>vox</b></TD><TD>determine active and inactive voices in a Humdrum file</TD></TR>
+<TR><TD></TD></TR>
+</blockquote>
+The following Humdrum command produces <b>**pitch</b> data as output:
+<blockquote>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>pitch</b></TD><TD>translates <b>**cents</b>, <b>**degree</b>, <b>**freq</b>, <b>**fret</b>, <b>**kern</b>,</TD></TR>
+<TR><TD></TD><TD></TD><TD><b>**MIDI</b>, <b>**semits</b>, <b>**solfg</b>, <b>**specC</b>, and <b>**Tonh</b> to</TD></TR>
+<TR><TD></TD><TD></TD><TD><b>**pitch</b></TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**pitch</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**pitch</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2), <b>**cents</b> (2),
+<b>**deg</b> (2), <b>**degree</b> (2),
+<b>**freq</b> (2), <b>**hint</b> (2), <b>**kern</b> (2),
+<b>mint</b> (4), <b>**pc</b> (2), <b>pitch</b> (4), <b>**semits</b> (2),
+<b>**solfa</b> (2), <b>**solfg</b> (2),
+<b>**specC</b> (2), <b>**Tonh</b> (2)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**recip</b>  --  beat-proportion representation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**recip</b>
+scheme is able to represent durations according to the traditional system of
+beat-proportions (rather than according to elapsed- or clock-time.)
+Durations are specified through the use of integer numbers
+and augmentation dots.
+With the exception of the value zero, durations are represented by
+reciprocal numerical values.
+For example:
+<blockquote>
+<TABLE>
+<TR><TD>0</TD><TD>breve duration</TD></TR>
+<TR><TD>1</TD><TD>whole duration</TD></TR>
+<TR><TD>2</TD><TD>half duration</TD></TR>
+<TR><TD>4</TD><TD>quarter duration</TD></TR>
+<TR><TD>8</TD><TD>eighth duration</TD></TR>
+<TR><TD>16</TD><TD>sixteenth duration</TD></TR>
+<TR><TD>32</TD><TD>thirty-second duration</TD></TR>
+<TR><TD>64</TD><TD>sixty-fourth duration</TD></TR>
+<TR><TD>etc.</TD></TR>
+</TABLE>
+<CENTER>
+<i>Representations of Duration in <b>**recip</b></i>
+</CENTER>
+</blockquote>
+The number zero (0) is reserved for the
+<i>breve</i>
+duration (i.e. a duration of twice the length of a whole note).
+Dotted durations are indicated by adding the period character (.)
+after the numerical value:
+<blockquote>
+<TABLE>
+<TR><TD>2.</TD><TD>dotted half duration</TD></TR>
+<TR><TD>8..</TD><TD>doubly-dotted eighth duration</TD></TR>
+<TR><TD>etc.</TD></TR>
+</TABLE>
+<CENTER>
+<i>Representation of Dotted Durations in <b>**recip</b></i>
+</CENTER>
+</blockquote>
+Any number of augmentation dots may follow the duration integer.&#167
+&#167
+Notice that the period is used both to indicate Humdrum null tokens and
+<b>**recip</b>
+augmentation dots.
+In parsing
+<b>**recip</b>
+spines, there is never any confusion concerning
+the meaning of the period:
+as a null token, the period will appear isolated from all other
+characters (by tabs or carriage returns).
+As an augmentation dot, the period will always follow a number.
+.FE
+</P>
+<P>
+Triplet and other irregular durations are represented in a somewhat more
+arcane, though no less logical fashion.
+Consider, for example, the quarter-note triplet duration.
+Three quarter triplets occur in the time of four quarters
+or one whole duration.
+If we divide a whole duration ("1") into three equal parts, each part
+has a duration of one-third.
+The corresponding reciprocal integer for 1/3 is 3, hence
+<b>**recip</b>
+represents a quarter-note triplet as a "third-note" -- 3.
+Similarly, eighth-note triplets are represented by the integer 6
+while sixteenth-note triplets are represented by the integer 12.
+Eighth-note quintuplets (5 in the time of 4)
+will be represented by the value 10 (a half duration divided by 5).
+</P>
+<P>
+In general, the way to determine the
+<b>**recip</b>
+equivalent of an arbitrary "tuplet" duration is to multiply the
+number of tuplets by the total duration which they occupy.
+If 7 notes of equal duration occupy the duration of a whole-note ("1"),
+then each septuplet is represented by the value 7 (i.e. 1 x 7).
+A more extreme example is 23 notes in the time of a doubly-dotted quarter.
+The appropriate
+<b>**recip</b>
+duration can be found by multiplying 4 by 23 (equals 92)
+and adding the appropriate augmentation dots.
+Thus "92.." is the correct
+<b>**recip</b>
+encoding for a note whose duration is 23 notes in the time of a
+doubly-dotted quarter.
+</P>
+<P>
+The
+<b>**recip</b>
+representation can be used to encode a sequence
+of time-spans or successive durations.
+The units are seconds.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**recip</big></code>
+data should be given names with the distinguishing `.rcp' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**recip</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>.</TD><TD>dotted duration; null token</TD></TR>
+<TR><TD>=</TD><TD>barlines</TD></TR>
+<TR><TD>==</TD><TD>double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**recip</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! Gustav Holst</TD></TR>
+<TR><TD>**recip</TD></TR>
+<TR><TD>*M5/4</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>12</TD></TR>
+<TR><TD>12</TD></TR>
+<TR><TD>12</TD></TR>
+<TR><TD>4</TD></TR>
+<TR><TD>4</TD></TR>
+<TR><TD>8</TD></TR>
+<TR><TD>8</TD></TR>
+<TR><TD>4</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum command accepts <b>**recip</b> encoded data as input:
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>timebase</b></TD><TD>reformat <b>**recip</b> score with constant time-base</TD></TR>
+<TR><TD></TD><TD><b>urrhythm</b></TD><TD>characterize the rhythmic prototype in a passage</TD></TR>
+</TABLE>
+</blockquote>
+</P>
+<P>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**recip</b>:
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+<TR><TD>timebase</TD><TD><code><big>*tb32</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**recip</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**date</b> (2),
+<b>**metpos</b> (2), <b>**ordo</b> (2),
+<b>**recip</b> (2), <b>**takt</b> (2), <b>**time</b> (2),
+<b>timebase</b> (4),
+<b>**URrhythm</b> (2), <b>urrhythm</b> (4),
+<b>**Zeit</b> (2)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**semits</b>  --  semitone absolute pitch representation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**semits</b>
+representation is used to represent absolute pitch
+in semitone units with respect to middle C.
+Middle C is designated zero semitones.
+All other pitches are represented with respect to this reference,
+hence A4 is 9 semits and A3 is -3 semits.
+Fractional values can also be represented, hence 1.5 is midway
+between C#4 and D4.
+</P>
+<P>
+Pitch tokens may be modified by the presence of additional signifiers.
+The open brace `{' denotes the beginning of a phrase.
+The closed brace `}' denotes the end of a phrase.
+The open parenthesis `(' denotes the beginning of a slur.
+The closed parenthesis `)' denotes the end of a slur.
+The semicolon `;' denotes a pause.
+</P>
+<P>
+Rest tokens are denoted by the lower-case letter `r'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**semits</big></code>
+data should be given names with the distinguishing `.sem' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**semits</b>
+mappings of signifiers and signifieds.
+</P>
+<P>
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>-</TD><TD>minus sign</TD></TR>
+<TR><TD>+</TD><TD>plus sign (optional)</TD></TR>
+<TR><TD>.</TD><TD>fractional delimiter; null token</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>(</TD><TD>slur start</TD></TR>
+<TR><TD>)</TD><TD>slur end</TD></TR>
+<TR><TD>{</TD><TD>phrase mark (start)</TD></TR>
+<TR><TD>}</TD><TD>phrase mark (end)</TD></TR>
+<TR><TD>;</TD><TD>pause sign</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**semits</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+The following sample document shows a <code><big>**kern</big></code> spine
+with corresponding <code><big>**semits</big></code> pitch values.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**semits</TD><TD>**kern</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>*c:</TD><TD>*c:</TD></TR>
+<TR><TD>=</TD><TD>=</TD></TR>
+<TR><TD>r</TD><TD>8r</TD></TR>
+<TR><TD>12</TD><TD>16cc</TD></TR>
+<TR><TD>11</TD><TD>16bn</TD></TR>
+<TR><TD>12</TD><TD>8cc</TD></TR>
+<TR><TD>14</TD><TD>8dd</TD></TR>
+<TR><TD>5</TD><TD>16f</TD></TR>
+<TR><TD>7</TD><TD>16g</TD></TR>
+<TR><TD>8</TD><TD>4a-</TD></TR>
+<TR><TD>7</TD><TD>16g</TD></TR>
+<TR><TD>5</TD><TD>16f</TD></TR>
+<TR><TD>=</TD><TD>=</TD></TR>
+<TR><TD>4 7</TD><TD>1e 1g</TD></TR>
+<TR><TD>==</TD><TD>==</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum commands accept <b>**semits</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>cents</b></TD><TD>translates <b>**semits</b> to <b>**cents</b></TD></TR>
+<TR><TD></TD><TD><b>freq</b></TD><TD>translates <b>**semits</b> to <b>**freq</b></TD></TR>
+<TR><TD></TD><TD><b>kern</b></TD><TD>translates <b>**semits</b> to <b>**kern</b></TD></TR>
+<TR><TD></TD><TD><b>melac</b></TD><TD>calculate melodic accent values for successive pitches</TD></TR>
+<TR><TD></TD><TD><b>pc</b></TD><TD>translate <b>**semits</b> pitch to <b>**pc</b></TD></TR>
+<TR><TD></TD><TD><b>pitch</b></TD><TD>translate <b>**semits</b> pitch to <b>**pitch</b></TD></TR>
+<TR><TD></TD><TD><b>semits</b></TD><TD>change numerical precision of <b>**semits</b> values</TD></TR>
+<TR><TD></TD><TD><b>solfg</b></TD><TD>translate <b>**semits</b> pitch to <b>**solfg</b></TD></TR>
+<TR><TD></TD><TD><b>tonh</b></TD><TD>translate <b>**semits</b> pitch to <b>**Tonh</b></TD></TR>
+<TR><TD></TD><TD><b>vox</b></TD><TD>determine active and inactive voices in a Humdrum file</TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+</blockquote>
+The following Humdrum commands produce <b>**semits</b> data as outputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>semits</b></TD><TD>translates <b>**cents</b>, <b>**freq</b>, <b>**fret</b>, <b>**kern</b>, <b>**MIDI</b>,</TD></TR>
+<TR><TD></TD><TD></TD><TD><b>**pitch</b>, <b>**semits</b>, <b>**solfg</b>, <b>**specC</b>, <b>**Tonh</b>,</TD></TR>
+<TR><TD></TD><TD></TD><TD>to <b>**semits</b></TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**semits</b>:
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**semits</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**cents</b> (2), <b>cents</b> (4),
+<b>**freq</b> (2), <b>freq</b> (4),
+<b>**fret</b> (2), <b>**kern</b> (2), <b>kern</b> (4),</b> <b>**MIDI</b> (2),
+<b>midi</b> (4), <b>**pitch</b> (2), <b>pitch</b> (4), <b>semits</b> (4),
+<b>**solfg</b> (2), <b>solfg</b> (4), <b>**specC</b> (2) <b>specC</b> (4),
+<b>**Tonh</b> (2), <b>tonh</b> (4)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**simil</b>  --  similarity representation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**simil</b>
+representation encodes numerical values that
+indicate the Damerau-Levenshtein edit distance between two
+other Humdrum representations.
+Data tokens for
+<b>**simil</b>
+consist only of decimal numbers.
+The value 1.0 indicates identical material beginning at the
+current data record.
+Lower numerical values indicate increasingly less similarity
+at the current data record.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**simil</big></code>
+data should be given names with the distinguishing `.sim' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**simil</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>.</TD><TD>fractional delimiter; null token</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**simil</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**simil</TD></TR>
+<TR><TD>0.78</TD></TR>
+<TR><TD>0.73</TD></TR>
+<TR><TD>0.74</TD></TR>
+<TR><TD>0.69</TD></TR>
+<TR><TD>0.71</TD></TR>
+<TR><TD>0.68</TD></TR>
+<TR><TD>0.68</TD></TR>
+<TR><TD>0.63</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+</P>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum command produces <b>**simil</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>simil</b></TD><TD>measure the similarity between two Humdrum spines</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**simil</b>:
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**simil</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>cmp</b> (UNIX),
+<b>**correl</b> (2),
+<b>correl</b> (4),
+<b>diff</b> (UNIX), <b>patt</b> (4), <b>pattern</b> (4),
+<b>simil</b> (4), <b>**xref</b> (2)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**solfa</b>  --  representation for tonic solfa syllables
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**solfa</b>
+representation permits the encoding of extended tonic solfa syllables
+for the "moveable doh" system of pitch naming.
+</P>
+<P>
+The
+<b>**solfa</b>
+representation distinguishes three types of data tokens:
+pitches, rests, and barlines.
+</P>
+<P>
+Pitches tokens are represented using the syllables
+<i>do, re, mi, fa, so, la,</i>
+and <i>ti</i> -- or their chromatic alterations:
+<i>di, da, ri, ra,</i>
+etc. (see table below).
+Tonic solfa syllables can be determined only with reference to some
+prevailing key.
+For example, the pitch C is the tonic (<code><big>do</big></code>) in
+the key of C major or C minor.
+</P>
+<P>
+The
+<b>**solfa</b>
+representation does not distinguish between major and minor modes.
+Only the tonic pitch is of importance when determining the
+representation for a given pitch.
+For example, in both C major and C minor,
+the pitch A-natural is represented as <code><big>la</big></code>
+while the pitch A-flat is represented as <code><big>le</big></code>.
+</P>
+<P>
+The amount of chromatic alteration is not represented by <b>**solfa</b>;
+once a pitch is "raised," raising it further will not
+change the note's representation.
+For example, where the tonic pitch is B-flat, both B-natural
+and B-sharp are represented by <code><big>di</big></code>.
+</P>
+<P>
+Octave designations are not represented in
+<b>**solfa.</b>
+However,
+<b>**solfa</b>
+provides limited capabilities for representing phrasing and slurs.
+</P>
+<P>
+Several pitches may be encoded concurrently in a single spine by using
+the Humdrum multiple-stop convention:
+pitches within multiple-stops are separated by single spaces.
+For example,
+the following example encodes a 4-note tonic major chord using two
+<b>**solfa</b>
+spines -- each spine containing a double-stop.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**solfa</TD><TD>**solfa</TD></TR>
+<TR><TD>*C:</TD><TD>*C:</TD></TR>
+<TR><TD>do mi</TD><TD>so do</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+Pitch tokens may be modified by the presence of additional signifiers.
+The open brace `{' denotes the beginning of a phrase.
+The closed brace `}' denotes the end of a phrase.
+The open parenthesis `(' denotes the beginning of a slur.
+The closed parenthesis `)' denotes the end of a slur.
+The semicolon `;' denotes a pause.
+</P>
+<P>
+Rest tokens are denoted by the lower-case letter `r'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+File type is dubbed `.sol'.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**solfa</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>do</TD><TD>(pronounced <i>doe</i>) tonic pitch</TD></TR>
+<TR><TD>di</TD><TD>(<i>dee</i>) raised tonic pitch</TD></TR>
+<TR><TD>de</TD><TD>(<i>day</i>) lowered tonic pitch</TD></TR>
+<TR><TD>re</TD><TD>(<i>ray</i>) supertonic pitch</TD></TR>
+<TR><TD>ri</TD><TD>(<i>ree</i>) raised supertonic pitch</TD></TR>
+<TR><TD>ra</TD><TD>(<i>raw</i>) lowered supertonic pitch</TD></TR>
+<TR><TD>mi</TD><TD>(<i>me</i>) mediant pitch</TD></TR>
+<TR><TD>my</TD><TD>(<i>my</i>) raised mediant pitch</TD></TR>
+<TR><TD>me</TD><TD>(<i>may</i>) lowered mediant pitch</TD></TR>
+<TR><TD>fa</TD><TD>(<i>fah</i>) subdominant pitch</TD></TR>
+<TR><TD>fi</TD><TD>(<i>fee</i>) raised subdominant pitch</TD></TR>
+<TR><TD>fe</TD><TD>(<i>fay</i>) lowered subdominant pitch</TD></TR>
+<TR><TD>so</TD><TD>(<i>so</i>) dominant pitch</TD></TR>
+<TR><TD>si</TD><TD>(<i>see</i>) raised dominant pitch</TD></TR>
+<TR><TD>se</TD><TD>(<i>say</i>) lowered dominant pitch</TD></TR>
+<TR><TD>la</TD><TD>(<i>la</i>) submediant pitch</TD></TR>
+<TR><TD>li</TD><TD>(<i>lee</i>) raised submediant pitch</TD></TR>
+<TR><TD>le</TD><TD>(<i>lay</i>) lowered submediant pitch</TD></TR>
+<TR><TD>ti</TD><TD>(<i>tee</i>) leading tone</TD></TR>
+<TR><TD>ty</TD><TD>(<i>tie</i>) raised leading tone</TD></TR>
+<TR><TD>te</TD><TD>(<i>tay</i>) lowered leading tone</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>(</TD><TD>slur start</TD></TR>
+<TR><TD>)</TD><TD>slur end</TD></TR>
+<TR><TD>{</TD><TD>phrase mark (start)</TD></TR>
+<TR><TD>}</TD><TD>phrase mark (end)</TD></TR>
+<TR><TD>;</TD><TD>pause sign</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**solfa</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! Johannes Brahms</TD></TR>
+<TR><TD>!! Waltz Opus 39, No. 15</TD></TR>
+<TR><TD>**solfa</TD><TD>**solfa</TD></TR>
+<TR><TD>*M3/4</TD><TD>*M3/4</TD></TR>
+<TR><TD>*A:</TD><TD>*A:</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>do</TD><TD>so mi</TD></TR>
+<TR><TD>so mi</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>mi do</TD></TR>
+<TR><TD>mi so</TD><TD>mi do</TD></TR>
+<TR><TD>.</TD><TD>so mi</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>do</TD><TD>la fa</TD></TR>
+<TR><TD>.</TD><TD>so</TD></TR>
+<TR><TD>.</TD><TD>fa</TD></TR>
+<TR><TD>fa fa</TD><TD>so mi</TD></TR>
+<TR><TD>la do</TD><TD>fa re</TD></TR>
+<TR><TD>=4</TD><TD>=4</TD></TR>
+<TR><TD>do</TD><TD>so mi</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum command accepts <b>**solfa</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>vox</b></TD><TD>determine active and inactive voices in a Humdrum file</TD></TR>
+<TR><TD></TD></TR>
+</blockquote>
+The following Humdrum command produces <b>**solfa</b> data as output:
+<blockquote>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>solfa</b></TD><TD>translates <b>**kern</b>, <b>**pitch</b>, <b>**solfg</b>, <b>**Tonh</b></TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**solfa</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**solfa</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**deg</b> (2), <b>**degree</b> (2),
+<b>**kern</b> (2), <b>**pitch</b> (2),
+<b>**solfg</b> (2), <b>**Tonh</b> (2),
+<b>vox</b> (4)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**solfg</b>  --  French solf&#232ge (pitch) notation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**solfg</b>
+representation permits the encoding of Western musical pitches using the
+common French system for pitch naming.
+</P>
+<P>
+The
+<b>**solfg</b>
+representation distinguishes three types of data tokens:
+pitches, rests, and barlines.
+Pitches are encoded using diatonic pitch names, accidentals,
+and octave indications.
+In addition,
+<b>**solfg</b>
+provides limited capabilities for representing phrasing and slurs.
+</P>
+<P>
+Pitch tokens consist of three logical parts -- without
+any intervening spaces.
+The first part uses the so-called `fixed-do' method of diatonic
+pitch designations:
+<i>do, r&#233, mi, fa, sol, la,</i>
+and
+<i>si.</i>
+The second part is an optional accidental preceded by an
+tilde.
+Flats (<i>b&#233mol</i>) and sharps (<i>di\o'e\ga'se</i>)
+are abbreviated
+<i>b</i>
+and
+<i>d</i>
+respectively.
+Hence, `do di\o'e\ga'se' (<code><big>do~d</big></code>) for C-sharp, `la b\o'e\aa'mol'
+(<code><big>la~b</big></code>) for A-flat, `sol double-di&#232se' (<code><big>sol~dd</big></code>)
+for G double-sharp, `si double-b&#233mol' (<code><big>si~bb</big></code>)
+for B double-flat, and so on.
+</P>
+<P>
+The third part of a pitch token is the octave designation.
+The number 4 is used to designate all pitches between middle C
+and the
+<i>si</i>
+a major seventh above, inclusive.
+Octave numbers are incremented by one for each successively higher octave,
+and are decremented by one for each successively lower octave.
+Negative octave numbers are not permitted, so the lowest
+pitch in the
+<b>**solfg</b>
+representation is do0 (16.35 Hz).
+Only a single octave digit is permitted, so the highest
+<b>**solfg</b>
+pitch is si9 (15,804 Hz).
+</P>
+<P>
+Once again, no intervening spaces are permitted within a single note.
+Notice that the order of signifiers is important for pitch encodings.
+Pitch letter-name is followed by one or more accidentals (if appropriate),
+followed by an octave designation.
+</P>
+<P>
+Several notes may be encoded concurrently in a single spine by using
+the Humdrum multiple-stop convention:
+notes within multiple-stops are separated by single spaces.
+The following example encodes a C-minor chord as four pitches in two
+<b>**solfg</b>
+spines -- each spine containing a double-stop.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**solfg</TD><TD>**solfg</TD></TR>
+<TR><TD>do4 mi~b4</TD><TD>sol4 do5</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+Pitch tokens may be modified by the presence of additional signifiers.
+The open brace `{' denotes the beginning of a phrase.
+The closed brace `}' denotes the end of a phrase.
+The open parenthesis `(' denotes the beginning of a slur.
+The closed parenthesis `)' denotes the end of a slur.
+The semicolon `;' denotes a pause.
+</P>
+<P>
+Rest tokens are denoted by the lower-case letter `r'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**solfg</big></code>
+data should be given names with the distinguishing `.slg' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**solfg</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>octave designation, where do4 equals middle C;</TD></TR>
+<TR><TD>doremifasl</TD><TD>diatonic pitches letter names</TD></TR>
+<TR><TD>~</TD><TD>accidental delimiter</TD></TR>
+<TR><TD>~b</TD><TD>flat (b&#233mol)</TD></TR>
+<TR><TD>~d</TD><TD>sharp (di&#232se)</TD></TR>
+<TR><TD>~bb</TD><TD>double-flat</TD></TR>
+<TR><TD>~dd</TD><TD>double-sharp</TD></TR>
+<TR><TD>n</TD><TD>natural</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>(</TD><TD>slur start</TD></TR>
+<TR><TD>)</TD><TD>slur end</TD></TR>
+<TR><TD>{</TD><TD>phrase mark (start)</TD></TR>
+<TR><TD>}</TD><TD>phrase mark (end)</TD></TR>
+<TR><TD>;</TD><TD>pause sign</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**solfg</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! Claude Debussy</TD></TR>
+<TR><TD>!! "Voiles"</TD></TR>
+<TR><TD>**solfg</TD><TD>**solfg</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>r</TD><TD>r</TD></TR>
+<TR><TD>{mi5</TD><TD>{sol~d5</TD></TR>
+<TR><TD>re5</TD><TD>fah~d5</TD></TR>
+<TR><TD>do5</TD><TD>mi5</TD></TR>
+<TR><TD>si~b4</TD><TD>re5</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>la~b4</TD><TD>do5</TD></TR>
+<TR><TD>sol~d5</TD><TD>do6</TD></TR>
+<TR><TD>fa~d5}</TD><TD>si~b5}</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum commands accept <b>**solfg</b> encoded data as inputs:
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>cents</b></TD><TD>translate <b>**solfg</b> to <b>**cents</b></TD></TR>
+<TR><TD></TD><TD><b>deg</b></TD><TD>translate <b>**solfg</b> to <b>**deg</b></TD></TR>
+<TR><TD></TD><TD><b>degree</b></TD><TD>translate <b>**solfg</b> to <b>**degree</b></TD></TR>
+<TR><TD></TD><TD><b>freq</b></TD><TD>translate <b>**solfg</b> to <b>**freq</b></TD></TR>
+<TR><TD></TD><TD><b>hint</b></TD><TD>calculate harmonic intervals from <b>**solfg</b> input</TD></TR>
+<TR><TD></TD><TD><b>kern</b></TD><TD>translate <b>**solfg</b> to <b>**kern</b></TD></TR>
+<TR><TD></TD><TD><b>mint</b></TD><TD>calculate melodic intervals from <b>**solfg</b> input</TD></TR>
+<TR><TD></TD><TD><b>pc</b></TD><TD>translate <b>**solfg</b> pitch to <b>**pc</b></TD></TR>
+<TR><TD></TD><TD><b>pitch</b></TD><TD>translate <b>**solfg</b> pitch to <b>**pitch</b></TD></TR>
+<TR><TD></TD><TD><b>semits</b></TD><TD>translate <b>**solfg</b> pitch to numerical <b>**semits</b></TD></TR>
+<TR><TD></TD><TD><b>solfa</b></TD><TD>translate <b>**solfg</b> pitch to <b>**solfa</b></TD></TR>
+<TR><TD></TD><TD><b>tonh</b></TD><TD>translate <b>**solfg</b> pitch to <b>**Tonh</b></TD></TR>
+<TR><TD></TD><TD><b>trans</b></TD><TD>transpose <b>**solfg</b> score</TD></TR>
+<TR><TD></TD><TD><b>vox</b></TD><TD>determine active and inactive voices in a Humdrum file</TD></TR>
+<TR><TD></TD></TR>
+</blockquote>
+The following Humdrum command produces <b>**solfg</b> data as output:
+<blockquote>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>solfg</b></TD><TD>translates <b>**cents</b>, <b>**degree</b>, <b>**fret</b>, <b>**freq</b>, <b>**kern</b>,</TD></TR>
+<TR><TD></TD><TD></TD><TD><b>**MIDI</b>, <b>**pitch</b>, <b>**semits</b>, <b>**specC</b>, and <b>**Tonh</b> to <b>**solfg</b></TD></TR>
+</TABLE>
+</blockquote>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**solfg</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**solfg</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**cents</b> (2),
+<b>**deg</b> (2), <b>**degree</b> (2),
+<b>**freq</b> (2), <b>**hint</b> (2), <b>**kern</b> (2),
+<b>**mint</b> (2), <b>mint</b> (4),
+<b>**pc</b> (2), <b>pc</b> (4),
+<b>**pitch</b> (2), <b>pitch</b> (4),
+<b>**semits</b> (2), <b>**solfa</b> (2),
+<b>solfg</b> (4), <b>**Tonh</b> (2), <b>tonh</b> (4)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**specC</b>  --  spectral centroid representation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**specC</b>
+representation can be used to represent the frequency of the
+spectral centroid for pure or complex tones.
+Spectral centroid is the amplitude-weighted mean of several
+frequency components.
+For example, given three frequencies (200, 400, 900 Hz) of equal
+amplitude,
+the corresponding spectral centroid would be the arithmetic mean
+of the three frequencies (i.e. 750 Hz).
+For pure tones, the spectral centroid is equivalent to the
+frequency of the pure tone.
+For complex tones, the spectral centroid is higher when tones
+have greater energy (amplitudes) in the upper partials.
+Hence, spectral centroid provides a simple index for the
+<i>richness</i>
+or
+<i>brightness</i>
+of a tone or sonority.
+</P>
+<P>
+Spectral centroid tokens are numerical values in units of hertz.
+Frequencies may be specified as integer or real values (using a decimal).
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**specC</big></code>
+data should be given names with the distinguishing `.spc' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**specC</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>frequency (in hertz) specified as an integer</TD></TR>
+<TR><TD></TD><TD>     or real value</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**specC</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**specC</TD><TD>**specC</TD></TR>
+<TR><TD>*pure</TD><TD>*complex</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>1900</TD><TD>2730</TD></TR>
+<TR><TD>868.9</TD><TD>.</TD></TR>
+<TR><TD>1362</TD><TD>4402</TD></TR>
+<TR><TD>2263.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>3742</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>r</TD><TD>r</TD></TR>
+<TR><TD>==</TD><TD>==</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+</code></big>
+Notice that frequencies can be either real or integer values.
+Rests are represented by the single letter `r'.
+</blockquote>
+</P>
+<P>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum commands accept <b>**specC</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>cents</b></TD><TD>translates <b>**specC</b> to <b>**cents</b></TD></TR>
+<TR><TD></TD><TD><b>deg</b></TD><TD>translate <b>**specC</b> to <b>**deg</b></TD></TR>
+<TR><TD></TD><TD><b>degree</b></TD><TD>translate <b>**specC</b> to <b>**degree</b></TD></TR>
+<TR><TD></TD><TD><b>freq</b></TD><TD>translate <b>**specC</b> to <b>**freq</b></TD></TR>
+<TR><TD></TD><TD><b>kern</b></TD><TD>translates <b>**specC</b> to <b>**kern</b></TD></TR>
+<TR><TD></TD><TD><b>pc</b></TD><TD>translate <b>**specC</b> pitch to <b>**pc</b></TD></TR>
+<TR><TD></TD><TD><b>pitch</b></TD><TD>translates <b>**specC</b> to <b>**pitch</b></TD></TR>
+<TR><TD></TD><TD><b>semits</b></TD><TD>translate <b>**specC</b> to numerical <b>**semits</b></TD></TR>
+<TR><TD></TD><TD><b>solfg</b></TD><TD>translate <b>**specC</b> pitch to <b>**solfg</b></TD></TR>
+<TR><TD></TD><TD><b>specc</b></TD><TD>change numerical precision of <b>**specC</b> values</TD></TR>
+<TR><TD></TD><TD><b>tonh</b></TD><TD>translate <b>**solfg</b> pitch to <b>**Tonh</b></TD></TR>
+<TR><TD></TD></TR>
+</blockquote>
+The following Humdrum command produces <b>**specC</b> data as output:
+<blockquote>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>specc</b></TD><TD>translates <b>**freq</b>, and <b>**specC</b> to <b>**specC</b></TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**specC</b>:
+<blockquote>
+<TABLE>
+<TR><TD>pure tones</TD><TD><code><big>*pure</big></code></TD></TR>
+<TR><TD>complex tones</TD><TD><code><big>*complex</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**specC</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**cents</b> (2), <b>**deg</b> (2),
+<b>**degree</b> (2), <b>**freq</b> (2),
+<b>**kern</b> (2), <b>**pc</b> (2),
+<b>**pitch</b> (2),
+<b>**semits</b> (2), <b>**solfg</b> (2),
+<b>**Tonh</b> (2)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**spect</b>  --  discrete frequency spectrum representation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**spect</b>
+representation is used to represent successive acoustic spectra.
+Three types of data tokens are recognized by
+<b>**spect</b>:
+spectral data, silence (ambient spectrum), and barlines.
+In the case of spectral data, each token represents a complete
+spectrum specified as a set of concurrent discrete frequency components.
+Each component in the spectrum is represented by
+a pair of numerical values separated by a semicolon (;).
+These paired values encode the frequency and amplitude attributes respectively
+for a single spectral component.
+Frequency values are positive integer or real values representing
+<i>hertz.</i>
+Amplitude values are positive integer or real values representing
+the sound pressure level in decibels (dB SPL).
+Where a spectrum consists of more than one pure tone component,
+the data are encoded as Humdrum multiple-stops.
+</P>
+<P>
+When no sound is present, this is represented by an ambient spectrum
+--  denoted simply by the upper-case letter `A'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**spect</big></code>
+data should be given names with the distinguishing `.spe' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**spect</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>frequency or amplitude values specified as integer</TD></TR>
+<TR><TD></TD><TD>     or real value; measure numbers</TD></TR>
+<TR><TD>.</TD><TD>decimal point; null token</TD></TR>
+<TR><TD>A</TD><TD>ambient spectrum ("silence")</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>=;</TD><TD>barline with pause sign</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**spect</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+The following sample document encodes five spectra and a barline.
+The first data record encodes an ambient spectrum (silence).
+There ensues two spectra, each consisting of three spectral components.
+The first spectrum consists of a 261 Hz tone at 47 dB SPL, as well as spectral
+components at 523 Hz and 785 Hz at 57 dB SPL and 35 dB SPL, respectively.
+Following the barline are two data records that encode two different
+amalgamations of the preceding two three-component spectra.
+Notice that these two spectra are identical; only the order of
+the components differs.
+In the
+<b>**spect</b>
+representation there is no special requirement that the spectral components
+be encoded in any particular order.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**spect</TD></TR>
+<TR><TD>A</TD></TR>
+<TR><TD>261;47 523;57 785;35</TD></TR>
+<TR><TD>330;57 659;35 989;27</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>261;47 523;57 785;35 330;57 659;35 989;27</TD></TR>
+<TR><TD>261;47 330;57 523;57 659;35 785;35 989;27</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</blockquote>
+</code></big>
+</blockquote>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum command produces <b>**spect</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>spect</b></TD><TD>assemble total spectral content for individual sonorities</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**spect</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**spect</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**dB</b> (2),
+<b>diss</b> (4), <b>**freq</b> (2),
+<b>**semits</b> (2), <b>semits</b> (4),
+<b>**spect</b> (2), <b>spect</b> (4)
+</code></big>
+</blockquote>
+</P>
+<P>
+<H3>WARNING</H3>
+<blockquote>
+The
+<b>**spect</b>
+representation frequently produces long data records.
+Viewing or editing the output using restricted window widths
+may be inconvenient.
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**synco</b>  --  represent degree of metric syncopation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**synco</b>
+representation encodes numerical values that indicate the
+degree of metric syncopation for successive moments in a musical passage.
+Data tokens for
+<b>**synco</b>
+consist only of decimal numbers.
+The value 0 indicates no metric syncopation at the current data record.
+Higher numerical values indicate increasing amounts of metric syncopation
+at the current data record.
+</P>
+<P>
+Syncopation values follow a definition of metric syncopation inspired by the
+work of Lee and Longuet-Higgins (1982).
+In brief, metric syncopation may be defined as a moment where an expected
+metric stress is absent.
+More specifically, a metrically syncopated moment is defined as occurring when
+no note-onset happens at a moment whose metric position is more important
+than that of the most recent note onset.
+For example, where a note occurs on the second beat of a quadruple meter,
+and is not followed by a note on the third beat, the third beat is
+deemed syncopated because it occupies a higher metric position than
+the previous onset.
+</P>
+<P>
+Numerical
+<b>**synco</b>
+values are equal to the logarithm of the metric position of the
+previous onset minus the logarithm of the metric position of the
+current moment -- where the
+current moment has no note onset, and coincides with a higher
+metric position than the previous onset.
+For example, missing downbeats at the beginning of a measure produce
+the large syncopation values.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</P>
+<P>
+Note:
+<b>**synco</b>
+data is normally produced by the
+<b>synco</b>
+command.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**synco</big></code>
+data should be given names with the distinguishing `.syn' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**synco</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>.</TD><TD>fractional delimiter; null token</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**synco</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**synco</TD></TR>
+<TR><TD>*M2/4</TD></TR>
+<TR><TD>*tb8</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>1.10</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>=3</TD></TR>
+<TR><TD>0.69</TD></TR>
+<TR><TD>0</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum command produces <b>**synco</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>synco</b></TD><TD>measure the degree of metric syncopation</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**synco</b>:
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+<TR><TD>timebase</TD><TD><code><big>*tb32</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**synco</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**metpos</b> (2), <b>synco</b> (4),
+<b>**timebase</b> (2)
+</code></big>
+</blockquote>
+</P>
+<P>
+<H3>REFERENCES</H3>
+<blockquote>
+Longuet-Higgins, H. C., & Lee, C. S.,
+"The perception of musical rhythms,"
+<i>Perception,</i>
+Vol. 11 (1982) pp. 115-128.
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**takt</b>  --  beat-position representation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+Frequently, it is useful to represent temporal moments within
+a recurring cycle or pattern.
+In music, the best example of such recurring moments is the pattern
+of beats within a measure.
+In 3/4 meter, for example, a recurring cycle of beats occurs: 1-2-3-1-2-3 ...
+The
+<b>**takt</b>
+interpretation permits the representation of recurring
+moments within some temporal cycle.
+For most applications, the duration of the repeating cycle will be
+equivalent to the measure.
+However, other cycles are possible, such as phrase, sub-phrase, etc.
+</P>
+<P>
+In <b>**takt</b>,
+integer values refer to beats, hence the value `2' refers to the second beat.
+Fractional values refer to moments within beats.
+For example, the value `3.5' refers
+to the second half of the third beat.
+In 4/4 meter, the value `4.75' refers to the last sixteenth of the
+measure.
+Up to two digits are permitted following the decimal point.
+Some decimal values are reserved to mean precise subdivisions.
+For example, the decimal values `x.33' and `x.67' are assumed to be precisely
+one-third and two-thirds respectively, i.e. equivalent to `x.33333...' and
+`x.66666...'
+Other fractional values are defined in the following table.
+<blockquote>
+<TABLE>
+<TR><TD><i>x.</i>10</TD><TD>1/10</TD></TR>
+<TR><TD><i>x.</i>11</TD><TD>1/9</TD></TR>
+<TR><TD><i>x.</i>13</TD><TD>1/8</TD></TR>
+<TR><TD><i>x.</i>14</TD><TD>1/7</TD></TR>
+<TR><TD><i>x.</i>16</TD><TD>1/6</TD></TR>
+<TR><TD><i>x.</i>20</TD><TD>1/5</TD></TR>
+<TR><TD><i>x.</i>22</TD><TD>2/9</TD></TR>
+<TR><TD><i>x.</i>25</TD><TD>1/4</TD></TR>
+<TR><TD><i>x.</i>29</TD><TD>2/7</TD></TR>
+<TR><TD><i>x.</i>30</TD><TD>3/10</TD></TR>
+<TR><TD><i>x.</i>33</TD><TD>1/3, 3/9</TD></TR>
+<TR><TD><i>x.</i>38</TD><TD>3/8</TD></TR>
+<TR><TD><i>x.</i>40</TD><TD>2/5</TD></TR>
+<TR><TD><i>x.</i>43</TD><TD>3/7</TD></TR>
+<TR><TD><i>x.</i>44</TD><TD>4/9</TD></TR>
+<TR><TD><i>x.</i>50</TD><TD>1/2</TD></TR>
+<TR><TD><i>x.</i>56</TD><TD>5/9</TD></TR>
+<TR><TD><i>x.</i>57</TD><TD>4/7</TD></TR>
+<TR><TD><i>x.</i>60</TD><TD>3/5</TD></TR>
+<TR><TD><i>x.</i>63</TD><TD>5/8</TD></TR>
+<TR><TD><i>x.</i>67</TD><TD>2/3, 6/9</TD></TR>
+<TR><TD><i>x.</i>70</TD><TD>7/10</TD></TR>
+<TR><TD><i>x.</i>71</TD><TD>5/7</TD></TR>
+<TR><TD><i>x.</i>75</TD><TD>3/4</TD></TR>
+<TR><TD><i>x.</i>78</TD><TD>7/9</TD></TR>
+<TR><TD><i>x.</i>80</TD><TD>4/5</TD></TR>
+<TR><TD><i>x.</i>83</TD><TD>5/6</TD></TR>
+<TR><TD><i>x.</i>86</TD><TD>6/7</TD></TR>
+<TR><TD><i>x.</i>88</TD><TD>7/8</TD></TR>
+<TR><TD><i>x.</i>89</TD><TD>8/9</TD></TR>
+<TR><TD><i>x.</i>90</TD><TD>9/10</TD></TR>
+</TABLE>
+</blockquote>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**takt</big></code>
+data should be given names with the distinguishing `.tak' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**takt</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>.</TD><TD>fractional delimiter; null token</TD></TR>
+<TR><TD>=</TD><TD>barlines</TD></TR>
+<TR><TD>==</TD><TD>double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**takt</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**kern</TD><TD>**metpos</TD><TD>**takt</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>*c:</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>8r</TD><TD>1</TD><TD>1</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD><TD>1.5</TD></TR>
+<TR><TD>16bn</TD><TD>5</TD><TD>1.75</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD><TD>2</TD></TR>
+<TR><TD>8g</TD><TD>4</TD><TD>2.5</TD></TR>
+<TR><TD>8a-</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD><TD>3.5</TD></TR>
+<TR><TD>16b</TD><TD>5</TD><TD>3.75</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD><TD>4</TD></TR>
+<TR><TD>8dd</TD><TD>4</TD><TD>4.5</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>8g</TD><TD>1</TD><TD>1</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD><TD>1.5</TD></TR>
+<TR><TD>16bn</TD><TD>5</TD><TD>1.75</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD><TD>2</TD></TR>
+<TR><TD>8dd</TD><TD>4</TD><TD>2.5</TD></TR>
+<TR><TD>16f</TD><TD>2</TD><TD>3</TD></TR>
+<TR><TD>16g</TD><TD>5</TD><TD>3.25</TD></TR>
+<TR><TD>[8a-</TD><TD>4</TD><TD>3.5</TD></TR>
+<TR><TD>8a-]</TD><TD>3</TD><TD>4</TD></TR>
+<TR><TD>16g</TD><TD>4</TD><TD>4.5</TD></TR>
+<TR><TD>16f</TD><TD>5</TD><TD>4.75</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+Currently, no special-purpose Humdrum commands produce
+<b>**takt</b>
+as output, or process
+<b>**takt</b>
+encoded data as input.
+</blockquote>
+</P>
+<P>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**takt</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**takt</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**date</b> (2), <b>**dur</b> (2),
+<b>**metpos</b> (2), <b>**ordo</b> (2),
+<b>**recip</b> (2), <b>**time</b> (2),
+<b>timebase</b> (4),
+<b>**Zeit</b> (2)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**text</b>  --  vocal text representation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**text</b>
+representation permits the representation of sung or spoken language.
+Only languages transcribable into the Roman alphabet can be represented using
+<b>**text</b>.
+For non-Roman alphabets and non-language vocables, refer to the
+<b>**IPA (2)</b>
+representation.
+</P>
+<P>
+The
+<b>**text</b>
+representation distinguishes three classes of data tokens:
+text-tokens, silence-tokens, and barlines.
+</P>
+<P>
+<i>Text-tokens</i>
+are of three types:
+syllabic, melismatic, and polysyllabic.
+A
+<i>syllabic</i>
+text-token means that a single syllable is associated with a single
+moment (such as a single pitch).
+A
+<i>melismatic</i>
+text-token means that a single syllable is associated with several
+successive moments (such as more than one pitch).
+A
+<i>polysyllabic</i>
+text-token means that several syllables are associated with a
+single moment (such as a single pitch).
+</P>
+<P>
+The simplest of these is the
+<i>melismatic</i>
+text-token -- which consist merely of a single vertical bar (|).
+By itself, the vertical bar means that the previous syllable is
+sustained through the current moment.
+Syllabic and polysyllabic text-tokens are more complicated.
+</P>
+<P>
+In the
+<b>**text</b>
+representation, text-tokens are syllable-oriented,
+so words must be broken-up into the component syllables.
+Words may be of three basic types: single-syllable words,
+multi-syllable words, and hyphenated words (e.g. the word "half-mast").
+As a result, four types of syllables are distinguished:
+(1) a single-syllable word, (2) a word-initiating syllable,
+(3) a word-completing syllable, and (4) a mid-word syllable.
+In
+<b>**text</b>
+the hyphen (<code><big>-</big></code>) is used to signify syllable boundaries;
+the tilde (<code><big>~</big></code>) is used to signify boundaries between hyphenated words
+(necessarily also a syllable boundary).
+The following table illustrates the how these signifiers are used:
+<blockquote>
+<TABLE>
+<TR><TD><i>text</i></TD><TD>a single-syllable word</TD></TR>
+<TR><TD><i>text</i>-</TD><TD>a word-initiating syllable</TD></TR>
+<TR><TD>-<i>text</i></TD><TD>a word-completing syllable</TD></TR>
+<TR><TD>-<i>text</i>-</TD><TD>-d-word syllable</TD></TR>
+<TR><TD><i>text</i>~</TD><TD>a single-syllable word beginning a hyphenated multi-word</TD></TR>
+<TR><TD>~<i>text</i></TD><TD>a single-syllable word completing a hyphenated multi-word</TD></TR>
+<TR><TD>~<i>text</i>~</TD><TD>a single-syllable word continuing a hyphenated multi-word</TD></TR>
+<TR><TD>~<i>text</i>-</TD><TD>a word-initating syllable completing a hyphenated multi-word</TD></TR>
+<TR><TD>-<i>text</i>~</TD><TD>a word-completing syllable -- part of a hyphenated multi-word</TD></TR>
+</TABLE>
+</blockquote>
+A
+<i>syllabic</i>
+text-token consists of any one of the above tokens.
+</P>
+<P>
+Occasionally, it is useful to encode several syllables or words
+for a single moment (or pitch) -- as in the case of
+<i>recitativo</i>
+passages.
+In the
+<b>**text</b>
+representation, such multi-word or polysyllabic text-tokens are encoded
+via Humdrum multiple-stops.
+That is, several words or syllables are encoded on the same data record,
+with each successive syllable separated by a space.
+The following encoding shows two syllables/words for each note:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**pitch</TD><TD>**text</TD></TR>
+<TR><TD>C4</TD><TD>I saw</TD></TR>
+<TR><TD>A4</TD><TD>a li-</TD></TR>
+<TR><TD>G4</TD><TD>-ly beau-</TD></TR>
+<TR><TD>F4</TD><TD>-ti- -ful ,</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+In the
+<b>**text</b>
+representation, punctuation marks -- such as commas, periods,
+and exclamation marks -- are segregated from the syllable texts
+by a space.
+The period character is represented by the asterisk (<code><big>*</big></code>)
+in order to avoid the illegal construction of a period (null token)
+in a multiple stop.
+Five remaining punctuation marks are represented literally in <b>**text</b>:
+comma (<code><big>,</big></code>), exclamation mark (<code><big>!</big></code>), question mark (<code><big>?</big></code>),
+colon (<code><big>:</big></code>), and the semicolon (<code><big>;</big></code>).
+When used in a melismatic context, an explicitly notated (printed)
+dash is represented by a double vertical bar (<code><big>||</big></code>).
+This signifies both the presence of a printed dash
+and the fact that the previous syllable continues to sound.
+In addition, double quotation marks (<code><big>"</big></code>) and parentheses (<code><big>()</big></code>)
+are also permitted.
+Once again, all such forms of punctuation must be segregated from
+the alphabetic text by the presence of a space.
+It is important to remember that periods are represented by asterisks.
+</P>
+<P>
+The
+<b>**text</b>
+representation is intended to represent canonical language
+information rather than verbatim transcriptions of a printed score.
+Textual abbreviations and printing conventions such as
+<i>"etc.," "#"</i>
+and
+<i>"$"</i>
+must be expanded as:
+<i>et ce- -te- -ra, num- -ber,</i>
+and
+<i>dol- -lar</i>
+respectively (depending on the language).
+(If the user wishes to represent
+<i>text as printed,</i>
+an explicit
+<b>**underlay</b>
+or
+<b>**overlay</b>
+representation would be more appropriate.)
+</P>
+<P>
+Where greater subtlety is required for pronunciation,
+refer to the
+<b>**IPA (2)</b>
+representation.
+</P>
+<P>
+The original ASCII character set is regrettably hostile to
+non-English languages, especially with regard to accents.
+With the extended (international) ASCII set, French, German, and other
+accents are properly handled, but for English users, a given computer
+system may prove inflexible for non-English materials.
+In such cases, the
+<b>**text</b>
+representation provides the following aliases to designate
+common accents.
+Accent signifiers are assumed to modify the immediately preceding Roman letter.
+<blockquote>
+<TABLE>
+<TR><TD>/</TD><TD>acute accent</TD></TR>
+<TR><TD>\</TD><TD>grave accent</TD></TR>
+<TR><TD>^</TD><TD>circumflex</TD></TR>
+<TR><TD>0</TD><TD>small superscript circle</TD></TR>
+<TR><TD>1</TD><TD>macron</TD></TR>
+<TR><TD>2</TD><TD>Umlaut</TD></TR>
+<TR><TD>5</TD><TD>cidilla</TD></TR>
+<TR><TD>6</TD><TD>hacek</TD></TR>
+<TR><TD>7</TD><TD>enya (tilde)</TD></TR>
+</TABLE>
+<CENTER>
+<i>Accent signifiers in <b>**text</b></i>
+</CENTER>
+</blockquote>
+Musical phrasing can be explicitly represented in
+<b>**text</b>
+via the open brace (<code><big>{</big></code>) and closed brace (<code><big>}</big></code>) for
+phrase-beginnings and phrase-endings respectively.
+Slurs can be represented via the open bracket (<code><big>[</big></code>) and closed
+bracket (<code><big>]</big></code>).
+Stressed and unstressed syllables can be explicitly denoted
+by prepending the plus sign (<code><big>+</big></code>) or the underscore (<code><big>_</big></code>)
+respectively -- at the beginning of the associated text.
+</P>
+<P>
+A handful of vocables can be represented via
+<b>**text</b>
+including humming (signified by the upper-case letter `M' by itself)
+and laughing (signified by the upper-case letter `L' by itself).
+Tandem interpretation also permit encoding of the depth of vibrato
+and the degree of ennunciation.
+For example, shallow vibrato is indicated by <code><big>*vibrato1</big></code>
+whereas deep vibrato is indicated by <code><big>*vibrato9</big></code>.
+Sloppy ennunciation is indicated by <code><big>*ennun1</big></code>
+whereas highly precise ennunciation is indicated by <code><big>*ennun9</big></code>.
+Intermediate values can be used as needed.
+</P>
+<P>
+Apart from text-tokens
+<b>**text</b>
+also permits the encoding of silence-tokens and barlines.
+Silence-tokens consist simply of the percent sign (<code><big>%</big></code>)
+appearing in isolation.
+This indicates the termination or absence of any vocal sound.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</P>
+<P>
+Much vocal music is strophic in form -- containing two or more
+"verses" sung to the same musical setting.
+Abbreviated representations may take advantage of the Humdrum
+<i>strophe</i>
+mechanism to avoid duplicate encoding of melodies, etc.
+See <b>strophe (4)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**text</big></code>
+data should be given names with the distinguishing `.txt' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The complete system of signifiers used by
+<b>**text</b>
+is summarized in the following table.
+<blockquote>
+<TABLE>
+<TR><TD>A-Z</TD><TD>upper-case letters A to Z</TD></TR>
+<TR><TD>a-z</TD><TD>lower-case letters a to z</TD></TR>
+<TR><TD>%</TD><TD>silence token (character by itself)</TD></TR>
+<TR><TD>L</TD><TD>laughing voice (character by itself)</TD></TR>
+<TR><TD>M</TD><TD>humming voice (character by itself)</TD></TR>
+<TR><TD>-</TD><TD>multi-syllable-word syllable boundary</TD></TR>
+<TR><TD>~</TD><TD>hyphenated-word word separator; printed dash</TD></TR>
+<TR><TD>|</TD><TD>melisma indicator (syllable sustain)</TD></TR>
+<TR><TD>||</TD><TD>printed hyphen indicating melisma</TD></TR>
+<TR><TD>.</TD><TD>null token (<b>not</b> period)</TD></TR>
+<TR><TD>*</TD><TD>period (must be preceded by a space)</TD></TR>
+<TR><TD>?</TD><TD>question mark (must be preceded by a space)</TD></TR>
+<TR><TD>:</TD><TD>colon (must be preceded by a space)</TD></TR>
+<TR><TD>;</TD><TD>semicolon (must be preceded by a space)</TD></TR>
+<TR><TD>!</TD><TD>exclamation mark (must be preceded by a space)</TD></TR>
+<TR><TD>(</TD><TD>open parenthesis</TD></TR>
+<TR><TD>)</TD><TD>closed parenthesis</TD></TR>
+<TR><TD>{</TD><TD>beginning of a phrase</TD></TR>
+<TR><TD>}</TD><TD>end of a phrase</TD></TR>
+<TR><TD>[</TD><TD>beginning of a slur</TD></TR>
+<TR><TD>]</TD><TD>end of a slur</TD></TR>
+<TR><TD>=</TD><TD>barline</TD></TR>
+<TR><TD>==</TD><TD>double barline</TD></TR>
+<TR><TD>/</TD><TD>acute accent</TD></TR>
+<TR><TD>\</TD><TD>grave accent</TD></TR>
+<TR><TD>^</TD><TD>circumflex</TD></TR>
+<TR><TD>0</TD><TD>small circle</TD></TR>
+<TR><TD>1</TD><TD>macron</TD></TR>
+<TR><TD>2</TD><TD>Umlaut</TD></TR>
+<TR><TD>5</TD><TD>cedilla</TD></TR>
+<TR><TD>6</TD><TD>hacek</TD></TR>
+<TR><TD>7</TD><TD>enya (tilde)</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**text</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**text</TD></TR>
+<TR><TD>*English</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>Once up-</TD></TR>
+<TR><TD>||</TD></TR>
+<TR><TD>-on a</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>time</TD></TR>
+<TR><TD>|</TD></TR>
+<TR><TD>there</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>was a</TD></TR>
+<TR><TD>lit- -tle</TD></TR>
+<TR><TD>girl</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>whose</TD></TR>
+<TR><TD>=3</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+Notice that the first measure contains two Humdrum double-stops
+(<code><big>Once up-</big></code> and <code><big>-on a</big></code>).
+The double vertical bar (<code><big>||</big></code>) indicates that the word "upon"
+is explicitly divided by a notated hyphen.
+The word <code><big>time</big></code> is melismatic -- spanning two time-events.
+</blockquote>
+</P>
+<P>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+Currently, no special-purpose Humdrum commands produce
+<b>**text</b>
+as output or process
+<b>**text</b>
+encoded data as input.
+</blockquote>
+</P>
+<P>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**text</b>:
+<blockquote>
+<TABLE>
+<TR><TD>language indicator</TD><TD><code><big>*Deutsch</big></code></TD></TR>
+<TR><TD>strophe indicator</TD><TD><code><big>*strophe</big></code></TD></TR>
+<TR><TD>verse number</TD><TD><code><big>*S/3</big></code></TD></TR>
+<TR><TD>choral text</TD><TD><code><big>*ensemble</big></code></TD></TR>
+<TR><TD>solo text</TD><TD><code><big>*solo</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>underlay position</TD><TD><code><big>*unter</big></code></TD></TR>
+<TR><TD>overlay position</TD><TD><code><big>*ueber</big></code></TD></TR>
+<TR><TD>vibrato depth</TD><TD><code><big>*vibrato7</big></code></TD></TR>
+<TR><TD>ennunciation</TD><TD><code><big>*ennun5</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**text</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>assemble</b> (4), <b>**IPA</b> (2), <b>strophe</b> (4), <b>thru</b> (4)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**time</b>  --  relative elapsed time (in seconds)
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**time</b>
+representation is used to represent elapsed time
+(from some arbitrary moment deemed "time zero")
+to the onset of the current moment.
+A typical use for
+<b>**time</b>
+is to represent the elapsed time from the beginning of a work (in seconds).
+Data tokens in
+<b>**time</b>
+consist simply of numbers of seconds, with an optional decimal value.
+The
+<b>**time</b>
+representation has no provision for representing
+"hours" or "minutes".
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**time</big></code>
+data should be given names with the distinguishing `.tim' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**time</b>
+mappings of signifiers and signifieds.
+</P>
+<P>
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>.</TD><TD>fractional second delimiter; null token</TD></TR>
+<TR><TD>=</TD><TD>barlines</TD></TR>
+<TR><TD>==</TD><TD>double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**time</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**kern</TD><TD>**metpos</TD><TD>**takt</TD><TD>**time</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>*MM60</TD><TD>*MM60</TD><TD>*MM60</TD><TD>*MM60</TD></TR>
+<TR><TD>*c:</TD><TD>*</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>8r</TD><TD>1</TD><TD>1</TD><TD>0</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD><TD>1.5</TD><TD>0.5</TD></TR>
+<TR><TD>16bn</TD><TD>5</TD><TD>1.75</TD><TD>0.75</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD><TD>2</TD><TD>1</TD></TR>
+<TR><TD>8g</TD><TD>4</TD><TD>2.5</TD><TD>1.5</TD></TR>
+<TR><TD>8a-</TD><TD>2</TD><TD>3</TD><TD>2</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD><TD>3.5</TD><TD>2.5</TD></TR>
+<TR><TD>16b</TD><TD>5</TD><TD>3.75</TD><TD>2.75</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD><TD>4</TD><TD>3</TD></TR>
+<TR><TD>8dd</TD><TD>4</TD><TD>4.5</TD><TD>3.5</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>8g</TD><TD>1</TD><TD>1</TD><TD>4</TD></TR>
+<TR><TD>16cc</TD><TD>4</TD><TD>1.5</TD><TD>4.5</TD></TR>
+<TR><TD>16bn</TD><TD>5</TD><TD>1.75</TD><TD>4.75</TD></TR>
+<TR><TD>8cc</TD><TD>3</TD><TD>2</TD><TD>5</TD></TR>
+<TR><TD>8dd</TD><TD>4</TD><TD>2.5</TD><TD>5.5</TD></TR>
+<TR><TD>16f</TD><TD>2</TD><TD>3</TD><TD>6</TD></TR>
+<TR><TD>16g</TD><TD>5</TD><TD>3.25</TD><TD>6.25</TD></TR>
+<TR><TD>4a-</TD><TD>4</TD><TD>3.5</TD><TD>6.5</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+Currently, no special-purpose Humdrum commands produce
+<b>**time</b>
+as output, or process
+<b>**time</b>
+encoded data as input.
+</blockquote>
+</P>
+<P>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**time</b>:
+<blockquote>
+<TABLE>
+<TR><TD>MIDI channel</TD><TD><code><big>*Ch1</big></code></TD></TR>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**time</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**date</b> (2),
+<b>**dur</b> (2), <b>**metpos</b> (2), <b>**ordo</b> (2),
+<b>**recip</b> (2), <b>**takt</b> (2), <b>**Zeit</b> (2)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**Tonh</b>  --  German Tonh\o'o\(..'he (pitch) notation
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**Tonh</b>
+representation permits the encoding of Western musical pitches using the
+common German system for pitch naming.
+This system is similar to the English system of pitch designations
+with the exceptions noted below.
+</P>
+<P>
+The
+<b>**Tonh</b>
+representation distinguishes three types of data tokens:
+pitches, rests, and barlines.
+Pitches are encoded using pitch letter-name, accidental, and octave
+designation.
+In addition,
+<b>**Tonh</b>
+provides limited capabilities for representing phrasing and slurs.
+</P>
+<P>
+Pitch tokens consist of three logical parts -- without
+any intervening spaces.
+The first part is the pitch letter-name;
+only the upper-case letters A, B, C, D, E, F, G, H, and S are permitted.
+The second part is an optional accidental: the suffix `is'
+designates a sharp, while the suffix `es' designates a flat --
+hence `Cis' for C-sharp and `Ges' for G-flat.
+Suffixes may be repeated for double and triple sharps and flats.
+Special exceptions include the following: `B' for B-flat, `H' for
+B-natural, `Heses' for B double-flat (rather than `Bes'),
+and `As' and `Es' rather than `Aes' or `Ees'.
+In addition, `S' may be used as an alias for `Es' (E-flat).
+</P>
+<P>
+The third part of a pitch token is the octave designation.
+The number 4 is used to designate all pitches between middle C
+and the H a major seventh above, inclusive.
+Octave numbers are incremented by one for each successively higher octave,
+and are decremented by one for each successively lower octave.
+Negative octave numbers are not permitted, so the lowest
+pitch in the
+<b>**Tonh</b>
+representation is C0 (16.35 Hz).
+Only a single octave digit is permitted, so the highest
+<b>**Tonh</b>
+pitch is H9 (15,804 Hz).
+</P>
+<P>
+Once again, no intervening spaces are permitted within a single note.
+Notice that the order of signifiers is important for pitch encodings.
+Pitch letter-name is followed by one or more accidentals (if appropriate),
+followed by an octave designation.
+</P>
+<P>
+Several notes may be encoded concurrently in a single spine by using
+the Humdrum multiple-stop convention:
+notes within multiple-stops are separated by single spaces.
+The following example encodes a C-minor chord as four pitches in two
+<b>**Tonh</b>
+spines -- each spine containing a double-stop.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**Tonh</TD><TD>**Tonh</TD></TR>
+<TR><TD>C4 Es4</TD><TD>G4 C5</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+Pitch tokens may be modified by the presence of additional signifiers.
+The open brace `{' denotes the beginning of a phrase.
+The closed brace `}' denotes the end of a phrase.
+The open parenthesis `(' denotes the beginning of a slur.
+The closed parenthesis `)' denotes the end of a slur.
+The semicolon `;' denotes a pause.
+</P>
+<P>
+Rest tokens are denoted by the lower-case letter `r'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**Tonh</big></code>
+data should be given names with the distinguishing `.tnh' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**Tonh</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>octave designation, where C4 equals middle C;</TD></TR>
+<TR><TD>A-H</TD><TD>absolute pitches letter name</TD></TR>
+<TR><TD>es</TD><TD>flat</TD></TR>
+<TR><TD>eses</TD><TD>double flat (`eseses' for triple flat)</TD></TR>
+<TR><TD>is</TD><TD>sharp</TD></TR>
+<TR><TD>isis</TD><TD>double sharp</TD></TR>
+<TR><TD>Heses</TD><TD>B double-flat (rather than `Bes')</TD></TR>
+<TR><TD>As</TD><TD>A-flat (rather than `Aes')</TD></TR>
+<TR><TD>Es</TD><TD>E-flat (rather than `Ees')</TD></TR>
+<TR><TD>S</TD><TD>alias for `Es'</TD></TR>
+<TR><TD>n</TD><TD>natural</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>(</TD><TD>slur start</TD></TR>
+<TR><TD>)</TD><TD>slur end</TD></TR>
+<TR><TD>{</TD><TD>phrase mark (start)</TD></TR>
+<TR><TD>}</TD><TD>phrase mark (end)</TD></TR>
+<TR><TD>;</TD><TD>pause sign</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**Tonh</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! Anton Webern</TD></TR>
+<TR><TD>!! Klavierst\o'u\(..'ck, opus posthumous</TD></TR>
+<TR><TD>!! Im Tempo eines Menuetts</TD></TR>
+<TR><TD>**Tonh</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>(Cis4</TD></TR>
+<TR><TD>Dn5)</TD></TR>
+<TR><TD>Es3</TD></TR>
+<TR><TD>Fis3</TD></TR>
+<TR><TD>F4</TD></TR>
+<TR><TD>E2</TD></TR>
+<TR><TD>=3</TD></TR>
+<TR><TD>Cn6</TD></TR>
+<TR><TD>B2 A3</TD></TR>
+<TR><TD>H4</TD></TR>
+<TR><TD>Gis2 G3</TD></TR>
+<TR><TD>Cis4</TD></TR>
+<TR><TD>D2 S3</TD></TR>
+<TR><TD>=4</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum commands accept <b>**Tonh</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>cents</b></TD><TD>translate <b>**Tonh</b> to <b>**cents</b></TD></TR>
+<TR><TD></TD><TD><b>deg</b></TD><TD>translate <b>**Tonh</b> to <b>**deg</b></TD></TR>
+<TR><TD></TD><TD><b>degree</b></TD><TD>translate <b>**Tonh</b> to <b>**degree</b></TD></TR>
+<TR><TD></TD><TD><b>freq</b></TD><TD>translate <b>**Tonh</b> to <b>**freq</b></TD></TR>
+<TR><TD></TD><TD><b>hint</b></TD><TD>calculate harmonic intervals from <b>**Tonh</b> input</TD></TR>
+<TR><TD></TD><TD><b>kern</b></TD><TD>translate <b>**Tonh</b> to <b>**kern</b></TD></TR>
+<TR><TD></TD><TD><b>mint</b></TD><TD>calculate melodic intervals from <b>**Tonh</b> input</TD></TR>
+<TR><TD></TD><TD><b>pc</b></TD><TD>translate <b>**Tonh</b> pitch to <b>**pc</b></TD></TR>
+<TR><TD></TD><TD><b>pitch</b></TD><TD>translate <b>**Tonh</b> pitch to <b>**pitch</b></TD></TR>
+<TR><TD></TD><TD><b>semits</b></TD><TD>translate <b>**Tonh</b> pitch to numerical <b>**semits</b></TD></TR>
+<TR><TD></TD><TD><b>solfa</b></TD><TD>translate <b>**Tonh</b> pitch to <b>**solfa</b></TD></TR>
+<TR><TD></TD><TD><b>solfg</b></TD><TD>translate <b>**Tonh</b> pitch to <b>**solfg</b></TD></TR>
+<TR><TD></TD><TD><b>trans</b></TD><TD>transpose <b>**Tonh</b> score</TD></TR>
+<TR><TD></TD><TD><b>vox</b></TD><TD>determine active and inactive voices in a Humdrum file</TD></TR>
+<TR><TD></TD></TR>
+</blockquote>
+The following Humdrum command produces <b>**Tonh</b> data as output:
+<blockquote>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>tonh</b></TD><TD>translates <b>**cents</b>, <b>**degree</b>, <b>**fret</b>, <b>**freq</b>, <b>**kern</b>,</TD></TR>
+<TR><TD></TD><TD></TD><TD><b>**MIDI</b>, <b>**pitch</b>, <b>**semits</b>, <b>**solfg</b>, and <b>**specC</b> to <b>**Tonh</b></TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**Tonh</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**Tonh</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**cents</b> (2),
+<b>**deg</b> (2), <b>**degree</b> (2),
+<b>**freq</b> (2),
+<b>**hint</b> (2), <b>hint</b> (4),
+<b>**kern</b> (2),
+<b>**mint</b> (2), <b>mint</b> (4),
+<b>**pc</b> (2), <b>pc</b> (4),
+<b>**pitch</b> (2), <b>pitch</b> (4),
+<b>**semits</b> (2),
+<b>**solfa</b> (2),
+<b>**solfg</b> (2), <b>solfg</b> (4),
+<b>**specC</b> (2),
+<b>tonh</b> (4)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**URrhythm</b>  --  represent Johnson-Laird beat prototypes for a passage
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**URrhythm</b>
+representation encodes beat "prototypes" (Ur-rhythms) evident in
+a musical passage.
+The representation is based on Johnson-Laird's theory of rhythmic
+prototypes (see REFERENCES below).
+</P>
+<P>
+The
+<b>**URrhythm</b>
+representation characterizes each beat in a passage as belonging to one of
+three "beat types":
+<i>Note</i>
+(N),
+<i>Syncopation</i>
+(S), or
+<i>Other</i>
+(O).
+Only principle beats are characterized in this way.
+Hence, in 3/4 or 9/8 meters, three beats are characterized for
+each complete measure.
+Similarly, in 4/2 and 12/16, four beats are characterized for
+each complete measure.
+Johnson-Laird's rhythmic-prototype theory can be applied only to
+musical passages conforming to regular meters
+(simple and compound, duple, triple and quadruple).
+</P>
+<P>
+A "Note" (signified in the output by the letter `N') is defined as a beat
+that coincides with a note onset.
+</P>
+<P>
+A metric "Syncopation" (signified by the letter `S') is defined as arising
+when no note-onset happens on a beat whose metric position is more
+important than that of the most recent note onset.
+By way of example, imagine a measure in 4/4 meter containing a quarter-note,
+followed by a half-note, followed by a quarter-note.
+The third beat position does not coincide with a note onset.
+The most recent note onset prior to the third beat occurs on beat two.
+Since beat three is a more important metric position than beat two,
+beat three is deemed to be syncopated.
+</P>
+<P>
+Metrically syncopated beats can happen only after the first note onset;
+subsequent syncopated moments require another note onset
+(i.e. two syncopated moments can't occur in a row without some note
+onset intervening).
+</P>
+<P>
+An "Other" (signified by the letter `O') is any beat that is not
+a Note (N) or a syncopation (S).
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**URrhythm</big></code>
+data should be given names with the distinguishing `.urr' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**URrhythm</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>N</TD><TD>"note" beat prototype</TD></TR>
+<TR><TD>O</TD><TD>"other" beat prototype</TD></TR>
+<TR><TD>S</TD><TD>"syncopation" beat prototype</TD></TR>
+<TR><TD>.</TD><TD>null token</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>0-9</TD><TD>measure numbers</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**URrhythm</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**URrhythm</TD></TR>
+<TR><TD>*M4/4</TD></TR>
+<TR><TD>*tb8</TD></TR>
+<TR><TD>N</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>N</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>S</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>N</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>O</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>S</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>O</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>S</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>S</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>O</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>N</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum command produces <b>**URrhythm</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>urrhythm</b></TD><TD>characterize the rhythmic prototypes in a passage</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**URrhythm</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+<TR><TD>timebase</TD><TD><code><big>*tb32</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**URrhythm</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**metpos</b> (2), <b>metpos</b> (4), <b>urrhythm</b> (4),
+<b>**synco</b> (2), <b>synco</b> (4), <b>**timebase</b> (2)
+</code></big>
+</blockquote>
+</P>
+<P>
+<H3>REFERENCES</H3>
+<blockquote>
+Philip Johnson-Laird, 
+"Rhythm and meter: A theory at the computational level,"
+<i>Psychomusicology,</i>
+Vol. 10 (1991) pp. 88-106.
+</P>
+<P>
+Jasba Simpson & David Huron,
+"The perception of rhythmic similarity: A test of a modified
+version of Johnson-Laird's theory,"
+<i>Canadian Acoustics,</i>
+Vol. 21, No. 3 (1993) pp. 89-90.
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**vox#</b>  --  representation of number of concurrently active voices
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**vox#</b>
+representation permits the representation of the number of notes
+sounding together at successive moments in time.
+The
+<b>**vox#</b>
+representation distinguishes just two types of data tokens:
+number-tokens, and barlines.
+Each
+<b>**vox#</b>
+number-token consists of a single integer value
+indicating the total number of simultaneously sounding voices.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <b>barlines (2)</b>.
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**vox#</big></code>
+data should be given names with the distinguishing `.vox' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**vox#</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>integer values; measure numbers</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>;</TD><TD>pause (for barlines)</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**vox#</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**vox#</TD></TR>
+<TR><TD>=18</TD><TD>=18</TD><TD>=18</TD><TD>=18</TD><TD>=18</TD><TD>=18</TD></TR>
+<TR><TD>8r</TD><TD>8B</TD><TD>4.g</TD><TD>8g</TD><TD>8dd)</TD><TD>4</TD></TR>
+<TR><TD>8BBn</TD><TD>8B</TD><TD>.</TD><TD>8dd</TD><TD>8gg</TD><TD>5</TD></TR>
+<TR><TD>8BB</TD><TD>8B</TD><TD>.</TD><TD>8dd</TD><TD>8gg</TD><TD>5</TD></TR>
+<TR><TD>8BB</TD><TD>8B</TD><TD>8d</TD><TD>8g</TD><TD>8ff</TD><TD>5</TD></TR>
+<TR><TD>=19</TD><TD>=19</TD><TD>=19</TD><TD>=19</TD><TD>=19</TD><TD>=19</TD></TR>
+<TR><TD>4C</TD><TD>4c</TD><TD>4e-</TD><TD>4c 4g 4ee-</TD><TD>4ee-</TD><TD>7</TD></TR>
+<TR><TD>4r</TD><TD>4r</TD><TD>4r</TD><TD>4r</TD><TD>4r</TD><TD>0</TD></TR>
+<TR><TD>=20</TD><TD>=20</TD><TD>=20</TD><TD>=20</TD><TD>=20</TD><TD>=20</TD></TR>
+<TR><TD>4AA-</TD><TD>4AA-</TD><TD>4a-</TD><TD>4a- 4f# 4cc</TD><TD>4a- 4f# 4cc</TD><TD>9</TD></TR>
+<TR><TD>8.r</TD><TD>8.r</TD><TD>8.r</TD><TD>8.r</TD><TD>8.r</TD><TD>0</TD></TR>
+<TR><TD>=21</TD><TD>=21</TD><TD>=21</TD><TD>=21</TD><TD>=21</TD><TD>=21</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*^</TD><TD>*</TD></TR>
+<TR><TD>4GG</TD><TD>4GG</TD><TD>4G</TD><TD>4g 4d 4bn</TD><TD>4G 4d 4bn</TD><TD>2gg;</TD><TD>10</TD></TR>
+<TR><TD>4r</TD><TD>4r</TD><TD>4r</TD><TD>4r</TD><TD>4r</TD><TD>.</TD><TD>1</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+The following Humdrum command produces <b>**vox#</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><b>vox</b></TD><TD>determine number of concurrently active voices for <b>**cbr</b>, <b>**cents</b>,</TD></TR>
+<TR><TD></TD><TD></TD><TD><b>**cocho</b>, <b>**deg</b>, <b>**degree</b>, <b>**freq</b>, <b>**kern</b>, <b>**pc</b>,</TD></TR>
+<TR><TD></TD><TD></TD><TD><b>**pitch</b>, <b>**semits</b>, <b>**solfa</b>, <b>**solfg</b>, <b>**specC</b>, and <b>**Tonh</b></TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**vox#</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**vox#</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>barlines</b> (2),
+<b>**barks</b> (2), <b>**cbr</b> (2), <b>**cents</b> (2),
+<b>**cocho</b> (2), <b>**deg</b> (2), <b>**degree</b> (2),
+<b>**freq</b> (2), <b>**kern</b> (2), <b>**pc</b> (2),
+<b>**pitch</b> (2), <b>**semits</b> (2), <b>**solfa</b> (2),
+<b>**solfg</b> (2), <b>**specC</b> (2), <b>**Tonh</b> (2),
+<b>vox</b> (4)
+</code></big>
+</blockquote>
+</P>
+</P>
+<H3>REPRESENTATION</H3>
+<blockquote>
+<b>**Zeit</b>  --  absolute period of time
+</blockquote>
+</P>
+<P>
+<H3>DESCRIPTION</H3>
+<blockquote>
+The
+<b>**Zeit</b>
+representation is used to represent spans of time,
+such as the life-span of a composer, or the chronology of a rehearsal.
+The syntax for
+<b>**Zeit</b>
+is nearly identical to the
+<b>**date</b>
+representation.
+Since
+<b>**Zeit</b>
+represents a span of time, two date tokens
+must be specified and separated by a dash (<code><big>-</big></code>).
+For example, the
+<b>**Zeit</b>
+data token <code><big>1770/-1827/</big></code> represents the period from 1770 to 1827.
+</P>
+<P>
+The
+<b>**Zeit</b>
+representation includes all of the features of
+<b>**date</b>
+for signifying approximation (~), uncertainty (?), approximate value (x),
+uncertain value (z), as well as between-range (^), either-or (|),
+prior (<) and after (>) boundaries.
+Either one or both of the dates specified in a
+<b>**Zeit</b>
+data token may encode complex degrees of approximation or uncertainty.
+</P>
+<P>
+Conceptually,
+<b>**Zeit</b>
+data tokens consist of two
+<b>**date</b>
+"sub-tokens."
+Zeit tokens are encoded according to the following basic syntax:
+</P>
+<P>
+<CENTER>
+<i>year<b>/</b>month<b>/</b>day<b>/</b>hour<b>:</b>minute<b>:</b>second<b>.</b>decimal<b>-</b>year<b>/</b>month<b>/</b>day<b>/</b>hour<b>:</b>minute<b>:</b>second<b>.</b>decimal</i>
+</CENTER>
+</P>
+<P>
+The data tokens making-up the
+<b>**Zeit</b>
+information may be encoded in full, or may consist of isolated elements
+or parts.
+The following table shows the most succinct ways of encoding single date values
+within sub-tokens in <b>**Zeit</b>:
+<blockquote>
+<TABLE>
+<TR><TD><code><big>.11</big></code></TD><TD>eleven one-hundredths of a second</TD></TR>
+<TR><TD><code><big>11</big></code></TD><TD>11th second</TD></TR>
+<TR><TD><code><big>11:</big></code></TD><TD>11th minute</TD></TR>
+<TR><TD><code><big>11::</big></code></TD><TD>11 o'clock</TD></TR>
+<TR><TD><code><big>11/</big></code></TD><TD>A.D. 11</TD></TR>
+<TR><TD><code><big>/11</big></code></TD><TD>November</TD></TR>
+<TR><TD><code><big>//11</big></code></TD><TD>11th day of the month</TD></TR>
+</TABLE>
+<CENTER>
+<i>Examples of <b>date</b> sub-components</i>
+</CENTER>
+</blockquote>
+Notice that if a single numerical value appears, it is interpreted as
+<i>seconds</i>;
+if a single value appears followed by a slash, it is interpreted as a
+<i>year</i>;
+if a single value appears followed by a colon, it is interpreted as a
+<i>minutes</i>.
+Days and hours require two leading or two trailing delimiters
+respectively.
+In general, abbreviated forms of date sub-tokens
+tend to favor the two extremes of time: seconds and years.
+These are the time frames that are typically of greatest interest
+to music scholars.
+</P>
+<P>
+The
+<b>**Zeit</b>
+representation makes use of the Gregorian calendar and the 24-hour clock.
+Dates prior to the year 1 A.D. can be specified by prepending a minus
+sign to the year.
+</P>
+<P>
+The
+<b>**Zeit</b>
+representation provides three distinct means for representing
+approximate moments.
+It also provides two independent means for representing
+uncertainty, as well as mechanisms for representing time boundaries
+(prior to ...; after ...).
+For the appropriate representation syntax refer to
+<b>**date (2).</b>
+</blockquote>
+</P>
+<P>
+<H3>FILE TYPE</H3>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**Zeit</big></code>
+data should be given names with the distinguishing `.zt' extension.
+</blockquote>
+</P>
+<P>
+<H3>SIGNIFIERS</H3>
+<blockquote>
+The following table summarizes the
+<b>**Zeit</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>-</TD><TD>sub-token separator (from-to); (must appear</TD></TR>
+<TR><TD></TD><TD>in each <b>**Zeit</b> data token)</TD></TR>
+<TR><TD>0-9</TD><TD>decimal values</TD></TR>
+<TR><TD>@</TD><TD>year B.C. rather than A.D.</TD></TR>
+<TR><TD>/</TD><TD>year-month, month-day and day-hour delimiter</TD></TR>
+<TR><TD>:</TD><TD>hour-minute and minute-second delimiter</TD></TR>
+<TR><TD>.</TD><TD>fractional second delimiter; null token</TD></TR>
+<TR><TD>?</TD><TD>date uncertain</TD></TR>
+<TR><TD>z</TD><TD>value uncertain</TD></TR>
+<TR><TD>~</TD><TD>date approximate</TD></TR>
+<TR><TD>x</TD><TD>value approximate</TD></TR>
+<TR><TD><</TD><TD>sometime prior to</TD></TR>
+<TR><TD>></TD><TD>sometime after</TD></TR>
+<TR><TD>^</TD><TD>"between" conjunction</TD></TR>
+<TR><TD>|</TD><TD>"or" conjunction</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**Zeit</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>EXAMPLES</H3>
+<blockquote>
+Several examples of
+<b>**Zeit</b>
+data tokens are identified below:
+<blockquote>
+<TABLE>
+<TR><TD>**Zeit tokens</TD><TD>meaning</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>1939/-1945/</TD><TD></big></code>From 1939 to 1945.</TD></TR>
+<TR><TD><code><big>1817/06/02/-1817/6/15</TD><TD></big></code>From June 2nd to 15th, 1817.</TD></TR>
+<TR><TD><code><big>1817/6/02/-1817/06/15</TD><TD></big></code>From June 2nd to 15th, 1817.</TD></TR>
+<TR><TD><code><big>///10::-///11::</TD><TD></big></code>From 10 AM to 11 AM.</TD></TR>
+<TR><TD><code><big>10::-11::</TD><TD></big></code>From 10 AM to 11 AM.</TD></TR>
+<TR><TD><code><big>~10::-~11::</TD><TD></big></code>From approximately 10 AM to approximately</TD></TR>
+<TR><TD></TD><TD>11 AM.</TD></TR>
+<TR><TD><code><big>>22::-<23::</TD><TD></big></code>From sometime after 10 PM to sometime</TD></TR>
+<TR><TD></TD><TD>before 11 PM.</TD></TR>
+<TR><TD><code><big>:11:51-:12:35</TD><TD></big></code>From 11 minutes 51 seconds to 12 minutes</TD></TR>
+<TR><TD></TD><TD>35 seconds.</TD></TR>
+<TR><TD><code><big>.001-.008</TD><TD></big></code>From 1 millisecond to 8 milliseconds.</TD></TR>
+<TR><TD><code><big>23.8-41.3</TD><TD></big></code>From 23.8 seconds to 41.3 seconds.</TD></TR>
+<TR><TD><code><big>//12/31-//1/1</TD><TD></big></code>From December 31st to New Years' Day.</TD></TR>
+<TR><TD><code><big><?1231///-1283/3/9</TD><TD></big></code>From before perhaps 1231 to March 9th 1283.</TD></TR>
+<TR><TD><code><big><1724/2//-1724/4z/2</TD><TD></big></code>From before Feb. 1724 to April (?) 2nd 1724.</TD></TR>
+<TR><TD><code><big>1848/|1849/-1851/</TD><TD></big></code>From 1848 or 1849 to 1851.</TD></TR>
+<TR><TD><code><big>/5/9/^/5/11/-//8/23</TD><TD></big></code>Starting sometime between May 9th and 11th</TD></TR>
+<TR><TD></TD><TD>ending August 23rd.</TD></TR>
+</TABLE>
+<CENTER>
+<i>Examples of <b>**Zeit</b> Tokens</i>
+</CENTER>
+</blockquote>
+The following examples illustrate the use of the <code><big>**Zeit</big></code> representation:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**Zeit</TD><TD>**maker</TD></TR>
+<TR><TD>?1644/-1737/12/18</TD><TD>Stradivari, Antonio</TD></TR>
+<TR><TD>1794/4/9-1881/11/25</TD><TD>Boehm, Theobald</TD></TR>
+<TR><TD>1797/2/15-1871/2/7</TD><TD>Steinweg, Heinrich</TD></TR>
+<TR><TD>1814/11/6-1894/2/4</TD><TD>Sax, Adolphe</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**Zeit</TD><TD>**recording log</TD></TR>
+<TR><TD>/4/9:20:18-/4/9:20:20</TD><TD>Aria - Take #1</TD></TR>
+<TR><TD>/4/9:20:20-/4/9:20:22</TD><TD>Aria - Take #2</TD></TR>
+<TR><TD>/4/9:20:23-/4/9:20:25</TD><TD>Aria - Take #3</TD></TR>
+<TR><TD>/4/9:20:25-/4/9:20:27</TD><TD>Var.1 - Take #1</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**Zeit</TD><TD>**section</TD></TR>
+<TR><TD>0:0-0:23</TD><TD>Introduction</TD></TR>
+<TR><TD>0:23-1:58</TD><TD>Exposition</TD></TR>
+<TR><TD>1:58.3-3:22</TD><TD>Development</TD></TR>
+<TR><TD>3:22-4:51</TD><TD>Recapitulation</TD></TR>
+<TR><TD>4:52-5:04</TD><TD>Coda</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**Zeit</TD><TD>**style</TD></TR>
+<TR><TD>~1450/-~1600/</TD><TD>Renaissance</TD></TR>
+<TR><TD>~1600/-~1750/</TD><TD>Baroque</TD></TR>
+<TR><TD>~1775/-~1825/</TD><TD>Classicism</TD></TR>
+<TR><TD>~1800/-~1900/</TD><TD>Romanticism</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<H3>PERTINENT COMMANDS</H3>
+<blockquote>
+Currently, no special-purpose Humdrum commands produce
+<b>**Zeit</b>
+as output, or process
+<b>**Zeit</b>
+encoded data as input.
+</blockquote>
+</P>
+<P>
+<H3>TANDEM INTERPRETATIONS</H3>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**Zeit</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**Zeit</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<H3>SEE ALSO</H3>
+<blockquote>
+<code><big>
+<b>**date</b> (2),
+<b>**dur</b> (2), <b>**metpos</b> (2), <b>**ordo</b> (2),
+<b>**recip</b> (2), <b>**takt</b> (2), <b>**time</b> (2)
+</code></big>
+</blockquote>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="http://dactyl.som.ohio-state.edu/Humdrum/guide1.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="http://dactyl.som.ohio-state.edu/Humdrum/guide-1.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<br><br>
+
+</BODY>
+</HTML>

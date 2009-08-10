@@ -1,0 +1,81 @@
+################################################################
+##					MINT.KSH
+# Programmed by: Tim Racinsky       Date: May, 1994
+# Copyright (c) 1994 David Huron
+#
+# Modifications:
+#    Date:    Programmer:        Description:
+# June 7/94	Tim Racinsky	Modified to used getopts
+#
+#	A korn shell script to parse commands for the mint command
+#
+OPTIONS=""
+BREAK=""
+SKIP=""
+FILENAME=""
+HELP=""
+FLAG=""
+STNDIN=""
+#
+USAGE1="USAGE: mint -h                   (Help Screen)"
+USAGE2="       mint [-acde] [-b regexp] [-s regexp] [file ...]"
+#
+while getopts ab:cdehs: arg
+do
+	case "$arg" in
+	b)	BREAK=${OPTARG};;
+	s)	SKIP=${OPTARG};;
+	h) 	HELP="ON";;
+     [acde])
+		OPTIONS="$OPTIONS${arg}";;
+	[?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no options were specified, print a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/mint.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/mint.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Can only use '-' once for each command
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "mint: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+# Invoke mint.awk with the specified options.
+#echo $AWK_VER -f ${HUMDRUM}/bin/mint.awk "DUMMY" "${OPTIONS:-null}" "${BREAK:-null}" "${SKIP:-null}" $FILENAME
+$AWK_VER -f ${HUMDRUM}/bin/mint.awk "DUMMY" "${OPTIONS:-null}" "${BREAK:-null}" "${SKIP:-null}" $FILENAME

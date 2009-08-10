@@ -1,0 +1,7 @@
+!! "humdrum: WARNING 1: Local comment may be mistaken for global"
+!! "comment in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for warning number 1
+**ex	**ex	**ex
+!comment	!!comment	!comment
+*-	*-	*-

@@ -1,0 +1,203 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- pf</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>pf</b>  --  determine prime form for successive Humdrum vertical sonorities
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>pf</b>  [<i>inputfile</i> ...]  [> <i>outputfile.pf</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>pf</b>
+command is used to determine the
+<i>prime form</i>
+for any of five set-theory related inputs:
+pitch (<code><big>**semits</big></code>), pitch-class (<code><big>**pc</big></code>),
+normal form (<code><big>**nf</big></code>), interval-vector (<code><big>**iv</big></code>),
+or Fortean set name (<code><big>**pcset</big></code>).
+</P>
+<P>
+"Prime form" is a standardized way of representing the
+symmetrical interval structure for any arbitrary set of pitch-classes.
+Prime form is the most intervalically compact representation of a
+pitch-class set, transposed to begin on pitch-class 0 -- where
+inversions are deemed equivalent.
+By way of example, any major or minor chord, having any root, in any inversion,
+consisting of any number of notes, with any spelling, will have the
+prime form: 0,3,7.
+See
+<A HREF="#REFERENCES">REFERENCES</A> below.
+</P>
+<P>
+When provided with <code><big>**semits</big></code> or <code><big>**pc</big></code> inputs,
+<b>pf</b>
+treats each input record as a set of pitches.
+Unisons and other pitch-class duplications have no effect on the output.
+Rests within a set of pitches are ignored;
+where an input record consists solely of one or more
+rests, a null-token is output.
+The
+<b>pf</b>
+command can also accept other set theoretic inputs, such as
+<code><big>**nf</big></code>, <code><big>**iv</big></code>, <code><big>**pcset</big></code>, as well as
+<code><big>**pf</big></code> itself.
+</P>
+<P>
+The following table identifies the input representations accepted by
+<b>pf.</b>
+For descriptions of the various input representations
+(including <code><big>**pf</big></code>) refer to Section 2
+<i>(Representation Reference)</i>
+of this reference manual.
+</P>
+<P>
+It is recommended that output files produced using the
+<b>pf</b>
+command should be given names with the distinguishing `.pf' extension.
+<blockquote><TABLE>
+<TR><TD><code><big>**iv</big></code></TD><TD>interval-class vector representation</TD></TR>
+<TR><TD><code><big>**nf</big></code></TD><TD>normal form representation</TD></TR>
+<TR><TD><code><big>**pc</big></code></TD><TD>pitch-class representation</TD></TR>
+<TR><TD><code><big>**pcset</big></code></TD><TD>Fortean pitch-class set name</TD></TR>
+<TR><TD><code><big>**pf</big></code></TD><TD>prime form representation</TD></TR>
+<TR><TD><code><big>**semits</big></code></TD><TD>equal-tempered semitones with respect to middle C=0 (e.g. 12 = C5)</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Input representations processed by <b>pf</b>.</i>
+</CENTER>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+<P>
+The
+<b>pf</b>
+command provides only a help option:
+<blockquote>
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+</TABLE></blockquote>
+</blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following command outputs the prime form for the sets
+formed by successive sonorities in the input file <code><big>opus24</big></code>.
+The input may be pitches, pitch-classes, Fortean set names, etc.
+</P>
+<P>
+<blockquote>
+<code><big>
+pf opus24 > opus24.pf
+</code></big>
+</blockquote>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<A HREF="context.html">
+<b>context</b></A> (4),
+<b>**iv</b> (2),
+<A HREF="iv.html">
+<b>iv</b></A> (4),
+<b>**nf</b> (2),
+<A HREF="nf.html">
+<b>nf</b></A> (4),
+<b>**pc</b> (2),
+<A HREF="pc.html">
+<b>pc</b></A> (4),
+<b>**pcset</b> (2),
+<A HREF="pcset.html">
+<b>pcset</b></A> (4),
+<b>**pf</b> (2),
+<b>**semits</b> (2),
+<A HREF="semits.html">
+<b>semits</b></A> (4)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>NOTE</H3></FONT>
+The
+<b>pf</b>
+command is a shell script that invokes
+<code><big>pcset -p</big></code>.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<A NAME="REFERENCES">
+<FONT color="0000FF"><H3>REFERENCES</H3></FONT>
+Allen Forte,
+<i>The Structure of Atonal Music.</i>
+New Haven: Yale University Press, 1973.
+</P>
+<P>
+John Rahn,
+<i>Basic Atonal Theory.</i>
+New York: Longman Inc., 1980.
+</P>
+<P>
+Straus, J.
+<i>Introduction to Post-Tonal Theory.</i>
+Englewood Cliffs, N.J.: Prentice Hall, 1990.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide34.html#Prime_Form">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

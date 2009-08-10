@@ -1,0 +1,287 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- pcset</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>pcset</b>  --  convert Humdrum pitch and pitch-class information to set-theoretic representations
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>pcset</b>  [<b>-c</b>]  [<b>-n</b>|<b>p</b>|<b>v</b>]  [<i>inputfile</i> ...]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>pcset</b>
+command is used to generate and convert between various
+set-theoretic representations.
+</P>
+<P>
+By default, the output is the Fortean pitch-class set type (<code><big>**pcset</big></code>).
+Alternatively, the user may choose to output the corresponding
+<i>normal form</i>
+(<code><big>**nf</big></code>) or the more succinct
+<i>prime form</i>
+(<code><big>**pf</big></code>) or the associated
+<i>interval-class vector</i>
+(<code><big>**iv</big></code>).
+See
+<A HREF="#REFERENCES">REFERENCES</A> below.
+</P>
+<P>
+In addition to accepting <code><big>**semits</big></code> or <code><big>**pc</big></code> inputs,
+<b>pcset</b>
+can also process <code><big>**nf</big></code>, <code><big>**iv</big></code>,
+<code><big>**pf</big></code> or <code><big>**pcset</big></code> inputs.
+This permits the user to determine the normal form, prime form or
+interval-class vector for a given pc-set, or the interval-class vector for a given
+pc-set, prime form, or normal form, etc.
+</P>
+<P>
+For all of the above translations,
+<b>pcset</b>
+also provides a
+<i>complementation</i>
+operator, where output values corresponding to the pitch-class set complement.
+For example, when the complementation option is invoked,
+an input consisting of the pitch-classes (0,4,7,10)
+would produce an output pertinent to the complementary set (1,2,3,5,6,8,9,11).
+Complementation can be applied to any accepted input type,
+including normal form, prime form, interval-class vector, and pc-set.
+Note that if the input consists of all twelve pitch-classes,
+<b>pcset</b>
+produces a null token as the set complement.
+</P>
+<P>
+When provided with <code><big>**semits</big></code> or <code><big>**pc</big></code> inputs,
+<b>pcset</b>
+treats each input record as a set of pitches.
+Unisons and other pitch-class duplications have no effect on the output.
+Rests within a set of pitches are ignored;
+where an input record consists solely of one or more
+rests, a null-token is output.
+</P>
+<P>
+The
+<b>pcset</b>
+command is able to translate any of the representations listed below.
+For descriptions of the various input representations
+(including <code><big>**pcset</big></code>) refer to Section 2
+<i>(Representation Reference)</i>
+of this reference manual.
+</P>
+<P>
+It is recommended that output files produced using the
+<b>pcset</b>
+command should be given names with the distinguishing
+extensions `.pcs', `.nf' `.pf' or `.iv' -- depending on the
+selected option.
+<blockquote><TABLE>
+<TR><TD><code><big>**iv</big></code></TD><TD>interval-class vector representation</TD></TR>
+<TR><TD><code><big>**nf</big></code></TD><TD>normal form for pitch-class sets</TD></TR>
+<TR><TD><code><big>**pc</big></code></TD><TD>pitch-class representation</TD></TR>
+<TR><TD><code><big>**pcset</big></code></TD><TD>Fortean pitch-class set name</TD></TR>
+<TR><TD><code><big>**pf</big></code></TD><TD>prime form representation</TD></TR>
+<TR><TD><code><big>**semits</big></code></TD><TD>equal-tempered semitones with respect to middle C=0 (e.g. 12 = C5)</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Input representations processed by <b>pcset</b>.</i>
+</CENTER>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>pcset</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-c</b></TD><TD>generate output for set complement</TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-n</b></TD><TD>output normal form (<code><big>**nf</code></big>) spine</TD></TR>
+<TR><TD><b>-p</b></TD><TD>output prime form (<code><big>**pf</code></big>) spine</TD></TR>
+<TR><TD><b>-v</b></TD><TD>output interval-class vector (<code><big>**iv</code></big>) spine</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+By default, the
+<b>pcset</b>
+command outputs a <code><big>**pcset</big></code> representation.
+</P>
+<P>
+The
+<b>-n</b>
+option causes
+<b>pcset</b>
+to output normal form (<code><big>**nf</big></code>) data instead of <code><big>**pcset</big></code> data.
+"Normal form" is a standard way of representing the interval
+structure of any arbitrary set of pitch-classes.
+</P>
+<P>
+The
+<b>-p</b>
+option causes
+<b>pcset</b>
+to output the prime form (<code><big>**pf</big></code>) for the input.
+Prime form is analogous to rearranging notes in a chord so that
+the spelling is in root position,
+close position, transposed so that the root of the chord is C.
+By way of example, any major chord (having any root, in any inversion,
+with any spelling) will have the normal form: 0,4,7 -- namely, a given
+(basic) pitch, plus a pitch 4 semitones above than the basic pitch,
+plus a pitch 7 semitones above the basic pitch.
+(See <A HREF="#REFERENCES">REFERENCES</A>.)
+</P>
+<P>
+The
+<b>-v</b>
+option causes interval-class vector information (<code><big>**iv</big></code>) to be output
+rather than <code><big>**pcset</big></code> data.
+All pitch-class sets can be characterized according to the possible
+interval-classes that can be constructed.
+The six-element interval-class vector specifies the abundance
+of various interval-classes from 1 semitone to 6 semitones.
+(See <A HREF="#REFERENCES">REFERENCES</A>.)
+</P>
+<P>
+Note that the
+<b>iv</b>
+command, the
+<b>nf</b>
+command, and the
+<b>pf</b>
+command are aliases for
+<code><big>pcset -v</big></code>,
+<code><big>pcset -n</big></code> and
+<code><big>pcset -p</big></code> respectively.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following command outputs the interval-class vectors for the sets
+formed by successive sonorities in the input file <code><big>webern</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>
+pcset -v webern > webern.iv
+</code></big>
+</blockquote>
+</P>
+<P>
+The following command outputs the Fortean set type for the complement
+of the sonorities given in the input file <code><big>berg</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>
+pcset -c berg > berg.pcs
+</code></big>
+</blockquote>
+</P>
+<P>
+The following command outputs the normal form representation
+for sets formed from successive
+sonorities in the input file <code><big>boulez</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>
+pcset -n boulez.nf
+</code></big>
+</blockquote>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<A HREF="context.html">context</A>
+<b>context</b></A> (4),
+<b>**iv</b> (2),
+<A HREF="iv.html">
+<b>iv</b></A> (4),
+<b>**nf</b> (2),
+<A HREF="nf.html">
+<b>nf</b></A> (4),
+<b>**pc</b> (2),
+<A HREF="pc.html">
+<b>pc</b></A> (4),
+<b>**pcset</b> (2),
+<b>**pf</b> (2),
+<A HREF="pf.html">
+<b>pf</b></A> (4),
+<b>**semits</b> (2),
+<A HREF="semits.html">
+<b>semits</b></A> (4)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<A NAME="REFERENCES">
+<FONT color="0000FF"><H3>REFERENCES</H3></FONT>
+Allen Forte,
+<i>The Structure of Atonal Music.</i>
+New Haven: Yale University Press, 1973.
+</P>
+<P>
+John Rahn,
+<i>Basic Atonal Theory.</i>
+New York: Longman Inc., 1980.
+</P>
+<P>
+Straus, J.
+<i>Introduction to Post-Tonal Theory.</i>
+Englewood Cliffs, N.J.: Prentice Hall, 1990.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide34.html#The_pcset_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

@@ -1,0 +1,32 @@
+
+CANON     : Produces an inventory of interval relations in CF canons
+
+     This command produces an inventory of interval relations formed
+     between the Guida and Cantus Firmus in a Cantus Firmus canon.
+     Specifically, an output is generated consisting of three values:
+     the second value is the melodic interval between successive
+     Cantus Firmus pitches, the third value is the harmonic interval
+     formed between the Cantus Firmus pitch and the guida pitch at
+     the distance of either a crotchet (-c), a minim (-m) or semibreve
+     (-s), and the first value is the number of instances found.
+
+     Only a single input file can be analysed at a time.  The input
+     must be in duple or quadruple meter, must have no more than one
+     CF note per measure, and must have spines marked *CF and *guida.
+
+Inputs processed:
+
+     **kern,    **pitch,   **solfg,   **Tonh
+
+Syntax:
+
+     canon [-cms] [inputfile]
+
+Options:
+
+  -c     : analyse for canonic imitation at the distance of a crotchet
+  -m     : analyse for canonic imitation at the distance of a minim
+  -s     : analyse for canonic imitation at the distance of a semibreve
+
+  Refer to Huron & Collins (1995) for further details.
+

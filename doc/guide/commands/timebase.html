@@ -1,0 +1,208 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- timebase</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>timebase</b>  --  reformat Humdrum <code><big>**kern</code></big> or <code><big>**recip</code></big> score with constant time-base
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>timebase</b>  <b>-t</b> <i>n</i>[<i>.</i>]  [<b>-M</b> <i>mark</i>] [<b>-m</b> <i>mark</i>] [<b>-x</b>]  [<i>inputfile</i> ...]  [ > <i>outputfile.tb</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>timebase</b>
+command is used to reformat <code><big>**kern</big></code> or <code><big>**recip</big></code> inputs so
+that output data records represent equivalent slices (elapsed duration) of time.
+The effect of the
+<b>timebase</b>
+command is best illustrated by an example.
+With a specified time-base of a sixteenth duration,
+the following input:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD></TR>
+<TR><TD>4g</TD><TD> 8.r</TD><TD> 8.cc</TD><TD> 16ee</TD></TR>
+<TR><TD>.</TD><TD> .</TD><TD> .</TD><TD> 8ff</TD></TR>
+<TR><TD>.</TD><TD> 32b</TD><TD> 16cc</TD><TD> 16gg</TD></TR>
+<TR><TD>.</TD><TD> 32a</TD><TD> .</TD><TD> .</TD></TR>
+<TR><TD>8f</TD><TD> 8cc</TD><TD> 8dd</TD><TD> 8ff</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+would produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD></TR>
+<TR><TD>*tb16</TD><TD>*tb16</TD><TD>*tb16</TD><TD>*tb16</TD></TR>
+<TR><TD>4g</TD><TD> 8.r</TD><TD> 8.cc</TD><TD> 16ee</TD></TR>
+<TR><TD>.</TD><TD> .</TD><TD> .</TD><TD> 8ff</TD></TR>
+<TR><TD>.</TD><TD> .</TD><TD> .</TD><TD> .</TD></TR>
+<TR><TD>.</TD><TD> 32b</TD><TD> 16cc</TD><TD> 16gg</TD></TR>
+<TR><TD>8f</TD><TD> 8cc</TD><TD> 8dd</TD><TD> 8ff</TD></TR>
+<TR><TD>.</TD><TD> .</TD><TD> .</TD><TD> .</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Each output record represents a snap-shot of a sixteenth duration
+following the previous data record.
+Depending upon the choice of time-base, the resulting output is either
+expanded or contracted in length.
+Details finer than the specified time-base are lost;
+in the above example, notice that the second thirty-second note
+(pitch `A' in the second spine) has disappeared from the file as
+the time-base is only a sixteenth duration.
+</P>
+<P>
+The time-base is selected by assigning a <code><big>**recip</big></code> duration
+value to the
+<b>-t</b>
+option.
+Time-base durations may be dotted.
+</P>
+<P>
+Comments and barlines are preserved in the output,
+however, acciaccatura records (grace notes) are discarded.
+</P>
+<P>
+It is recommended that output files produced using the
+<b>timebase</b>
+command should be given names with the distinguishing `.tb' extension.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>timebase</b>
+command provides a number of options.
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-t <i>n</i></TD><TD>set time-base where <i>n</i> represents a <code><big>**recip</i> duration</TD></TR>
+<TR><TD><b>-x</b></TD><TD>strip duration values from the input</TD></TR>
+<TR><TD><b>-M <i>mark</i></TD><TD>prepend <i>mark</i> to beginning of any padded output records</TD></TR>
+<TR><TD><b>-m <i>mark</i></TD><TD>append <i>mark</i> to end of any padded output records</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.  e.g.
+</P>
+<P>
+<blockquote>
+<code><big>
+timebase -t 8. -x
+</code></big>
+</blockquote>
+</P>
+<P>
+will remove <code><big>**kern</big></code> or <code><big>**recip</big></code> duration encodings from
+the output;
+each output data record will represent an elapsed duration of
+a dotted eighth note.
+</P>
+<P>
+The
+<b>-M</b>
+option adds a user-specified marker-string to the beginning of
+all records that
+<b>timebase</b>
+pads to the output.
+For example, the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+timebase -t 8 -M ABC
+</code></big>
+</blockquote>
+</P>
+<P>
+will add the string <code><big>ABC</big></code> to the beginning of (otherwise)
+null data records added by
+<b>timebase.</b>
+</P>
+<P>
+The
+<b>-m</b>
+option appends a user-specified marker-string to the end of all
+padded output records.
+Both the
+<b>-M</b>
+and
+<b>-m</b>
+options can be used concurrently.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<b>**kern</b> (2),
+<A HREF="metpos.html">
+<b>metpos</b></A> (4)
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+Depending upon the defined time-base, passages of prolonged syncopation
+may disappear from the output.
+The
+<b>timebase</b>
+command assumes the integrity of
+the duration structure of the input score.
+Corrupt duration structures in the input will produce unpredictable results.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#Aligning_Durations_Using_the_timebase_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

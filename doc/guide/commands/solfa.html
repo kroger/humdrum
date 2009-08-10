@@ -1,0 +1,323 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- solfa</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>solfa</b>  --  translate selected Humdrum pitch-related representations to tonic solfa syllables (<code><big>**solfa</code></big>)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>solfa</b>  [<b>-tx</b>]  [<i>inputfile</i> ...]  [> <i>outputfile.sol</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>solfa</b>
+command transforms various pitch-related inputs to the corresponding
+tonic solfa syllables.
+The command outputs one or more Humdrum <code><big>**solfa</big></code>
+spines -- where pitches are designated by the syllables
+<i>do, re, mi, fa, so, la,</i>
+and <i>ti</i> -- or their chromatic alterations:
+<i>di, da, ri, ra,</i>
+etc. (see below).
+Tonic solfa syllables can be determined only with reference to some
+prevailing key.
+For example, the pitch C is the tonic (<code><big>do</big></code>) in the key of C major,
+but the mediant (<code><big>mi</big></code>) in the key of A-flat major.
+The
+<b>solfa</b>
+command expects a tandem interpretation indicating the key of the input passage;
+<b>solfa</b>
+will adapt to specified changes of key within an input stream.
+If no key information is provided prior to the first pitch-related data,
+<b>solfa</b>
+issues an error message and terminates.
+</P>
+<P>
+There are various systems for extending the tonic solfa syllables
+in order to representing chromatic alterations.
+The system used by
+<b>solfa</b>
+is tabulated below.
+(Pronunciations are indicated in parentheses.)
+<blockquote><TABLE>
+<TR><TD><b>basic</TD><TD><b>raised</TD><TD><b>lowered</b></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>do (<i>doe</i>)</TD><TD>di (<i>dee</i>)</TD><TD>de (<i>day</i>)</TD></TR>
+<TR><TD>re (<i>ray</i>)</TD><TD>ri (<i>ree</i>)</TD><TD>ra (<i>raw</i>)</TD></TR>
+<TR><TD>mi (<i>me</i>)</TD><TD>my (<i>my</i>)</TD><TD>me (<i>may</i>)</TD></TR>
+<TR><TD>fa (<i>fah</i>)</TD><TD>fi (<i>fee</i>)</TD><TD>fe (<i>fay</i>)</TD></TR>
+<TR><TD>so (<i>so</i>)</TD><TD>si (<i>see</i>)</TD><TD>se (<i>say</i>)</TD></TR>
+<TR><TD>la (<i>la</i>)</TD><TD>li (<i>lee</i>)</TD><TD>le (<i>lay</i>)</TD></TR>
+<TR><TD>ti (<i>tee</i>)</TD><TD>ty (<i>tie</i>)</TD><TD>te (<i>tay</i>)</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Summary of <b>solfa</b> Signifiers</i>
+</CENTER>
+</P>
+<P>
+The
+<b>solfa</b>
+command differs from the
+<A HREF="deg.html"><b>deg</b></A>
+and
+<A HREF="degree.html"><b>degree</b></A>
+commands in that pitches are represented without regard to major or minor
+<i>mode.</i>
+For example,
+in the key of C major,
+<b>deg</b>
+and
+<b>degree</b>
+will characterize A-flat as a lowered sixth scale degree,
+whereas the same pitch will be a normal sixth scale degree in the
+key of C minor.
+In the case of
+<b>solfa,</b>
+the A-flat will be characterized as <code><big>le</code></big>
+--  whether or not the key is C major or C minor.
+As in the case of
+<b>deg</b>
+and
+<b>degree</b>,
+the amount of chromatic alteration is not represented;
+once a pitch is "raised," raising it further will not
+change the output representation.
+For example, where the tonic pitch is B-flat, both B-natural
+and B-sharp are represented by <code><big>di</big></code>.
+</P>
+<P>
+The
+<b>solfa</b>
+command is able to translate any of the pitch-related
+representations listed below.
+For descriptions of the various input representations
+(including <code><big>**solfa</big></code>) refer to Section 2
+<i>(Representation Reference)</i>
+of this reference manual.
+</P>
+<P>
+It is recommended that output files produced by the
+<b>solfa</b>
+command should be given names with the distinguishing .sol extension.
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</big></code></TD><TD>core pitch/duration representation</TD></TR>
+<TR><TD><code><big>**pitch</big></code></TD><TD>American National Standards Institute pitch notation (e.g. "A#4")</TD></TR>
+<TR><TD><code><big>**solfg</big></code></TD><TD>French solf&#232ge system (fixed `doh')</TD></TR>
+<TR><TD><code><big>**Tonh</big></code></TD><TD>German pitch system</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Input representations processed by <b>solfa</b>.</i>
+</CENTER>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>solfa</b>
+</CENTER>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-t</b></TD><TD>suppresses printing of all but the first note of a group of tied notes</TD></TR>
+<TR><TD><b>-x</b></TD><TD>suppresses printing of non-<code><big>**solfa</b> signifiers</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The
+<b>-t</b>
+option ensures that only a single output value is given for tied notes;
+the output coincides with the first note of the tie.
+</P>
+<P>
+In the default operation,
+<b>solfa</b>
+outputs non-pitch-related signifiers in addition to the degree value.
+For example, in the key of D, the <code><big>**kern</big></code>
+token "4Gz"
+will result in the output "4faz" -- that is, after translating
+G to fa, the "4...z" signifiers are retained in the output.
+For some applications, echoing non-pitch-related signifiers in the output
+is useful.
+However, in other situations, the result can prove confusing.
+The
+<b>-x</b>
+option is useful for eliminating non-pitch-related signifiers from the output.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following example illustrates the use of
+<b>solfa.</b>
+The input contains four pitch-related spines -- one of which (<code><big>**MIDI</big></code>)
+cannot be processed by
+<b>solfa.</b>
+In addition, there is one non-pitch-related spines (<code><big>**embell</big></code>).
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `solfa' example.</TD></TR>
+<TR><TD>**kern</TD><TD>**Tonh</TD><TD>**MIDI</TD><TD>**solfg</TD><TD>**pitch</TD><TD>**embell</TD></TR>
+<TR><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD></TR>
+<TR><TD>*C:</TD><TD>*d:</TD><TD>*G#:</TD><TD>*a:</TD><TD>*F:</TD><TD>*F:</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>8ee-</TD><TD>Gis2</TD><TD>/60/</TD><TD>do3</TD><TD>F4foo</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-60/</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>8f</TD><TD>H2</TD><TD>/62/</TD><TD>fa3</TD><TD>G4bar</TD><TD>upt</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-62/</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>8dd-</TD><TD>B2</TD><TD>/70/</TD><TD>mi3</TD><TD>E4</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-70/</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>8d--</TD><TD>Cis4</TD><TD>/61/</TD><TD>r</TD><TD>F4</TD><TD>sus</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-61/</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>[4a-</TD><TD>r</TD><TD>.</TD><TD>mi_b3</TD><TD>F4 A4</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>Heses2</TD><TD>.</TD><TD>re3</TD><TD>G4 Bb4</TD><TD>ct</TD></TR>
+<TR><TD>4a-]</TD><TD>C3</TD><TD>/48/ /52/</TD><TD>do3</TD><TD>E4 C5</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-48/</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>H2 E3</TD><TD>/-52/</TD><TD>la3</TD><TD>G4</TD><TD>ct</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>r</TD><TD>A2 F3</TD><TD>.</TD><TD>r</TD><TD>F4</TD><TD>.</TD></TR>
+<TR><TD>==</TD><TD>==</TD><TD>==</TD><TD>==</TD><TD>==</TD><TD>==</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Executing the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+solfa -tx input > output
+</code></big>
+</blockquote>
+</P>
+<P>
+produces the following result:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! `solfa' example.</TD></TR>
+<TR><TD>**solfa</TD><TD>**solfa</TD><TD>**MIDI</TD><TD>**solfa</TD><TD>**solfa</TD><TD>**embell</TD></TR>
+<TR><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD></TR>
+<TR><TD>*C:</TD><TD>*d:</TD><TD>*G#:</TD><TD>*a:</TD><TD>*F:</TD><TD>*F:</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>me</TD><TD>fi</TD><TD>/60/</TD><TD>me</TD><TD>do</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-60/</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>fa</TD><TD>la</TD><TD>/62/</TD><TD>le</TD><TD>r</TD><TD>upt</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-62/</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>ra</TD><TD>le</TD><TD>/70/</TD><TD>so</TD><TD>ti</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-70/</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>ra</TD><TD>ti</TD><TD>/61/</TD><TD>r</TD><TD>do</TD><TD>sus</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-61/</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>le</TD><TD>r</TD><TD>.</TD><TD>so</TD><TD>do mi</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>le</TD><TD>.</TD><TD>fa</TD><TD>re fa</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>te</TD><TD>/48/ /52/</TD><TD>me</TD><TD>ti so</TD><TD>ct</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>/-48/</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>la re</TD><TD>/-52/</TD><TD>do</TD><TD>re</TD><TD>ct</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>r</TD><TD>so me</TD><TD>.</TD><TD>r</TD><TD>do</TD><TD>.</TD></TR>
+<TR><TD>==</TD><TD>==</TD><TD>==</TD><TD>==</TD><TD>==</TD><TD>==</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Both processed and unprocessed spines are output.
+Notice that the tied note at the beginning of measure 2 in the <code><big>**kern</big></code>
+spine has been rendered as a single note rather than as two notes
+(due to the
+<b>-t</b>
+option).
+Also notice that the non-pitch-related signifiers (e.g. foo)
+in the first notes of the <code><big>**pitch</big></code> spine have been
+stripped away (due to the
+<b>-x</b>
+option).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>FILES</H3></FONT>
+The file <code><big>x_option.awk</big></code>
+is used by this program when the
+<b>-x</b>
+option is invoked.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<b>**deg</b> (2),
+<A HREF="deg.html">
+<b>deg</b></A> (4),
+<b>**degree</b> (2),
+<A HREF="degree.html">
+<b>degree</b></A> (4),
+<b>**kern</b> (2),
+<A HREF="kern.html">
+<b>kern</b></A> (4),
+<b>**pitch</b> (2),
+<A HREF="pitch.html">
+<b>pitch</b></A> (4),
+<b>**solfa</b> (2),
+<b>**solfg</b> (2),
+<A HREF="solfg.html">
+<b>solfg</b></A> (4),
+<b>**Tonh</b> (2),
+<A HREF="tonh.html">
+<b>tonh</b></A> (4)
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide04.html#Scale_Degree">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

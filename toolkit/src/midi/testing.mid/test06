@@ -1,0 +1,8 @@
+!! midi Test #6
+!! **kern spines with only double barlines should cause no problems.
+**kern
+==
+==
+==
+==
+*-

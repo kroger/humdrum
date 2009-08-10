@@ -1,0 +1,26 @@
+
+SCRAMBLE  : Randomize order of either Humdrum data records or data tokens.
+
+     This command can rearrange the order of data records in a Humdrum
+     input (preserving token order), OR it can rearrange the order of
+     data tokens within each record (preserving record order).
+     Either the -r or -t option must be specified.
+
+     Each time SCRAMBLE is invoked, a different random ordering is generated.
+
+Syntax:
+
+     scramble -r [-s regexp] inputfile
+     scramble -t [-m] [-s regexp] inputfile
+
+Options:
+
+  -m        : redistribute subtokens in multiple stops across all tokens
+              in the record; used in conjunction with -t only
+  -r        : scramble order of data records; don't scramble data tokens
+  -s regexp : do not scramble data records matching regexp; leave matching
+              records intact, and in the same position
+  -t        : scramble order of data tokens; don't scramble data records
+
+  Refer to reference manual for further details.
+

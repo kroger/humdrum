@@ -1,0 +1,24 @@
+
+REIHE     : Output specified row variant for a given prime row.
+
+     This command outputs either prime (-p), retrograde (-r), inversion (-i),
+     retrograde-inversion (-ri), or cyclic-shift (-s), variants of a given
+     input.   -s accepts any input, otherwise **pc inputs are required.
+
+Syntax:
+     reihe [-P|-p] n [-a] [-m n] primefile
+     reihe [-I|-i] n [-a] [-m n] primefile
+     reihe [-R|-r] [n] [-a] [-m n] primefile
+     reihe [-RI|-ri] n [-a] [-m n] primefile
+     reihe [-S|-s] [+-]n primefile
+
+Options:
+     -a            : output alphanumeric signifiers for **pc inputs (A=10...)
+     -i n (or -I)  : ouput inversion set-form starting on pitch-class n
+     -m n          : calculate according to modulo n arithmetic
+     -p n (or -P)  : output prime set-form starting on pitch-class n
+     -r n (or -R)  : output retrograde set-form ending on pitch-class n
+     -s n (or -S)  : output set-form shifted n elements
+     -ri n (or -RI): output retrograde-inversion ending on pitch-class n
+
+  Refer to reference manual for further details.

@@ -1,0 +1,119 @@
+###################################################################
+#                          MSSTAFF
+#
+# Programmed by: David Huron        Date: January, 1997
+# Copyright (c) 1997 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+#
+#
+# This script ensures proper "*staff" assignments in any
+# Humdrum input.
+#
+# (1) If the input has no "staff-assignments", then appropriate
+#     assignments will be added.  Specifically, staff numbers
+#     will be added beginning with the right-most spine (*staff1).
+#     Non-kern spines are assumed to be textual underlay, and are
+#     assigned the same staff number as the **kern spine nearest
+#     to the right.
+#
+# (2) If the input already has staff assignments, then the
+#     numbering is checked to ensure that it begins with the
+#     number 1 and that successive values increments by 1.
+#
+BEGIN	{
+	TRUE = 1; FALSE = 0; EXCLUSIVE = FALSE
+	FS="	"	# Set field separator to tab character.
+	}
+{
+if ($0 ~/^!!/)	# Echo global comments.
+	{
+	print $0
+	next
+	}
+if ($0 ~/^!/)	# Echo single local comments.
+	{
+	print $1
+	next
+	}
+if ($0 ~ /^\*/)	# Process interpretations.
+	{
+	if ($0 ~ /^\*\*/)
+		{
+		# Store the exclusive interpretations.
+		for (i=1; i<=NF; i++)
+			{
+			if ($i == "**kern") interp_type[i] = "kern"
+			else interp_type[i] = "non-kern"
+			}
+		EXCLUSIVE = TRUE	# Set flag.
+		print $0
+		next
+		}
+	}
+###################################################################
+
+# Only tandem interpretations and data records continue from here.
+
+###################################################################
+
+if (EXCLUSIVE)	# (Executes only on the first non-comment input following
+		# the first exclusive interpretation.)
+	{
+	if ($0 ~/^\*staff[0-9][0-9]*(	\*staff[0-9][0-9]*)*$/)
+		{
+		sub(",","",staffs)	# Strip away leading comma.
+		number=split(staffs,ordered_numbers,",")
+		for (spine=1; spine<=NF; spine++)
+			{
+			input_staff_num=$spine
+			gsub("*staff","",input_staff_num)
+			for (i=1; i<=number; i++)
+				{
+				if (input_staff_num ~ ordered_numbers[i])
+					{
+					output_line = output_line "	*staff" i
+					}
+				}
+			}
+		sub("	","",output_line) # Eliminate leading tab.
+		print output_line
+		}
+	else
+		{
+		# If there is no pre-existing staffing interpretations,
+		# then assign staffing from right-to-left.  Assign a new
+		# staff number for each **kern spine.
+
+		FIRST_KERN = FALSE
+		staff = 1
+		output_line = "*staff" staff
+		if (interp_type[NF] == "kern") FIRST_KERN = TRUE
+		for (i=NF-1; i>=1; i--)
+			{
+			if (!FIRST_KERN)
+				{
+				output_line = "*staff" staff "	" output_line
+				if (interp_type[i] == "kern") FIRST_KERN = TRUE
+				}
+			else 
+				{
+				if (interp_type[i] == "non-kern") output_line = "*staff" staff "	" output_line
+				else
+					{
+					staff++
+					output_line = "*staff" staff "	" output_line
+					}
+				}
+			}
+		print output_line
+		# Don't forget to print the current interpretation if it
+		# doesn't contain *staff information.
+		if ($0 !~/\*staff/) print $0
+		}
+	EXCLUSIVE = FALSE
+	next
+	}
+print $0
+}

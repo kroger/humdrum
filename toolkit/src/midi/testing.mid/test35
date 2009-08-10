@@ -1,0 +1,9 @@
+**kern
+4r
+*+
+*	**notkern
+4a	not4b
+*-	*+
+*	**kern
+4a	4b
+*-	*-

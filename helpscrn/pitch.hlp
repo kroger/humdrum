@@ -1,0 +1,24 @@
+
+PITCH     : Converts various pitch representations to **pitch.
+
+     This command translates frequency, MIDI, semits and other pitch-
+     related units to the **pitch representation.  Pitches are
+     designated by letter name, accidental, and octave (e.g. A#4).
+
+Inputs processed:
+
+     **cents,   **degree,  **freq,    **fret,    **kern,
+     **MIDI,    **semits,  **solfg,   **specC,   **Tonh
+
+Syntax:
+
+     pitch [-tx] [inputfile ...]
+
+Options:
+
+     -t     : suppresses outputting of all but first note for groups of
+              tied notes
+     -x     : suppresses outputting of non-pitch data
+
+  Refer to reference manual for further details.
+

@@ -1,0 +1,10 @@
+	To test the files in this directory, run the shell scripts:
+
+				errors.ksh and testing.ksh
+
+	The file errors.ksh will invoke the current command so that any
+error messages that are found within the shell script or the awk script
+will be output (to standard error).
+
+	The file testing.ksh will run all of the test files and compare them
+to the corresponding output files.

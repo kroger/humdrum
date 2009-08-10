@@ -1,0 +1,150 @@
+###################################################################
+# 						REIHE
+# Programmed by: Tim Racinsky        Date: June, 1994
+# Copyright (c) 1994 David Huron
+#
+# Modifications:
+#    Date:     Programmer:        	Description:
+#
+# 	This shell program is used to invoke the awk program reihe.awk.
+#
+FILENAME=""
+OPTIONS=""
+COMMAND=""
+INTEGER=""
+MODULO=""
+RETRO="FALSE"
+commands="ahi:I:m:p:P:r:R:s:S:x:X:"
+HELP=""
+FLAG=""
+STNDIN=""
+USAGE1="USAGE: reihe -h                (Help Screen)"
+USAGE2="       reihe [-P|-p] n [-a] [-m n] primefile"
+USAGE3="       reihe [-I|-i] n [-a] [-m n] primefile"
+USAGE4="       reihe [-R|-r] [n] [-a] [-m n] primefile"
+USAGE5="       reihe [-RI|-ri] n [-a] [-m n] primefile"
+USAGE6="       reihe [-S|-s] n primefile"
+DUALCASE=1
+for arg
+do
+	case "${arg}" in
+	-RI|-ri)
+		if [ $RETRO = "TRUE" ]
+		then
+			commands="ahi:I:m:p:P:rRs:S:x:X:"
+			RETRO="FALSE"
+		fi
+		arg="-X"
+		parameters="${parameters} ${arg}" ;;
+	-R|-r)
+		if [ $RETRO = "TRUE" ]
+		then
+			commands="ahi:I:m:p:P:rRs:S:x:X:"
+			RETRO="FALSE"
+		else
+			RETRO="TRUE"
+		fi
+		parameters="${parameters} ${arg}" ;;
+	*) 	if [ $RETRO = "TRUE" ]
+		then
+			if [ "X${arg}" = "X-a" -o "X${arg}" = "X-m" -o -f "${arg}" -o -z "${arg}" ]
+			then
+				commands="ahi:I:m:p:P:rRs:S:x:X:"
+				RETRO="FALSE"
+			else
+				commands="ahi:I:m:p:P:r:R:s:S:x:X:"
+				RETRO="FALSE"
+			fi
+		fi
+		parameters="${parameters} ${arg}" ;;
+	esac
+done
+set -- ${parameters}
+while getopts ${commands} arg
+do
+	case "${arg}" in
+	m)	OPTIONS="${OPTIONS}${arg}"
+		MODULO="${OPTARG}" ;;
+	a) 	OPTIONS="${OPTIONS}${arg}" ;;
+	h) 	HELP="ON" ;;
+     [iIpPrRsSxX])
+		if [ -n "${COMMAND}" ]
+		then
+			echo "reihe: ERROR: Cannot specify more than one of -I, -P, -R, -S, or -X" 1>&2
+			echo "" 1>&2
+			echo "$USAGE1" 1>&2
+			echo "$USAGE2" 1>&2
+			echo "$USAGE3" 1>&2
+			echo "$USAGE4" 1>&2
+			echo "$USAGE5" 1>&2
+			echo "$USAGE6" 1>&2
+			exit
+		else
+			COMMAND="${arg}"
+			INTEGER="${OPTARG}"
+		fi ;;
+	[?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		echo "$USAGE3" 1>&2
+		echo "$USAGE4" 1>&2
+		echo "$USAGE5" 1>&2
+		echo "$USAGE6" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/reihe.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/reihe.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+if [ "X$COMMAND" = "X" ]
+then
+	echo "reihe: ERROR: Must specify at least one of -I, -P, -R, -S, or -RI" 1>&2
+	echo "" 1>&2
+	echo "$USAGE1" 1>&2
+	echo "$USAGE2" 1>&2
+	echo "$USAGE3" 1>&2
+	echo "$USAGE4" 1>&2
+	echo "$USAGE5" 1>&2
+	echo "$USAGE6" 1>&2
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' may be used
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "reihe: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+$AWK_VER -f ${HUMDRUM}/bin/reihe.awk "DUMMY" "${COMMAND:-null}" "${OPTIONS:-null}" "${INTEGER:-null}" "${MODULO:-null}" $FILENAME

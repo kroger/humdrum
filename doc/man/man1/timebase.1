@@ -1,0 +1,151 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH timebase 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +14
+.ti -14
+\fBtimebase\fR  --  reformat Humdrum \f(CR**kern\fR or \f(CR**recip\fR score with constant time-base
+.in -14
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +10
+.ti -10
+\fBtimebase\fR  \fB-t \fIn\fR[\fI.\fR]  [\fB-x\fR]  [\fIinputfile\fR ...]  [ > \fIoutputfile.tb\fR]
+.in -10
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "timebase"
+command is used to reformat \f(CR**kern\fR or \f(CR**recip\fR inputs so
+that output data records represent equivalent slices (elapsed duration) of time.
+The effect of the
+.B "timebase"
+command is best illustrated by an example.
+With a specified time-base of a sixteenth duration,
+the following input:
+.in +2
+.sp 1
+.TS
+l l l l.
+**kern	**kern	**kern	**kern
+4g	 8.r	 8.cc	 16ee
+\.	 .	 .	 8ff
+\.	 32b	 16cc	 16gg
+\.	 32a	 .	 .
+8f	 8cc	 8dd	 8ff
+*-	*-	*-	*-
+.TE
+.sp 1
+.in -2
+would produce the following output:
+.in +2
+.sp 1
+.TS
+l l l l.
+**kern	**kern	**kern	**kern
+*tb16	*tb16	*tb16	*tb16
+4g	 8.r	 8.cc	 16ee
+\.	 .	 .	 8ff
+\.	 .	 .	 .
+\.	 32b	 16cc	 16gg
+8f	 8cc	 8dd	 8ff
+\.	 .	 .	 .
+*-	*-	*-	*-
+.TE
+.sp 1
+.in -2
+Each output record represents a snap-shot of a sixteenth duration
+following the previous data record.
+Depending upon the choice of time-base, the resulting output is either
+expanded or contracted in length.
+Details finer than the specified time-base are lost;
+in the above example, notice that the second thirty-second note
+(pitch `A' in the second spine) has disappeared from the file as
+the time-base is only a sixteenth duration.
+.sp 1
+.sp 1
+The time-base is selected by assigning a \f(CR**recip\fR duration
+value to the
+.B "-t"
+option.
+Time-base durations may be dotted.
+.sp 1
+.sp 1
+Comments and barlines are preserved in the output,
+however, acciaccatura records (grace notes) are discarded.
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "timebase"
+command should be given names with the distinguishing `.tb' extension.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "timebase"
+command provides a number of options.
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-t \fIn\fR	set time-base where \fIn\fR represents a \f(CR**recip\fR duration
+\fB-x\fR	strip duration values from the input
+.TE
+.sp 1
+Options are specified in the command line.  e.g.
+.sp 1
+.sp 1
+.in +2
+timebase -t 8. -x
+.in -2
+.sp 1
+.sp 1
+.fi
+.SA
+will remove \f(CR**kern\fR or \f(CR**recip\fR duration encodings from
+the output;
+each output data record will represent an elapsed duration of
+a dotted eighth note.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fB**kern\fR (2), \fBmetpos\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+Depending upon the defined time-base, passages of prolonged syncopation
+may disappear from the output.
+The
+.B "timebase"
+command assumes the integrity of
+the duration structure of the input score.
+Corrupt duration structures in the input will produce unpredictable results.
+.in -2

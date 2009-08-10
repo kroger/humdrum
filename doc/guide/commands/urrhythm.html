@@ -1,0 +1,259 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- urrhythm</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>urrhythm</b>  --  characterize Johnson-Laird rhythmic prototypes in a Humdrum passage
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>urrhythm</b>  <i>inputfile</i>  [ > <i>outputfile.urr</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>urrhythm</b>
+command outputs a single Humdrum spine (<code><big>**URrhythm</big></code>) containing data
+representing rhythmic `prototypes' (Ur-rhythms) evident in a musical passage.
+The command implements a variation of Johnson-Laird's theory of rhythmic
+prototypes (see <A HREF="#REFERENCES">REFERENCES</A> below).
+In order to identify the rhythmic prototypes,
+<b>urrhythm</b>
+requires information about note onsets and metric position.
+These may be provided via two input spines:
+<code><big>**kern</big></code> (or <code><big>**recip</big></code>) and <code><big>**metpos</big></code>.
+</P>
+<P>
+Johnson-Laird's rhythmic-prototype theory can be applied only to musical
+passages conforming to some established metric context,
+such as 2/4, 3/2, or 12/8 meters.
+The
+<b>urrhythm</b>
+command handles all regular types of meters (simple and compound,
+duple, triple and quadruple).
+Specifically, any meter having a "numerator"
+of 2, 3, 4, 6, 9, or 12 can be processed.
+<b>Urrhym</b>
+adapts to changes of meter, but is unable to handle irregular meters.
+If an irregular meter is encountered in the input an error is generated
+and the command terminates.
+</P>
+<P>
+<b>urrhythm</b>
+characterizes each beat in a passage as belonging to one of
+three beat types:
+<i>Note</i>
+(N),
+<i>Syncopation</i>
+(S), or
+<i>Other</i>
+(O).
+Only major beats are characterized in this way.
+Hence, in 3/4 or 9/8 meters, three beats will be characterized for
+each complete measure.
+Similarly, in 4/2 and 12/16, four beats will be characterized for
+each complete measure.
+</P>
+<P>
+A "Note" (signified in the output by the letter `N') is defined as a beat
+that coincides with a note onset.
+</P>
+<P>
+A "Syncopation" (signified by the letter `S') is defined as arising
+when no note-onset happens on a beat whose position in the metric
+hierarchy is greater than that of the most recent note onset.
+By way of example, imagine a measure in 4/4 meter containing a quarter-note,
+followed by a half-note, followed by a quarter-note.
+The third beat position does not coincide with a note onset.
+The most recent note onset prior to the third beat occurs on beat two.
+Since beat three is a more important metric position than beat two,
+beat three is deemed to be syncopated.
+</P>
+<P>
+Syncopated beats can happen only after the first note onset;
+subsequent syncopated moments will require another note onset
+(i.e. two syncopated moments can't occur in a row without some note
+onset intervening).
+</P>
+<P>
+An "Other" (signified by the letter `O') is any beat that is not
+a Note (N) or a syncopation (S).
+</P>
+<P>
+It is recommended that output files produced using the
+<b>urrhythm</b>
+command should be given names with the distinguishing `.urr' extension.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>urrhythm</b>
+command provides only a help option:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following example illustrates the operation of
+<b>urrhythm.</b>
+The first two spines (<code><big>**kern</big></code> and <code><big>**metpos</big></code>)
+constitute the input.
+The third spine (<code><big>**URrhythm</big></code>) is added by the
+<b>urrhythm</b>
+command.
+All three spines are given in the output.
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**kern</TD><TD>**metpos</TD><TD>**URrhythm</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>*tb8</TD><TD>*tb8</TD><TD>*tb8</TD></TR>
+<TR><TD>8g</TD><TD>3</TD><TD>N</TD></TR>
+<TR><TD>8g#</TD><TD>4</TD><TD>.</TD></TR>
+<TR><TD>8a</TD><TD>2</TD><TD>N</TD></TR>
+<TR><TD>[8cc</TD><TD>4</TD><TD>.</TD></TR>
+<TR><TD>8cc]</TD><TD>3</TD><TD>S</TD></TR>
+<TR><TD>8a</TD><TD>4</TD><TD>.</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>4.cc</TD><TD>1</TD><TD>N</TD></TR>
+<TR><TD>.</TD><TD>4</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>3</TD><TD>O</TD></TR>
+<TR><TD>[8b-</TD><TD>4</TD><TD>.</TD></TR>
+<TR><TD>4.b-]</TD><TD>2</TD><TD>S</TD></TR>
+<TR><TD>.</TD><TD>4</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>3</TD><TD>O</TD></TR>
+<TR><TD>[8g</TD><TD>4</TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>8g]</TD><TD>1</TD><TD>S</TD></TR>
+<TR><TD>[8e-</TD><TD>4</TD><TD>.</TD></TR>
+<TR><TD>8e-]</TD><TD>3</TD><TD>S</TD></TR>
+<TR><TD>4.r</TD><TD>4</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>2</TD><TD>O</TD></TR>
+<TR><TD>.</TD><TD>4</TD><TD>.</TD></TR>
+<TR><TD>[4c</TD><TD>3</TD><TD>N</TD></TR>
+<TR><TD>.</TD><TD>4</TD><TD>.</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>2c]</TD><TD>1</TD><TD>S</TD></TR>
+<TR><TD>.</TD><TD>4</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>3</TD><TD>O</TD></TR>
+<TR><TD>.</TD><TD>4</TD><TD>.</TD></TR>
+<TR><TD>4r</TD><TD>2</TD><TD>O</TD></TR>
+<TR><TD>.</TD><TD>4</TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+<center><HR WIDTH=500></center>
+</P>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+<P>
+The
+<b>urrhythm</b>
+command is currently unable to handle Humdrum spine-path changes
+--  such as join-path, exchange-path, or split-path.
+If spine-path changes are encountered an error is issued and the
+command terminates.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<b>**kern</b> (2),
+<b>**metpos</b> (2),
+<A HREF="metpos.html">
+<b>metpos</b></A> (4),
+<b>**recip</b> (2),
+<A HREF="timebase.html">
+<b>timebase</b></A> (4),
+<A HREF="synco.html">
+<b>synco</b></A> (4),
+<b>**URrhythm</b> (2)
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>NOTE</H3></FONT>
+The
+<b>urrhythm</b>
+command differs from Johnson-Laird's theory in the
+definition of syncopation.
+Johnson-Laird's theory requires that a listener be able to
+identify a syncopation retrospectively.
+That is, a listener is able to determine whether the current
+beat is a syncopation, only by determining what happens at the beginning
+of the next beat.
+The algorithm used here avoids the theoretical assumption of backward listening.
+(See
+<A HREF="../../Huron/publications.html">Simpson & Huron, 1993</A>.)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<A NAME="REFERENCES">
+<FONT color="0000FF"><H3>REFERENCES</H3></FONT>
+Johnson-Laird, P.
+"Rhythm and meter: A theory at the computational level,"
+<i>Psychomusicology,</i>
+Vol. 10 (1991) pp. 88-106.
+</P>
+<P>
+<A HREF="../../Huron/publications.html">Simpson, J. & Huron, D.</A>
+"The perception of rhythmic similarity: A test of a modified
+version of Johnson-Laird's theory,"
+<i>Canadian Acoustics,</i>
+Vol. 21, No. 3 (1993) pp. 89-90.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

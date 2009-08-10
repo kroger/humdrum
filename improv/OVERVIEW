@@ -1,0 +1,153 @@
+Improv 2.5: Interactive MIDI Programming in C++
+Sun Jun 14 18:20:51 PDT 2009
+Craig Stuart Sapp <craig@ccrma.stanford.edu>
+   http://improv.sapp.org
+
+Basic subset of MIDI I/O code is available at:
+   http://midiio.sapp.org
+
+----------------------------------------------------------------------------
+
+Improv contains two components: 
+   (1) a code library for writing MIDI I/O programs
+   (2) a set of example programs.  
+The library is separated into two directories: 
+   (1) improv/src, which contains the source code for the library
+   (2) improv/include, which contains header files necessary for linking 
+       to the library once it is compiled.  
+The example programs demonstrate how to use the library functions to access 
+MIDI I/O.
+
+
+To compile the library you will have to define one or two variables in
+the Makefiles:
+  (1) OSTYPE == this tells the compiler which hardware code to compile.
+      * VISUAL for Windows 95 or higher using the Visual C++ 6.0 compiler.
+      * LINUX for linux (only on Intel CPU's)
+      * OSXPC for Apple OS X on Intel CPU's.  Or OSXOLD for Apple OS X on
+        PowerPC CPU's.
+
+  (2) OSSUB == this tells the compiler which hardware interface to
+      use when talking to the MIDI I/O ports in linux: either 
+      * ALSA = Antidocumented Linux Sound Architecture.  Version 1.0.  
+        Alternatively, ALSA09 and ALSA05 can be used for earlier versions
+	of the ALSA interface.
+      * OSS = Open Sound System (http://www.opensound.com/ossorder.html)
+        Not tested recently in OSS.
+
+----------------------------------------------------------------------------
+
+Here are brief descriptions of the C++ classes available in the library:
+
+Most important are the set of classes which control access to Midi input and 
+output:
+      MidiInPort  -- basic high-level user access to MIDI input data.
+      MidiOutPort -- basic high-level user access to MIDI output data.
+
+The MidiInPort and MidiOutPort interface are very basic, and the two 
+following classes are intended to be the primary MIDI input/output interface
+(unless you only need the basics):
+      MidiOutput     -- adds useful functions to basic MidiOutPort class.
+      MidiInput      -- adds useful functions to basic MidiInPort class.
+
+The above classes depend on the following C++ classes which are used to
+define access to MIDI input/output and are inherited privately:
+
+   Microsoft Windows with Windows Multimedia Library:
+      MidiInPort_visual  -- low-level MIDI Input access with winmm.lib.
+      MidiOutPort_visual -- low-level MIDI Output access with winmm.lib.
+
+   Apple OS X:
+      Sequencer_osx      -- low-level MIDI I/O access for CoreMIDI.
+      MidiInPort_osx     -- low-level MIDI Input access for CoreMIDI.
+      MidiOutPort_osx    -- low-level MIDI Output access for CoreMIDI.
+
+   Linux ALSA 1.0:
+      Sequencer_alsa     -- low-level MIDI I/O access for ALSA 1.0.
+      MidiInPort_alsa    -- low-level MIDI Input access for ALSA 1.0.
+      MidiOutPort_alsa   -- low-level MIDI Output access for ALSA 1.0.
+
+   Linux ALSA 0.9:
+      Sequencer_alsa09   -- low-level MIDI I/O access for ALSA 0.9.
+      MidiInPort_alsa09  -- low-level MIDI Input access for ALSA 0.9.
+      MidiOutPort_alsa09 -- low-level MIDI Output access for ALSA 0.9.
+
+   Linux ALSA 0.5:
+      Sequencer_alsa05   -- low-level MIDI I/O access for ALSA 0.5.
+      MidiInPort_alsa05  -- low-level MIDI Input access for ALSA 0.5.
+
+   Linux OSS:
+      Sequencer_oss      -- low-level MIDI I/O access for OSS.
+      MidiInPort_oss     -- low-level MIDI Input access for OSS.
+      MidiOutPort_oss    -- low-level MIDI Output access for OSS.
+
+   Dummy MIDI access:
+      MidiInPort_unsupported  -- fake MIDI Input access.
+      MidiOutPort_unsupported -- fake MIDI Output access.
+   
+   Linux with both ALSA and OSS:
+      MidiInPort_linux   -- low-level MIDI Input access for both OSS and ALSA.
+      MidiOutPort_linux  -- low-level MIDI Output access for both OSS and ALSA.
+
+The classes MidiInPort and MidiOutPort are inherited by several other
+classes, including:
+      MidiPort       -- combines MidiInPort and MidiOutPort into one class.
+      MidiIO         -- combines MidiInput and MidiOutput classes.
+
+   Classes for specialized MIDI devices:
+      Voice          -- convenience class for keeping track of note-offs.
+      Synthesizer    -- convenience class for reading notes from a synthesizer.
+      RadioBaton     -- for use with Max Mathew's Radio Baton MIDI controller.
+      AdamsStick     -- for use with Interval Corp.'s Talking Stick prototype.
+
+MIDI file reading/writing classes:
+      MidiFile       -- Main MIDI file reading/writing class.
+      MidiFileWrite  -- Used for writing real-time midi output to a file.
+
+Keyboard classes used to standardize keyboard hit programming interface
+between Unix and Windows:
+      KeyboardInput        -- user interface to key hits.
+      KeyboardInput_unix   -- Unix-specific implementation.
+      KeyboardInput_osx    -- Apple OS X specific impelementation.
+      KeyboardInput_visual -- Windows-specific implementation.
+
+Utility classes:
+      SigCollection  -- array which can dynamically grow and has bounds check.
+      Array          -- variant on the SigCollection class for numerical data.
+      CircularBuffer -- Input buffer implementation for MidiInput data.
+      FileIO         -- fstream related class used for MidiFile class.
+      SigTimer       -- high-resolution timer.
+
+Miscellaneous classes:
+      Idler          -- used to be nice in multi-tasking operating systems.
+      LineDisplay    -- somewhat useless line display class.
+      MidiMessage    -- information packet for MidiInput messages.
+      Nidaq          -- National Instruments Digital Acquisition card interface.
+      Options        -- very useful command-line option handler.
+      Performance    -- Midi output for sorted data.
+      PerformData    -- used in Performance class.
+      PerformDataRecord -- used in PerformData.
+      MidiPerform    -- similar to Performance class.
+
+Classes for "Event Buffering" (see example program gliss.cpp for
+example usage):
+      EventBuffer    -- MidiOutput derived class for playing events.
+      Event          -- virtual class for deriving Event classes.
+      MidiEvent      -- for playing a single MIDI event.
+      NoteEvent      -- for playing a note-on and note-off Event.
+      OneStageEvent  -- virtual class for MidiEvent
+      TwoStageEvent  -- virtual class for NoteEvent
+      MultiStageEvent-- virtual class for FunctionEvent.
+      FunctionEvent  -- function Event structure for use in EventBuffer.
+
+
+----------------------------------------------------------------------------
+
+Some interesting examples programs:
+
+improv/cinmidi.cpp    -- MIDI input monitor.
+improv/sysexio.cpp    -- Examples on how to read/write System Excl. messages.
+synthImprov/gliss.cpp -- Demonstration of EventBuffer class for running
+                         multiple algorithms at the same time.
+
+

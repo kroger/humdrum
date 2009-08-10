@@ -1,0 +1,121 @@
+
+
+
+08/27/93 E. Correia
+WK#:67        MV#:2
+Breitkopf & H\3artel, Series 1 No.5, Leipzig
+Symphony No. 5 in C Minor
+
+Clarinetto 2 in Bb
+0 0 .
+Group memberships: sound
+sound: part 6 of 18 
+&
+
+Testing key signatures, time signatures, clefs, etc.
+
+&
+$  K:+8   Q:24   T:1/128  C:01 D:Andante con moto
+$  K:+7   Q:24   T:2/64  C:02 D:Andante con moto
+$  K:+6   Q:24   T:3/32  C:03 D:Andante con moto
+$  K:+5   Q:24   T:4/16  C:04  D:Andante con moto
+$  K:+4   Q:24   T:5/8  C:05  D:Andante con moto
+$  K:+3   Q:24   T:6/4  C:11  D:Andante con moto
+$  K:+2   Q:24   T:7/2  C:12  D:Andante con moto
+$  K:+1   Q:24   T:8/1  C:23  D:Andante con moto
+$  K:-1   Q:24   T:1/1  C:24  D:Andante con moto
+$  K:-2   Q:24   T:0/0  C:30  D:Andante con moto
+$  K:-3   Q:24   T:2/0  C:31  D:Andante con moto
+$  K:-4   Q:24   T:3/4  C:32  D:Andante con moto
+$  K:-5   Q:24   T:13/4  C:33  D:Andante con moto
+$  K:-6   Q:24   T:14/4  C:40  D:Andante con moto
+$  K:-7   Q:24   T:15/4  C:41  D:Andante con moto
+$  K:-8   Q:24   T:16/4  C:42  D:Andante con moto
+&
+
+Testing the way the program handles ridiculous durations.
+
+&
+C4     1
+C4     2
+C4     3
+C4     4
+C4     5
+C4     6
+C4     7
+@ Testing the way the program handles ties...
+@
+@ Simple tie:
+C4     8-
+C4     8
+@ Extended tie:
+C4     8-
+C4     8-
+C4     8
+@ Double-stop tie:
+C4     8-
+ E4    8-
+ G4    8-
+C4     8
+ E4    8
+ G4    8
+@ Extended double-stop tie:
+C4     8-
+ E4    8-
+ G4    8-
+C4     8-
+ E4    8-
+ G4    8-
+C4     8
+ E4    8
+ G4    8
+C4     9
+C4    10
+C4    11
+C4    12
+C4    13
+C4    14
+C4    15
+C4    16
+C4    17
+C4    18
+C4    19
+C4    20
+C4    21
+C4    22
+C4    23
+C4    24
+C4    25
+C4    26
+C4    27
+C4    28
+C4    29
+C4    30
+C4    31
+C4    32
+C4    33
+C4    34
+C4    35
+C4    36
+C4    37
+C4    38
+C4    39 
+C4    40
+C4    41
+C4    42
+C4    43
+C4    44
+C4    45
+C4    46
+C4    47
+C4    48
+back 210
+C4    40
+C4    41
+C4    42
+C4    43
+C4    44
+C4    45
+C4    46
+C4    47
+C4    48

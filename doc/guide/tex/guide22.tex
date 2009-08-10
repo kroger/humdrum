@@ -1,0 +1,985 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter22}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Classifying}
+
+
+
+Many of the most important analytic tasks involve classifying
+or categorizing various things.
+In this chapter we will discuss two general approaches to classifying:
+\textit{parametric}
+classifying and
+\textit{non-parametric}
+classifying.
+In the first instance, we will see how numerical data can be
+categorized according to arithmetic ranges.
+We will then revisit the
+\textbf{humsed}
+command and learn how it can be used to classify different types
+of non-numeric data tokens.
+
+
+\subsection*{The \textit{recode} Command}
+
+\par 
+Suppose that we have a Humdrum spine that contains numerical
+information representing the moment-to-moment heart-rate of a listener.
+Heart rate is related to arousal level
+and so we might use our data to identify passages that tend to arouse listeners.
+Since the average heart-rate of listeners differs,
+we are interested primarily in the rate-of-change.
+We can use the
+\textbf{xdelta}
+command to calculate the differences in heart-rate
+between successive values.
+
+\par 
+
+\texttt{xdelta -s = heart.dat > changes}
+
+
+\par 
+The example below displays the input (left) spine and the corresponding
+output (right) spine for the above command:
+
+\texttt{**heart*Xheart
+=133=133
+550
+561
+55-1
+=134=134
+583
+56-2
+55-1
+=135=135
+572
+55-2
+561
+
+=136=136
+55-1
+605
+622
+=137=137
+61-1
+59-2
+590
+=138=138
+*-*-}
+
+
+\par 
+A certain amount of heart-rate variation is to be expected
+because of monitoring equipment and other variables.
+So we are primarily interested in large changes of heart-rate,
+such as the change occurring in measure 136.
+The
+\textbf{recode}
+command allows us to classify numerical data according to value or range.
+In the above case, we may be interested in identifying acceleration
+or decelerations that exceed some threshold.
+The
+\textbf{recode}
+command requires that the user supply a
+\textit{reassignment file}
+that specifies how numerical values are to be reassigned.
+In our heart-rate application, we might create the following
+reassignment file, named \texttt{reassign}.
+Reassignment files obey the following syntax:
+for each line,
+\textit{conditions}
+are given on the left followed by a single tab,
+followed by a
+\textit{reassignment string.}
+
+\texttt{>3+event
+<-3-event
+else.}
+
+
+\par 
+The above reassignment file may be interpreted as follows:
+if the numerical value is greater than 3,
+then output the string "\texttt{+event}";
+if the numerical value is less than -3,
+then output the string "\texttt{-event}";
+otherwise output a string consisting of an isolated period (\texttt{.}).
+We can invoke an appropriate command as follows:
+
+\par 
+
+\texttt{recode -f reassign -i '**Xheart' -s \^{}= changes}
+
+
+\par 
+The
+\textbf{-f}
+option is required, and is used to identify the file containing the
+reassignment information.
+The
+\textbf{-i}
+option is also required, and is used to identify the
+exclusive interpretation for the data to be processed.
+The
+\textbf{-s}
+option tells
+\textbf{recode}
+to skip records matching some specified regular expression -$\,$-
+in this case, to skip barlines.
+Finally, "\texttt{changes}" is the name of our input file.
+
+\par 
+The result of applying this process to the right-most spine in
+the above example is given below:
+
+\texttt{*Xheart
+=133
+\texttt{.
+\texttt{.
+\texttt{.
+=134
+\texttt{.
+\texttt{.
+\texttt{.
+=135
+\texttt{.
+\texttt{.
+\texttt{.
+=136
+\texttt{.
++event
+\texttt{.
+=137
+\texttt{.
+\texttt{.
+\texttt{.
+=138
+*-}
+
+
+\par 
+Notice that we have used
+\textbf{recode}
+to drastically reduce the volume of data by
+transforming the input into a set of more basic cateogires.
+
+\par 
+Having constructed our new output spine,
+we can further process this information in various ways.
+For example, we might assemble this spine to our original musical score.
+Then we might then use
+\textbf{grep -n}
+to located any points in the score where a heart-rate related
+event has occurred.
+
+\par 
+Permissible relational operators used by
+\textbf{recode}
+include the following:
+
+==equals
+!=not equal
+<less than
+<=less than or equal
+>greater than
+>=greater than or equal
+elsedefault relation
+
+
+\par 
+Conditions are tested in the order given in the reassignment file.
+Thus if a numerical value satisfies more than one condition,
+only the first string replacement is made.
+Consider the following reassignment file:
+
+\texttt{<=0LOW
+>100HIGH
+>0MEDIUM}
+
+
+\par 
+The order of specification is important here.
+If the \texttt{MEDIUM} condition was specified prior to the \texttt{HIGH}
+condition, then all values greater than one hundred would be
+categorized as \texttt{MEDIUM} rather than as \texttt{HIGH}.
+Only a single
+\textbf{else}
+condition is allowed in a reassignment file;
+when it is present, the else statement should appear
+as the last reassignment.
+
+
+\subsection*{Classifying Intervals}
+
+\par 
+The
+\textbf{recode}
+command has innumerable applications.
+Suppose we wanted to determine how frequently ascending melodic leaps
+are followed by a descending step.
+Let's consider two different ways of distinguishing steps and leaps:
+a "semitone" method and a "diatonic" method.
+In the first method, we might define a step interval as either one or two
+semitones.
+Our reassignment file (dubbed "\texttt{reassign}") might appear as follows:
+
+\texttt{>=3up-leap
+>0up-step
+==0unison
+>=-2down-step
+<=-3down-leap}
+
+
+\par 
+Given this reassignment file, we can now begin our processing.
+In the first method, we translate to semitone data using
+\textbf{semits},
+translate to semitone-differences using
+\textbf{xdelta},
+and then classify into five interval types using
+\textbf{recode}.
+The
+\textbf{context}
+\textbf{-n 2}
+command will create pairs of interval types, then
+\textbf{rid},
+\textbf{sort}
+and
+\textbf{uniq -c}
+are used to generate an
+inventory.
+Finally, we use
+\textbf{grep}
+to identify what happens following ascending leaps:
+
+\par 
+
+\texttt{semits melody | xdelta -s = | recode -f reassign $\backslash$
+
+-i '**Xsemits' -s = | context -n 2 | rid -GLId | sort $\backslash$
+\\
+| uniq -c | grep 'up-leap .*\$'}
+
+
+
+\par 
+An alternative way of distinguishing steps from leaps
+is by diatonic interval.
+For example, we might consider a diminished third to be a leap,
+while an augmented second may be considered a step.
+In this case, we can use the
+\textbf{mint}
+command to determine the melodic interval size; the
+\textbf{-d}
+option limits the output to diatonic intervals and excludes
+the interval quality (perfect, major, minor, etc.).
+The appropriate reassignment file would be:
+
+\texttt{>=3up-leap
+==2up-step
+==1unison
+==-2down-step
+<=-3down-leap}
+
+
+\par 
+The appropriate command pipe would be:
+
+\par 
+
+\texttt{mint melody | xdelta -s = | recode -f reassign -i '**mint' $\backslash$
+
+-s = | context -n 2 | rid -GLId | sort | uniq -c $\backslash$
+\\
+| grep 'up-leap .*\$'}
+
+
+
+
+\subsection*{Clarinet Registers}
+
+\par 
+Consider another use of the
+\textbf{recode}
+command.
+
+
+Imagine that we wanted to arrange Claude Debussy's
+\textit{Syrinx}
+for soprano clarinet instead of flute.
+Our principle concern as arranger is determining what key
+would be especially well suited to the clarinet.
+Tone color is particularly important for this piece.
+The clarinet has four fairly distinctive tessituras as
+shown in Example 22.1.
+These are the
+\textit{chalemeau}
+register (dark and rich), the
+\textit{clarion}
+register (bright and clear), the
+\textit{altissimo}
+register (very high and piercing), and the
+\textit{throat}
+register (weak and breathy).
+\\\\
+\textbf{Example 22.1.}  Clarinet registers (notated at concert pitch).
+
+
+
+\textit{chalemeau\textit{throat}\textit{clarion}\textit{altissimo}
+
+
+
+
+\par 
+Suppose we wanted to pick a key that satisfies two conditions:
+(1) it is not out of range for the clarinet, and
+(2) it minimizes the number of notes played in the throat register.
+We can use
+\textbf{recode}
+to classify all pitches according to the following reassignments:
+
+\texttt{>=30too-high
+>=23altissimo
+>=8clarion
+>=5throat-register
+>=-10chalemeau
+elsetoo-low}
+
+
+\par 
+Now we simply explore various transpositions using
+\textbf{trans}
+and create an inventory of pitch types.
+For Debussy's \textit{Syrinx}, the minimum number of throat tones
+(without exceeding the clarinet's range) occurs when we
+transpose down a major sixth:
+
+\par 
+
+\texttt{trans -d -5 -c -9 syrinx | semits | recode -f reassign $\backslash$
+
+-i '**semits' -s = | rid -GLId | sort | uniq -c}
+
+
+
+
+\subsection*{Open and Close Position Chords}
+
+
+\par 
+Inputs to the
+\textbf{recode}
+command can be quite sophisticated.
+Consider, for example, the task of
+classifying chords as "open" or "close" position.
+According to one definition,
+a chord is said to be in "open" position when the
+the interval separating the soprano and tenor voices is
+an octave or greater.
+One music theorist has claimed that close position chords are
+more common than open position.
+How might we test this?
+
+\par 
+In determining an appropriate sequence of Humdrum commands,
+it is often helpful to work backwards from our goal.
+We'd like to end up with a spine that simply encodes the
+words "open" or "close" for each sonority.
+This classification will be based on the distance separating
+the soprano and tenor voices.
+Our reassignment file might be as follows:
+
+\texttt{<=12close}
+\texttt{>12open}
+
+
+\par 
+We will need to extract the soprano and tenor voices,
+translate the pitch representation to
+\texttt{**semits}
+and use
+\textbf{ydelta}
+to calculate the semitone distance between the two voices.
+In the following set of commands, we have also added the
+\textbf{ditto}
+command to ensure that there are semitone values for each sonority.
+
+\par 
+
+\texttt{extract -i '*Itenor,*Isopran'} \textit{inputfile}\texttt{ | semits -x | ditto $\backslash$
+
+| ydelta -s = -i '**semits' | recode -f reassign $\backslash$
+\\
+-i '**Ysemits' -s = > tempfile
+
+grep -c 'open' tempfile
+\\
+grep -c 'close' tempfile}
+
+
+\par 
+The
+\textbf{grep -c}
+commands tell us whether open position sonorities
+are more common than close position sonorities.
+
+
+\subsection*{Flute Fingering Transitions}
+
+\par 
+There is no fixed limit to the length of a reassignment file.
+Consider for example, the following file named \texttt{map}.
+Each \texttt{**semits} value from C4 (0) to C7 (36) has been
+assigned to a schematic representation of flute fingerings.
+The letter `X' indicates a closed key, whereas the letter `O'
+indicates an open key.
+The first letter pertains to the left thumb;
+the next group of four letters pertain to the ensuing fingers
+of the left hand;
+the final group of letters pertain to the right-hand fingers.
+The little finger of the right hand is able to play three keys
+(labelled X, Y, and Z).
+Fingerings are shown only for the first octave (from C4 to C5):
+
+\texttt{<0out-of-range
+\texttt{==0\texttt{X-XXXO-XXXZ
+\texttt{==1\texttt{X-XXXO-XXXY
+\texttt{==2\texttt{X-XXXO-XXXO
+\texttt{==3\texttt{X-XXXO-XXXX
+\texttt{==4\texttt{X-XXXO-XXOX
+\texttt{==5\texttt{X-XXXO-XOOX
+\texttt{==6\texttt{X-XXXO-OOXX
+\texttt{==7\texttt{X-XXXO-OOOX
+\texttt{==8\texttt{X-XXXX-OOOX
+\texttt{==9\texttt{X-XXOO-OOOX
+\texttt{==10\texttt{X-XOOO-XOOX
+\texttt{==11\texttt{X-XOOO-OOOX
+\texttt{==12\texttt{O-XOOO-OOOX}
+
+etc.
+
+\texttt{elserest}
+
+
+\par 
+Suppose we wanted to determine what kinds of fingering
+\textit{transitions}
+occur in Joachim Quantz's flute concertos.
+Since instrument fingerings are insensitive to enharmonic spelling,
+an appropriate input representation would be \texttt{**semits}.
+Having used
+\textbf{recode}
+to translate the pitches to fingerings,
+we can then use
+\textbf{context -n 2}
+to generate diads of successive finger combinations.
+
+\par 
+
+\texttt{semits con* | recode -f map -s = | context -n 2 -o = > fingers}
+
+
+\par 
+For example, if our input contains the pitch G5 followed by B4,
+the appropriate data record in the \texttt{fingers} file would be the
+following Humdrum double-stop:
+
+\par 
+
+\texttt{X-XXXO-OOOX X-XOOO-OOOX}
+
+
+\par 
+We could create an inventory of finger transitions by continuing the
+processing:
+
+\par 
+
+\texttt{rid -GLI fingers | sort | uniq -c | sort -n}
+
+
+
+\par 
+We could create a similar reassignment file containing fingers pertaining
+to the pre-Boehm flute.
+Suppose the revised reassignment file was called \texttt{premodern}.
+We could determine how the finger transitions differ between
+the pre-Boehm traverse flute and the modern flute.
+In
+Chapter 29
+we will see how the
+\textbf{diff}
+command can be used to identify
+differences between two spines.
+This will allow us to identify specific places in the score
+where Baroque and modern fingerings differ.
+
+\par 
+The
+\textbf{recode}
+command can be used for innumerable other kinds of classifications.
+For example,
+\texttt{**kern}
+durations might be expressed in seconds
+(using the
+\textbf{dur}
+command), and the elapsed times then classified as
+\textit{long}, \textit{short} and \textit{medium} (say).
+Sound pressure levels (in decibels) might be classified
+as dynamic markings (\textbf{\textit{ff}}, \textbf{\textit{mf}}, \textbf{\textit{mp}}, \textbf{\textit{pp}}, etc.),
+and so on.
+
+
+\subsection*{Classifying with \textit{humsed}}
+
+\par 
+The
+\textbf{recode}
+command is restricted to classifying numerical data only.
+For many applications, it is useful to be able to classify data
+according to non-numerical criteria.
+As we saw in
+Chapter 14,
+stream editors such as
+\textbf{sed}
+and
+\textbf{humsed}
+provide automated substitution operations.
+Such string substitutions can be used for non-parametric classifying.
+We can illustrate this with
+\textbf{humsed.}
+
+
+\par 
+Suppose we wanted to classify various flute finger-transitions
+as either \textit{easy}, \textit{moderate} or \textit{difficult}.
+For example, F4 to G4 is an easy fingering,
+E5 to A5 is a moderate fingering, whereas C5 to D5
+is difficult.
+As before, it is best to use a semitone representation
+so we don't need to consider differences in enharmonic pitch spelling.
+We can use the
+\textbf{semits}
+command to transform all pitches.
+Then we can use
+\textbf{context -n 2}
+to generate pairs of successive pitches as double-stops.
+We can then create a
+\textbf{humsed}
+script file (let's call it \texttt{difficulty})
+containing substitutions such as the following:
+
+\texttt{s/5 7/easy/}[i.e. F4 to G4]
+\texttt{s/16 21/moderate/}[i.e. E5 to A5]
+\texttt{s/12 14/difficult/}[i.e. C5 to D5]
+etc.
+
+
+\par 
+We can apply the script as follows:
+
+\par 
+
+\texttt{humsed -f difficulty sonata*}
+
+
+\par 
+Since there are a large number of possible pitch transitions,
+our script file is apt to be especially large.
+However, notes an octave apart have a high likelihood of
+having identical fingerings on the modern flute.
+A more succinct
+\textbf{humsed}
+script would deal with fingering transitions rather than pitch transitions.
+
+\par 
+
+\\
+\texttt{s/X-XXXO-XOOX X-XXXO-OOOX/easy/
+\\
+s/X-XXXO-XXOX X-XXOO-OOOX/moderate/
+\\
+s/O-XOOO-OOOX X-OXXO-XXXO/difficult/}
+\\
+etc.
+
+
+\par 
+The three substitutions shown above apply to many more pitch
+transitions than the original transitions F4-G4, E5-A5, and C5-D5.
+The above three substitutions apply also to F5-G5, F5-G4, F4-G5,
+E4-A4, E4-A5, and E5-A4.
+
+\par 
+Having created a file classifying all fingering transitions as
+"easy," "moderate" or "difficult,"
+we can characterize our Quantz flute concertos using the following pipeline:
+
+\par 
+
+\texttt{semits Quantz* | recode -f map -s = | context -n 2 -o = $\backslash$
+
+| humsed -f difficulty}
+
+
+
+\par 
+The output will be a single spine that classifies the difficulty of
+all fingering transitions.
+
+
+\subsection*{Classifying Cadences}
+
+\par 
+Consider another application where we use
+\textbf{humsed}
+to classify cadences.
+Suppose we have Roman-numeral harmonic data (as provided by the
+\texttt{**harm}
+representation).
+In the case of Bach's chorale harmonizations, for example,
+cadences are clearly evident by the presence of pauses
+(designated by the semicolon).
+We can easily create a spine that identifies only cadences.
+Consider a suitable reassignment file (dubbed \texttt{cadences}):
+
+\par 
+
+\\
+\texttt{s/V I;/authentic/
+\\
+s/V7 I;/authentic/
+\\
+s/V i;/authentic/
+\\
+s/V7 i;/authentic/
+\\
+s/IV I;/plagal/
+\\
+s/iv i;/plagal/
+\\
+s/iv I;/plagal/
+\\
+s/V vi;/deceptive/
+\\
+s/V VI;/deceptive/}
+\\
+
+\\
+etc.
+\\
+
+\\
+\texttt{s/\^{}[IiVv].*\$/./}
+
+
+\par 
+(The precise file will depend on your preferred way of
+labeling cadences.)
+Remember that, unlike the
+\textbf{recode}
+command, all of the substitutions in a
+\textbf{humsed}
+or
+\textbf{sed}
+script are applied to every input line.
+The final substitution causes any record beginning
+with either an \textit{i}, \textit{i}, \textit{v} or \textit{V} to be
+changed to a null data token.
+In effect, any progression that is not deemed to be an authentic,
+plagal or deceptive cadence is transformed to a null data record.
+Using the above reassignment file, we could create a cadence
+spine using the following pipeline:
+
+\par 
+
+\texttt{extract -i '**harm' chorales | context -o = -n 2 $\backslash$
+
+| humsed -f cadences | sed 's/$\backslash$*$\backslash$*harm/**cadences/'}
+
+
+
+\par 
+We first extract the \texttt{**harm} spine using
+\textbf{extract}.
+We then generate a sequence of two-chord progressions using
+\textbf{context}
+-$\,$-  taking care to omit barlines (\texttt{-o =}).
+We then use
+\textbf{humsed}
+to run the script of cadence-name substitutions.
+Finally, we use the
+\textbf{sed}
+command to change the name of the exclusive interpretation from \texttt{**harm}
+to something more suitable -$\,$- \texttt{**cadences}.
+
+\par 
+Many more sophisticated variants of this sort of procedure may be used.
+For example, one could first classify harmonies more broadly.
+In so-called "functional" harmony, for example,
+supertonic chords in first inversion are normally considered to be
+subdominant functions.
+One could construct a whole series of re-write rules that classify
+harmonies in a variety of ways.
+
+
+\subsection*{Orchestration}
+
+\par 
+One of the simplest classifications in a musical score is
+whether or not an instrument is sounding or resting.
+Suppose we extracted the viola part from Beethoven's Symphony No. 1.
+We might use the
+\textbf{ditto}
+command to ensure that each data record encodes either a note, rest,
+or barline:
+
+\par 
+
+\texttt{extract -i '*Iviola' symphony1 | ditto -s =}
+
+
+\par 
+Let's append to this pipeline a
+\textbf{humsed}
+command that makes two string substitutions.
+The first substitution replaces all data records containing the lower-case
+letter \texttt{r} (i.e., rests) with the string \texttt{-viola}.
+The second substitution changes any record that does not begin with
+either a minus sign or an equals sign to the string \texttt{+viola}.
+In effect, we've transformed the viola part so that all data tokens
+encode either \texttt{+viola}, \texttt{-viola} or are barlines.
+
+\par 
+
+\texttt{extract -i '*Iviola' symphony1 | ditto -s = $\backslash$
+
+| humsed 's/.*r.*/-viola/; /s/\^{}[\^{}-=].*\$/+viola/' > viola}
+
+
+
+\par 
+Now imagine that we repeat this process for every instrument in
+Beethoven's Symphony No. 1.
+In each case, we substitute the name of the instrument (preceded by
+a plus-sign or minus-sign) for the various note or rest tokens.
+
+\par 
+
+\texttt{extract -i '*Iflt' symphony1 | ditto -s = $\backslash$
+
+| humsed 's/.*r.*/-flt/; /s/\^{}[\^{}-=].*\$/+flt/' > flt}
+
+\texttt{extract -i '*Ioboe' symphony1 | ditto -s = $\backslash$
+
+| humsed 's/.*r.*/-oboe/; /s/\^{}[\^{}-=].*\$/+oboe/' > oboe}
+
+\texttt{extract -i '*Iclars' symphony1 | ditto -s = $\backslash$
+
+| humsed 's/.*r.*/-clars/; /s/\^{}[\^{}-=].*\$/+clars/' > clars}
+
+\texttt{extract -i '*Ifagot' symphony1 | ditto -s = $\backslash$
+
+| humsed 's/.*r.*/-fagot/; /s/\^{}[\^{}-=].*\$/+fagot/' > fagot}
+
+
+\par 
+etc.
+
+
+\par 
+When we are finished, we reassemble all of the transformed parts into a complete score.
+
+\par 
+
+\texttt{assemble cbass cello viola violn2 violn1 tromb tromp fagot $\backslash$
+
+clars oboe flt > orchestra}
+
+
+
+\par 
+We now have a file that contains data records that look something
+like the following excerpt:
+
+\texttt{+cbass+cello+viola+violn+violn-tromb-tromp+fagot-clars+oboe+flt
++cbass+cello-viola-violn+violn-tromb-tromp+fagot-clars+oboe+flt
++cbass+cello+viola+violn+violn-tromb-tromp+fagot-clars+oboe+flt
++cbass+cello-viola-violn+violn-tromb-tromp+fagot-clars+oboe+flt
+-cbass-cello+viola+violn+violn-tromb-tromp-fagot-clars+oboe+flt
+-cbass-cello-viola-violn+violn-tromb-tromp-fagot-clars+oboe+flt
+=131=131=131=131=131=131=131=131=131=131=131
++cbass+cello+viola+violn+violn-tromb-tromp+fagot-clars+oboe+flt
++cbass+cello-viola-violn+violn-tromb-tromp+fagot-clars+oboe+flt
+-cbass-cello+viola+violn+violn-tromb-tromp-fagot-clars+oboe+flt
+-cbass-cello-viola-violn+violn-tromb-tromp-fagot-clars+oboe+flt
++cbass+cello+viola+violn+violn-tromb-tromp+fagot-clars+oboe+flt
++cbass+cello-viola+violn+violn-tromb-tromp+fagot-clars+oboe+flt}
+
+etc.
+
+
+\par 
+The first sonority indicates that all of the string instruments are playing,
+that the brass are inactive, and that all of the woodwinds are sounding
+with the exception of the clarinet.
+
+
+\par 
+A representation such as the above provides an opportunity to
+study instrumental combinations in Beethoven's orchestration.
+For example, the following command will count the number of sonorities
+where the oboe and bassoon sound concurrently:
+
+\par 
+
+\texttt{grep -c '+fagot.*+oboe' orchestra}
+
+
+\par 
+It is better to express this count as a proportion of the total work.
+We can count the total number of sonorities in the work
+by omitting any leading plus or minus sign:
+
+\par 
+
+\texttt{grep -c 'fagot.*oboe' orchestra}
+
+
+
+\par 
+How often are the oboe and bassoon resting at the same time?
+
+\par 
+
+\texttt{grep -c '-fagot.*-oboe' orchestra}
+
+
+
+\par 
+Excluding \textit{tutti} sections, do the trumpet and flute tend to "repell"
+each others' presence?
+
+\par 
+
+\texttt{grep '$\backslash$-' orchestra | grep -c '+tromp.*-flt' orchestra}
+\\
+\texttt{grep '$\backslash$-' orchestra | grep -c '+tromp.*+flt' orchestra}
+\\
+\texttt{grep '$\backslash$-' orchestra | grep -c '-tromp.*-flt' orchestra}
+\\
+\texttt{grep '$\backslash$-' orchestra | grep -c '-tromp.*+flt' orchestra}
+
+
+
+\par 
+When all of the woodwinds are playing, which of the remaining instruments is
+Beethoven most likely to omit from the texture?
+
+
+\texttt{grep '+fagot.*+clars.*+oboe.*+flt' orchestra | grep -c '-cbass'}
+\\
+\texttt{grep '+fagot.*+clars.*+oboe.*+flt' orchestra | grep -c '-cello'}
+\\
+\texttt{grep '+fagot.*+clars.*+oboe.*+flt' orchestra | grep -c '-viola'}
+\\
+\texttt{grep '+fagot.*+clars.*+oboe.*+flt' orchestra | grep -c '-violn'}
+\\
+etc.
+
+
+
+\par 
+Many refinements can be added to this basic approach.
+For example, instead of classifying instruments as simply being
+"present" or "absent,"
+we might distinguish various registers for each instrument -$\,$- as we
+did with the clarinet when describing \textbf{recode}.
+We could then determine whether Beethoven tends to link, say,
+activity in the chalemeau register of the clarinet with low register
+activity in the strings.
+
+\par 
+Further refinements might include relating orchestration to structural
+aspects of the music.
+For example, we might use
+\textbf{yank}
+to extract sections of movements;
+we could then compare possible differences
+of orchestration between the first and second themes, for example.
+Similarly, we could reduce instruments to instrument classes,
+and examine how brass, woodwinds, strings, and percussion in general
+are related.
+
+
+
+\subsection*{Reprise}
+
+\par 
+A large number of analytic tasks simply involve classifying things.
+In general, two sorts of classifying methods can be distinguished:
+(1) a numerical or
+\textit{parametric}
+classification can be used to reassign various ranges of numerical
+values into a finite set of classes or categories;
+(2) a
+\textit{non-parametric}
+classification maps one set of words or terms into a second (usually smaller)
+set of words (used to label various classes or categories).
+In this chapter, we have seen that,
+for any Humdrum representation, parametric classification can be done
+using the
+\textbf{recode}
+command and non-parametric classification can be achieved using the
+\textit{substitution}
+operation provided by the
+\textbf{humsed}
+command.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

@@ -1,0 +1,361 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Pitch-Class Sets</TITLE>
+<!-- Documentation for the **pcset Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **pcset Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,pitch-class sets,software,theory,analysis,systematic musicology,computer representation,**pcset">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Pitch-Class Sets</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**pcset</b>  --  Fortean pitch-class set representation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<i>**pcset</i>
+representation provides a means for indicating pitch-class sets.
+The representation is based on a simple extension of the system
+devised by Allen Forte (see
+<A HREF="#REFERENCE"><b>REFERENCE</b></A>).
+Fortean set names consist of two numbers separated by a dash,
+with an optional up-case letter `Z' preceding the second number.
+The first number indicates the pitch-class
+<i>cardinality</i>
+--  that is, the number of unique pitch-classes in the set.
+For example, all major and minor chords have a cardinality of `3'
+since all such chords consist of three unique pitch-classes.
+(Inversionally-related pitch-class sets have the same set designation.)
+</P>
+<P>
+The number following the dash simply distinguishes different pitch-class
+sets having the same cardinality.
+The letter `Z' is used to indicate that the set shares the same
+interval-class content as some other set.
+(said to be Z-related sets).
+For example, sets 4-Z15 and 4-Z29 are said to be Z-related since
+they both exhibit the same interval-class content.
+(See <A HREF="iv.rep.html"><b>**iv</b></A> representation.)
+</P>
+<P>
+Barlines are represented using the "common system"
+barlines -- see
+<A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**pcs</big></code>
+data should be given names with the distinguishing `.pcs' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<i>**pcset</i>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>pitch-class set labels; measure numbers</TD></TR>
+<TR><TD>.</TD><TD>null token</TD></TR>
+<TR><TD>-</TD><TD>dash; separates cardinality for set number</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of **pcset Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+The following sample document shows a pitch-class
+representation for the opening measures of Schoenberg's
+"Sommerm\o'u\(..'d" from
+<i>Three Songs,</i>
+Opus 48.
+The right-most spine shows a <code><big>**pcset</big></code> representation
+identifying the pitch-class content of each sonority.
+(The <code><big>**pcset</big></code> spine might be generated using the
+<b>pcset</b>
+command, after the <code><big>**pc</big></code> pitch-class spines are
+<i>filled-out</i>
+using the
+<b>fill</b>
+command.)
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! Arnold Schoenberg, "Sommermued" (1933)</TD></TR>
+<TR><TD>**pc</TD><TD>**pc</TD><TD>**pc</TD><TD>**text</TD><TD>**pcset</TD></TR>
+<TR><TD>*Ipiano</TD><TD>*Ipiano</TD><TD>*Ivoice</TD><TD>*Deutsch</TD><TD>*</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD><TD>*</TD></TR>
+<TR><TD>*MM72</TD><TD>*MM72</TD><TD>*MM72</TD><TD>*MM72</TD><TD>*</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>r</TD><TD>r</TD><TD>r</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>(7</TD><TD>(11</TD><TD>.</TD><TD>.</TD><TD>2-4</TD></TR>
+<TR><TD>.</TD><TD>9^)</TD><TD>r</TD><TD>.</TD><TD>2-2</TD></TR>
+<TR><TD>8')</TD><TD>.</TD><TD>1</TD><TD>Wenn</TD><TD>3-4</TD></TR>
+<TR><TD>r</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>2-4</TD></TR>
+<TR><TD>r</TD><TD>r</TD><TD>.</TD><TD>.</TD><TD>1-1</TD></TR>
+<TR><TD>(9</TD><TD>(11</TD><TD>2</TD><TD>du</TD><TD>3-7</TD></TR>
+<TR><TD>.</TD><TD>7^)</TD><TD>.</TD><TD>.</TD><TD>3-9</TD></TR>
+<TR><TD>8')</TD><TD>.</TD><TD>0</TD><TD>schon</TD><TD>3-4</TD></TR>
+<TR><TD>r</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>2-5</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>r</TD><TD>r</TD><TD>(0</TD><TD>glaubst ,</TD><TD>1-1</TD></TR>
+<TR><TD>9</TD><TD>(7</TD><TD>[6</TD><TD>|</TD><TD>3-2</TD></TR>
+<TR><TD>(9`</TD><TD>8</TD><TD>.</TD><TD>.</TD><TD>3-2</TD></TR>
+<TR><TD>11)</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>3-7</TD></TR>
+<TR><TD>r</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>2-2</TD></TR>
+<TR><TD>r</TD><TD>7')</TD><TD>6])</TD><TD>|</TD><TD>2-1</TD></TR>
+<TR><TD>.</TD><TD>r</TD><TD>.</TD><TD>.</TD><TD>1-1</TD></TR>
+<TR><TD>.</TD><TD>(9</TD><TD>3</TD><TD>es</TD><TD>2-6</TD></TR>
+<TR><TD>[11</TD><TD>.</TD><TD>3</TD><TD>ist</TD><TD>3-8</TD></TR>
+<TR><TD>.</TD><TD>8)</TD><TD>[5</TD><TD>e-</TD><TD>3-10</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</blockquote>
+</code></big>
+</blockquote>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following humdrum commands accept <i>**pcset</i> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD><A HREF="../commands/iv.html"><b>iv</b></A></TD><TD>determine interval vectors for successive vertical sonorities</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/nf.html"><b>nf</b></A></TD><TD>determine normal form for successive vertical sonorities</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/pcset.html"><b>pcset</b></A></TD><TD>convert pitch and pitch-class information to set-theoretic representations</TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/pf.html"><b>pf</b></A></TD><TD>prime form representation</TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+</blockquote>
+The following Humdrum command produces <i>**pcset</i> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD><A HREF="../commands/pcset.html"><b>pcset</b></A></TD><TD>convert pitch and pitch-class information to set-theoretic representations</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<i>**pcset:</i>
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD>*M6/8</TD></TR>
+<TR><TD>key signatures</TD><TD>*k[  ]</TD></TR>
+<TR><TD>key</TD><TD>*c#:</TD></TR>
+<TR><TD>tempo</TD><TD>*MM96.3</TD></TR>
+<TR><TD>timebase</TD><TD>*tb32</TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**pcset</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="iv.rep.html"><b>**iv</b></A>,
+<A HREF="../commands/iv.html"><b>iv</b></A>,
+<A HREF="nf.rep.html"><b>**nf</b></A>,
+<A HREF="../commands/nf.html"><b>nf</b></A>,
+<A HREF="pc.rep.html"><b>**pc</b></A>,
+<A HREF="../commands/pc.html"><b>pc</b></A>,
+<A HREF="../commands/pcset.html"><b>pcset</b></A>,
+<A HREF="pf.rep.html"><b>**pf</b></A>,
+<A HREF="../commands/pf.html"><b>pf</b></A>,
+<A HREF="../commands/reihe.html"><b>reihe</b></A>,
+<A HREF="semits.rep.html"><b>**semits</b></A>,
+<A HREF="../commands/semits.html"><b>semits</b></A>
+</code></big>
+</blockquote>
+</P>
+<P>
+<A NAME="REFERENCE">
+<FONT color="DD00FF"><H3>REFERENCE</H3></FONT>
+<blockquote>
+Forte, A.
+<i>The Structure of Atonal Music.</i>
+New Haven: Yale University Press, 1973.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>APPENDIX</H3></FONT>
+<blockquote>
+The following table provides an extended list of all possible Fortean-type
+pitch-class set names.
+The corresponding pitch-class set and interval vectors are also shown.
+<TABLE>
+<TR><TD><b>Fortean</TD><TD>pitch-class</TD><TD>interval</TD><TD></TD><TD></TD><TD></TD><TD>Fortean</TD><TD>pitch-class</TD><TD>interval</b></TD></TR>
+<TR><TD><b>set-name</TD><TD>set</TD><TD>vector</TD><TD></TD><TD></TD><TD></TD><TD>set-name</TD><TD>set</TD><TD>vector</b></TD></TR>
+<TR><TD>0-0</TD><TD>(empty)</TD><TD><000000></TD><TD></TD><TD></TD><TD></TD><TD>12-1</TD><TD>(0,1,2,3,4,5,6,7,8,9,10,11)</TD><TD><12,12,12,12,12,12></TD></TR>
+<TR><TD>1-1</TD><TD>(0)</TD><TD><000000></TD><TD></TD><TD></TD><TD></TD><TD>11-1</TD><TD>(0,1,2,3,4,5,6,7,8,9,10)</TD><TD><10,10,10,10,10,10></TD></TR>
+<TR><TD>2-1</TD><TD>(0,1)</TD><TD><100000></TD><TD></TD><TD></TD><TD></TD><TD>10-1</TD><TD>(0,1,2,3,4,5,6,7,8,9)</TD><TD><988888></TD></TR>
+<TR><TD>2-2</TD><TD>(0,2)</TD><TD><010000></TD><TD></TD><TD></TD><TD></TD><TD>10-2</TD><TD>(0,1,2,3,4,5,6,7,8,A)</TD><TD><898888></TD></TR>
+<TR><TD>2-3</TD><TD>(0,3)</TD><TD><001000></TD><TD></TD><TD></TD><TD></TD><TD>10-3</TD><TD>(0,1,2,3,4,5,6,7,9,A)</TD><TD><889888></TD></TR>
+<TR><TD>2-4</TD><TD>(0,4)</TD><TD><000100></TD><TD></TD><TD></TD><TD></TD><TD>10-4</TD><TD>(0,1,2,3,4,5,6,8,9,A)</TD><TD><888988></TD></TR>
+<TR><TD>2-5</TD><TD>(0,5)</TD><TD><000010></TD><TD></TD><TD></TD><TD></TD><TD>10-5</TD><TD>(0,1,2,3,4,5,7,8,9,A)</TD><TD><888898></TD></TR>
+<TR><TD>2-6</TD><TD>(0,6)</TD><TD><000001></TD><TD></TD><TD></TD><TD></TD><TD>10-6</TD><TD>(0,1,2,3,4,6,7,8,9,A)</TD><TD><888889></TD></TR>
+<TR><TD>3-1</TD><TD>(0,1,2)</TD><TD><210000></TD><TD></TD><TD></TD><TD></TD><TD>9-1</TD><TD>(0,1,2,3,4,5,6,7,8)</TD><TD><876663></TD></TR>
+<TR><TD>3-2</TD><TD>(0,1,3)</TD><TD><111000></TD><TD></TD><TD></TD><TD></TD><TD>9-2</TD><TD>(0,1,2,3,4,5,6,7,9)</TD><TD><777663></TD></TR>
+<TR><TD>3-3</TD><TD>(0,1,4)</TD><TD><101100></TD><TD></TD><TD></TD><TD></TD><TD>9-3</TD><TD>(0,1,2,3,4,5,6,8,9)</TD><TD><767763></TD></TR>
+<TR><TD>3-4</TD><TD>(0,1,5)</TD><TD><100110></TD><TD></TD><TD></TD><TD></TD><TD>9-4</TD><TD>(0,1,2,3,4,5,7,8,9)</TD><TD><766773></TD></TR>
+<TR><TD>3-5</TD><TD>(0,1,6)</TD><TD><100011></TD><TD></TD><TD></TD><TD></TD><TD>9-5</TD><TD>(0,1,2,3,4,6,7,8,9)</TD><TD><766674></TD></TR>
+<TR><TD>3-6</TD><TD>(0,2,4)</TD><TD><020100></TD><TD></TD><TD></TD><TD></TD><TD>9-6</TD><TD>(0,1,2,3,4,5,6,8,10)</TD><TD><686763></TD></TR>
+<TR><TD>3-7</TD><TD>(0,2,5)</TD><TD><011010></TD><TD></TD><TD></TD><TD></TD><TD>9-7</TD><TD>(0,1,2,3,4,5,7,8,10)</TD><TD><677673></TD></TR>
+<TR><TD>3-8</TD><TD>(0,2,6)</TD><TD><010101></TD><TD></TD><TD></TD><TD></TD><TD>9-8</TD><TD>(0,1,2,3,4,6,7,8,10)</TD><TD><676764></TD></TR>
+<TR><TD>3-9</TD><TD>(0,2,7)</TD><TD><010020></TD><TD></TD><TD></TD><TD></TD><TD>9-9</TD><TD>(0,1,2,3,5,6,7,8,10)</TD><TD><676683></TD></TR>
+<TR><TD>3-10</TD><TD>(0,3,6)</TD><TD><002001></TD><TD></TD><TD></TD><TD></TD><TD>9-10</TD><TD>(0,1,2,3,4,6,7,9,10)</TD><TD><668664></TD></TR>
+<TR><TD>3-11</TD><TD>(0,3,7)</TD><TD><001110></TD><TD></TD><TD></TD><TD></TD><TD>9-11</TD><TD>(0,1,2,3,5,6,7,9,10)</TD><TD><667773></TD></TR>
+<TR><TD>3-12</TD><TD>(0,4,8)</TD><TD><000300></TD><TD></TD><TD></TD><TD></TD><TD>9-12</TD><TD>(0,1,2,4,5,6,8,9,10)</TD><TD><666963></TD></TR>
+<TR><TD>4-1</TD><TD>(0,1,2,3)</TD><TD><321000></TD><TD></TD><TD></TD><TD></TD><TD>8-1</TD><TD>(0,1,2,3,4,5,6,7)</TD><TD><765442></TD></TR>
+<TR><TD>4-2</TD><TD>(0,1,2,4)</TD><TD><221100></TD><TD></TD><TD></TD><TD></TD><TD>8-2</TD><TD>(0,1,2,3,4,5,6,8)</TD><TD><665542></TD></TR>
+<TR><TD>4-3</TD><TD>(0,1,3,4)</TD><TD><212100></TD><TD></TD><TD></TD><TD></TD><TD>8-3</TD><TD>(0,1,2,3,4,5,6,9)</TD><TD><656542></TD></TR>
+<TR><TD>4-4</TD><TD>(0,1,2,5)</TD><TD><211110></TD><TD></TD><TD></TD><TD></TD><TD>8-4</TD><TD>(0,1,2,3,4,5,7,8)</TD><TD><655552></TD></TR>
+<TR><TD>4-5</TD><TD>(0,1,2,6)</TD><TD><210111></TD><TD></TD><TD></TD><TD></TD><TD>8-5</TD><TD>(0,1,2,3,4,6,7,8)</TD><TD><654553></TD></TR>
+<TR><TD>4-6</TD><TD>(0,1,2,7)</TD><TD><210021></TD><TD></TD><TD></TD><TD></TD><TD>8-6</TD><TD>(0,1,2,3,5,6,7,8)</TD><TD><654463></TD></TR>
+<TR><TD>4-7</TD><TD>(0,1,4,5)</TD><TD><201210></TD><TD></TD><TD></TD><TD></TD><TD>8-7</TD><TD>(0,1,2,3,4,5,8,9)</TD><TD><645652></TD></TR>
+<TR><TD>4-8</TD><TD>(0,1,5,6)</TD><TD><200121></TD><TD></TD><TD></TD><TD></TD><TD>8-8</TD><TD>(0,1,2,3,4,7,8,9)</TD><TD><644563></TD></TR>
+<TR><TD>4-9</TD><TD>(0,1,6,7)</TD><TD><200022></TD><TD></TD><TD></TD><TD></TD><TD>8-9</TD><TD>(0,1,2,3,6,7,8,9)</TD><TD><644464></TD></TR>
+<TR><TD>4-10</TD><TD>(0,2,3,5)</TD><TD><122010></TD><TD></TD><TD></TD><TD></TD><TD>8-10</TD><TD>(0,2,3,4,5,6,7,9)</TD><TD><566452></TD></TR>
+<TR><TD>4-11</TD><TD>(0,1,3,5)</TD><TD><121110></TD><TD></TD><TD></TD><TD></TD><TD>8-11</TD><TD>(0,1,2,3,4,5,7,9)</TD><TD><565552></TD></TR>
+<TR><TD>4-12</TD><TD>(0,2,3,6)</TD><TD><112101></TD><TD></TD><TD></TD><TD></TD><TD>8-12</TD><TD>(0,1,3,4,5,6,7,9)</TD><TD><556543></TD></TR>
+<TR><TD>4-13</TD><TD>(0,1,3,6)</TD><TD><112011></TD><TD></TD><TD></TD><TD></TD><TD>8-13</TD><TD>(0,1,2,3,4,6,7,9)</TD><TD><556453></TD></TR>
+<TR><TD>4-14</TD><TD>(0,2,3,7)</TD><TD><111120></TD><TD></TD><TD></TD><TD></TD><TD>8-14</TD><TD>(0,1,2,4,5,6,7,9)</TD><TD><555562></TD></TR>
+<TR><TD>4-Z15</TD><TD>(0,1,4,6)</TD><TD><111111></TD><TD></TD><TD></TD><TD></TD><TD>8-Z15</TD><TD>(0,1,2,3,4,6,8,9)</TD><TD><555553></TD></TR>
+<TR><TD>4-16</TD><TD>(0,1,5,7)</TD><TD><110121></TD><TD></TD><TD></TD><TD></TD><TD>8-16</TD><TD>(0,1,2,3,5,7,8,9)</TD><TD><554563></TD></TR>
+<TR><TD>4-17</TD><TD>(0,3,4,7)</TD><TD><102210></TD><TD></TD><TD></TD><TD></TD><TD>8-17</TD><TD>(0,1,3,4,5,6,8,9)</TD><TD><546652></TD></TR>
+<TR><TD>4-18</TD><TD>(0,1,4,7)</TD><TD><102111></TD><TD></TD><TD></TD><TD></TD><TD>8-18</TD><TD>(0,1,2,3,5,6,8,9)</TD><TD><546553></TD></TR>
+<TR><TD>4-19</TD><TD>(0,1,4,8)</TD><TD><101310></TD><TD></TD><TD></TD><TD></TD><TD>8-19</TD><TD>(0,1,2,4,5,6,8,9)</TD><TD><545752></TD></TR>
+<TR><TD>4-20</TD><TD>(0,1,5,8)</TD><TD><101220></TD><TD></TD><TD></TD><TD></TD><TD>8-20</TD><TD>(0,1,2,4,5,7,8,9)</TD><TD><545662></TD></TR>
+<TR><TD>4-21</TD><TD>(0,2,4,6)</TD><TD><030201></TD><TD></TD><TD></TD><TD></TD><TD>8-21</TD><TD>(0,1,2,3,4,6,8,10)</TD><TD><474643></TD></TR>
+<TR><TD>4-22</TD><TD>(0,2,4,7)</TD><TD><021120></TD><TD></TD><TD></TD><TD></TD><TD>8-22</TD><TD>(0,1,2,3,5,6,8,10)</TD><TD><465562></TD></TR>
+<TR><TD>4-23</TD><TD>(0,2,5,7)</TD><TD><021030></TD><TD></TD><TD></TD><TD></TD><TD>8-23</TD><TD>(0,1,2,3,5,7,8,10)</TD><TD><465472></TD></TR>
+<TR><TD>4-24</TD><TD>(0,2,4,8)</TD><TD><020301></TD><TD></TD><TD></TD><TD></TD><TD>8-24</TD><TD>(0,1,2,4,5,6,8,10)</TD><TD><464743></TD></TR>
+<TR><TD>4-25</TD><TD>(0,2,6,8)</TD><TD><020202></TD><TD></TD><TD></TD><TD></TD><TD>8-25</TD><TD>(0,1,2,4,6,7,8,10)</TD><TD><464644></TD></TR>
+<TR><TD>4-26</TD><TD>(0,3,5,8)</TD><TD><012120></TD><TD></TD><TD></TD><TD></TD><TD>8-26</TD><TD>(0,1,2,4,5,7,9,10)</TD><TD><456562></TD></TR>
+<TR><TD>4-27</TD><TD>(0,2,5,8)</TD><TD><012111></TD><TD></TD><TD></TD><TD></TD><TD>8-27</TD><TD>(0,1,2,4,5,7,8,10)</TD><TD><456553></TD></TR>
+<TR><TD>4-28</TD><TD>(0,3,6,9)</TD><TD><004002></TD><TD></TD><TD></TD><TD></TD><TD>8-28</TD><TD>(0,1,3,4,6,7,9,10)</TD><TD><448444></TD></TR>
+<TR><TD>4-Z29</TD><TD>(0,1,3,7)</TD><TD><111111></TD><TD></TD><TD></TD><TD></TD><TD>8-Z29</TD><TD>(0,1,2,3,5,6,7,9)</TD><TD><555553></TD></TR>
+<TR><TD>5-1</TD><TD>(0,1,2,3,4)</TD><TD><432100></TD><TD></TD><TD></TD><TD></TD><TD>7-1</TD><TD>(0,1,2,3,4,5,6)</TD><TD><654321></TD></TR>
+<TR><TD>5-2</TD><TD>(0,1,2,3,5)</TD><TD><332110></TD><TD></TD><TD></TD><TD></TD><TD>7-2</TD><TD>(0,1,2,3,4,5,7)</TD><TD><554331></TD></TR>
+<TR><TD>5-3</TD><TD>(0,1,2,4,5)</TD><TD><322210></TD><TD></TD><TD></TD><TD></TD><TD>7-3</TD><TD>(0,1,2,3,4,5,8)</TD><TD><544431></TD></TR>
+<TR><TD>5-4</TD><TD>(0,1,2,3,6)</TD><TD><322111></TD><TD></TD><TD></TD><TD></TD><TD>7-4</TD><TD>(0,1,2,3,4,6,7)</TD><TD><544332></TD></TR>
+<TR><TD>5-5</TD><TD>(0,1,2,3,7)</TD><TD><321121></TD><TD></TD><TD></TD><TD></TD><TD>7-5</TD><TD>(0,1,2,3,5,6,7)</TD><TD><543342></TD></TR>
+<TR><TD>5-6</TD><TD>(0,1,2,5,6)</TD><TD><311221></TD><TD></TD><TD></TD><TD></TD><TD>7-6</TD><TD>(0,1,2,3,4,7,8)</TD><TD><533442></TD></TR>
+<TR><TD>5-7</TD><TD>(0,1,2,6,7)</TD><TD><310132></TD><TD></TD><TD></TD><TD></TD><TD>7-7</TD><TD>(0,1,2,3,6,7,8)</TD><TD><532353></TD></TR>
+<TR><TD>5-8</TD><TD>(0,2,3,4,6)</TD><TD><232201></TD><TD></TD><TD></TD><TD></TD><TD>7-8</TD><TD>(0,2,3,4,5,6,8)</TD><TD><454422></TD></TR>
+<TR><TD>5-9</TD><TD>(0,1,2,4,6)</TD><TD><231211></TD><TD></TD><TD></TD><TD></TD><TD>7-9</TD><TD>(0,1,2,3,4,6,8)</TD><TD><453432></TD></TR>
+<TR><TD>5-10</TD><TD>(0,1,3,4,6)</TD><TD><223111></TD><TD></TD><TD></TD><TD></TD><TD>7-10</TD><TD>(0,1,2,3,4,6,9)</TD><TD><445332></TD></TR>
+<TR><TD>5-11</TD><TD>(0,2,3,4,7)</TD><TD><222220></TD><TD></TD><TD></TD><TD></TD><TD>7-11</TD><TD>(0,1,3,4,5,6,8)</TD><TD><444441></TD></TR>
+<TR><TD>5-Z12</TD><TD>(0,1,3,5,6)</TD><TD><222121></TD><TD></TD><TD></TD><TD></TD><TD>7-Z12</TD><TD>(0,1,2,3,4,7,9)</TD><TD><444342></TD></TR>
+<TR><TD>5-13</TD><TD>(0,1,2,4,8)</TD><TD><221311></TD><TD></TD><TD></TD><TD></TD><TD>7-13</TD><TD>(0,1,2,4,5,6,8)</TD><TD><443532></TD></TR>
+<TR><TD>5-14</TD><TD>(0,1,2,5,7)</TD><TD><221131></TD><TD></TD><TD></TD><TD></TD><TD>7-14</TD><TD>(0,1,2,3,5,7,8)</TD><TD><443352></TD></TR>
+<TR><TD>5-15</TD><TD>(0,1,2,6,8)</TD><TD><220222></TD><TD></TD><TD></TD><TD></TD><TD>7-15</TD><TD>(0,1,2,4,6,7,8)</TD><TD><442443></TD></TR>
+<TR><TD>5-16</TD><TD>(0,1,3,4,7)</TD><TD><213211></TD><TD></TD><TD></TD><TD></TD><TD>7-16</TD><TD>(0,1,2,3,5,6,9)</TD><TD><435432></TD></TR>
+<TR><TD>5-Z17</TD><TD>(0,1,3,4,8)</TD><TD><212320></TD><TD></TD><TD></TD><TD></TD><TD>7-Z17</TD><TD>(0,1,2,4,5,6,9)</TD><TD><434541></TD></TR>
+<TR><TD>5-Z18</TD><TD>(0,1,4,5,7)</TD><TD><212221></TD><TD></TD><TD></TD><TD></TD><TD>7-Z18</TD><TD>(0,1,2,3,5,8,9)</TD><TD><434442></TD></TR>
+<TR><TD>5-19</TD><TD>(0,1,3,6,7)</TD><TD><212122></TD><TD></TD><TD></TD><TD></TD><TD>7-19</TD><TD>(0,1,2,3,6,7,9)</TD><TD><434343></TD></TR>
+<TR><TD>5-20</TD><TD>(0,1,3,7,8)</TD><TD><211231></TD><TD></TD><TD></TD><TD></TD><TD>7-20</TD><TD>(0,1,2,4,7,8,9)</TD><TD><433452></TD></TR>
+<TR><TD>5-21</TD><TD>(0,1,4,5,8)</TD><TD><202420></TD><TD></TD><TD></TD><TD></TD><TD>7-21</TD><TD>(0,1,2,4,5,8,9)</TD><TD><424641></TD></TR>
+<TR><TD>5-22</TD><TD>(0,1,4,7,8)</TD><TD><202321></TD><TD></TD><TD></TD><TD></TD><TD>7-22</TD><TD>(0,1,2,5,6,8,9)</TD><TD><424542></TD></TR>
+<TR><TD>5-23</TD><TD>(0,2,3,5,7)</TD><TD><132130></TD><TD></TD><TD></TD><TD></TD><TD>7-23</TD><TD>(0,2,3,4,5,7,9)</TD><TD><354351></TD></TR>
+<TR><TD>5-24</TD><TD>(0,1,3,5,7)</TD><TD><131221></TD><TD></TD><TD></TD><TD></TD><TD>7-24</TD><TD>(0,1,2,3,5,7,9)</TD><TD><353442></TD></TR>
+<TR><TD>5-25</TD><TD>(0,2,3,5,8)</TD><TD><123121></TD><TD></TD><TD></TD><TD></TD><TD>7-25</TD><TD>(0,2,3,4,6,7,9)</TD><TD><345342></TD></TR>
+<TR><TD>5-26</TD><TD>(0,2,4,5,8)</TD><TD><122311></TD><TD></TD><TD></TD><TD></TD><TD>7-26</TD><TD>(0,1,3,4,5,7,9)</TD><TD><344532></TD></TR>
+<TR><TD>5-27</TD><TD>(0,1,3,5,8)</TD><TD><122230></TD><TD></TD><TD></TD><TD></TD><TD>7-27</TD><TD>(0,1,2,4,5,7,9)</TD><TD><344451></TD></TR>
+<TR><TD>5-28</TD><TD>(0,2,3,6,8)</TD><TD><122212></TD><TD></TD><TD></TD><TD></TD><TD>7-28</TD><TD>(0,1,3,5,6,7,9)</TD><TD><344433></TD></TR>
+<TR><TD>5-29</TD><TD>(0,1,3,6,8)</TD><TD><122131></TD><TD></TD><TD></TD><TD></TD><TD>7-29</TD><TD>(0,1,2,4,6,7,9)</TD><TD><344352></TD></TR>
+<TR><TD>5-30</TD><TD>(0,1,4,6,8)</TD><TD><121321></TD><TD></TD><TD></TD><TD></TD><TD>7-30</TD><TD>(0,1,2,4,6,8,9)</TD><TD><343542></TD></TR>
+<TR><TD>5-31</TD><TD>(0,1,3,6,9)</TD><TD><114112></TD><TD></TD><TD></TD><TD></TD><TD>7-31</TD><TD>(0,1,3,4,6,7,9)</TD><TD><336333></TD></TR>
+<TR><TD>5-32</TD><TD>(0,1,4,6,9)</TD><TD><113221></TD><TD></TD><TD></TD><TD></TD><TD>7-32</TD><TD>(0,1,3,4,6,8,9)</TD><TD><335442></TD></TR>
+<TR><TD>5-33</TD><TD>(0,2,4,6,8)</TD><TD><040402></TD><TD></TD><TD></TD><TD></TD><TD>7-33</TD><TD>(0,1,2,4,6,8,10)</TD><TD><262623></TD></TR>
+<TR><TD>5-34</TD><TD>(0,2,4,6,9)</TD><TD><032221></TD><TD></TD><TD></TD><TD></TD><TD>7-34</TD><TD>(0,1,3,4,6,8,10)</TD><TD><254442></TD></TR>
+<TR><TD>5-35</TD><TD>(0,2,4,7,9)</TD><TD><032140></TD><TD></TD><TD></TD><TD></TD><TD>7-35</TD><TD>(0,1,3,5,6,8,10)</TD><TD><254361></TD></TR>
+<TR><TD>5-Z36</TD><TD>(0,1,2,4,7)</TD><TD><222121></TD><TD></TD><TD></TD><TD></TD><TD>7-Z36</TD><TD>(0,1,2,3,5,6,8)</TD><TD><444342></TD></TR>
+<TR><TD>5-Z37</TD><TD>(0,3,4,5,8)</TD><TD><212320></TD><TD></TD><TD></TD><TD></TD><TD>7-Z37</TD><TD>(0,1,3,4,5,7,8)</TD><TD><434541></TD></TR>
+<TR><TD>5-Z38</TD><TD>(0,1,2,5,8)</TD><TD><212221></TD><TD></TD><TD></TD><TD></TD><TD>7-Z38</TD><TD>(0,1,2,4,5,7,8)</TD><TD><434442></TD></TR>
+<TR><TD>6-1</TD><TD>(0,1,2,3,4,5)</TD><TD><543210></TD><TD></TD><TD></TD><TD></TD><TD>6-Z26</TD><TD>(0,1,3,5,7,8)</TD><TD><232341></TD></TR>
+<TR><TD>6-2</TD><TD>(0,1,2,3,4,6)</TD><TD><443211></TD><TD></TD><TD></TD><TD></TD><TD>6-27</TD><TD>(0,1,3,4,6,9)</TD><TD><225222></TD></TR>
+<TR><TD>6-Z3</TD><TD>(0,1,2,3,5,6)</TD><TD><433221></TD><TD></TD><TD></TD><TD></TD><TD>6-Z28</TD><TD>(0,1,3,5,6,9)</TD><TD><224322></TD></TR>
+<TR><TD>6-Z4</TD><TD>(0,1,2,4,5,6)</TD><TD><432321></TD><TD></TD><TD></TD><TD></TD><TD>6-Z29</TD><TD>(0,1,3,6,8,9)</TD><TD><224232></TD></TR>
+<TR><TD>6-5</TD><TD>(0,1,2,3,6,7)</TD><TD><422232></TD><TD></TD><TD></TD><TD></TD><TD>6-30</TD><TD>(0,1,3,6,7,9)</TD><TD><224223></TD></TR>
+<TR><TD>6-Z6</TD><TD>(0,1,2,5,6,7)</TD><TD><421242></TD><TD></TD><TD></TD><TD></TD><TD>6-31</TD><TD>(0,1,3,5,8,9)</TD><TD><223431></TD></TR>
+<TR><TD>6-7</TD><TD>(0,1,2,6,7,8)</TD><TD><420243></TD><TD></TD><TD></TD><TD></TD><TD>6-32</TD><TD>(0,2,4,5,7,9)</TD><TD><143250></TD></TR>
+<TR><TD>6-8</TD><TD>(0,2,3,4,5,7)</TD><TD><343230></TD><TD></TD><TD></TD><TD></TD><TD>6-33</TD><TD>(0,2,3,5,7,9)</TD><TD><143241></TD></TR>
+<TR><TD>6-9</TD><TD>(0,1,2,3,5,7)</TD><TD><342231></TD><TD></TD><TD></TD><TD></TD><TD>6-34</TD><TD>(0,1,3,5,7,9)</TD><TD><142422></TD></TR>
+<TR><TD>6-Z10</TD><TD>(0,1,3,4,5,7)</TD><TD><333321></TD><TD></TD><TD></TD><TD></TD><TD>6-35</TD><TD>(0,2,4,6,8,10)</TD><TD><060603></TD></TR>
+<TR><TD>6-Z11</TD><TD>(0,1,2,4,5,7)</TD><TD><333231></TD><TD></TD><TD></TD><TD></TD><TD>6-Z36</TD><TD>(0,1,2,3,4,7)</TD><TD><433221></TD></TR>
+<TR><TD>6-Z12</TD><TD>(0,1,2,4,6,7)</TD><TD><332232></TD><TD></TD><TD></TD><TD></TD><TD>6-Z37</TD><TD>(0,1,2,3,4,8)</TD><TD><432321></TD></TR>
+<TR><TD>6-Z13</TD><TD>(0,1,3,4,6,7)</TD><TD><324222></TD><TD></TD><TD></TD><TD></TD><TD>6-Z38</TD><TD>(0,1,2,3,7,8)</TD><TD><421242></TD></TR>
+<TR><TD>6-14</TD><TD>(0,1,3,4,5,8)</TD><TD><323430></TD><TD></TD><TD></TD><TD></TD><TD>6-Z39</TD><TD>(0,2,3,4,5,8)</TD><TD><333321></TD></TR>
+<TR><TD>6-15</TD><TD>(0,1,2,4,5,8)</TD><TD><323421></TD><TD></TD><TD></TD><TD></TD><TD>6-Z40</TD><TD>(0,1,2,3,5,8)</TD><TD><333231></TD></TR>
+<TR><TD>6-16</TD><TD>(0,1,4,5,6,8)</TD><TD><322431></TD><TD></TD><TD></TD><TD></TD><TD>6-Z41</TD><TD>(0,1,2,3,6,8)</TD><TD><332232></TD></TR>
+<TR><TD>6-Z17</TD><TD>(0,1,2,4,7,8)</TD><TD><322332></TD><TD></TD><TD></TD><TD></TD><TD>6-Z42</TD><TD>(0,1,2,3,6,9)</TD><TD><324222></TD></TR>
+<TR><TD>6-18</TD><TD>(0,1,2,5,7,8)</TD><TD><322242></TD><TD></TD><TD></TD><TD></TD><TD>6-Z43</TD><TD>(0,1,2,5,6,8)</TD><TD><322332></TD></TR>
+<TR><TD>6-Z19</TD><TD>(0,1,3,4,7,8)</TD><TD><313431></TD><TD></TD><TD></TD><TD></TD><TD>6-Z44</TD><TD>(0,1,2,5,6,9)</TD><TD><313431></TD></TR>
+<TR><TD>6-20</TD><TD>(0,1,4,5,8,9)</TD><TD><303630></TD><TD></TD><TD></TD><TD></TD><TD>6-Z45</TD><TD>(0,2,3,4,6,9)</TD><TD><234222></TD></TR>
+<TR><TD>6-21</TD><TD>(0,2,3,4,6,8)</TD><TD><242412></TD><TD></TD><TD></TD><TD></TD><TD>6-Z46</TD><TD>(0,1,2,4,6,9)</TD><TD><233331></TD></TR>
+<TR><TD>6-22</TD><TD>(0,1,2,4,6,8)</TD><TD><241422></TD><TD></TD><TD></TD><TD></TD><TD>6-Z47</TD><TD>(0,1,2,4,7,9)</TD><TD><233241></TD></TR>
+<TR><TD>6-Z23</TD><TD>(0,2,3,5,6,8)</TD><TD><234222></TD><TD></TD><TD></TD><TD></TD><TD>6-Z48</TD><TD>(0,1,2,5,7,9)</TD><TD><232341></TD></TR>
+<TR><TD>6-Z24</TD><TD>(0,1,3,4,6,8)</TD><TD><233331></TD><TD></TD><TD></TD><TD></TD><TD>6-Z49</TD><TD>(0,1,3,4,7,9)</TD><TD><224322></TD></TR>
+<TR><TD>6-Z25</TD><TD>(0,1,3,5,6,8)</TD><TD><233241></TD><TD></TD><TD></TD><TD></TD><TD>6-Z50</TD><TD>(0,1,4,6,7,9)</TD><TD><224232></TD></TR>
+</TABLE>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

@@ -1,0 +1,739 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter33}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Word Sounds}
+
+
+
+In addition to the meanings conveyed by words, words also
+provide distinctive sounds that can prove to be musically useful.
+Poets and composers often arrange or choose texts so that the sequence of
+sounds create alliteration, onomatopoeia, rhythm, rhyme and other sonorous effects.
+This chapter introduces the
+\texttt{**IPA}
+scheme for representing speech sounds.
+This representation provides a companion to the
+\texttt{**text}
+and
+\texttt{**silbe}
+representations discussed in
+Chapter 27.
+Various sonorous processes are illustrated.
+
+
+\subsection*{The **IPA Representation}
+
+\par 
+The Humdrum
+\texttt{**IPA}
+scheme provides a way to represent the International Phonetic Alphabet.
+The \texttt{**IPA} scheme is based on the
+transliteration scheme developed by
+linguist Evan Kirshenbaum.
+The scheme is suitable for representing the basic phonemes found in
+most of the world's languages.
+The table below summarizes the \texttt{**IPA}
+mappings for various phonemes.
+
+@\textbf{schwa}§ as in (unaccented) \textit{banana, collide, alone} or (accented) \textit{humdrum}
+V\textbf{schwa} (IPA symbol: $\backslash$(an); as in the British pronunciation of \textit{hut}
+R\textbf{R}$\backslash$(dd; as in \textit{burn, operation, dirt, urgent}
+\&short \textbf{a} (IPA symbol: $\backslash$(ae); as in \textit{mat, map, mad, gag, snap, patch}
+A\textbf{ä} (IPA symbol: \textit{a}); as in \textit{bother, cot}, and, with most American speakers,
+\textit{father, cart}
+a\textbf{a$\backslash$(de}; \textit{father} as pronounced by speakers who do not rhyme it with \textit{bother}.
+Eshort \textbf{e} (IPA symbol: $\backslash$(*e or E); as in \textit{get, bed, peck, edge}
+ilong \textbf{e} (IPA symbol: e$\backslash$(ma); as in \textit{beat, greed, evenly, easy}
+Ishort \textbf{i} (IPA symbol: I or $\backslash$(*i); as in \textit{tip, banish, active}
+o\textbf{o} as in \textit{oboe, trombone, banjo}
+O\textbf{o$\backslash$(de} (IPA symbol: o or upside-down `c'); as in \textit{law, all, shawm}
+W\textbf{oe} digraph (IPA symbol: $\backslash$(oe); as in the French \textit{boeuf}, German \textit{Hölle}
+u\textbf{ü}; as in \textit{rule, youth, few, ooze}
+U\textbf{u$\backslash$(de'} (IPA symbol: $\backslash$(*u or U or $\backslash$(*w);  as in \textit{pull, wood, book}
+y\textbf{ue}; as in the German \textit{füllen}, \textit{hübsch}, or French \textit{rue}
+\textit{vowel}~following a vowel* indicates a vowel or diphthong pronounced with open
+nasal passages; as in the French "un bon vin blanc" (\texttt{W~ bo~ va~ blA~})
+
+b\textbf{b} (IPA symbol: b or c$\backslash$(hc'); as in \textit{beam, cabin, rob}
+d\textbf{d}; as in \textit{deed, dulcimer, adder}
+f\textbf{f}; as in \textit{fugue, staff}, \textit{forte}
+g\textbf{g}; as in \textit{guitar, fagot, gig}
+h\textbf{h}; as in \textit{hear, ahead, horn}
+k\textbf{k}; as in \textit{cook, take, score, ache}
+x\textbf{K} (IPA symbol: k); as in the German \textit{ich, Buch}
+l\textbf{l}; as in \textit{libretto, Lully, pool}
+m\textbf{m}; as in \textit{music, limb, hymn}
+n\textbf{n}; as in \textit{no, instrument, blown}
+N\textbf{eng} (IPA symbol: `n' with a tail); as in \textit{sing, fingering, ink}
+p\textbf{p}; as in \textit{piano, beeper, lip}
+r\textbf{r}; as in \textit{reed, organ, car}
+s\textbf{s}; as in \textit{soprano, cymbal, source, bass}
+S\textbf{sh} ["esh"] (IPA symbol: $\backslash$(It$\backslash$(Im$\backslash$(Ib'); as in \textit{sharp, crescendo, special, percussion}
+t\textbf{t}; as in \textit{tempo, tie, attacca, minuet}
+T\textbf{th} ["thorn"] (IPA symbol: $\backslash$(*h); as in \textit{thin, path, ether}
+D\textbf{th} ["eth"] (IPA symbol: \textit{d~) as in \textit{then, rhythm, smooth}
+v\textbf{v}; as in \textit{voice, vivace, live}
+w\textbf{w}; as in \textit{we, away}
+j\textbf{j}; as in \textit{yes, Johann, cue, onion}
+z\textbf{z}; as in \textit{zone, raise, xylophone, jazz}
+Z\textbf{zh} ["yogh"$\backslash$(sc]; as in \textit{measure, vision, azure}
+\textit{consonant}-following a consonant (l-, n-, m-, or N-)** indicates a consonant preceded
+by a \textit{schwa} that is pronounced as an independent syllable; as in \textit{battle,
+mitten, eaten
+\textit{consonant};following a consonant,§§ indicates that the front of the tongue is
+positioned as in the beginning of the word `yard'
+
+\^{}preceding phoneme is palatalized
+$\backslash$'primary stress (should precede stressed sound)
+,secondary stress (should precede stressed sound)
+\%silence signifier
+
+
+\textit{Summary of \textit{**IPA} Signifiers}
+
+
+\par 
+\begin{itemize}
+\item 
+The IPA \textit{schwa} is notated as an upside-down `e'.
+\item 
+The IPA symbol consists of a \textit{schwa} with a hook.
+\item 
+The IPA \textit{yogh} is written like a flat-topped numeral `3' that has
+been lowered in height.
+\item 
+In IPA such vowels are marked by the presence of a tilde
+above the vowel.
+\item 
+In IPA such consonants are marked by the presence of
+a vertical bar below the consonant.
+\item 
+The IPA symbol consists of a superscript letter `j' either following or
+hooked beneath the consonant.
+\end{itemize}
+
+\par 
+Humdrum does not provide a tool for translating from
+\texttt{**text}
+or
+\texttt{**silbe}
+representations
+to
+\texttt{**IPA}.
+However, there are a number of commercial text-to-phoneme translators available for most
+common languages.
+
+
+\subsection*{Alliteration}
+
+
+\par 
+A common sonorous use of words is found in alliteration where
+several successive words commence with the same sound.
+A famous example of alliteration is found at the beginning of William Shakespeare's
+\textit{Tempest}:
+
+\texttt{**text**IPA
+\texttt{Fullful
+\texttt{fathomf\&D@m
+\texttt{fivefAiv
+\texttt{thyDAi
+\texttt{fatherfADR
+\texttt{lieslAiz
+\texttt{*-*-}
+
+
+\par 
+Given an \texttt{**IPA} input,
+occurrences of alliteration can be found by first isolating the
+initial phoneme for each word using \textbf{humsed}.
+This task requires some additional knowledge about using
+\textbf{humsed}.
+Both
+\textbf{sed}
+and
+\textbf{humsed}
+provide a "back reference" construction that allows users
+to manipulate a matched expression without knowing the precise
+matched sequence of characters.
+The expression to be matched is indicated via parentheses preceded
+by back-slash characters, i.e., \texttt{$\backslash$(} and \texttt{$\backslash$)}.
+Several such expressions can be defined and each successive expression is
+internally labelled with an integer beginning with 1.
+The marked expression can then be "back-referenced"
+by using the integer label preceded by a back-slash.
+Hence, \texttt{$\backslash$1} refers to the first referenced expression.
+Consider, by way of illustration, the following command:
+
+\par 
+
+\texttt{sed 's/\^{}$\backslash$(.$\backslash$).*/$\backslash$1/'}
+
+
+\par 
+In this command, the referenced expression consists of the period (match any single character).
+Notice that this expression is back-referenced in the replacement string -$\,$- \texttt{$\backslash$1}.
+In other words, this
+\textbf{sed}
+command carries out the following operation:
+find a single character at the beginning of a line followed by zero or more characters.
+Replace this entire string by just the first character in the line.
+
+\par 
+Let's now use this back-reference technique in our alliteration search.
+First we extract the
+\texttt{**IPA}
+spine and use
+\textbf{humsed}
+to eliminate all but the first character in each data record:
+
+\par 
+
+\texttt{extract -i '**IPA' Tempest | humsed 's/\^{}$\backslash$(.$\backslash$).*/$\backslash$1/'}
+
+
+\par 
+The result is:
+
+\texttt{**IPA
+\texttt{f
+\texttt{f
+\texttt{f
+\texttt{D
+\texttt{f
+\texttt{*-}
+
+
+\par 
+We can now amalgamate successive initial phonemes by using the
+\textbf{context}
+command.
+Suppose we are interested in identifying alliterations where three
+or more words begin with the same initial phoneme.
+For this, we would use the \textbf{-n 3} option for \textbf{context}.
+Having amalgamated three phonemes on each data record we can use
+\textbf{humsed}
+to eliminate the spaces between the multiple stops:
+
+\par 
+
+\texttt{extract -i '**IPA' Tempest | humsed 's/$\backslash$(.$\backslash$).*/$\backslash$1/' $\backslash$
+
+| context -n 3 | humsed 's/ //g'}
+
+
+
+\par 
+The revised output is:
+
+\texttt{**IPA
+\texttt{fff
+\texttt{ffD
+\texttt{fDf
+\texttt{Dfl
+\texttt{.
+\texttt{.
+\texttt{*-}
+
+
+\par 
+Now we need to identify any data records that contain three
+identical sigifiers.
+Once again, we can use the back-reference feature for \textbf{humsed}.
+
+\par 
+
+\texttt{extract -i '**IPA' Tempest | humsed 's/$\backslash$(.$\backslash$).*/$\backslash$1/' $\backslash$
+
+| context -n 3 | humsed 's/ //g'; s/$\backslash$(.$\backslash$)$\backslash$1$\backslash$1/allit: $\backslash$1/'}
+
+
+
+\par 
+The resulting output is:
+
+\texttt{**IPA
+\texttt{allit: f
+\texttt{ffD
+\texttt{fDf
+\texttt{Dfl
+\texttt{.
+\texttt{.
+\texttt{*-}
+
+
+\par 
+Let's add one further refinement which illustrates yet another feature
+provided by
+\textbf{sed}
+and \textbf{humsed}.
+Recall that operations such as substitions (\texttt{s}) and deletions (\texttt{d})
+can be preceded by a regular expression that limits the operation only
+to those lines that match the expression.
+For example, the command \texttt{sed '/=/s/[0-9]//g'} will eliminate all
+numbers found on lines containing an equals sign.
+The leading regular expression can be followed by an exclamation mark
+which reverses the sense of the action.
+For example, the command \texttt{sed '/=/!s/[0-9]//g'} will eliminate all
+numbers \textit{except} those found on lines containin an equals sign.
+
+\par 
+This feature can be usefully applied in our alliteration task to
+eliminate all other data in our spine except alliteration markers.
+Our final revised pipeline transforms non-alliteration data to null tokens:
+
+\par 
+
+\texttt{extract -i '**IPA' Tempest | humsed 's/$\backslash$(.$\backslash$).*/$\backslash$1/' $\backslash$
+
+| context -n 3 | humsed 's/ //g'; s/$\backslash$(.$\backslash$)$\backslash$1$\backslash$1/allit: $\backslash$1/; $\backslash$
+\\
+/allit/!s/.*/./'}
+
+
+
+\par 
+The final output is:
+
+\texttt{**IPA
+\texttt{allit: f
+\texttt{.
+\texttt{.
+\texttt{.
+\texttt{.
+\texttt{.
+\texttt{*-}
+
+
+
+\subsection*{Classifying Phonemes}
+
+\par 
+Linguists have devised innumerable ways for classifing phonemes.
+For example, phenomes such as \textit{f}, \textit{s}, \textit{sh}, \textit{th}, \textit{v}, etc. are
+classified as fricatives.
+Bi-labial plosives include the \textit{p} and \textit{b} sounds.
+The \textit{m} and \textit{n} sounds are classified as nasals.
+And so on.
+
+\par 
+For some tasks, it is often useful to reduce the phonemes
+to phonetic classes.
+For example, in our example from Shakespeare's \textit{Tempest}, the `th' in `thy'
+is part of the fricative alliteration.
+
+\par 
+In
+Chapter 22
+we saw how
+\textbf{humsed}
+can be used to classify things.
+A simple reassignment script can be defined which collapses
+the various phonemes into a smaller set of phonetic classes.
+For example, a suitable script might contain the following assignments:
+
+\par 
+
+\texttt{s/[bdtk]//g
+\\
+s/[mn]//g
+\\
+s/[fsSTDv]//g}
+\\
+etc.
+
+
+\par 
+Classifying phonemes in this way will allow us to broaden our searches
+for alliterative passages.
+
+
+\subsection*{Properties of Vowels}
+
+\par 
+Vowels are particular important in music since notes can be
+sustained only by increasing the duration of the vowels.
+In speech, more time is occupied by vowel sounds than by consonants.
+In vocal music, an even greater proportion of the time is taken up by vowels.
+This means that the quality of the vowels can have a marked
+impact on the overall timbre or tone color of a work.
+For example, a long note sustained with an `ee' can sound
+very different from the same note sung with a sustained `ah'.
+
+\par 
+Like consonants, vowels can also be classified in many ways.
+One common classifying dimension is the front/back distinction.
+The vowel `oo' is a front position vowel whereas the vowel `ah'
+is a back position vowel.
+Similarly, vowels can be classified according to the high/low distinction.
+The vowel `ee' is a high vowel whereas the vowel `oh' is a low vowel.
+
+\par 
+A preponderance of high vowels is often associated with sarcasm, irony
+or humor.
+Taunting sounds made by children ("nya, nya ...")
+commonly use high vowels mixed with nasals.
+Similarly, high/nasal vocal sounds are often used by comedians
+and actors to produce a `funny' voice.
+
+
+\par 
+Suppose we want to test the idea that a certain piece in a Gilbert and
+Sullivan operetta exhibits a preponderance of high vowels.
+We might begin by creating a re-assignment file where
+the estimated height of each vowel is given a value between 1 (low)
+and 10 (high).
+We can estimate the overall average vowel height for a piece by
+averaging these values together.
+The basic pipeline will extract the pertinent \texttt{**IPA}
+spine, eliminate all
+non-vowel phonemes, add spaces between each vowel, and then assign
+estimated heights to each vowel.
+Finally, non-data records are eliminated using
+\textbf{rid}
+and the data values averaged using the
+\textbf{stats}
+command:
+
+\par 
+
+\texttt{extract -i '**IPA' Penzance | humsed 's/[\^{}@VR\&AaEiIoOWuUy]//'$\backslash$
+
+| humsed 's/./\& /g; s/  / /; s/ \$//' | humsed -f vowel.map$\backslash$
+\\
+| rid -GLId | stats}
+
+
+
+\par 
+This procedure can be repeated for several movements or pieces to
+provide a contrast for the piece of interest.
+
+
+\subsection*{Vowel Coloration}
+
+\par 
+When translating vocal texts from one language to another,
+it is often difficult for translators to preserve the vowel coloration.
+A vocal work can be considerably maligned if a prominent
+(high/long) note is changed from an `ah' sound to an `ee' sound.
+
+\par 
+Suppose we want to determine which of several English translations
+of a song by Schubert best preserves the vowel coloration.
+As above, let's limit our notion of coloration to vowel height.
+(Of course any other similarity mapping or dimension can be used.)
+As in our Gilbert and Sullivan example, we could simply compare the
+overall vowel height for the original Schubert song with each of
+the translations.
+However, not all notes are equally important.
+In the first instance, the vowels on longer sustained notes will be
+more noticeable than the vowels attending shorter notes.
+A simple remedy is to use the
+\textbf{timebase}
+command to expand the input so that longer notes are proportionally
+more influential in our measure of overall vowel height.
+We can use
+\textbf{ditto}
+to repeat sustained vowels:
+
+\par 
+
+\texttt{timebase -t 16 Schubert | extract -i '**IPA' $\backslash$
+
+| humsed 's/[\^{}@VR\&AaEiIoOWuUy]//' | humsed 's/./\& /g; $\backslash$
+\\
+s/  / /; s/ \$//' | humsed -f vowel.map | rid -GLId | stats}
+
+
+
+\par 
+Since translators have plenty of other issues to consider when translating a
+vocal text, we might focus our comparisons solely on a small collection of
+especially important notes.
+We might for example use a longer value for \textbf{timebase}.
+Alternatively, we might use the Humdrum
+\textbf{accent}
+command (described in
+Chapter 25)
+to identify notes have a particularly high noticeability.
+
+
+
+\subsection*{Rhymes and Rhyme Schemes}
+
+\par 
+Rhymes are common poetic devices throughout the world's cultures.
+Rhymes involve the use of similar or identical word-final phonemes.
+Typically, rhymes are based on the final phonemes of phrase-terminating words,
+but rhymes commonly occur in mid-phrase and other positions in poetry from
+various cultures.
+Consider the rhymes in the following traditional nonsense verse:
+
+\par 
+
+We're all in the dumps,
+\\
+For diamonds are trumps,
+\\
+The kittens are gone to St. Paul's
+\\
+The babies are bit,
+\\
+The moon's in a fit
+\\
+And the houses are built without walls.
+
+
+-Anon. "We're All in the Dumps" From The Faber Book of Nonsense Verse, Geoffrey Grigson (ed.) 1979; p.65
+
+
+\par 
+Suppose we want to automatically identify the rhyme scheme for this (or some other) text.
+Our first order of business is to identify phrase-terminating points.
+Let's assume we already have some phrase indicators (via curly braces \{\}).
+Our input might begin as follows:
+
+\texttt{**text**IPA
+\texttt{We're\{wRr
+\texttt{allAl
+\texttt{inIn
+\texttt{theD@
+\texttt{dumps,d@mps\}}
+etc.
+
+
+\par 
+Using \textbf{extract}, \textbf{context} and \textbf{rid}
+we can isolate each poetic phrase:
+
+\par 
+
+\texttt{extract -i '**IPA poem | context -b \{ -e \} | rid -GLId}
+
+
+\par 
+The result is as follows:
+
+\par 
+
+\texttt{\{wRr Al In D@ d@mps\}
+\\
+\{foR dAim@nds Ar tr@mps\}
+\\
+\{D@ kIt@ns Ar gAn tu seint pAUls\}
+\\
+\{D@ beibiz Ar bIt\}
+\\
+\{D@ munz In @ fIt\}
+\\
+\{\&nd D@ h\&uz@z Ar bIlt wITAut wAUls\}}
+
+
+\par 
+The rhyming portion of words typically consist of a final vowel
+plus any subsequent consonants.
+We can isolate these phonemes using \textbf{sed}.
+Notice our use of back reference to preserve the final phonemes:
+
+\par 
+
+\texttt{ ... | sed 's/.*$\backslash$([@VR\&AaEiIoOWuUy][\^{}@VR\&AaEiIoOWuUy]*\}\$$\backslash$)/$\backslash$1/'}
+
+
+\par 
+The resulting output is:
+
+\texttt{@mps\}
+\texttt{@mps\}
+\texttt{Uls\}
+\texttt{It\}
+\texttt{It\}
+\texttt{Uls\}}
+
+
+\par 
+A little further processing can remove the closing braces using
+\textbf{sed}, and eliminate the duplicate lines using \textbf{sort} and \textbf{uniq}.
+
+\par 
+
+\texttt{ ... | humsed 's/\}//' | sort | uniq}
+
+
+\par 
+The output can then be changed into a set of substitutions for a
+\textbf{humsed}
+script.
+A suitable file would contain the following substitutions:
+
+\par 
+
+\texttt{s/.*@mps\$/A/
+\\
+s/.*It\$/B/
+\\
+s/.*Uls\$/C/
+\\
+s/.*/./}
+
+
+\par 
+This script will label all words ending with "umps" to `A'.
+Word ending with "its" will be labelled `B', and so on.
+All other words will be output as null tokens.
+Using this script, a suitable pipeline for processing our
+original file would be as follows:
+
+\par 
+
+\texttt{extract -i '**IPA poem | context -b \{ -e \} | humsed 's/\}//' $\backslash$
+
+| humsed -f rhyme | rid -GLId}
+
+
+
+\par 
+The corresponding output would indicate the rhyme scheme for this poem:
+
+\texttt{A
+\texttt{A
+\texttt{B
+\texttt{C
+\texttt{C
+\texttt{B
+
+
+\par 
+Note that the entire analytic procedure can be placed in a shell script and
+applied to any input containing \texttt{**IPA} text.
+The following script adds a number of refinements.
+
+\par 
+\texttt{\# RHYME
+\\
+\#
+\\
+\# This script determines the rhyme scheme for an input file containing
+\\
+\# an **IPA spine.  This script assumes that the input contains curly
+\\
+\# braces indicating phrase endings.
+\\
+\#
+\\
+\# USAGE:  rhyme 
+\\
+
+\\
+extract -i '**IPA' \$1 | extract -f 1 | context -b \{ -e \} | rid -GLId $\backslash$
+\\
+
+\\
+| sed 's/.*$\backslash$([@VR\&AaEiIoOWuUy][\^{}@VR\&AaEiIoOWuUy]*\}\$$\backslash$)/$\backslash$1/' $\backslash$
+\\
+| sort | uniq | sed 's/\^{}/s$\backslash$/.*/; s/\$/$\backslash$/XXX$\backslash$//' $\backslash$
+\\
+| awk 'BEGIN \{alphabet[1]="A"; alphabet[2]="B"; alphabet[3]="C";
+\\
+
+\\
+alphabet[4]="D"; alphabet[5]="E"; alphabet[6]="F";
+\\
+alphabet[7]="G"; alphabet[8]="H"; alphabet[9]="I";
+\\
+alphabet[10]="J"; alphabet[11]="K"; alphabet[12]="L";
+\\
+alphabet[13]="M"; alphabet[14]="N"; alphabet[15]="O";
+\\
+alphabet[16]="P"; alphabet[17]="Q"; alphabet[18]="R";
+\\
+alphabet[19]="S"; alphabet[20]="T"; alphabet[21]="U";
+\\
+alphabet[22]="V"; alphabet[23]="W"; alphabet[24]="X";
+\\
+alphabet[25]="Y"; alphabet[26]="Z"; alphabet[27]="ERROR"\}
+\\
+\{temp=\$0
+\\
+gsub("XXX",alphabet[NR],temp)
+\\
+print temp
+\\
+\}' > rhyme.sed.\$\$
+\\
+
+\\
+
+\\
+extract -i '**IPA' \$1 | extract -f 1 | context -b \{ -e \} | rid -GLId $\backslash$
+\\
+
+\\
+| sed -f rhyme.sed.\$\$
+\\
+
+\\
+rm rhyme.sed.\$\$}
+
+
+
+\subsection*{Reprise}
+
+\par 
+By focusing on phonetic signifiers, the \texttt{**IPA}
+representation provides opportunities
+for analyzing many sonorous aspects of vocal sounds -$\,$-
+including alliteration, vowel coloration, rhyme, and other effects.
+Although we did not illustrate it in this chapter, the
+\texttt{**IPA}
+representation can be used in conjunction witht the
+\texttt{**silbe}
+representation to characterize
+complex aspects of rhythm and rhyme in vocal texts.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

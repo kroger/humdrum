@@ -1,0 +1,235 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH assemble 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBassemble\fR  --  amalgamate two or more Humdrum files
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+\fBassemble  \fIinputfile1  inputfile2\fR  [\fIinputfile3 ...\fR]  [ > \fIoutputfile\fR]
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "assemble"
+command allows two or more structurally similar Humdrum files 
+to be aligned together -- such as where a full score
+is assembled from files containing individual parts.
+.sp 1
+.sp 1
+The
+.B "assemble"
+command is similar to the \s-1UNIX\s+1
+paste
+command.
+If file `A' contains:
+.sp 1
+.in +2
+1
+.br
+2
+.br
+3
+.in -2
+.sp 1
+and file `B' contains:
+.sp 1
+.in +2
+A
+.br
+B
+.br
+C
+.in -2
+.sp 1
+then the \s-1UNIX\s+1 command:
+.sp 1
+.sp 1
+.in +2
+paste A B
+.in -2
+.sp 1
+.sp 1
+will produce the following output:
+.sp 1
+.in +2
+1	A
+.br
+2	B
+.br
+3	C
+.in -2
+.sp 1
+The
+.B "assemble"
+command is a more sophisticated version of
+paste
+-- suitable for assembling several concurrent spines stored in
+different Humdrum files.
+The
+.B "assemble"
+command coordinates and synchronizes comments, interpretations,
+and data records from the input files.
+Duplicate global comments are avoided.
+Corresponding local comments are output where appropriate.
+Where one file contains local comments and a second file contains none,
+null local comments are inserted as appropriate.
+Similarly, null interpretations may also be added as necessary.
+.sp 1
+.sp 1
+The
+.B "assemble"
+command expects that the input files will normally have the 
+same number of data records.
+These data records are aligned side-by-side.
+If the input files do not contain the same number of data records,
+then the spines in the shorter file will be terminated with appropriate
+spine-path terminators.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "assemble"
+command provides only a help option:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+.TE
+.sp 1
+Options are specified in the command line.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The operation of
+.B "assemble"
+can be illustrated by considering the following two input files.
+Both files contain the same number of data records (4).
+.sp 1
+.sp 1
+.B "file1:"
+.in +2
+.sp 1
+.TS
+l s s s l
+l l l l l.
+!! A sample file.
+**foo		**foo		**foo
+!1		!2		!3
+X		.		X
+X		.		.
+*		*v		*v
+X		X
+\.		X
+*-		*-
+.TE
+.sp 1
+.in -2
+.sp 1
+.sp 1
+.B "file2:"
+.in +2
+.sp 1
+.TS
+l s s s s
+l s s s s
+l l l l l.
+!! A sample file.
+!! An additional global comment.
+**bar	**bar
+!4	!5
+\.	.
+X	X
+*v	*v
+! joined
+X
+\.
+*-
+.TE
+.sp 1
+.in -2
+If the
+.B "assemble"
+command is invoked as:
+.sp 1
+.sp 1
+.in +2
+assemble file1 file2
+.in -2
+.sp 1
+.sp 1
+then the corresponding output is:
+.in +2
+.sp 1
+.TS
+l s s s s s
+l s s s s s
+l l l l l l.
+!! A sample file.
+!! An additional global comment.
+**foo	**foo	**foo	**bar	**bar
+!1	!2	!3	!4	!5
+X 	.	X	.	.
+X	.	.	X	X
+* 	*v	*v	*	*
+* 	*	*v	*v
+!	!	! joined
+X	X	X
+\.	X	.
+*-	*-	*-
+.TE
+.sp 1
+.in -2
+Notice that both input files begin with the identical global comment;
+only one copy of this comment appears in the output.
+The second file contains an additional global comment that is also output.
+The subsequent local comments have been amalgamated on a single output line.
+The spine-path changes in both input files have been properly rendered
+by padding null interpretations in the appropriate spines.
+The last local comment in
+file2
+has also been correctly re-positioned.
+Finally, each of the four data records have been aligned.
+.sp 1
+.sp 1
+.in -2
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBcensus\fR (1),
+\fBextract\fR (1), \fBhumdrum\fR (1),
+\fBpaste\fR (\s-1UNIX\s+1),
+\fBtimebase\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "LIMITS"
+.in +2
+The number of specified input files may be limited on \s-1DOS\s+1 systems.
+.in -2

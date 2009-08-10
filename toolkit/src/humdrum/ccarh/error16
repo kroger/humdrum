@@ -1,0 +1,6 @@
+!! "humdrum: ERROR 17: First exclusive interpretation record contains"
+!! "a spine-path indicator in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 17
+**ex	**ex	*+	**ex
+*-	*-	*-	*-

@@ -1,0 +1,565 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- correl</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>correl</b>  --  measure the numerical similarity between two Humdrum spines
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>correl</b>  [<b>-f</b> <i>templatefile</i>]  [<b>-m</b>]  [<b>-p</b> <i>n</i>]  [<b>-s</b> <i>regexp</i>]  [<i>inputfile ...</i>]  [> <i>outputfile.cor</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>correl</b>
+command measures the degree of parametric (numerical) similarity
+between corresponding values in two Humdrum spines.
+More precisely,
+<b>correl</b>
+calculates Pearson's coefficient of correlation for
+paired tokens containing numerical data.
+</P>
+<P>
+Two modes of operation are provided.
+In the
+<i>single input mode,</i>
+a single file containing two equal-length spines is processed.
+In this mode, the output from
+<b>correl</b>
+consists of a single number indicating the linear correlation between
+the two spines of numerical data.
+</P>
+<P>
+In the
+<i>dual input mode,</i>
+two single-spine numerical inputs -- called the
+<i>template file</i>
+and the
+<i>input file</i>
+--  are specified by the user.
+Normally, the template file is considerably shorter than the input file.
+In this mode, the output consists of a spine of numerical information
+(<code><big>**correl</big></code>) that reflects the momentary similarity between
+the template and the input for each successive moment in the input.
+In short, the input file is `scanned' using the template values,
+and the correlational similarity determined at each point.
+</P>
+<P>
+In both
+<i>single input</i>
+and
+<i>dual input</i>
+modes, output numerical values range between +1 and -1.
+Correlation values reflect the degree to which two sets of
+numerical values rise and fall in synchrony.
+The maximum output value is +1 -- indicating that the two sets
+of numbers are perfectly related according to a linear relationship.
+-nimum output value of -1 indicates that the two sets of numbers
+are perfectly out-of-phase -- one set of numbers rises while
+the other set falls by a proportional magnitude, and vice versa.
+A correlation value of zero indicates that there is no linear
+relationship between the two sets of numbers.
+</P>
+<P>
+In
+<i>single input mode,</i>
+inputs to
+<b>correl</b>
+must consist of precisely two spines;
+otherwise an error message is generated and the command is terminated.
+The two spines may contain different interpretations and represent
+different types of information.
+In the case of the
+<i>dual input mode,</i>
+the input file and template file must have precisely one spine each;
+the spines may differ in length, but the
+<i>template</i>
+file must not be longer than the
+<i>input</i>
+file.
+</P>
+<P>
+Only numerical signifiers are considered by
+<b>correl;</b>
+non-numeric input data are ignored.
+Where a data token contains a mix of numeric and non-numeric signifiers,
+only the first complete numerical subtoken contributes to the calculation.
+The following examples illustrate how
+<b>correl</b>
+interprets mixed data tokens:
+<blockquote><TABLE>
+<TR><TD>data token</TD><TD>numerical interpretation</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>4gg#</TD><TD></big></code>4</TD></TR>
+<TR><TD><code><big>4.gg#</TD><TD></big></code>4</TD></TR>
+<TR><TD><code><big>-33aa</TD><TD></big></code>-33</TD></TR>
+<TR><TD><code><big>-aa33</TD><TD></big></code>33</TD></TR>
+<TR><TD><code><big>x7.2yz</TD><TD></big></code>7.2</TD></TR>
+<TR><TD><code><big>a7..2bc</TD><TD></big></code>7</TD></TR>
+<TR><TD><code><big>[+5]12</TD><TD></big></code>5</TD></TR>
+<TR><TD><code><big>$17@2</TD><TD></big></code>17</TD></TR>
+<TR><TD><code><big>a1b2 c.3.d</TD><TD></big></code>1   0.3</TD></TR>
+</TABLE></blockquote>
+Humdrum multiple-stops require special attention in
+<b>correl</b>
+(see below).
+</P>
+<P>
+In the
+<i>dual input mode</i>
+the output from the
+<b>correl</b>
+command consists of a set of records matching the structure of the
+<i>input</i>
+document.
+Output values indicate the correlation between the
+<i>template</i>
+data values and the input data values beginning at that record.
+</P>
+<P>
+When the
+<i>dual input mode</i>
+is invoked, it is recommended that output files produced by the
+<b>correl</b>
+command should be given names with the distinguishing `.cor' extension.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>correl</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-f <i>templatefile</i></TD><TD>specify source pattern as <i>templatefile</i> and</TD></TR>
+<TR><TD></TD><TD>invoke dual input mode</TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-m</b></TD><TD>disable matched-pairs criterion</TD></TR>
+<TR><TD><b>-p <i>n</i></TD><TD>output precision to <i>n</i> decimal places</TD></TR>
+<TR><TD><b>-s <i>regexp</i></TD><TD>skip; completely ignore data records matching <i>regexp</i></TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The
+<b>-f</b>
+option is used to specify an independent
+<i>template file</i>
+--  and so invokes the
+<i>dual input mode.</i>
+</P>
+<P>
+The
+<b>-p</b>
+option can be used to set the precision of the output values to
+<i>n</i>
+decimal places.
+The default precision is 3 decimal places.
+</P>
+<P>
+The
+<b>-s</b>
+option allows the user to avoid (or skip) the processing of certain
+types of data records.
+This option must be accompanied by a user-defined regular-expression.
+Input data records matching this expression are not processed.
+</P>
+<P>
+Correlation values can be calculated only where all numerical data
+are arranged as matched pairs -- that is, the input conforms to
+the "matched pairs criterion."
+For example, the following two spines illustrate numerical data matching.
+The number of numerical data values in both spines are matched throughout
+the inputs:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**spine1</TD><TD>**spine2</TD></TR>
+<TR><TD>10.0</TD><TD>4</TD></TR>
+<TR><TD>7 3</TD><TD>2 .91</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>13.8</TD><TD>4</TD></TR>
+<TR><TD>5 8 5</TD><TD>1 1 2</TD></TR>
+<TR><TD>a b c</TD><TD>x</TD></TR>
+<TR><TD>.</TD><TD>p q</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+By contrast, the following file shows several transgressions of
+the matched pairs criterion.
+For example, the first data record gives a numerical value in spine #1
+that is not matched by a numerical value in spine #2.
+Similarly, the multiple-stop values in the second data record
+are unmatched in spine #2:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**spine1</TD><TD>**spine2</TD></TR>
+<TR><TD>9.7</TD><TD>a</TD></TR>
+<TR><TD>7 31</TD><TD>2</TD></TR>
+<TR><TD>.</TD><TD>114</TD></TR>
+<TR><TD>426</TD><TD>.</TD></TR>
+<TR><TD>r 11 7</TD><TD>35 xy08z 28</TD></TR>
+<TR><TD>a b c</TD><TD>6 .07</TD></TR>
+<TR><TD>.</TD><TD>p q</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+In normal operation, a single failure to conform to
+the matched pairs criterion will cause
+<b>correl</b>
+to issue an error message and terminate operation.
+If the
+<b>-m</b>
+option is invoked, unmatched data is simply ignored.
+For example, with the
+<b>-m</b>
+option, the above input is treated as equivalent to the
+following input:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**spine1</TD><TD>**spine2</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>7</TD><TD>2</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>11 7</TD><TD>35 08</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following examples illustrate the operation of
+<b>correl.</b>
+The first example shows an excerpt containing considerable
+parallel motion between two polyphonic voices.
+Measuring the pitch-contour similarity can be done using the
+single input mode.
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! J.S. Bach, Invention No. 8; BWV 779</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD>**semits</TD><TD>**semits</TD></TR>
+<TR><TD>*M3/4</TD><TD>*M3/4</TD></TR>
+<TR><TD>9</TD><TD>17</TD></TR>
+<TR><TD>12</TD><TD>21</TD></TR>
+<TR><TD>10</TD><TD>19</TD></TR>
+<TR><TD>12</TD><TD>21</TD></TR>
+<TR><TD>9</TD><TD>17</TD></TR>
+<TR><TD>12</TD><TD>21</TD></TR>
+<TR><TD>10</TD><TD>19</TD></TR>
+<TR><TD>12</TD><TD>21</TD></TR>
+<TR><TD>=6</TD><TD>=6</TD></TR>
+<TR><TD>5</TD><TD>14</TD></TR>
+<TR><TD>9</TD><TD>17</TD></TR>
+<TR><TD>7</TD><TD>16</TD></TR>
+<TR><TD>9</TD><TD>17</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+In order to avoid processing the measure numbers, the skip (<b>-s</b>)
+option is used; executing the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+correl -s = bwv779
+</code></big>
+</blockquote>
+</P>
+<P>
+will produce the following output:
+</P>
+<P>
+<blockquote>
+<code><big>
+0.979
+</code></big>
+</blockquote>
+</P>
+<P>
+The second example illustrates the dual input mode.
+The target input consists of a single spine (labelled
+<code><big>
+**input)
+</i></b></code></big>
+</i></b></code></big>
+containing mixed alphabetic and numerical values.
+(This input file is shown below as the left-most column.)
+The template file consists of the numerical sequence:
+1, 2, 3 -- mixed with the letters a, b, c.
+(This file is shown as the middle column below.)
+Note that the non-numeric characters in both the input
+and template files have no influence on the operation of
+<b>correl.</b>
+The third (output) spine is produced by the following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+correl -f template input > output.cor
+</code></big>
+</blockquote>
+</P>
+<P>
+<code><big>
+<blockquote><TABLE>
+<TR><TD>(input</TD><TD>(template</TD><TD>(correl</TD></TR>
+<TR><TD>file)</TD><TD>file)</TD><TD>output)</TD></TR>
+<TR><TD>**input</TD><TD>**template</TD><TD>**correl</TD></TR>
+<TR><TD>0</TD><TD>1a</TD><TD>1.000</TD></TR>
+<TR><TD>1</TD><TD>2b</TD><TD>1.000</TD></TR>
+<TR><TD>2</TD><TD>3c</TD><TD>1.000</TD></TR>
+<TR><TD>3</TD><TD>*-</TD><TD>-0.655</TD></TR>
+<TR><TD>4</TD><TD></TD><TD>-0.655</TD></TR>
+<TR><TD>x1x</TD><TD></TD><TD>0.866</TD></TR>
+<TR><TD>y2.</TD><TD></TD><TD>0.866</TD></TR>
+<TR><TD>2z</TD><TD></TD><TD>0.000</TD></TR>
+<TR><TD>(3)</TD><TD></TD><TD>-1.000</TD></TR>
+<TR><TD>[2]</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>01</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD></TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+The similarity values generated by
+<b>correl</b>
+are given in the
+<code><big>
+**correl
+</i></b></code></big>
+</i></b></code></big>
+spine.
+Each successive value in the output spine is matched with a data token in
+the target input file (<code><big>**foo</big></code>).
+For example, the initial three output values (1.000)
+indicate that exact positive correlations occur between the template
+and the input.
+That is (0, 1, 2) (1, 2, 3) and (2, 3, 4) all show simple equidistant
+increases corresponding to the source template.
+The final numerical value in
+<code><big>
+**correl
+</i></b></code></big>
+</i></b></code></big>
+shows a negative correlation (-1.000) indicating that the numerical sequence
+(3, 2, 1) is the exact opposite contour to the source template (1, 2, 3).
+By contrast, the immediately preceding output
+value (0.000) indicates that the sequence (2, 3, 2)
+shows no systematic linear relationship with the source template (1, 2, 3).
+</P>
+<P>
+The following example provides a more complicated illustration of
+<b>correl.</b>
+Once again the left-most column is the target input,
+the middle column is the source template, and the right-most column
+shows the corresponding output.
+<code><big>
+<blockquote><TABLE>
+<TR><TD>(input</TD><TD>(template</TD><TD>(correl</TD></TR>
+<TR><TD>file)</TD><TD>file)</TD><TD>output)</TD></TR>
+<TR><TD>**input</TD><TD>**template</TD><TD>**correl</TD></TR>
+<TR><TD>=1</TD><TD>1</TD><TD>.</TD></TR>
+<TR><TD>1</TD><TD>2 3</TD><TD>1.000</TD></TR>
+<TR><TD>2 3</TD><TD>.</TD><TD>-0.370</TD></TR>
+<TR><TD>100</TD><TD>4</TD><TD>-0.742</TD></TR>
+<TR><TD>8r</TD><TD>5 6</TD><TD>.</TD></TR>
+<TR><TD>4</TD><TD>*-</TD><TD>0.042</TD></TR>
+<TR><TD>5 6</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>=2</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>0</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>4r</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>-2x -3</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>-x8</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>==</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD></TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+The above output spine was created by executing the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+correl -m -s '[=r]' -f template input > output.cor
+</i></b></code></big>
+</blockquote>
+</P>
+<P>
+Due to the
+<b>-s</b>
+option, all records in the input file containing an equals-sign
+or lower-case `r' are eliminated from the calculations.
+The presence of the null-token in the third data record of the template file is
+noteworthy.
+Although no correlations are calculated with the null-token,
+it acts as a place-holder, and causes the corresponding record
+in the input file to be ignored.
+For example, the first correlation value is calculated on the basis
+of the following coordination of numerical data:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>1</TD><TD>1</TD></TR>
+<TR><TD>2 3 </TD><TD>2 3</TD></TR>
+<TR><TD>100</TD><TD>.</TD></TR>
+<TR><TD>4</TD><TD>4</TD></TR>
+<TR><TD>5 6</TD><TD>5 6</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Since the value `100' is not matched with a numerical value in the
+template, it is ignored in the correlation measure.
+(Note that without the
+<b>-m</b>
+option, no output would be generated.)
+</P>
+<P>
+At the next instant, the correlation value is calculated on the basis
+of the following coordination of numerical data:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>2 3</TD><TD>1</TD></TR>
+<TR><TD>100 </TD><TD>2 3</TD></TR>
+<TR><TD>4</TD><TD>.</TD></TR>
+<TR><TD>5 6</TD><TD>4</TD></TR>
+<TR><TD>0</TD><TD>5 6</TD></TR>
+</TABLE></blockquote>
+</code></big>
+The double-stops do not form matched pairs, hence much of the data
+is discarded.
+For example, in the first data record, 2 is matched with 1 but 3 is discarded.
+In the second record, 100 is matched with 2 but 3 is discarded, etc.
+</P>
+<P>
+The third correlation value is calculated on the basis
+of the following coordination of numerical data:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>100</TD><TD>1</TD></TR>
+<TR><TD>4 </TD><TD>2 3</TD></TR>
+<TR><TD>5 6</TD><TD>.</TD></TR>
+<TR><TD>0</TD><TD>4</TD></TR>
+<TR><TD>-2 -3</TD><TD>5 6</TD></TR>
+</TABLE></blockquote>
+</code></big>
+In this case, the correlation value is based on the following numerical pairing:
+100 <--> 1, 4  <--> 2, 0 <--> 4, -2 <--> 5, -3 <--> 6.
+All other numerical values are ignored.
+</P>
+<P>
+The final correlation value in this example is calculated on the basis
+of the following coordination of numerical data:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>4</TD><TD>1</TD></TR>
+<TR><TD>5 6 </TD><TD>2 3</TD></TR>
+<TR><TD>0</TD><TD>.</TD></TR>
+<TR><TD>-2 -3</TD><TD>4</TD></TR>
+<TR><TD>8</TD><TD>5 6</TD></TR>
+</TABLE></blockquote>
+</code></big>
+The corresponding correlation value is based on the following numerical pairing:
+4 <--> 1, 5 <--> 2, 6 <--> 3, -2 <--> 4, 8 <--> 5.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<A HREF="patt.html">
+<b>patt</b></A> (4),
+<A HREF="pattern.html">
+<b>pattern</b></A> (4),
+<A HREF="simil.html">
+<b>simil</b></A> (4)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+Correlation coefficients indicate only the
+magnitude of the association between two sets of data.
+High correlation values can occur purely by chance.
+The noteworthiness (statistical significance) of a
+correlation value depends on the number of input values
+given in the template spine.
+Novice users should consult a standard statistics textbook
+for further advice on how to interpret the results.
+</P>
+<P>
+For formal statistical measures, the
+<b>-m</b>
+option should never be invoked.
+</P>
+<P>
+If only one pair of matched values is present,
+the linear correlation is mathematically undefined.
+In this case a question mark signifier is output.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>LIMITS</H3></FONT>
+The
+<b>correl</b>
+command is currently unable to handle input files greater than
+about 4,000 records.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>NOTE</H3></FONT>
+The
+<b>correl</b>
+command is also able to process simple columnated data
+that does not conform to the Humdrum syntax.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide25.html#The_correl_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

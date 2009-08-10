@@ -1,0 +1,279 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- assemble</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>assemble</b>  --  amalgamate two or more Humdrum files
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>assemble</b>  <i>inputfile1  inputfile2</i>  [<i>inputfile3 ...</i>]  [ > <i>outputfile</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>assemble</b>
+command allows two or more structurally similar Humdrum files 
+to be aligned together -- such as where a full score
+is assembled from files containing individual parts.
+</P>
+<P>
+The
+<b>assemble</b>
+command is similar to the UNIX
+<code><big>
+paste
+</i></b></code></big>
+</i></b></code></big>
+command.
+If file `A' contains:
+<blockquote>
+<TABLE>
+<code><big>
+<TR><TD>1</TD></TR>
+<TR><TD>2</TD></TR>
+<TR><TD>3</TD></TR>
+</i></b></code></big>
+</i></b></code></big>
+</TABLE>
+</blockquote>
+and file `B' contains:
+<blockquote>
+<TABLE>
+<code><big>
+<TR><TD>A</TD></TR>
+<TR><TD>B</TD></TR>
+<TR><TD>C</TD></TR>
+</TABLE>
+</i></b></code></big>
+</i></b></code></big>
+</blockquote>
+then the UNIX command:
+</P>
+<P>
+<code><big>
+paste A B
+</code></big>
+</P>
+<P>
+will produce the following output:
+<blockquote>
+<TABLE>
+<code><big>
+<TR><TD>1</TD><TD></TD><TD></TD><TD></TD><TD>A</TD></TR>
+<TR><TD>2</TD><TD></TD><TD></TD><TD></TD><TD>B</TD></TR>
+<TR><TD>3</TD><TD></TD><TD></TD><TD></TD><TD>C</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+The
+<b>assemble</b>
+command is a more sophisticated version of
+<code><big>
+paste
+</i></b></code></big>
+</i></b></code></big>
+--  suitable for assembling several concurrent spines stored in
+different Humdrum files.
+The
+<b>assemble</b>
+command coordinates and synchronizes comments, interpretations,
+and data records from the input files.
+Duplicate global comments are avoided.
+Corresponding local comments are output where appropriate.
+Where one file contains local comments and a second file contains none,
+null local comments are inserted as appropriate.
+Similarly, null interpretations may also be added as necessary.
+</P>
+<P>
+The
+<b>assemble</b>
+command expects that the input files will normally have the 
+same number of data records.
+These data records are aligned side-by-side.
+If the input files do not contain the same number of data records,
+then the spines in the shorter file will be terminated with appropriate
+spine-path terminators.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>assemble</b>
+command provides only a help option:
+<blockquote>
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+</TABLE></blockquote>
+</blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The operation of
+<b>assemble</b>
+can be illustrated by considering the following two input files.
+Both files contain the same number of data records (4).
+</P>
+<P>
+<b>file1:</b>
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! A sample file.</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD>**foo</TD><TD></TD><TD>**foo</TD><TD></TD><TD>**foo</TD></TR>
+<TR><TD>!1</TD><TD></TD><TD>!2</TD><TD></TD><TD>!3</TD></TR>
+<TR><TD>X</TD><TD></TD><TD>.</TD><TD></TD><TD>X</TD></TR>
+<TR><TD>X</TD><TD></TD><TD>.</TD><TD></TD><TD>.</TD></TR>
+<TR><TD>*</TD><TD></TD><TD>*v</TD><TD></TD><TD>*v</TD></TR>
+<TR><TD>X</TD><TD></TD><TD>X</TD></TR>
+<TR><TD>.</TD><TD></TD><TD>X</TD></TR>
+<TR><TD>*-</TD><TD></TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+<b>file2:</b>
+<blockquote><TABLE>
+<TR><TD>!! A sample file.</TD></TR>
+<TR><TD>!! An additional global comment.</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD>**bar</TD><TD>**bar</TD></TR>
+<TR><TD>!4</TD><TD>!5</TD></TR>
+<TR><TD>.</TD><TD>.</TD></TR>
+<TR><TD>X</TD><TD>X</TD></TR>
+<TR><TD>*v</TD><TD>*v</TD></TR>
+<TR><TD>! joined</TD></TR>
+<TR><TD>X</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+</blockquote>
+If the
+<b>assemble</b>
+command is invoked as:
+</P>
+<P>
+<code><big>
+<blockquote>
+assemble file1 file2
+</blockquote>
+</code></big>
+</P>
+<P>
+then the corresponding output is:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>!! A sample file.</TD></TR>
+<TR><TD>!! An additional global comment.</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD>**foo</TD><TD>**foo</TD><TD>**foo</TD><TD>**bar</TD><TD>**bar</TD></TR>
+<TR><TD>!1</TD><TD>!2</TD><TD>!3</TD><TD>!4</TD><TD>!5</TD></TR>
+<TR><TD>X </TD><TD>.</TD><TD>X</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>X</TD><TD>.</TD><TD>.</TD><TD>X</TD><TD>X</TD></TR>
+<TR><TD>* </TD><TD>*v</TD><TD>*v</TD><TD>*</TD><TD>*</TD></TR>
+<TR><TD>* </TD><TD>*</TD><TD>*v</TD><TD>*v</TD></TR>
+<TR><TD>!</TD><TD>!</TD><TD>! joined</TD></TR>
+<TR><TD>X</TD><TD>X</TD><TD>X</TD></TR>
+<TR><TD>.</TD><TD>X</TD><TD>.</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</i></b></code></big>
+</i></b></code></big>
+</blockquote>
+Notice that both input files begin with the identical global comment;
+only one copy of this comment appears in the output.
+The second file contains an additional global comment that is also output.
+The subsequent local comments have been amalgamated on a single output line.
+The spine-path changes in both input files have been properly rendered
+by padding null interpretations in the appropriate spines.
+The last local comment in
+<code><big>
+file2
+</i></b></code></big>
+</i></b></code></big>
+has also been correctly re-positioned.
+Finally, each of the four data records have been aligned.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="census.html">
+<b>census</b></A> (4),
+<A HREF="extract.html">
+<b>extract</b></A> (4),
+<A HREF="humdrum.html">
+<b>humdrum</b></A> (4),
+<b>paste</b> (UNIX),
+<A HREF="timebase.html">
+<b>timebase</b></A> (4)
+</i></b></code></big>
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>LIMITS</H3></FONT>
+The number of specified input files may be limited on DOS systems.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#Assembling_Parts_Using_the_assemble_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

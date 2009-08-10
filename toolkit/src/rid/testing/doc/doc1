@@ -1,0 +1,13 @@
+!! `rid' example
+!!
+**abc	**xyz
+*tand	*em
+12	.
+.	.
+!local	!comments
+*	*
+*x	*x
+**xyz	**abc
+!	!
+.	34
+*-	*-

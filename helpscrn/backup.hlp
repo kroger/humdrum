@@ -1,0 +1,26 @@
+
+MELVEL    : Calculates the melodic velocity for some monophonic input.
+
+     This command produces "melodic velocity" data for a monophonic
+     input.  Melodic velocity values are in semitones per second.
+     If no metronome or tempo indication is available, MELVEL assumes
+     a tempo of 60 quarter-notes per minute.
+
+Inputs processed:
+
+     **cents,   **freq,    **fret,    **kern,    **MIDI,    **pitch,
+     **semits,  **solfg,   **specC,   **Tonh
+
+Syntax:
+
+     melvel [-t num | -T num | -m num | -M num] [-x] [inputfile ...]
+
+Options:
+
+     -m num : specify tempo as quarter durations per minute
+     -M num : same as -m but over-ride any tempo interpretations in input
+     -t num : specify tempo in seconds per quarter-duration
+     -T num : same as -t but over-ride any tempo interpretations in input
+
+  Refer to reference manual for further details.
+

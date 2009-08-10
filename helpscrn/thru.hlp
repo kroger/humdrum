@@ -1,0 +1,22 @@
+
+THRU      : Expand abbreviated format to through-composed format.
+
+     This command expands abbreviated format representations (such as
+     Da Capo forms) to through-composed formats.  The expansion is deter-
+     mined by a pre-encoded "expansion list" that lists (in order) one or
+     more musical sections designated by "section labels".
+
+     Where more than one expansion list is encoded, each such list is
+     identified by a unique "version" label.  Using the -v option, the
+     user can select which expanded version is generated.
+
+Syntax:
+
+     thru [-v version] [inputfile ...]
+
+Options:
+
+     -v version  : expand according to expansion-list labelled "version"
+
+  Refer to reference manual for further details.
+

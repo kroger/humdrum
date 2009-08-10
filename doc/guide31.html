@@ -1,0 +1,719 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 31</TITLE>
+<!-- Chapter 31 (Repertoires and Links) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:16:26 EST 2000">
+<meta name="description" content="Chapter 31 (Repertoires and Links) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<H1>Chapter31</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide30.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide32.html"><i>Next Chapter</i></A>]
+<center><HR WIDTH=500></center>
+</SMALL>
+<H1>Repertories and Links</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+In initiating a research project, we often begin by
+selecting a suitable repertory for study.
+A common approach is to focus on a particular composer,
+period, style, or culture.
+For example, a researcher might focus on 17th century canons, or on
+Beethoven's compositions prior to Opus 20, or on Ojibway songs transcribed
+in the 1900s.
+Depending on the research task, the user may wish to locate works
+that conform to highly complex criteria --
+such as solo Baroque flute works written in compound
+meters, or slow Russian symphonic movements that don't include any
+wind instruments and are written in minor keys.
+</P>
+<P>
+In this chapter, we discuss how to search entire file-systems
+for Humdrum scores that conform to user-specified criteria.
+With large musical databases,
+automated methods for locating specific
+repertories become important.
+As we will see, in most cases, one or two commands are all
+that is necessary to assemble
+a repertory list of works conforming to complex selection criteria.
+</P>
+<A NAME="The_find_Command">
+<H2>The <i>find</i> Command</H2>
+</P>
+<P>
+The UNIX
+<b>find</b>
+command traverses through a file hierarchy,
+and finds all files that match certain conditions.
+The
+<b>find</b>
+command takes the following syntax:
+</P>
+<P>
+<blockquote>
+<code><big>find</code></big> <i><PATH> <OPTIONS> <ACTIONS></i>
+</blockquote>
+</P>
+<P>
+The <i>PATH</i> is a directory from which the search
+<i>commences.</i>
+All files in the specified directory are examined including all files in the
+subdirectories, sub-subdirectories, and so on.
+</P>
+<P>
+The path
+</P>
+<P>
+<blockquote>
+<code><big>/</big></code>
+</blockquote>
+</P>
+<P>
+means the "root" directory containing all files on a computer system.
+Even single-user systems are apt to have several thousand files subsumed
+under the root directory.
+</P>
+<P>
+The path
+</P>
+<P>
+<blockquote>
+<code><big>/scores</big></code>
+</blockquote>
+</P>
+<P>
+means all files under the <code><big>scores</big></code> directory, whereas
+</P>
+<P>
+<blockquote>
+<code><big>/scores/bach</big></code>
+</blockquote>
+</P>
+<P>
+means all files under the <code><big>scores/bach</big></code> directory.
+The period character:
+</P>
+<P>
+<blockquote>
+<code><big> .</big></code>
+</blockquote>
+</P>
+<P>
+tells
+<b>find</b>
+to commence searching from the current directory.
+</P>
+<P>
+Since
+<b>find</b>
+searches all files under the given path, its operation
+may be quite slow when there are thousands of files to search.
+It's wise to restrict the search by choosing a reasonable starting point.
+For example, specifying the path <code><big>/scores/bach/chorales</big></code>
+may save a great deal of time compared with the path <code><big>/scores</big></code>.
+Although we won't discuss them in this book, the
+<b>find</b>
+command provides
+a number of options that help to restrict the depth of searches or
+otherwise "prune" the search.
+When first trying
+<b>find</b>
+it's a good idea to limit the searches to small segments of the file system.
+</P>
+<A NAME="Scores_with_PC_data">
+<P>
+When searching through the specific <i>PATH</i>,
+<b>find</b>
+is able to carry out a wide variety of possible tests on each file.
+One simple action is to test whether the file-name conforms to a
+given regular expression.
+Consider, for example, the goal of identifying all files representing
+pitch-class
+(<A HREF="representations/pc.rep.html"><code><big>**pc</big></code></A>)
+information.
+The Humdrum convention is to identify these files by adding the <code><big>.pc</big></code>
+extension to the filename -- such as <code><big>opus24.pc</big></code>.
+The following
+<b>find</b>
+command will traverse through the <code><big>/scores</big></code>
+directory (and all sub-directories) searching for files that contain
+the <code><big>pc</big></code> file extension:
+</P>
+<P>
+<blockquote>
+<code><big>find /scores -name *.pc</big></code>
+</blockquote>
+</P>
+<P>
+The above command uses the
+<b>-name</b>
+option followed by the appropriate regular expression.
+This command is unusual in that it has no
+explicit <i>action</i>.
+In such cases, the implied action is to print or display
+the name of all files whose names match the regular expression.
+</P>
+<P>
+Note that regular expressions may be literal strings.
+This means we can locate a specific named file.
+For example, the following command will locate
+all files named <code><big>findme</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>find / -name findme</big></code>
+</blockquote>
+</P>
+<P>
+An example of an explicit <i>ACTION</i> might be to delete files conforming
+to a particular criterion.
+For example, the following command
+searches the <code><big>/scores</big></code> path for files whose names contain
+the <code><big>.tmp</big></code> extension.
+Any matching file is then deleted using the UNIX
+<b>rm</b>
+command:
+</P>
+<P>
+<blockquote>
+<code><big>find /scores -name *.tmp -exec rm "{}" ";"</big></code>
+</blockquote>
+</P>
+<P>
+This command illustrates a number of features of the
+<b>find</b>
+command.
+The search begins from the
+<i>path</i>
+<code><big>/scores</big></code>.
+The
+<i>option</i>
+<code><big>-name *.tmp</big></code> identifies the search condition.
+The <code><big>-exec</big></code>
+flag identifies the <i>action</i> as that of executing a command.
+The arguments between <code><big>-exec</big></code> and the semi-colon are treated as the
+command to be executed.
+Each time a file is found with the <code><big>.tmp</big></code>
+extension, the <code><big>-exec</big></code> action is executed.
+The paired curly braces {}
+have a special significance to
+<b>find.</b>
+The braces are replaced by the filename found to match the regular expression.
+For example, if the first file found is named <code><big>xyz.tmp</big></code> the
+braces will be replaced by the string <code><big>xyz.tmp</big></code>.
+The quotation marks around the braces and around the semi-colon are
+necessary in order to prevent the UNIX shell interpreter
+from substituting inappropriate information before passing the command
+line to <b>rm</b>.
+</P>
+<P>
+Note that the
+<b>-name</b>
+option defaults to filenames only; it does not apply to directory names.
+The above command is equivalent to the more explicit form:
+</P>
+<P>
+<blockquote>
+<code><big>find /scores -type f -name *.tmp -exec rm "{}" ";"</big></code>
+</blockquote>
+</P>
+<P>
+The
+<b>-type</b>
+option can be used to match 
+regular files (<b>f</b>), directories (<b>d</b>), or network files (<b>n</b>).
+By way of example, the following command deletes all directories
+whose names have the <code><big>.tmp</big></code> extension.
+</P>
+<P>
+<blockquote>
+<code><big>find /scores -type d -name *.tmp -exec rmdir "{}" ";"</big></code>
+</blockquote>
+</P>
+<A NAME="Content_Searching">
+<H2>Content Searching</H2>
+</P>
+<P>
+For most music research applications,
+we are interested in identifying files on the basis of their contents.
+That is, we'd like to know what's inside the file before we take any action.
+</P>
+<A NAME="Works_in_7.8_Meter">
+<P>
+The
+<b>grep</b>
+command is especially useful in determining whether certain
+items of information are present in a file.
+For example, the following
+command identifies all files in the path <code><big>/scores</big></code>
+that contain passages in 7/8 meter:
+</P>
+<P>
+<blockquote>
+<code><big>find /scores -type f -exec grep -l '\*M7/8' "{}" ";"</big></code>
+</blockquote>
+</P>
+<P>
+Recall that the
+<b>-l</b>
+option for
+<b>grep</b>
+causes the output to consist only
+of names of files that contain the sought regular expression.
+Note that the
+<b>-type f</b> option has been specified in order to ensure that the
+<b>grep</b>
+command is only executed for files.
+</P>
+<A NAME="Works_with_Brass">
+<P>
+The structure of the above command can be used to search for all
+sorts of pertinent musical information.
+For example, recall that the <code><big>*IC</big></code> tandem interpretation is used to encode
+instrument classes such as strings, voice, percussion, etc.
+The following command
+searches all files in the path <code><big>scores</big></code> and generates a list of
+those files that encode scores containing one or more brass instruments:
+</P>
+<P>
+<blockquote>
+<code><big>find scores -type f -exec grep -l '\*ICbras' "{}" ";"</big></code>
+</blockquote>
+</P>
+<A NAME="Works_in_C_Major">
+<P>
+The following command identifies all files in the path <code><big>/scores</big></code>,
+that contain passages in the key of C major:
+</P>
+<P>
+<blockquote>
+<code><big>find /scores -type f -exec grep -l '\*C:' "{}" ";"</big></code>
+</blockquote>
+</P>
+<A NAME="Works_in_Minor_Keys">
+<P>
+The following command identifies all files in the path <code><big>/scores</big></code>,
+that contain passages in any minor key:
+</P>
+<P>
+<blockquote>
+<code><big>find /scores -type f -exec grep -l '\*[a-g][#-]*:' "{}" ";"</big></code>
+</blockquote>
+</P>
+<A NAME="Generate_Franck_List">
+<P>
+Humdrum reference records are ideal targets for such searches
+since reference records encode information such as the composer's name,
+composer's dates, title of work, date of composition, movement number,
+instrumentation, meter classification, and so on.
+For example, the following command identifies all files in the
+path <code><big>/scores</big></code> that are composed by Franck:
+</P>
+<P>
+<blockquote>
+<code><big>find /scores -type f -exec grep -l '!!!COM.*Franck' "{}" ";"</big></code>
+</blockquote>
+</P>
+<A NAME="Works_in_compound_meters">
+<P>
+The following command identifies all files in the path <code><big>/scores</big></code>
+that are written in compound meters:
+</P>
+<P>
+<blockquote>
+<code><big>find /scores -type f -exec grep -l '!!!AMT.*compound' "{}" ";"</big></code>
+</blockquote>
+</P>
+<A NAME="Rondo_Works">
+<P>
+The following command identifies all files beginning from the current directory
+that are rondos:
+</P>
+<P>
+<blockquote>
+<code><big>find . -exec grep -il '!!!AFR.*rondo' "{}" ";"</big></code>
+</blockquote>
+</P>
+<P>
+Recall that the
+<b>-i</b>
+option for
+<b>grep</b>
+makes the pattern-match insensitive to upper- or lower-case.
+</P>
+<A NAME="Heterophonic_Works">
+<P>
+The following command identifies all files in the path <code><big>non-western</big></code>
+that have been designated as having heterophonic textures:
+</P>
+<P>
+<blockquote>
+<code><big>find non-western -exec grep -il '!!!AST.*heterophony' "{}" ";"</big></code>
+</blockquote>
+</P>
+<A NAME="Bebop">
+<P>
+In the path <code><big>/scores/jazz</big></code>,
+we might want to identify all files
+that contain the style-designation "bebop:"
+</P>
+<P>
+<blockquote>
+<code><big>find /scores/jazz -exec grep -il '!!!AST.*bebop' "{}" ";"</big></code>
+</blockquote>
+</P>
+<A NAME="18thC_Works_with_Horns_and_Oboes">
+<P>
+The following command identifies all files in the path <code><big>18th-century</big></code>,
+that include French horns and oboes:
+</P>
+<P>
+<blockquote>
+<code><big>find 18th-century -exec grep -il '!!!AIN.*cor.*oboe' "{}" ";"</big></code>
+</blockquote>
+</P>
+<A NAME="1805_to_1809">
+<P>
+Of course, more complex regular expressions can be also be defined.
+For example, the following command identifies all works composed
+between 1805 and 1809:
+</P>
+<P>
+<blockquote>
+<code><big>find / -exec grep -l '!!!ODT.*180[5-9]' "{}" ";"</big></code>
+</blockquote>
+</P>
+<P>
+There is no restriction on the complexity of the regular expression.
+The following command identifies all works composed between 1812
+and 1840:
+</P>
+<P>
+<blockquote>
+<code><big>find / -exec egrep -l '!!!ODT.*18(1[2-9])|([23][0-9])|(40)' \
+<blockquote>
+"{}" ";"</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Often the
+<b>find</b>
+command can be used to answer research questions more directly.
+Suppose we wanted to determine whether
+German drinking songs more likely to be in triple meter.
+There are over four thousand German folksongs encoded in Helmut Schaffrath's
+<i>Essen Folksong Collection</i>.
+These works contain genre-related tags encoded as "<code><big>AGN</big></code>"
+reference records.
+One of the genres distinguished is "Trinklied" (drinking song).
+</P>
+<P>
+In order to answer our question, we need to search the file system
+for all works that have the "Trinklied" designation, and then generate
+an inventory of meter classifications (available in "AMT" records).
+</P>
+<P>
+<blockquote>
+<code><big>find /scores -type f -exec grep -l '!!AGN.*Trinklied' "{}" \
+<blockquote>
+";" | grep '!!!AMT.*' | sort | uniq -c</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+For the entire database, the output is as follows:
+</P>
+<P>
+<blockquote>
+<code><big> 1 !!!AMT: compound duple
+<br>
+ 4 !!!AMT: irregular
+<br>
+14 !!!AMT: simple quadruple
+<br>
+ 5 !!!AMT: simple triple</big></code>
+</blockquote>
+</P>
+<P>
+There are just 24 drinking songs in the Essen collection and only
+five are in triple meters.
+The proportion of drinking songs in triple meters turns out to be no different
+than the distribution of triple meters in general for German folksongs.
+In other words, according to the
+<i>Essen Folksong Collection</i>,
+it is not the case that German drinking songs are
+more likely to be in triple meters.
+</P>
+<A NAME="Using_find_with_the_xargs_Command">
+<H2>Using <i>find</i> with the <i>xargs</i> Command</H2>
+</P>
+<A NAME="Corelli_Change_of_Meters">
+<P>
+As we saw in
+<A HREF="guide10.html">Chapter 10,</A>
+the
+<b>xargs</b>
+command can be used to propagate file names from command to command within
+a pipeline.
+Using
+<b>xargs</b>
+in conjunction with
+<b>find</b>
+provides a powerful means for finding works that conform to highly
+complex criteria.
+For example, the following command identifies all files in the path
+<code><big>/corelli</big></code> that contain a change of meter signature:
+</P>
+<P>
+<blockquote>
+<code><big>find /corelli -type f -name '*' | xargs grep -c '^\*M[0-9]' \
+<blockquote>
+| grep -v ':[01]$'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+The output specifies each filename followed by a colon, followed by
+the number of meter signatures in the corresponding file.
+For example,
+in the following output, the third movement from Opus 1, No. 5 by
+Corelli is identified as containing 6 meter signatures at different
+points in the score:
+</P>
+<P>
+<blockquote>
+<code><big>/corelli/opus1n5c.krn:6
+<br>
+/corelli/opus1n9a.krn:3
+<br>
+/corelli/opus1n9b.krn:2
+<br>
+/corelli/opus1n9d.krn:2</big></code>
+</blockquote>
+</P>
+<A NAME="Works_with_Change_of_Key">
+<P>
+Similarly, the following command identifies all works that contain
+a change of key signature:
+</P>
+<P>
+<blockquote>
+<code><big>find /scores -type f -name '*' | xargs grep -c '^\*k\[' \
+<blockquote>
+| grep -v ':[01]$'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Change_of_Key_and_Change_of_Meter">
+<P>
+As a further example of the use of <b>xargs</b>,
+consider the following extension of the above pipeline.
+The
+<b>grep -v</b>
+command causes only those files containing more than one key signature to be passed.
+The
+<b>sed</b>
+command eliminates the colon and the number appended to the filenames.
+The ensuing
+<b>grep -c</b>
+counts the number of meter signatures in each file.
+The final
+<b>grep -v</b>
+passes only those filenames containing 2 or more meter signatures.
+</P>
+<P>
+<blockquote>
+<code><big>find / -type f -name '*' | xargs grep -c '^\*k\[' | \
+<blockquote>
+grep -v ':[01]$' | sed 's/:.*$//' | \
+<br>
+xargs grep -c '^\*M[0-9]' | grep -v ':[01]$'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+In summary, the above pipeline identifies all scores that contain both a
+change of key signature as well as a change of meter signature.
+</P>
+<A NAME="Compound_Meter_Woodwind_Quintets">
+<P>
+The
+<b>xargs</b>
+command can also be used to process a list of files -- where the list
+has been stored in a file.
+For example, suppose we used the
+<b>find</b>
+command to locate all scores in compound meters written for woodwind quintet:
+</P>
+<P>
+<blockquote>
+<code><big>find . -name '*' | xargs grep -l '!!!AMT:.*compound' \
+<blockquote>
+</blockquote>
+| xargs grep -l '!!!AIN: clars cor fagot flt oboe' > scorelist</big></code>
+</blockquote>
+</P>
+<P>
+The resulting list of files can be used for further processing.
+For example, we might search these files for any scores containing changes
+of key:
+</P>
+<P>
+<blockquote>
+<code><big>cat scorelist | xargs grep -c '^\*[A-Ga-g][#-]*:' | grep -v ':[01]$'</big></code>
+</blockquote>
+</P>
+<P>
+The output identifies all scores in compound meters written for woodwind quintet
+that contain changes of key.
+</P>
+<A NAME="Repertoires_As_File_Links">
+<H2>Repertories As File Links</H2>
+</P>
+<P>
+Rather than applying commands to files stored in a list,
+it is often helpful to have all of the files accessible in one location.
+That is, we might create a directory containing only those
+score-files that meet our selection criteria.
+it is often helpful to have all of the files accessible in one location.
+We might simply make copies of the files in a special directory.
+However, UNIX systems make it possible to create "links"
+to files in other directories without having to make duplicate copies
+of already existing files.
+</P>
+<P>
+Suppose you wanted to make a directory of all scores containing
+vocal parts.
+The following command creates a file
+(<code><big>vocalfiles</big></code>) listing all files
+in the path <code><big>/scores</big></code> that contain one or more vocal parts:
+</P>
+<P>
+<blockquote>
+<code><big>find /scores -exec grep -l '!!!AIN.*vox' "{}" ";" > vocalfiles</big></code>
+</blockquote>
+</P>
+<P>
+The contents of <code><big>vocalfiles</big></code> might look like the following:
+</P>
+<P>
+<blockquote>
+<code><big>/scores/bach/cantatas/cant140.krn
+<br>
+/scores/bach/chorales/chor217.krn
+<br>
+/scores/bach/chorales/midi/chor368.hmd</big></code>
+<br>
+etc.
+</blockquote>
+</P>
+<P>
+We can create an appropriate new directory using the
+<b>mkdir</b>
+command.
+</P>
+<P>
+<blockquote>
+<code><big>mkdir vocal</big></code>
+</blockquote>
+</P>
+<P>
+Next, edit the file containing the list of filenames as follows.
+Insert
+<b>ln -s</b>
+prior to each filename, and append the directory
+name <code><big>vocal</big></code> at the end of each line.
+</P>
+<P>
+<blockquote>
+<code><big>ln -s /scores/bach/cantatas/cant140.krn vocal
+<br>
+ln -s /scores/bach/chorales/chor217.krn vocal
+<br>
+ln -s /scores/bach/chorales/midi/chor368.hmd vocal</big></code>
+<br>
+etc.
+</blockquote>
+</P>
+<P>
+(The <b>-s</b> option for
+<b>ln</b>
+is used to create a so-called "symbolic" link.)
+</P>
+<P>
+Using the
+<b>chmod</b>
+command, we can make this file executable, and then we can execute it:
+</P>
+<P>
+<blockquote>
+<code><big>chmod +x vocalfiles
+<br>
+./vocalfiles</big></code>
+</blockquote>
+</P>
+<P>
+We now have a new directory whose files contain scores with vocal parts.
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+The
+<b>find</b>
+command provides a convenient way to traverse through
+an entire file-system looking for files that conform to specific
+criteria.
+In musicological tasks, the
+<b>find</b>
+command is especially well suited to assembling a repertory of scores
+that exhibit some characteristic(s) of interest.
+Multiple selection criteria can be accommodated by using one or more
+pipes in conjunction with the
+<b>grep</b>
+command.
+</P>
+<P>
+For convenience, it is often helpful to create a new directory
+that holds all of works selected for a study repertory.
+On UNIX systems, file "links" can be created,
+so that there is no need to make multiple copies of the same score.
+This means that several concurrent directory structures can be created
+without duplicating files.
+For example, a given score may be accessed in one directory
+structure via <i>composer</i>, in another directory via <i>instrumentation</i>,
+in a third directory via <i>genre</i>, and so on.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide32.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide30.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

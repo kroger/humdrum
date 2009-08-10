@@ -1,0 +1,473 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH strophe 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +13
+.ti -13
+\fBstrophe\fR  --  selectively extract strophic data for Humdrum inputs
+.in -13
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +11
+.ti -11
+\fBstrophe\fR  [\fB-s \fIstrophe_list\fR | \fB-x \fIstrophe_label\fR]  [\fIinputfile\fR ...]
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "strophe"
+command is used to isolate or extract selective strophic data.
+Strophic data encode alternative concurrent information for a given
+passage.
+Examples of alternative concurrent information might include
+the texts for different verses of a song,
+alternative renditions of the same passage (such as \fIossia\fR passages),
+or differing editorial interpretations of a given note or sequence of notes.
+.sp 1
+.sp 1
+The
+.B "strophe"
+command permits the user to extract selected information paths
+(called \fIstrophes\fR) present in a Humdrum input.
+.sp 1
+.sp 1
+Structurally, strophic data must begin from a single common spine,
+split apart into two or more alternative spines, and then rejoin
+to form a single spine.
+Since the strophes split from a common spine,
+all strophic data necessarily begin by sharing the same data type.
+Different exclusive interpretations may be introduced in the
+strophic passage -- provided all strophic spines end up sharing
+the same data type just prior to being rejoined.
+.sp 1
+.sp 1
+The beginning of a strophic passage is signalled by the presence of a
+.I "strophic passage initiator"
+-- a single asterisk followed by the keyword \(odstrophe\(cd
+(\f(CR*strophe\fR).
+The end of a strophic passage is signalled by the
+.I "strophic passage terminator"
+-- a single asterisk followed by the upper-case letter `S' followed
+by a minus sign (\f(CR*S-\fR).
+Each spine within the strophic passage begins with a
+.I "strophe label"
+and ends with a
+.I "strophe end indicator"
+(\f(CR*S/fin\fR).
+.sp 1
+.sp 1
+Strophe labels may consist of either alphanumeric names,
+or numbers.
+Numerical labels should be used when the strophic data imply some
+sort of order, such as verses in a song.
+Alphanumeric labels are convenient for distinguishing different editions or
+.I "ossia"
+passages.
+The following example encodes a melodic phrase containing four numbered verses
+from \(odDas Wandern\(cd from \fIDie Sch\o'o\(..'ne M\o'u\(..'llerin\fR
+by Schubert.
+.in +2
+.sp 1
+.TS
+l s s s s l
+l l l l l l.
+!! Franz Schubert, `Das Wandern' from "Die Schoene Muellerin"
+**kern	**text
+*>[V,V,V,V]	*>[V,V,V,V]
+*>V	*>V
+*k[b-e-]	*Deutsch
+*	*solo
+*	*strophe
+*	*^
+*	*^	*^
+*	*S/1	*S/2	*S/3	*S/4
+8f	Das	Vom	Das	Die
+=5	=5	=5	=5	=5
+8f	Wan-	Was-	sehn	Stei-
+8b-	-dern	-ser	wir	-ne
+8a	ist	ha-	auch	selbst ,
+8ee-	des	-ben	den	so
+=6	=6	=6	=6	=6
+(16dd	M\o'u\(..'l-	wir's	R\o'a\(..'-	schwer
+)16ff	|	|	|	|
+(16dd	-lers	ge-	-dern	sie
+)16b-	|	|	|	|
+8f	Lust ,	-lernt ,	ab ,	sind ,
+8dd	das	vom	den	die
+=7	=7	=7	=7	=7
+(8.cc	Wan-	Was-	R\o'a\(..'-	Stei-
+)16a	|	|	|	|
+8b-	-dern !	-ser !	-dern !	-ne !
+8r	%	%	%	%
+*	*S/fin	*S/fin	*S/fin	*S/fin
+*	*v	*v	*v	*v
+*	*S-
+*-	*-
+.TE
+.sp 1
+.in -2
+Notice that this file contains a single section labelled `V' (verse)
+and that an expansion list occurs near the beginning of the file
+that indicates the section is to be repeated 4 times in total.
+.sp 1
+.sp 1
+The strophic passage in the above example pertains only to the spine marked
+\f(CR**text\fR.
+Following the strophic passage indicator (\f(CR*strophe\fR),
+the spine is split apart until the required number of verses are generated.
+Then each spine is labelled with its own strophe label.
+Since the verses have an order, it is appropriate to label them with
+numbers:\f(CR*S/1, *S/2,\fR and so on.
+The individual verses are terminated with strophe end indicators
+(\f(CR*S/fin\fR), the spines rejoin, and then a strophic passage
+terminator (\f(CR*S-\fR) marks the end of the strophic passage.
+.sp 1
+.sp 1
+Executing the command:
+.sp 1
+.sp 1
+.in +2
+strophe -s 4
+.in -2
+.sp 1
+.sp 1
+produces the following output:
+.in +2
+.sp 1
+.TS
+l s s s s l
+l l l l l l.
+!! Franz Schubert, `Das Wandern' from "Die Schoene Muellerin"
+**kern	**text
+*>[V,V,V,V]	*>[V,V,V,V]
+*>V	*>V
+*k[b-e-]	*Deutsch
+*	*solo
+8f	Die
+=5	=5
+8f	Stei-
+8b-	-ne
+8a	selbst ,
+8ee-	so
+=6	=6
+(16dd	schwer
+)16ff	|
+(16dd	sie
+)16b-	|
+8f	sind ,
+8dd	die
+=7	=7
+(8.cc	Stei-
+)16a	|
+8b-	-ne !
+8r	%
+*-	*-
+.TE
+.sp 1
+.in -2
+Strophic encodings are nearly always encoded in
+\fIabbreviated\fR rather than \fIthrough-composed\fR file formats.
+Abbreviated encodings employ
+.I "section labels"
+and
+.I "expansion-lists"
+in order to identify how various passages are repeated and ordered.
+.sp 1
+.sp 1
+When extracting a single strophe, either the abbreviated or
+through-composed versions can be used as input.
+However, when using the
+.B "strophe"
+command to select more than one strophe for output,
+it is essential that the input first be expanded to
+a through-composed version, via the
+.B "thru"
+command.
+For example, in order to select the first and third verses
+in the above passage by Schubert, the user would need to execute
+the following command pipeline:
+.sp 1
+.sp 1
+.in +2
+thru wandern | strophe -s 1,3
+.in -2
+.sp 1
+.sp 1
+The list following the
+.B "-s"
+option can contain individual strophes separated by commas.
+For example, the following command extracts verses 1, 3 and 4
+in succession:
+.sp 1
+.sp 1
+.in +2
+thru wandern | strophe -s 1,3,4
+.in -2
+.sp 1
+.sp 1
+Strophes may also be output in non-numeric order as in the following
+command invocation:
+.sp 1
+.sp 1
+.in +2
+thru wandern | strophe -s 4,3,2,1
+.in -2
+.sp 1
+.sp 1
+If the
+.B "-x"
+option is invoked,
+.B "strophe"
+outputs only a single strophe whose string
+.I "label"
+is specified as an option.
+Strophe names need not be numerical.
+E.g.
+.sp 1
+.sp 1
+.in +2
+strophe -x ossia
+.in -2
+.sp 1
+.sp 1
+If the
+.B "strophe"
+command is invoked without any option,
+then all strophes are expanded in the output in numerical order
+beginning with strophe 1.
+Missing numerical strophes
+(such as a missing strophe \f(CRS/3\fR in a four-strophe encoding)
+will cause an error to be generated and terminate the
+.B "strophe"
+command.
+.sp 1
+.sp 1
+Note that the
+.B "strophe"
+command allows strophe numbers containing a single decimal point,
+such as strophe \f(CR*S/4.2\fR.
+Having extracted the verse \f(CR*S/1\fR, the
+.B "strophe"
+command will output verse \f(CR*S/1.1\fR
+in preference to \f(CR*S/2\fR -- if the decimal strophe is present.
+This feature allows more than one strophic passage to be encoded
+within a single abbreviated format file.
+This feature might prove useful, for example, in a musical work that contains
+a brief refrain in the middle of each verse.
+.sp 1
+.sp 1
+The various strophe-related tandem interpretations are summarized
+below:
+.sp 1
+.TS
+center;
+l l.
+*strophe	strophic passage initiator
+*S-	strophic passage terminator
+*S/\fIstring\fR	strophe name label
+*S/\fIn[.n]\fR	strophe number label
+*S/fin	strophe end indicator
+.TE
+.sp 1
+.ce
+.I "Types of Strophe Interpretations"
+Note that for each strophic passage, all strophe labels must appear
+on the same record.
+See EXAMPLES below.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.I "strophe"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the
+	  command syntax
+\fB-s \fIstrophe_list\fR	output numbered strophes according to
+	  \fIstrophe_list\fR
+\fB-x \fIstrophe_label\fR	output only strophes labelled \fIstrophe_label\fR
+.TE
+.sp 1
+Options are specified in the command line.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following example is concocted to illustrate the operation of the
+.B "strophe"
+command.
+Consider the following Humdrum input:
+.in +2
+.sp 1
+.TS
+l s s
+l l l.
+!! `strophe' example.
+**example	**bar
+*>[A,V,V,Coda]	*>[A,V,V,Coda]
+*>A	*>A
+A	i
+*>V	*>V
+*	**foo
+*	*strophe
+*	*^
+*	*S/1	*S/2
+B	1	2
+*	*S/fin	*S/fin
+*	*v	*v
+*	*S-
+*	**bar
+C	refrain
+*	*strophe
+*	*^
+*	*S/1.1	*S/2.1
+B	1	2
+*	*S/fin	*S/fin
+*	*v	*v
+*	*S-
+*>Coda	*>Coda
+*	**foo
+E	i
+*-	*-
+.TE
+.sp 1
+.in -2
+Since this file is in abbreviated format, we must first
+expand it to through-composed form using the
+.B "thru"
+command.
+The resulting output is:
+.in +2
+.sp 1
+.TS
+l s s s s l l
+l l l l l l l.
+!! `strophe' example.
+**example			**bar
+*thru			*thru
+*>A			*>A
+A			i
+*>V			*>V
+*			**foo
+*			*thru
+*			*strophe
+*			*^
+*			*S/1			*S/2
+B			1			2
+*			*S/fin			*S/fin
+*			*v			*v
+*			*S-
+*			**bar
+*			*thru
+C			refrain
+*			*strophe
+*			*^
+*			*S/1.1			*S/2.1
+B			1			2
+*			*S/fin			*S/fin
+*			*v			*v
+*			*S-
+*>V			*>V
+*			**foo
+*			*thru
+*			*strophe
+*			*^
+*			*S/1			*S/2
+B			1			2
+*			*S/fin			*S/fin
+*			*v			*v
+*			*S-
+*			**bar
+*			*thru
+C			refrain
+*			*strophe
+*			*^
+*			*S/1.1			*S/2.1
+B			1			2
+*			*S/fin			*S/fin
+*			*v			*v
+*			*S-
+*>Coda			*>Coda
+*			**foo
+*			*thru
+E			i
+*-			*-
+.TE
+.sp 1
+.in -2
+The command:
+.sp 1
+.sp 1
+.in +2
+strophe file
+.in -2
+.sp 1
+.sp 1
+will produce the following output:
+.in +2
+.sp 1
+.TS
+l s s
+l l l.
+!! `strophe' example.
+**example	**bar
+*thru	*thru
+*>A	*>A
+A	i
+*>V	*>V
+*	**foo
+*	*thru
+B	1
+*	**bar
+*	*thru
+C	refrain
+B	1
+*>V	*>V
+*	**foo
+*	*thru
+B	2
+*	**bar
+*	*thru
+C	refrain
+B	2
+*>Coda	*>Coda
+*	**foo
+*	*thru
+E	i
+*-	*-
+.TE
+.sp 1
+.in -2
+.in -2
+.SH "PORTABILITY"
+.in +2
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBextract\fR (1), \fBthru\fR (1),
+\fB*strophe\fR (2), \fByank\fR (1)
+.in -2

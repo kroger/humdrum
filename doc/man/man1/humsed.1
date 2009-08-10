@@ -1,0 +1,369 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH humsed 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBhumsed\fR  --  stream editor for Humdrum inputs
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBhumsed\fR   [\fB-E\fR]   '\fIsed_instruction[;sed_instruction;\fR...]'   [\fIinputfile ...\fR]   [\fB > \fIoutputfile\fR]
+.ti -7
+\fBhumsed\fR   [\fB-E\fR]   [\fB-f \fIscriptfile\fR]   [\fIinputfile ...\fR]   [\fB > \fIoutputfile\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "humsed"
+command provides a stream-editor for Humdrum data records.
+A stream-editor is a non-interactive editor that automatically
+processes a given input according to a user-specified set of
+editing instructions.
+Possible editing operations include substitution, deletion,
+transliteration, file-read, and file-write.
+By default the output is sent to the display,
+however the output can be routed to a file using file redirection (>
+.I "outputfile)."
+.sp 1
+.sp 1
+The
+.B "humsed"
+command is fashioned after the \s-1UNIX\s+1
+.B "sed"
+stream editor.
+In contrast to
+.B "sed,"
+.B "humsed"
+editing instructions are applied only to Humdrum data records;
+Humdrum
+.I "interpretations"
+and 
+.I "comments"
+are not affected by
+.B "humsed."
+.sp 1
+.sp 1
+The
+.B "humsed"
+command accepts one or more
+.B "sed"
+instructions.
+Instructions are specified on the command-line within a pair of single quotes.
+Where more than one editing instruction is specified,
+successive instructions are separated by a semicolon.
+Alternatively, instructions may be executed from a
+.I "scriptfile"
+using the
+.B "-f"
+option.
+If instructions are provided both on the command-line as well as via a
+.I "scriptfile,"
+the command line instructions are performed prior to the
+.I "scriptfile"
+instructions.
+.sp 1
+.sp 1
+Permissible instructions include
+.B "s"
+for substitution,
+.B "y"
+for transliteration,
+.B "d"
+for deletion,
+.B "i"
+for insertion,
+.B "a"
+for append,
+.B "r"
+for file-read, and
+.B "w"
+for file-write.
+Each instruction may be preceded by an optional
+.I "regular expression"
+that limits the scope of the editing instruction only to those
+data records matching the regular expression.
+For example, the user may replace all occurrences of `X' with `Y' --
+provided the signifier `Z' also occurs in the same data record.
+In the case of the delete
+.B "(d)"
+instruction, failing to specify a preceding regular expression will
+result in the deletion of all data records in the input.
+.sp 1
+.sp 1
+For further information concerning the syntax and use of
+.B "humsed"
+editing instructions, refer to the documentation for the \s-1UNIX\s+1
+.B "sed"
+command.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "humsed"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-E\fR	invoke Extended Regular Expression syntax
+\fB-f \fIscriptfile\fR	execute editing instructions from the file \fIscriptfile\fR
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+With the
+.B "-E"
+option,
+.B "humsed"
+invokes the \(odextended\(cd regular expression syntax, rather than the normal
+or \(odbasic\(cd regular expression syntax.
+With extended regular expressions, the following additional operations
+are supported:
+one-or-more (+), zero-or-one (?), logical OR (|),
+precedence grouping (  ), and alphanumeric token start and end anchors <   >.
+.sp 1
+.sp 1
+Note that not all systems support extended regular expressions for the
+.B "sed"
+command; on such systems the
+.B "-E"
+option for
+.B "humsed"
+is ineffective and may result in an error.
+.sp 1
+.sp 1
+The
+.B "-f"
+options allows the user to specify a
+.I "scriptfile"
+that contains a set of editing instructions.
+Instructions in
+.I "scriptfile"
+are executed after any command-line editing scripts.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following examples illustrate the substitution, transliteration,
+deletion, file-read and file-write instruction provided by
+.B "humsed."
+.sp 1
+.sp 1
+Simple substitution:
+.sp 1
+.sp 1
+.in +2
+humsed 's/A/X/g' ragtime
+.in -2
+.sp 1
+.sp 1
+The above command replaces the upper-case letter A
+by the upper-case letter X.
+Without the
+g
+(global) modifier, only the first occurrence of an \(odA\(cd
+in each data record would be modified.
+The use of
+g
+applies the substitution instruction to
+.I "all"
+occurrences in a data record.
+.sp 1
+.sp 1
+Substitution commands can be preceded by another regular expression
+that limits the selection of records that are affected by the substitution.
+For example, the following command eliminates all measure numbers in a
+**kern
+representation:
+.sp 1
+.sp 1
+.in +2
+humsed '/=/s/[0-9]*//g' jellyroll
+.in -2
+.sp 1
+.sp 1
+Rather than simply eliminating all numerical data, the initial
+regular expression
+(/=/)
+limits the substitution operation to those data records contain the
+**kern
+barline signifier
+(=).
+.sp 1
+.sp 1
+More complicated substitutions may involve compound (two or more)
+instructions.
+Instructions are separated by a semicolon, and are executed in
+succession for each data record.
+Consider the following command:
+.sp 1
+.sp 1
+.in +2
+humsed 's/4[A-G]/8&/g;s/84/8/g' chicago > fastbass
+.in -2
+.sp 1
+.sp 1
+This command changes all quarter-note pitches (in a
+**kern
+representation) below middle C
+to eighth-note durations, while leaving quarter-notes above middle C unchanged.
+The first substitution instruction
+(s/4[A-G]/8&/g)
+searches for all strings beginning
+with the number 4, followed by one of the upper-case letters A to G.
+It then prepends the number 8;
+thus the token 4F will be replaced by 84F.
+(Note that the ampersand (&) in the substitution denotes the
+matched string found by the target regular expression.)
+The second substitution
+(s/84/8/g)
+replaces the string 84 by the string 8.
+In short, tokens such as 4F and 4CC# will be modified to 8F and 8CC#
+respectively -- whereas tokens such as 2F and 4cc# will remain unmodified.\(dg
+.FS \(dg
+Note that this command is inadequate if 24th notes
+(thirty-second note triplets) are present in the input --
+since they will be transformed to 28th notes.
+.FE
+.sp 1
+.sp 1
+The transliteration instruction
+.B "(y)"
+provides a short-cut for multiple
+single-character substitutions.
+For example, the following command replaces A with 0, B with 1, C with 2, etc.
+for the letters A to J:
+.sp 1
+.sp 1
+.in +2
+humsed 'y/ABCDEFGHIJ/0123456789/' dixieland
+.in -2
+.sp 1
+.sp 1
+Substitutions are organized by mapping each element in the first
+character string with the corresponding element in the second string.
+The first and second character strings must contain the same number of
+characters.
+.sp 1
+.sp 1
+The delete instruction is preceded by a regular expression,
+followed by the single letter
+.B "d."
+The following command deletes all data records containing the lower-case
+letter \(odr\(cd.
+.sp 1
+.sp 1
+.in +2
+humsed '/r/d' swing
+.in -2
+.sp 1
+.sp 1
+The file-write instruction
+.B "(w)"
+provides a way of copying selected material
+to a specified output file.
+Consider the following command:
+.sp 1
+.sp 1
+.in +2
+humsed '/;/w pauses' bigband
+.in -2
+.sp 1
+.sp 1
+This command identifies all data records in the file \(odbigband\(cd
+that contain a semicolon (the
+**kern
+pause signifier) and copies them into the file \(odpauses.\(cd
+Recall that
+.B "humsed"
+operates only on Humdrum data records, so
+the
+.B "w"
+command will cause only data records to be outputted.
+Hence the resulting file \(odpauses\(cd will not be a valid Humdrum file.
+(If the user wishes the extracted material to be in a valid Humdrum
+format, this could be done using the Humdrum
+.B "yank"
+command:\f(CRyank -m ';' 0 bigband > pauses\fR.)
+.sp 1
+.sp 1
+The
+.B "humsed"
+command can also be used to read
+.B "(r)"
+material from a specified file whenever
+a certain condition occurs in the input stream.
+For example, the following command could be used to search for
+**kern
+pause signifiers (;) and add a global comment indicating
+the presence of a pause.
+.sp 1
+.sp 1
+.in +2
+humsed '/;/r comment' bebop
+.in -2
+.sp 1
+.sp 1
+-- where the file \(odcomment\(cd contains the following global comment:
+.sp 1
+.sp 1
+.in +2
+!! A pause.
+.in -2
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+Any system supporting the \s-1UNIX\s+1-style
+.B "sed"
+command.
+Note that the
+.B "-E"
+option is a non-POSIX extension currently supported only by
+the MKS toolkit.
+It is hoped that in the future, other systems will support
+extended regular expression syntax for
+.B "sed."
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBawk\fR (\s-1UNIX\s+1),
+\fBregexp\fR (1),
+\fBrid\fR (1),
+\fBsed\fR (\s-1UNIX\s+1),
+\fBvi\fR (\s-1UNIX\s+1),
+\fByank\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+In the process of modifying text, it is possible to transform inadvertently
+Humdrum data records into interpretation records or comments.
+Particular caution should be exercised when inserting exclamation marks or
+asterisks.
+.sp 1
+.sp 1
+In addition, it is possible to disrupt the spine structure by
+inserting or deleting tabs.
+Substitutions may result in empty lines or extra spaces that render
+the file no longer consistent with the Humdrum syntax.
+.in -2

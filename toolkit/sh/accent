@@ -1,0 +1,242 @@
+###################################################################
+#                            ACCENT
+# Programmed by: David Huron        Date: 1996 May 9
+# Copyright (c) 1996 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+#
+#   This shell program accepts monophonic **kern input and outputs a
+#   series of numerical values estimating the perceived accent associated
+#   with each note.  Output accent values vary between 0 (minimum accent)
+#   and 1 (maximum accent).  Input is limited to only a single **kern
+#   data spine.
+#
+#   The "accent" command takes into account seven factors: (1) the duration
+#   of notes (agogic stress), (2) the amount of melodic (or pitch-related)
+#   accent, (3) metric position, (4) position in scale-degree hierarchy,
+#   (5) primacy/recency contexts, (6) explicit accent/articulation marks, and
+#   (7) inner-voice or outer-voice position.
+#
+PROCESS="$$"
+FILENAME=""
+OPTIONS=""
+HELP=""
+FLAG=""
+STNDIN=""
+USAGE1="USAGE: accent -h                (Help Screen)"
+USAGE2="       accent [-i] [file ...]"
+# 
+#while getopts hi arg
+#do
+#	case "$arg" in
+#	h) 	HELP="ON";;
+#	i)	OPTIONS="$OPTIONS${arg}";;
+#     [?]) echo "" 1>&2
+#		echo "$USAGE1" 1>&2
+#		echo "$USAGE2" 1>&2
+#		exit ;;
+#	esac
+#done
+#shift `expr $OPTIND - 1`
+# 
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/accent.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/accent.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' may be used
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "accent: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+#echo "accent: option -" $OPTIONS
+
+# Deal with the case where the input is from a pipe.
+
+if [ "X$FILENAME" = "X" ]
+then
+	# Since we want to have access to the data several times, place
+	# any piped input into a temporary file.
+	cat $FILENAME > $TMPDIR/$PROCESS.tmp
+	FILENAME="$TMPDIR/$PROCESS.tmp"
+fi
+
+#echo "FILENAME is: " $FILENAME
+
+# Ensure that only one spine is present:
+
+SPINE=`humdrum -v $FILENAME | grep 'Maximum' | sed 's/	.*//; s/.* //'`
+# In case "humdrum -v" doesn't work, use the less reliable "grep" approach.
+if [ x$SPINE = x ]
+then
+	SPINE=`grep '^\*\*' $FILENAME | awk '{print NF}'`
+fi
+#echo "SPINES: " $SPINE
+
+if [ x$SPINE != x1 ]
+then
+	echo "accent: ERROR: Only one input spine permitted."
+	exit
+fi
+
+# Establish the shortest duration:
+
+SHORTEST=`sh census -k $FILENAME | grep 'Shortest note' | sed 's/.* //'`
+#echo $SHORTEST
+
+# Calculate the note durations:
+
+sh dur -x $FILENAME > $TMPDIR/$PROCESS.dur
+
+# Calculate the melodic accent values:
+
+sh semits -xt $FILENAME | sh melac > $TMPDIR/$PROCESS.mac
+
+# Calculate the metric position values:
+# (N.B. The `sed' scripts are intended to preserve any null data
+#  records that are present in the original input.)
+
+sed 's/^\.$/!.NULL/' $FILENAME | sh timebase -t $SHORTEST | metpos \
+    | sed '/^\.	/d; s/^!\.NULL	./.	./' > $TMPDIR/$PROCESS.mp
+#   | sed '/^\.	/d; s/^!\.NULL	./.	./' | extract -f 2 > $TMPDIR/$PROCESS.mp
+
+# Calculate scale-degree values.
+
+sh deg -t $FILENAME | sed 's/[v^]//' > $TMPDIR/$PROCESS.deg
+
+# Establish primacy and recency conditions.
+#
+#    INCOMPLETE
+#
+# Identify any explicit accent/articulation markings.  Accents in **kern include:
+#            ^=accent    `=attacca    z=sforzando   '=staccato
+#                        ~=tenuto     s=spiccato    "=pizzicato
+
+#assemble $TMPDIR/$PROCESS.dur $TMPDIR/$PROCESS.mac $TMPDIR/$PROCESS.mp $TMPDIR/$PROCESS.deg > blat2
+assemble $TMPDIR/$PROCESS.dur $TMPDIR/$PROCESS.mac $TMPDIR/$PROCESS.mp $TMPDIR/$PROCESS.deg | $AWK_VER '
+BEGIN	{
+	# Define some constants.
+
+	# First some weighting coefficients.  Research suggests R-squareds of:
+	PHRASE = .28712;  AGOGIC = .40194;  VOICE = .46723;  DEGREE = .48596
+
+	# Research suggests that melodic accent is about one-tenth the
+	# importance of agogic accent:
+	MELAC = .042
+
+	# The remaining constants are just guesses.
+	METPOS = .30;    ARTICULATION = .70
+
+	# ***HOWEVER, trial and error suggests the following revisions:
+
+	ARTICULATION = .70
+	VOICE        = .60
+	AGOGIC       = .50
+	PHRASE       = .30
+	METPOS       = .25
+	DEGREE       = .20
+	MELAC        = .20
+
+	SUM_OF_WEIGHTS = PHRASE + AGOGIC + VOICE + DEGREE + MELAC + METPOS + ARTICULATION
+
+	# For now assume that input voice is outer-voice.
+	voice = 1
+
+	# The tonality coefficients as determined by Krumhansl & Kessler (1982)
+	# are defined for both the major and minor keys.
+	#
+	major["1"]  = 6.35; major["1+"] = 2.23;
+	major["2-"] = 2.23; major["2"]  = 3.48; major["2+"] = 2.33
+	major["3-"] = 2.33; major["3"]  = 4.38;
+	major["4-"] = 4.38; major["4"]  = 4.09; major["4+"] = 2.52
+	major["5-"] = 2.52; major["5"]  = 5.19; major["5+"] = 2.39
+	major["6-"] = 2.39; major["6"]  = 3.66; major["6+"] = 2.29
+	major["7-"] = 2.29; major["7"]  = 2.88
+	#
+	minor["1"]  = 6.33; minor["1+"] = 2.68;
+	minor["2-"] = 2.68; minor["2"]  = 3.52;
+	minor["3-"] = 3.52; minor["3"]  = 5.38; minor["3+"] = 2.60
+	minor["4-"] = 2.60; minor["4"]  = 3.53; minor["4+"] = 2.54
+	minor["5-"] = 2.54; minor["5"]  = 4.75; minor["5+"] = 3.98
+	minor["6-"] = 4.75; minor["6"]  = 3.98; minor["6+"] = 2.69
+	minor["7-"] = 3.34; minor["7"]  = 3.17
+	}
+{
+# Now calculate the overall accent.
+
+# Echo barlines and comments:
+if ($1 ~/^!!/) {print $0; next}
+if ($1 ~/^!/)  {print $1; next}
+if ($1 ~/^=/)  {print $1; next}
+
+# Echo null records:
+if ($0 ~/^\.(	\.)*$/) {print "."; next}
+
+# Output appropriate interpretations.
+if ($1 ~/^\*/)
+	{
+	if ($1 ~/^\*\*/) print "**accent"
+	else
+		{ # Watch out for key-related interpretations.
+		if ($5 ~/^\*[A-G][#-]*:$/) mode = "major"
+		if ($5 ~/^\*[a-g][#-]*:$/) mode = "minor"
+		print $5
+		}
+	next
+	}
+agogic = melac = metpos = degree = 0	# Set/re-set variables.
+
+agogic = $1;  if (agogic > 1) agogic = 1.0
+melac  = $2
+
+# Identify an explicit accent/articulation markings:
+articulation = 0.5
+if ($3 ~/z/)  articulation = 1.00	# sforzando
+if ($3 ~/\`/) articulation = 0.95	# attacca
+if ($3 ~/\^/) articulation = 0.90	# accent
+if ($3 ~/~/)  articulation = 0.85	# tenuto
+if ($3 ~/\"/) articulation = 0.80	# pizzicato
+if ($3 ~/s/)  articulation = 0.75	# spiccato
+# NOTE: staccato is missing -- indicated by apostrophe.
+
+metpos = 1/$4
+if (mode == "major") degree = major[$5] / 6.35
+if (mode == "minor") degree = minor[$5] / 6.33
+
+accent = (AGOGIC * agogic + MELAC * melac + METPOS * metpos + DEGREE * degree \
+      + ARTICULATION * articulation + PHRASE * phrase + VOICE * voice) / SUM_OF_WEIGHTS
+print accent " AGO:" agogic " MEL:" melac " MET:" metpos " DEG:" degree " ART:" articulation " VOC:" voice " PHR:" phrase
+}' options="$OPTIONS"
+
+rm -f $TMPDIR/$PROCESS.dur $TMPDIR/$PROCESS.mac $TMPDIR/$PROCESS.mp $TMPDIR/$PROCESS.tmp $TMPDIR/$PROCESS.deg

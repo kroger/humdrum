@@ -1,0 +1,1202 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter19}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Musical Contexts}
+
+
+
+Much of what makes an event of interest is the context of the event.
+We may be interested in what precedes or follows a note or chord.
+We have already seen how the
+\textbf{-A}
+and
+\textbf{-B}
+options for
+\textbf{grep}
+can be used to output `before' and `after' contexts.
+In
+Chapter 21
+we will see how the
+\textbf{patt}
+and
+\textbf{pattern}
+commands can provide further flexibility for searching.
+
+\par 
+However, in this chapter we introduce the deceptively simple
+\textbf{context}
+command.
+
+
+\subsection*{The \textit{context} Command}
+
+\par 
+The effect of the
+\textbf{context}
+command is easier to illustrate than describe.
+Consider a file (named \texttt{input}) that contains the numbers
+1 through 6 on successive lines.
+A null token is interposed between the numbers 2 and 3:
+\\\\
+
+\texttt{
+**numbers
+1
+2
+.
+3
+4
+5
+6
+*-}
+
+The command
+
+\par 
+
+\texttt{context -n 3 input}
+
+
+\par 
+will produce the following output:
+\\\\
+
+\texttt{
+**numbers
+1 2 3
+2 3 4
+.
+3 4 5
+4 5 6
+.
+.
+*-}
+
+In effect,
+\textbf{context}
+amalgamates data tokens from successive records and assembles them
+as multiple-stops on a single record.
+Notice that the number of data records in the output is the same
+as in the input:
+\textbf{context}
+has simply padded the trailing data records with null tokens.
+Also notice that individual data tokens can appear more than once.
+For example, the number 3 appears at the end of the second line,
+in the middle of the third line, and at the beginning of the fourth line.
+In the above example only the numbers 1 and 6 appear once.
+Finally, notice that null tokens are simply ignored:
+the null token in the fourth line of our input also appears in the
+fourth line of the output.
+
+\par 
+The
+\textbf{-n 3}
+option tells
+\textbf{context}
+how many data tokens to amalgamate on each output line.
+With the specification \textbf{-n 2},
+just two data tokens would be amalgamated on each output line.
+
+\par 
+How might
+\textbf{context}
+be useful?
+Suppose we wanted to determine how harmonic octave intervals are approached
+in Bach's two-part keyboard \textit{Inventions}.
+What harmonic interval tends to precede an octave?
+We can use the
+\textbf{hint}
+command to generate the harmonic intervals for each successive sonority.
+To calculate all \textit{passing intervals}, we will preprocess using
+\textbf{ditto}:
+
+\par 
+
+\texttt{ditto inventions* | hint}
+
+
+\par 
+Typical outputs might look like this:
+
+\texttt{M3
+M6
+A4
+=12
+M6
+m7
+M3
+A4
+M6
+A4
+M6
+P4
+M6
+M7
+m9
+m10
+d12
+m10
+P11
+M9
+=13
+m10
+P4
+M9
+M10}
+
+
+\par 
+Using
+\textbf{context}
+with the
+\textbf{-n 2}
+option will cause pairs of successive intervals to appear in the
+data records.
+Each data record will consist of a double-stop containing two
+harmonic intervals.
+We simply need to identify those data records that have \texttt{P8}
+as the second token of the double-stop.
+In short, we are interested in data records that end with \texttt{P8}.
+The dollars-sign can be used in a regular expression to anchor the
+pattern to the end of the line.
+Hence:
+
+\par 
+
+\texttt{ditto inventions* | hint | context -n 2 -o = | grep ' P8\$'}
+
+
+\par 
+The
+\textbf{-o =}
+option tells
+\textbf{context}
+to omit any data tokens matching the equals-sign -$\,$-
+that is, to omit barlines from the amalgamated multiple stops.
+(The
+\textbf{-o}
+option accepts any regular expression as a parameter,
+so omitted data can be defined in a much more refined manner
+than simply specifying an equals-sign.)
+The
+\textbf{grep}
+command grabs all of the lines ending with \texttt{P8}.
+We can now create an inventory of harmonic interval pairs and order them
+from least common to most common:
+
+\par 
+
+\texttt{ditto inventions* | hint | context -n 2 -o = $\backslash$
+\\
+
+| grep ' P8\$' | sort | uniq -c | sort -rn}
+
+
+
+\par 
+In the case of Bach's fifteen two-part \textit{Inventions} the results
+look as follows:
+
+\par 
+
+\\
+\texttt{24  m10 P8
+\\
+24  M10 P8
+\\
+23  m7 P8
+\\
+21  M6 P8
+\\
+19  M9 P8
+\\
+12  P5 P8
+\\
+11  m6 P8
+\\
+ 9  P12 P8
+\\
+ 8  m13 P8
+\\
+ 8  - P8}
+
+
+\par 
+In other words, the octave is most commonly approached by contracting
+from minor and major tenths rather than expanding from a major sixth interval.
+
+
+\par 
+This same basic process can be used to address a variety of similar problems.
+For example, suppose we wanted to determine the most common word following
+"gloria" in Gregorian chant texts.
+We first extract the
+\texttt{**text}
+spine, use
+\textbf{context}
+to create pairs of words, and search in the normal way:
+
+\par 
+
+\texttt{extract -i '**text' chants* | context -n 2 $\backslash$
+\\
+
+| grep -i ' gloria\$' | sort | uniq -c | sort -nr}
+
+
+
+\par 
+A slight change to the regular expression for
+\textbf{grep}
+will allow us to determine what word typically
+\textit{follows}
+after the word "gloria."
+In this case, we need to anchor the word "gloria"
+to the beginning of the line by using the caret (\^{}).
+
+\par 
+
+\texttt{extract -i '**text' chants* | context -n 2 $\backslash$
+\\
+
+| grep -i '\^{}gloria ' | sort | uniq -c | sort -nr}
+
+
+
+\par 
+Suppose we wanted to determine what scale degree most commonly
+precedes the dominant pitch in a sample of Czech folksongs.
+First we translate the folksongs to the
+\texttt{**deg}
+representation using
+the
+\textbf{deg}
+command, and then process as above:
+
+\par 
+
+\texttt{deg Czech* | context -n 2 -o = | grep '5 ' | sort $\backslash$
+\\
+
+| uniq -c | sort -nr}
+
+
+
+
+\subsection*{Harmonic Progressions}
+
+\par 
+The V-I progression is the most common chord progression in Western
+tonal music.
+After the V-I progression, what is the most common chord progression
+in Bach's chorale harmonizations?
+We will assume that a Roman numeral
+\texttt{**harm}
+spine already exists.
+First we extract the appropriate spine.
+Then we create context records holding pairs of harmony data
+(omitting barlines).
+Then we eliminate global and local comments, interpretations,
+and null data.
+We then sort the data records, eliminate duplicates while counting,
+and then sort by numerical count in reverse order.
+
+\par 
+
+\texttt{extract -i '**harm' chorales* | context -n 2 -o = $\backslash$
+\\
+
+| rid -GLId | sort | uniq -c | sort -nr}
+
+
+
+\par 
+Of course, there is no need to restrict ourselves to pairs of
+successive data tokens (i.e. \textbf{-n 2}) as we have done in the above example.
+Given a database of melodies, we can determine the most common
+sequence of five melodic intervals as follows:
+
+\par 
+
+\texttt{mint melodies* | context -n 5 -o = | rid -GLId | sort $\backslash$
+\\
+
+| uniq -c | sort -nr}
+
+
+
+
+\subsection*{Using \textit{context} with the \textit{-b} and \textit{-e} Options}
+
+\par 
+Example 19.1 shows an excerpt from a flute study by Anderson.
+Although the work is monophonic,
+the work's structure is based on an underlying chord progression
+that is realized as a series of arpeggiation figures.
+\\\\
+\textbf{Example 19.1   Joachim Anderson, Opus 30, No. 24.}
+
+
+
+The harmonic structure can be made more explicit by amalgamating
+all of the notes in each arpeggio.
+There are several possible ways of doing this, but the
+slurs are particularly useful delineators.
+The
+\textbf{-b}
+option for
+\textbf{context}
+allows the user to specify a regular expression that marks the
+\textit{beginning}
+of each collection of data tokens.
+Consider the following command:
+
+\par 
+
+\texttt{context -b '(' Anderson}
+
+
+\par 
+Whenever a data record contains an open parenthesis a new
+amalgamation begins.
+The appropriate output for measure 1 of Example 19.1 would be:
+\\\\
+
+\texttt{**kern
+*clefG2
+*k[b-]
+*d:
+*M4/4
+=1-
+(16dd 16ff 16dd 16a)
+.
+.
+.
+(16dd 16gg 16dd 16b-)
+.
+.
+.
+(16dd 16ff 16dd 16a)
+.
+.
+.
+(16f 16a 16f 16e) =2}
+
+etc.
+
+Notice how the barline for measure 2 has been included in the
+fourth group.
+(Groups continue until the next open parenthesis is encountered.)
+Once again we might eliminate barlines by using the
+\textbf{-o}
+option.
+However, sometimes the barlines prove useful in further processing.
+
+\par 
+In the above passage by Anderson, the close of each slur provides a
+convenient marker for ending each chord.
+We can be more explicit in defining the grouping boundaries by
+also including the
+\textbf{-e}
+option for
+\textbf{context}.
+This option allows the user to specify a regular expression that marks the
+\textit{end}
+of each collection of data tokens.
+A suitably revised command would be:
+
+\par 
+
+\texttt{context -b '(' -e ')' Anderson}
+
+
+\par 
+The resulting output would begin as follows:
+\\\\
+
+\texttt{**kern
+*clefG2
+*k[b-]
+*d:
+*M4/4
+=1-
+(16dd 16ff 16dd 16a)
+.
+.
+.
+(16dd 16gg 16dd 16b-)
+.
+.
+.
+(16dd 16ff 16dd 16a)
+.
+.
+.
+(16f 16a 16f 16e)
+.
+.
+.
+=2
+(16d 16ff 16dd 16a)}
+
+etc.
+
+We could pipe this output to the
+\textbf{ms}
+command in order to display the re-arranged passage.
+We place the output in a postscript file and use a display tool such as
+\textbf{ghostview}
+to display the output:
+
+\par 
+
+\texttt{context -b '(' -e ')' Anderson | ms > output.ps}
+
+
+\textbf{Example 19.2   Arpeggio Amalgamation.}
+
+
+
+\par 
+Notice that the resulting notation is "ungrammatical"
+because the meter signature disagrees with the total duration
+for each measure.
+
+
+\par 
+Having reformatted our input data using \textbf{context},
+we can continue by translating the data to another representation.
+For example, we might use the
+\textbf{deg}
+command to reformulate each pitch group as scale degrees.
+This might allow us to search for particular harmonic patterns
+such as (say) an augmented sixth chord:
+
+\par 
+
+\texttt{context -b '(' -e ')' Anderson | deg | grep '6-' | grep '4+' $\backslash$
+
+| grep '1'}
+
+
+
+\par 
+Any regular expression can be used to identify the beginning and/or
+ending of an amalgamated group.
+For example, tokens might be grouped by barlines.
+Suppose the
+\textbf{census}
+command tells us that a monophonic work contains sixty-fourth notes.
+We might want to know whether the sixty-fourth notes all tend to
+happen in one or two measures, or whether they occur throughout
+the work.
+Just how many measures contain sixty-fourth notes?
+
+\par 
+
+\texttt{context -b = inputfile | rid -GLId | grep -c '64'}
+
+
+
+\par 
+Similarly, for
+\texttt{**kern}
+inputs, the following command counts the
+number of measures that contain at least one trill:
+
+\par 
+
+\texttt{context -b = inputfile | grep -c '\^{}=.*[Tt]'}
+
+
+
+\par 
+In \texttt{**kern} representations, the beginnings and endings of
+beams are indicated by the letters `\texttt{L}' and `\texttt{J}' respectively.
+We might group notes according to the beaming:
+
+\par 
+
+\texttt{context -b L -e J inputfile}
+
+
+
+\par 
+For example, the following command determines the location of any beams
+that cross over phrase boundaries:
+
+\par 
+
+\texttt{context -b L -e J inputfile | grep -n '\}.*\{'}
+
+
+\par 
+As in the case of the
+\textbf{-b}
+option, the
+\textbf{-e}
+option can be used by itself.
+This option might prove useful, for example, when
+collecting all chord functions preceding a cadence.
+In Bach's chorale harmonizations, for example,
+cadences are conveniently marked by a pause.
+In the \texttt{**harm} representation, pauses are indicated by
+the semicolon (\texttt{;}).
+We can create phrase related harmonic sequences as follows:
+
+\par 
+
+\texttt{context -o = -e ';' input}
+
+
+
+\par 
+For example, we might count the number of harmonic functions in
+each phrase as follows:
+
+\par 
+
+\texttt{context -o = -e ';' input | rid -GLId | awk '\{print \$NF\}'}
+
+
+\par 
+In
+Chapter 22
+we will learn how to classify data into discrete categories.
+Using the
+\textbf{recode}
+command described in that chapter, we might group notes together
+according to changes of melodic direction.
+That is, each group of would consist of notes that are all ascending
+or all descending in pitch.
+
+
+\subsection*{Using \textit{context} with \textit{sed} and \textit{humsed}}
+
+\par 
+The stream-editors (\textbf{sed} and \textbf{humsed}) are especially
+handy companions for \textbf{context}.
+Suppose we wanted to identify by measure number those measures
+that contain a
+\textit{iii-V}
+progression.
+Given a \texttt{**harm} input, we would first amalgamate all harmony
+tokens for each measure.
+
+\par 
+
+\texttt{context -b \^{}= inputfile | grep 'iii V' | sed 's/ .*//; s/=//'}
+
+
+\par 
+Here we have used
+\textbf{grep}
+to isolate all those records that contain the character sequence \texttt{iii V}.
+We have then used
+\textbf{sed}
+to eliminate all data following the first occurrence of a space.
+This will leave only the barline token -$\,$- including the measure number.
+
+\par 
+When using
+\textbf{grep}
+it is common for the output to no longer conform to the Humdrum syntax.
+This is the reason why we used \textbf{sed} rather than
+\textbf{humsed}
+in the above example.)
+Remember that we can always use the
+\textbf{yank} -m
+command to create "grep-like" output that still conforms to
+the Humdrum syntax.
+If we wanted to maintain the Humdrum syntax, an equivalent to the above
+command would be:
+
+\par 
+
+\texttt{context -b \^{}= inputfile | yank -m 'iii V' -r 0 $\backslash$
+
+| humsed 's/ .*//; s/=//'}
+
+
+
+\par 
+The range option (\textbf{-r}) specifies that we grab the current record (0)
+that matches the marker (\texttt{iii V}).
+However, we are free to specify any other range.
+Consider the following command variation:
+
+\par 
+
+\texttt{context -b \^{}= inputfile | rid -d | yank -m 'iii V' -r 1 $\backslash$
+
+| grep 'ii IV' | humsed 's/ .*//; s/=//'}
+
+
+
+\par 
+This command identifies all those measures containing a
+\textit{ii IV}
+progression that have been preceded by a
+\textit{iii V}
+progression in the previous measure.
+
+\par 
+Consider another example.
+Suppose we wanted to determine whether the first pitch
+in a phrase tends to be lower than the last pitch in a phrase.
+As before, we might first amalgamate all notes in each phrase
+onto individual data records.
+We can use
+\textbf{humsed}
+to eliminate all notes other than the first and last.
+The regular expression \texttt{/ .* /} specifies any sequence
+of characters preceded by a space and followed by a space.
+Replacing matching strings with a single space will leave
+output data records consisting of double-stops.
+The first note of the double-stop will be the first note of
+the phrase, and the second note of the double-stop will be
+the last note of the same phrase:
+
+\par 
+
+\texttt{context -b \{ -e \} file | humsed 's/ .* / /'}
+
+
+\par 
+We can continue processing by piping the output to the
+\textbf{semits}
+command.
+This will leave pairs of numbers representing
+the semitone distances from middle C.
+We might then isolate the data records by using
+\textbf{rid}.
+
+\par 
+
+\texttt{ . . . | semits | rid -GLId | awk '\{print \$2-\$1\}'}
+
+
+\par 
+Finally, we have used the UNIX
+\textbf{awk}
+utility to carry out some simple numerical processing:
+in this case, substracting the first semitone value from the second one.
+Phrases that end on a pitch higher than the beginning pitch will
+have positive semitone outputs.
+Phrases that end on a pitch lower than the beginning pitch will
+have negative semitone outputs.
+
+\par 
+If we wanted to determine the semitone pitch distance
+\textit{between}
+phrases, we need only to reverse the begin (\textbf{-b}) and end (\textbf{-e})
+criteria.
+That is, we will amalgamate the last note of one phrase with
+the first note in the subsequent phrase.
+The full pipeline would be as follows:
+
+\par 
+
+\texttt{context -b \{ -e \} file | humsed 's/ .* / /' | semits $\backslash$
+
+| rid -GLId | awk '\{print \$2-\$1\}'}
+
+
+
+
+\subsection*{Linking \textit{context} Outputs with Inputs}
+
+\par 
+Frequently, we would like to answer context-related questions
+that mix different types of data together.
+For example, how many ascending major sixth intervals occur in phrases
+that end on the dominant?
+For this question, we need concurrent access to both melodic interval
+data as well as scale degree information.
+The solution to such questions typically involves linking different
+types of data together using the
+\textbf{assemble}
+command.
+Suppose the first phrase in our input begins as follows:
+\\\\
+
+\texttt{**kern
+*F:
+*M3/4
+\{8Bn
+8c
+=1
+4.a
+8g
+4f
+=2
+4g
+4d
+4e
+=3
+2c\}
+*-}
+
+We need to pursue two independent lines of processing.
+First we creat a temporary file of scale degree information:
+
+\par 
+
+\texttt{mint inputfile > temp.mnt}
+
+
+\par 
+Then we amalgamate the pitch data according the phrasing information,
+and translate the resulting data to the
+\texttt{**deg}
+representation:
+
+\par 
+
+\texttt{context -b \{ -e \} -o \^{}= inputfile | deg > temp.deg}
+
+
+\par 
+Next we assemble the two temporary files together to form a single
+document.
+
+\par 
+
+\texttt{assemble temp.mnt temp.deg}
+
+
+\par 
+The first phrase output will appear as follows:
+\\\\
+
+\texttt{**mint**deg
+*F:*F:
+*M3/4*M3/4
+[B]4+ \^{}5 \^{}3 v2 v1 \^{}2 v6 \^{}7 v5
++m2.
+=1.
++M6.
+-M2.
+-M2.
+=2.
++M2.
+-P4.
++M2.
+=3.
+-M3.}
+
+etc.
+
+We need to search for the interval of an ascending major sixth (\texttt{+M6})
+associated with a phrase ending on the dominant (\texttt{5\$}).
+Before using the approprate
+\textbf{grep}
+command, we need to use
+\textbf{ditto}
+to propagate the scale degree data over the null data tokens in
+the \texttt{**deg} spine;
+\textbf{ditto}
+will generate the following output:
+\\\\
+
+\texttt{**mint**deg
+*F:*F:
+*M3/4*M3/4
+[B]4+ \^{}5 \^{}3 v2 v1 \^{}2 v6 \^{}7 v5
++m24+ \^{}5 \^{}3 v2 v1 \^{}2 v6 \^{}7 v5
+=14+ \^{}5 \^{}3 v2 v1 \^{}2 v6 \^{}7 v5
++M64+ \^{}5 \^{}3 v2 v1 \^{}2 v6 \^{}7 v5
+-M24+ \^{}5 \^{}3 v2 v1 \^{}2 v6 \^{}7 v5
+-M24+ \^{}5 \^{}3 v2 v1 \^{}2 v6 \^{}7 v5
+=24+ \^{}5 \^{}3 v2 v1 \^{}2 v6 \^{}7 v5
++M24+ \^{}5 \^{}3 v2 v1 \^{}2 v6 \^{}7 v5
+-P44+ \^{}5 \^{}3 v2 v1 \^{}2 v6 \^{}7 v5
++M24+ \^{}5 \^{}3 v2 v1 \^{}2 v6 \^{}7 v5
+=34+ \^{}5 \^{}3 v2 v1 \^{}2 v6 \^{}7 v5
+-M34+ \^{}5 \^{}3 v2 v1 \^{}2 v6 \^{}7 v5}
+
+etc.
+
+Finally, we use
+\textbf{grep}
+to search for the composite data:
+
+\par 
+
+\texttt{assemble temp.mnt temp.deg | ditto | grep '\^{}+M6.*5\$'}
+
+
+\par 
+In addition to linking together different types of data,
+sometimes we may also need to use a stream editor to
+modify the data in some way.
+Suppose we wanted to test a theory that the tonic pitch
+tends to be followed by a greater variety of melodic intervals than
+precedes it.
+That is, we might suspect that the tonic tends to be approached
+in stereotypic ways -$\,$- such as from the leading-tone (+m2), from
+the supertonic (-M2) or from the dominant (+P4);
+but what follows the tonic may be less restricted.
+
+\par 
+In effect, we need to generate two inventories:
+one for intervals that approach the tonic, and one for intervals
+that follow the tonic.
+We already know how to create an inventory of intervals approaching
+a particular scale-degree:
+
+\par 
+
+\texttt{deg -a inputfile > temp1}
+\\
+\texttt{mint inputfile > temp2}
+\\
+\texttt{assemble temp1 temp2 | grep '\^{}[v\^{}]*1	' | sort | uniq -c $\backslash$
+
+| sort -rn > inventory.pre}
+
+
+
+\par 
+For the intervals following the tonic, we need to use
+\textbf{context} -n 2.
+This will create pairs of intervals:
+the first interval will indicate the approach, and the second interval
+in each pair will indicate the continuation.
+
+\par 
+
+\texttt{deg -a inputfile > temp1}
+\\
+\texttt{mint inputfile | context -n 2 -o \^{}= > temp2}
+\\
+\texttt{humsed 's/ .*//' temp2 > intervals.pre}
+\\
+\texttt{humsed 's/.* //' temp2 > intervals.post}
+\\
+\texttt{assemble temp1 intervals.pre | grep '\^{}1	' | sort | uniq -c $\backslash$
+
+| sort -rn > inventory.pre}
+
+\texttt{assemble temp1 intervals.post | grep '\^{}1	' | sort | uniq -c $\backslash$
+
+| sort -rn > inventory.post}
+
+
+
+\par 
+In some tasks, it may be necessary to generate more than one
+\textbf{context}
+output.
+For example, suppose we wanted to identify possible
+"cross relations" between two voices.
+A cross relation occurs when an accidental occurs in one
+voice but not in another voice within a brief period of time.
+One approach is to extract each voice, translate to scale-degree
+and create brief contexts of (say) 2 or 3 notes.
+E.g.
+
+\par 
+
+\texttt{extract -f 1 inputfile | deg | context -n 3 -o \^{}= > lower.tmp}
+\\
+\texttt{extract -f 2 inputfile | deg | context -n 3 -o \^{}= > upper.tmp}
+
+
+\par 
+We can then assemble the two contexts together:
+
+\par 
+
+\texttt{assemble lower.tmp upper.tmp}
+
+
+\par 
+Suppose our inputs consisted of an ascending C major scale played in the
+lower voice concurrent with an E major scale in the upper voice.
+Our output would look as follows:
+\\\\
+
+\texttt{**deg**deg
+*C:*C:
+1 \^{}2 \^{}33 \^{}4+ \^{}5+
+\^{}2 \^{}3 \^{}4\^{}4+ \^{}5+ \^{}6
+\^{}3 \^{}4 \^{}5\^{}5+ \^{}6 \^{}7
+\^{}4 \^{}5 \^{}6\^{}6 \^{}7 \^{}1+
+\^{}5 \^{}6 \^{}7\^{}7 \^{}1+ \^{}2+
+\^{}6 \^{}7 \^{}1\^{}1+ \^{}2+ \^{}3
+..
+..
+*-*-}
+
+
+In effect, each data record contains an agglomeration of three
+successive notes from both voices.
+Seaching for cross-relations would entail looking for scale
+degrees that are both modified and unmodified concurrently.
+For example, in the case of the subdominant pitch,
+we could search for such instances as follows:
+
+\par 
+
+\texttt{assemble lower.tmp upper.tmp | rid -GLId $\backslash$
+
+| egrep '4[+-].*	.*4([\^{}+-])|\$'}
+
+
+
+\par 
+The regular expression given to
+\textbf{egrep}
+searches for a subdominant pitch in the lower voice that is either
+raised or lowered -$\,$- concurrent with
+a subdominant pitch in the upper voice that has not been modified.
+Notice the use of the tab character in the regular expressions to specify
+the precise voice being searched.
+We would also need to test for the reverse situation, where the modified
+pitch is in the upper voice:
+
+\par 
+
+\texttt{assemble lower.tmp upper.tmp | rid -GLId $\backslash$
+
+| egrep '4[\^{}+-].*	.*4[+-]'}
+
+
+
+\par 
+In a similar fashion, the user can mix together spines representing
+highly diverse types of contextual information to carry out
+searches for complex patterns or conditions.
+For example, a user might search for a specific piano fingering
+that coincides with particular interval-transitions and harmonic contexts.
+
+
+\subsection*{Using \textit{context} with the \textit{-p} Option}
+
+\par 
+The
+\textbf{-p}
+option for
+\textbf{context}
+allows the output data records to be "pushed" forward
+by a specified number of lines.
+Consider the normal operation of
+\textbf{context}
+as illustrated below.
+The left-hand spine represents the input
+and the right-hand spine represents the output where the option
+\textbf{-n 2}
+has been specified.
+\\\\
+
+\texttt{**kern**kern
+*C:*C:
+cc d
+dd e
+ee f
+ff g
+gg a
+aa b
+bb cc
+cc.
+*-*-}
+
+Now consider the effect of adding the
+\textbf{-p}
+option.
+In this case, the complete command is:
+
+\par 
+
+\texttt{context -n 2 -p 1}
+
+
+\par 
+The corresponding result is:
+\\\\
+
+\texttt{**kern**kern
+*C:*C:
+c.
+dc d
+ed e
+fe f
+gf g
+ag a
+ba b
+ccb cc
+*-*-}
+
+The data records have been pushed forward by one line:
+a null token now appears at the beginning of the output spine
+rather than at the end.
+Similarly, consider the effect of the following command:
+
+\par 
+
+\texttt{context -n 4 -p 2}
+
+
+\par 
+The corresponding result is:
+\\\\
+
+\texttt{**kern**kern
+*C:*C:
+c.
+d.
+ec d e f
+fd e f g
+ge f g a
+af g a b
+bg a b cc
+cc.
+*-*-}
+
+The output is now padded with two preceding null tokens
+with a trailing null token at the end of the spine.
+In summary, the
+\textbf{-p}
+option pushes the context records by a specified number of lines.
+This allows us to move the contextual information around,
+and so provides more possibilities for searching.
+In the above case, the pitch `e' is aligned with contextual
+information that indicates the two pitches that precede `e' and
+the one pitch that follows it.
+
+
+\par 
+By way of example, suppose we are looking for a submediant pitch
+that is approached by two melodic intervals of an ascending major
+third followed by a descending major second.
+First, we generate independent
+\texttt{**mint}
+and
+\texttt{**deg}
+outputs.
+Next we process the \texttt{**mint} data using
+\textbf{context}
+to create pairs of successive intervals.
+Without the
+\textbf{-p}
+option, the assembled output might look as follows:
+\\\\
+
+\texttt{**deg**mint
+*C:*C:
+3[e] +m2
+\^{}4+m2 +M2
+\^{}5+M2 +M3
+\^{}7+M3 -M2
+v6-M2 +m3
+\^{}1+m3 -P4
+v5.
+*-*-}
+
+With
+\textbf{-p 1}
+the output becomes:
+\\\\
+
+\texttt{**deg**mint
+*C:*C:
+3.
+\^{}4[e] +m2
+\^{}5+m2 +M2
+\^{}7+M2 +M3
+v6+M3 -M2
+\^{}1-M2 +m3
+v5+m3 -P4
+*-*-}
+
+Now we can search directly for the situation of interest:
+
+\par 
+
+\texttt{grep '6	+M3 -M2\$'}
+
+
+
+
+\subsection*{Reprise}
+
+\par 
+The
+\textbf{context}
+command essentially transforms sequences of events into collections
+of pseudo-concurrent events.
+This pseudo-concurrent arrangement enables processing using
+line-oriented or record-oriented tools -$\,$- most notably
+\textbf{grep}, \textbf{sed},
+\textbf{humsed}
+and \textbf{awk}.
+For example, it facilitates pattern searching using
+\textbf{grep}
+and also allows useful manipulations via tools such as \textbf{humsed}.
+The manner by which data tokens are collected together
+can be defined by a starting marker or an ending marker or both.
+Particular types of data can be excluded or omitted from the collections
+using the
+\textbf{-o}
+option, and the collections can be transported or pushed forward
+through the spine using the
+\textbf{-p}
+option.
+
+\par 
+We've seen a number of ways by which
+\textbf{context}
+can be used to establish a particular context for data.
+In
+Chapter 21
+we will see how the
+\textbf{patt}
+command can be used to establish other kinds of contexts
+and how both of these commands can be used together.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

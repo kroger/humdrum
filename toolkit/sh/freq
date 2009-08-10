@@ -1,0 +1,83 @@
+###################################################################
+# 						FREQ
+# Programmed by: Tim Racinsky        Date: July, 1993
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# June 9/94	Tim Racinsky	Modified to work with getopts
+#
+#
+# 	This shell program is used to invoke the awk program freq.awk.
+#
+FILENAME=""
+OPTIONS=""
+HELP=""
+FLAG=""
+STNDIN=""
+X_OPTION=""
+PVALUE=""
+USAGE1="USAGE: freq -h                (Help Screen)"
+USAGE2="       freq [-p n] [-tx] [file ...]"
+# 
+while getopts hp:tx arg
+do
+	case "$arg" in
+	h) 	HELP="ON";;
+	p) 	PVALUE="${OPTARG}";;
+	x) 	X_OPTION="x"
+		OPTIONS="$OPTIONS${arg}";;
+     t)	OPTIONS="$OPTIONS${arg}";;
+     [?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit ;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/freq.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/freq.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' may be used
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "freq: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+if [ "X$X_OPTION" = X ]
+then
+	$AWK_VER -f ${HUMDRUM}/bin/freq.awk "DUMMY" "${OPTIONS:-null}" "${PVALUE:-null}" $FILENAME
+else
+	$AWK_VER -f ${HUMDRUM}/bin/x_option.awk "DUMMY" $FILENAME | $AWK_VER -f ${HUMDRUM}/bin/freq.awk "DUMMY" "${OPTIONS:-null}" "${PVALUE:-null}" -
+fi

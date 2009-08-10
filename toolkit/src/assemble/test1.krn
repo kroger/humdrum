@@ -1,0 +1,9 @@
+!! comment in test1
+!! This comment is the same in both files
+**kern
+Wally1
+!!COMMENT
+You1
+!local
+Twit1
+*-

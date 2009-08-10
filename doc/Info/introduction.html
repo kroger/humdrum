@@ -1,0 +1,1869 @@
+<HTML>
+<HEAD>
+<TITLE> The Humdrum Toolkit: Software for Music Research </TITLE>
+<!-- Main site for information concerning the use of the Humdrum Toolkit for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Sat Aug 28 11:27:27 EDT 1999">
+<meta name="description" content="Main site for information concerning the use of the Humdrum Toolkit for music research.">
+<meta name="keywords" content="music research,music software,music theory,music analysis,systematic musicology,computer music,music research software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#DDDDDD link="800080" alink="8D8D8D" vlink="808040">
+<br>
+<br>
+
+<H2>Music Information Processing Using the Humdrum Toolkit:
+Concepts, Examples, and Lessons</H2>
+
+<center>
+David Huron
+<br>
+<I>Ohio State University</I>
+</center>
+
+<H4>ABSTRACT</H4>
+
+<blockquote>
+<P>
+The Humdrum Toolkit
+provides general-purpose software tools
+for music-related information processing.
+Humdrum has been used in a broad range of applications
+including music theory, ethnomusicology, historical research,
+and composition.
+The underlying concepts and operation of Humdrum
+are illustrated through a number of tutorial examples.
+On the basis of experience with Humdrum,
+a number of general lessons are drawn relating to
+the design of music information processing software.
+</P>
+</blockquote>
+
+<P>
+Humdrum is a general-purpose software system intended to assist
+users in a wide variety of music-related applications.
+This article provides an introductory tour of Humdrum
+emphasizing three goals:
+(1) to identify the basic elements,
+operations, and organization of Humdrum,
+(2) to illustrate the range of applications
+through a series of tutorial examples,
+and (3) to identify a number of lessons from Humdrum that
+might benefit future music software designers.
+</P>
+
+<P>
+Humdrum's capabilities are quite broad, so it is difficult
+to describe concisely what it can do.
+Since its inception,
+the principal users of Humdrum have been systematic musicologists,
+theorists, ethnomusicologists, music librarians,
+historians, music cognition researchers, and composers.
+Five features have accounted for this broad interest:
+(1) the capacity for individuals to concoct or tailor
+unique representations that pertain to the user's specific interests,
+(2) a flexible set of analytic and processing tools
+that can be applied to both established and user-defined representations,
+(3) a coherent and extensible system for representing
+reference-related metadata,
+(4) ease of connectivity to other existing software, and
+(5) availability of a large volume of high quality
+encoded materials.
+</P>
+
+<P>
+In Humdrum, representations spring into existence
+simply by using them.
+The opportunities to craft representations for
+specific tasks 
+has led to the development of innumerable representations.
+For example, Humdrum users have concocted representations
+for Bugandan xylophone music, Cajun button accordeon tablatures,
+square notation, Persian Ney music, Benesh dance notation,
+running acoustic spectra, and CD-track index markers.
+For many projects, it is common to generate intermediate
+or "throw-away" representations that are
+used only for a single task.
+For example, in perceptual research, collected data
+(such as listener responses) are commonly encoded
+in the same document that contains the stimulus materials.
+</P>
+
+<P>
+In addition to specific representation schemes for user "data",
+Humdrum allows users to define their own types of
+reference-related information.
+Conventional reference information includes artist's name,
+title, date of performance, copyright status, etc.
+However, Humdrum allows users both to extend and omit
+such metadata in ways that maintain compatibility
+without compelling users to encode
+task-irrelevant materials.
+For example, a ballet scholar might define reference
+information identifying the transcriber of a Laban
+dance notation, while remaining compatible with
+conventional cataloguing systems.
+At the same time, users can still process materials
+with incomplete or absent reference information.
+</P>
+
+<P>
+Although Humdrum does not provide its own sound generation
+or graphic notation capabilities, a number of translators exist
+that connect Humdrum to existing applications software.
+These include translations to MIDI, Csound (Vercoe, 1993),
+the Finale enigma format, the Score notation system
+(Smith, 1972; Kornst\(:adt, 1996),
+and the Mup music text formatter.
+In addition, materials can be translated to the Humdrum
+format from MIDI, the Finale enigma format,
+MuseData (Hewlett, 1997), DARMS (Erickson, 1976; Hall, 1997),
+Mustran (Wenker, 1974), and the RISM Plaine and Easie
+representation (Howard, 1997).
+</P>
+
+<P>
+All Humdrum file formats are plain ASCII text.
+This facilitates viewing and editing data,
+increases cross-platform portability,
+and eases the writing of task-unique software.
+The plain text format also facilitates
+reformatting data for special-purpose uses such
+as graphics programs or statistical packages.
+</P>
+
+<P>
+Musical materials encoded in the Humdrum format
+span five centuries and six continents.
+Encoded materials include complete musical
+works, as well as collections of themes and incipits.
+As of the year 2000, roughly 40,000 musical works have
+been encoded in various levels of detail.
+Some encodings are simple monophonic melodies;
+others include full orchestral scores including
+such details as stem-direction and beaming.
+In addition to the MIDI format, the Humdrum "kern"
+representation is one of the principal
+distribution formats for the high quality
+electronic editions produced by the
+Center for Computer Assisted Research in the Humanities
+(www.ccarh.org).
+An extensive collection of non-Western musics
+has been encoded;
+an incomplete alphabetic sample includes
+Aleutian,
+Brazilian,
+Chinese,
+Dutch,
+Ethiopian,
+Fijian,
+German,
+Haitian,
+Indonesian,
+Japanese,
+Khmer,
+Lakota,
+Mandan,
+Namibian,
+Ojibway,
+Peruvian,
+Quebecois,
+Russian,
+Scottish,
+Thai,
+Usarafus,
+Venda,
+Xhosa,
+Yoruba,
+and Zulu musics.
+(Huron, 1992).
+</P>
+
+<P>
+With regard to Humdrum's analytic capacity,
+a selection of tools will be discussed below.
+</P>
+
+<H3>Humdrum Syntax</H3>
+
+<P>
+Humdrum data are organized in two-dimensional tables
+akin to a spread-sheet.
+Columns of data can be defined to represent different
+types of information.
+Successive lines (records) represent successive moments,
+so time passes as one moves down the page.
+The example below encodes an ascending major scale.
+The left-most column represents pitch using the
+International Standards Organization pitch designations.
+The right-most column represents piano fingerings.
+The columns are separated by a single tab character.
+Each column of data begins with an
+<I>interpretation</I>
+that identifies the type of data being represented,
+and ends with a
+<I>path terminator.</I>
+</P>
+
+<TABLE>
+<TR>
+	<TD>**pitch</TD><TD>**fingering</TD>
+</TR>
+<TR>
+	<TD>C4</TD><TD>R1</TD>
+</TR>
+<TR>
+	<TD>D4</TD><TD>R2</TD>
+</TR>
+<TR>
+	<TD>E4</TD><TD>R3</TD>
+</TR>
+<TR>
+	<TD>F4</TD><TD>R1</TD>
+</TR>
+<TR>
+	<TD>G4</TD><TD>R2</TD>
+</TR>
+<TR>
+	<TD>A4</TD><TD>R3</TD>
+</TR>
+<TR>
+	<TD>B4</TD><TD>R4</TD>
+</TR>
+<TR>
+	<TD>C5</TD><TD>R5</TD>
+</TR>
+<TR>
+	<TD>*-</TD><TD>*-</TD>
+</TR>
+</TABLE>
+
+<P>
+The ISO **pitch representation is pre-defined in Humdrum
+whereas the **fingering representation has been concocted
+for this example.
+Humdrum encodings can consist of any number of columns
+and any length.
+</P>
+
+<P>
+Unlike the columns in a spreadsheet,
+Humdrum "columns" can exhibit
+complicated paths through the document.
+Columns can join together, split apart, exchange positions,
+stop in mid-table, or be introduced in mid-table.
+Since columns of Humdrum data can roam about the
+table in a flexible way, they are referred to as
+<I>spines.</I>
+</P>
+
+<P>
+Humdrum spines are formally labelled using
+<I>interpretations</I>
+(tokens beginning with an asterisk).
+<I>Exclusive interpretations</I>
+(double asterisks) identify the basic type of data
+being represented.
+<I>Tandem interpretations</I>
+(single asterisks) provide supplementary labels or
+tags that can clarify the state of the data.
+Tandem interpretations can be added anywhere in a spine in any numbers.
+In addition, Humdrum provides ways of adding running commentaries:
+comments might pertain to the whole encoding, to a given row or spine,
+to a given data cell, or to a particular item of information within a cell
+(such as a single letter or digit).
+Specially formatted comments are used to encode reference-
+or cataloguing-related information.
+All types of comments are designed by a leading exclamation mark (!).
+</P>
+
+<P>
+The most common Humdrum files encode the "score" for a complete
+work or movement.
+Typically, musical notes are encoded
+in the various cells of the table;
+the most common use of a spine is to represent a single
+musical part or instrument.
+</P>
+
+<P>
+Some thirty representation schemes are pre-defined in Humdrum.
+Pre-defined representations include many common forms of
+music-related information such frequency, pitch, cents, scale degree,
+melodic and harmonic intervals, duration, dynamics,
+decibels, harmonic function, pitch-class sets, lyrics, etc.
+However, spines can be used to represent anything
+(including sound functions),
+and users can concoct their own representations simply
+by writing an exclusive interpretation with a unique identifier.
+</P>
+
+<P>
+Of the pre-defined Humdrum representation the most popular is
+<I>kern</I>,
+a scheme intended to represent the basic or core musical information
+of notes, durations, rests, barlines, etc.
+(Huron, 1997).
+(The <I>kern</I> representation gets its name from the
+German word for "core".)
+By way of illustration, the following example encodes the accompanying
+musical excerpt using the **kern representation.
+</P>
+
+Place Figure 1 near this position.
+
+(follow Figure 1 immediately by the following text)
+
+<blockquote>
+<TABLE>
+<TR>
+	<TD>!!!COM: Kabalevsky, Dmitri</TD>
+</TR>
+<TR>
+	<TD>!!!OTL: 2. Rondo - Dance</TD>
+</TR>
+<TR>
+	<TD>**kern</TD><TD>**kern</TD>
+</TR>
+<TR>
+	<TD>*staff2</TD><TD>*staff1</TD>
+</TR>
+<TR>
+	<TD>*clefF4</TD><TD>*clefG2</TD>
+</TR>
+<TR>
+	<TD>*k[f#c#]</TD><TD>*k[f#c#]</TD>
+</TR>
+<TR>
+	<TD>*M3/8</TD><TD>*M3/8</TD>
+</TR>
+<TR>
+	<TD>8r</TD><TD>(16dd</TD>
+</TR>
+<TR>
+	<TD>\.</TD><TD>16cc#</TD>
+</TR>
+<TR>
+	<TD>\(eq</TD><TD>\(eq</TD>
+</TR>
+<TR>
+	<TD>8D'</TD><TD>8dd')</TD>
+</TR>
+<TR>
+	<TD>8A'</TD><TD>8f#' 8a'</TD>
+</TR>
+<TR>
+	<TD>8r</TD><TD>(16b</TD>
+</TR>
+<TR>
+	<TD>\.</TD><TD>16a#</TD>
+</TR>
+<TR>
+	<TD>\(eq</TD><TD>\(eq</TD>
+</TR>
+<TR>
+	<TD>8BB'</TD><TD>8b')</TD>
+</TR>
+<TR>
+	<TD>8F#'</TD><TD>8d' 8f#'</TD>
+</TR>
+<TR>
+	<TD>8r</TD><TD>(16g</TD>
+</TR>
+<TR>
+	<TD>\.</TD><TD>16f#</TD>
+</TR>
+<TR>
+	<TD>\(eq</TD><TD>\(eq</TD>
+</TR>
+<TR>
+	<TD>8BB-'</TD><TD>8g')</TD>
+</TR>
+<TR>
+	<TD>8G'</TD><TD>8c#' 8e'</TD>
+</TR>
+<TR>
+	<TD>8F#'</TD><TD>8a'</TD>
+</TR>
+<TR>
+	<TD>\(eq</TD><TD>\(eq</TD>
+</TR>
+<TR>
+	<TD>8D</TD><TD>(8f#</TD>
+</TR>
+<TR>
+	<TD>8A</TD><TD>8d)</TD>
+</TR>
+<TR>
+	<TD>*-</TD><TD>*-</TD>
+</TR>
+<TR>
+</TABLE>
+</blockquote>
+
+<P>
+The representation mirrors the two-dimension structure of
+the score -- rotated clockwise by 90 degrees.
+The tandem interpretations in this example can be readily deciphered
+as representing staves, clefs, key and meter signatures.
+Reciprocal numbers are used to indicate durations.
+Pitches are represented using lower-case letters (middle C and above)
+and upper-case letters (below middle C).
+Octaves are represented using a system of letter repetition.
+(See Huron, 1995 for a complete description.)
+In each complete measure, note the appearance of a "multiple stop".
+Using the space as a delimiter,
+more than one data token can appear in a given spine.
+A single staff can be represented by more than one spine
+so complex polyphonic and other textures can be represented.
+</P>
+
+<P>
+It is important to understand that there is nothing special about
+the **kern representation.
+For example,
+in using the pitch letter names A-G, this particular representation
+shows a bias towards English-speaking users, while the
+use of numbers for durations shows an American bias.
+However, other pre-defined Humdrum representations allow users to
+represent music using French fixed-doh solf\o'e\(ga'ge
+or the German system of pitch-naming (e.g. H=B-natural, Es=S=E-flat, etc.)
+Encodings are easily translated from one representation to another.
+Users of Humdrum have tailored other representations that
+better reflect special representation requirements,
+from Australian aboriginal music to Zydeco music.
+</P>
+
+<H3>Humdrum Tools</H3>
+
+<P>
+The Humdrum Toolkit contains roughly 70 inter-related
+yet stand-alone software tools.
+Each tool can be invoked individually or in connection
+with other tools.
+Typically, the tools are invoked in a command-line shell
+or as statements in a program or script.
+Any data that conforms to the Humdrum syntax can be manipulated using
+the Humdrum tools.
+Since the tools can be interconnected with each other
+(and can also be interconnected with non-Humdrum tools)
+there are a lot of ways to manipulate Humdrum data.
+</P>
+
+<H3>Some Sample Commands</H3>
+
+<P>
+One group of tools is used to extract or select sections of data.
+Vertical spines of data can be extracted from a Humdrum file using the
+<b>extract</b>
+command.
+For example, if a file encodes four musical parts
+(encoded in four spines), then the
+<b>extract</b>
+command might be used to isolate one or more given parts.
+The command
+<blockquote>
+<BIG><code>extract -f 1,3 filename</code></BIG>
+</blockquote>
+will extract the first (left-most) and third column or spine of data.
+Often it is useful to extract material according to the encoded content
+without regard to the position of the spine.
+For example, the following command will extract all spines containing
+a label indicating the tenor part(s).
+
+<blockquote>
+<BIG><code>extract -i '*Itenor' filename</code></BIG>
+</blockquote>
+
+Instruments can be labelled by "instrument class" and so can be
+extracted accordingly.
+The following command extracts all of the woodwind parts:
+
+<blockquote>
+<BIG><code>extract -i '*ICww' filename</code></BIG>
+</blockquote>
+
+Any vocal text can be similarly extracted:
+
+<blockquote>
+<BIG><code>extract -i '**text' filename</code></BIG>
+</blockquote>
+
+Or if the text is available in more than one language,
+a specific language may be isolated:
+
+<blockquote>
+<BIG><code>extract -i '*LDeutsch' filename</code></BIG>
+</blockquote>
+
+As noted above, users are free to define their own
+interpretations.
+For example, if a user has coded electro-encephalographic
+data in a spine (denoted, say "**EEG"), the pertinent data
+can be extracted using the same syntax:
+
+<blockquote>
+<BIG><code>extract -i '**EEG' filename</code></BIG>
+</blockquote>
+
+</P>
+
+<P>
+Segments or passages of music can be extracted using the
+<b>yank</b>
+command.
+Segments can be defined by sections, phrases, measures,
+or other any user-specified marker.
+For example, the following command extracts the section
+labelled "Trio" from a minuet & trio:
+
+<blockquote>
+<BIG><code>yank -s Trio -r 1 filename</code></BIG>
+</blockquote>
+
+Suppose a user wanted to select
+the material in measures 114 to 183.
+In the following command, the
+<b>-n</b>
+option specifies a regular expression (=)
+which might be used in this case as a barline marker.
+The
+<b>-r</b>
+option identifies the range of, in this case, the numbered
+labels on the barlines:
+
+<blockquote>
+<BIG><code>yank -n = -r 114-183 filename</code></BIG>
+</blockquote>
+
+In a representation (like **kern) that uses curly
+braces to represent phrases,
+selecting the second-last phrase in the work
+might be achieved as follows:
+
+<blockquote>
+<BIG><code>yank -o { -e } -r '$-1' filename</code></BIG>
+</blockquote>
+
+All Humdrum commands conform to the POSIX 2 portability standard.
+Whenever appropriate, command options allow users to
+define general-purpose patterns using the well-known
+<I>regular expression</I>
+syntax.
+This means that the tools can operate in ways that
+are sensitive to the encoded material,
+even without any "knowledge" of the representational convention.
+</P>
+
+<P>
+Some tools translate from one representation to another.
+For example, the
+<b>mint</b>
+command generates melodic interval information.
+The
+<b>mint</b>
+command only operates on pitch-related data;
+any non-pitch-related data are ignored.
+For example, if we apply the
+<b>mint</b>
+command to the above ascending scale, the resulting
+output would transform the **pitch spine while leaving
+the **fingering spine unaffected:
+</P>
+
+<blockquote>
+<TABLE>
+<TR>
+	<TD><BIG><code>**mint</code></BIG></TD><TD><BIG><code>**fingering</code></BIG></TD>
+</TR>
+<TR>
+	<TD><BIG><code>[C4]</code></BIG></TD><TD><BIG><code>R1</code></BIG></TD>
+</TR>
+<TR>
+	<TD><BIG><code>+M2</code></BIG></TD><TD><BIG><code>R2</code></BIG></TD>
+</TR>
+<TR>
+	<TD><BIG><code>+m2</code></BIG></TD><TD><BIG><code>R3</code></BIG></TD>
+</TR>
+<TR>
+	<TD><BIG><code>+M2</code></BIG></TD><TD><BIG><code>R1</code></BIG></TD>
+</TR>
+<TR>
+	<TD><BIG><code>+M2</code></BIG></TD><TD><BIG><code>R2</code></BIG></TD>
+</TR>
+<TR>
+	<TD><BIG><code>+M2</code></BIG></TD><TD><BIG><code>R3</code></BIG></TD>
+</TR>
+<TR>
+	<TD><BIG><code>+M2</code></BIG></TD><TD><BIG><code>R4</code></BIG></TD>
+</TR>
+<TR>
+	<TD><BIG><code>+m2</code></BIG></TD><TD><BIG><code>R5</code></BIG></TD>
+</TR>
+<TR>
+	<TD><BIG><code>*-</code></BIG></TD><TD><BIG><code>*-</code></BIG></TD>
+</TR>
+<TR>
+</TABLE>
+</blockquote>
+
+<P>
+Two or more commands can be connected into a
+<I>pipeline.</I>
+The following command locates all tritones -- including
+compound (octave) equivalents:
+<blockquote>
+<BIG><code>mint -c filename | egrep -n '((d5)|(A4))'</code></BIG>
+</blockquote>
+Since the Humdrum tools are stand-alone commands,
+non-Humdrum tools can be interposed at any point in
+the processing.
+For example, the
+<b>egrep</b>
+command in the above pipeline is a common utility
+associated with the Unix operating system, but
+available on many other systems as well.
+</P>
+
+<P>
+Depending on the type of translation, the resulting data can be
+searched for different things.
+The following command identifies French sixth chords by
+first translating the input into a pre-defined scale degree
+representation.
+When provided with scale-degree data,
+the regular expression "6-.*4+" means "find any
+lowered sixth scale degree that is concurrent with a raised
+fourth scale degree.
+The regular expression "2" simply ensures that the
+sonority also contains the second scale degree:
+</P>
+
+<blockquote>
+<BIG><code>deg file | extract -i '**deg' | ditto | grep '6-.*4+' | grep 2</code></BIG>
+</blockquote>
+
+<P>
+Locate all sonorities in the music of Machaut where the seventh
+scale degree has been doubled:
+</P>
+
+<blockquote>
+<BIG><code>deg -t machaut* | grep -n '7[^-+].*7'</code></BIG>
+</blockquote>
+
+Count the number of phrases that end on the subdominant pitch:
+
+<blockquote>
+<BIG><code>deg filename | egrep -c '(}.*4)|(4.*})'</code></BIG>
+</blockquote>
+
+The following command identifies all scores
+(in the current directory)
+whose instrumentation includes a tuba but not a trumpet:
+
+<blockquote>
+<BIG><code>grep -sl '!!!AIN.*tuba' * | grep -v 'tromp'</code></BIG>
+</blockquote>
+
+Predefined pitch and duration representations can
+be translated to MIDI using the Humdrum
+<b>midi</b>
+or
+<b>smf</b>
+commands;
+a
+<b>perform</b>
+command provides a simple command-line MIDI-player.
+For example, the following pipeline generates a MIDI
+performance of the second phrase in the oboe part:
+
+<blockquote>
+<BIG><code>yank -o { -e } -r 2 filename | midi | perform</code></BIG>
+</blockquote>
+
+Similarly, the following command will play the first
+and last measures from a section marked "Coda"
+at half the notated tempo from a file named <BIG><code>Cui</code></BIG>:
+</P>
+
+<blockquote>
+<BIG><code>yank -s 'Coda' Cui | yank -o ^= -r 1,$ | midi | perform -t .5</code></BIG>
+</blockquote>
+
+<P>
+The
+<b>ms</b>
+command generates input for the Mup notation program.
+The following pipeline generates a postscript graphical output
+(for viewing) of a notational rendering of the first
+and last five measures from a score:
+</P>
+
+<blockquote>
+<BIG><code>yank -n = -r 1-5,$-5-$ filename | ms</code></BIG>
+</blockquote>
+
+Similarly, the following command will create a 'cello
+part for the first 20 measures of a work:
+</P>
+
+<blockquote>
+<BIG><code>yank -o = -r 1-20 filename | extract -i '*Icello' | ms</code></BIG>
+</blockquote>
+
+Other output tools can be used to generate Csound.
+Robert Gjerdingen and Po-Yan Tsang have written tools
+that translate between Humdrum and the
+Finale engima format.
+</P>
+
+<P>
+The
+<b>context</b>
+command provides a deceptively simple way of searching
+for patterns in particular contexts.
+The command `context -n 2' will change a sequence
+of tokens -- such as the following Roman numeral harmonies:
+</P>
+
+<blockquote>
+**harm
+<br>
+I
+<br>
+V
+<br>
+iii
+<br>
+VI7
+<br>
+ii;
+<br>
+*-
+</blockquote>
+
+into a sequence of paired tokens or "digrams:"
+
+<blockquote>
+**harm
+<br>
+I V
+<br>
+V iii
+<br>
+iii VI7
+<br>
+VI7 ii;
+<br>
+.
+<br>
+*-
+</blockquote>
+
+<P>
+In effect, the resulting representation indicates that
+a <I>I</I> chord is followed by a <I>V</I> chord; a <I>V</I>
+chord is followed by
+a <I>iii</I> chord, and so on.
+An inventory of the most common two-chord progressions in Bach's
+chorale harmonizations can be created by simply sorting and
+counting the number of unique data records.
+First we extract the functional harmony spine;
+next we contextualize the data as paired digrams;
+sort all of the lines so identical lines are contiguous;
+count the number of instances of each unique line;
+and sort the output numerically by the most common digram:
+</P>
+
+<blockquote>
+<BIG><code>extract -i '**harm' chorales* | context -n 2 -o = | sort | uniq -c | sort -n</code></BIG>
+</blockquote>
+
+<P>
+An inventory of three-chord progressions can be generated by
+changing the <BIG><code>-n 2</code></BIG> option to <BIG><code>-n 3</code></BIG>.
+</P>
+
+<P>
+Earlier we saw that the
+<b>extract</b>
+command can be used to isolate one or more spines from a file.
+The reverse process is achieved using the Humdrum
+<b>assemble</b>
+command, which amalgamates individual spines into a single file.
+An obvious use for
+<b>assemble</b>
+would be to assemble a full score from individual parts.
+However,
+<b>assemble</b>
+is more commonly used to amalgamate different kinds of
+information in a single document.
+Multiple files can be aligned simply by specifying
+the inputs and output:
+
+<blockquote>
+<BIG><code>assemble degree.file interval.file > filename</code></BIG>
+</blockquote>
+
+Suppose we would like to determine whether
+descending minor seconds are more likely to occur as
+<I>fah-mi</I>
+rather than
+<I>doh-ti.</I>
+We can use the
+<b>mint</b>
+command to characterize melodic intervals and the
+<b>solfa</b>
+command to characterize scale degrees:
+
+<blockquote>
+<BIG><code>mint melody > file1</code></BIG>
+<br>
+<BIG><code>solfa melody > file2</code></BIG>
+</blockquote>
+
+We can then use
+<b>assemble</b>
+to amalgamate the two kinds of representations
+and use
+<b>grep</b>
+to search for the appropriate combination
+of interval and scale degree:
+
+<blockquote>
+<BIG><code>assemble file1 file2 | grep -c '-m2.*mi'</code></BIG>
+<br>
+<BIG><code>assemble file1 file2 | grep -c '-m2.*ti'</code></BIG>
+</blockquote>
+
+</P>
+<P>
+Innumerable variants of this technique are possible.
+Several different representations of the same music
+can be coordinated in a single file.
+For example, a user might search for all instances
+of a descending minor third in the soprano voice,
+in preparation for a suspension (occurring in either the alto or tenor),
+leading to a half cadence, with the soprano terminating
+on a tonic pitch approached from below.
+(Such complicated examples are discussed in detail in the
+Humdrum <I>User Guide</I>.)
+</P>
+
+<P>
+A more general tool,
+<b>humsed,</b>
+implements a stream editor conforming to the syntax of the
+popular
+<b>sed</b>
+stream editor used on Unix systems.
+Both
+<b>sed</b>
+and
+<b>humsed</b>
+are Turing-complete, which means that any
+manipulation of strings of characters that can be achieved
+using a computer, can be done using
+<b>humsed.</b>
+In practice, stream editors such as
+<b>humsed</b>
+are used for more modest functions like simple substitutions.
+By way of example, a user might set-up a simple script
+to rewrite the pitches in a trumpet piece as valve combinations.
+</P>
+
+<P>
+Jonathan Berec has collected data from trumpet performers
+estimating the degree of difficulty for various finger/valve
+combinations.
+On a scale from 1 (least difficult) to 10 (most difficulty),
+the valve/finger sequence 1-3 followed by 2 was rated by
+performers as 9.7 in difficulty
+whereas the sequence 1-2 followed by 2 was rated 5.8.
+Having used
+<b>humsed</b>
+to translate pitches to valve combinations, the
+<b>context</b>
+command can be used to assemble pairs of successive valve-combination
+changes.
+A subsequent
+<b>humsed</b>
+script can then be used to replace valve-combination changes by
+their difficulty ratings.
+In other words, any monophonic musical score in the range of the
+trumpet can be processed to generate a new spine indicating the
+degree of moment-to-moment fingering difficulty:
+</P>
+
+<blockquote>
+<TABLE>
+<TR>
+	<TD>**kern</TD><TD>**valves</TD><TD>**difficulty</TD>
+</TR>
+<TR>
+	<TD>B4</TD><TD>2</TD><TD>0</TD>
+</TR>
+<TR>
+	<TD>D#5</TD><TD>2</TD><TD>0</TD>
+</TR>
+<TR>
+	<TD>A4</TD><TD>1-2</TD><TD>3.0</TD>
+</TR>
+<TR>
+	<TD>G#4</TD><TD>2-3</TD><TD>6.0</TD>
+</TR>
+<TR>
+	<TD>A4</TD><TD>1-2</TD><TD>5.0</TD>
+</TR>
+<TR>
+	<TD>F4</TD><TD>1</TD><TD>1.5</TD>
+</TR>
+<TR>
+	<TD>C4</TD><TD>0</TD><TD>1.0</TD>
+</TR>
+<TR>
+	<TD>*-</TD><TD>*-</TD><TD>*-</TD>
+</TR>
+</TABLE>
+</blockquote>
+
+<P>
+When the output is piped to a sound synthesis program such as Csound,
+the "difficulty" information might be used to modify
+performance parameters so that difficult fingerings
+are associated with hesitation, fluctuations in intonation
+or other acoustic cues that add realism to the performance.
+</P>
+
+<P>
+A composer might try different transpositions
+to determine the easiest (or most difficult) key for a work.
+For example, Figure 2 shows a graph of the average
+fingering difficult for Herbert Clarke's
+<I>Stars in a Velvety Sky</I>
+-- a virtuoso trumpet work composed by a skilled
+trumpet performer.
+The work was methodically transposed covering all
+keys in which the work might be theoretically played.
+In general, the average fingering difficulty
+tends to decrease as the work is transposed higher in
+pitch due to the greater variety of alternative fingerings
+available for high notes compared with low notes.
+Against this general trend, significant changes in
+average fingering difficulty occur from key to key.
+In works composed by trumpet virtuosi,
+Huron and Berec found a marked tendency for the lowest fingering
+difficulty to correspond with the key in which the
+work was actually written.
+This pattern was not evident in trumpet works written
+by non-trumpet players.
+</P>
+
+
+Place Figure 2 near this position.
+
+<P>
+The values for Figure 2 made use of a simple Humdrum
+<b>trans</b>
+tool which allows passages to be transposed in various ways.
+The
+<b>trans</b>
+tool permits independent
+<I>diatonic</I>
+and
+<I>chromatic</I>
+offsets, so it is possible to transpose works into
+different modes as well as different keys.
+For example, the following command causes a simple
+diatonic shift, and so perform's a Joplin rag
+in D Dorian rather than C major:
+</P>
+
+<blockquote>
+<BIG><code>trans -d 1 Joplin | midi | perform</code></BIG>
+</blockquote>
+
+<H3>Two-Dimensional Patterns</H3>
+
+<P>
+Tools such as
+<I>grep</I>
+allow users to carry out string searches
+where the pattern of interest can be found on
+a single line.
+The two-dimensional structure of Humdrum representations
+means that important musical patterns will stretch over
+many lines or records.
+The Humdrum
+<b>patt</b>
+command provides a two-dimensional equivalent to
+<I>grep</I>
+that allows users to search for patterns spanning
+multiple records.
+</P>
+
+<P>
+Consider, for example, the task of searching for
+the pitch pattern B-A-C-H.
+As a sequential pattern, the Humdrum syntax will
+cause such a pattern to span several lines.
+The
+<b>patt</b>
+command allows users to specific a pattern template
+that is also multi-record.
+A suitable template might be as follows:
+</P>
+
+<blockquote>
+<TABLE>
+<TR>
+	<TD>[Bb]</TD><TD>+</TD>
+</TR>
+<TR>
+	<TD>[Aa]</TD><TD>+</TD>
+</TR>
+<TR>
+	<TD>[Cc]</TD><TD>+</TD>
+</TR>
+<TR>
+	<TD>[Hh]</TD><TD>+</TD>
+</TR>
+</TABLE>
+</blockquote>
+
+<P>
+The square brackets are used to indicate character classes
+(e.g. `B' or `b').
+The plus sign following the tab means "one or more
+matching records."
+Consequently, the above template means "one or more (data) records matching
+either a lower- or upper-case character `B'
+followed by one or more records matching
+either a lower- or upper-case character `A'
+followed by one or more records matching
+either a lower- or upper-case character `C'
+followed by one or more records matching
+either a lower- or upper-case character `H'.
+We can use this template after we have translated our
+input into the German system for pitch representation.
+Assuming the file `BACH' contains the above template,
+the following two commands will search for all instances
+of B-A-C-H, and play each instance using MIDI:
+</P>
+
+<blockquote>
+<BIG><code>tonh -x file | ditto -s = > file.german
+<br>
+patt -e -f BACH file.german | midi | perform</code></BIG>
+</blockquote>
+
+Figure 3 shows an example of a formerly unknown
+instance of B-A-C-H discovered by Walter Hewlett
+in Bach's Brandenburg Concerto No. 2 -- just six measures
+before the end of the first movement.
+The B-A-C-H occurs in the 'cello and contrabass parts.
+</P>
+
+
+Place Figure 3 near this position.
+
+</P>
+<P>
+Rather than searching for pitch patterns,
+a musically more useful
+search might focus on melodic intervals.
+Suppose, for example, we were looking for
+motivic statements in the opening movement
+of Beethoven's fifth symphony.
+The following template will locate
+all passages that begin with any sonority ("<BIG><code>.*</code></BIG>"),
+are followed by two perfect unisons, and terminated by
+either a major or minor descending third:
+
+<blockquote>
+<BIG><code>.*
+<br>
+P1
+<br>
+P1
+<br>
+-[mM]3</code></BIG>
+</blockquote>
+
+</P>
+<P>
+In some applications,
+it is often useful to generate pattern templates automatically.
+For example, in serial and twelve-tone compositions, the Humdrum
+<b>reihe</b>
+command can be used to generate all set variants from
+some prime form.
+Then the
+<b>patt</b>
+command can be iteratively invoked to search for each
+set form.
+Normally, a pitch-class set (**PC) representation would be
+used to conduct the search.
+</P>
+
+<P>
+A unique characteristic of set-related practices is
+the constructing of simultenaeities using successive
+elements from a row.
+That is, an abstract sequence of tones (1,2,3,4,5) might
+appear as tone 1, followed by tones 2, 3 and 4 (sounded concurrently),
+followed by tone 5.
+The
+<b>patt</b>
+command provides an option that instructs
+<b>patt</b>
+to match each input record with the maximum number
+of possible contiguous template patterns.
+</P>
+
+<P>
+Figure 4 shows a sample passage from the first movement
+of Webern's Opus 24 Concerto, with the row statements as
+identified using a script that interatively invokes
+<b>patt</b>
+for each row variant.
+Notice that
+<b>patt</b>
+has identified patterns both within and across instruments.
+When appropriate, alternative names for tone-row statements
+will be identified.
+In the second system,
+<b>patt</b>
+also identified a statement of I1 (identified only
+by numbered pitches).
+Although this statement seems to be questionable,
+the pitches of I1 are indeed contiguous across
+the participating instruments.
+</P>
+
+Place Figure 4 near this position.
+
+<P>
+The
+<b>patt</b>
+command provides an option that causes
+a new spine to be output containing user-defined tags
+(such as P5, RI6, Theme A, etc.).
+These tagged outputs can be used as input
+for another pattern search.
+Hence users can use
+<b>patt</b>
+to search for patterns of patterns, etc.
+For example, the following Humdrum input
+might match a template whose purpose is
+to identify sonata allegro forms:
+</P>
+
+<blockquote>
+**sections
+<br>
+Introduction
+<br>
+Exposition
+<br>
+Development
+<br>
+Recapitulation
+<br>
+Coda
+<br>
+*-
+</blockquote>
+</P>
+
+<H3>Similarity</H3>
+
+<P>
+A problem with pattern searches is that only
+two states are possible:
+either a passage matches the defined template
+or it does not.
+Since music relies extensively on the art of variation,
+for many musical applications it is more important
+to be able to characterize degrees of resemblance
+than match/no-match.
+</P>
+
+<P>
+While the concept of "similarity" seems
+intuitively obvious, as an operational concept
+it proves remarkably complex.
+A basic distinction can be made between similarity
+for numerical (or parametric) data and
+non-numeric (non-parametric) data.
+Measurements of similarity for parametric data can be
+devised using variants on mathematical correlation such
+as Pearson's <I>r</I>.
+Measurements of similarity for non-parametric
+data have been explored using various algorithms
+in the field of approximate string matching (see Hall and Dowling, 1980).
+</P>
+
+<P>
+Humdrum provides a parametric similarity tool
+(<b>correl</b>) for characterizing numerical
+similarity, such as determining similar pitch contours.
+A non-parametric Humdrum tool
+(<b>simil</b>) allows users to define similarity
+according to an extended class of
+Damereau-Levenshtein edit-distances
+(see Orpen and Huron, 1992 for details).
+</P>
+
+<P>
+The
+<b>simil</b>
+tool allows users to define penalties for various
+edit actions;
+users are also free to define the basic representation
+used by
+<b>simil.</b>
+Depending on the application, a user might choose
+pitch similarity, interval similarity, contour/duration
+similarity, articulation similarity, harmonic similarity,
+or other forms or combinations of similarity.
+</P>
+
+<P>
+A unique property of the Humdrum
+<b>simil</b>
+tool is that it allows users to define asymmetrical
+similarity measures -- where A is judged more similar
+to B than B is to A.
+Psychologically, the capacity for asymmetrical
+similarity measures is important.
+In prototype theory, for example, it is known that
+people will judge the color pink as more similar to the
+color red (prototype) than vice versa.
+Similarly, listeners judge a musical variation as more
+similar to the theme (prototype) than the reverse comparison.
+</P>
+
+<P>
+The operation of
+<b>simil</b>
+can be illustrated using the the opening subject in
+J.S. Bach's Fugue 1, from the
+<I>Well Tempered Clavier</I>
+shown in Figure 5.
+The fugal subject was coded using a melodic interval
+representation, and this interval sequence
+has been used as the template for
+<b>simil.</b>
+</P>
+
+
+Place Figure 5 near this position.
+
+<P>
+Figure 6 illustrates a "sliding template" mode where
+<b>simil</b>
+outputs continuous values indicating the degree of
+similarity at each successive point in the score.
+The graph pertains to the bass voice only.
+Figure 7 illustrates a passage in the bass voice
+near the final cadence that shows a high similarity
+value with the fugal subject.
+</P>
+
+
+Place Figure 6 near this position.
+
+
+
+Place Figure 7 near this position.
+
+<P>
+Note that
+<b>simil</b>
+is not restricted to notation-based applications;
+<b>simil</b>
+is equally adept at all non-parametric similarity
+tasks, such as characterizing spectral similarity,
+fingering similarity, similarity of conducting gestures,
+etc.
+Any representation that a user can concoct can be
+used as input for <b>simil</b>.
+</P>
+
+<H3>Other Tools</H3>
+
+<P>
+The above examples have introduced only a handful
+of the Humdrum Tools, and have only scratched the
+surface in illustrating the information processing
+capabilities of Humdrum.
+As we have seen, the strength of the Humdrum tools lies
+not in their individual capabilities,
+but in the endless variety of configurations
+and interactions.
+The Humdrum web site (www.humdrum.net) provides hundreds
+of additional tutorial examples that illustrate a wide
+variety of music-related information-processing tasks.
+</P>
+
+<H3>Scripts</H3>
+
+<P>
+Humdrum's command-line oriented interface is
+frequently regarded as the principal impediment
+to more widespread use.
+However, programmers will readily understand
+that the command-oriented structure is Humdrum's
+principal strength, since it allows
+complex scripts to be written and embedded
+in one's favorite programming language.
+Scripts can be created both to carry out routine
+operations and to package a complex process
+as a stand-alone application.
+</P>
+
+<P>
+An example of the latter can be found in "Themefinder"
+-- a name-that-tune web application (themefinder.com).
+Themefinder provides a simple web interface that
+allows users to search a database of some 25,000 musical themes
+and incipits by specifying various search keys, such as
+the up/down melodic contour (Kornst\(:adt, 1998).
+The engine underlying Themefinder is a Humdrum script
+that was written in a single afternoon.
+The actually searching is done by the UNIX `grep' command.
+It is important to understand that Themefinder
+actually limits users' searching capabilities.
+Humdrum itself allows far more ways of accessing
+and searching the data, but a form-based web interface
+provides greater convenient.
+</P>
+
+<P>
+Another example of the value of scripting is
+evident in the simplicity with which Humdrum can be
+connected to other software tools.
+Figure 8 shows a musical map generated by connecting
+Humdrum to GMT -- a free "generic mapping tool"
+that is used by professional geographers to
+generate high-quality postscript maps.
+Like the Humdrum commands, GMT is invoked
+as a POSIX-format command with a potentially
+large number of map-drawing options.
+As part of a project to study culture-related
+musical features, Bret Aarden wrote a script that
+formats Humdrum's geographical reference records
+as input to GMT (see Aarden and Huron, 2001).
+Figure 8 shows a simple contour map indicating the density
+of Germanic folksongs in minor keys.
+The map was generated using data from
+the Essen Folksong Collection (Schaffrath, 1995)
+The important point is that any type of music-related
+search can be "piped" to GMT resulting
+in a tailor-made musical map.
+</P>
+
+Place Figure 8 near this position.
+
+
+<H3>Technical Specifications</H3>
+
+<P>
+Humdrum is written in a combination of languages,
+including C, C++, awk, kornshell, yacc, lex, and perl.
+The toolkit is available free of charge via the web.
+Source code is included in the distribution.
+Humdrum is used with all popular operating systems,
+however a simple POSIX-conformant command shell is required.
+Complete documentation is available,
+including information describing all pre-defined representations,
+software documentation for all Humdrum tools,
+introductory tutorials, examples, and newsletters.
+A developers kit is available including a syntax checker,
+input parser, and test suites.
+Documentation is available in both printed and
+online versions.
+An FAQ is available at www.humdrum.net.
+The best general introduction to the Humdrum Toolkit is
+<I>Music Research Using Humdrum: A User's Guide</I>
+(Huron, 1999).
+</P>
+
+<H3>Drawing Lessons from the Humdrum Experience</H3>
+
+<P>
+Whether or not one uses Humdrum, there are a number of
+broad lessons arising from the Humdrum experience
+that are pertinent to creating general-purpose music-related software.
+These lessons include the following:
+<ol>
+<li>
+<P>
+In software design, a useful distinction can be made
+between closed and open applications.
+A closed application may be defined as one serving
+a well-defined problem space where all of the
+tasks can be specified in advance.
+In closed applications it is possible to
+construct efficient stand-alone software
+that provides an intuitive and effective user interface.
+</P>
+<P>
+However, in research or development-related environments,
+the types of tasks users will pursue are unpredictable
+and so open-ended.
+In such environments, it is impossible to conceive
+of a single integrated application that will
+serve all purposes, and so a
+<I>software tools</I>
+approach is preferrable.
+</P>
+<li>
+Wherever possible, use flat text (ASCII) representations.
+This spares programmers the headache of having to
+design special-purpose editors, and other general
+tools for each representation.
+Using text-based representation also avoids
+erecting barriers for users who wish to define and
+use their own representations.
+<li>
+Do not attempt to represent everything in one
+gigantic encoding scheme.
+As in the case of structured programming,
+it is better to segment the representational problem
+so encoding, editing, and processing remain manageable.
+<li>
+Do not force users to encode information
+(such as pitch, duration, title) that is not of
+interest to the user.
+<li>
+The effectiveness of text-based representations
+is greatly increased by pushing the data structures
+into the data representation.
+In its use of a tabular format of spines and records,
+Humdrum representations are inherently two-dimensional,
+and so closely echo the structure of sequential and
+concurrent events typical of music.
+In effect, Humdrum representations form a linked-list
+lattice structure.
+Instead of creating an internal data structure
+accessible only within a program,
+Humdrum places the linked-list structure within the
+data representation.
+This approach greatly simplifies access and
+processing of the data.
+<li>
+Label or tag the representations so each software
+tool can identify which data the tool can legitimately
+manipulate, which data it should leave untouched,
+and which data constitutes an error condition.
+<li>
+In research and development situations,
+create software tools that can be executed
+within any programming language or script.
+<li>
+When processing information, at each step ensure
+that users can intercept the data and invoke
+either commercial tools or user-crafted
+scripts to massage the information.
+<li>
+Do not assume that users will perform a given
+task using the tool you have provided.
+Users may disagree with the approach or be more
+familiar with the operation of another tool.
+<li>
+Avoid writing software that already exists,
+such as general "sort" routines or music notation editors.
+Having to write such software usually means that
+insufficient attention has been paid to allowing
+users to connect easily with other software.
+<li>
+Provide comprehensive and complete documentation
+for all tools so that conscientious users are able to
+comprehend and anticipate the limits of operation,
+and so programmers can identify suspected bugs with confidence.
+</ol>
+
+</P>
+<P>
+In many ways, basic Humdrum tools like
+<b>extract,</b>
+<b>assemble,</b>
+<b>patt</b>
+and
+<b>humsed</b>
+are structured equivalents of the popular
+Unix utilities
+<b>cut,</b>
+<b>paste,</b>
+<b>grep</b>
+and
+<b>sed.</b>
+Whereas the Unix tools operate indiscriminantly
+on all data in the standard input, the Humdrum equivalents
+(1) pass comments and reference information intact,
+(2) preserve the structure and syntax of the input,
+(3) operate only on specified data types within
+a data stream,
+and
+(4) where appropriate, update the interpretation information
+so that subsequent tools recognize that the data has been
+modified in a particular manner.
+</P>
+
+<P>
+The importance of data typing is evident in the
+burgeoning conventions for filename extensions
+such as .jgp, .gif, .html, .mid, .mp3, etc.
+These tags are often used by applications software
+to recognize files that can be processed,
+and are appended to output files to specify
+the data format.
+The Humdrum "interpretation" records provide a
+more nuanced and powerful way of data tagging.
+By placing the type tags within the file or data stream itself,
+Humdrum allows multiple forms of information to co-exist
+within a single document.
+</P>
+
+<P>
+The benefit of this approach is that it preserve structural
+relationships between various data types and so facilitates
+contextually sensitive processing of multiple
+forms of data concurrently.
+For example, with Humdrum it is straightforward to
+process notation-related and performance-related data
+concurrently.
+By way of illustration, in Humdrum it would be relatively easy
+for a user to search for all notated mordents where the
+key-velocity of a MIDI performance is higher for the second
+note than for the third note of the mordent.
+By contrast, if the notation data and MIDI data were stored in
+separate files, performing such a search would be
+technically challenging.
+</P>
+
+<H3>Conclusion</H3>
+
+<P>
+This article has provided a cursory introduction to Humdrum.
+Humdrum provides a syntax that allows
+users to represent arbitrary forms of time-dependent information.
+Humdrum also provides a set of utilities or tools
+that manipulate Humdrum representations in various ways.
+The tools carry out operations such as displaying, performing,
+searching, editing, transforming, extracting, linking,
+classifying, labelling and comparing.
+The tools can be used individually or linked together
+to carry out a wide variety of tasks.
+Users can intercept representations at any point
+and write their own tools that augment the functioning of Humdrum.
+In addition, the Humdrum tools can be accessed from within
+standard programming languages.
+</P>
+
+<P>
+After more than a decade, the Humdrum Toolkit remains without
+peer in music information processing applications.
+Its principal attraction has been its broad scope for
+musical problem-solving and its flexibility of operation.
+Its principal detractions have been its command-line
+interface, and its presumption that users have facility
+with UNIX-like shell commands.
+Especially for users with no prior programming experience,
+the learning curve for Humdrum can seem intimidating.
+While not all computer music researchers will benefit from
+using Humdrum, a number of design features and criteria
+provide useful lessons for developing future music-related software.
+</P>
+
+<H3>Acknowledgements</H3>
+
+<P>
+Continued software development has benefitted from the efforts
+of innumerable researchers working in various parts of the world.
+Two graphic user interfaces have be written for Humdrum
+-- one by Michael Taylor at the University of Belfast (Taylor, 1996),
+and a second by Andreas Kornst\(:adt at the University of Hamburg
+(Kornst\(:adt, 1996).
+Robert Gjerdingen at Northwestern University wrote
+the first translation programs between Humdrum and Finale
+-- programs which were subsequently re-written and extended
+by Po-Yan Tsang at the University of Waterloo.
+Extensions related to coordinating Humdrum with CDs
+were written by Kyle Dawkins at McGill University.
+Utilities for making Humdrum Lisp compatible have
+been written by J\(:org Garbers and Thomas Noll
+at the Technical University of Berlin.
+Craig Sapp at Stanford University has written a number
+of useful Humdrum utilities, including a harmonic analyzer.
+Another harmonic analyzer developed by David Temperley
+(Temperley, 2001) at Columbia University and the Eastman
+School of Music was rendered Humdrum-compatible by Bret Aarden
+at the Ohio State University.
+Michael Good of Recordare Incorporated has fashioned an XML scheme
+inspired by Humdrum (Good, 2000).
+</P>
+
+<P>
+The Center for Computer Assisted Research in the Humanities
+has been indispensable in providing direct and indirect
+support for Humdrum.
+For the past 15 years, the Center has been involved in
+high quality encoding of classical Western repertory
+under the direction of Drs. Walter Hewlett and Eleanor
+Selfridge-Field.
+I am grateful that the MuseData repository of musical editions
+has been made available over the web in the Humdrum format.
+</P>
+
+<P>
+Music encoded directly in the Humdrum format has
+come from a variety of sources.
+Ethnomusicological transcriptions have proved
+particularly popular.
+More than 80 collections of non-Western music have
+been created.
+Among others who have encoded music using Humdrum
+are Suzi Wint, Sandra Serafini, Lonney Young,
+Ben Koen, Eric Berg, Norma Welch,
+Franz Wiering, Joshua Veltman, Igor Karaca, Natasa Kara,
+Paul von Hippel (von Hippel, 1998),
+Stefan Morent (Morent, 2000),
+Matthew Royal (Huron and Royal, 1996),
+and Denis Collins (Collins and Huron, in press).
+Other scholars have provided databases initially
+encoded using other representation schemes,
+including John Miller at North Dakota State University,
+and Harry Lincoln at the State University of New York at Binghamton.
+</P>
+<P>
+In addition to those individuals already mentioned
+further thanks are due to Keith Orpen, Keith Mashinter,
+Bill Thompson (Thompson and Stainton, 1995-96),
+Jasba Simpson (Simpson and Huron, 1993),
+Jonathan Wild (Wild, 1996),
+Randall Howard, Simon Clift, Maki Ishizaki, Timothy Prime,
+Frances Bennion, Bo Alphonce, Bruce Pennycook, David Wessel,
+Chris Chafe, Max Mathews, John Howard, Gregory Sandell, Perry Roland,
+and Jordi Martin.
+I am especially indebted to my former research assistants
+Tim Racinsky and Kyle Dawkins for their professional
+programming efforts.
+Finally, thanks to the Social Sciences and Humanities
+Research Council of Canada for providing the enabling
+funds that permitted the first distribution of the
+Humdrum Toolkit.
+</P>
+
+<H3>References</H3>
+
+<blockquote>
+Aarden, B. and Huron, D.  2001.
+Mapping European folksong: Geographical localization of
+musical features.
+<I>Computing in Musicology,</I>
+12: 169-183.
+</blockquote>
+
+<blockquote>
+Collins, D. and Huron, D.  (in press).
+Voice-leading in cantus firmus-based canonic
+composition: A comparison between theory and practice
+in renaissance and baroque music.
+<I>Computers in Music Research.</I>
+</blockquote>
+
+<blockquote>
+Erickson, R.  1976.
+<I>DARMS: A Reference Manual.</I>
+Binghamton, NY: typescript.
+</blockquote>
+
+<blockquote>
+Good, M.  2000.
+MusicXML for notation and analysis.
+<I>Computing in Musicology,</I>
+12: 113-124.
+</blockquote>
+
+<blockquote>
+Hall, P. and Dowling, G.  1980.
+Approximate string matching.
+<I>ACM Computing Surveys,</I>
+12: 381-402.
+</blockquote>
+
+<blockquote>
+Hall, T.  1997.
+DARMS: The A-R Dialect.
+In E. Selfridge-Field (ed.),
+<I>Beyond MIDI: The Handbook of Musical Codes.</I>
+Cambridge, MA: MIT Press, pp. 573-580.
+</blockquote>
+
+<blockquote>
+Hewlett, W. B.  1997.
+MuseData: A multipurpose representation.
+In E. Selfridge-Field (ed.),
+<I>Beyond MIDI: The Handbook of Musical Codes.</I>
+Cambridge, MA: MIT Press, pp. 402-447.
+</blockquote>
+
+<blockquote>
+von Hippel, P.  1998.
+<I>42 Ojibway folksongs in the Humdrum **kern representation:
+Electronic transcriptions from the Densmore Collections.</I>
+Stanford, CA: Center for Computer Assisted Research in the Humanities. 
+</blockquote>
+
+<blockquote>
+Howard, J.  1997.
+Plaine and Easie Code: A Code for Music Bibliography.
+In E. Selfridge-Field (ed.),
+<I>Beyond MIDI: The Handbook of Musical Codes.</I>
+Cambridge, MA: MIT Press, pp. 343-361.
+</blockquote>
+
+<blockquote>
+Huron, D.  1992.
+Design principles in computer-based music representation.
+In A. Marsden and A. Pople (eds.),
+<I>Computer Representations and Models in Music,</I>
+London: Academic Press, 1992 pp. 5-59.
+</blockquote>
+
+<blockquote>
+Huron, D.  1995.
+<I>The Humdrum Toolkit: Reference Manual.</I>
+Stanford, California:
+Center for Computer Assisted Research in the Humanities, 552
+pages, ISBN 0-936943-10-6.
+</blockquote>
+
+<blockquote>
+Huron, D.  1997.
+Humdrum and Kern: Selective feature encoding.
+In: E. Selfridge-Field (ed.),
+<I>Beyond MIDI: The Handbook of Musical Codes.</I>
+Cambridge, MA: Massachusetts Institute of Technology Press,
+1997; pp. 375-401.
+</blockquote>
+
+<blockquote>
+Huron, D.  1999.
+<I>Music Research Using Humdrum: A User's Guide.</I>
+Typescript, 414 pages.
+</blockquote>
+
+<blockquote>
+Huron, D. and Royal, M.  1996.
+What is melodic accent?
+Converging evidence from musical practice.
+<I>Music Perception,</I>
+13(4): 498-516.
+</blockquote>
+
+<blockquote>
+Kornst\(:adt, A.  1996.
+SCORE-to-Humdrum: A graphical environment for musicological
+analysis.
+<I>Computing in Musicology,</I>
+10: 105-122.
+</blockquote>
+
+<blockquote>
+Kornst\(:adt, A.  1998.
+<I>Themefinder</I>: A web-based melodic search tool.
+analysis.
+<I>Computing in Musicology,</I>
+11: 231-236.
+</blockquote>
+
+<blockquote>
+Morent, S.  2000.
+Representing a medieval repertory and its sources:
+The music of Hildegard von Bingen.
+<I>Computing in Musicology,</I>
+12: 19-33.
+</blockquote>
+
+<blockquote>
+Orpen, K. and Huron, D.  1992.
+Measurement of similarity in music: A quantitative approach
+for non-parametric representations.
+<I>Computers in Music Research,</I>
+4: 1-44.
+</blockquote>
+
+<blockquote>
+Schaffrath, H.  1995.
+<I>The Essen Folksong Collection</I>
+[database].
+D. Huron (ed.).
+Stanford, CA: Center for Computers Assisted Research in 
+the Humanities.
+</blockquote>
+
+<blockquote>
+Simpson, J. and Huron, D.  1993.
+The perception of rhythmic similarity:
+A test of a modified version of Johson-Laird's theory.
+<I>Canadian Acoustics,</I>
+21(3): 89-90.
+</blockquote>
+
+<blockquote>
+Smith, L.  1972.
+SCORE -- A Musician's Approach to Computer Music.
+<I>Journal of the Audio Engineering Society,</I>
+20: 7-14.
+</blockquote>
+
+<blockquote>
+Taylor, W. M.  1996.
+<I>Humdrum Graphical User Interface.</I>
+MA Thesis, Music Technology program,
+Queen's University of Belfast.
+</blockquote>
+
+<blockquote>
+Temperley, D.  (2001).
+<I>The Cognition of Basic Musical Structures.</I>
+Cambridge, Massachusetts: MIT Press.
+</blockquote>
+
+<blockquote>
+Thompson, W.F. and Stainton, M.  1995-96.
+Using Humdrum to analyze melodic structure:
+An assessment of Narmour's implication-realization model.
+<I>Computing in Musicology,</I>
+10: 24-33.
+</blockquote>
+
+<blockquote>
+Vercoe, B.  1993.
+<I>Csound: A Manual for the Audio Processing System and
+<I>Supporting Programs with Tutorials.</I>
+2nd rev. ed. Cambridge, MA: Massachusetts Institute
+of Technology Media Lab.
+</blockquote>
+
+<blockquote>
+Wild, J.  1996.
+A review of the Humdrum Toolkit:
+Unix tools for musical research, created by David Huron.
+<I>Music Theory Online,</I>
+2(7).
+</blockquote>
+
+
+<center>
+<A HREF="resources.html"><b>Full Index to Online Resources</b></A>
+</center>
+
+</BODY>
+</HTML>

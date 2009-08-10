@@ -1,0 +1,23 @@
+
+PATT      : Locate and output user-defined patterns in a Humdrum input.
+
+     This command is used to search for occurrences of a specified pattern
+     in a given humdrum input.  Patterns consist of one or more regular
+     expressions stored on separate lines in a specified template file.
+
+Syntax:
+
+     patt [-cem] [-s skip_reg] [-t output_tag] -f template [inputfile ...]
+
+Options:
+
+     -c              : make PATT sensitive to comments
+     -e              : echo matched patterns to output
+     -f <template>   : use patterns defined in file <template>
+     -m              : invoke multi-record matching mode
+     -s <reg_exp>    : ignore (skip) lines matching given regular expression
+     -t <output_tag> : create a **patt output spine; output <output_tag> in
+                       **patt spine at location of each matched input pattern
+
+  Refer to reference manual for further details.
+

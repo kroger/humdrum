@@ -1,0 +1,666 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+\subsection*{Detailed Table of Contents}
+
+\\
+
+
+\textbf{Regular Table of Contents}
+
+
+
+\begin{itemize}
+\item 
+\textbf{Preface}
+\item 
+\textbf{Acknowledgments}
+\item 
+\textbf{How to Use This Book}
+\end{itemize}
+
+\textbf{Chapter\textbf{
+
+
+\begin{enumerate}
+\item 
+
+\textbf{Humdrum:  A Brief Tour}
+	
+	What Can Humdrum Do?
+	\\The Humdrum Syntax and the Humdrum Toolkit
+	\\Humdrum Syntax
+	\\Humdrum Tools
+	\\Some Sample Commands
+	\\Reprise
+	
+\item 
+
+\textbf{Representing Music Using **kern (Part I)}
+	
+	Comment Records
+	\\Reference Records
+	\\Reprise
+	
+\item 
+
+\textbf{Some Initial Processing}
+	
+	The census Command
+	\\Simple Searches Using the \textit{grep} Command
+	\\Pattern Locations Using \textit{grep -n}
+	\\Counting Pattern Occurrences Using \textit{grep -c}
+	\\Searching for Reference Information
+	\\The \textit{sort} Command
+	\\The \textit{uniq} Command
+	\\Options for the \textit{uniq} Command
+	\\Reprise
+	
+\item 
+
+\textbf{Basic Pitch Translations}
+	
+	ISO Pitch Representation
+	\\German Tonöhe
+	\\French Solfège
+	\\Frequency
+	\\Cents
+	\\Semitones
+	\\MIDI
+	\\Scale Degree
+	\\Pitch Translations
+	\\Transposition Using the \textit{trans} Command
+	\\Key Interpretations
+	\\Pitch Processing
+	\\Uses for Pitch Translations
+	\\Reprise
+	
+\item 
+
+\textbf{The Humdrum Syntax}
+	
+	Types of Records
+	\\Comment Records
+	\\Interpretation Records
+	\\Data Records
+	\\Data Tokens and Null Tokens
+	\\Data Sub-Tokens
+	\\Spine Paths
+	\\
+	The Humdrum Syntax:  A Formal Definition
+	\\The \textit{humdrum} Command
+	\\Reprise
+	
+\item 
+
+\textbf{Representing Music Using **kern (Part II)}
+	
+	Grace Notes, Gruppetos and Appoggiaturas
+	\\Multiple Stops
+	\\Further Examples
+	\\Reprise
+	
+\item 
+
+\textbf{MIDI Output Tools}
+	
+	The \textit{**MIDI} Representation
+	\\The \textit{midi} Command
+	\\The \textit{perform} Command
+	\\Data Scrolling During Playback
+	\\Changing Tempo
+	\\The \textit{tacet} Command
+	\\The \textit{smf} Command
+	\\Reprise
+	
+
+\item 
+
+\textbf{The Shell (I)}
+	
+	Shell Special Characters
+	\\File Redirection
+	\\Pipe (|)
+	\\Shell Wildcard (*)
+	\\Comment (\#)
+	\\Command Delimiter (;)
+	\\Background Command (\&)
+	\\Shell Command Syntax
+	\\Output Redirection
+	\\Tee
+	\\Reprise
+	
+\item 
+
+\textbf{Searching with Regular Expressions}
+	
+	Literals
+	\\Wild-Card
+	\\Escape Character
+	\\Repetition Operators
+	\\Context Anchors
+	\\OR Logical Operator
+	\\Character Classes
+	\\Examples of Regular Expressions
+	\\Examples of Regular Expressions in Humdrum
+	\\Basic, Extended, and Humdrum-Extended Regular Expressions
+	\\Reprise
+	
+\item 
+
+\textbf{Musical Uses of Regular Expressions}
+	
+	The \textit{grep} Command (Again)
+	\\German, French, Italian, and Neapolitan Sixths
+	\\AND-Searches Using the \textit{xargs} Command
+	\\OR-Searches Using the \textit{grep -f} Command
+	\\Reprise
+	
+\item 
+
+\textbf{Melodic Intervals}
+	
+	Types of Melodic Intervals
+	\\Melodic Intervals Using the \textit{mint} Command
+	\\Unvoiced Inner Intervals
+	\\Calculating Distance Intervals Using the \textit{mint -s} Command
+	\\Simple and Compound Melodic Intervals
+	\\Diatonic Intervals, Absolute Intervals and Contour
+	\\Using the \textit{mint} Command
+	\\Calculating Melodic Intervals Using the \textit{xdelta} Command
+	\\Reprise
+	
+\item 
+
+\textbf{Selecting Musical Parts and Passages}
+	
+	
+	Extracting Spines:  The \textit{extract} Command
+	\\Extraction by Interpretation
+	\\Using \textit{extract} in Pipelines
+	\\Extracting Spines that Meander
+	\\Field-Trace Extracting
+	\\
+	Extracting\_Passages: The \textit{yank} Command
+	\\Yanking by Marker
+	\\Yanking by Delimiters
+	\\Yanking by Section
+	\\Examples Using \textit{yank}
+	\\Using \textit{yank} in Pipelines
+	\\Reprise
+	
+\item 
+
+\textbf{Assembling Scores}
+	
+	The \textit{cat} Command
+	\\The \textit{rid} Command
+	\\Assembling Parts Using the \textit{assemble} Command
+	\\Aligning Durations Using the \textit{timebase} Command
+	\\Assembling N-tuplets
+	\\Checking an Assembled Score Using \textit{proof}
+	\\Other Uses for the \textit{timebase} Command
+	\\Additional Uses of \textit{assemble} and \textit{timebase}
+	\\Reprise
+	
+\item 
+
+\textbf{Stream Editing}
+	
+	The \textit{sed} and \textit{humsed} Commands
+	\\Simple Substitutions
+	\\Selective Elimination of Data
+	\\The \textit{stats} Command
+	\\Eliminate Everything But...
+	\\Deleting Data Records
+	\\Adding Information
+	\\Multiple Substitutions
+	\\Switching Signifiers
+	\\Executing from a File
+	\\Writing to a File
+	\\Reading a File as Input
+	\\Reprise
+	
+\item 
+
+\textbf{Harmonic Intervals}
+	
+	Types of Harmonic Intervals
+	\\Harmonic Intervals Using the \textit{hint} Command
+	\\Propagating Data Using the \textit{ditto} Command
+	\\Using the \textit{ditto} and \textit{hint} Commands
+	\\Determining Implicit Harmonic Intervals
+	\\The \textit{ydelta} Command
+	\\More Examples Using the \textit{ydelta} Command
+	\\Reprise
+	
+
+\item 
+
+\textbf{The Shell (II)}
+	
+	Shell Special Characters
+	\\Shell Variables
+	\\The Shell Greve
+	\\Single Quotes, Double Quotes
+	\\Using Shell Variables
+	\\Aliases
+	\\Reprise
+	
+\item 
+
+\textbf{Creating Inventories}
+	
+	Filter, Sort, Count
+	\\Filtering Data with the \textit{rid} Command
+	\\Inventories for Multi-spine Inputs
+	\\Sorting By Frequency of Occurrence
+	\\Counting with the \textit{wc} Command
+	\\Excluding or Seeking Rare Events
+	\\Transforming and Editing Inventory Data
+	\\Further Examples
+	\\Reprise
+	
+\item 
+
+\textbf{Fingers, Footsteps and Frets}
+	
+	Heart Beats and Other Esoterica
+	\\The \textit{**fret} Representation
+	\\Additional Features of \textit{**fret}
+	\\Reprise
+	
+\item 
+
+\textbf{Musical Contexts}
+	
+	The \textit{context} Command
+	\\Harmonic Progressions
+	\\Using \textit{context} with the \textit{-b} and \textit{-e} Options
+	\\Using context with \textit{sed} and \textit{humsed}
+	\\Linking context Outputs with Inputs
+	\\Using \textit{context} with the \textit{-p} Option
+	\\Reprise
+	
+\item 
+
+\textbf{Strophes, Verses and Repeats}
+	
+	Section Labels
+	\\Expansion Lists
+	\\Using \textit{yank} to Extract Sections
+	\\Using the \textit{thru} Command to Expand Encodings
+	\\Alternative Versions
+	\\Section Types
+	\\Hierarchical Sections
+	\\Using the \textit{yank} and \textit{thru} Commands
+	\\Strophic Representations
+	\\The \textit{strophe} Command
+	\\Using the \textit{strophe} and \textit{thru} Commands
+	\\Reprise
+	
+\item 
+
+\textbf{Searching for Patterns}
+	
+	The \textit{patt} Command
+	\\Using \textit{patt}'s Tag Option
+	\\Matching Multiple Records Using the \textit{patt} Command
+	\\The \textit{pattern} Command
+	\\Patterns of Patterns
+	\\Reprise
+	
+\item 
+
+\textbf{Classifying}
+	
+	The \textit{recode} Command
+	\\Classifying Intervals
+	\\Clarinet Registers
+	\\Open and Close Position Chords
+	\\Flute Fingering Transitions
+	\\Classifying with \textit{humsed}
+	\\Classifying Cadences
+	\\Orchestration
+	\\Reprise
+	
+\item 
+
+\textbf{Rhythm}
+	
+	The \textit{**recip} Representation
+	\\The \textit{dur} Command
+	\\Classifying Durations
+	\\Using \textit{yank} with the \textit{timebase} Command
+	\\The \textit{metpos} Command
+	\\Changes of Stress
+	\\Reprise
+	
+
+\item 
+
+\textbf{The Shell (III)}
+	
+	Shell Programs
+	\\
+	Flow of Control: The \textit{if} Statement
+	\\
+	Flow of Control: The \textit{for} Statement
+	\\A Script for Identifying Transgressions of Voice-Leading
+		
+		
+		(1) Parts Out Of Range
+		\\
+		(2) Augmented/Diminished Melodic Intervals
+		\\
+		(3) Consecutive Fifths or Octaves
+		\\
+		(4) Doubled Leading Tone
+		\\
+		(5) Avoid Unisons
+		\\
+		(6) Crossed Parts
+		\\
+		(7) Parts Separated by Greater than an Octave
+		\\
+		(8) Overlapped Parts
+		\\
+		(9) Exposed Octaves
+		
+	Reprise
+	
+\item 
+
+\textbf{Similarity}
+	
+	The \textit{correl} Command
+	\\Using a Template with \textit{correl}
+	\\The \textit{simil} Command
+	\\Defining Edit Penalties
+	\\The \textit{accent} Command
+	\\Reprise
+	
+\item 
+
+\textbf{Moving Signifiers Between Spines}
+	
+	The \textit{rend} Command
+	\\The \textit{cleave} Command
+	\\Creating Mixed Representations
+	\\Reprise
+	
+\item 
+
+\textbf{Text and Lyrics}
+	
+	The \textit{**text} and \textit{**silbe} Representations
+	\\The \textit{text} Command
+	\\The \textit{fmt} Command
+	\\Rhythmic Feet in Text
+	\\Concordance
+	\\Simile
+	\\Word Painting
+	\\Emotionality
+	\\Other Types of Language Use
+	\\Reprise
+	
+\item 
+
+\textbf{Dynamics}
+	
+	The \textit{**dynam} and \textit{**dyn} Representations
+	\\The \textit{**dyn} Representation
+	\\The \textit{**dB} Representation
+	\\The \textit{db} Command
+	\\Processing Dynamic Information
+	\\Terraced Dynamics
+	\\Dynamic Swells
+	\\MIDI Dynamics
+	\\Reprise
+	
+\item 
+
+\textbf{Differences and Similarities}
+	
+	Comparing Files Using \textit{cmp}
+	\\Comparing Files Using \textit{diff}
+	\\Comparing Inventories -$\,$- The \textit{comm} Command
+	\\Reprise
+	
+\item 
+
+\textbf{MIDI Input Tools}
+	
+	The \textit{record} Command
+	\\The \textit{encode} Command
+	\\Reprise
+	
+\item 
+
+\textbf{Repertoires and Links}
+	
+	The \textit{find} Command
+	\\Content Searching
+	\\Using \textit{find} with the \textit{xargs} Command
+	\\Repertoires As File Links
+	\\Reprise
+	
+
+\item 
+
+\textbf{The Shell (IV)}
+	
+	The \textit{awk} Programming Language
+	\\Automatic Parsing of Input Data
+	\\Arithemtic Operations
+	\\Conditional Statements
+	\\Assigning Variables
+	\\Manipulating Character Strings
+	\\The \textit{for} Loop
+	\\Reprise
+	
+\item 
+
+\textbf{Word Sounds}
+	
+	The \textit{**IPA} Representation
+	\\Alliteration
+	\\Classifying Phonemes
+	\\Properties of Vowels
+	\\Vowel Coloration
+	\\Rhyme and Rhyme Schemes
+	\\Reprise
+	
+\item 
+
+\textbf{Serial Processing}
+	
+	Pitch-Class Representation
+	\\The \textit{pcset} Command
+	\\Prime Form and Normal Form
+	\\Interval Vectors Using the \textit{iv} Command
+	\\Segmentation Using the \textit{context} Command
+	\\The \textit{reihe} Command
+	\\Generating a Set Matrix
+	\\Locating and Identifying Tone-Rows
+	\\Reprise
+	
+\item 
+
+\textbf{Layers}
+	
+	Implied Harmony
+	
+\item 
+
+\textbf{Sound and Spectra}
+	
+	The \textit{**spect} Representation
+	\\The SHARC Database and \textit{spect} Command
+	\\The \textit{mask} Command
+	\\The \textit{sdiss} Command
+	\\Connecting Humdrum with Csound -$\,$- the \textit{kern2cs} Command
+	\\Sound Analysis
+	\\Reprise
+	
+\item 
+
+\textbf{Electronic Music Editing}
+	
+	The Process of Electronic Editing
+	\\Establishing the Goal
+	\\Documenting Encoded Data
+	\\Sources
+	\\Selecting a Sample from Some Repertory
+	\\Encoding
+	\\Transposing Instruments
+	\\Instrument Identification
+	\\Leading Barlines
+	\\Ornamentation
+	\\Editing Sections
+	\\Editorialisms in the \textit{**kern} Representation
+	\\Adding Reference Information
+	\\Proof-reading Materials
+	\\Data Integrity Using the VTS Checksum Record
+	\\Preparing a Distribution
+	\\Electronic Citation
+	\\Reprise
+	
+\item 
+
+\textbf{Systematic Musicology}
+	
+	Comparison Repertory
+	\\Randomizing
+	\\Using the \textit{scramble} Command
+	\\Retrograde Controls Using the \textit{tac} Command
+	\\Autophase Procedure
+	\\Reprise
+	
+\item 
+
+\textbf{Troubleshooting}
+	
+	Encoding Errors
+	\\Searching Tips
+	\\Pipeline Tips
+	\\Reprise
+	
+\item 
+
+\textbf{Conclusion}
+	
+	Pursuing a Project with Humdrum
+	
+\end{enumerate}
+
+\begin{itemize}
+\item 
+
+\textbf{Bibliography}
+
+\item 
+
+\textbf{Appendix I:  Humdrum Reference Records}
+	
+	
+	Authorship Information
+	\\
+	Performance Information
+	\\
+	Work Identification Information
+	\\
+	Imprint Information
+	\\
+	Copyright Information
+	\\
+	Analytic Information
+	\\
+	Representation Information
+	\\
+	Electronic Citation
+	\\
+	Further Reference Record Codes
+	
+
+
+\item 
+
+\textbf{Appendix II:  Instrumentation Codes}
+	
+	
+	Introduction
+	\\
+	Voice Range
+	\\
+	Voice Quality
+	\\
+	String Instruments
+	\\
+	Wind Instruments
+	\\
+	Percussion Instruments
+	\\
+	Keyboard Instruments
+	
+
+\item 
+
+\textbf{Index to Problems}
+
+\item 
+
+\textbf{Index to Names, Works and Genres}
+
+\item 
+
+\textbf{General Index}
+\end{itemize}
+
+
+\par 
+\begin{itemize}
+\item 
+
+\textbf{Regular Table of Contents}
+\item 
+\textbf{Index of Humdrum Commands}
+\item 
+\textbf{On-line Humdrum Course Description}
+\item 
+\textbf{Index to Humdrum On-line Resources}
+\item 
+\textbf{Humdrum Exercises}}
+\item 
+\textbf{Summary of **kern Music Representation}
+\item 
+\textbf{
+Humdrum Toolkit Home Page}
+\item 
+\textbf{
+Humdrum Toolkit Home Page (University of Virginia) 
+}
+\item 
+\textbf{Ohio State University Music Cognition Home Page}
+\end{itemize}
+\\
+\\
+\\
+\\
+
+© Copyright 1999 David Huron
+\end{document}

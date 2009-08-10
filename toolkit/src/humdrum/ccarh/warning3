@@ -1,0 +1,7 @@
+!! "humdrum: WARNING 3: Data token may be mistaken for local "
+!! "comment in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for warning number 3
+**ex	**ex	**ex
+data	!comment	more data
+*-	*-	*-

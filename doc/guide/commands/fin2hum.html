@@ -1,0 +1,168 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- fin2hum</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>fin2hum</b>  --  converts a Finale enigma file (.etf) into a Humdrum file
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>fin2hum</b> <i>inputfile</i> [ > <i>outputfile</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The <b>fin2hum</b> command provides the means for the user to process a Finale enigma 
+file with Humdrum tools by converting the Finale file into a humdrum file. The 
+<b>fin2hum</b> command accepts a Finale engima file as input and outputs a file with 
+the same musical data represented in the humdrum format. The enigma format is 
+an ASCII-based file format developed by CodaMusic Technology, developer of 
+Finale, which allows finale data to be read by both Macs and PCs.
+</P>
+<P>
+As of April 2000, <b>fin2hum</b> is able to convert Finale's musical data into the 
+following Humdrum representations or interpretations:
+</P>
+<P>
+1. **kern representation
+<b>fin2hum</b> supports most kern signifiers, including:
+</P>
+<P>
+0, 1, 2, 4, ... 128, '.', 
+note duration
+-, #
+accdientals
+a-g, A-g, r
+pitches
+' z ^ ; ~ , ` : W M S u v q
+articulations and ornaments
+J, L
+beaming
+[ ] -
+tie
+( )
+slur
+{ }
+phrase
+/, \\
+stemming
+* Supported kern signifiers
+</P>
+<P>
+2. Humdrum's barline scheme
+Hum2fin recognizes the following barline signifiers:
+==|!, ==:!|, ==:|!, ==, =!, =", =-, =', = and = with measure number.
+</P>
+<P>
+3. Tandem interpretations
+Hum2fin supports the following tandem interpretations: clefs, key signature, 
+key, time signature, and instrument. 
+</P>
+<P>
+Recall that Humdrum representation are organized aas though the notated score 
+has been rotated clockwise 90 degrees. This means that the upper-most part is 
+typically represented by the right-most spine. The <b>fin2hum</b> command places the 
+lowest Finale staff in the left-most spine, with subsequent staffs placed 
+consecutively to the right.
+</P>
+
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="hum2fin.html">
+<b>hum2fin</b></A> (4),
+<A HREF="ms.html">
+<b>ms</b></A> (4)
+</i></b></code></big>
+</P>
+
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>FILES</H3></FONT>
+fin2hum (shell script), fin2hum.exe (compiled C++ executable), artic.txt, 
+barline.txt, dynam.txt
+</P>
+<P>
+(The fin2hum script is the main program. It first calls the fin2hum.exe 
+program. The fin2hum.exe executable reads the enigma file and outputs temporary 
+files that consist of one spine each. The fin2hum script then takes the 
+temporary spine files and assembles them into one standard Humdrum file.)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>LIMITS</H3></FONT>
+<b>fin2hum</b> adds natural signs according to standard orthographic rules, which is 
+to place a natural sign for a note that had an accidental before in the SAME 
+measure. However, in **kern, this rule does not apply.  **Kern expects a 
+natural sign when the first note of the same pitch appears without an 
+accidental, regardless of whether the two notes are in the same measure.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+Linux, and MSDOS with MKSToolkit. The Humdrum Toolkit needs to be installed in 
+the system also.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>ERRORS</H3></FONT>
+Error reading files
+<b>fin2hum</b> has error messages when there are errors with reading input and output 
+files. <b>fin2hum</b> also requires the files "barline.txt", "artic.txt" for 
+outputting the humdrum file; if there are problems reading these files, error 
+messages are issued.
+</P>
+<P>
+Errors with Timebase, Assemble commands
+In the <b>fin2hum</b> script, the humdrum tools "timebase" and "assemble" are used.  
+Therefore make sure that you have installed the Humdrum Toolkit in your system 
+and also have the above tools installed. 
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>AUTHORSHIP</H3></FONT>
+The original translation program was written by Robert Gjerdingen
+in the awk programming language.
+The program was re-written and extended by Po-yan Tsang in C++.
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>
+

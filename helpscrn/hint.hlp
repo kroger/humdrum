@@ -1,0 +1,33 @@
+
+HINT      : Determine harmonic intervals between concurrent pitches.
+
+     This command outputs various harmonic interval measures for
+     concurrent pitch-related data tokens.  Intervals are indicated
+     via diatonic size, plus interval quality (P=perfect, M=major,
+     m=minor, A=augmented, d=diminished).  For example, the
+     concurrent pitches C4 and A4 will produce the output of
+     a major sixth (i.e. M6).
+
+     The -a, -l, and -v options are mutually exclusive.
+
+Inputs processed:
+
+     **kern,    **pitch,   **solfg,   **Tonh
+
+Syntax:
+
+     hint [-a|-l|-v] [-cdu] [-s regexp] [inputfile ...]
+
+Options:
+
+     -a        : calculate all intervals by permuting all pitches present
+     -d        : output diatonic interval size only, without interval quality
+     -c        : output compound intervals as non-compound intervals
+     -l        : calculate intervals with respect to the lowest pitch present
+     -s regexp : skip; ignore records matching regexp; echo in output only
+     -u        : eliminate unisons when processing the input
+     -v        : indicate interval direction (up[+]/down[-]) according to
+                 left-to-right spine order
+
+  Refer to reference manual for further details.
+

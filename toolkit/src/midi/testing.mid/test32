@@ -1,0 +1,79 @@
+!! midi Test #32
+!! Test of spine-path exchange (*x).
+**kern
+*M2/4
+*C:
+=1
+4CC
+4DD
+=2
+!! A split.
+*^
+4EE	4r
+!! Exchange.
+*x	*x
+4FF	4r
+=3	=3
+4r	4GG
+4AA	4r
+!! Exchange.
+*x	*x
+=4	=4
+4BB	4r
+4r	4C
+=5	=5
+!! Split.
+*	*^
+4r	4D	4r
+4r	4r	4E
+!! Exchange.
+*	*x	*x
+=6	=6	=6
+4F	4r	4r
+4r	4G	4r
+!! Exhange.
+*x	*x	*
+=7	=7	=7
+4r	4r	4A
+4r	4B	4r
+=8	=8	=8
+*	*v	*v
+4c	4r
+!! Exchange
+*x	*x
+4d	4r
+=9	=9
+!! Split.
+4r	4e
+*^	*^
+4r	4r	4r	4f
+!! Split again.
+=10	=10	=10	=10
+4r	4g	4r	4r
+*v	*v	*	*
+!! Joins.
+*	*v	*v
+4r	4a
+!! Add non-kern spine.
+*	*+
+*	*	**foo
+=11	=11	not=11
+4b	4r	not4C#
+4r	4cc	not4b-
+=12	=12	.
+*	*x	*x
+4r	not4d#	4dd
+*x	*x	*
+not4c#	4ee	4r
+.	=13	=13
+.	4ff	4r
+*x	*x	*
+*	*x	*x
+4gg	4r	not16e-
+=14	=14	not a barline
+4r	4aa	not16a-
+4r	4bb	not16gg-
+=15	=15	not16dd#
+2r	2ccc	not16cc#
+====	====	====
+*-	*-	*-

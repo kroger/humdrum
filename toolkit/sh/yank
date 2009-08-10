@@ -1,0 +1,186 @@
+######################################################################
+##                               YANK.KSH 
+# Programmed by: Tim Racinsky        Date: July, 1993
+# Copyright (c) 1993 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       	Description:
+# May 13/94	Tim Racinsky		Added -s option
+# June 3/94	Tim Racinsky		Added getopts
+# July 21/95	David Huron		Modified tempfiles to use PID numbers.
+#
+#
+#	A korn shell script to parse commands for the yank command and invoke
+# the right awk script.
+#
+# The following variables will be used to store the user's options
+OPTIONS=""
+COMMAND=""
+HELP=""
+REGEXP1=""
+REGEXP2=null
+RANGE=""
+FILENAME=""
+INPUT=""
+STNDIN=""
+FLAG=""
+#
+USAGE1="USAGE: yank -h                       (Help Screen)"
+USAGE2="       yank -l -r range [-c] [file ...]"
+USAGE3="       yank -m regexp -r range [-c] [file ...]"
+USAGE4="       yank -n regexp -r range [-c] [file ...]"
+USAGE5="       yank -o regexp [-e regexp] -r range [-c] [file ...]"
+USAGE6="       yank -s section_label -r range [-c] [file ...]"
+while getopts ce:hlm:n:o:s:r: arg
+do
+	case "$arg" in
+	c)	OPTIONS="$OPTIONS$arg";;
+	e)	OPTIONS="$OPTIONS$arg"
+		REGEXP2="$OPTARG";;
+	h)	HELP=ON;;
+	[olmns]) 
+		if [ -n "$COMMAND" ]
+		then
+			echo "yank: ERROR: Cannot specify more than one of -l,-m,-n,-o, or -s." 1>&2
+			echo "" 1>&2
+			echo "$USAGE1" 1>&2
+			echo "$USAGE2" 1>&2
+			echo "$USAGE3" 1>&2
+			echo "$USAGE4" 1>&2
+			echo "$USAGE5" 1>&2
+			echo "$USAGE6" 1>&2
+			exit
+		else
+			COMMAND=$arg
+			case "$arg" in
+			[omns])
+				REGEXP1="$OPTARG"
+			esac
+		fi;;
+	r)	RANGE="$OPTARG";;
+	[?])
+		echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		echo "$USAGE3" 1>&2
+		echo "$USAGE4" 1>&2
+		echo "$USAGE5" 1>&2
+		echo "$USAGE6" 1>&2
+		exit
+	esac
+done
+shift `expr $OPTIND - 1`
+# If the help option was specified, print the help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/yank.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/yank.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# If no main command specified, print an error
+if [ "X$COMMAND" = X ]
+then
+	echo "yank: ERROR: No options specified." 1>&2
+	echo "" 1>&2
+	echo "$USAGE1" 1>&2
+	echo "$USAGE2" 1>&2
+	echo "$USAGE3" 1>&2
+	echo "$USAGE4" 1>&2
+	echo "$USAGE5" 1>&2
+	echo "$USAGE6" 1>&2
+	exit
+fi
+# If no range specified, print an error
+if [ "X$RANGE" = X ]
+then
+	echo "yank: ERROR: No range specified." 1>&2
+	echo "" 1>&2
+	echo "$USAGE1" 1>&2
+	echo "$USAGE2" 1>&2
+	echo "$USAGE3" 1>&2
+	echo "$USAGE4" 1>&2
+	echo "$USAGE5" 1>&2
+	echo "$USAGE6" 1>&2
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' is allowed
+		if [ -z "$STNDIN" ]
+		then
+			read INPUT
+			if [ $? -eq 0 ]
+			then
+				echo "$INPUT" > $TMPDIR/yk$$.tmp
+				while read INPUT
+				do
+					echo "$INPUT" >> $TMPDIR/yk$$.tmp
+				done
+			else
+				echo "$INPUT" > $TMPDIR/yk$$.tmp
+			fi
+			FILENAME="$FILENAME $TMPDIR/yk$$.tmp"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "yank: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If no files specified (valid or invalid), assume standard input
+# and read into a temporary file
+if [ "X$FILENAME" = X ]
+then
+	if [ -z "$FLAG" ]
+	then
+		read INPUT
+		if [ $? -eq 0 ]
+		then
+			echo "$INPUT" > $TMPDIR/yk$$.tmp
+			while read INPUT
+			do
+				echo "$INPUT" >> $TMPDIR/yk$$.tmp
+			done
+		else
+			echo "$INPUT" > $TMPDIR/yk$$.tmp
+		fi
+		FILENAME="$FILENAME $TMPDIR/yk$$.tmp"
+	else
+		exit
+	fi
+fi	
+if [ "X$OPTIONS" = X ]
+then
+	OPTIONS=null
+fi
+# Depending on which option selected, call correct awk program
+case $COMMAND in
+l)	$AWK_VER -f ${HUMDRUM}/bin/yank1.awk "DUMMY" "$OPTIONS" "$RANGE" $FILENAME ;;
+m)	$AWK_VER -f ${HUMDRUM}/bin/yank2.awk "DUMMY" "$OPTIONS" "$REGEXP1" "$RANGE" $FILENAME ;;
+	# Replace any blanks with "XTIMX" so that they can be transferred
+	# to the yank3.awk program
+n) 	$AWK_VER -f ${HUMDRUM}/bin/yank3.awk "DUMMY" "$OPTIONS" "$REGEXP1" "$RANGE" $FILENAME ;;
+s) 	$AWK_VER -f ${HUMDRUM}/bin/yank5.awk "DUMMY" "$OPTIONS" "$REGEXP1" "$RANGE" $FILENAME ;;
+*)  $AWK_VER -f ${HUMDRUM}/bin/yank4.awk "DUMMY" "$OPTIONS" "$REGEXP1" "$RANGE" "$REGEXP2" $FILENAME ;;
+esac
+# If a tempfile was created, remove it
+if [ -f "$TMPDIR/yk$$.tmp" ]
+then
+	rm $TMPDIR/yk$$.tmp
+fi

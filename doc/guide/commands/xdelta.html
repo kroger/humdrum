@@ -1,0 +1,561 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- xdelta</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>xdelta</b>  --  calculate sequential numeric differences between successive Humdrum data tokens
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>xdelta</b>  [<b>-ae</b>]  [<b>-b</b> <i>regexp</i>]  [<b>-s</b> <i>regexp</i>]  [<i>inputfile ...</i>]
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>xdelta</b>
+command calculates the numeric differences between successive
+data tokens within individual spines.
+By way of illustration,
+<b>xdelta</b>
+will change a sequence of numerical tokens -- such as
+<i>x, y, z</i>
+--  to their successive differences
+<i>y-x, z-y</i>.
+The
+<b>xdelta</b>
+command might be used for such purposes as determining the melodic
+interval distances between successive pitches in a musical line,
+or calculating changes of duration for successive notes.
+</P>
+<P>
+Each output interpretation is automatically assigned a new name by
+prepending the letter `X' to the input interpretations.
+For example, an input of
+<code><big>
+**semits
+</i></b></code></big>
+</i></b></code></big>
+will result in an output interpretation named
+<code><big>
+**Xsemits.
+</i></b></code></big>
+</i></b></code></big>
+Output from
+<b>xdelta</b>
+may be reprocessed as input, so that the `differences between the differences'
+(i.e. second derivative) may be calculated.
+Once again, the letter `X' will be prepended to the input interpretation,
+so that an input interpretation such as
+<code><big>
+**Xfreq
+</i></b></code></big>
+</i></b></code></big>
+will result in an output interpretation named
+<code><big>
+**XXfreq.
+</i></b></code></big>
+</i></b></code></big>
+</P>
+<P>
+The
+<b>xdelta</b>
+command has a number of subtleties in its operation that facilitate
+the processing of music-related data.
+However, these subtleties can lead to unexpected results for the
+inexperienced user;
+caution is advised.
+</P>
+<P>
+Numeric data are processed by calculating the arithmetic difference
+between successive data tokens within each spine.
+Hence, an input token `<code><big>-5</big></code>' followed by `<code><big>-2</big></code>'
+will result in an output of `<code><big>3</big></code>'.
+Positive output values indicate increasing input values;
+negative output values indicate decreasing input values.
+Null tokens are simply echoed in the output, however numerical
+processing continues as if the null tokens were absent.
+For example, the input token `<code><big>-5</big></code>' followed by a null token,
+followed by `<code><big>-2</big></code>' will result in an output of `<code><big>3</big></code>'.
+</P>
+<P>
+No difference value is calculated for the first numeric input token;
+however, the numeric value of the first numeric token is echoed in the
+output -- appearing in square brackets.
+These initial values are referred to as
+<i>offset</i>
+values, since they indicate the starting value from which subsequent
+differences are calculated.
+Offset values can prove useful in attempting to reconstruct the input,
+but the user may wish to eliminate offset values in subsequent processing
+(see below).
+</P>
+<P>
+All data tokens containing only non-numeric data are simply echoed in the
+output.
+In the default operation, data tokens without numbers cause the
+difference calculation to be suspended, and the next occurrence of
+a numeric token is treated as a new offset value for subsequent calculations.
+As noted, null-tokens (.) are also directly echoed.
+If data tokens contain both numeric and non-numeric data (e.g. <code><big>42abc</big></code>),
+the default operation is to suppress the echoing of non-numeric signifiers in
+the corresponding output.
+Hence, an input token `<code><big>33b</big></code>' followed by `<code><big>p51.3xm</big></code>'
+will result in the output token `<code><big>18.3</big></code>' (i.e. 51.3 - 33).
+However, the accompanying non-numeric data can be echoed in
+the output by invoking the
+<b>-e</b>
+option.
+</P>
+<P>
+The
+<b>xdelta</b>
+command is able to calculate unsigned (absolute) values where appropriate
+--  using the
+<b>-a</b>
+option.
+It is also able to handle multiple stops and data-flow interruptions
+such as the occurrence of barlines.
+By defining
+<i>regular expression</i>
+patterns, the user may select
+which types of data tokens should be ignored by
+<b>xdelta.</b>
+(See EXAMPLES below.)
+</P>
+<P>
+Note that the output spine generated by
+<b>xdelta</b>
+preserves the same record-type structure as the input,
+and so may readily be pasted with the input file using the Humdrum
+<b>assemble</b>
+command.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>xdelta</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-a</b></TD><TD>output absolute difference values</TD></TR>
+<TR><TD><b>-b <i>regexp</i></TD><TD>break; do not calculate difference for tokens matching <i>regexp;</i></TD></TR>
+<TR><TD></TD><TD>restart difference calculations with next numerical token</TD></TR>
+<TR><TD><b>-e</b></TD><TD>echo non-numeric data for input tokens containing numbers</TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-s <i>regexp</i></TD><TD>skip; completely ignore tokens matching <i>regexp;</i></TD></TR>
+<TR><TD></TD><TD>(echo in output only)</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The "skip" function takes precedence over the "break" function,
+so input strings matching both the skip (-s) and break (-b) regular
+expressions cause a skip rather than a break.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The various aspects of the
+<b>xdelta</b>
+command are best illustrated using a set of examples.
+Consider the following input:
+</P>
+<P>
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**cents</TD></TR>
+<TR><TD>100</TD></TR>
+<TR><TD>300</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>1200</TD></TR>
+<TR><TD>600</TD></TR>
+<TR><TD>-200</TD></TR>
+<TR><TD>1000</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Using the default invocation, the
+<b>xdelta</b>
+command transforms the above input into the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**Xcents</TD></TR>
+<TR><TD>[100]</TD></TR>
+<TR><TD>200</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>900</TD></TR>
+<TR><TD>-600</TD></TR>
+<TR><TD>[-200]</TD></TR>
+<TR><TD>1200</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice that the input interpretation (<code><big>**cents</big></code>)
+has been modified to <code><big>**Xcents</big></code> in the first record.
+As can be seen, the leading or "offset" value `<code><big>100</big></code>'
+has been echoed in the second record -- although it has been printed
+in square brackets.
+This is not a "difference" value since there is no previous numerical
+value from which to calculate a difference;
+<b>xdelta</b>
+simply echoes the initial starting value.
+The third output record contains the value `<code><big>200</big></code>' -- which is the
+difference between the second and third input records (300 minus 100).
+(Musically, we would say that the difference between 100 cents above
+middle C followed by 300 cents above middle C is an increase
+of plus 200 cents.)
+The null-token in the fourth record has been echoed.
+Null-tokens have no effect on subsequent numerical calculations and are
+treated as though they are non-existent.
+Thus the fifth output record contains the difference between the
+third and fifth input records (1200 minus 300 equals 900).
+The sixth input record (`<code><big>600</big></code>') is lower in value than the preceding
+value (`<code><big>1200</big></code>') and so produces a negative output
+(60-nus 1200 equals -600).
+The seventh input record contains no numerical value;
+as a result,
+<b>xdelta</b>
+"breaks" operation;
+it cannot calculate a numerical difference value.
+The output action is to echo the input token (`<code><big>r</big></code>') and to begin
+looking for a new offset value.
+The eighth input record (`<code><big>-200</big></code>') begins a new sequence of
+numerical values; the output echoes <code><big>[-200]</big></code> as the new offset.
+The ninth input record (<code><big>1000</big></code>) is 1200 cents above -200,
+and so the corresponding output value is 1200.
+</P>
+<P>
+Sometimes numerical values appear in tokens that the user doesn't want
+processed.
+A good example occurs with numbered barlines.
+Consider the following simple example.
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**dur</TD></TR>
+<TR><TD>1.6</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>2.5</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+If the
+<b>xdelta</b>
+command is invoked with the default options, the output will be:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**Xdur</TD></TR>
+<TR><TD>[1.6]</TD></TR>
+<TR><TD>-0.6</TD></TR>
+<TR><TD>1.5</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+In other words, the measure number (1) interacts (incorrectly)
+with the duration values.
+This can be avoided by using the
+<b>-s</b>
+(skip) option.
+The skip option allows the user to identify records that should
+not be involved in 
+<i>delta</i>
+processing.
+The <code><big>**dur</big></code> barline signifier is the equals-sign;
+hence, the command
+<code><big>
+xdelta -s = input
+</code></big>
+will cause the barlines to be ignored in the numerical calculation,
+and so produce the following (correct) output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**Xdur</TD></TR>
+<TR><TD>[1.6]</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>0.9</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Some inputs may contain multiple-stops -- that is, Humdrum data tokens
+containing two or more encoded components.
+The
+<b>xdelta</b>
+command is also able to process numerical data tokens containing
+multiple-components.
+Consider, for example, the following
+<code><big>
+**semits
+</i></b></code></big>
+</i></b></code></big>
+file:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**semits</TD></TR>
+<TR><TD>3</TD></TR>
+<TR><TD>4 7</TD></TR>
+<TR><TD>-3 -7 11</TD></TR>
+<TR><TD>12</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice the presence of the double- and triple-stops in the fourth and
+fifth records.
+Using the default invocation, the
+<b>xdelta</b>
+command processes this input as follows:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**Xsemits</TD></TR>
+<TR><TD>[3]</TD></TR>
+<TR><TD>1 4 </TD></TR>
+<TR><TD>-7 (-11) (-14) 4 </TD></TR>
+<TR><TD>15 19 1 </TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Once again, the input interpretation (<code><big>**semits</big></code>)
+has been modified to <code><big>**Xsemits</big></code>.
+The leading or offset value [3] has been echoed
+in the second record.
+(The user might wish to eliminate such offset values via the
+<A HREF="humsed.html"><b>humsed</b></A>
+command; see below.)
+The third records in both the input and output contain double-stops.
+In the output, the first value of the double-stop (`1') represents
+the difference between 3 and 4.
+The second value in the double-stop (`4') represents the difference
+between 3 and 7.
+In short,
+<b>xdelta</b>
+traces both possible difference "paths."
+In moving from the pitch D# to two concurrent pitches (E and G),
+we may trace both the D#-E interval (1 semit) and the D#-G interval (3 semits).
+</P>
+<P>
+In processing successive multiple-stops
+<b>xdelta</b>
+does not calculate all of the possible permutations.
+For example, in the case of two consecutive triple-stops,
+<b>xdelta</b>
+will calculate three intervals corresponding to the first notes
+in both triple-stops, the second notes, and the third notes.
+</P>
+<P>
+Where the number of multiple-stops changes,
+<b>xdelta</b>
+operates under some special conventions.
+Consider, for example, the case of a double-stop followed
+by a triple-stop:
+the pitches P+Q followed by X+Y+Z.
+All of the possible (interval) differences might be enumerated as follows:
+X-P, Y-P, Z-P, X-Q, Y-Q and Z-Q.
+<b>Xdelta</b>
+first calculates the "outer" interval distances (X-P and Z-Q).
+It then calculates a permuted set of "inner" intervals
+(Y-P and Y-Q).
+The remaining intervals are considered unlikely or implausible and
+are not calculated by
+<b>xdelta.</b>
+</P>
+<P>
+In the above example,
+moving from the double-stop to the triple stop between records three
+and four generates the two "outer" interval distances
+(-3 minus 4 equals -7; 11 minus 7 equals 4), as well as the permuted
+"inner" intervals (-7 minus 4 equals -11; -7 minus 7 equals -14).
+Both the resulting inner intervals are printed in parentheses.
+A similar process occurs when moving from records four to five.
+Three intervals may be traced from the 3 initial tokens to the
+subsequent single token.
+</P>
+<P>
+Depending on the goal, the presence of the parentheses makes it easy
+for the user to eliminate the inner intervals using the Humdrum
+stream-editor
+<A HREF="humsed.html"><b>humsed.</b></A>
+For example, the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+humsed 's/([^)]*) //g' input > output
+</code></big>
+</blockquote>
+</P>
+<P>
+can be used to eliminate inner intervals.
+Alternatively, the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+humsed 's/[()]//g' input > output
+</code></big>
+</blockquote>
+</P>
+<P>
+can be used to eliminate the parentheses surrounding the inner intervals.
+Offset values can be transformed to null-tokens using the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+humsed 's/\[[^]]*\]/./g' input > output
+</code></big>
+</blockquote>
+</P>
+<P>
+Entire records containing offset values can be eliminated using the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+humsed '/\[.*\]/d' input > output
+</code></big>
+</blockquote>
+</P>
+<P>
+A further example shows how the output of
+<b>xdelta</b>
+can be recirculated as input, and the second derivative calculated.
+In the example below, the first spine is the original input,
+consisting of a rising-falling major arpeggio,
+followed by an ascending major scale.
+The second spine is the corresponding output from the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+xdelta -s = spine1 | humsed 's/\[.*\]/./' > spine2
+</code></big>
+</blockquote>
+</P>
+<P>
+The original input and both outputs have been assembled together below.
+</P>
+<P>
+Notice that barlines have been skipped and that the initial offset
+value has been changed to a null token (using
+<b>humsed).</b>
+The second spine has then been used as input to
+<b>xdelta</b>
+with the result of the following command given in the third spine.
+</P>
+<P>
+<blockquote>
+<code><big>
+xdelta -a -s = spine2 | humsed 's/\[.*\]/./' > spine3
+</code></big>
+</blockquote>
+</P>
+<P>
+Notice that only absolute numerical differences have been generated in the
+third spine.
+In the output below, semitone pitch values are coordinated with the
+interval by which it was approached (2nd spine) and by the change of
+interval size (3rd spine).
+Notice that large values in third spine (e.g. 10 and 6) correspond
+to points in the input where the arpeggio changes direction, and
+where the arpeggio changes to a scale.
+(It is common to encounter such large discontinuities
+whenever a pattern changes.)
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**semits</TD><TD>**Xsemits</TD><TD>**XXsemits</TD></TR>
+<TR><TD>*M3/4</TD><TD>*M3/4</TD><TD>*M3/4</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>0</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD>4</TD><TD>4</TD><TD>.</TD></TR>
+<TR><TD>7</TD><TD>3</TD><TD>1</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>12</TD><TD>5</TD><TD>2</TD></TR>
+<TR><TD>7</TD><TD>-5</TD><TD>10</TD></TR>
+<TR><TD>4</TD><TD>-3</TD><TD>2</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>0</TD><TD>-4</TD><TD>1</TD></TR>
+<TR><TD>2</TD><TD>2</TD><TD>6</TD></TR>
+<TR><TD>4</TD><TD>2</TD><TD>0</TD></TR>
+<TR><TD>5</TD><TD>1</TD><TD>1</TD></TR>
+<TR><TD>=4</TD><TD>=4</TD><TD>=4</TD></TR>
+<TR><TD>7</TD><TD>2</TD><TD>1</TD></TR>
+<TR><TD>9</TD><TD>2</TD><TD>0</TD></TR>
+<TR><TD>11</TD><TD>2</TD><TD>0</TD></TR>
+<TR><TD>=5</TD><TD>=5</TD><TD>=5</TD></TR>
+<TR><TD>12</TD><TD>1</TD><TD>1</TD></TR>
+<TR><TD>====</TD><TD>====</TD><TD>====</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<A HREF="assemble.html">
+<b>assemble</b></A> (4),
+<A HREF="humsed.html">
+<b>humsed</b></A> (4),
+<A HREF="mint.html">
+<b>mint</b></A> (4),
+<A HREF="recode.html">
+<b>recode</b></A> (4),
+<A HREF="regexp.html">
+<b>regexp</b></A> (4),
+<b>regexp</b> (6),
+<A HREF="ydelta.html">
+<b>ydelta</b></A> (4)
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide11.html#Calculating_Melodic_Intervals_Using_the_xdelta_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

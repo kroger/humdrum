@@ -1,0 +1,430 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 40</TITLE>
+<!-- Chapter 40 (Conclusion) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:17:15 EST 2000">
+<meta name="description" content="Chapter 40 (Conclusion) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<body>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<br>
+
+<H1>Chapter40</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide39.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Conclusion</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+In
+<A HREF="guide01.html">Chapter 1,</A>
+we noted that computers are quite limited in what
+they are able to do.
+We noted in particular that computers are not good at
+<i>interpreting</i>
+data.
+Because so much music scholarship hinges on interpretations,
+this would seem to preclude computers from being of much use.
+However, as we have seen, there are some things that computers do well,
+and when a skilled user intervenes to make a few crucial interpretations,
+the resulting computer/human interaction can lead to pretty sophisticated
+results.
+</P>
+<P>
+The lucid use of Humdrum depends on understanding how each of the
+tools works and how it is possible to connect the tools to perform
+particular tasks.
+The power and creativity of Humdrum truly lies in the hands
+of the user.
+</P>
+<P>
+As we've seen, there are two parts to Humdrum: the
+<i>Humdrum syntax</i>
+and the
+<i>Humdrum toolkit.</i>
+The Humdrum syntax simply provides a formal framework for
+representing any kind of sequential symbolic data.
+A number of representation schemes are pre-defined in Humdrum,
+but you are free to construct your own representations as
+demanded by the tasks.
+In several of the tutorial examples in the previous chapters
+we saw various
+<i>ad hoc</i>
+representations that were concocted as temporary or
+intermediate representations.
+You should now feel comfortable with the possibilities of
+devising your own representations to assist you in whatever
+task you are interested.
+</P>
+<P>
+The
+<i>Humdrum Toolkit</i>
+is a set of inter-related software tools.
+These tools manipulate text data conforming to the Humdrum syntax.
+If the data represents music-related information,
+then we can say that the Humdrum tools manipulate music-related information.
+Each Humdrum tool carries out a fairly modest process.
+</P>
+<P>
+By way of review, we can group the various Humdrum (and UNIX)
+tools according to the type of operation.
+There are roughly a dozen or so classes of tasks:
+<ul>
+<li>
+<b><i>Displaying things.</i></b>
+The
+<b>ms</b>
+command can be used to print or display musical notation.
+<li>
+<b><i>Auditing.</i></b>
+MIDI sound output can be generated using the
+<A HREF="commands/midi.html"><b>midi</b></A>
+and
+<A HREF="commands/perform.html"><b>perform</b></A>
+commands.
+<li>
+<b><i>Searching for things.</i></b>
+When searching for things within specified files, appropriate
+commands include: <b>grep</b>, <b>egrep</b>,
+<A HREF="commands/yank.html"><b>yank -m</b>,</A>
+<A HREF="commands/patt.html"><b>patt</b>,</A>
+<A HREF="commands/pattern.html"><b>pattern</b>,</A>
+<A HREF="commands/correl.html"><b>correl</b>,</A>
+<A HREF="commands/simil.html"><b>simil</b></A>
+and
+<A HREF="commands/humdrum.html"><b>humdrum -v</b>.</A>
+When searching for files that meet certain conditions,
+appropriate commands include
+<b>grep -l</b>, <b>egrep -l</b> and <b>find</b>.
+Most of these search tools rely extensively on regular
+expressions to define patterns of characters.
+<li>
+<b><i>Counting things.</i></b>
+Appropriate commands include: <b>wc</b>, <b>wc -l</b>, <b>grep -c</b>,
+<b>egrep -c</b>,
+<A HREF="commands/census.html"><b>census</b></A>
+and <b>census -k</b>.
+Eliminating unnecessary or confounding information can be achieved
+using
+<A HREF="commands/rid.html"><b>rid</b>,</A>
+<A HREF="commands/extract.html"><b>extract</b>,</A>
+<b>grep -v</b>, <b>sed</b> and
+<A HREF="commands/humsed.html"><b>humsed</b>.</A>
+<li>
+<b><i>Editing things.</i></b>
+Manual editing may be done using any text editor, such as <b>emacs</b>
+or <b>vi</b>.
+Automated (or "stream") editing may be done
+using <b>sed</b> and
+<A HREF="commands/humsed.html"><b>humsed</b>.</A>
+<li>
+<b><i>Editorializing.</i></b>
+E.g., add an editorial footnote to a specified note or passage;
+indicate that a passage differs from the composer's autograph.
+<li>
+<b><i>Transforming or translating between representations.</i></b>
+Appropriate commands include:
+<A HREF="commands/cents.html"><b>cents</b>,</A>
+<A HREF="commands/deg.html"><b>deg</b>,</A>
+<A HREF="commands/degree.html"><b>degree</b>,</A>
+<b>dur</b>,
+<A HREF="commands/freq.html"><b>freq</b>,</A>
+<A HREF="commands/hint.html"><b>hint</b>,</A>
+<A HREF="commands/humsed.html"><b>humsed</b>,</A>
+<A HREF="commands/iv.html"><b>iv</b>,</A>
+<A HREF="commands/kern.html"><b>kern</b>,</A>
+<A HREF="commands/mint.html"><b>mint</b>,</A>
+<A HREF="commands/pc.html"><b>pc</b>,</A>
+<A HREF="commands/pf.html"><b>pf</b>,</A>
+<A HREF="commands/pitch.html"><b>pitch</b>,</A>
+<A HREF="commands/reihe.html"><b>reihe</b>,</A>
+<A HREF="commands/semits.html"><b>semits</b>,</A>
+<A HREF="commands/solfa.html"><b>solfa</b>,</A>
+<A HREF="commands/solfg.html"><b>solfg</b>,</A>
+<b>text</b>,
+<A HREF="commands/tonh.html"><b>tonh</b>,</A>
+<A HREF="commands/trans.html"><b>trans</b></A>
+and
+<A HREF="commands/vox.html"><b>vox</b>.</A>
+<li>
+<b><i>Arithmetic transformations of representations.</i></b>
+Manipulating numerical values can be done using
+<A HREF="commands/xdelta.html"><b>xdelta</b>,</A>
+<A HREF="commands/ydelta.html"><b>ydelta</b>,</A>
+<A HREF="commands/recode.html"><b>recode</b></A>
+and <b>awk</b>.
+<li>
+<b><i>Extracting or selecting information.</i></b>
+Appropriate commands include:
+<A HREF="commands/extract.html"><b>extract</b>,</A>
+<A HREF="commands/yank.html"><b>yank</b>,</A>
+<b>grep</b>, <b>egrep</b>,
+<A HREF="commands/yank.html"><b>yank -m</b>,</A>
+<A HREF="commands/thru.html"><b>thru</b>,</A>
+<A HREF="commands/strophe.html"><b>strophe</b>,</A>
+<A HREF="commands/rend.html"><b>rend</b></A>
+and <b>csplit</b>.
+<li>
+<b><i>Linking or joining information.</i></b>
+Appropriate commands include:
+<A HREF="commands/assemble.html"><b>assemble</b>,</A>
+<b>cat</b>,
+<A HREF="commands/cleave.html"><b>cleave</b>,</A>
+<A HREF="commands/timebase.html"><b>timebase</b>,</A>
+<A HREF="commands/context.html"><b>context</b>,</A>
+<A HREF="commands/ditto.html"><b>ditto</b></A>
+and
+<b>join</b>.
+<li>
+<b><i>Generating inventories of things.</i></b>
+Appropriate commands include:
+<b>sort</b> and <b>uniq</b>.
+Once again, unnecessary or confounding information can be eliminated
+using
+<A HREF="commands/rid.html"><b>rid</b>,</A>
+<A HREF="commands/extract.html"><b>extract</b>,</A>
+<b>grep -v</b>,
+<A HREF="commands/yank.html"><b>yank -m</b>,</A>
+<b>sed</b> or
+<A HREF="commands/humsed.html"><b>humsed</b>.</A>
+<li>
+<b><i>Classifying things.</i></b>
+Numerical values can be classified using
+<A HREF="commands/recode.html"><b>recode</b>;</A>
+non-numerical data can be classified using
+<A HREF="commands/humsed.html"><b>humsed</b>.</A>
+<li>
+<b><i>Labelling things.</i></b>
+Appropriate commands include:
+<A HREF="commands/patt.html"><b>patt -t</b>,</A>
+<A HREF="commands/recode.html"><b>recode</b>,</A>
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+and
+<A HREF="commands/timebase.html"><b>timebase</b>.</A>
+<li>
+<b><i>Comparing whether things are the same or similar.</i></b>
+Appropriate commands include:
+<b>diff</b>, <b>diff3</b>, <b>cmp</b>,
+<A HREF="commands/correl.html"><b>correl</b></A>
+and
+<A HREF="commands/simil.html"><b>simil</b>.</A>
+<li>
+<b><i>Capturing data.</i></b>
+MIDI data can be input via
+<A HREF="commands/encode.html"><b>encode</b></A>
+and
+<A HREF="commands/record.html"><b>record.</b></A>
+<li>
+<b><i>Trouble-shooting.</i></b>
+Appropriate commands include:
+<A HREF="commands/humdrum.html"><b>humdrum</b>,</A>
+<A HREF="commands/humdrum.html"><b>humdrum -v</b>,</A>
+<A HREF="commands/proof.html"><b>proof</b>,</A>
+<A HREF="commands/proof.html"><b>proof -k</b>,</A>
+<A HREF="commands/veritas.html"><b>veritas</b>,</A>
+<A HREF="commands/midi.html"><b>midi</b></A>
+and
+<A HREF="commands/perform.html"><b>perform</b>.</A>
+</ul>
+</P>
+<P>
+Not all of the existing Humdrum Tools were covered in this book.
+Nor were all of the available options described for all of the tools
+discussed.
+Exploring the
+<i>Humdrum Reference Manual</i>
+is recommended for readers interested in continuing to develop
+facility with Humdrum.
+</P>
+<A NAME="Pursuing_a_Project_with_Humdrum">
+<H2>Pursuing a Project with Humdrum</H2>
+</P>
+<P>
+If you have made it this far in the book, you will now have a fairly
+sophisticated knowledge of Humdrum.
+With this background, we might review some general principles
+and specific tips for making effective use of Humdrum
+when pursuing some musicological project.
+The following seven questions provide useful guidelines:
+<ul>
+<li>
+<i>What do I want my final output to look like?</i>
+<br>
+Do I want a count or inventory?
+</P>
+<P>
+<blockquote>
+<code><big>115 instances of ...
+<br>
+28 instances of ...</big></code>
+</blockquote>
+</P>
+<P>
+Do I want to output a found pattern?
+</P>
+<P>
+<blockquote>
+<code><big>pattern found in line ...
+<br>
+pattern not found ...</big></code>
+</blockquote>
+</P>
+<P>
+Do I want a comparison?
+</P>
+<P>
+<blockquote>
+<code><big>file X is the same as file Y
+<br>
+X is similar to Y
+<br>
+X and Y are different</big></code>
+</blockquote>
+</P>
+<P>
+<li>
+<i>What materials are available for processing?</i>
+</P>
+<P>
+<blockquote>
+Use
+<b>find</b>
+and
+<b>grep</b>
+to locate useful materials.
+</blockquote>
+</P>
+<P>
+<li>
+<i>What materials do I need to create?</i>
+</P>
+<P>
+<blockquote>
+Use
+<A HREF="commands/encode.html"><b>encode</b></A>
+to create new data.
+Use
+<A HREF="commands/humdrum.html"><b>humdrum</b></A>
+and
+<A HREF="commands/proof.html"><b>proof</b></A>
+to check the data.
+If necessary, define your own Humdrum representation for a given purpose.
+</blockquote>
+</P>
+<P>
+<li>
+<i>How do I transform my data so it is easier to process?</i>
+</P>
+<P>
+<blockquote>
+Use
+<A HREF="commands/recode.html"><b>recode</b></A>
+and
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+to classify data into various classes -- such as
+<i>up</i>, <i>down</i>, <i>leap</i>, <i>long</i>, <i>short</i>, <i>difficult</i>,
+<i>easy</i>, <i>clarion register</i>, <i>dominant</i>,
+etc.
+</P>
+<P>
+Use translating/transforming commands such as
+<A HREF="commands/mint.html"><b>mint</b>,</A>
+<A HREF="commands/ydelta.html"><b>ydelta</b>,</A>
+<A HREF="commands/pcset.html"><b>pcset</b>,</A>
+etc to translate
+the data to a different representation.
+</blockquote>
+</P>
+<P>
+<li>
+<i>What data should I eliminate?</i>
+</P>
+<P>
+<blockquote>
+Use
+<A HREF="commands/rid.html"><b>rid</b>,</A>
+<A HREF="commands/extract.html"><b>extract</b>,</A>
+<A HREF="commands/yank.html"><b>yank</b>,</A>
+<b>sed</b>,
+<A HREF="commands/humsed.html"><b>humsed</b>,</A>
+<b>uniq</b>,
+<b>uniq -d</b>
+and <b>grep -v</b>
+to eliminate selective materials.
+</blockquote>
+</P>
+<P>
+<li>
+<i>What data do I need to coordinate?</i>
+</P>
+<P>
+<blockquote>
+Use
+<A HREF="commands/context.html"><b>context</b></A>
+to generate contextual information.
+Use
+<A HREF="commands/assemble.html"><b>assemble</b>,</A>
+<A HREF="commands/rend.html"><b>rend</b></A>
+and
+<A HREF="commands/cleave.html"><b>cleave</b></A>
+to link information together.
+</blockquote>
+</P>
+<P>
+<li>
+<i>How do I know my results are worthwhile?</i>
+</P>
+<P>
+<blockquote>
+Use comparative tests whenever you can.
+Use
+<A HREF="commands/scramble.html"><b>scramble</b></A> -r,
+<b>scramble -t</b>,
+<b>tac</b> and
+<A HREF="commands/reihe.html"><b>reihe</b></A> -s
+to generate control groups.
+</blockquote>
+</ul>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide39.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

@@ -1,0 +1,1072 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Reference Manual</TITLE>
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+
+<H1><i>Development Reference</i></H1>
+<center><HR WIDTH=500></center>
+</P>
+<CENTER>
+<H1>How To Translate MuseData Files to Humdrum</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+
+<P>
+Quick Index:
+<blockquote>
+<TABLE>
+<TR>
+<TD><A HREF="#Introduction"><b>Introduction</B></A></TD>
+<TD><A HREF="#Procedural Overview"><b>Procedural Overview</B></A></TD>
+<TD><A HREF="#Procedural Details"><b>Procedural Details</B></A></TD>
+</TR><TR>
+<TD><A HREF="#1.  Access Appropriate Files."><B>1.  Access Appropriate Files.</B></A></TD>
+<TD><A HREF="#2.  Basic Translation."><B>2.  Basic Translation.</B></A></TD>
+<TD><A HREF="#3.  Transposing Parts."><B>3.  Transposing Parts.</B></A></TD>
+</TR><TR>
+<TD><A HREF="#4.  Beam Modification."><B>4.  Beam Modification.</B></A></TD>
+<TD><A HREF="#5.  Combining Parts."><B>5.  Combining Parts.</B></A></TD>
+<TD><A HREF="#6.  Alignment Check."><B>6.  Alignment Check.</B></A></TD>
+</TR><TR>
+<TD><A HREF="#7.  Removing Duplicate Header Information."><B>7.  Removing Duplicate Header Information.</B></A></TD>
+<TD><A HREF="#8.  Eliminate Redundant Section Labels."><B>8.  Eliminate Redundant Section Labels.</B></A></TD>
+<TD><A HREF="#9.  Instrument Identification."><B>9.  Instrument Identification.</B></A></TD>
+</TR><TR>
+<TD><A HREF="#10.  Figured Bass Generation."><B>10.  Figured Bass Generation.</B></A></TD>
+<TD><A HREF="#11.  Editing Figured Bass."><B>11.  Editing Figured Bass.</B></A></TD>
+<TD><A HREF="#12.  Leading Barlines."><B>12.  Leading Barlines.</B></A></TD>
+</TR><TR>
+<TD><A HREF="#13.  Logical and Orthographic Barlines."><B>13.  Logical and Orthographic Barlines.</B></A></TD>
+<TD><A HREF="#14.  Eliminating figured bass comments."><B>14.  Eliminating figured bass comments.</B></A></TD>
+<TD><A HREF="#15.  Eliminating `P' Record Comments."><B>15.  Eliminating `P' Record Comments.</B></A></TD>
+</TR><TR>
+<TD><A HREF="#16.  Resolving backspace Passages."><B>16.  Resolving "backspace" Passages.</B></A></TD>
+<TD><A HREF="#17.  Checking Naturals."><B>17.  Checking Naturals.</B></A></TD>
+<TD><A HREF="#18.  Adding Heavy Wedge Accents."><B>18.  Adding Heavy Wedge Accents.</B></A></TD>
+</TR><TR>
+<TD><A HREF="#19.  Resolving Trills and Mordents."><B>19.  Resolving Trills and Mordents.</B></A></TD>
+<TD><A HREF="#20.  Appoggiaturas."><B>20.  Appoggiaturas.</B></A></TD>
+<TD><A HREF="#21.  Section Labels."><B>21.  Section Labels.</B></A></TD>
+</TR><TR>
+<TD><A HREF="#22.  Repeats and Da Capos."><B>22.  Repeats and Da Capos.</B></A></TD>
+<TD><A HREF="#23.  Editorialisms."><B>23.  Editorialisms.</B></A></TD>
+<TD><A HREF="#24.  Reference Records."><B>24.  Reference Records.</B></A></TD>
+</TR><TR>
+<TD><A HREF="#25.  Syntax Checking (I)."><B>25.  Syntax Checking (I).</B></A></TD>
+<TD><A HREF="#26.  Syntax Checking (II)."><B>26.  Syntax Checking (II).</B></A></TD>
+<TD><A HREF="#27.  Proof Listening."><B>27.  Proof Listening.</B></A></TD>
+</TR><TR>
+<TD><A HREF="#28.  Adding VTS Checksum Record."><B>28.  Adding VTS Checksum Record.</B></A></TD>
+<TD><A HREF="#29.  Assemble the Distribution Files."><B>29.  Assemble the Distribution Files.</B></A></TD>
+<TD><A HREF="#30.  Create a README File."><B>30.  Create a README File.</B></A></TD>
+</TR><TR>
+<TD><A HREF="#31.  Create a LICENSE File."><B>31.  Create a LICENSE File.</B></A></TD>
+<TD><A HREF="#32.  Prepare a Master Disk."><B>32.  Prepare a Master Disk.</B></A></TD>
+</TR>
+</TABLE>
+</blockquote>
+</P>
+<A NAME="Introduction"</A>
+<H1>Introduction</H1>
+<P>
+This document provides a detailed description
+of how to translate score-related data from the MuseData format
+to the Humdrum format.
+Some familiarity with Humdrum and MuseData is assumed.
+A suitable introduction to the MuseData format may be found in
+<A HREF="manual.bibliog.html"><b>
+W.B. Hewlett,
+"MuseData: Comprehensive representation for printing, sound,
+and analysis."</b></A>
+In: E. Selfridge-Field
+<i>Beyond MIDI: The Handbook of Musical Codes,</i>
+Cambridge, Massachusetts: MIT Press, 1997.
+A suitable introduction to Humdrum may be found in
+Section I ("Humdrum General Introduction") of the
+<i>Humdrum Toolkit Reference Manual</i>
+(pp. 7-37).
+In addition, the user must be familiar with the Humdrum Kern
+representation.
+The most comprehensive introduction to Kern is in the file
+<code>kern_rep.txt</code> found in every distribution disk
+containing Kern data.
+Additional technical details regarding Kern are given in the
+<i>Humdrum Toolkit Reference Manual,</i>
+pp. 96-105.
+</P>
+<P>
+Both
+<i>MuseData</i>
+and
+<i>Humdrum</i>
+are used to represent score-related musical data.
+MuseData provides a hub of high quality data that may be
+translated to various forms -- one of which is Humdrum.
+Humdrum representations are tailored to facilitate music analysis.
+The goal of translation is to provide
+a broader distribution of CCARH data for music scholars.
+It is important that the translation be as accurate and
+complete as possible.
+</P>
+<P>
+When translating between two formats, it's important to know
+some things about both representations.
+Both MuseData and Humdrum rely on ASCII (text) formats.
+Descriptions of the MuseData and Humdrum "Kern" representations
+may be found in E. Selfridge-Field (editor)
+<i>Handbook of Musical Codes</i>
+(MIT Press, 1997).
+The MuseData representation is also described in documents
+available from the Center for Computer Assisted Research in the Humanities;
+a succinct description of the Humdrum "Kern" representation
+can also be found in the file <code>kern_hlp.txt</code> which accompanies
+every Humdrum data distribution.
+</P>
+<P>
+There are two types of MuseData files:
+<i>stage 1</i>
+and
+<i>stage 2.</i>
+Both stages conform to the MuseData representation format,
+but stage 2 data is more complete.
+Specifically, stage 2 data includes layout information
+suitable for printing and notation display.
+For example, stage 2 data contains stem direction information
+which is not present in stage 1.
+Translation to Humdrum can be done from
+<i>either</i>
+stage 1 or stage 2 MuseData -- however, it is obviously preferable
+to translate from the more complete stage 2 data.
+</P>
+<P>
+Humdrum provides several different types of representations.
+In translating MuseData, the most pertinent Humdrum representations are the
+<i>Kern</i>
+and
+<i>Bnum</i>
+representations.
+The
+<i>Kern</i>
+representation is suitable for representing notes, rests, stems,
+beams, etc., and is the most important of the Humdrum target representations.
+The
+<i>Bnum</i>
+representation is used to represent "basso numerato"
+or figured-bass data.
+Figured bass information may or may not be present in the MuseData files.
+</P>
+<P>
+The principal difference between MuseData and Humdrum is in the file
+organization.
+Humdrum represents a full score in a single file, whereas MuseData
+represents each part or voice in a separate file.
+In translating from MuseData to Kern, each individual part
+is first translated to Kern, and then all of the parts are assembled
+into a full score.
+</P>
+<A NAME="Procedural Overview"</A>
+<H2>Procedural Overview</H2>
+<P>
+Although the basic translation to Kern has been automated,
+there are several ancilliary problems that must be attended to.
+Unfortunately, these ancilliary problems involve the greatest
+amount of work.
+The translation process is described in detail later in this
+document.
+The basic steps involved in translating from MuseData to Humdrum
+can be summarized as follows.
+<ul>
+<li> (i)
+<i>Accessing</i>
+or assembling the necessary MuseData files.
+<li> (ii)
+<i>Basic translation</i>
+from MuseData to the Humdrum Kern representation.
+Each part is translated separately.
+<li> (iii)
+<i>Re-beaming and transposing</i>
+any parts for transposing instruments.
+<li> (iv)
+<i>Assembling a full score</i>
+from individual parts.
+<li> (v)
+<i>Generating figured bass</i>
+data (if necessary).
+<li> (vi)
+<i>Editing</i>
+the score to add header information and discard
+unneeded data.
+Also resolving "backspace" passages, resolving trills
+and mordents, checking for naturals, and arranging editorialisms.
+<li> (vii)
+<i>Adding reference records</i>
+to provide "library-type" information about the work.
+<li> (viii)
+<i>Syntax checking</i>
+and proof listening.
+<li> (ix)
+<i>Adding checksum</i>
+information to insure data integrity.
+<li> (x)
+<i>Assembling the distribution package</i>
+including <code>README</code> and <code>LICENSE</code> files.
+</ul>
+</P>
+<P>
+The most onerous of the above procedures are automated,
+however most of the steps involve manual intervention.
+</P>
+<A NAME="Procedural Details"</A>
+<H2>Procedural Details</H2>
+<P>
+For data translation, you will normally want to use a UNIX
+system.
+Data translation can also be carried out under DOS or WINDOWS
+but the translation programs will run much slower.
+</P>
+<P>
+In the following detailed explanation, we use the hypothetical
+example of translating a work containing four parts:
+<i>continuo, 'cello, horn</i>, and <i>oboe</i>.
+</P>
+<A NAME="1.  Access Appropriate Files."</A>
+<H3>1.  Access Appropriate Files.</H3>
+<P>
+Copy the appropriate files to a convenient working directory
+on your hard disk.
+Typically, you will need to copy an entire directory structure
+containing several subdirectories.
+On UNIX systems, use the
+<b>cp</b>
+command with the
+<b>-r</b>
+(recursively copy) option.
+For example, the following command will copy everything from the `A'
+disk to the current directory:
+<blockquote>
+<code>cp -r a:* .</code>
+</blockquote>
+You may need to use the
+<b>mcopy</b>
+command to access DOS disks from Linux systems.
+</P>
+<P>
+On DOS systems you may use the
+<b>cptree</b>
+command to replicate a subdirectory structure.
+</P>
+<A NAME="2.  Basic Translation."</A>
+<H3>2.  Basic Translation.</H3>
+<P>
+Change directories in the MuseData file structure
+until reaching the parts for a given movement or work.
+In our hypothetical example the directory will contain numbered files
+from 1 to 4.
+Use the
+<b>md2kern</b>
+program to translate each part separately:
+<blockquote>
+<code>md2kern 1 > 1.krn
+<br>
+md2kern 2 > 2.krn
+<br>
+md2kern 3 > 3.krn
+<br>
+md2kern 4 > 4.krn</code>
+</blockquote>
+Each part is now in the Humdrum Kern format.
+</P>
+<P>
+On very rare occasions you may find that
+<b>md2kern</b>
+fails to work.
+This arises from a yet to be diagnosed bug
+that seems related to the line-length of input records.
+This problem can be overcome by editing the file and
+eliminating trailing blanks at the ends of lines.
+</P>
+<A NAME="3.  Transposing Parts."</A>
+<H3>3.  Transposing Parts.</H3>
+<P>
+Unlike the printed score, the Kern representation encodes
+music at concert pitch.
+Determine whether any parts are for transposing instruments.
+If so, determine how each transposing instrument should be
+transposed in order to return it to concert pitch.
+For example, a horn in F sounds a perfect fifth below
+the notated music.
+Use the Humdrum
+<b>trans</b>
+command to transpose down 4 diatonic letter-names (<code>-d -4</code>)
+and transpose down 7 chromatic semitones (<code>-c -7</code>).
+(Refer to the <i>Humdrum Reference Manual</i> -- Section 4
+for details on how to use this command).
+In the case of our horn part:
+<blockquote>
+<code>trans -d -4 -c -7 3.krn > 3.tra</code>
+<br>
+<code>mv 3.tra 3.krn</code>     (on UNIX systems)
+<br>
+<code>ren 3.tra 3.krn</code>     (on DOS systems)
+</blockquote>
+In the case of a B-flat trumpet or B-flat clarinet,
+the appropriate transposition would be:
+<blockquote>
+<code>trans -d -1 -c -2</code>
+</blockquote>
+In the case of clarinet in A, use the following transposition:
+<blockquote>
+<code>trans -d -2 -c -3</code>
+</blockquote>
+Having transposed the part, edit this file so that
+the "transposition interpretation"
+designates a transposing <i>instrument</i>
+(see <i>Humdrum Reference Manual</i> -- Section 3 for details on
+transposition designators).
+Simply add the upper-case letter `I' prior to the `T'
+in the appropriate tandem interpretation.
+In the case of our horn, use a text editor to make the following change:
+<blockquote>
+<code>*Trd-4c-7</code>
+</blockquote>
+to:
+<blockquote>
+<code>*ITrd-4c-7</code>
+</blockquote>
+</P>
+<A NAME="4.  Beam Modification."</A>
+<H3>4.  Beam Modification.</H3>
+<P>
+MuseData and Kern handle beaming information in different ways.
+Use the
+<b>rebeam</b>
+program to transform the beaming data so that it
+conforms to the Kern format.
+Apply the command to each of the Kern part files:
+<blockquote>
+<code>rebeam 1.krn > 1.bem
+<br>
+rebeam 2.krn > 2.bem
+<br>
+rebeam 3.krn > 3.bem
+<br>
+rebeam 4.krn > 4.bem</code>
+</blockquote>
+</P>
+<A NAME="5.  Combining Parts."</A>
+<H3>5.  Combining Parts.</H3>
+<P>
+Combining parts entails expanding the files using the
+<b>timebase</b>
+command,
+then amalgamating the part files into a full score using the
+<b>assemble</b>
+command, and then eliminating null data records using the
+<b>rid</b>
+command.
+</P>
+<P>
+In order to expand the files, a suitable
+<i>time-base</i>
+duration must be chosen.
+As a minimum, the time-base must not be longer than the shortest
+duration note in any of the part files.
+The Humdrum
+<b>census</b>
+command can be used to establish the shortest note:
+<blockquote>
+<code>census -k *.bem</code>
+</blockquote>
+Note that triplets or other "n-tuplets" might require
+an even shorter time-base for proper score assembly.
+For example, if the shortest duration in the work is an eighth-note (`8'),
+but the work also contains quarter-note triplets (`12'), then a
+common divisor must be sought.
+Both 12 and 8 divide evenly into 24, therefore a time-base of 24
+is the minimum required.
+If you are in doubt about an appropriate time-base value, a "safe"
+value is often 96.
+Apply the same time-base to each of the part files:
+<blockquote>
+<code>timebase -t 96 1.bem > 1.tb
+<br>
+timebase -t 96 2.bem > 2.tb
+<br>
+timebase -t 96 3.bem > 3.tb
+<br>
+timebase -t 96 4.bem > 4.tb</code>
+</blockquote>
+(If you have chosen an inappropriate timebase don't worry too much,
+because the
+<b>proof</b>
+command will complain voluminously when we apply it later.)
+</P>
+<P>
+Now we can assemble the parts into a single file containing
+the full score.
+Since the Humdrum convention places the lowest parts in the
+left-most columns, we must reverse the numerical order of the part files.
+We should also use the
+<b>rid</b>
+command to eliminate null data records:
+<blockquote>
+<code>assemble 4.tb 3.tb 2.tb 1.tb | rid -d > full.krn</code>
+</blockquote>
+The file <code>full.krn</code> will now contain a full score rendering
+of the work or movement.
+</P>
+<A NAME="^.  Alignment Check."</A>
+<H3>6.  Alignment Check.</H3>
+<P>
+Now that we have a full score, we ought to check to ensure that the
+parts have been correctly aligned.
+The formal way of checking this is to run the Humdrum
+<b>proof</b>
+command, but since we will be running this command later,
+and since the likelihood is that everything is okay,
+a faster check is simply to ensure that the number of the spines
+is constant throughout the file.
+We can do this using the
+<b>humdrum</b>
+command with the
+<b>-v</b>
+(verbose) option.
+<blockquote>
+<code>humdrum -v full.krn | grep 'concurrent spines'</code>
+</blockquote>
+The output from this command will tell us the
+<i>minimum</i>
+and
+<i>maximum</i>
+number of spines in the file;
+they should be identical.
+If they aren't identical, then it is likely that the parts are misaligned.
+The probable cause is that one or more of the parts contains
+an unusual <i>n</i>-tuplet (such as 7 in the time of a quarter)
+and that the time-base value used in the
+<b>timebase</b>
+command was insufficiently large.
+Examine the full score at the point where the parts are misaligned
+and determine which duration value that has led to the problem.
+Calculate a better time-base value so that all durations in the
+work are common factors.
+For example, if the work contains quarter-notes (4),
+eighth-notes (8) and septuplets in the time of a quarter (28),
+then a suitable time-base value would be 28 X 8 or 224.
+Return to the section "Combining Parts" and use the revised
+time-base value.
+</P>
+<A NAME="7.  Removing Duplicate Header Information."</A>
+<H3>7.  Removing Duplicate Header Information.</H3>
+<P>
+After creating a full score, duplicate MuseData header comments
+can be removed using a text editor like
+<b>vi</b>
+or
+<b>emacs.</b>
+For example, if the full score contains 12 parts, we don't
+need 12 identical comments indicating the date that the
+parts were encoded.
+</P>
+<A NAME="8.  Eliminate Redundant Section Labels."</A>
+<H3>8.  Eliminate Redundant Section Labels.</H3>
+<P>
+Humdrum provides ways of labelling sections and indicating repeats,
+Da Capos, etc.
+The
+<b>md2kern</b>
+program automatically assigns the default label `A' to the first section
+in any translated work.
+Subsequent sections are labelled `B', `C', etc.
+In many cases, the work has only a single section;
+in this case the section label is of no use unless there is a repeat.
+Consequently, the Humdrum "expansion list" (indicating
+how to expand repeats) simply says play section `A' once.
+In these cases, both the
+<i>section label</i>
+and the
+<i>expansion list</i>
+are redundant and should be deleted.
+That is, the following lines should be eliminated if they occur together:
+<blockquote>
+<code>*>[A]
+<br>
+*>A</code>
+</blockquote>
+</P>
+<A NAME="9.  Instrument Identification."</A>
+<H3>9.  Instrument Identification.</H3>
+<P>
+Humdrum provides standardized instrumentation indicators.
+For example, the standard indicator for "harpsichord"
+is <code>*Icemba</code>.
+An extensive list of instrument designators can be found in
+Section 3 of the
+<i>Humdrum Reference Manual</i>
+(pp. 193-198).
+</P>
+<P>
+In addition, Humdrum provides standardized instrument class
+designators, such as <code>*ICklav</code> for keyboard instruments
+and <code>*ICidio</code> for percussion instruments,
+and for instrument groupings -- such as <code>*IGripn</code> for
+<i>ripieno</i>
+instruments and <code>*IGacmp</code> for accompaniment instruments.
+These instrument class designators can also be found in
+Section 3 of the Humdrum reference manual.
+</P>
+<P>
+In addition, the original instrument name (as found in the score)
+should also be encoded as a Humdrum local comment.
+</P>
+<P>
+Add instrument and instrument-class tandem interpretations.
+Also add the instrument identification to corresponding local
+comments.
+</P>
+<A NAME="10.  Figured Bass Generation."</A>
+<H3>10.  Figured Bass Generation.</H3>
+<P>
+If the original MuseData score includes figured-bass information,
+then the appropriate data will appear in the Kern output as special
+global comments (beginning "<code>!!f1</code> ..." or "<code>!!f2</code> ..." etc.).
+These comments can be used to generate a Humdrum "basso-numerato"
+spine (<code>**Bnum</code>) using the
+<b>md2bnum</b>
+program.
+<blockquote>
+<code>md2bnum full.krn > figbass</code>
+</blockquote>
+This new spine should then be added to the full score using the
+<b>assemble</b>
+command:
+<blockquote>
+<code>assemble full.krn figbass > temp
+<br>
+mv temp full.krn</code>
+</blockquote>
+</P>
+<A NAME="11.  Editing Figured Bass."</A>
+<H3>11.  Editing Figured Bass.</H3>
+<P>
+There is an unfortunate problem arising when translating MuseData
+figured bass to the Humdrum basso-numerato.
+When a new figure occurs while a bass note is being sustained,
+it is possible that the position of the figure in the Humdrum file is incorrect.
+Consider, for example, the two passages shown below.
+The "<code>5-3</code>" figured bass is positioned
+<i>incorrectly</i>
+in the first passage,
+but it is positioned
+<i>correctly</i>
+in the second passage:
+<blockquote>
+<table>
+<TR><TD><code>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**Bnum</TD></TR>
+<TR><TD>2E</TD><TD>4c</TD><TD>8g</TD><TD>6</TD></TR>
+<TR><TD><code>.</TD><TD>.</TD><TD>8a</TD><TD>5 3</TD></TR>
+<TR><TD><code>.</TD><TD>4B</TD><TD>4g</TD><TD>.</TD></TR>
+<TR><TD></TD><TD></TD><TD></TD><TD></TD></TR>
+<TR><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**Bnum</TD></TR>
+<TR><TD>2E</TD><TD>4c</TD><TD>8g</TD><TD>6</TD></TR>
+<TR><TD><code>.</TD><TD>.</TD><TD>8a</TD><TD>.</TD></TR>
+<TR><TD><code>.</TD><TD>4B</TD><TD>4g</TD><TD>5 3</code></TD></TR>
+</table>
+</blockquote>
+When more than one figured bass is given for a single bass note the
+<b>md2bnum</b>
+command cannot determine where the correct placement is from the
+MuseData information.
+</P>
+<P>
+The
+<b>bnumhelp</b>
+program marks all
+<i>possible</i>
+error points for manual inspection and editing:
+<blockquote>
+<code>bnumhelp full.krn > new.krn</code>
+</blockquote>
+Open the file "<code>new.krn</code>" and search for any occurrences of the
+string "<code>ERROR?</code>"
+Check each possible error points with the original score to
+determine whether the figured bass notation is correctly positioned.
+When you have finished editing the file:
+<blockquote>
+<code>mv new.krn full.krn</code>
+</blockquote>
+</P>
+<A NAME="12.  Leading Barlines."</A>
+<H3>12.  Leading Barlines.</H3>
+<P>
+Humdrum tools prefer to have explicit information indicating
+the beginning of the first measure.
+If a file does not begin with an anacrusis ("pickup")
+then an "invisible" first barline needs to be encoded in the Kern
+representation.
+In our hypothetical file containing five spines,
+we would need to insert the following line just before the first
+note(s) in the work:
+<blockquote>
+<table>
+<TR><TD><code>=1-<TD></TD>=1-<TD></TD>=1-<TD></TD>=1-<TD></TD>=1-</code></TD></TR>
+</table>
+</blockquote>
+</P>
+<P>
+Don't forget to add the appropriate barline in the figured bass
+spine (if it is present).
+</P>
+<A NAME="13.  Logical and Orthographic Barlines."</A>
+<H3>13.  Logical and Orthographic Barlines.</H3>
+<P>
+The kern representation makes a distinction between the logical
+<i>function</i>
+of a barline and it's visual or
+<i>orthographic</i>
+appearance.
+For example, kern distinguishes between double barlines whose
+function is to indicate the end of a work or movement,
+and double barlines that simply delineate sections within the course
+of a work or movement.
+Moreover, in kern, it is possible for a barline at the
+end of the work to be "functionally" a double barline,
+yet appear visually as a single barline.
+</P>
+<P>
+<i>Functional double barlines</i>
+are encoded with a double equals sign (==) whether or not they
+are visually rendered as double barlines.
+<i>Functional single barlines</i>
+are encoded with a single equals sign (=) whether or not they
+are visually rendered as single barlines.
+</P>
+<P>
+The specific visual appearance may be encoded following the equals
+sign(s).
+The vertical line (|) represents a `thin' line and the exclamation
+mark (!) represents a `thick' line.
+A typical final double bar would be encoded:
+<blockquote>
+<code>==|!</code>
+</blockquote>
+Most mid-movement double bars are encoded with two thin lines
+and so would be encoded:
+<blockquote>
+<code>=||</code>
+</blockquote>
+</P>
+<P>
+A common translation error arising from the
+<b>md2kern</b>
+program is to render mid-movement double barlines as
+<i>functional</i>
+rather than
+<i>orthographic</i>
+double-bars.
+Check all double barlines for proper visual encoding.
+Remove "functional" double bars from within the work/movement;
+retain only visual double barlines mid-work.
+</P>
+<A NAME="14.  Eliminating Figured Bass Comments."</A>
+<H3>14.  Eliminating Figured Bass Comments.</H3>
+<P>
+Once the figured bass information has been properly edited,
+the associated global comments can be eliminated from the Humdrum file.
+Open the file and eliminate all lines beginning with two exclamation
+marks followed by the lower-case letter `f'.
+For example, execute the following command if using the
+<b>vi</b>
+text editor:
+<blockquote>
+<code>:g/^!!f/d</code>
+</blockquote>
+</P>
+<A NAME="15.  Eliminating `P' Record Comments."</A>
+<H3>15.  Eliminating `P' Record Comments.</H3>
+<P>
+Also, eliminate some other MuseData information that has been
+echoed as Humdrum comments:
+<blockquote>
+<code>:g/^!!P/d</code>
+</blockquote>
+</P>
+<A NAME="16.  Resolving backspace Passages."</A>
+<H3>16.  Resolving "backspace" Passages.</H3>
+<P>
+MuseData provides a "backspace" capability that
+allows the score pointer to be moved backwards in time.
+This is forbidden in Humdrum.
+The
+<b>md2kern</b>
+program marks all occurrences of MuseData backspace material,
+and encodes the passage as local comments.
+These must be edited by hand.
+The user must go back the specified duration and insert
+the material either as (1) Kern multiple stops, or as (2) a temporary
+split-spine.
+If the note durations are identical to the concurrent material in
+the same voice, then the backspace material should be inserted
+as multiple stops.
+If the note durations differ, then a temporary split-spine
+must be added.
+</P>
+<A NAME="17.  Checking Naturals."</A>
+<H3>17.  Checking Naturals.</H3>
+<P>
+The
+<b>md2kern</b>
+program currently fails to translate all naturals correctly.
+Until this bug is fixed, it is necessary to manually check
+the output Kern data against the printed score in order to
+ensure that all of the naturals are present.
+</P>
+<A NAME="18.  Adding Heavy Wedge Accents."</A>
+<H3>18.  Adding Heavy Wedge Accents.</H3>
+<P>
+The
+"md2kern"
+program also currently fails to translate "heavy wedge"
+symbols (designated in MuseData by the semicolon ";").
+These must be inserted manually as a greve (`) in the
+kern data.
+</P>
+<A NAME="19.  Resolving Trills and Mordents."</A>
+<H3>19.  Resolving Trills and Mordents.</H3>
+<P>
+The Kern representation makes a distinction between whole-tone
+and semitone trills and mordents.
+Each trill and mordent must be examined manually and the correct code
+selected.
+</P>
+<P>
+The
+<b>md2kern</b>
+command translates all trills using the token "<code>Tt</code>".
+Open the file using a text editor and search for occurrences of `Tt'.
+Check each trill against the printed score and determine whether
+the trill is intended to be a semitone or tone in size.
+In rare cases, the size of the trill will be ambiguous.
+In these cases choose what you think is the best,
+and add the kern `x' signifier immediately following the `T' or `t'.
+This indicates that the trill size is an "editorial interpretation."
+</P>
+<P>
+Repeat this same procedure for mordents ("<code>Mm</code>")
+and for inverted mordents ("<code>Ww</code>").
+</P>
+<A NAME="20.  Appoggiaturas."</A>
+<H3>20.  Appoggiaturas.</H3>
+<P>
+The kern representation treats appoggiaturas in a special way.
+In general, kern is oriented to representing things in a manner
+closer to how they sound.
+Consequently, appoggiaturas are encoded as they would be
+logically performed.
+For example, a quarter-note preceded by an appoggiatura (small note)
+would be performed as two eighth-notes.
+Similarly, a dotted quarter-note preceded by an appoggiatura
+would be performed as a quarter-note followed by an eighth-note.
+</P>
+<P>
+All appoggiaturas must be re-encoded in a
+way that reflects their likely performance.
+At the same time, the two notes forming the appoggiatura
+must be marked in the kern representation:
+the initial note of the appoggiatura is marked by the upper-case
+letter `<code>P</code>' and the final (second) note of the appoggiatura is
+marked by a lower-case letter `<code>p</code>'.
+</P>
+<A NAME="21.  Section Labels."</A>
+<H3>21.  Sections Labels.</H3>
+<P>
+It is helpful to break-up large works/movements into
+smaller sections that can be labelled.
+In a binary work, for example, it may be useful to label the `A' and `B'
+sections.
+In a sonata-allegro work, it may be useful to label the
+introduction, exposition, development, recapitulation, etc.
+Some works include explicitly notated labels.
+These labels may be traditional, e.g. "Coda,"
+or they may reflect programatic descriptions,
+such as the section entitled
+<i>Il canto degl'uccelli</i>
+[The song of the birds] in Vivaldi's
+<i>The Four Seasons.</i>
+</P>
+<P>
+Where appropriate, suitable section labels should be created
+and encoded using the Humdrum Section Label designator.
+Section labels can include the space character:
+<blockquote>
+<code>*>1st Theme</code>
+</blockquote>
+If you include section labels, you must also include a Humdrum
+"Expansion List" to indicate how the sections are
+connected.
+The Humdrum
+<b>thru</b>
+command causes a through-composed version of a file to be
+generated according to the expansion list.
+For example, an expansion list for a simple binary work may be
+encoded as:
+<blockquote>
+<code>*>[A,B]</code>
+</blockquote>
+Remember that expansion lists ought to be encoded prior
+to the first section label.
+</P>
+<A NAME="22.  Repeats and Da Capos."</A>
+<H3>22.  Repeats and Da Capos.</H3>
+<P>
+Whenever a work/movement includes repeats or Da Capos,
+section labels and expansion lists must be encoded.
+In some cases, there is more than one way of interpreting
+how to realize the repeats.
+The most "conventional" realization should be encoded
+with the
+<i>unnamed expansion list.</i>
+This will specify the default expansion using the Humdrum
+<b>thru</b>
+command.
+Suppose for example, that you are encoding a typical
+minuet and trio.
+The conventional performance practice involves repeating
+all sections of both the minuet and trio, but then avoiding
+the repeats in the minuet following the Da Capo.
+A suitable expansion list might be:
+<blockquote>
+<code>*>[Minuet,Minuet,Trio,Trio,,Minuet]</code>
+</blockquote>
+An alternative expansion list might be encoded as follows
+(notice the expansion-list-label <i>ossia</i>):
+<blockquote>
+<code>*>ossia[Minuet,Minuet,Trio,Trio,,Minuet,Minuet]</code>
+</blockquote>
+</P>
+<A NAME="23.  Editorialisms."</A>
+<H3>23.  Editorialisms.</H3>
+<P>
+MuseData files may contain comments that provide
+editorial annotations.
+Humdrum provides several ways of encoding editorialisms.
+These include editorial footnotes, local comments,
+global comments, interpretation data,
+<i>sic</i>
+and
+<i>ossia</i>
+designations, version labels, sectional labels,
+and expansion lists.
+</P>
+<P>
+The kern `<code>x</code>' signifies an "editorial interpretation" -- that the 
+immediately preceding signifier is interpreted.
+The kern `<code>xx</code>' also signifies an editorial interpretation where the
+immediately preceding data token is interpreted.
+The kern `<code>X</code>' signifies an "editorial intervention" -- that the
+immediately preceding signifier is an editorial addition.
+The kern `<code>XX</code>' also signifies an editorial intervention where the
+immediately preceding data token is an editorial addition.
+The kern `<code>y</code>' designates a invisible symbol -- such as an unprinted
+note or rest that is logically implied.
+The kern `<code>Y</code>' signifies an editorial
+<i>sic</i>
+marking -- that the information is encoded literally, but is questionable.
+The kern `<code>?</code>' signifies an editorial footnote where the immediately
+preceding signifier has an accompanying editorial footnote
+(located in a comment record).
+The kern `<code>??</code>' signifies an editorial footnote where the immediately
+preceding data token has an accompanying editorial footnote
+(located in a comment record).
+</P>
+<A NAME="24.  Reference Records."</A>
+<H3>24.  Reference Records.</H3>
+<P>
+Reference information must be added to each file.
+This information provides "library-type" information
+about the composer, date of composition, place of composition,
+copyright notice, etc.
+</P>
+<P>
+As many reference records should be added as possible since
+these are immensely useful to Humdrum users.
+Essential reference records include the following:
+<blockquote>
+<table>
+<TR><TD><code>!!!COM:</code></TD><TD>composer's name</TD></TR>
+<TR><TD><code>!!!CDT:</code></TD><TD>composer's dates</TD></TR>
+<TR><TD><code>!!!OTL:</code></TD><TD>title (in original language)</TD></TR>
+<TR><TD><code>!!!OMV:</code></TD><TD>movement number (if appropriate)</TD></TR>
+<TR><TD><code>!!!OPS:</code></TD><TD>opus number (if appropriate)</TD></TR>
+<TR><TD><code>!!!ODT:</code></TD><TD>date of composition</TD></TR>
+<TR><TD><code>!!!OPC:</code></TD><TD>place of composition</TD></TR>
+<TR><TD><code>!!!YEP:</code></TD><TD>publisher of electronic edition</TD></TR>
+<TR><TD><code>!!!YEC:</code></TD><TD>date & owner of electronic copyright</TD></TR>
+<TR><TD><code>!!!YER:</code></TD><TD>date electronic edition released</TD></TR>
+<TR><TD><code>!!!YEM:</code></TD><TD>copyright message</TD></TR>
+<TR><TD><code>!!!YEN:</code></TD><TD>country of copyright</TD></TR>
+<TR><TD><code>!!!EED:</code></TD><TD>electronic editor</TD></TR>
+<TR><TD><code>!!!ENC:</code></TD><TD>encoder of document</TD></TR>
+<TR><TD><code>!!!EEV:</code></TD><TD>electronic edition version</TD></TR>
+<TR><TD><code>!!!ELF:</code></TD><TD>file number, e.g. 1 or 4 (1/4)</TD></TR>
+<TR><TD><code>!!!VTS:</code></TD><TD>checksum validation number (see below)</TD></TR>
+<TR><TD><code>!!!AMT:</code></TD><TD>metric classification</TD></TR>
+<TR><TD><code>!!!AIN:</code></TD><TD>instrumentation</TD></TR>
+</table>
+</blockquote>
+</P>
+<P>
+Where appropriate, the following reference records should
+also be included:
+<blockquote>
+<table>
+<TR><TD><code>!!!CNT:</code></TD><TD>composer's nationality</TD></TR>
+<TR><TD><code>!!!XEN:</code></TD><TD>title (English translation)</TD></TR>
+<TR><TD><code>!!!OPR:</code></TD><TD>title of larger (or parent) work</TD></TR>
+<TR><TD><code>!!!ODE:</code></TD><TD>dedication</TD></TR>
+<TR><TD><code>!!!OCY:</code></TD><TD>country of composition</TD></TR>
+<TR><TD><code>!!!PPR:</code></TD><TD>first publisher</TD></TR>
+<TR><TD><code>!!!PDT:</code></TD><TD>date first published</TD></TR>
+<TR><TD><code>!!!PPP:</code></TD><TD>place first published</TD></TR>
+<TR><TD><code>!!!SCT:</code></TD><TD>scholarly catalogue name & number</TD></TR>
+<TR><TD><code>!!!SMA:</code></TD><TD>manuscript acknowledgement</TD></TR>
+<TR><TD><code>!!!AFR:</code></TD><TD>form of work</TD></TR>
+<TR><TD><code>!!!AGN:</code></TD><TD>genre of work</TD></TR>
+<TR><TD><code>!!!AST:</code></TD><TD>style of period</TD></TR>
+</table>
+</blockquote>
+</P>
+<P>
+Refer to pages 26-37 in the <i>Humdrum Reference Manual</i> for
+further information about the types and format for different
+reference records.
+</P>
+<A NAME="25.  Syntax Checking (I)."</A>
+<H3>25.  Syntax Checking (I).</H3>
+<P>
+Use the Humdrum
+<b>humdrum</b>
+command to identify whether the final encoded output conforms
+to the Humdrum syntax:
+<blockquote>
+<code>humdrum full.krn</code>
+</blockquote>
+</P>
+<A NAME="26.  Syntax Checking (II)."</A>
+<H3>26.  Syntax Checking (II).</H3>
+<P>
+Use the Humdrum
+<b>proof</b>
+command to identify any syntactical errors in the encoded Kern
+data:
+<blockquote>
+<code>proof full.krn</code>
+</blockquote>
+</P>
+<A NAME="27.  Proof Listening."</A>
+<H3>27.  Proof Listening.</H3>
+<P>
+One of the best ways to ensure that musical data makes sense
+is to listen to it.
+No data should be released to the public without some proof listening.
+The Humdrum
+<b>midi</b>
+and
+<b>perform</b>
+commands currently only work under the DOS operating system.
+Ensure that you are using DOS when executing the following command:
+<blockquote>
+<code>midi -c full.krn | perform</code>
+</blockquote>
+The
+<b>perform</b>
+command allows you to
+<i>pause</i>
+(press the space bar), to
+<i>move</i>
+to a particular measure
+(type a measure number followed by enter),
+to increase (type <) or decrease (type >) the
+<i>tempo,</i>
+and to
+<i>return</i>
+to the beginning of the score
+(type enter).
+There are many other functions within the
+<b>perform</b>
+command; refer to the <i>Humdrum Reference Manual</i> -- section 4
+for further details.
+</P>
+<A NAME="28.  Adding VTS Checksum Record."</A>
+<H3>28.  Adding VTS Checksum Record.</H3>
+<P>
+Once you are certain that the score files are completely finished,
+you must calculate a "checksum" value to be encoded in a
+Humdrum "VTS" reference record.
+This record will allow users of the data to check the integrity
+of the data using the Humdrum
+<b>veritas</b>
+command.
+</P>
+<P>
+In order to calculate the checksum value for a given file,
+type the command:
+<blockquote>
+<code>cksum full.krn > temp</code>
+</blockquote>
+Open the original file:
+<blockquote>
+<code>vi full.krn</code>
+</blockquote>
+Go to the bottom of the file by typing `G' and then read in the
+checksum value:
+<blockquote>
+<code>:.r temp</code>
+</blockquote>
+<P>
+Then insert the `<code>!!!VTS: </code>' reference record designator.
+</P>
+<A NAME="29.  Assemble the Distribution Files."</A>
+<H3>29.  Assemble the Distribution Files.</H3>
+<P>
+Rename the score files and collect them into a coherent repertoire.
+Be sure to use the <code>.krn</code> file extension.
+Place all resulting Humdrum files in a single directory.
+</P>
+<A NAME="30.  Create a README File."</A>
+<H3>30.  Create a README File.</H3>
+<P>
+Create a <code>README</code> file similar to others in Humdrum data distributions.
+The file should contain a title, a brief paragraph describing the
+historical background for the works, a paragraph describing
+the personnel involved in the production, a copyright
+and license notice, and a table of contents.
+Avoid tabs in this file,
+and ensure that no line is greater than 80-characters in length.
+</P>
+<A NAME="31.  Create a LICENSE File."</A>
+<H3>31.  Create a LICENSE File.</H3>
+<P>
+<P>
+Add a <code>LICENSE</code> file reiterating the licensing agreement
+for the distributed data.
+Simply copy a file used in previous distributions.
+</P>
+<A NAME="32.  Prepare a Master Disk."</A>
+<H3>32.  Prepare a Master Disk.</H3>
+<P>
+Copy all of the files onto a master floppy disk from which distribution
+copies will be made.
+Render the master disk "read-only."
+Attach a clearly marked label.
+Make a backup copy of the appropriate directory on the hard disk.
+</P>
+
+David Huron
+<br>
+1996 October
+<br>
+Revised 1997 January
+

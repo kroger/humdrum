@@ -1,0 +1,434 @@
+<HTML>
+<HEAD>
+<TITLE>The Humdrum Toolkit</TITLE>
+</HEAD>
+<BODY bgcolor=#FFFFFF link="004DDD" alink="000000" vlink="000000">
+</OLD-BODY BACKGROUND/bgcolor=#C0C0C0 /link="008DDD" /alink="00DDDD" /vlink="008080">
+<br>
+<br>
+<BIG><B>
+<center><HR WIDTH=500></center> 
+<XXXimg src="muscog_icon.gif" ALIGN=RIGHT> <br>
+<center><H1>The Humdrum Toolkit: Unix-based Tools for Music Research</H1></center>
+<center><HR WIDTH=500></center> 
+
+<CENTER>
+<B>David Huron</B>
+<br>
+<B>Music Cognition Group</B>
+<br>
+<B>Ohio State University</B>
+</CENTER>
+
+
+<BIG>
+<B>
+
+<hr>
+
+<H2>PROBLEM</H2>
+<blockquote>
+How does one design software that enhances
+research productivity in music?
+</blockquote>
+
+<hr>
+
+<CENTER>
+<H2>DESIGN APPROACH</H2>
+</CENTER>
+<ul>
+<li>
+machine-like software vs tool-like software
+<br>
+<br>
+<ul>
+<li>
+design machine-like software when problem area is well-defined
+<br>
+<br>
+<li>
+design tool-like software when problem area not well-defined
+<br>
+<br>
+</ul>
+<li>
+music scholarship not well-defined -- hence need for
+software tools
+</ul>
+
+<hr>
+<CENTER>
+<H2>MUSIC REPRESENTATION</H2>
+</CENTER>
+<ul>
+<li>
+representation (a venerable if uninteresting problem)
+<br>
+<img src="humdrum.01a.gif">
+</ul>
+<H2>Structure Problem</H2>
+<ul>
+<li>
+traditional approach: raster scan
+<br>
+<br>
+either vertical:
+<br>
+<img src="humdrum.01b.gif">
+<br>
+E5 E5 G4 C4 F5 D5 F4 G4 E5 C5 G4 E4 C6 C6 C4 E3 G#5 F4 C4 A5 E5 F5 etc.
+<br>
+<br>
+or horizontal:
+<br>
+<img src="humdrum.01c.gif">
+<br>
+E5 E5 F5 D5 E5 C5 C6 C6 G#5 A5 E5 F5 D5 B4 C4 G4 G4 G4 C4 F4 F4 E4 etc.
+<br>
+<br>
+<li>
+Humdrum approach:  2D format
+<TABLE>
+<TR><TD></TD><TD></TD><TD><B>E5</TD><TD></TD><TD></TD><TD><B>E5</TD><TD></TD><TD></TD><TD><B>F5</TD><TD></TD><TD></TD><TD><B>D5</TD><TD></TD><TD></TD><TD><B>E5</TD><TD></TD><TD></TD><TD><B>C5</TD><TD></TD><TD></TD><TD><B>C6</TD><TD></TD><TD></TD><TD><B>C6</TD><TD></TD><TD></TD><TD><B>G#5</TD><TD></TD><TD></TD><TD><B>A5</TD><TD></TD><TD></TD><TD><B>E5</TD><TD></TD><TD></TD><TD><B>F5</TD><TD></TD><TD></TD><TD><B>D5</TD><TD></TD><TD></TD><TD><B>B4</TD><TD></TD><TD></TD><TD><B>C5</TD></TR>
+<TR><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>G4</TD><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>G4</TD><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>G4</TD><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>C4</TD><TD></TD><TD></TD><TD><B>F4</TD><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>F4</TD><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>E4</TD></TR>
+<TR><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>C4</TD><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>F4</TD><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>E4</TD><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>E3</TD><TD></TD><TD></TD><TD><B>C4</TD><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>G4</TD><TD></TD><TD></TD><TD><B>.</TD><TD></TD><TD></TD><TD><B>C4</TD></TR>
+</TABLE>
+</ul>
+
+<H3>Structure Solution</H3>
+<blockquote>
+Use 2D representation structure to facilitate data manipulation.
+</blockquote>
+
+<hr>
+<H2>Semiotic Problem</H2>
+<blockquote>
+What do we represent?
+<ul>
+<li>
+notated pitch?
+<li>
+concert pitch?
+<li>
+relative pitch?
+<li>
+fundamental frequency?
+<li>
+cents?
+<li>
+interval?
+<li>
+scale degrees?
+<li>
+MIDI?
+<li>
+visual appearance in score? ("orthography")
+</ul>
+</P>
+ANSWER: ... yes, all of them
+</blockquote>
+
+<H3>Semiotic Solution</H3>
+<blockquote>
+Provide a means for representing whatever
+the user wants to represent.
+</blockquote>
+
+<hr>
+<CENTER>
+<H2>HOW DO WE LET USER'S REPRESENT ANYTHING?</H2>
+</CENTER>
+<ul>
+<li>
+<CENTER>
+Humdrum "interpretations". E.g.
+</CENTER>
+<br>
+<br>
+<CENTER>
+<TABLE>
+<TR><TD></TD><TD><B>**pitch</TD><TD></TD><TD><B>**intervals</TD><TD></TD><TD><B>**scale</TD><TD></TD><TD><B>**Korean</TD><TD></TD><TD><B>**anything</TD></TR>
+<TR><TD></TD><TD><B>C4</TD><TD></TD><TD><B>.</TD><TD></TD><TD><B>DO</TD><TD></TD><TD><B>tae</TD><TD></TD><TD><B>abc</TD></TR>
+<TR><TD></TD><TD><B>A4</TD><TD></TD><TD><B>+M6</TD><TD></TD><TD><B>LA</TD><TD></TD><TD><B>hwang</TD><TD></TD><TD><B>%G&()</TD></TR>
+<TR><TD></TD><TD><B>F4</TD><TD></TD><TD><B>-M3</TD><TD></TD><TD><B>FA</TD><TD></TD><TD><B>chung</TD><TD></TD><TD><B>34.5</TD></TR>
+<TR><TD></TD><TD><B>E4</TD><TD></TD><TD><B>-m2</TD><TD></TD><TD><B>MI</TD><TD></TD><TD><B>nam</TD><TD></TD><TD><B>Q@-7</TD></TR>
+</TABLE>
+</CENTER>
+</ul>
+
+<hr>
+<CENTER>
+<H2>HOW DO WE MANIPULATE SUCH REPRESENTATIONS?</H2>
+</CENTER>
+<br>
+<CENTER>
+<TABLE>
+<TR><TD><BIG><B>Two kinds of tools:</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><BIG><B>1. Tools that manipulate any representation conforming to the Humdrum Syntax.</TD></TR>
+<TR><TD><BIG><B>&#32&#32&#32(Similar to grep, cat, sed, cut ...)</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><BIG><B>2. Tools that translate or modify pre-defined representations.</TD></TR>
+<TR><TD><BIG><B>&#32&#32&#32E.g.  pitch -> frequency -> cochlear coordinates -> solfg -> pitch -> semits</TD></TR>
+</TABLE>
+</CENTER>
+
+<hr>
+<CENTER>
+<H2>WHAT REPRESENTATIONS ARE PRE-DEFINED?</H2>
+</CENTER>
+<blockquote>
+<ul>
+<li>
+ANSI pitch, French solfege, German Tonhohe
+<br>
+<br>
+<li>
+semitones, cents, MIDI
+<br>
+<br>
+<li>
+critical bands, cochlear coordinates
+<br>
+<br>
+<li>
+absolute time, relative time, duration, epoch
+<br>
+<br>
+<li>
+tablatures: guitar, lute, banjo, sitar ...
+<br>
+<br>
+</ul>
+</blockquote>
+
+<hr>
+<CENTER>
+<H2>EXAMPLES OF USER-DEFINED REPRESENTATIONS</H2>
+</CENTER>
+<blockquote>
+<ul>
+<li>
+Gregorian Chant (Royal)
+<br>
+<br>
+<li>
+Balinese Cipher Notation (von Hippel)
+<br>
+<br>
+<li>
+Trumpet Biomechanics (Berec)
+<br>
+<br>
+<li>
+Spectral content in orchestral scores (Smythe)
+<br>
+<br>
+<li>
+Sensory Dissonance (Mashinter)
+<br>
+<br>
+<li>
+Korean Court music (Nam)
+<br>
+<br>
+<li>
+Cajun Button Accordion (DeWitt)
+<br>
+<br>
+<li>
+many others ...
+<br>
+<br>
+</ul>
+</blockquote>
+
+<hr>
+
+using grep:
+grep '6-.*4+' (augmented sixth chord)
+
+interval
+
+<ul>
+<li>
+-extract and yank
+</ul>
+<blockquote>
+<img src="humdrum.03.gif">
+</blockquote>
+<hr>
+<blockquote>
+<img src="humdrum.02.gif">
+</blockquote>
+<hr>
+<blockquote>
+<img src="humdrum.04.gif">
+</blockquote>
+<hr>
+<blockquote>
+<img src="humdrum.07.gif">
+</blockquote>
+</hr>
+<blockquote>
+</img src="humdrum.06.gif">
+</blockquote>
+<hr>
+<blockquote>
+<img src="humdrum.05.gif">
+</blockquote>
+<hr>
+<CENTER>
+<H2>TWO-DIMENSIONAL REGULAR EXPRESSIONS</H2>
+</CENTER>
+<br>
+<br>
+<H3>Normal Regular Expressions:</H3>
+
+<CENTER>
+<TABLE>
+<TR><TD><BIG><B>*</TD><TD></TD><TD><BIG><B>zero or more ...</TD><TD></TD></TR>
+<TR><TD><BIG><B>+</TD><TD></TD><TD><BIG><B>one or more ...</TD><TD></TD></TR>
+<TR><TD><BIG><B>?</TD><TD></TD><TD><BIG><B>zero or one ...</TD><TD></TD></TR>
+</TABLE>
+</CENTER>
+<H3>Multi-Record Regular Expressions:</H3>
+<CENTER>
+<TABLE>
+<TR><TD><BIG><B><i>&#60tab&#62</i>*\n</TD><TD></TD><TD><BIG><B>zero or more records ...</TD><TD></TD></TR>
+<TR><TD><BIG><B><i>&#60tab&#62</i>+\n</TD><TD></TD><TD><BIG><B>one or more records ...</TD><TD></TD></TR>
+<TR><TD><BIG><B><i>&#60tab&#62</i>?\n</TD><TD></TD><TD><BIG><B>zero or one records ...</TD><TD></TD></TR>
+</TABLE>
+</CENTER>
+<br>
+<br>
+Examples of a multi-record regular expressions:
+<br>
+<br>
+<CENTER>
+<TABLE>
+<TR><TD><BIG><B>^[A-Z].*[A-Z]$<i>&#60tab&#62</i>+\n</TD><TD></TD><TD><BIG><B>one or one records beginning and ending with upper-case letters</TD><TD></TD></TR>
+<TR><TD><BIG><B>^X$</TD><TD></TD><TD><BIG><B>followed by a single record containing just the letter X</TD><TD></TD></TR>
+</TABLE>
+</CENTER>
+<br>
+<br>
+<CENTER>
+<TABLE>
+<TR><TD><BIG><B>B-<i>&#60tab&#62</i>+\n</TD><TD></TD><TD><BIG><B></TD><TD></TD></TR>
+<TR><TD><BIG><B>A<i>&#60tab&#62</i>+\n</TD><TD></TD><TD><BIG><B></TD><TD></TD></TR>
+<TR><TD><BIG><B>C<i>&#60tab&#62</i>+\n</TD><TD></TD><TD><BIG><B></TD><TD></TD></TR>
+<TR><TD><BIG><B>H<i>&#60tab&#62</i>+\n</TD><TD></TD><TD><BIG><B></TD><TD></TD></TR>
+</TABLE>
+</CENTER>
+<hr>
+
+<CENTER>
+<H2>HUMDRUM RESOURCES</H2>
+</CENTER>
+<hr>
+<ul>
+Over 8000 encoded works:
+<li>
+Translation routines from CCARH MuseData format.
+<li>
+<li>
+<li>
+<li>
+</ul>
+
+<CENTER>
+<H2>PROJECTS USING HUMDRUM</H2>
+</CENTER>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+</B>
+</BIG>
+</BODY>
+</HTML>
+
+<H3>ABSTRACT</H3>
+<P>
+The Humdrum Toolkit provides a set of 60 inter-related
+software tools intended to assist in music research.  The toolkit
+is suitable for use in a wide variety of computer-based musical
+investigations.  Although Humdrum is not designed for sound
+synthesis or visual notational rendering, it connects readily to
+Csound, MIDI, and notation packages.  By way of illustration,
+Humdrum allows users to pose and answer questions such as the
+following:
+</P>
+
+<ul>
+<li>
+In the music of Stravinsky, are dissonances more common in
+strong metric positions than in weak metric positions? 
+<li>
+What are the most common fret-board patterns in guitar riffs
+by Jimi Hendrix?
+<li>
+Which of several MIDI performances of Liszt piano works exhibit
+elevated timing variation at the phrase boundaries?
+<li>
+Which of the Brandenburg Concertos contains the B-A-C-H motif? 
+<li>
+Which of two different English translations of Schubert lyrics
+best preserves the vowel coloration of the original German? 
+<li>
+Did George Gershwin tend to use more syncopation in his later
+works? 
+<li>
+After the V-I progression, which harmonic progression is most
+apt to employ a suspension? 
+</ul>
+</P>
+<P>
+The Humdrum tools are organized as independent Unix commands
+that can be piped together to carry out complex music-related
+processing.  For example, the Humdrum "patt" command provides a
+two-dimension version of "grep" that allows searching for patterns
+where the target string is related to characters above and below,
+as well as to the left and right. This facilitates music-related
+pattern-matching.
+</P>
+<P>
+The Humdrum tools work on any ASCII data that conforms to
+a generalized syntax.  This means that representations are
+open-ended and easily tailored for specific tasks.  For example,
+Humdrum has been used to represent Gregorian chant (Royal), Balinese
+cipher notations (von Hippel), to represent the biomechanics of a
+trumpet performer (Berec), spectral content in orchestral scores
+(Smithe), sensory dissonance (Mashinter), Korean Court music (Nam),
+and performance kinematics for the Cajun button accordion (DeWitt).
+A strength of Humdrum is it's ability to integrate and coordinate
+disparate data types.  For example, a user might process EEG data,
+spectral data, harmonic analyses and Schenkerian graphs -- all at
+the same time.
+</P>
+<P>
+A large volume of musical materials are encoded in Humdrum
+-- from Ambrosian chant and barbershop quartets to Zemlinsky
+and Zulu music.  Several dozen published research projects have
+made use of Humdrum.  The Humdrum Toolkit is available at no cost.
+
+<br>
+<br>
+<ul>
+<li>
+<A HREF="talk.15.html"><B>Next</B></A>
+<li>
+<A HREF="talk.13.html"><B>Previous</B></A>
+</ul>
+<br>
+<br>
+<br>
+</B>
+</BIG>
+</BODY>
+</HTML>
+

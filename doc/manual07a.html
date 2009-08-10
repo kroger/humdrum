@@ -1,0 +1,551 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Reference Manual - Music Representation Development</TITLE>
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+
+<H1><i>Development Reference</i></H1>
+<center><HR WIDTH=500></center>
+</P>
+<CENTER>
+<H1>Humdrum Representation Development</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+
+<H1>Representation Assumptions</H1>
+<P>
+Three principle assumptions underly the Humdrum syntax.
+As with all design assumptions, these principles inevitably act as
+limitations -- circumscribing what is possible.
+</P>
+<ul>
+<li>
+<P>
+The first assumption is that the information can be adequately
+represented using discrete rather than continuous signifiers.
+This is a limitation of all
+<i>symbolic</i>
+as opposed to
+<i>analogic</i>
+representations.
+If continuous data (such as conducting gestures, or analog sound)
+are to be represented using Humdrum, the data must be somehow transformed
+into a discrete form.
+</P>
+<li>
+<P>
+The second assumption is that information can be meaningfully organized as
+ordered successions of data tokens.
+More concretely, it is assumed that data can be arranged in linear
+<i>spines,</i>
+and that these spines are interpretable.
+This limitation implies that data tokens can be meaningfully ordered.
+Normally,
+<i>time</i>
+(as in sequences of events), or
+<i>space</i>
+(as in successive printed signs) provide suitable ordering devices.
+However, events that are conceived as entirely independent of one
+another are difficult to represent in Humdrum.
+</P>
+<li>
+<P>
+The third assumption is that the ASCII character set provides sufficient
+richness to act as an appropriate set of signifiers.
+In practice, this third assumption proves to be the most limiting.
+The use of alphabetic and numeric characters is itself of little concern;
+as Saussure pointed out, the choice of symbols is arbitary and conventional.
+Of greater concern is the limitation of size.
+There are some 128 characters in the basic ASCII set -- not all of
+them are printable.
+</P>
+</ul>
+<P>
+The size restriction imposed by the ASCII character set might be
+circumvented by using binary, pictoral or other signifiers.
+However, there are currently significant advantages to using ASCII signifiers.
+The principal advantage is that many important software tools
+already exist for the manipulation of ASCII text.
+The principal disadvantage of ASCII is addressed in Humdrum by allowing
+users to recycle the ASCII characters an indefinite number of times --
+through the use of new exclusive interpretations.
+Note that if all representation schemes use ASCII signifiers,
+then any software tool developed for the manipulation of ASCII
+text can be applied immediately to any Humdrum representation.
+This approach discourages the explosive proliferation of specialized
+software (each dealing with a unique representation),
+and encourages users to rely on a smaller toolkit consisting
+of more generalized and flexible tools.
+More precisely, this approach reduces the demands for software development
+while maximizing the range of tasks to which a user's skills may be applied.
+</P>
+<P>
+An alternative to Humdrum's provision for multiple representations
+would be to provide a single representation,
+with greater contextual constraints on the positioning of signifiers.
+Unfortunately, high levels of context dependency end up
+placing an inordinate burden on software development and use.
+Humdrum attempts to simplify software development by minimizing
+as much as possible context-dependent meanings for signifiers.
+</P>
+<H1>Creating New Humdrum Representations</H1>
+<P>
+The Humdrum syntax provides a framework within which different
+music-related symbol-systems can be defined.
+Each symbol system or representation
+<i>scheme</i>
+is denoted by a unique
+<i>exclusive interpretation.</i>
+There is no restriction on the number of schemes
+that can be used or created within Humdrum.
+Humdrum users are consequently free to design new representation schemes
+that address various needs.
+</P>
+<P>
+Many newly created representation schemes are apt to be
+<i>user-specific</i>
+-- ways of organizing or representing information that are not likely
+to be of much value to other Humdrum users.
+In other cases, a well crafted representation scheme will prove to be
+of benefit to a wider community of users.
+Whether a new Humdrum representation scheme is intended for private use
+or for public distribution,
+it is prudent to develope good design habits.
+There is no such thing as a "perfect" representation,
+but it is possible to distinguish poor representations
+from better representations.
+</P>
+<P>
+There are a number of considerations involved
+in the lucid design of a Humdrum interpretation.
+In general, the procedures involved in representation design can
+be summarized as follows:
+<ol>
+<li>
+Identify as clearly as possible the goal or goals you hope to achieve
+using this new representation.
+Formulate a list of questions you expect to be able to answer or address.
+<li>
+Create a list of the
+<i>essential signifieds</i>
+(concepts to be represented)
+that are needed to pursue the goal(s).
+<li>
+Make a supplementary list of
+<i>related signifieds</i>
+that seem peripheral to the immediate goal(s), but might prove
+important in pursuing related goals.
+<li>
+By examining the lists of essential and related signifieds,
+try to identify and define the
+<i>class</i>
+or
+<i>classes</i>
+of information with which you are dealing.
+<li>
+Identify whether the signifieds of immediate interest belong
+together in a single representation,
+or whether they ought to be split into two or more Humdrum interpretations.
+<li>
+Having established a clearer understanding of the class of signifieds,
+trim the previous lists of signifieds to a single list.
+<li>
+Identify those signifieds that may take many variant forms
+(as, for example, musical ornament symbols).
+Determine whether these variant forms are
+<i>finite, infinite</i>
+or
+<i>unknown</i>
+in number.
+If the number is infinite or unknown, a single signifier should be
+used -- with provision for an auxilliary representation that can be
+used to identify the specific variant form.
+<li>
+Assign signifiers to all signifieds using the supply
+of available ASCII characters.
+In general, assign only a single character for each signified.
+Using individual ASCII characters as signifiers helps eliminates
+context dependency, and so reduces the complexity of the software needed
+to process the representation.
+<li>
+In assigning signifiers to signifieds, try to avoid English language
+initialisms (such as Q for quarter-note), since these mappings are poor
+mnemonics for non-English-speaking users.
+</ol>
+</P>
+<P>
+Some of the "do's" and "dont's" of designing a Humdrum
+interpretation can be illustrated by considering a hypothetical
+representation problem.
+Below, we consider how to design a representation for keyboard fingering.
+</P>
+<A NAME="Sample_Problem">
+<H1>Defining a New Humdrum Interpretation: A Sample Problem</H1>
+</P>
+<P>
+Suppose that we are interested in providing a comprehensive
+representation scheme for fingering keyboard instruments.
+More concretely, let's suppose that we are interested in studying
+the degree of performance difficulty for various keyboard works.
+Our
+<i>goal</i>
+might be to compare the relative difficulty of works
+by different composers, or whether a given musical arrangement is
+easier to perform than another arrangement.
+We might imagine, for example, writing a program which, given
+some knowledge of performance constraints, could accept fingering information
+as input and produce as output an index of the degree of difficulty.
+At a later stage, we might imagine creating an "intelligent"
+fingering program that could be used to determine an optimum
+way of fingering a particular keyboard passage.
+(Such a program might even be designed to take into account the unique
+physiological abilities, constraints, or preferences of a given performer.)
+In summary, our first research goal would use our "fingering"
+representation as an input to some analysis program, whereas our second
+research goal might produce the "fingering" representation as output.
+</P>
+<P>
+Having identified the above goals,
+our next task is to identify the
+<i>essential signifieds</i>
+that would be needed to solve these problems.
+The most basic information we want to represent includes:
+<ol>
+<li>
+The identity of the finger and hand used in each key-press.
+<li>
+The identify of the key used in each key-press.
+<li>
+The order or sequence of key-presses.
+<li>
+The timing of each activity or movement.
+</ol>
+</P>
+<P>
+Having identified what we see as the essential signifieds,
+we ought to pause and consider related signifieds that,
+although they appear to be peripheral to our goals,
+might prove important in pursuing related goals.
+By thinking ahead about these other signifieds,
+we might avoid future difficulties should we discover that
+another item of information proves crucial to our enterprise.
+</P>
+<P>
+Some potential properties or attributes that we might consider representing
+could include the following:
+<ol>
+<li>
+The force or velocity with which the key is pressed.
+<li>
+Whether the hands are crossed -- and if so, which arm is
+placed above the other.
+<li>
+What part of the finger/hand is used to press the key (e.g. knuckles).
+<li>
+Whether more than one finger is used to press the same key together.
+<li>
+Whether one (or more) finger is substituted for another finger in the
+course of holding a depressed key.
+<li>
+Whether trills are notated as a precise sequence of finger presses,
+or whether they are recorded as generic "trills."
+<li>
+Whether "Bebung" is used -- that is, whether lateral or
+vertical pressure is applied once the key is depressed.
+<li>
+Whether a second performer can be accommodated
+(as in the case of a piano duet).
+<li>
+Physiological or anatomical attributes of the performer (such as hand-spans).
+<li>
+Pedalling.
+</ol>
+A list of related signifieds is rarely likely
+to be exhaustive or complete.
+So it is important to take time to consider other possible types
+of information that relate to keyboard fingering.
+</P>
+<P>
+In the initial stages of designing a Humdrum representation,
+it is generally wise to try to formulate a fairly exhaustive
+list of possible pertinent attributes.
+The purpose of such a list is to ensure that an informed decision is
+made regarding those properties we wish to include in the representation,
+and those properties we propose to exclude.
+More specifically, our goal is to exclude information on the basis of an
+explicit decision rather than due to a tacit oversight.
+</P>
+<P>
+Given the above list of potential signifieds,
+the next step is to pause and consider the nature of the
+<i>class</i>
+of information we wish to deal with.
+For example, the idea of "pedalling" raises an interesting representation
+question.
+Are we trying to represent keyboard <i>fingering?</i>
+Or is our task the representation of keyboard <i>performance</i>?
+Pedalling is obviously part of keyboard performance,
+but not something fingers do.
+Are we mistaken in thinking that our representation task is limited
+to fingering?
+Also, since larger arm and body movements are essential aspects of
+good performance, should we also consider representing these additional
+factors?
+</P>
+<P>
+In light of our goal of measuring performance difficulty,
+we would have to admit that pedalling can indeed contribute to the
+physical challenge arising from performing a given work.
+In terms of our research task therefore, it makes sense to include
+pedalling information.
+However, we might balk at the prospect of mixing fingering and
+pedalling within a single representation -- especially since
+some keyboard instruments (e.g. clavichord) have no pedals.
+Moreover, the pedals on a piano differ considerably from the
+pedals on an organ, although both contribute to overall performance
+difficulty.
+</P>
+<P>
+At this point, we are invited to consider whether the various signifieds in
+the above list truly belong together in a single
+<i>representation,</i>
+or whether they ought to be split into two or more Humdrum interpretations.
+The above discussion suggests that we might distinguish at least five classes
+of information:
+<i>performance (broadly construed), fingering, body movement, pedal-boarding</i>
+(as on the organ), and
+<i>pedalling</i>
+(as on the piano or harpsichord).
+Moreover, we might define "performance information" as the combination of
+fingering plus pedalling or pedal-boarding.
+In short, it would make sense to define
+<i>three</i>
+representations: fingering, pedalling, and pedal-boarding,
+and to assume that our program measuring performance difficulty
+will accept any combination of one or more of these three classes
+of information.
+</P>
+<P>
+Our task has clearly expanded somewhat, since now we need to
+consider three types of representation rather than one.
+For the purposes of this tutorial example, we might set aside the
+problems of representing pedalling and pedal-boarding
+and focus on the fingering aspect of keyboard performance.
+</P>
+<P>
+Now that we have a clearer understanding of the class of signifieds,
+we can begin to trim the lists of signifieds to a single short list.
+We have decided not to represent pedalling using the same
+Humdrum interpretation as for fingering.
+We might also decide that the fingering activity for a second performer
+can be represented using a second independent spine of information.
+We might also dispense with representing the force or velocity of
+key-depression, and what part of the finger/hand is used to press the key.
+We might have decided to represent the fingering for trills,
+but not to encode each key-stroke of the trill separately.
+We could also decide that representing physiological
+attributes of the performer (such as hand-spans) ought to be
+left as a separate representation.
+Finally, we might have also decided not to represent
+<i>Bebung.</i>
+This leaves a trimmed list of eight types of signifieds:
+<ol>
+<li>
+The identity of the finger and hand used in each key-press.
+<li>
+The identify of the key used in each key-press.
+<li>
+The order or sequence of key-presses.
+<li>
+The duration of each activity or movement.
+<li>
+Whether the hands are crossed -- and if so, which arm is
+placed above the other.
+<li>
+Whether more than one finger is used to press the same key together.
+<li>
+Whether finger substitution occurs.
+<li>
+The fingering for trills.
+</ol>
+</P>
+<P>
+Before going on to map signifiers and signifieds we
+need to consider those signifieds that may take variant forms.
+What sort of "variations" might appear in a fingering
+representation?
+An obvious form of variation occurs when alternative fingerings
+are possible -- that is, where a passage contains two (or more)
+ways of assigning key-presses to different fingers.
+Our first task here is to determine whether the number of variant forms
+is finite, infinite, or unknown in number.
+We can consider this question both at the level of the individual key-press,
+and at the level of the entire work.
+In the case of the individual key-press, the maximum number of variants
+is ten -- since there are no more than ten fingers.
+If more than one finger is used to press a key, or if finger-substitutions
+occur, then the maximum number of variants is somewhat more than ten --
+although still finite in number.
+At the level of the entire work, the maximum number of variants is potentially
+very large (at least 10 X the total number of key-presses in the work).
+Nevertheless, this number remains a finite value for works of finite length.
+The question arises, do we want our fingering representation to represent a
+single performance of a keyboard passage, or is the representation intended
+to represent alternative forms of performance?
+</P>
+<P>
+In order to answer this question we must return once again to
+our initial goals.
+In analysing the degree of performance difficulty for a work,
+we might prefer to analyse a single (actual or plausible) performance.
+Measuring the degree of performance difficulty for a
+<i>class</i>
+of variant performances is apt to prove difficult.
+On the other hand, the musical score for a keyboard work may contain no
+fingering indications whatsoever.
+Therefore it would be wrong to assume that a single fingering specification
+would give an accurate indication of the performance difficulty
+for a given musical work.
+This raises the question of whether our intention is to measure
+the performance difficulty of a specific sequence of key-presses
+used in a performance, or whether our intention is to measure the
+performance difficulty of a particular musical work.
+</P>
+<P>
+As noted above, measuring the difficulty for a class of variant
+performances is likely to prove difficult.
+There are many many ways of fingering a keyboard work.
+Averaging the performance difficulty for the complete class
+of possible fingering arrangements would appear silly since most of
+these fingerings would be awkward.
+One could argue, for example, that the degree of performance difficulty
+for a work can be best established by analysing the single most convenient way
+of fingering the work.
+Alternatively, one could argue that the degree of performance difficulty
+for a work can be determined by examining a handful of the most convenient
+ways of fingering the work.
+Out of the large number of
+<i>possible</i>
+fingerings, it is only the
+<i>plausible</i>
+fingerings that really count.
+</P>
+<P>
+Whether our intention is to measure a single fingering sequence or a class of
+such fingerings, a helpful question to consider here is where do we
+expect to get our fingering data?
+Three sources come to mind:
+(1) recorded fingering data from an actual performance,
+(2) fingerings (including alternatives) notated in printed scores or
+annotated by keyboard performers, and
+(3) fingering data (including alternatives) generated by a computer program.
+In the case of an actual performance, there will be only one fingering.
+The other sources can potentially produce more than one fingering at a time.
+</P>
+<P>
+Having identified those attributes that we wish to represent,
+we need to consider how the representation ought to be structured.
+Specifically, we need to consider how our fingering representation
+can be coordinated with other Humdrum interpretations.
+The most important coordination task is ensuring that our representation
+will correspond well with the core <code>**kern</code> representation.
+Each data record in <code>**kern</code> represents a single sonority --
+a moment in time that differs from the previous state.
+Since key-presses are closely related to notes,
+we might want to coordinate each of the <code>**kern</code>
+note tokens with possible key-presses.
+Many Humdrum pitch-related representations include barlines
+-- which are useful markers for coordinating such representations.
+This suggests that it might be useful to include barlines
+in our fingering representation.
+Given both the barline and note-token/key-press correspondences,
+we should have little difficulty ensuring that our fingering
+representation will be fully coordinated with a number of
+other Humdrum representations.
+</P>
+<P>
+We are now ready to consider how to map our signifieds
+with a set of appropriate signifiers.
+In general, we should endeavor to define one signifier for each attribute.
+First, consider how we might identify the individual fingers.
+A good system would be to identify each finger by a unique
+signifier -- such as a unique decimal integer.
+However, there is a long-standing tradition of identifying the
+thumb of each hand as the number "1", the index finger by the number "2"
+and so on.
+Given the limited number of fingers, some context-dependency
+may be appropriate here.
+In short, we may decide to identify specific fingers through a
+<i>ligature</i>
+of "hand+finger" -- e.g. left-3 or right-5.
+The signifiers "left" and "right" obviously introduce an
+English bias.
+It would be better to consider more universally recognized
+terms such as "mano destra" (MD) and "mano sinistra" (MS).
+However, not every user will find these is terms familiar or comfortable.
+</P>
+<P>
+We need not rely on a literalism or initialism.
+"Left" and "right" are concepts that lend themselves well to
+pictorial representation, so we might consider using
+those ASCII characters that convey a left-right pictorial dimension.
+Possible contenders would include various letter-contrasts:
+<code>d</code> versus <code>b</code>, <code>J</code> versus <code>L</code>;
+the three types of parentheses: <code>(</code> versus <code>)</code>, <code>{</code>
+versus <code>}</code>, and <code>[</code> versus <code>]</code>;
+and the greater-than and less-than signs: <code><</code> versus <code>></code>.
+The letter contrasts <code>J</code> versus <code>L</code> are especially poor since
+although the angle of the letter <code>L</code></code> is drawn to the right,
+"L" implies an initialism for "left" -- and so is apt
+to cause confusion.
+The parentheses cannot be misconstrued as
+literalisms or initialisms, so they are somewhat better signifiers.
+However the greater-than and less-than signs are the mostly clearly
+arrow-like, and so perhaps provide a better pair of left-right signifiers.
+</P>
+<P>
+Having decided upon the signifiers for left and right,
+and having adopted the tradition of numbering the fingers
+(1=thumb, 2=index, 3=middle, 4=ring, 5=little),
+we could continue mapping signifiers to signifieds,
+taking care to minimize context dependency.
+</P>
+<P>
+In reflecting on the above discussion,
+readers are apt to feel that one or another type of
+information ought to have been included,
+or that the signifiers ought to be assigned in a different manner.
+Since Humdrum provides a framework within which alternative
+representation schemes can be designed,
+there is no need to defend a given representation from competing schemes.
+Whether an interpretation survives and proliferates will be determined,
+not by its conceptual elegance or completeness,
+but by whether it is found to have a practical utility in solving
+users' problems.
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="index.html">
+<B>Humdrum Toolkit Main Page</B></A>
+<li>
+<A HREF="manual07.html">
+<B>Developer's Guide Main Page</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Humdrum Toolkit User Guide</B></A>
+<li>
+<A HREF="commands.toc.html">
+<B>Humdrum Toolkit Command Documentation</B></A>
+</BODY>
+</HTML>
+
+
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>
+

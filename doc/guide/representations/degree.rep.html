@@ -1,0 +1,249 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Scale Degree</TITLE>
+<!-- Documentation for the **degree Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **degree Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,scale degree,software,theory,analysis,systematic musicology,computer representation,**degree">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Absolute Scale Degree</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**degree</b>  --  absolute scale degree representation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**degree</b>
+representation can be used to represent key-dependent
+scale-degree information for music in major or minor keys.
+The
+<b>**degree</b>
+representation differs from the related
+<A HREF="deg.rep.html"><b>**deg</b></A>
+representation in that it encodes absolute
+rather than relative pitch-height information.
+</P>
+<P>
+Three types of data tokens are distinguished by <b>**degree</b>:
+scale degree tokens, rest tokens, and barlines.
+</P>
+<P>
+Scale degree tokens are encoded as a combination of degree values,
+degree alterations, and octave designations.
+The scale degree values are indicated by the numbers 1 (tonic) to
+7 (leading-tone).
+These values may be chromatically altered by raising (+) or lowering (-).
+The
+<i>amount</i>
+of chromatic alteration is not indicated;
+for example, a raised super-tonic is represented as <code><big>2+</big></code>
+whereas a doubly-raised super-tonic is also represented as <code><big>2+</big></code>.
+A lowered submediant is represented as <code><big>6-</big></code>.
+</P>
+<P>
+A second integer value is used to indicate the octave
+following the ANSI standard pitch designations.
+For example, the pitch A4 lies in octave 4.
+(Octaves begin at C and end at B.)
+In order to avoid confusing scale degrees with octave indications
+the slash character is used as a sub-token separator.
+For example, the pitch C4 in the key of C major is
+represented as <code><big>1/4</big></code>, while the pitch A#4 in the key of G major
+is represented as <code><big>2+/4</big></code>.
+</P>
+<P>
+Scale degree tokens are always represented with respect to a
+prevailing major or minor
+<i>key.</i>
+In the case of minor keys, scale degrees are characterized
+with respect to the
+<i>harmonic minor</i>
+scale only.
+By way of example, the pitch F4 in the key of A minor is
+represented as the submediant (<code><big>6/4</big></code>) while F#4 is represented
+as the raised submediant (<code><big>6+/4</big></code>).
+In the same key, G4 is represented as the lowered seventh (<code><big>7-/4</big></code>)
+while G#4 is the normal leading-tone (<code><big>7/4</big></code>).
+In the key of A major, F4 is represented as the
+lowered submediant (<code><big>6-/4</big></code>).
+</P>
+<P>
+Rests are represented by the single letter `r'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**degree</big></code>
+data should be given names with the distinguishing `.dgr' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**degree</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>scale degrees, octave designations, or measure numbers</TD></TR>
+<TR><TD>/</TD><TD>scale-degree / octave number separator</TD></TR>
+<TR><TD>-</TD><TD>scale degree lowered</TD></TR>
+<TR><TD>+</TD><TD>scale degree raised</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**degree</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+The sample document given below shows the opening subject
+of the Fugue in C minor in the second volume of Bach's
+<i>Well Tempered Clavier.</i>
+The left spine shows a
+<A HREF="kern.rep.html"><b>**kern</b></A>
+encoding while the right spine shows a corresponding
+<b>**degree</b>
+encoding.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! J.S. Bach, Fugue 2 WTC Book I</TD></TR>
+<TR><TD>**kern</TD><TD>**degree</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>*c:</TD><TD>*c:</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>8r</TD><TD>r</TD></TR>
+<TR><TD>16cc</TD><TD>1/5</TD></TR>
+<TR><TD>16bn</TD><TD>7/4</TD></TR>
+<TR><TD>8cc</TD><TD>1/5</TD></TR>
+<TR><TD>8g</TD><TD>5/4</TD></TR>
+<TR><TD>8a-</TD><TD>6/4</TD></TR>
+<TR><TD>16cc</TD><TD>1/5</TD></TR>
+<TR><TD>16b</TD><TD>7/4</TD></TR>
+<TR><TD>8cc</TD><TD>1/5</TD></TR>
+<TR><TD>8dd</TD><TD>2/5</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>8g</TD><TD>5/4</TD></TR>
+<TR><TD>16cc</TD><TD>1/5</TD></TR>
+<TR><TD>16bn</TD><TD>7/4</TD></TR>
+<TR><TD>8cc</TD><TD>1/5</TD></TR>
+<TR><TD>8dd</TD><TD>2/5</TD></TR>
+<TR><TD>16f</TD><TD>4/4</TD></TR>
+<TR><TD>16g</TD><TD>5/4</TD></TR>
+<TR><TD>4a-</TD><TD>6/4</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum commands accept <b>**degree</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/kern.html"><b>kern</b></A></TD><TD>translates <b>**degree</b> to <b>**kern</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/pitch.html"><b>pitch</b></A></TD><TD>translates <b>**degree</b> to <b>**pitch</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/solfg.html"><b>solfg</b></A></TD><TD>translates <b>**degree</b> to <b>**solfg</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/tonh.html"><b>tonh</b></A></TD><TD>translates <b>**degree</b> to <b>**Tonh</b></TD></TR>
+<TR><TD></TD><TD><A HREF="../commands/vox.html"><b>vox</b></A></TD><TD>determine active and inactive voices in a Humdrum file</TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+</blockquote>
+The following Humdrum command produces <b>**degree</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD></TD><TD valign="top"><A HREF="../commands/degree.html"><b>degree</b></A></TD><TD>translates <b>**kern</b>, <b>**pitch</b>, <b>**solfg</b>, <b>**Tonh</b>, to <b>**degree</b></TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**degree</b>:
+<blockquote>
+<TABLE>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**degree</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="deg.rep.html"><b>**deg</b></A>,
+<A HREF="../commands/deg.html"><b>deg</b></A>,
+<A HREF="../commands/degree.html"><b>degree</b></A>,
+<A HREF="kern.rep.html"><b>**kern</b></A>,
+<A HREF="pitch.rep.html"><b>**pitch</b></A>,
+<A HREF="solfg.rep.html"><b>**solfg</b></A>,
+<A HREF="Tonh.rep.html"><b>**Tonh</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

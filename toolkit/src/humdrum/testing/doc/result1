@@ -1,0 +1,25 @@
+Inventory of Interpretations:				HUMDRUM FILE SUMMARY
+
+	Interpretations	Occurrences
+	**inter		3
+	**foo		1
+	**bar		1
+	**ding		1
+	*		2
+	*bop		1
+
+Inventory of data token signifiers:	 %()+-.034567:<>
+					ACILMPSTW^_
+					adeklnorstuwxy
+
+Number of global comments:      14	Number of local comments:       4
+Maximum # of concurrent spines: 3	Minimum # of concurrent spines: 3
+Number of data records:         10	Number of null tokens:          4
+
+
+Changes in number of spines:
+	New spines:        0
+	Terminated spines: 3
+	Split spines:      0
+	Joined spines:     0
+	Exchanges spines:  4

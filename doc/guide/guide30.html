@@ -1,0 +1,298 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 30</TITLE>
+<!-- Chapter 30 (MIDI Input Tools) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:16:21 EST 2000">
+<meta name="description" content="Chapter 30 (MIDI Input Tools) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<body>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<br>
+
+<H1>Chapter30</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide29.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide31.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>MIDI Input Tools</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+The Humdrum Toolkit provides two tools for inputting
+MIDI data.
+In this chapter we briefly introduce the
+<A HREF="commands/record.html"><b>record</b></A>
+and
+<A HREF="commands/encode.html"><b>encode</b></A>
+commands.
+These tools provide ways for capturing MIDI input
+and translating them to representations that conform to
+the Humdrum syntax.
+The
+<b>record</b>
+command translates a live or computer-generated MIDI performance
+to the
+<A HREF="representations/MIDI.rep.html"><code><big>**MIDI</big></code></A>
+representation.
+The
+<b>encode</b>
+command provides an interactive editor that translates
+MIDI events to any pre-defined or user-defined Humdrum representation.
+</P>
+<P>
+Note that the Humdrum
+<b>record</b>
+and
+<b>encode</b>
+commands are currently available only for the DOS operating system.
+These commands can be used only with computers that have MIDI
+capable hardware.
+</P>
+<A NAME="The_record_Command">
+<H2>The <i>record</i> Command</H2>
+</P>
+<P>
+The
+<A HREF="commands/record.html"><b>record</b></A>
+command captures a stream of input MIDI data and
+translates this data into the Humdrum <code><big>**MIDI</big></code>
+representation described in
+<A HREF="guide07.html">Chapter 7.</A>
+The input data is obtained from a MIDI instrument
+such as a keyboard synthesizer.
+</P>
+<P>
+Recording commences as soon as the command is invoked
+and recording ceases when any key is pressed -- with
+the exception of the space bar.
+Pressing the space bar causes a <code><big>**MIDI</big></code> barline
+token to be output.
+Measure numbers are incremented automatically beginning
+with measure 1.
+</P>
+<P>
+Only MIDI key-press activity (including after-touch)
+information is recorded.
+MIDI "system-exclusive" instructions and other
+non-key-press data are not recorded.
+</P>
+<P>
+Each MIDI channel is represented using a separate Humdrum spine.
+New spines are added automatically during the recording
+in response to MIDI activity appearing in any MIDI channel.
+Once a MIDI channel becomes active, the corresponding Humdrum spine
+continues to be output until the recording is terminated.
+</P>
+<P>
+The recorded output is normally directed to a file as
+in the following:
+</P>
+<P>
+<blockquote>
+<code><big>record > filippa</big></code>
+</blockquote>
+</P>
+<A NAME="The_encode_Command">
+<H2>The <i>encode</i> Command</H2>
+</P>
+<P>
+The
+<A HREF="commands/encode.html"><b>encode</b></A>
+command provides an interactive editor for capturing Humdrum
+data from a MIDI input, such as a keyboard synthesizer.
+MIDI events are mapped to user-defined signifiers so
+<b>encode</b>
+can be used to enter data directly into a particular representation
+such as
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>,
+<A HREF="representations/fret.rep.html"><code><big>**fret</big></code></A>,
+<A HREF="representations/solfg.rep.html"><code><big>**solfg</big></code></A>,
+etc.
+Since the mapping of MIDI events to Humdrum data tokens
+is arbitrary, users can enter data using a representation
+design by the user.
+</P>
+<P>
+The
+<b>encode</b>
+command is limited to encoding information one spine at a time.
+A typical use of
+<b>encode</b>
+is to encode individual musical parts or voices using a
+representation like **kern.
+A full score is generated from the individual parts using
+the
+<A HREF="commands/timebase.html"><b>timebase</b></A>
+and
+<A HREF="commands/assemble.html"><b>assemble</b></A>
+commands.
+</P>
+<P>
+The
+<b>encode</b>
+command implements a full-screen interactive editor similar to the
+<b>vi</b>
+text editor.
+When invoked, the screen is divided into three display regions,
+including a <i>status window</i>, a <i>command window</i>,
+and a larger <i>text window</i>.
+The
+<i>status window</i>
+displays various items of basic information about the file
+being edited.
+The
+<b>command window</b>
+allows the user to execute general-purpose commands to
+manipulate the data.
+The
+<b>text window</b>
+is used to display, encode and edit the encoded Humdrum text.
+</P>
+<P>
+When the
+<b>encode</b>
+command is invoked, its operation is determined by
+a configuration file (that may be written or edited by the user).
+This configuration file contains a series of definitions
+that map MIDI events to output strings.
+For example, the instruction
+</P>
+<P>
+<blockquote>
+<code><big>KEY 60 middle-C</big></code>
+</blockquote>
+</P>
+<P>
+assigns the key-on event for MIDI key #60 to the string <code><big>middle-C</big></code>.
+Each time key #60 is depressed, the string <code><big>middle-C</big></code> will appear
+in the text window.
+</P>
+<P>
+Such mappings can be made for each individual MIDI key.
+In addition, the user may define mappings for <i>key velocity</i>.
+For example, the following instruction in the configuration file
+will map any key-velocities between 90 and 127 MIDI units to the
+apostrophe character (the
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+signifier for a staccato note):
+</P>
+<P>
+<blockquote>
+<code><big>VEL 90 127 '</big></code>
+</blockquote>
+</P>
+<P>
+A third class of mapping instructions relates to the elapsed time
+between MIDI key onsets -- "delta time" or DEL.
+Consider, for example, the following configuration instructions:
+</P>
+<P>
+<blockquote>
+<code><big>DEL 48 80 8</big></code>
+<br>
+<code><big>DEL 81 112 8.</big></code>
+<br>
+<code><big>DEL 113 160 4</big></code>
+<br>
+<code><big>DEL 161 224 4.</big></code>
+<br>
+<code><big>DEL 225 320 2</big></code>
+</blockquote>
+</P>
+<P>
+These instructions divide the elapsed time between key onsets into
+five ranges.
+When the elapsed time lies between 48 and 80 clock ticks,
+the string "<code><big>8</big></code>" is output.
+When the elapsed time lies between 81 and 112 clock ticks,
+the string "<code><big>8.</big></code>" is output.
+And so on.
+This allows the durations to be classified as either an eighth note,
+a dotted eighth note, a quarter note, a dotted quarter note, or
+a half note.
+Once again, the user is free to map events to any arbitrary output
+string and to arrange the ranges and number of classes as needed.
+</P>
+<P>
+The Humdrum Toolkit provides a large selection of predefined configuration
+files for use with <b>encode</b>.
+Depending on the configuration, the input may be mapped to
+a particular representation such as **kern.
+For example, Humdrum provides a configuration file that is
+optimized for encoding lute tablatures using the **fret representation.
+Other configuration files are optimized for particular keys.
+For example, one may select a configuration file that
+interprets the MIDI events in the key of C# minor;
+in this case, playing the pitch C will result in a default encoding of B#.
+</P>
+<P>
+The
+<b>encode</b>
+command provides many additional features that facilitate
+encoding Humdrum data from a MIDI input device.
+These include setting metronome values, assigning the beat,
+rearranging the order of signifiers, making global and local
+substitutions, replaying an interpreted input, defining
+buffers and string constants, and so on.
+Using the configuration files, users can tailor the
+<b>encode</b>
+editor to suit specific needs and skills.
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+In this chapter we have briefly identified two tools for
+capturing MIDI-related input:
+<A HREF="commands/encode.html"><b>encode</b></A>
+and
+<A HREF="commands/record.html"><b>record</b></A>.
+These tools allow MIDI data to be translated to a Humdrum format.
+Further information regarding these tools is given in the
+<i>Humdrum Toolkit Reference Manual.</i>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide31.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide29.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

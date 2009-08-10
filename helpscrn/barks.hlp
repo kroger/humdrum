@@ -1,0 +1,22 @@
+
+BARKS     : Converts various pitch representations to "barks" units.
+
+     This command translates frequency, cochlear coordinates, and
+     critical band rate, to psychoacoustic "barks".  This command can
+     also be used to change the precision for existing barks data.
+
+Inputs processed:
+
+     **barks,   **cbr,    **cocho,   **freq
+
+Syntax:
+
+     barks [-p n] [-x] [inputfile ...]
+
+Options:
+
+     -p n   : set output precision to n decimal places
+     -x     : suppresses outputting of non-barks data
+
+  Refer to reference manual for further details.
+

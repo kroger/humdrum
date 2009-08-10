@@ -1,0 +1,23 @@
+
+CONTEXT   : Congeal data records to form contextual frames.
+
+     This command joins together one or more successive input data
+     records into single records according to user-defined criteria.
+
+Syntax:
+
+     context [-b regexp] [-d string] [-e regexp] [-i regexp] [-n n]
+                   [-o regexp] [-p n] [file ...]
+
+Options:
+
+  -b regexp : begin amalgamating new output record when record matches regexp
+  -d string : insert string as delimiter to separate amalgamated tokens
+  -e regexp : begin amalgamating new output record AFTER record matches regexp
+  -i regexp : ignore any records matching regexp when counting
+  -n n      : amalgamate n input data records for each output record
+  -o regexp : omit any records matching regexp from output
+  -p n      : place n null tokens before amalgamated output
+
+  Refer to reference manual for further details.
+

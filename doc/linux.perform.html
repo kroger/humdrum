@@ -1,0 +1,246 @@
+<HTML>
+<HEAD>
+<TITLE>The Humdrum Toolkit: Software for Music Research - Installing and using the "perform" command under Linux</TITLE>
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0F0F" alink="8D8D8D" vlink="FF8D00">
+<br>
+<H1>Installing and Using the Humdrum "perform" Command under Linux</H1>
+<br>
+<br>
+<FONT SIZE=+1>
+<P>
+
+
+</FONT>
+</P>
+<H2>How to Use the "perform" Command in Linux</H2>
+<P>
+These directions are intended to help users install and use
+the revised Humdrum "perform" version 2.0 command.
+These directions are for Red Hat 6.0 Linux, although they may be
+somewhat similar for other versions of Linux. 
+</P>
+<P>
+Author: Craig Stuart Sapp <craig@ccrma.stanford.edu>
+<br>
+Date:   Tue Aug 31 13:21:36 PDT 1999
+</P>
+<hr>
+<P>
+<ol>
+<li>
+Install the soundcard.
+You will have to check the list in Appendix A to see if the
+soundcard you have will work in Red Hat Linux 6.0.
+<br>
+<br>
+To install the soundcard, first turn off the computer and put
+the soundcard into one of the expansion slots of the computer.
+<br>
+<br>
+Now start the computer under Linux, and run the program
+/usr/sbin/sndconfig as root.
+<br>
+<br>
+If you have a recognized PCI interfaced soundcard, the installation 
+should be completely automatic.  If you have an ISA interfaced 
+soundcard, the you will have to manually set the IRQs, DMAs, and
+I/O Ports.  You can figure out these manual settings in two 
+ways: (1) log into Windows 95/98/NT, go to the control panel
+system icon and click on the devices tab. Then go to the Multimedia
+entries and search for the soundcard entry.  Double click on the 
+soundcard entry and then select the resources tab.  On the resources
+page, the IRQs, DMAs, and I/O Ports which are used for the
+the soundcard are listed: copy these settings and try them in 
+/usr/sbin/sndconfig. Manual setting method (2) is: try all possible
+permutations of the settings for the soundcard until one of them
+works.  The /usr/sbin/sndconfig program will play an audio file
+and a MIDI file to test the sound configuration.  It is also possible
+to mix methods (1) and (2) together for manually setting the soundcard.
+<br>
+<br>
+
+<li>
+Running the perform command.  
+<br>
+<br>
+The perform command understands **MIDI humdrum spines in input
+files.  **MIDI spines can be generated from **kern data with
+the "midi" humdrum tool.  See note 3A below however.
+<br>
+<br>
+Here are some important setup options for the perform command:
+<br>
+<br>
+"perform -l" lists all possible MIDI output ports.  By default
+MIDI information will be sent out port 0 unless otherwise specified
+with the "perform -p X" option where X is another port number.  For
+example on the CCARH lab computer, there are three possible 
+MIDI output ports to send MIDI to:
+<blockquote>
+<TABLE>
+<TR><TD>0:</TD><TD>Sound Blaster 16 (MIDI Out)</TD></TR>
+<TR><TD>1:</TD><TD>AWE Midi Emu (MIDI Out)</TD></TR>
+<TR><TD>2:</TD><TD>AWE32-0.4.3 (RAM4096k) (Wavetable)</TD></TR>
+</TABLE>
+</blockquote>
+There are two MIDI output ports (0 and 1) and one internal MIDI output
+port which sends the MIDI to the internale soundcard synthesizer, so
+to play MIDI output through port 1, you would use the option setting
+"perform -p1".  See note 3C however.
+<br>
+<br>
+
+   Other interesting arguments to the perform command:
+<br>
+<br>
+
+   "perform -t X" sets the tempo scaling to X, for example to play
+   a file twice as fast, try "perform -t 2.0".  The "<" and ">"
+   keys can be used to control the tempo while the performance
+   is occurring.
+<br>
+<br>
+
+   "perform --memory 1000000" sets the storage area to 1 Mb.  This
+    is the default size of the memory.  Large orchestral works will
+    need more memory, such as 8000000.  In the newest (and as yet
+    unfinished version of perform), there will be no need of this option.
+<br>
+<br>
+
+   "perform --options" will list all command line arguments, including
+    hidden/undocumented options if present.
+<br>
+<br>
+
+   "perform -h" will give a short help message on using the perform command.
+<br>
+<br>
+
+   The options to perform can occur in any order.  For example if you
+   are performing the file zzz.hmd, then both of these calls to 
+   perform are valid and equivalent:
+      perform -t2 zzz.hmd
+      perform zzz.hmd -t2
+<br>
+<br>
+
+   Most command-line options have aliases.  The default velocity
+   setting can be accessed with either "-v" or "--velocity":
+      perform -v 64 zzz.hmd
+      perform --velocity 64 zzz.hmd
+   The "perform --options" will list all options aliases.
+<br>
+<br>
+
+
+<li>
+Known bugs/quirks in the perform command for Linux.  
+<br>
+<br>
+<ul>
+<li>
+The perform command cannot be used in a command pipeline.
+There is some strange terminal setting problem that needs
+to be worked with to get this working.  Currently you must
+write an intermediate file with the "midi" humdrum tool
+and then run the "perform" command as a separate
+<li>
+Not all of the performance commands have been implemented.
+<li>
+On the internal MIDI in the soundcard at CCARH, only a 
+monophonic voice is played at any given time.  So if you
+are playing a symphony, you only hear one part.  This seems
+to be a problem with the Linux driver for the soundcard.
+The external MIDI port output of perform works properly
+in the CCARH lab.
+<li>
+If you have a very large file to perform you may have to 
+increase the memory size of the internal storage space if
+directed to do so by an error message.  Use perform with
+the --memory X option where X is the number of bytes to
+store the data in.  The default setting is 1000000 bytes.
+</ul>
+</ol>
+</P>
+<H2>Appendix A: Soundcards that can be used in Red Hat Linux 6.0:</H2>
+<P>
+Here is a list of the soundcards that work with Linux Red Hat 6.0.
+This list was extracted from the binary program /usr/sbin/sndconfig
+which is the program to use to install a soundcard in Red Hat 6.0
+Linux.
+</P>
+<P>
+/usr/sbin/sndconfig v 1.77 1999/04/19 15:29:04 
+<blockquote>
+<TABLE>
+<TR><TD><B>Module to use</B></TD><TD><B>Description of Soundcard</TD></TR>
+<TR><TD></TD><TD></TD></TR>
+<TR><TD>ad1816</TD><TD>AD1816 (Acer FX-3D, HP Kayak) </TD></TR>
+<TR><TD>ad1848</TD><TD>CMI8330 sound chip (Cyrix MediaGX, many motherboards) </TD></TR>
+<TR><TD>ad1848</TD><TD>Compaq Deskpro XL Sound </TD></TR>
+<TR><TD>ad1848</TD><TD>Ensoniq SoundScape VIVO </TD></TR>
+<TR><TD>ad1848</TD><TD>Windows Sound System (AD1848/CS4248/CS4231)</TD></TR>
+<TR><TD>adlib_card</TD><TD>AdLib</TD></TR>
+<TR><TD>amd7930</TD><TD>AMD7930 (sun4c) & cs4231 CS4231 (some sun4m, sun4u) </TD></TR>
+<TR><TD>cs4232</TD><TD>Crystal CS423x sound chip </TD></TR>
+<TR><TD>es1370</TD><TD>* Ensoniq AudioPCI 1370 (SoundBlaster 64/128 PCI)  </TD></TR>
+<TR><TD>es1371</TD><TD>Creative/Ensoniq AudioPCI </TD></TR>
+<TR><TD>gus</TD><TD>Gravis UltraSound </TD></TR>
+<TR><TD>gus</TD><TD>Gravis UltraSound MAX</TD></TR>
+<TR><TD>gus</TD><TD>Gravis UltraSound PnP </TD></TR>
+<TR><TD>mad16</TD><TD>MAD16 Pro (OPTi 82C929/82C930) </TD></TR>
+<TR><TD>mad16</TD><TD>Mozart/MAD16 (OPTi 82C928) </TD></TR>
+<TR><TD>mad16</TD><TD>miroSOUND PCM12 opl3sa OPL3-SA1 sound chip </TD></TR>
+<TR><TD>msnd_classic</TD><TD>Turtle Beach MultiSound Classic/Monterey/Tahiti </TD></TR>
+<TR><TD>msnd_pinnacle</TD><TD>Turtle Beach MultiSound Pinnacle/Fiji </TD></TR>
+<TR><TD>opl3sa2</TD><TD>OPL3-SA2/3/x sound chip </TD></TR>
+<TR><TD>pas2</TD><TD>Pro Audio Spectrum/Studio 16, Logitech SoundMan </TD></TR>
+<TR><TD>pss</TD><TD>PSS (Orchid SW32, Cardinal DSP16) sonicvibes S3 SonicVibes </TD></TR>
+<TR><TD>sb</TD><TD>ACER Notebook sound </TD></TR>
+<TR><TD>sb</TD><TD>Advance Logic ALS-007</TD></TR>
+<TR><TD>sb</TD><TD>Advance Logic ALS-100/110</TD></TR>
+<TR><TD>sb</TD><TD>ESS1688 AudioDrive </TD></TR>
+<TR><TD>sb</TD><TD>ESS1868 AudioDrive </TD></TR>
+<TR><TD>sb</TD><TD>ESS688 AudioDrive </TD></TR>
+<TR><TD>sb</TD><TD>Logitech SoundMan Games (not SM16 or SM Wave!) </TD></TR>
+<TR><TD>sb</TD><TD>MediaVision Jazz16 (ProSonic, SoundMan Wave) </TD></TR>
+<TR><TD>sb</TD><TD>Sound Blaster </TD></TR>
+<TR><TD>sb</TD><TD>Sound Blaster 16 </TD></TR>
+<TR><TD>sb</TD><TD>***,* Sound Blaster AWE32/64 </TD></TR>
+<TR><TD>sb</TD><TD>Sound Blaster Pro </TD></TR>
+<TR><TD>sgalaxy</TD><TD>Aztech Sound Galaxy Waverider Pro 32-3D, Washington </TD></TR>
+<TR><TD>sscape</TD><TD>Ensoniq SoundScape </TD></TR>
+<TR><TD>trix</TD><TD>** MediaTrix AudioTrix Pro</TD></TR>
+</TABLE>
+</blockquote>
+</P>
+<P>
+<TABLE>
+<TR><TD>*</TD><TD>CCRMA has this sound card installed in Linux and both</TD></TR>
+<TR><TD></TD><TD>the audio and MIDI works with it.</TD></TR>
+<TR><TD></TD><TD></TD></TR>
+<TR><TD>**</TD><TD>CCRMA has this sound card installed in Linux and only the</TD></TR>
+<TR><TD></TD><TD>audio works (MIDI internal is the only part of MIDI that works,</TD></TR>
+<TR><TD></TD><TD>external MIDI is not possible).</TD></TR>
+<TR><TD></TD><TD></TD></TR>
+<TR><TD>***</TD><TD>CCARH has this soundcard in ccarh-lab-1</TD></TR>
+<TR><TD></TD><TD></TD></TR>
+<TR><TD>****</TD><TD> Sound Blaster PCI soundcards currently do not have a</TD></TR>
+<TR><TD></TD><TD>working driver for MIDI, but someone at EMU (owned by SoundBlaster)</TD></TR>
+<TR><TD></TD><TD>is writing the driver.</TD></TR>
+</TABLE>
+</P>
+
+<hr>
+<br>
+<br>
+<A HREF="index.html"><B>Humdrum Toolkit Home Page</B></A>
+<br>
+<A HREF="install.html"><B>Humdrum Toolkit Installation Guide</B></A>
+<br>
+<br>
+
+</BODY>
+</HTML>

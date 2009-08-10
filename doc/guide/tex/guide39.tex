@@ -1,0 +1,523 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter39}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Trouble-Shooting}
+
+
+
+Computers have an unbounded capacity to generate nonsense.
+Even when commands appear to execute correctly, there is
+no guarantee that the results are accurate or meaningful.
+In this chapter we will identify some of the many things
+that can go wrong when using the Humdrum Toolkit.
+We will also present a number of suggestions and tips that
+will help you avoid potential problems.
+
+\par 
+Errors can arise from a number of sources including corrupt or
+error-prone input data, failure to anticipate special
+circumstances or exceptions, improper processing,
+software bugs, and incautious interpretations of results.
+
+
+\subsection*{Encoding Errors}
+
+\par 
+In the first instance, the accuracy of your results will depend
+on the accuracy of the input data.
+Humdrum data may originate from a variety of sources.
+Users may encode their own materials, or use existing
+data encoded by other individuals or available from
+institutional sources.
+Data quality can be highly variable and there may be no
+easy way to determine the accuracy of a given data set.
+
+\par 
+It is important to spend time with a data set.
+Historical musicologists may spend a considerable amount of
+time becoming familiar with a manuscript,
+and the same practice is recommended for computational musicologists.
+Users should look at the data, listen to the data,
+compare the data to published sources, and generally
+browse and peruse it.
+Most data errors are discovered while processing the data -$\,$-
+such as finding a suspicious major ninth melodic interval
+in a simple song.
+Over time, more and more errors are eventually discovered
+and corrected.
+Unfortunately, there is no magic flag that pops up to notify
+us when all errors have been eliminated from an encoded
+musical work.
+Only over time will the user gain confidence (or lose confidence)
+in a given data set.
+In working with a file, we are far more apt to discover
+something is wrong with the data than to learn that
+the data is a pristine encoding.
+
+\par 
+Errors can be magnified by the type of processing that is applied.
+For example, consider the case of an encoded repertory
+that is known to have a pitch-related error rate of 1 percent.
+That is, roughly 1 out of every 100 notes has an incorrect
+pitch representation.
+If we were to do an inventory of pitches in this repertory,
+then our results would also exhibit a 1 percent error rate.
+For many applications, such errors are not a problem.
+
+\par 
+However, consider what happens when we create an inventory
+of melodic intervals.
+One incorrect pitch will falsify
+\textit{two}
+melodic intervals, hence the error rates for intervals is now
+2 percent.
+Similarly, if we are looking at four-note chords,
+a single wrong pitch will falsify an entire chord.
+So we  will have roughly a 4 percent error rate for
+chord identification.
+If we are investigating simple chord progressions,
+a single wrong note will now disrupt the identification
+of two successive chords.
+Thus we have an error rate of 8 percent for chord progressions.
+
+\par 
+There are two general lessons that can be drawn from these
+observations.
+The first lesson is obvious.
+Always try to use the best quality data that is available.
+When encoding your own data, aim for total accuracy.
+The second lesson is more subtle.
+The more data that participates in identifying
+some pattern, the greater the likelihood that a single
+data error will cause a problem.
+Whenever possible try to restrict pattern searches to
+small or concise patterns.
+
+
+\subsection*{Searching Tips}
+
+\par 
+Many of the problems in computer-based musicology are evident
+when searching for some pattern.
+In general, there are two types of searching errors:
+\textit{false hits}
+and \textit{misses}.
+A
+\textit{false hit}
+occurs when the search returns something that is not intended.
+A
+\textit{miss}
+occurs when the search fails to catch an instance that was
+intended to be a match.
+Unfortunately, efforts to reduce the number of false hits
+often tend to increase the number of misses.
+Similarly, efforts to avoid misses often tend to increase
+the number of false hits.
+Precision and caution are necessary.
+
+\par 
+Search failures can arise from five sources:
+(1) corrupt or inaccurate data,
+(2) failure to search all of the intended data,
+(3) inaccurate or inappropriate definition of the search template,
+(4) failure to understand how a given search tool or option operates,
+(5) failure on the part of the user to form a clear idea
+of what is being sought.
+Let's deal with each of these problems in turn.
+
+\par 
+\textbf{(1) No search can produce accurate results if the data}
+\textbf{to be searched is inaccurate.}
+You can increase the accuracy of your search by choosing
+high quality data and preparing the files in
+an appropriate manner.
+
+\par 
+\textbf{Tips:}
+\begin{itemize}
+\item 
+Use the
+\textbf{humdrum}
+command to ensure that the input data conforms to the Humdrum
+syntax.
+\item 
+Use the
+\textbf{humdrum} \textbf{-v}
+command to determine whether the kind of data (signifiers)
+you are interested in are truly present in all of the files
+to be searched.
+\item 
+Use the
+\textbf{proof}
+command to ensure that any
+\texttt{**kern}
+data is properly encoded.
+\item 
+Visually inspect sample passages from the input data.
+Do not rely solely on the
+\textbf{ms}
+command;
+instead, look at the actual ASCII text data using the
+\textbf{more}
+command.
+\item 
+Use the
+\textbf{midi}
+and
+\textbf{perform}
+commands to listen to sample passages;
+ensure that the data makes sense.
+\item 
+If you are uncertain of the quality of the data,
+try encoding a randomly selected subset and then
+use the UNIX
+\textbf{diff}
+command to identify any differences between the original
+data and the re-encoded data.
+\item 
+Always read any release notes or README files
+that accompany the data.
+\item 
+Use
+\textbf{grep}
+to search for
+\textit{warning}
+and
+\textit{Nota Bene}
+reference records (\texttt{!!!RWG:} and \texttt{!!!ONB:}).
+These records may contain important editorial notes or warnings.
+\item 
+Where appropriate, expand files to through-composed versions
+(using
+\textbf{thru}) before searching.
+If more than one editorial version is present in a document,
+select the most appropriate edition before processing.
+\item 
+Create an inventory of all the types of data tokens
+present in an input.
+Inspect the inventory list to determine whether any
+unexpected data are present.
+\item 
+If necessary, eliminate certain types of data that might
+confound or interfere with your search in some way.
+Use
+\textbf{rid},
+\textbf{grep -v},
+\textbf{extract} \textbf{-i},
+\textbf{sed}
+and/or
+\textbf{humsed}
+to restrict the data.
+\end{itemize}
+
+\par 
+\textbf{(2) Ensure that you are searching all of the intended data:}
+\begin{itemize}
+\item 
+Use
+\textbf{grep}
+to search for titles, or composers, or opus numbers, etc.,
+in order to ensure that the file or files you are
+searching are the ones you want.
+Also check to ensure that you are not searching
+materials that don't belong in the input.
+\item 
+Be wary of searching duplicated materials.
+Create inventories of titles, opus numbers, etc.,
+and use
+\textbf{uniq -d}
+to identify unwanted duplicate copies of works or files.
+\item 
+Use the
+\textbf{ls -l}
+or
+\textbf{wc}
+commands to determine the size of the search data.
+Does the amount of input data seem unduly small
+or unduly large?
+\item 
+Use the
+\textbf{find}
+command to search the system for other files that
+ought to be included in the search task.
+\end{itemize}
+
+\par 
+\textbf{(3) One of the most common problems in searching arises}
+\textbf{from inaccurate or inappropriate search templates.}
+
+\par 
+\textbf{Tips:}
+\begin{itemize}
+\item 
+Be careful when formulating regular expressions.
+Read aloud the meaning of the regular expression.
+\item 
+Do not use
+\textit{extended}
+regular expressions with the
+\textbf{grep}
+command.
+Use
+\textbf{egrep}
+instead.
+\item 
+Ensure that you know which characters in your search
+template are meta-characters.
+\item 
+Execute your command from a shell script file so that
+you don't inadvertently make a typing error when
+entering the command.
+\item 
+Maintain a command history file so that you have a permanent
+record of what you did.
+Depending on the system settings, the UNIX
+\textbf{history}
+command will display the past 100 (or more) commands
+you have executed.
+Place this information in a permanent \texttt{record} file
+as follows:
+
+\par 
+
+\texttt{history > record}
+
+
+\par 
+In addition, keep records of the precise regular expressions
+used for a given project.
+These records will help you determine later whether you
+made a mistake.
+For added security, print-out these files and glue them
+into a lab book.
+\item 
+Create a test file containing different patterns, and test
+the ability of your regular expressions to catch all cases.
+Included "lures" in your test -$\,$- i.e., patterns
+that are close to what you want, but should be rejected.
+\item 
+Use extra caution when using "not" logic.
+For example, the
+\textbf{grep}
+expression "not-A" (i.e. \texttt{[\^{}A]})
+will still match records containing the letter \texttt{A}
+as long as one non-A letter is present.
+The commands
+
+\texttt{grep [\^{}A]}
+and\texttt{grep -v A}
+
+
+\par 
+are
+\textit{not}
+the same.
+\item 
+Compare outputs from a search that you know ought to increase
+the number of false hits.
+Compare outputs from a search that you know ought to miss some
+sought patterns.
+\item 
+Translate the data to another representation and repeat the
+search using a different pattern tailored to the new representation.
+The results should be identical.
+\item 
+Maintain a file containing regular expressions you have tested
+so you can re-use them in later projects.
+\item 
+Visually inspect the ASCII output to ensure that the results
+are correct.
+Remember that visual inspection will only help you identify
+\textit{false hits.}
+Visual inspection of the output will not help you identify
+\textit{misses.}
+\item 
+Use the
+\textbf{midi}
+and
+\textbf{perform}
+commands to proof-listen to your output.
+Again remember that aural inspection will only help
+you identify
+\textit{false hits.}
+\item 
+Ask whether the output makes sense.
+Given the amount of music searched, does it make
+sense to find the number of occurrences found?
+\item 
+Try making a slight modification to your pattern template
+-$\,$-  a modification that you know should produce
+a different result.
+\item 
+Look for converging evidence.
+Try two or three contrasting approaches to ensure
+that the same answer arises for each approach.
+For example, try searching each part individually using the
+\textbf{extract}
+command.
+\end{itemize}
+
+\par 
+\textbf{(4) Ensure that you understand how a given search tool or option}
+\textbf{operates.}
+
+\par 
+\textbf{Tips:}
+\begin{itemize}
+\item 
+Remember that
+\textit{extended}
+regular expressions require the use of
+\textbf{egrep}
+rather than \textbf{grep}.
+\item 
+Re-read the documentation to ensure that each software
+tool does what you think it does.
+\item 
+Refer to the examples given in the
+\textit{Humdrum Reference Manual}
+in order to ensure that you understand what a given option does.
+\item 
+Compare outputs using different options.
+Ensure that your selected option(s) is matching
+the correct pattern.
+\item 
+Use the
+\textbf{humver}
+command to determine which version of the Humdrum Toolkit
+you are using.
+Ensure that the documentation pertains to the correct version.
+\item 
+Read the "Release Notes" for the software you use.
+Known software bugs are often reported in such notes or in the
+documentation.
+\item 
+Report discovered bugs to the software's author.
+Even if the software is not revised, other users should
+be informed of the problem.
+\end{itemize}
+
+\par 
+\textbf{(5) Perhaps the most onerous problems in pattern searching}
+\textbf{arises when the user fails to have a clear understanding}
+\textbf{of what is being sought:}
+
+\par 
+\textbf{Tips:}
+\begin{itemize}
+\item 
+Think carefully about the search problem.
+What precisely are you looking for?
+\item 
+Inspect the input to familiarize yourself with various
+contexts and possible variants.
+\item 
+Check your search by carrying out a manual search of
+a random subset of the data.
+\end{itemize}
+
+\par 
+Compared with manual research, computer searches are impressively fast.
+However, don't let yourself be caught-up by the speed of interaction.
+Take your time and reflect on the problem being addressed.
+Formulate a search strategy away from the computer so that
+you have time to consider possible confounds.
+
+
+\subsection*{Pipeline Tips}
+
+\par 
+Apart from searching tasks, most Humdrum processing involves two or
+more software tools linked in a pipeline.
+Pipelines can obscure all sorts of processing errors.
+
+\par 
+\textbf{Tips:}
+\begin{itemize}
+\item 
+Slowly assemble your pipeline by adding one software tool
+at a time.
+Visually inspect the output following the addition of each process.
+\item 
+Start with a small volume of input data.
+Once you have some confidence in your pipeline use a
+\textit{different}
+sample of input data.
+Again add one software tool at a time while inspecting
+the results at each stage.
+\item 
+Use the UNIX
+\textbf{tee}
+command to generate files at intermediate points in the processing.
+Use the
+\textbf{assemble}
+command to align inputs and outputs at various stages in
+the processing.
+\item 
+Execute your finalized pipeline from a shell script in order to
+avoid undetected typing errors.
+\end{itemize}
+
+
+
+\subsection*{Reprise}
+
+\par 
+In research-oriented activities, it is essential to exercise care when
+relying on computer-based methods.
+Computers have an unbounded capacity to generate false results.
+Unfortunately, computer outputs often seem deceptively authoritative.
+Take your time and develop a coherent strategy for solving
+a particular problem.
+Test your materials and processes, and maintain good records
+of what you have done.
+For critical tasks, always use two or more independent methods
+to ensure that the results agree.
+In general, cultivate a skeptical attitude;
+wise users are wary users.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

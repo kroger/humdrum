@@ -1,0 +1,280 @@
+## Improv example-programs makefile.
+##
+## Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
+## Creation Date: Fri Jan 15 05:23:55 PST 1999
+## Last Modified: Wed Jun 17 17:35:29 PDT 2009
+## Filename:      ...improv/Makefile.examples
+##
+## Description: This Makefile creates example programs which use the
+##		Improv library using gcc 2.7.2.1 or higher.
+##
+## To run this makefile, type (without quotes) 
+##      make -f Makefile.examples
+## However, typically it is used in conjunction with Makefile by typing:
+##      make examples
+##
+## Without arguments, the makefile will compile all example programs.
+## If you give a program name as an argument, it will compile 
+## just that particular program.  For exmaple:
+##      make -f Makefile.examples cinmidi
+## or
+##      make cinmidi
+## will compile the cinmidi program and place it in the ./bin directory.
+##
+
+# You can set the OSTYPE and OSSUBTYPE variables below; otherwise, they
+# will be set automatically later on.
+
+###########################################################################
+#                                                                         #
+#  Operating System OSTYPEs available in the Improv examples compilation: #
+#                                                                         #
+#      LINUX  = Linux running on intel computers and OSS sound drivers    #
+#      VISUAL = Windows 95/NT using Microsoft Visual C++ 5/6              #
+#      OSXPC  = Apple OS X on Intel CPUs                                  #
+#      OSXOLD = Apple OS X on PowerPC CPUs                                #
+#                                                                         #
+# Choose one of the following OSTYPE defines:                             #
+#                                                                         #
+
+#OSTYPE = LINUX
+#OSTYPE = OSXPC
+#OSTYPE = OSXOLD
+#OSTYPE = VISUAL
+
+
+###########################################################################
+#                                                                         #
+# The OSSUBTYPE is for determining which type of sound drivers are being  #
+# used in linux.  There are three possibilities:                          #
+#    OSSUBTYPE = ALSA   : ALSA 1.0 interface (http://www.alsa-project.org)#
+#    OSSUBTYPE = OSS    : OSS interface      (http://www.4front-tech.com) #
+#    OSSUBTYPE =        : use this for OS X since there is only CoreMIDI  #
+#                                                                         #
+# Two additional options are available for older systems:                 #
+#    OSSUBTYPE = ALSA09 : ALSA 0.9 interface (http://www.alsa-project.org)#
+#    OSSUBTYPE = ALSA05 : ALSA 0.5 interface (http://www.alsa-project.org)#
+#                                                                         #
+# Note: The Improv library accesses the internal/external MIDI devices    #
+# in OSS, but only the external MIDI devices in ALSA.  OSS can be         #
+# emulated in ALSA 0.9 and higher, but seems to be broken in ALSA 1.0.    #
+#                                                                         #
+# Choose one of the following OSSUBTYPE defines:                          #
+#                                                                         #
+
+#OSSUBTYPE = ALSA
+#OSSUBTYPE = OSS
+#OSSUBTYPE = 
+
+
+###########################################################################
+#                                                                         #
+# This section automatically sets the OSTYPE and OSSUBTYPE variables      #
+# they are not defined manually above this point. This code will decide   #
+# if the computer is and Apple Machintosh running on an Intel CPU, or a   #
+# Linux computer running on an Intel CPU.  You will have to specify a     #
+# different setup manually in the previous section of the makefile.       #
+# If the computer architecture is LINUX, then the code below will decide  #
+# whether to compile OSS or ALSA MIDI interface code.                     #
+#                                                                         #
+
+ifeq ($(origin OSTYPE), undefined)
+   ifneq ($(wildcard /mach_kernel*),)
+      OSTYPE = OSXPC
+   else 
+      OSTYPE = LINUX
+   endif
+endif
+# Next if statement needed for some versions of make which already set OSTYPE:
+ifeq ($(OSTYPE),linux)
+   OSTYPE = LINUX
+endif
+
+ifeq ($(origin OSSUBTYPE), undefined)
+   ifeq ($(OSTYPE),OSXPC)
+      OSSUBTYPE = 
+   endif
+   ifeq ($(OSTYPE),LINUX)
+      ifneq ($(wildcard /proc/asound/version),)
+         OSSUBTYPE = ALSA
+      else 
+         OSSUBTYPE = OSS
+      endif
+   endif
+endif
+
+
+###########################################################################
+#                                                                         #
+# Other setup of variables which usually don't need to be modified.       #
+#                                                                         #
+
+SRCDIR    = examples
+INCDIR    = include
+OBJDIR    = obj
+LIBDIR    = lib
+LIBFILE   = improv
+TARGDIR   = bin
+# LANG=C: Nuts to the GCC error beautification committee.
+COMPILER  = LANG=C g++
+
+DEFINES   = $(addprefix -D,$(OSTYPE))
+DEFINES  += $(addprefix -D,$(OSSUBTYPE))
+
+PREFLAGS  = -O6 -I$(INCDIR) $(DEFINES) 
+
+# Add the following define if you are using an older C++ compiler:
+#PREFLAGS += -DOLDCPP
+
+# Add -static flag to compile without dynamics libraries for better portability:
+#PREFLAGS += -static
+
+POSTFLAGS  = -L$(LIBDIR) -l$(LIBFILE) 
+
+ifeq ($(OSTYPE),OSXPC)
+   POSTFLAGS += -framework CoreMIDI -framework CoreServices
+endif
+ifeq ($(OSTYPE),OSXOLD)
+   POSTFLAGS += -framework CoreMIDI -framework CoreServices
+endif
+
+ifeq ($(OSTYPE),LINUX)
+   # include pthread library 
+   POSTFLAGS += -L/usr/lib -lpthread
+   # Add the ALSA library interface, if using ALSA:
+   ifeq ($(OSSUBTYPE),ALSA)
+      POSTFLAGS += -lasound
+   endif
+endif
+
+# Extra setup for compiling humplay:
+ifneq ($(wildcard ../humextra/lib/libhumextra.a),)
+   PREFLAGS  += -I../humextra/include
+   POSTFLAGS += -L../humextra/lib -lhumextra
+   HUMEXTRA  := yes
+endif
+
+#                                                                         #
+# End of user-modifiable variables.                                       #
+#                                                                         #
+###########################################################################
+
+
+# setting up the directory paths to search for program source code
+vpath %.cpp   $(SRCDIR)/improv $(SRCDIR)/synthImprov $(SRCDIR)/batonImprov \
+              $(SRCDIR)/batonSynthImprov $(SRCDIR)/midifile \
+              $(SRCDIR)/stickImprov $(SRCDIR)/hciImprov
+
+# generating a list of the programs to compile with "make all"
+PROGS1=$(notdir $(patsubst %.cpp,%,$(wildcard $(SRCDIR)/improv/*.cpp)))
+PROGS2=$(notdir $(patsubst %.cpp,%,$(wildcard \
+      $(SRCDIR)/synthImprov/*.cpp)))
+PROGS3=$(notdir $(patsubst %.cpp,%,$(wildcard \
+      $(SRCDIR)/batonImprov/*.cpp)))
+#PROGS4=$(notdir $(patsubst %.cpp,%,$(wildcard \
+#      $(SRCDIR)/batonSynthImprov/*.cpp)))
+PROGS5=$(notdir $(patsubst %.cpp,%,$(wildcard $(SRCDIR)/midifile/*.cpp)))
+PROGS6=$(notdir $(patsubst %.cpp,%,$(wildcard \
+      $(SRCDIR)/hciImprov/*.cpp)))
+PROGS7=$(notdir $(patsubst %.cpp,%,$(wildcard \
+      $(SRCDIR)/stickImprov/*.cpp)))
+PROGS=$(PROGS1) $(PROGS2) $(PROGS3) $(PROGS5) $(PROGS6) $(PROGS7)
+
+
+# targets which don't actually refer to files
+.PHONY : all bin improv synthImprov batonImprov batonSynthImprov \
+         stickImprov hciImprov midifile 2dpos position1 position2 nana2
+
+
+###########################################################################
+#                                                                         #
+#                                                                         #
+
+all: bin $(addprefix $(TARGDIR)/,$(PROGS))
+	@echo Finished compiling all example programs.
+
+improv: bin $(addprefix $(TARGDIR)/,$(PROGS1))
+	@echo Finished compiling improv example programs.
+
+synthImprov: bin $(addprefix $(TARGDIR)/,$(PROGS2))
+	@echo Finished compiling synthImprov example programs.
+
+batonImprov: bin $(addprefix $(TARGDIR)/,$(PROGS3))
+	@echo Finished compiling batonImprov example programs.
+
+batonSynthImprov: bin $(addprefix $(TARGDIR)/,$(PROGS4))
+	@echo Finished compiling batonSynthImprov example programs.
+
+midifile: bin $(addprefix $(TARGDIR)/,$(PROGS5))
+	@echo Finished compiling midifile example programs.
+
+hciImprov: bin $(addprefix $(TARGDIR)/,$(PROGS5))
+	@echo Finished compiling hciImprov example programs.
+
+stickImprov: bin $(addprefix $(TARGDIR)/,$(PROGS5))
+	@echo Finished compiling stickImprov example programs.
+
+bin:
+#	@echo Programs are: $(PROGS)
+	-mkdir $(TARGDIR)
+
+###########################################################################
+
+# programs which can not be compiled in Linux or OSX:
+
+bin/2dpos:
+	@echo Skipping 2dpos program: compiles only in Windows 95/NT
+
+bin/position1:
+	@echo Skipping position1 program: compiles only in Windows 95/NT
+
+bin/position2:
+	@echo Skipping position2 program: compiles only in Windows 95/NT
+
+bin/nana2:
+	@echo Skipping nana2 program: needs external functions from sigNet.
+
+bin/cond:
+	@echo Skipping cond program: needs updating.
+
+bin/hcidisplay:
+	@echo Skipping hcidisplay program
+
+
+# These programs need the Humdrum Extras library:
+ifeq ($(origin HUMEXTRA),undefined)
+bin/humplay: 
+	@echo Skipping humplay program for now
+humplay:
+	@echo Skipping humplay program for now
+bin/jazzchord: 
+	@echo Skipping jazzchord program for now
+jazzchord:
+	@echo Skipping jazzchord program for now
+bin/henonfile: 
+	@echo Skipping henonfile program for now
+henonfile:
+	@echo Skipping henonfile program for now
+endif
+
+###########################################################################
+
+# defining an explicit rules for program sourcefile dependencies:
+
+$(TARGDIR)/% : $(notdir %.cpp)
+	$(COMPILER) $(PREFLAGS) -o $@ $< $(POSTFLAGS) \
+	   && strip $@
+
+% : $(notdir %.cpp)
+ifeq ($(wildcard $(TARGDIR)),)
+	-mkdir $(TARGDIR)
+endif
+	$(COMPILER) $(PREFLAGS) -o $(TARGDIR)/$@ $< $(POSTFLAGS) \
+	   && strip $(TARGDIR)/$@
+
+#                                                                         #
+#                                                                         #
+###########################################################################
+
+
+

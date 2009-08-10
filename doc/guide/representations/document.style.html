@@ -1,0 +1,143 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference</TITLE>
+<!-- Describes documentation style for Humdrum computer music representations. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Describes documentation style for the Humdrum computer music representaton..">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer representation,documentation style">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation Reference</H1>
+</CENTER>
+</P>
+<H2>Documentation Style</H2>
+<P>
+This section of the
+<i>Reference Manual</i>
+describes various pre-defined representations conforming to the Humdrum
+syntax.
+Each representation defines a scheme by which the numbers, letters, and other
+characters of the ASCII character-set are mapped to musically pertinent
+signs or "signifieds."
+Each representation is designated by a different Humdrum
+<i>exclusive interpretation.</i>
+Exclusive interpretations are denoted by two leading asterisk characters
+(beginning in the first column of a line or record)
+followed immediately by an interpretation
+<i>keyword.</i>
+For any given spine (column of data), only one exclusive interpretation
+can be active at a given moment, and an interpretation must precede
+the first data record.
+</P>
+<P>
+Each documented representation includes a description of the scope
+of the representation, a complete tabulation of all pre-defined
+signifiers, and examples of syntactically-correct representations.
+For many representations, a number of
+<i>tandem interpretations</i>
+are also pre-defined.
+Tandem interpretations provide additional contextual information
+concerning the represented data.
+In addition, each entry lists all of the existing Humdrum
+commands that are able to process the representation.
+Descriptions of the various
+<A HREF="../commands.toc.html"><b>Humdrum commands</b></A>
+are also available on-line.
+</P>
+<P>
+All Humdrum representations can be processed by the
+general-purpose tools list in the following table.
+<blockquote><TABLE>
+<TR><TD><A HREF="../commands/assemble.html"><b>assemble</b></A></TD><TD>paste together Humdrum files</TD></TR>
+<TR><TD><A HREF="../commands/census.html"><b>census</b></A></TD><TD>determine general properties of a Humdrum file</TD></TR>
+<TR><TD><A HREF="../commands/cleave.html"><b>cleave</b></A></TD><TD>join tokens from two or more spines into a single spine</TD></TR>
+<TR><TD><A HREF="../commands/context.html"><b>context</b></A></TD><TD>congeal data records to form a contextual frame</TD></TR>
+<TR><TD><A HREF="../commands/correl.html"><b>correl</b></A></TD><TD>measure the numerical similarity between two spines</TD></TR>
+<TR><TD><A HREF="../commands/ditto.html"><b>ditto</b></A></TD><TD>replace null tokens with previous non-null data token</TD></TR>
+<TR><TD><A HREF="../commands/encode.html"><b>encode</b></A></TD><TD>interactive Humdrum encoding from MIDI input</TD></TR>
+<TR><TD><A HREF="../commands/extract.html"><b>extract</b></A></TD><TD>select input spines for output</TD></TR>
+<TR><TD><A HREF="../commands/fields.html"><b>fields</b></A></TD><TD>trace changes in spine structure</TD></TR>
+<TR><TD><A HREF="../commands/humdrum.html"><b>humdrum</b></A></TD><TD>test conformance to Humdrum syntax</TD></TR>
+<TR><TD><A HREF="../commands/humsed.html"><b>humsed</b></A></TD><TD>stream editor for Humdrum files</TD></TR>
+<TR><TD><A HREF="../commands/infot.html"><b>infot</b></A></TD><TD>calculate information flow</TD></TR>
+<TR><TD><A HREF="../commands/num.html"><b>num</b></A></TD><TD>number selected records according to user-defined criteria</TD></TR>
+<TR><TD><A HREF="../commands/patt.html"><b>patt</b></A></TD><TD>locate and output user-defined patterns in a Humdrum input</TD></TR>
+<TR><TD><A HREF="../commands/pattern.html"><b>pattern</b></A></TD><TD>exhaustively locate user-defined patterns in a Humdrum input</TD></TR>
+<TR><TD><A HREF="../commands/recode.html"><b>recode</b></A></TD><TD>recode numeric tokens in selected Humdrum spines</TD></TR>
+<TR><TD><A HREF="../commands/rend.html"><b>rend</b></A></TD><TD>split tokens in a single spine into two or more spines</TD></TR>
+<TR><TD><A HREF="../commands/rid.html"><b>rid</b></A></TD><TD>eliminate specified record types from the input</TD></TR>
+<TR><TD><A HREF="../commands/scramble.html"><b>scramble</b></A></TD><TD>randomize order of either Humdrum data records or data tokens</TD></TR>
+<TR><TD><A HREF="../commands/simil.html"><b>simil</b></A></TD><TD>measure the similarity between two Humdrum spines</TD></TR>
+<TR><TD><A HREF="../commands/strophe.html"><b>strophe</b></A></TD><TD>selectively extract strophic data</TD></TR>
+<TR><TD><A HREF="../commands/thru.html"><b>thru</b></A></TD><TD>expand repeats to through-composed form</TD></TR>
+<TR><TD><A HREF="../commands/xdelta.html"><b>xdelta</b></A></TD><TD>calculate numeric differences for successive tokens within a spine</TD></TR>
+<TR><TD><A HREF="../commands/yank.html"><b>yank</b></A></TD><TD>extract passages from a Humdrum input</TD></TR>
+<TR><TD><A HREF="../commands/ydelta.html"><b>ydelta</b></A></TD><TD>calculate numeric differences for concurrent spines</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Each reference entry contains information identifying the name
+and purpose of the representation, a summary description of
+mappings between signifiers and signifieds, the designated file-type,
+and a list of Humdrum commands that accept or
+produce the given representation as input or output.
+The standard order of documentation sections is as follows:
+(1) representation,
+(2) description,
+(3) file type designation,
+(4) signifiers used,
+(5) examples,
+(6) pertinent commands,
+(7) tandem interpretations,
+(8) see also,
+(9) warnings,
+(10) limits,
+(11) note,
+(12) reference,
+(13) proposed modifications, and
+(14) author(s).
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../index.html">
+<B>Humdrum Main Page</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

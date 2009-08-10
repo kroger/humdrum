@@ -1,0 +1,134 @@
+################################################################
+##					NUM.KSH
+# Programmed by: Tim Racinsky       Date: June, 1994
+# Copyright (c) 1994 David Huron
+#
+# Modifications:
+#    Date:    Programmer:        Description:
+# August 5/94	Tim Racinsky	Removed getopts function for compatability
+# August 8/94	Tim Racinsky	Added -p and -P options
+#
+#	A korn shell script to parse commands for the num command
+#
+OPTIONS=""
+ATTACH=null
+INCREMENT=null
+NUMBER=null
+offset=null
+OFFSET=null
+position=null
+POSITION=null
+resume=null
+RESUME=null
+suspend=null
+SUSPEND=null
+EXCLUDE=null
+reset=null
+RESET=null
+FILENAME=""
+HELP=""
+FLAG=""
+STNDIN=""
+#
+USAGE1="USAGE: num -h                   (Help Screen)"
+USAGE2="       num [-efT] [-a **interp] [-i n] [-n regexp] [-o n] [-O n]"
+USAGE3="           [-p regexp] [-P regexp] [-r regexp] [-R regexp] [-s regexp]"
+USAGE4="           [-S regexp] [-x regexp] [-z regexp] [-Z regexp] [file ...]"
+#
+DUALCASE=1
+while [ "$#" -ne 0 ]
+do
+	case "$1" in
+	--)	shift
+		break ;;
+	-)	break ;;
+	-*h*)
+		HELP="ON"
+		shift
+		break ;;
+	-[ainoOpPrRsSxzZ])
+		if [ x"$2" = x ]
+		then
+			echo "num: ERROR: $1 option requires argument." 1>&2
+			echo "" 1>&2
+			echo "${USAGE1}" 1>&2
+			echo "${USAGE2}" 1>&2
+			echo "${USAGE3}" 1>&2
+			echo "${USAGE4}" 1>&2
+			exit
+		else
+			OPTIONS="${OPTIONS}$1"
+			case "$1" in
+				-a) ATTACH="$2" ;;
+				-i) INCREMENT="$2" ;;
+				-o) offset="$2" ;;
+				-O) OFFSET="$2" ;;
+				-p) position="$2" ;;
+				-P) POSITION="$2" ;;
+				-n) NUMBER="$2" ;;
+				-r) resume="$2" ;;
+				-R) RESUME="$2" ;;
+				-s) suspend="$2" ;;
+				-S) SUSPEND="$2" ;;
+				-x) EXCLUDE="$2" ;;
+				-z) reset="$2" ;;
+				-Z) RESET="$2" ;;
+			esac
+			shift 2
+		fi ;;
+	-*[ainoOpPrRsSxzZ]*)
+		echo "num: ERROR: Options expecting arguments must be specified separately." 1>&2
+		echo "" 1>&2
+		echo "${USAGE1}" 1>&2
+		echo "${USAGE2}" 1>&2
+		echo "${USAGE3}" 1>&2
+		echo "${USAGE4}" 1>&2
+		exit ;;
+	-*)	
+		OPTIONS="${OPTIONS}$1"
+		shift ;;
+	*)	break ;;
+	esac
+done
+# If no options were specified, print a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/num.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/num.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Can only use '-' once for each command
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "num: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+$AWK_VER -f ${HUMDRUM}/bin/num.awk "DUMMY" "${OPTIONS:-null}" "$ATTACH" "$INCREMENT" "$NUMBER" "$offset" "$OFFSET" "$resume" "$RESUME" "$suspend" "$SUSPEND" "$EXCLUDE" "$reset" "$RESET" "$position" "$POSITION" $FILENAME

@@ -1,0 +1,291 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter35}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Layers}
+
+
+
+In
+Chapters 11
+and
+15
+we examined different kinds of intervals,
+including both harmonic and melodic intervals.
+A number of different types of intervals were distinguished
+and we learned how to calculate such intervals.
+One type of melodic interval mentioned in
+Chapter 11
+is the
+\textit{distance interval}
+-$\,$-  an interval between pitches which are separated by
+intervening musical materials.
+In this chapter we consider more sophisticated ways of determining
+distance intervals.
+These types of intervals are the foundation of various notions
+of hierarchies or "layers" of pitch analysis.
+
+\par 
+This chapter also visits a related issue of implied harmony.
+Many melodic passages outline clear harmonic progressions
+which are also implicated in layer-related analyses.
+
+
+\subsection*{Implied Harmony}
+
+\par 
+Example 35.1 shows a two-phrase trumpet solo from Aaron Copland's
+\textit{El Salon Mexico}.
+Harmonic progressions may be evident only when arpeggiated figures
+are collapsed.
+In this case, an implicit harmony may is evident
+where a G major chord is followed by a D dominant seventh chord.
+The barlines provide convenient ways of parsing the harmonies.
+
+\par 
+\textbf{Example 35.1}  Aaron Copland, \textit{El Salon Mexico}.
+
+
+
+A
+\texttt{**kern}
+encoding of the passage is given below:
+
+\texttt{!!!COM: Copland, A.
+\texttt{!!!OTL: El Salon Mexico
+\texttt{**kern
+\texttt{*Itromp
+\texttt{*clefG2
+\texttt{*k[]
+\texttt{*M4/4
+\texttt{=29
+\texttt{2r
+\texttt{8r
+\texttt{\{8d
+\texttt{8g
+\texttt{8b
+\texttt{=30
+\texttt{28dd
+\texttt{28b
+\texttt{28dd
+\texttt{28b
+\texttt{28dd
+\texttt{28b
+\texttt{28dd
+\texttt{8b
+\texttt{8dd
+\texttt{8gg
+\texttt{8dd
+\texttt{8b
+\texttt{8g
+\texttt{=31
+\texttt{8cc
+\texttt{[4.a
+\texttt{8a]\}
+\texttt{\{8d
+\texttt{8f\#
+\texttt{8a
+\texttt{=32
+\texttt{4cc
+\texttt{8a
+\texttt{8f\#
+\texttt{8d
+\texttt{4dd
+\texttt{8dd
+\texttt{=33
+\texttt{8ff\#\}~
+\texttt{8r
+\texttt{4r
+\texttt{2r;
+\texttt{=
+\texttt{*-}
+
+
+\par 
+We can collapse the arpeggiated chords using the
+\textbf{context}
+command:
+
+\par 
+
+\texttt{context -b = -o = copland}
+
+
+\par 
+Identify the chords is facilitated by using the pitch-class
+(\texttt{**pc})
+representation described in
+Chapter 34.
+
+\par 
+
+\texttt{context -b = -o = copland | pc -a | rid -d}
+
+
+\par 
+The corresponding output is:
+
+\par 
+
+\texttt{!!!COM: Copland, A.
+\texttt{!!!OTL: El Salon Mexico
+\texttt{**pc
+\texttt{*Itromp
+\texttt{*clefG2
+\texttt{*k[]
+\texttt{*M4/4
+\texttt{2 B 2 B 2 B 2 B 2 7 2 B 7
+\texttt{0 9 9 2 6 9
+\texttt{0 9 6 2 2 2
+\texttt{6 r r r
+\texttt{*-}
+
+In order to identify these as G major and D dominant chords
+it would be convenient to reduce the sets to (2,7,B)
+and (0,2,6,9) respectively.
+For this task, we can use a
+The following awk script eliminates repeated tokens within a record:
+(huniq:
+We might call this script
+\textbf{huniq}
+since it acts like a horizontal version of the
+\textbf{uniq}
+command:
+
+\par 
+
+\texttt{awk '\{
+
+\# A script to eliminate repeated tokens within a record.
+\\
+if (\$0 ~ /\^{}[!*]/) \{print \$0; next\}
+\\
+else
+
+\{
+array[\$1] = line = \$1
+\\
+for (i=2; i<=NF; i++)
+
+\{
+\\
+if (array[\$i] == "") \{array[\$i]=\$i; line = line " " \$i\}
+\\
+\}
+
+print line
+\\
+for (i in array) delete array[i]
+\\
+\}
+
+\}' \$1}
+
+
+Applying this script to our output
+
+!!!COM: Copland, A.
+!!!OTL: El Salon Mexico
+**pc
+*Itromp
+*clefG2
+*k[]
+*M4/4
+r 2 7 B
+2 B 7
+0 9 2 6
+0 9 6 2
+6 r
+*-
+
+Identifying implicit harmonic intervals can be a little
+more taxing.
+Let's begin by considering a monophonic passage that
+exhibits a pseudo-polyphonic or compound melodic tendency.
+A passage from Bach's "Gigue" from the solo 'cello
+\textit{Suite No. 3}
+is shown in Example 35.1.
+\\\\
+\textbf{Example 35.1}  J.S. Bach, "Gigue" from \textit{Suite No. 3} for solo 'cello (excerpt).
+
+
+
+
+\texttt{**kern
+\texttt{*M3/8
+\texttt{=88
+\texttt{(16F\#
+\texttt{16c)
+\texttt{(16E
+\texttt{16c)
+\texttt{(16D
+\texttt{16c)
+\texttt{=89
+\texttt{(16B
+\texttt{16D)
+\texttt{(16A
+\texttt{16D)
+\texttt{(16B
+\texttt{16D)
+\texttt{=90
+\texttt{(16c
+\texttt{16D)
+\texttt{(16B
+\texttt{16D)
+\texttt{(16A
+\texttt{16D)
+\texttt{=91
+\texttt{(16B
+\texttt{16D)}
+
+
+
+
+
+
+
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

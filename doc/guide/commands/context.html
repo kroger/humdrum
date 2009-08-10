@@ -1,0 +1,579 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- context</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>context</b>  --  congeal Humdrum data records to form a contextual frame
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>context</b> [<b>-b</b> <i>regexp</i>] [<b>-d</b> <i>string</i>] [<b>-e</b> <i>regexp</i>] [<b>-i</b> <i>regexp</i>] [<b>-n</b> <i>n</i>] [<b>-o</b> <i>regexp</i>] [<b>-p</b> <i>n</i>] [<i>inputfile</i> ...]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>context</b>
+command amalgamates one or more successive input data records into
+single records according to user-defined criteria.
+Only single-spine Humdrum inputs are permitted.
+The
+<b>context</b>
+command provides a useful means for amalgamating on a single line
+those data tokens that are somehow deemed to be contextually related.
+For example,
+<b>context</b>
+might be used to link together all pitches in a measure,
+or pair the first and last notes of each phrase.
+The command is useful in such tasks as partitioning possible pitch-class sets
+or grouping arpeggio tones into chords.
+</P>
+<P>
+In its simplest mode of operation
+<b>context</b>
+will join a specified number of successive data records together
+to form a single output record.
+By way of example, consider a file (named <code><big>input</big></code>) consisting of a single
+spine whose data records contain the numbers 1 through 6 on separate lines:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**numbers</TD></TR>
+<TR><TD>1</TD></TR>
+<TR><TD>2</TD></TR>
+<TR><TD>3</TD></TR>
+<TR><TD>4</TD></TR>
+<TR><TD>5</TD></TR>
+<TR><TD>6</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+The command
+</P>
+<P>
+<blockquote>
+<code><big>
+context -n 3 input
+</code></big>
+</blockquote>
+</P>
+<P>
+will produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD>**numbers</TD></TR>
+<TR><TD>1 2 3</TD></TR>
+<TR><TD>2 3 4</TD></TR>
+<TR><TD>3 4 5</TD></TR>
+<TR><TD>4 5 6</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice that the output file has been padded with null tokens so that
+the number of output records matches the number of input records.
+By invoking the
+<b>-p</b>
+option, the padded null tokens can be placed either at the beginning or the
+end of the file, or split between beginning and end.
+For example, the command
+</P>
+<P>
+<blockquote>
+<code><big>
+context -n 3 -p 3 input
+</code></big>
+</blockquote>
+</P>
+<P>
+will place the trailing null tokens in the above example at the beginning
+of the output.
+The
+<b>-p</b>
+option defaults to the value 0.
+</P>
+<P>
+If null tokens are present in the input, they remain in place,
+yet do not affect the congealed data records.
+For example, if a null token was present between the
+numbers 1 and 2 in the above input, the command
+</P>
+<P>
+<blockquote>
+<code><big>
+context -n 4 -p 1 input
+</code></big>
+</blockquote>
+</P>
+<P>
+would produce an output beginning with a single padded null token:
+<code><big>
+<blockquote><TABLE>
+<TR><TD><code><big>**numbers</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>1 2 3 4</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>2 3 4 5</TD></TR>
+<TR><TD><code><big>3 4 5 6</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Rather than specifying a fixed number of congealed data records,
+input records can alternatively be amalgamated according to the
+signifiers present in the input data itself.
+The
+<b>-e</b>
+option allows the user to specify an "end" signifier.
+When this signifier is encountered in the input,
+the input record is appended to the current congealed record
+--  which is then output -- and a new congealed output record begins.
+End signifiers are defined as string patterns using the
+<i>regular expression</i>
+syntax (see <b>regexp (5)</b>).
+For example, given an input of six successive numbers, the command
+</P>
+<P>
+<code><big>
+context -e [0246] input
+</i></b></code></big>
+</i></b></code></big>
+</P>
+<P>
+would produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD><code><big>**numbers</TD></TR>
+<TR><TD><code><big>1 2</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>3 4</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>5 6</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>context</b>
+command supports the following options:
+<blockquote>
+<blockquote><TABLE>
+<TR><TD><b>-b <i>regexp</i></TD><TD>begin a new output record starting with token matching <i>regexp</i></TD></TR>
+<TR><TD><b>-d <i>string</i></TD><TD>use <i>string</i> as output delimiter for input records rather than the space character</TD></TR>
+<TR><TD><b>-e <i>regexp</i></TD><TD>begin a new output record starting after token matching <i>regexp</i></TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-i <i>regexp</i></TD><TD>ignore any records matching <i>regexp</i> when counting</TD></TR>
+<TR><TD><b>-n <i>n</i></TD><TD>amalgamate <i>n</i> input data records for each output record</TD></TR>
+<TR><TD><b>-o <i>regexp</i></TD><TD>omit any records matching <i>regexp</i> from amalgamated output; do</TD></TR>
+<TR><TD></TD><TD>not count</TD></TR>
+<TR><TD><b>-p <i>n</i></TD><TD>pad <i>n</i> (normally trailing) null tokens at the beginning of the</TD></TR>
+<TR><TD></TD><TD>output spine</TD></TR>
+</TABLE></blockquote>
+</blockquote>
+Options are specified in the command line.
+Note that the <b>-b</b> and <b>-e</b> options are mutually exclusive
+with the <b>-n</b>, <b>-p</b>, and <b>-i</b> options.
+</P>
+<P>
+In the default operation,
+<b>context</b>
+separates amalgamated tokens by inserting a space character.
+(Thus the input tokens are treated as subtokens in a Humdrum multiple-stop.)
+The
+<b>-d</b>
+option allows the user to define an alternative string as the
+subtoken delimiter.
+</P>
+<P>
+The
+<b>-n</b>
+option allows the user to specify the maximum number of data records
+assembled into a single output record.
+</P>
+<P>
+The
+<b>-b</b>
+option allows the user to specify a "begin" marker.
+When this marker (<i>regexp</i>) is matched in the input,
+any current congealed record is output, and a new congealed
+record begins.
+Begin signifiers are defined as string patterns using the
+<i>regular expression</i>
+syntax.
+</P>
+<P>
+With the
+<b>-e</b>
+option, if
+<b>context</b>
+encounters a data record matching
+<i>regexp</i>
+then it appends the current input record to the current assembled output
+record and begins assembling a new record with the following input record.
+</P>
+<P>
+The
+<b>-i</b>
+option is used only with
+<b>-n;</b>
+it causes any data records matching
+<i>regexp</i>
+to be ignored in the counting of amalgamated tokens.
+Such "uncounted" records are nevertheless output.
+</P>
+<P>
+The
+<b>-o</b>
+option causes data records matching
+<i>regexp</i>
+to be omitted from the output.
+</P>
+<P>
+The
+<b>-p</b>
+option may be used in conjunction with <b>-n</b>.
+Normally, the output from
+<b>context -n</b>
+is padded with trailing null tokens -- one fewer in number than
+the value specified with <b>-n</b>.
+The <b>-p</b> <i>n</i> option causes <i>n</i> null tokens to be padded at the
+<i>beginning</i>
+of the output spine, rather than trailing at the end.
+</P>
+<P>
+Note that tandem interpretations and comments are processed like null tokens;
+they are merely echoed in the output in their appropriate position.
+Note also that
+<b>context</b>
+automatically breaks a congealed output record whenever
+it encounters a spine-path terminator or exclusive interpretation
+in the input.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following excerpt from Edgar Var&#232se's
+<i>Density 21.5 (1936)</i>
+illustrates the use of
+<b>context.</b>
+Consider the initial input:
+<code><big>
+<blockquote><TABLE>
+<TR><TD><code><big>!! Edgar Var&#232se, Density 21.5 (1936)</TD></TR>
+<TR><TD><code><big>!! excerpt: mm.41-45</TD></TR>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD><code><big>*MM72</TD></TR>
+<TR><TD><code><big>=41</TD></TR>
+<TR><TD><code><big>(16f#</TD></TR>
+<TR><TD><code><big>16e#</TD></TR>
+<TR><TD><code><big>[8gn</TD></TR>
+<TR><TD><code><big>2.g_</TD></TR>
+<TR><TD><code><big>=42</TD></TR>
+<TR><TD><code><big>4g])</TD></TR>
+<TR><TD><code><big>4r</TD></TR>
+<TR><TD><code><big>4r</TD></TR>
+<TR><TD><code><big>8r</TD></TR>
+<TR><TD><code><big>(16f#</TD></TR>
+<TR><TD><code><big>16e#</TD></TR>
+<TR><TD><code><big>=43</TD></TR>
+<TR><TD><code><big>6gn)</TD></TR>
+<TR><TD><code><big>(6e#</TD></TR>
+<TR><TD><code><big>6f#</TD></TR>
+<TR><TD><code><big>8g)</TD></TR>
+<TR><TD><code><big>(8f#</TD></TR>
+<TR><TD><code><big>12e#</TD></TR>
+<TR><TD><code><big>12g</TD></TR>
+<TR><TD><code><big>12dn</TD></TR>
+<TR><TD><code><big>=44</TD></TR>
+<TR><TD><code><big>2a-)</TD></TR>
+<TR><TD><code><big>(4an</TD></TR>
+<TR><TD><code><big>8een</TD></TR>
+<TR><TD><code><big>[8bb-</TD></TR>
+<TR><TD><code><big>=45</TD></TR>
+<TR><TD><code><big>4bb-]</TD></TR>
+<TR><TD><code><big>2.ccc#)</TD></TR>
+<TR><TD><code><big>=45</TD></TR>
+<TR><TD><code><big>8r</TD></TR>
+<TR><TD><code><big>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+A simple transformation would be to amalgamate successive data
+records in overlapping groups of 3.
+The following command:
+</P>
+<P>
+<blockquote>
+<code><big>
+context -n 3 density
+</code></big>
+</blockquote>
+</P>
+<P>
+would produce the following output:
+<code><big>
+<blockquote><TABLE>
+<TR><TD><code><big>!! Edgar Var&#232se, Density 21.5 (1936)</TD></TR>
+<TR><TD><code><big>!! excerpt: mm.41-45</TD></TR>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD><code><big>*MM72</TD></TR>
+<TR><TD><code><big>=41 (16f# 16e#</TD></TR>
+<TR><TD><code><big>(16f# 16e# [8gn</TD></TR>
+<TR><TD><code><big>16e# [8gn 2.g_</TD></TR>
+<TR><TD><code><big>[8gn 2.g_ =42</TD></TR>
+<TR><TD><code><big>2.g_ =42 4g])</TD></TR>
+<TR><TD><code><big>=42 4g]) 4r</TD></TR>
+<TR><TD><code><big>4g]) 4r 4r</TD></TR>
+<TR><TD><code><big>4r 4r 8r</TD></TR>
+<TR><TD><code><big>4r 8r (16f#</TD></TR>
+<TR><TD><code><big>8r (16f# 16e#</TD></TR>
+<TR><TD><code><big>(16f# 16e# =43</TD></TR>
+<TR><TD><code><big>16e# =43 6gn)</TD></TR>
+<TR><TD><code><big>=43 6gn) (6e#</TD></TR>
+<TR><TD><code><big>6gn) (6e# 6f#</TD></TR>
+<TR><TD><code><big>(6e# 6f# 8g)</TD></TR>
+<TR><TD><code><big>6f# 8g) (8f#</TD></TR>
+<TR><TD><code><big>8g) (8f# 12e#</TD></TR>
+<TR><TD><code><big>(8f# 12e# 12g</TD></TR>
+<TR><TD><code><big>12e# 12g 12dn</TD></TR>
+<TR><TD><code><big>12g 12dn =44</TD></TR>
+<TR><TD><code><big>12dn =44 2a-)</TD></TR>
+<TR><TD><code><big>=44 2a-) (4an</TD></TR>
+<TR><TD><code><big>2a-) (4an 8een</TD></TR>
+<TR><TD><code><big>(4an 8een [8bb-</TD></TR>
+<TR><TD><code><big>8een [8bb- =45</TD></TR>
+<TR><TD><code><big>[8bb- =45 4bb-]</TD></TR>
+<TR><TD><code><big>=45 4bb-] 2.ccc#)</TD></TR>
+<TR><TD><code><big>4bb-] 2.ccc#) =45</TD></TR>
+<TR><TD><code><big>2.ccc#) =45 8r</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice once again that the input and output have the same number of records.
+Preserving the structure in this way allows the user to
+coordinate the contextual output with the original input using the
+<b>assemble</b>
+command.
+</P>
+<P>
+A more useful transformation might amalgamate successive data
+records in overlapping groups of 3
+<i>notes;</i>
+that is where rests and barlines are not counted.
+The following command causes input records containing either an equals-sign
+or the letter `r' to be ignored when counting the number of amalgamated
+data records:
+</P>
+<P>
+<code><big>
+context -n 3 -i [=r] density
+</i></b></code></big>
+</i></b></code></big>
+</P>
+<P>
+The input and corresponding output are given in the left
+and right spines below:
+<code><big>
+<blockquote><TABLE>
+<TR><TD><code><big>!! Edgar Var&#232se, Density 21.5 (1936)</TD></TR>
+<TR><TD><code><big>!! excerpt: mm.41-45</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>**kern</TD><TD><code><big>**kern</TD></TR>
+<TR><TD><code><big>*MM72</TD><TD><code><big>*MM72</TD></TR>
+<TR><TD><code><big>=41</TD><TD><code><big>=41 (16f# 16e# [8gn</TD></TR>
+<TR><TD><code><big>(16f#</TD><TD><code><big>(16f# 16e# [8gn</TD></TR>
+<TR><TD><code><big>16e#</TD><TD><code><big>16e# [8gn 2.g_</TD></TR>
+<TR><TD><code><big>[8gn</TD><TD><code><big>[8gn 2.g_ =42 4g])</TD></TR>
+<TR><TD><code><big>2.g_</TD><TD><code><big>2.g_ =42 4g]) 4r 4r 8r (16f#</TD></TR>
+<TR><TD><code><big>=42</TD><TD><code><big>=42 4g]) 4r 4r 8r (16f# 16e#</TD></TR>
+<TR><TD><code><big>4g])</TD><TD><code><big>4g]) 4r 4r 8r (16f# 16e#</TD></TR>
+<TR><TD><code><big>4r</TD><TD><code><big>4r 4r 8r (16f# 16e# =43 6gn)</TD></TR>
+<TR><TD><code><big>4r</TD><TD><code><big>4r 8r (16f# 16e# =43 6gn)</TD></TR>
+<TR><TD><code><big>8r</TD><TD><code><big>8r (16f# 16e# =43 6gn)</TD></TR>
+<TR><TD><code><big>(16f#</TD><TD><code><big>(16f# 16e# =43 6gn)</TD></TR>
+<TR><TD><code><big>16e#</TD><TD><code><big>16e# =43 6gn) (6e#</TD></TR>
+<TR><TD><code><big>=43</TD><TD><code><big>=43 6gn) (6e# 6f#</TD></TR>
+<TR><TD><code><big>6gn)</TD><TD><code><big>6gn) (6e# 6f#</TD></TR>
+<TR><TD><code><big>(6e#</TD><TD><code><big>(6e# 6f# 8g)</TD></TR>
+<TR><TD><code><big>6f#</TD><TD><code><big>6f# 8g) (8f#</TD></TR>
+<TR><TD><code><big>8g)</TD><TD><code><big>8g) (8f# 12e#</TD></TR>
+<TR><TD><code><big>(8f#</TD><TD><code><big>(8f# 12e# 12g</TD></TR>
+<TR><TD><code><big>12e#</TD><TD><code><big>12e# 12g 12dn</TD></TR>
+<TR><TD><code><big>12g</TD><TD><code><big>12g 12dn =44 2a-)</TD></TR>
+<TR><TD><code><big>12dn</TD><TD><code><big>12dn =44 2a-) (4an</TD></TR>
+<TR><TD><code><big>=44</TD><TD><code><big>=44 2a-) (4an 8een</TD></TR>
+<TR><TD><code><big>2a-)</TD><TD><code><big>2a-) (4an 8een</TD></TR>
+<TR><TD><code><big>(4an</TD><TD><code><big>(4an 8een [8bb-</TD></TR>
+<TR><TD><code><big>8een</TD><TD><code><big>8een [8bb- =45 4bb-]</TD></TR>
+<TR><TD><code><big>[8bb-</TD><TD><code><big>[8bb- =45 4bb-] 2.ccc#)</TD></TR>
+<TR><TD><code><big>=45</TD><TD>.</TD></TR>
+<TR><TD><code><big>4bb-]</TD><TD>.</TD></TR>
+<TR><TD><code><big>2.ccc#)</TD><TD>.</TD></TR>
+<TR><TD><code><big>=45</TD><TD>.</TD></TR>
+<TR><TD><code><big>8r</TD><TD>.</TD></TR>
+<TR><TD><code><big>*-</TD><TD><code><big>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Notice that as the end of the file is approached,
+<b>context</b>
+will continue amalgamating data records until it
+is no longer able to satisfy the amalgamating criteria.
+If unable to complete an output record,
+<b>context</b>
+will output a null token.
+</P>
+<P>
+If the above command had used the
+<b>-o</b>
+rather than the
+<b>-i</b>
+option, all of the rests and barlines would have been omitted
+from the output.
+Otherwise, the output would be the same as given above.
+</P>
+<P>
+A more musically useful partitioning of Var&#232se's
+work might be based on slur markings.
+The following command uses open- and closed-slur markings
+to demarcate the contextual outputs;
+(note the need to escape the parentheses since they are regular expression
+metacharacters).
+</P>
+<P>
+<blockquote>
+<code><big>
+context -b '\(' -e '\)' -o '[=r]' density
+</code></big>
+</blockquote>
+</P>
+<P>
+Notice that the ensuing output (shown below) pads the output with
+null tokens in order to maintain the same
+number of data records as the original input.
+(An output such as the following might be used as input to
+a command sequence such as <b>pc -x | pcset</b>).
+<code><big>
+<blockquote><TABLE>
+<TR><TD><code><big>!! Edgar Var&#232se, Density 21.5 (1936)</TD></TR>
+<TR><TD><code><big>!! excerpt: mm.41-45</TD></TR>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD><code><big>*MM72</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>(16f# 16e# [8gn 2.g_ 4g])</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD><code><big>(16f# 16e# 6gn)</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD><code><big>(6e# 6f# 8g)</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD><code><big>(8f# 12e# 12g 12dn 2a-)</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD><code><big>(4an 8een [8bb- 4bb-] 2.ccc#)</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD>.</TD></TR>
+<TR><TD><code><big>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+If there were any notes not embraced within a slur,
+the above command would have caused them to be output on
+their own line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<A HREF="context.html">
+<b>context</b></A> (4),
+<b>grep</b> (UNIX),
+<A HREF="nf.html">
+<b>nf</b></A> (4),
+<A HREF="patt.html">
+<b>patt</b></A> (4),
+<A HREF="pattern.html">
+<b>pattern</b></A> (4),
+<A HREF="pcset.html">
+<b>pcset</b></A> (4)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+The <b>-b</b> and <b>-e</b> options are mutually exclusive
+with the <b>-n</b>, <b>-p</b>, and <b>-i</b> options.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide19.html#The_context_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

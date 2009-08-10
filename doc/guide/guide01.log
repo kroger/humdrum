@@ -1,0 +1,99 @@
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=latex 2009.3.3)  4 MAR 2009 17:07
+entering extended mode
+ %&-line parsing enabled.
+**guide01.tex
+(./guide01.tex
+LaTeX2e <2005/12/01>
+Babel <v3.8h> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, loaded.
+(/usr/share/texmf-texlive/tex/latex/base/article.cls
+Document Class: article 2005/09/16 v1.4f Standard LaTeX document class
+(/usr/share/texmf-texlive/tex/latex/base/size10.clo
+File: size10.clo 2005/09/16 v1.4f Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+No file guide01.aux.
+\openout1 = `guide01.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 5.
+LaTeX Font Info:    ... okay on input line 5.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 5.
+LaTeX Font Info:    ... okay on input line 5.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 5.
+LaTeX Font Info:    ... okay on input line 5.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 5.
+LaTeX Font Info:    ... okay on input line 5.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 5.
+LaTeX Font Info:    ... okay on input line 5.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 5.
+LaTeX Font Info:    ... okay on input line 5.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 51.
+(/usr/share/texmf-texlive/tex/latex/base/omscmr.fd
+File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 51.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 54.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 54.
+Missing character: There is no ä in font cmr10!
+ [1
+
+] [2] [3]
+Underfull \hbox (badness 10000) in paragraph at lines 324--336
+
+ []
+
+[4]
+Overfull \hbox (4.16776pt too wide) in paragraph at lines 338--351
+\OT1/cmr/m/n/10 fof-fof-foff 8th 16thof-fof-fof-fONof-fof-fof-foff 9th 16thof-f
+of-fof-fof-fONof-fof-foff 10th 16thof-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 352--358
+
+ []
+
+)
+Runaway argument?
+{Pitch\textbf {Duration\textbf {Valve Combination} 1st noteC4quarter0\ETC.
+! File ended while scanning use of \textbf .
+<inserted text> 
+                \par 
+<*> guide01.tex
+               
+? 
+
+*
+(Please type a command or say `\end')
+*
+(Please type a command or say `\end')
+*
+! Emergency stop.
+<*> 
+    
+End of file on the terminal!
+
+ 
+Here is how much of TeX's memory you used:
+ 225 strings out of 95087
+ 2507 string characters out of 1183279
+ 48944 words of memory out of 1500000
+ 3481 multiletter control sequences out of 10000+50000
+ 5504 words of font info for 20 fonts, out of 1200000 for 2000
+ 28 hyphenation exceptions out of 8191
+ 23i,4n,19p,157b,175s stack positions out of 5000i,500n,6000p,200000b,5000s
+Output written on guide01.dvi (4 pages, 15084 bytes).

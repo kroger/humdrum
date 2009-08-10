@@ -1,0 +1,265 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH pitch 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBpitch\fR  --  translate selected Humdrum pitch-related representations to American standard pitch notation
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBpitch\fR  [\fB-tx\fR]  [\fIinputfile\fR ...]  [ > \fIoutputfile.pit\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "pitch"
+command transforms various pitch-related inputs to the corresponding
+pitch designations approved by the American National
+Standards Institute (ANSI).
+The
+.B "pitch"
+command outputs one or more Humdrum \f(CR**pitch\fR spines.
+ANSI pitch designations use the upper-case letters A to G followed
+by an optional accidental, followed by an octave number.
+In the Humdrum \f(CR**pitch\fR representation,
+optional cents deviation from equal temperament can also be encoded.
+.sp 1
+.sp 1
+The
+.B "pitch"
+command is able to translate any of the pitch-related
+input representations listed below.
+In each case, a tuning standard of A4 equals 440 hertz is assumed.
+For descriptions of the various input representations
+(including \f(CR**pitch\fR) refer to Section 2
+.I "(Representation Reference)"
+of this reference manual.
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "pitch"
+command should be given names with the distinguishing `.pit' extension.
+.sp 1
+.TS
+l l.
+\f(CR**cents\fR	hundredths of a semitone with respect to middle C=0
+\f(CR**degree\fR	key-related scale degree
+\f(CR**freq\fR	fundamental frequency (in hertz)
+\f(CR**fret\fR	fretted-instrument pitch tablature
+\f(CR**kern\fR	core pitch/duration representation
+\f(CR**MIDI\fR	Music Instrument Digital Interface tablature
+\f(CR**semits\fR	equal-tempered semitones with respect to middle C=0
+	  (e.g. 12 = C5)
+\f(CR**solfg\fR	French solf\o'e\(ga'ge system (fixed `doh')
+\f(CR**specC\fR	spectral centroid (in hertz)
+\f(CR**Tonh\fR	German pitch system
+.TE
+.sp 1
+.ce
+.I "Input representations processed by \fBpitch\fR."
+.in -2
+.SH "OPTIONS"
+.in +2
+The
+.B "pitch"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-t\fR	suppresses printing of all but the first of a group of
+	  tied \f(CR**kern\fR notes
+\fB-x\fR	suppresses printing of non-pitch-related signifiers
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The
+.B "-t"
+option ensures that only a single output value is given for tied
+\f(CR**kern\fR notes;
+the output coincides with the first note of the tie.
+.sp 1
+.sp 1
+In the default operation,
+.B "pitch"
+outputs non-pitch-related signifiers in addition to the \f(CR**pitch\fR
+pitch value.
+For example, the \f(CR**Tonh\fR token \(odGes5zzz\(cd will result in
+the output \(odGb5zzz\(cd -- that is, after translating Ges5 to Gb5,
+the \(odzzz\(cd signifiers are retained in the output.
+For some applications, echoing non-pitch-related signifiers in the output
+is useful.
+However, in other situations, the result can prove confusing --
+especially, when the non-pitch-related signifiers are numbers.
+Consider the case of the \f(CR**kern\fR token \(od8aa#\(cd;
+after translating `aa#' to A#5, the non-pitch-related signifier `8'
+will also be output, hence the value 8A#5 -- which may cause
+confusion;
+commands such as
+.B "tonh, solfg,"
+and
+.B "pitch"
+treat the first number encountered in an input token
+as the octave designation.
+Hence further processing of this token may lead to it's interpretation as A#8
+-- or even A#58 -- rather than A#5.
+.sp 1
+.sp 1
+The
+.B "-x"
+option is useful for eliminating non-pitch-related signifiers from the output.
+For most \f(CR**kern\fR inputs, the
+.B "-x"
+option is recommended.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following example illustrates the use of
+.B "pitch."
+The input contains six pitch-related spines -- two of which
+(\f(CR**deg\fR and \f(CR**cocho\fR) cannot be processed by
+.B "pitch."
+.sp 1
+.TS
+l s s l l l
+l l l l l l.
+!! `pitch' example.
+**kern	**freq	**MIDI	**deg	**cocho	**degree
+*M2/4	*M2/4	*M2/4	*M2/4	*M2/4	*M2/4
+*	*	*	*	*	*d:
+*	*	*	*	*	*
+\(eq1	\(eq1	\(eq1	\(eq1	\(eq1	\(eq1
+8ee-	93foo	/60/bar	1foo	r	1/4
+\.	.	/-60/	.	.	.
+8ff	220	/62/	2	9.89	2/4
+\.	.	/-62/	.	.	.
+8dd-	936.2	/70/	1	7.07	3+/4
+\.	.	/-70/	.	.	.
+8d-	277.18	/61/	6	7.135	7/3
+\.	.	/-61/	.	.	.
+\(eq2	\(eq2	\(eq2	\(eq2	\(eq2	\(eq2
+[4a-	r	.	5	r	r
+\.	.	.	7	5.5	1/4
+4a-]	300	/48/ /52/	1	8.11	6+/4
+\.	.	/-48/	.	.	.
+\.	82.4 261.6	/-52/	2	7.33 6.4	3/4 5/4
+\(eq3	\(eq3	\(eq3	\(eq3	\(eq3	\(eq3
+r	512	.	r	r	3/4 1/5
+\(eq\(eq\(eq	\(eq\(eq\(eq	\(eq\(eq\(eq	\(eq\(eq\(eq	\(eq\(eq\(eq	\(eq\(eq\(eq
+*-	*-	*-	*-	*-	*-
+.TE
+.sp 1
+Executing the command
+.sp 1
+.sp 1
+.in +2
+pitch -tx input > output.pit
+.in -2
+.sp 1
+.sp 1
+produces the following result:
+.sp 1
+.TS
+l s s l l l
+l l l l l l.
+!! `pitch' example.
+**pitch	**pitch	**pitch	**deg	**cocho	**pitch
+*M2/4	*M2/4	*M2/4	*M2/4	*M2/4	*M2/4
+*	*	*	*	*	*d:
+*	*	*	*	*	*
+\(eq1	\(eq1	\(eq1	\(eq1	\(eq1	\(eq1
+Eb5	F#2+9	C4	1foo	r	D4
+\.	.	.	.	.	.
+F5	A3	D4	2	9.89	E4
+\.	.	.	.	.	.
+Db5	Bb5+7	Bb4	1	7.07	F#4	
+\.	.	.	.	.	.
+Db4	Db4	Db4	6	7.135	C#3
+\.	.	.	.	.	.
+\(eq2	\(eq2	\(eq2	\(eq2	\(eq2	\(eq2
+Ab4	r	.	5	r	r
+\.	.	.	7	5.5	D4
+\.	D4+36	C3 E3	1	8.11	B4
+\.	.	.	.	.	.
+\.	E2 C4	.	2	7.33 6.4	F4 A4
+\(eq3	\(eq3	\(eq3	\(eq3	\(eq3	\(eq3
+r	C5-37	.	r	r	F4 D5
+===	===	===	===	===	===
+*-	*-	*-	*-	*-	*-
+.TE
+.sp 1
+Both processed and unprocessed spines are output.
+Notice that the tied note at the beginning of measure 2 in the \f(CR**kern\fR
+spine has been rendered as a single note rather than as two notes
+(due to the
+.B "-t"
+option).
+Also notice that the non-pitch-related signifiers (e.g. foo)
+in the first notes of the \f(CR**freq, **MIDI\fR, and \f(CR**cocho\fR
+spines have been stripped away (due to the
+.B "-x"
+option).
+In the case of the \f(CR**degree\fR input,
+.B "pitch"
+recognizes the spelling of various pitches in the context of the key of
+D minor.
+Hence, the raised third degree is F#, and the raised sixth degree
+is B natural.
+Also note the presence of cents-deviation from equal temperament
+in the translation of the \f(CR**freq\fR data (second spine).
+.in -2
+.sp 1
+.sp 1
+.SH "FILES"
+.in +2
+The file \f(CRx_option.awk\fR
+is used by this program when the
+.B "-x"
+option is invoked.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fB**cents\fR (2), \fBcents\fR (1),
+\fB**degree\fR (2), \fBdegree\fR (1),
+\fB**freq\fR (2), \fBfreq\fR (1),
+\fB**fret\fR (2),
+.br
+\fBhint\fR (1),
+\fB**kern\fR (2), \fBkern\fR (1),\fR \fB**MIDI\fR (2),
+\fBmidi\fR (1), \fBmint\fR (1), \fB**pitch\fR (2),
+.br
+\fB**semits\fR (2), \fBsemits\fR (1),
+\fB**solfg\fR (2), \fBsolfg\fR (1), \fB**specC\fR (2) \fBspecC\fR (1),
+\fB**Tonh\fR (2), \fBtonh\fR (1)
+.in -2

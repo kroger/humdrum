@@ -1,0 +1,1064 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter13}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Assembling Scores}
+
+
+
+In the previous chapter we learned how to extract parts
+and passages from Humdrum files.
+In this chapter we discuss the reverse procedures:
+how to assemble and coordinate larger
+documents from individual segments and parts.
+We will discuss four tools: the UNIX
+\textbf{cat}
+command, and the Humdrum
+\textbf{assemble},
+\textbf{timebase}
+and
+\textbf{rid}
+commands.
+
+
+\subsection*{The \textit{cat} Command}
+
+
+\par 
+The UNIX
+\textbf{cat}
+command allows two or more inputs to be concatenated together.
+If we concatenate two files, the output will consist of the
+contents of the first file, followed immediately by the contents
+of the second file.
+For example, the following command will concatenate together the
+files \texttt{mov.1}, \texttt{mov.2} and \texttt{mov.3}
+and place the result in the file \texttt{complete}.
+The order of concatenation is the same as the order of file names
+given on the command line:
+
+\par 
+
+\texttt{cat mov.1 mov.2 mov.3 > complete}
+
+
+\par 
+If each of the concatenated files conforms to the Humdrum syntax,
+then the resulting combined file is guaranteed to conform
+to the Humdrum syntax.
+However, in many cases, there may be redundant information
+present in the concatenated output.
+Suppose we had three files, each of which encoded a single measure of music.
+Concatenating them together might result in an output such as the following:
+
+\texttt{!! File 1
+\texttt{**kern**kern**kern**kern
+\texttt{*M4/4*M4/4*M4/4*M4/4
+\texttt{*G:*G:*G:*G:
+\texttt{*k[f\#]*k[f\#]*k[f\#]*k[f\#]
+\texttt{4GG4B4d4g
+\texttt{=1=1=1=1
+\texttt{4GG4d4g4b
+\texttt{4FF\#4d[4a4dd
+\texttt{8GG4d8a]4b
+\texttt{8BB.[8g.
+\texttt{4D4d8g]4a
+\texttt{..8f\#.
+\texttt{*-*-*-*-
+\texttt{!! File 2
+\texttt{**kern**kern**kern**kern
+\texttt{*M4/4*M4/4*M4/4*M4/4
+\texttt{*k[f\#]*k[f\#]*k[f\#]*k[f\#]
+\texttt{=2=2=2=2
+\texttt{8G4d4g4b
+\texttt{8F\#...
+\texttt{4E4e4g4cc\#
+\texttt{4D;4A;4f\#;4dd;
+\texttt{8A4cn4a4ee
+\texttt{8G...
+\texttt{*-*-*-*-
+\texttt{!! File 3
+\texttt{**kern**kern**kern**kern
+\texttt{*M4/4*M4/4*M4/4*M4/4
+\texttt{*k[f\#]*k[f\#]*k[f\#]*k[f\#]
+\texttt{*k[f\#]*k[f\#]*k[f\#]*k[f\#]
+\texttt{=3=3=3=3
+\texttt{4F\#4d[4a8dd
+\texttt{...8cc
+\texttt{4G4d8a]4b
+\texttt{..[8g.
+\texttt{8C\#8e8g]4a
+\texttt{8D\#4B8f\#.
+\texttt{8E.8e8g
+\texttt{8F\#8A8d8a
+\texttt{*-*-*-*-}
+
+
+\par 
+Notice that each complete measure ends with spine-path terminators
+and that the
+\texttt{**kern}
+exclusive interpretations are repeated.
+This organization has a number of repercussions for various
+Humdrum tools.
+For example, the
+\textbf{mint}
+command calculates melodic intervals between successive notes
+within a spine.
+However,
+\textbf{mint}
+will not calculate intervals between pitches that are separated by
+a spine-path terminator.
+In other words, in the above output,
+\textbf{mint}
+will fail to calculate the melodic intervals between notes
+in successive measures.
+
+
+\subsection*{The \textit{rid} Command}
+
+\par 
+This problem can be resolved by using the Humdrum
+\textbf{rid}
+command.
+The
+\textbf{rid}
+command can be used to eliminate various kinds of records.
+Each option for
+\textbf{rid}
+eliminates a different class of records.
+Here are the record classes with their associated options:
+
+-Geliminate all global comments
+-geliminate only global comments that are empty
+-Leliminate all local comments
+-leliminate only local comments that are empty
+-Ieliminate all interpretations
+-ieliminate only null interpretations
+-Deliminate all data records
+-deliminate only null data records
+-Teliminate all tandem interpretations
+-teliminate duplicate (repeated) tandem interpretations
+-Ueliminate unnecessary exclusive interpretations (see below)
+-usame as -U
+
+
+\par 
+Null records are devoid of content.
+For example,
+null interpretations consist of a single asterisk in each spine;
+null data record consists of just null data tokens (.) in each spine;
+null local comments consist of a single exclamation mark in each spine.
+Null global comments contain just two exclamation marks at
+the beginning of a record.
+
+\par 
+Upper- and lower-case options are used to distinguish
+\textit{all}
+records
+of a certain class (upper-case) from \textit{empty}, \textit{null} or
+\textit{repeated}
+records of a certain class (lower-case).
+
+\par 
+By way of example, the following command will eliminate all global
+comments (including reference records) from the input:
+
+\par 
+
+\texttt{rid -G Saint-Saens}
+
+
+\par 
+Similarly, the following command will eliminate all tandem interpretations
+from an input:
+
+\par 
+
+\texttt{rid -T Vaughan-Williams}
+
+
+\par 
+Options can be combined.
+The following command eliminates all global and local comments,
+interpretations, and null data records:
+
+\par 
+
+\texttt{rid -GLId}
+
+
+\par 
+The option combination \textbf{-GLId} is very common with
+\textbf{rid}
+since only non-null data records are retained in the output.
+
+\par 
+With the
+\textbf{-u}
+option,
+\textbf{rid}
+will remove "unnecessary" exclusive interpretations.
+Exclusive interpretations are deemed unnecessary if they
+don't change the current status of the data.
+In the following example, the second \texttt{**psaltery}
+interpretation is redundant.
+The \textbf{rid -u} command would remove the first spine-path terminator
+and the second exclusive interpretation -$\,$- leaving a continuous
+data spine.
+
+\texttt{**psaltery
+\texttt{.}
+\texttt{.}
+\texttt{.}
+\texttt{*-}
+\texttt{**psaltery
+\texttt{.}
+\texttt{*-}
+
+
+\par 
+In addition,
+\textbf{rid}
+provides a
+\textbf{-t}
+option which removes "duplicate" or repeated
+tandem interpretations.
+In the above example there is no need to repeat the meter signature
+and key signature in each measure.
+
+The following command will concatenate each of the three measures
+together, and then eliminate the unwanted interpretations:
+
+\par 
+
+\texttt{cat bar1 bar2 bar3 | rid -ut}
+
+
+\par 
+The resulting output is given below:
+
+\texttt{!! File 1
+\texttt{**kern**kern**kern**kern
+\texttt{*M4/4*M4/4*M4/4*M4/4
+\texttt{*k[f\#]*k[f\#]*k[f\#]*k[f\#]
+\texttt{4GG4B4d4g
+\texttt{=1=1=1=1
+\texttt{4GG4d4g4b
+\texttt{4FF\#4d[4a4dd
+\texttt{8GG4d8a]4b
+\texttt{8BB.[8g.
+\texttt{4D4d8g]4a
+\texttt{..8f\#.
+\texttt{!! File 2
+\texttt{=2=2=2=2
+\texttt{8G4d4g4b
+\texttt{8F\#...
+\texttt{4E4e4g4cc\#
+\texttt{4D;4A;4f\#;4dd;
+\texttt{8A4cn4a4ee
+\texttt{8G...
+\texttt{!! File 3
+\texttt{=3=3=3=3
+\texttt{4F\#4d[4a8dd
+\texttt{...8cc
+\texttt{4G4d8a]4b
+\texttt{..[8g.
+\texttt{8C\#8e8g]4a
+\texttt{8D\#4B8f\#.
+\texttt{8E.8e8g
+\texttt{8F\#8A8d8a
+\texttt{*-*-*-*-}
+
+
+\par 
+Of course care should be exercised when
+concatenating inputs together.
+Although an output may conform to the Humdrum syntax,
+the result can nevertheless violate conventions for a specific
+representation such as \texttt{**kern}.
+For example, if we were to concatenate measure 85 to measure 87,
+it is possible that tied-notes won't match up, or that phrases will
+begin without ending, etc.
+These anomalies may cause problems with subsequent processing.
+
+
+\subsection*{Assembling Parts Using the \textit{assemble} Command}
+
+\par 
+Assembling parts into a full score is slightly more challenging
+than concatenating together musical segments.
+The principle tool for joining spines together is the
+\textbf{assemble}
+command.
+Consider the following two files:
+
+\texttt{!! Assemble example
+\texttt{!! File 1
+\texttt{**Letters
+\texttt{! A to E
+\texttt{A
+\texttt{B
+\texttt{C
+\texttt{D
+\texttt{E
+\texttt{*-}
+
+
+\texttt{!! Assemble example
+\texttt{!! File 2
+\texttt{**Numbers
+\texttt{! 1 to 5
+\texttt{1
+\texttt{2
+\texttt{3
+\texttt{4
+\texttt{5
+\texttt{*-}
+
+
+\par 
+These two files can be aligned side by side using
+\textbf{assemble}:
+
+\par 
+
+\texttt{assemble letters numbers}
+
+
+\par 
+The resulting output is:
+
+\texttt{!! Assemble example
+\texttt{!! File 1
+\texttt{!! File 2
+\texttt{**Letters**Numbers
+\texttt{! A to E! 1 to 5
+\texttt{A1
+\texttt{B2
+\texttt{C3
+\texttt{D4
+\texttt{E5
+\texttt{*-*-}
+
+
+\par 
+Note the following:
+(1) The spines are joined side by side from left to right in the
+same order as specified on the command line.
+(2) Local comments are preserved in their appropriate spines.
+(3) When identical global comments occur at the same
+location in both files, only a single instance of the comment is output.
+(4) Dissimilar global comments are output successively.
+
+\par 
+The files joined by
+\textbf{assemble}
+are not confined to a single spine.
+For example, one input file may contain 2 spines and a second file
+may contain 20 spines.
+The resulting output will contain 22 spines.
+There is no limit to the number of files that can be
+assembled at one time.
+
+\par 
+In many cases, the input files will have dissimilar lengths.
+The
+\textbf{assemble}
+command will correctly terminate the appropriate spines.
+For example, in the above case, if the \texttt{numbers} file
+contained only the numbers 1 to 3, the assembled output would
+appear as follows:
+
+\texttt{!! Assemble example
+\texttt{!! File 1
+\texttt{!! File 2
+\texttt{**Letters**Numbers
+\texttt{! A to E! 1 to 3
+\texttt{A1
+\texttt{B2
+\texttt{C3
+\texttt{**-
+\texttt{D
+\texttt{E
+\texttt{*-}
+
+
+\par 
+If the order of the input files was reversed,
+\textbf{assemble}
+would produce an output with the appropriate spine-path changes:
+
+\texttt{!! Assemble example
+\texttt{!! File 2
+\texttt{!! File 1
+\texttt{**Numbers**Letters
+\texttt{! 1 to 3! A to E
+\texttt{1A
+\texttt{2B
+\texttt{3C
+\texttt{*-*
+\texttt{D
+\texttt{E
+\texttt{*-}
+
+
+\par 
+Note that if all of the input files conform to the Humdrum syntax,
+then
+\textbf{assemble}
+guarantees that the assembled output will also conform to the Humdrum syntax.
+
+
+\subsection*{Aligning Durations Using the \textit{timebase} Command}
+
+\par 
+Suppose now that we wanted to join two hypothetical files containing
+\texttt{**kern}
+data.
+The first file contains two quarter notes,
+whereas the second file contains four eighth notes:
+
+\texttt{!! File 1
+\texttt{**kern
+\texttt{4c
+\texttt{4d
+\texttt{*-}
+
+
+\texttt{!! File 2
+\texttt{**kern
+\texttt{8e
+\texttt{8g
+\texttt{8f
+\texttt{8g
+\texttt{*-}
+
+
+\par 
+Using
+\textbf{assemble}
+to paste them together will clearly lead to an uncoordinated result.
+The two quarter notes in file 1 will be incorrectly matched with the
+first two eighth notes in file 2.
+
+\par 
+The Humdrum
+\textbf{timebase}
+command can be used to reformat either
+\texttt{**kern}
+or
+\texttt{**recip}
+inputs so that each output data record represents an
+equivalent slice (elapsed duration) of time.
+(Barlines are ignored by \textbf{timebase}.)
+The
+\textbf{timebase}
+command achieves this by padding an input with null data records.
+In the above case, we would preprocess file 1 as follows:
+
+\par 
+
+\texttt{timebase -t 8 file1 > file1.tb}
+
+
+\par 
+The new file would look like this:
+
+\texttt{!! File 1
+\texttt{**kern
+\texttt{4c
+\texttt{.
+\texttt{4d
+\texttt{.
+\texttt{*-}
+
+
+\par 
+The
+\textbf{-t}
+option is used to indicate the "time base" -$\,$- in this
+case, an eighth duration.
+Since all non-barline data records in both files represent elapsed
+durations of an eighth-note, we can continue by using the
+\textbf{assemble}
+command as before.
+The command:
+
+\par 
+
+\texttt{assemble file1.tb file2}
+
+
+\par 
+will result in the following two-part score:
+
+\texttt{!! File 1
+\texttt{!! File 2
+\texttt{**kern**kern
+\texttt{4c8e
+\texttt{.8g
+\texttt{4d8f
+\texttt{.8g
+\texttt{*-*-}
+
+Suppose that \texttt{file2} also contained a quarter-note.
+For example, consider a revised \texttt{file2}:
+
+\texttt{!! File 2
+\texttt{**kern
+\texttt{8e
+\texttt{8g
+\texttt{4f
+\texttt{*-}
+
+
+\par 
+Before assembling the two parts, we would need to apply the
+\textbf{timebase}
+command to this file (using the same 8th-note time-base value).
+Assembling the two "time-based" files would produce the
+following result:
+
+\texttt{!! File 1
+\texttt{!! File 2
+\texttt{**kern**kern
+\texttt{4c8e
+\texttt{.8g
+\texttt{4d4f
+\texttt{..
+\texttt{*-*-}
+
+
+\par 
+Notice that we have a spurious null data record in the last line;
+both parts encode null tokens.
+For most processing, the presence of null data records is inconsequential.
+However, if we wish, these null data records can be eliminated using the
+\textbf{rid}
+command with the
+\textbf{-d}
+option.
+In fact it is common to follow an
+\textbf{assemble}
+command with
+\textbf{rid -d}
+to strip away unnecessary null data records.
+The command:
+
+\par 
+
+\texttt{assemble file1.tb file2.tb | rid -d}
+
+
+\par 
+would result in the following output:
+
+\texttt{!! File 1
+\texttt{!! File 2
+\texttt{**kern**kern
+\texttt{4c8e
+\texttt{.8g
+\texttt{4d4f
+\texttt{*-*-}
+
+
+\par 
+The
+\textbf{timebase}
+command can be applied to multi-spine inputs as well as
+single-spine inputs.
+Consider, the following input:
+\\\\
+
+\texttt{**kern**kern**kern**kern**commentary
+\texttt{4g8.r8.cc16ee2nd inversion
+\texttt{...8ff.
+\texttt{.32b16cc16ggclash
+\texttt{.32a...
+\texttt{8f8cc8dd8ffsuspension
+\texttt{*-*-*-*-*-}
+
+The following command will cause the addition of null data records
+so that each data record represents an elapsed time of a 32nd duration.
+Incidentally, notice that any spine contain non-rhythmic data
+-$\,$-  such as the \texttt{**commentary} spine in the above example -$\,$-
+is also transformed so that synchronous data is maintained.
+
+\par 
+
+\texttt{timebase -t 32 Corelli}
+
+
+\par 
+The corresponding output is as follows.
+\\\\
+
+\texttt{**kern**kern**kern**kern**commentary
+\texttt{*tb32*tb32*tb32*tb32*tb32
+\texttt{4g8.r8.cc16ee2nd inversion
+\texttt{.....
+\texttt{...8ff.
+\texttt{.....
+\texttt{.....
+\texttt{.....
+\texttt{.32b16cc16ggclash
+\texttt{.32a...
+\texttt{8f8cc8dd8ffsuspension
+\texttt{.....
+\texttt{.....
+\texttt{.....
+\texttt{*-*-*-*-*-}
+
+Notice that
+\textbf{timebase}
+has added a tandem interpretation (\texttt{*tb32}).
+This indicates that the output has been processed
+so that each non-barline data record represents
+an elapsed duration equivalent to a thirty-second note.
+
+
+\subsection*{Assembling N-tuplets}
+
+\par 
+Typically, one can simply use the shortest duration present
+as a guide for a suitable time-base value.
+The shortest duration can be determined using the
+\textbf{census} -k
+command described in
+Chapter 4.
+However, tuplets require a little more sophistication.
+Suppose we wanted to assemble two parts, one containing
+just eighth-notes and the other containing just quarter-note triplets.
+(The quarter-note triplets will be encoded as three notes in the time
+of a half-note, or "6th" notes.)
+We need to create an output whose rhythmic structure will appear
+as follows:
+\\\\
+
+\texttt{**kern**kern
+\texttt{*M2/4*M2/4
+\texttt{=1=1
+\texttt{68
+\texttt{.8
+\texttt{6.
+\texttt{.8
+\texttt{6.
+\texttt{.8
+\texttt{=2=2
+\texttt{68
+\texttt{.8
+\texttt{6.
+\texttt{.8
+\texttt{6.
+\texttt{.8
+\texttt{=3=3
+\texttt{*-*-}
+
+In this case, choosing a time-base according to the shortest
+duration (8th) will not work since a 6th note is not an
+integral multiple of the eighth duration.
+We need to find a
+\textit{common duration factor}
+for both values.
+The shortest common duration is a 24th note (there are three 24th notes
+in an 8th note, and four 24th notes in a 6th note).
+Applying the time-base value `24' to both files will allow us to
+coordinate them properly.
+Remember that
+\textbf{rid -d}
+can be used to eliminate unnecessary null data records once we
+have finished assembling the spines.
+In the worst case, you can determine a common duration factor by
+simply multiplying together the shortest notes in the files
+to be assembled.
+For example, 6 x 8 = 48;
+so a time-base of 48 will be guaranteed to work for both files.
+
+
+\subsection*{Checking an Assembled Score Using \textit{proof}}
+
+\par 
+In assembling any score from a set of parts, there is always
+the danger of using the wrong time-base value.
+When parts are miscoordinated, it is typically the consequence
+of one or more notes being discarded by \textbf{timebase}.
+Fortunately, such miscoordinations are easily detected by applying the
+\textbf{proof}
+command to any assembled \texttt{**kern} output.
+The
+\textbf{proof}
+utility checks \texttt{**kern} representations for a wide
+variety of possible encoding errors or ambiguities:
+
+\par 
+
+\texttt{proof fullscore}
+
+
+\par 
+By way of summary, creating a full score from a set of
+\texttt{**kern}
+parts involves the following five tasks:
+(1) Identify a common duration factor for all the parts.
+Use
+\textbf{census}
+to determine the shortest duration;
+if any of the parts contains an N-tuplet, then the common duration
+factor may be smaller than the shortest note.
+(2) Use the
+\textbf{timebase}
+command to expand each input file separately using the common duration
+factor.
+(3) Assemble the parts using
+\textbf{assemble}.
+(4) If desired, eliminate unnecessary null data records usingi
+\textbf{rid -d}.
+(5) Check the assembled score for rhythmic coherence using the
+\textbf{proof}
+command.
+
+
+\subsection*{Other Uses for the \textit{timebase} Command}
+
+\par 
+The most common use of
+\textbf{timebase}
+is as a way of expanding a file by padding it with null data records.
+However,
+\textbf{timebase}
+can also be used to contract a file, giving us only those
+sonorities that lie a fixed duration apart.
+For example, specifying a time-base of
+\textbf{-t 2}
+will cause only those sonorities that are separated by a half-note
+duration to be output.
+This sort of rhythmic reduction can be useful in certain circumstances.
+For example, suppose you suspect there may be a hemiola
+tendency in a given work by Brahms, where the duration separating
+hemiola notes is a dotted-quarter.
+The command:
+
+\par 
+
+\texttt{timebase -t 4. brahms}
+
+
+\par 
+can be used to extract only those sonorities that are separated by
+a dotted-quarter duration.
+
+\par 
+Similarly, suppose we want to extract all sonorities falling
+on the third beat of a waltz written in 3/2 meter.
+First we would edit the input file so it begins
+on the third beat of some measure.
+Then we could use the following command:
+
+\par 
+
+\texttt{grep -v \^{}= waltz | timebase -t 1. > 3rd\_beat}
+
+
+\par 
+Note that the use of
+\textbf{grep}
+here is essential in order to eliminate barlines.
+The
+\textbf{timebase}
+command resets itself with each barline, so time-base durations
+are calculated from the beginning of the bar.
+When barlines are eliminated,
+\textbf{timebase}
+cannot synchronize to the beginning of each bar and so simply floats
+along at the fixed time-base.
+
+
+\subsection*{Additional Uses of \textit{assemble} and \textit{timebase}}
+
+\par 
+Although we normally assemble parts together,
+sometimes it is useful to assemble entire scores together.
+Suppose we wanted to listen to a theme at the same time as one
+of its variations.
+We might first use
+\textbf{yank}
+to extract the appropriate sections.
+At the same time we might determine a common duration factor
+and expand them using \textbf{timebase}.
+
+\par 
+
+\texttt{yank -s Theme -r 1 blacksmith | timebase -t 32 > temp1}
+\\
+\texttt{yank -s 'Variation 1' -r 1 blacksmith | timebase -t 32 > temp2}
+
+
+\par 
+Then we assemble the two sections together, translate to
+the
+\texttt{**MIDI}
+representation and use
+\textbf{perform}
+to listen to both sections at the same time:
+
+\par 
+
+\texttt{assemble temp1 temp2 | midi | perform}
+
+
+\par 
+Similarly, suppose we would like to compare the bass lines
+for each variation in some set.
+We might extract each of the bass lines, assemble them into a single
+score, and then use the
+\textbf{ms}
+and
+\textbf{ghostview}
+commands to allow us to see all of the bass lines for all of the
+variations concurrently.
+
+\par 
+
+\texttt{yank -s 'Variation 1' -r 1 goldberg | timebase -t 16 > temp1}
+\\
+\texttt{yank -s 'Variation 2' -r 1 goldberg | timebase -t 16 > temp2}
+\\
+     etc.   ...
+\\
+\texttt{assemble temp1 temp2 temp3 ... | rid -d | ms > basslines.ps}
+\\
+\texttt{ghostview basslines.ps}
+
+
+\par 
+The most common use of
+\textbf{assemble}
+is not to assemble parts, but to assemble different types of
+concurrent information.
+Suppose we would like to determine whether descending minor seconds
+are more likely to be \textit{fa-mi} rather than \textit{do-ti}.
+We can use the
+\textbf{mint}
+command to characterize melodic intervals, and the
+\textbf{solfa}
+command to characterize scale degrees.
+Assume that our input is monophonic:
+
+\par 
+
+\texttt{mint melodies > temp1}
+\\
+\texttt{solfa melodies > temp2}
+
+
+\par 
+The files \texttt{temp1} and \texttt{temp2} will have the same
+length, so we can assemble them together.
+This will generate an output consisting of two spines,
+\texttt{**mint}
+and
+\texttt{**solfa}.
+In effect, the \texttt{**mint} spine data will tell us the interval
+used to approach the scale degree encoded in the \texttt{**solfa} spine.
+We can use
+\textbf{grep}
+to search for the appropriate combinations of interval and scale degree
+and count the number of occurrences:
+
+\par 
+
+\texttt{assemble temp1 temp2 | grep -c '-m2.*mi'}
+\\
+\texttt{assemble temp1 temp2 | grep -c '-m2.*ti'}
+
+
+
+\par 
+This same approach can be used to address (innumerable) questions
+pertaining to concurrent patterns.
+For example, suppose we have a
+\texttt{**harm}
+spine that identifies
+the `Roman numeral' functional harmony for some choral work.
+We can identify complex situations such as the following:
+for the soprano voice, count how many subdominant pitches are approached
+by an interval of a rising third or a rising sixth and coincide with a
+dominant seventh chord.
+First, let's extract the soprano line and create a corresponding
+scale degree representation using \textbf{deg}.
+We can use the
+\textbf{-a}
+option to avoid outputting the melodic direction
+signifiers (\texttt{\^{}} and \texttt{v}):
+
+\par 
+
+\texttt{extract -i '*Isopran' howells | deg -a > temp1}
+
+
+\par 
+Next, let's again extract the soprano voice and create a
+corresponding melodic interval representation using \textbf{mint}.
+Since we are not interested in interval qualities we can invoke the
+\textbf{-d}
+option to output only diatonic interval sizes.
+
+\par 
+
+\texttt{extract -i '*Isopran' howells | mint -d > temp2}
+\\
+\texttt{extract -i '**harm' howells > temp3}
+
+
+\par 
+We have also extracted the \texttt{**harm} spine and placed
+it in the file \texttt{temp3}.
+If we assemble together our three temporary files, the result will
+have three spines: \texttt{**deg}, \texttt{**mint} and \texttt{**harm}.
+We can now use
+\textbf{grep}
+to search and count all instances of subdominant pitches that are
+approached by ascending thirds/sixths and that coincide with dominant
+seventh chords (in the \texttt{**kern} representation: `\texttt{V7}'):
+
+\par 
+
+\texttt{assemble temp1 temp2 temp3 | grep -c '\^{}4}\textit{}\texttt{+[36]}\textit{}\texttt{V7}
+
+
+
+\par 
+The
+\textbf{timebase}
+command can also be used for tasks other than assembling parts
+together.
+Suppose we would like to determine whether secondary dominant
+chords are more likely to appear on the third beat than other
+beats in a triple meter work.
+The
+\textbf{timebase}
+command can be used to reformat a score so that each measure
+occupies the same number of data records.
+For example, in a 3/4 meter, an eighth-note time-base will mean
+that each measure will contain six data records, and the fifth
+data record will correspond to the onset of the third beat.
+Recall from
+Chapter 12
+that the
+\textbf{yank -m}
+command allows us to extract particular data records following
+a specified marker.
+In the following command, we have defined the marker as a barline
+(\texttt{-m \^{}=}) and instructed
+\textbf{yank}
+to fetch the fifth line following each occurrence of the marker (\texttt{-r 5}).
+In our example, the
+\textbf{grep}
+command is being used to count V/V chords occurring on third beats:
+
+\par 
+
+\texttt{timebase -t 8 strauss | solfa | yank -m = -r 5 | grep re $\backslash$
+
+| grep fe | grep -c la}
+
+
+
+\par 
+We can repeat this command for beats one and two by changing the
+\textbf{-r}
+parameter to 1 and 3 respectively.
+
+
+
+\subsection*{Reprise}
+
+\par 
+In this chapter we have learned how to concatenate musical passages
+together using the
+\textbf{cat}
+command.
+We also learned how to eliminate redundant exclusive and
+tandem interpretations from concatenated outputs using the
+\textbf{-u}
+and
+\textbf{-t}
+options for
+\textbf{rid}.
+In addition, we learned how to assemble two or more spines into
+a single output file using
+\textbf{assemble}.
+In the case of
+\texttt{**kern}
+and
+\texttt{**recip}
+representations, we learned how to use the
+\textbf{timebase}
+command to preprocess each constituent file so that all data records
+represent equivalent elapsed durations.
+Having assembled a full score from parts,
+\textbf{rid}
+\textbf{-d}
+can be used to eliminate any residual or unnecessary null data records.
+The
+\textbf{proof}
+command can be used to ensure that any assembled \texttt{**kern}
+data is correctly aligned.
+
+\par 
+Finally, we learned that the
+\textbf{timebase}
+command can be used for other analytic purposes.
+Specifically, it can be used to reduce a score rhythmically
+so only particular onset points or beats are retained.
+In
+Chapter 23
+we will see additional uses of
+\textbf{timebase}
+for a variety of types of rhythmic tasks.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

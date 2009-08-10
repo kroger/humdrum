@@ -1,0 +1,964 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 11</TITLE>
+<!-- Chapter 11 (Melodic Intervals) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:14:25 EST 2000">
+<meta name="description" content="Chapter 11 (Melodic Intervals) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<body>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<br>
+
+<H1>Chapter11</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide10.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide12.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Melodic Intervals</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+A musical interval is the distance between two pitches.
+When the pitches are consecutive the distance is referred to as a
+<i>melodic interval;</i>
+when the pitches are concurrent the distance is referred to as a
+<i>harmonic interval.</i>
+</P>
+<P>
+The simplicity of these definitions is deceptive.
+In real music, the determination of pitch intervals can be
+surprisingly complicated.
+In this chapter we will discuss Humdrum tools related to
+melodic pitch intervals -- specifically the
+<A HREF="commands/mint.html"><b>mint</b></A>
+(melodic interval) and
+<A HREF="commands/xdelta.html"><b>xdelta</b></A>
+commands.
+Discussion of harmonic intervals will be delayed until
+<A HREF="guide15.html">Chapter 15.</A>
+</P>
+<A NAME="Types_of_Melodic_Intervals">
+<H2>Types of Melodic Intervals</H2>
+</P>
+<P>
+Example 11.1 provides a contrived illustration of seven different types
+of melodic intervals.
+(The corresponding <code><big>**kern</big></code> representation is given on the
+following page.)
+The simplest melodic interval is calculated between successive
+pitches within the same voice or part.
+We might call this a
+<i>voiced melodic interval.</i>
+Examples of voiced melodic intervals are the descending perfect
+fourth between the first two notes of the upper part,
+and the rising semitone at the beginning of the lower part.
+</P>
+<br><br>
+<b>Example 11.1</b>  Types of melodic intervals.
+<br>
+<br>
+<img src="guide.figures/guide11.1.gif">
+<br>
+<P>
+Even within a monophonic score, successive pitches may have one
+or more rests interposed between them.
+Depending on the research task, the interval spanning across the
+rest(s) may or may not be considered important.
+We might call such intervals
+<i>interrupted melodic intervals.</i>
+An example of an interrupted melodic interval is the ascending perfect
+fourth in the upper voice between the last note of the first measure
+(A4) and the first note of the last measure (D5).
+<br><br>
+<b>Example 11.1 continued.</b>
+</P>
+<P>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD></TD><TD>**kern</TD></TR>
+<TR><TD><code><big>*staff1</TD><TD></TD><TD>*staff1</TD></TR>
+<TR><TD><code><big>*M4/4</TD><TD></TD><TD>*M4/4</TD></TR>
+<TR><TD><code><big>=1-</TD><TD></TD><TD>=1-</TD></TR>
+<TR><TD><code><big>4.e</TD><TD></TD><TD>2cc</TD></TR>
+<TR><TD><code><big>8f</TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>4.e</TD><TD></TD><TD>4g</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD>8a</TD></TR>
+<TR><TD><code><big>[8f</TD><TD></TD><TD>8r</TD></TR>
+<TR><TD><code><big>=2</TD><TD></TD><TD>=2</TD></TR>
+<TR><TD><code><big>2f]</TD><TD></TD><TD>2dd</TD></TR>
+<TR><TD><code><big>4d 4g</TD><TD></TD><TD>4b 4ff</TD></TR>
+<TR><TD><code><big>4c 4e 4g</TD><TD></TD><TD>4cc 4ee</TD></TR>
+<TR><TD><code><big>*-</TD><TD></TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+In some cases, implied melodic intervals may arise by the interaction
+of two or more parts.
+For example, Example 11.2 shows a plausible reinterpretation of
+the voicings for the first measure.
+Here the quarter-note G is presumed to continue
+from the preceding eighth-note F rather than from the half-note C.
+In the context of the original <code><big>**kern</big></code> encoding above,
+we might call such intervals
+<i>cross-voice melodic intervals.</i>
+</P>
+<b>Example 11.2</b>  Possible re-interpretation of opening measure for Example 11.1.
+<blockquote>
+<img src="guide.figures/guide11.2.gif">
+</blockquote>
+<P>
+In the second measure, both parts are encoded using multiple stops.
+In the upper part, two successive double stops are encoded.
+In the case of multiple-stops, it is common to perceive the outer-most
+notes as connected.
+Hence, the B would resolve to the C and the F would resolve to the E.
+We might call such intervals
+<i>unvoiced outer intervals.</i>
+We may call them
+<i>unvoiced</i>
+because they aren't encoded using separate spines.
+The voicings are implied, principally because the notes form
+an `upper' or `lower' part.
+</P>
+<P>
+The multiple-stops in the lower voice illustrate even more possibilities.
+Apart from the unvoiced outer intervals (D->C and G->G),
+there are other possible melodic intervals.
+These include D->E and G->E.
+We might refer to such intervals as
+<i>unvoiced inner intervals.</i>
+</P>
+<P>
+In many research tasks (such as identifying melodic variations),
+important interval relationships may stretch across several intervening notes.
+In Example 11.1, for example, the two half-notes in the upper voice
+might be viewed as forming an ascending major second interval (i.e. C->D).
+We might call such intervals
+<i>distance intervals.</i>
+</P>
+<P>
+Finally, although in most situations tied notes should be treated
+as a single note, in some circumstances there is merit to
+considering each notehead as independent.
+</P>
+<P>
+By way of summary, we have distinguished no less than seven
+different types of melodic intervals:
+voiced melodic intervals, interrupted melodic intervals,
+cross-voice melodic intervals,
+unvoiced outer intervals,
+unvoiced inner intervals,
+distance intervals,
+and tied note intervals.
+</P>
+<P>
+Humdrum commands related to melodic intervals provide users
+with several alternative ways of interpreting melodic intervals.
+Users are typically interested in only certain types of intervals
+and so it is useful to restrict the outputs to specified
+interval classes.
+</P>
+<P>
+Apart from the question of types of melodic intervals,
+melodic intervals can be calculated according to a variety of
+<i>units</i>.
+Depending on the circumstance, the user may wish to calculate
+diatonic intervals, semitones, cents, frequency differences,
+or even differences in cochlear coordinates.
+</P>
+<A NAME="Melodic_Intervals_Using_the_mint_Command">
+<H2>Melodic Intervals Using the <i>mint</i> Command</H2>
+</P>
+<P>
+The Humdrum
+<A HREF="commands/mint.html"><b>mint</b></A>
+command calculates melodic intervals for pitch-related representations
+such as
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>,
+<A HREF="representations/pitch.rep.html"><code><big>**pitch</big></code></A>,
+<A HREF="representations/solfg.rep.html"><code><big>**solfg</big></code></A>
+and
+<A HREF="representations/Tonh.rep.html"><code><big>**Tonh</big></code></A>.
+Output intervals are expressed using the traditional diatonic terms
+where both interval quality and interval size are specified.
+Interval qualities include perfect (<code><big>P</big></code>),
+major (<code><big>M</big></code>),
+minor (<code><big>m</big></code>),
+augmented (<code><big>A</big></code>)
+and diminished (<code><big>d</big></code>).
+Interval qualities may also be doubly augmented (<code><big>AA</big></code>),
+triply diminished (<code><big>ddd</big></code>) and so on.
+Diatonic interval sizes are indicated by numbers
+(1=unison, 2=second, ... 8=octave, 9=ninth, etc.).
+Ascending and descending intervals are distinguished by a
+leading plus sign (+) or minus sign (-) respectively.
+</P>
+<P>
+In the default operation,
+<b>mint</b>
+outputs three of the seven types of melodic intervals.
+These are
+<i>voiced melodic intervals,</i>
+<i>unvoiced outer intervals</i>
+and
+<i>interrupted melodic intervals;</i>
+By way of illustration, Example 11.3 shows the output from the
+<b>mint</b>
+command for the input shown in Example 11.1.
+</P>
+<b>Example 11.3</b>  Default interval outputs from the <b>mint</b> command corresponding to Example 11.1.
+<P>
+<blockquote><TABLE>
+<TR><TD><code><big>**mint</TD><TD></TD><TD></TD><TD>**mint</TD></TR>
+<TR><TD><code><big>*M4/4</TD><TD></TD><TD></TD><TD>*M4/4</TD></TR>
+<TR><TD><code><big>=1-</TD><TD></TD><TD></TD><TD>=1-</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>+m2</TD><TD></TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>-m2</TD><TD></TD><TD></TD><TD>-P4</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD></TD><TD>+M2</TD></TR>
+<TR><TD><code><big>+m2</TD><TD></TD><TD></TD><TD>r</TD></TR>
+<TR><TD><code><big>=2</TD><TD></TD><TD></TD><TD>=2</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD></TD><TD>+P4</TD></TR>
+<TR><TD><code><big>-m3 +M2</TD><TD></TD><TD></TD><TD>-m3 +m3</TD></TR>
+<TR><TD><code><big>-M2 P1</TD><TD></TD><TD></TD><TD>+m2 -m2</TD></TR>
+<TR><TD><code><big>*-</TD><TD></TD><TD></TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Notice that the
+<i>interrupted interval</i>
+(spanning the rest)
+has been calculated, and that no unison has appeared for the tied note
+in the lower voice.
+</P>
+<P>
+If desired, the unison intervals between successive tied notes
+can be output via the
+<b>-t</b>
+option for
+<b>mint.</b>
+</P>
+<P>
+Sometimes it is useful to maintain the initial starting pitches
+in the output.
+The presence of these "offset" pitch values can prove useful
+in later reconstructing the original pitches from the
+<A HREF="representations/mint.rep.html"><code><big>**mint</big></code></A>
+interval data.
+When the
+<b>-o</b>
+option is invoked,
+<b>mint</b>
+outputs the initial starting pitches (placed in square brackets) from
+which the subsequent melodic intervals have been calculated.
+</P>
+<P>
+In order to avoid outputting interrupted intervals, the
+<b>-b</b>
+(break) option can be used.
+This option requires a subsequent regular expression that
+defines the contexts where the interval calculation should be
+suspended and restarted.
+A common invocation would identify <code><big>**kern</big></code> rests (<code><big>r</big></code>)
+as a suitable place to break melodic interval calculations.
+For example,
+</P>
+<P>
+<blockquote>
+<code><big> mint -b r inputfile</big></code>
+</blockquote>
+</P>
+<P>
+would produce the following output when applied to Example 11.1:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**mint</TD><TD></TD><TD></TD><TD>**mint</TD></TR>
+<TR><TD><code><big>*M4/4</TD><TD></TD><TD></TD><TD>*M4/4</TD></TR>
+<TR><TD><code><big>=1-</TD><TD></TD><TD></TD><TD>=1-</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>+m2</TD><TD></TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>-m2</TD><TD></TD><TD></TD><TD>-P4</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD></TD><TD>+M2</TD></TR>
+<TR><TD><code><big>+m2</TD><TD></TD><TD></TD><TD>r</TD></TR>
+<TR><TD><code><big>=2</TD><TD></TD><TD></TD><TD>=2</TD></TR>
+<TR><TD><code><big>P1</TD><TD></TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>-m3 +M2</TD><TD></TD><TD></TD><TD>-m3 +m3</TD></TR>
+<TR><TD><code><big>-M2 P1</TD><TD></TD><TD></TD><TD>+m2 -m2</TD></TR>
+<TR><TD><code><big>*-</TD><TD></TD><TD></TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Notice that the perfect fourth (+P4) has been replaced by a
+null token at the beginning of measure 2.
+In addition, the rest token `<code><big>r</big></code>' has been
+echoed just prior to the barline.
+</P>
+<P>
+Depending on the regular expression given, the
+<b>-b</b>
+option can used for a variety of specialized intervals.
+For example, suppose that we wanted to avoid calculating
+intervals between the last note of a phrase and the
+first note of the next phrase.
+In the
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+representation, the open and closed
+curly braces are used to indicate the beginnings and ends
+of phrases.
+We need to tell
+<b>mint</b>
+to break interval calculations each time an end-of-phrase
+signifier is encountered:
+</P>
+<P>
+<blockquote>
+<code><big>mint -b '}' inputfile</big></code>
+</blockquote>
+</P>
+<P>
+Similarly, the <code><big>**kern</big></code> representation uses the semicolon (<code><big>;</big></code>)
+to represent pauses.
+We might instruct
+<b>mint</b>
+to avoid calculating intervals between notes having pauses and
+the subsequent note:
+</P>
+<P>
+<blockquote>
+<code><big>mint -b ';' inputfile</big></code>
+</blockquote>
+</P>
+<P>
+Since the
+<b>-b</b>
+option accepts regular expressions, we can combine patterns.
+For example, the following command instructs
+<b>mint</b>
+to calculate melodic intervals, not including intervals spanning
+phrase boundaries, and not following notes with pauses:
+</P>
+<P>
+<blockquote>
+<code><big>mint -b '[;}]' inputfile</big></code>
+</blockquote>
+</P>
+<A NAME="Unvoiced_Inner_Intervals">
+<H2>Unvoiced Inner Intervals</H2>
+</P>
+<P>
+Unvoiced inner intervals can be included in the output
+by using the
+<b>-i</b>
+or
+<b>-I</b>
+options.
+With the
+<b>-I</b>
+option, unvoiced inner intervals appear in the output
+in parentheses.
+For example, the following output is generated for Example 1.1
+with the
+<b>-I</b>
+option.
+Notice the addition of <code><big>(+M2)</big></code> and <code><big>(-2)</big></code>.
+The rising major second arises from the pitches D4 and E4;
+the falling minor third arises from the pitches G4 and E4.
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**mint</TD><TD></TD><TD></TD><TD>**mint</TD></TR>
+<TR><TD><code><big>*M4/4</TD><TD></TD><TD></TD><TD>*M4/4</TD></TR>
+<TR><TD><code><big>=1-</TD><TD></TD><TD></TD><TD>=1-</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>+m2</TD><TD></TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>-m2</TD><TD></TD><TD></TD><TD>-P4</TD></TR>
+<TR><TD><code><big>.</TD><TD></TD><TD></TD><TD>+M2</TD></TR>
+<TR><TD><code><big>+m2</TD><TD></TD><TD></TD><TD>r</TD></TR>
+<TR><TD><code><big>=2</TD><TD></TD><TD></TD><TD>=2</TD></TR>
+<TR><TD><code><big>P1</TD><TD></TD><TD></TD><TD>.</TD></TR>
+<TR><TD><code><big>-m3 +M2</TD><TD></TD><TD></TD><TD>-m3 +m3</TD></TR>
+<TR><TD><code><big>-M2 (+M2) (-m3) P1</TD><TD></TD><TD></TD><TD>+m2 -m2</TD></TR>
+<TR><TD><code><big>*-</TD><TD></TD><TD></TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+With the
+<b>-i</b>
+option, the parentheses surrounding the unvoiced inner intervals
+would be omitted.
+</P>
+<A NAME="Calculating_Distance_Intervals_Using_the_mint_-s_Command">
+<H2>Calculating Distance Intervals Using the <i>mint -s</i> Command</H2>
+</P>
+<P>
+Another option provided by
+<A HREF="commands/mint.html"><b>mint</b></A>
+is the
+<b>-s</b>
+or skip option.
+Like the
+<b>-b</b>
+option, this option requires a subsequent regular expression.
+Any token matching this expression is transformed to a null
+data token and is ignored when processing.
+One possible use for this option is to help calculate
+<i>distance intervals.</i>
+Consider Example 11.4 where all of the durations are either
+sixteenth notes or eighth notes.
+Suppose we wanted to calculate the intervals only between
+the eighth notes.
+<br><br>
+</P>
+<P>
+<b>Example 11.4</b>
+<blockquote>
+<img src="guide.figures/guide11.4a.gif">
+</blockquote>
+</P>
+<P>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD><code><big>*M4/4</TD></TR>
+<TR><TD><code><big>=1-</TD></TR>
+<TR><TD><code><big>8cc</TD></TR>
+<TR><TD><code><big>16b</TD></TR>
+<TR><TD><code><big>16cc</TD></TR>
+<TR><TD><code><big>8g</TD></TR>
+<TR><TD><code><big>16f#</TD></TR>
+<TR><TD><code><big>16g</TD></TR>
+<TR><TD><code><big>=2</TD></TR>
+<TR><TD><code><big>8e</TD></TR>
+<TR><TD><code><big>16d#</TD></TR>
+<TR><TD><code><big>16e</TD></TR>
+<TR><TD><code><big>8c</TD></TR>
+<TR><TD><code><big>8r</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+We can use the skip option to instruct
+<b>mint</b>
+to ignore any note token matching the string `<code><big>16</big></code>':
+</P>
+<P>
+<blockquote>
+<code><big> mint -s 16 inputfile</big></code>
+</blockquote>
+</P>
+<P>
+This command would produce an output that highlights the
+descending arpeggiated major chord -- from C5 to G4 (down a P4),
+to E4 (down a m3) to C4 (down a M3).
+<br><br>
+<blockquote>
+<img src="guide.figures/guide11.4b.gif">
+</blockquote>
+<blockquote><TABLE>
+<TR><TD><code><big>**mint</TD></TR>
+<TR><TD><code><big>*M4/4</TD></TR>
+<TR><TD><code><big>=1-</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>-P4</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>=2</TD></TR>
+<TR><TD><code><big>-m3</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>-M3</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Using duration information is a somewhat limited technique for
+calculating distance intervals.
+Typically, users will want to define much more refined ways of
+identifying structural tones.
+More sophisticated methods for calculating distance intervals
+are discussed in
+<A HREF="guide35.html">Chapter 35</A>
+on "Layers."
+</P>
+<P>
+Cross-voice melodic intervals can be calculated by
+amalgamating several spines into a single spine.
+In
+<A HREF="guide26.html">Chapter 26</A>
+we will learn more about the
+<A HREF="commands/cleave.html"><b>cleave</b></A>
+command.
+But here is a typical use:
+</P>
+<P>
+<blockquote>
+<code><big>cleave -d ' ' -i '**kern' -o '**kern' example11a</big></code>
+</blockquote>
+</P>
+<P>
+With the <code><big>**kern</big></code> encoding for Example 11.1 as input,
+the corresponding output would be:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD><code><big>*M4/4</TD></TR>
+<TR><TD><code><big>=1- =1-</TD></TR>
+<TR><TD><code><big>4.e 2cc</TD></TR>
+<TR><TD><code><big>8f</TD></TR>
+<TR><TD><code><big>4.e 4g</TD></TR>
+<TR><TD><code><big>8a</TD></TR>
+<TR><TD><code><big>[8f 8r</TD></TR>
+<TR><TD><code><big>=2 =2</TD></TR>
+<TR><TD><code><big>2f] 2dd</TD></TR>
+<TR><TD><code><big>4d 4g 4b 4ff</TD></TR>
+<TR><TD><code><big>4c 4e 4g 4cc 4ee</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Note that this output doesn't quite conform to the
+<code><big>**kern</big></code> syntax:
+the barlines have been duplicated as double-stops, and the
+durations aren't right for multiple-stops.
+We can clean up the output using
+<A HREF="commands/humsed.html"><b>humsed,</b></A>
+but the incoherent durations won't cause problems if our intention
+is to calculate pitch intervals.
+</P>
+<P>
+If we pipe the above output through the
+<b>mint</b>
+command, the appropriate command pipeline becomes:
+</P>
+<P>
+<blockquote>
+<code><big>cleave -d ' ' -i '**kern' -o '**kern' example11a \
+<blockquote>
+| humsed 's/ =.*//' | mint -I</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+The corresponding melodic interval output is:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**mint</TD></TR>
+<TR><TD><code><big>*M4/4</TD></TR>
+<TR><TD><code><big>=1-</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>+m2 -P5</TD></TR>
+<TR><TD><code><big>-m2 +M2</TD></TR>
+<TR><TD><code><big>+P4 +M2</TD></TR>
+<TR><TD><code><big>-M3 r</TD></TR>
+<TR><TD><code><big>=2</TD></TR>
+<TR><TD><code><big>+P4</TD></TR>
+<TR><TD><code><big>-m3 (+M2) (-P5) (+A4) (-m3) +m3</TD></TR>
+<TR><TD><code><big>-M2 (-m3) (-P5) (P1) (-M3) (+P4) (+m2) -m2</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+<A NAME="Simple_and_Compound_Melodic_Intervals">
+<H2>Simple and Compound Melodic Intervals</H2>
+</P>
+<P>
+Of course, some melodic variants alter the octave placement
+of pitches.
+The
+<b>mint -c</b>
+option outputs compound intervals (i.e. intervals of an
+octave or greater) as non-compound equivalents.
+For example, the interval of a major tenth (<code><big>M10</big></code>) will be
+output as a major third (<code><big>M3</big></code>).
+</P>
+<P>
+<A NAME="Diatonic_Intervals,_Absolute_Intervals_and_Contour">
+<H2>Diatonic Intervals, Absolute Intervals and Contour</H2>
+</P>
+<P>
+The
+<A HREF="commands/mint.html"><b>mint</b></A>
+command provides three further options of interest.
+The
+<b>-d</b>
+option causes
+<b>mint</b>
+to output only the diatonic interval size without the interval quality
+information.
+The
+<b>-a</b>
+option causes
+<b>mint</b>
+to output absolute pitch intervals without distinguishing
+ascending intervals from descending intervals.
+That is, the leading plus (+) and minus (-) signs are discarded.
+</P>
+<P>
+Finally, the
+<b>-A</b>
+option causes
+<b>mint</b>
+to output just one of three states:
+a plus sign (+) indicating a rising interval,
+the minus sign (-) indicating a falling interval,
+and the number zero (0) indicating no pitch movement (i.e., unison).
+In short, the
+<b>-A</b>
+option outputs only gross contour.
+The
+<b>-a</b>
+and
+<b>-A</b>
+options are complementary.
+</P>
+<A NAME="Using_the_mint_Command">
+<H2>Using the <i>mint</i> Command</H2>
+</P>
+<P>
+Consider some of the following uses of the <b>mint</b> command.
+</P>
+<A NAME="Major_or_Minor_Ninths">
+<A NAME="Sinatra">
+<P>
+Are there any major or minor ninth melodic intervals in the
+file <code><big>Sinatra</big></code>?
+</P>
+<P>
+<blockquote>
+<code><big>mint Sinatra | grep '[Mm][9]'</big></code>
+</blockquote>
+</P>
+<A NAME="Piaf">
+<A NAME="Compound_Melodic_Intervals">
+<P>
+Are there any compound melodic intervals in the file <code><big>Piaf</big></code>?
+</P>
+<P>
+<blockquote>
+<code><big>mint Piaf | egrep '([Mm][9])|([MmPAd][1-9][0-9]''</big></code>
+</blockquote>
+</P>
+<A NAME="Chevalier">
+<P>
+Are descending seconds more common than ascending seconds
+in melodies by Maurice Chevalier?
+</P>
+<P>
+<blockquote>
+<code><big>mint Chevalier* | grep -c '+[Mm]2'</big></code>
+<br>
+<code><big>mint Chevalier* | grep -c '-[Mm]2'</big></code>
+</blockquote>
+</P>
+<P>
+An alternative way of achieving the same goal might simplify
+the regular expression to <b>grep</b> and use the <b>-d</b> (diatonic)
+option for <b>mint</b>:
+</P>
+<P>
+<blockquote>
+<code><big>mint -d Chevalier* | grep -c '+2'</big></code>
+<br>
+<code><big>mint -d Chevalier* | grep -c '-2'</code></big>
+</blockquote>
+</P>
+<P>
+Identify whether there are any tritone melodic intervals in
+any of the vocal parts of a score:
+</P>
+<A NAME="Platters">
+<P>
+<blockquote>
+<code><big>extract -i '*Ivox' Platters | mint -c | egrep '(A4)|(d5)'</big></code>
+</blockquote>
+</P>
+<P>
+Here we have used the extended regular expression capabilities
+of <b>egrep</b> to specify an either/or pattern.
+</P>
+<P>
+Suppose we had a directory containing only files
+encoding melodies using the
+<A HREF="representations/mint.rep.html"><code><big>**mint</big></code></A>
+representation.
+Does any melody in the current directory contain both an
+ascending major sixth and a descending major sixth?
+</P>
+<P>
+<blockquote>
+<code><big>grep -l '+M6' * | xargs grep '-M6'</big></code>
+</blockquote>
+</P>
+<P>
+Do the vocal lines of Louis Jourdain contain successive ascending
+major thirds (such as forming an augmented triad)?
+</P>
+<P>
+<blockquote>
+<code><big>mint Jourdain | grep -v = | uniq -d | grep '+M3'</big></code>
+</blockquote>
+</P>
+<P>
+What is the longest run of rising intervals in the vocal lines of Marlene Dietrich?
+</P>
+<P>
+<blockquote>
+<code><big>mint -A Dietrich | grep -v = | uniq -cd | grep '+' | sort -n</big></code>
+</blockquote>
+</P>
+<A NAME="Calculating_Melodic_Intervals_Using_the_xdelta_Command">
+<H2>Calculating Melodic Intervals Using the <i>xdelta</i> Command</H2>
+</P>
+<P>
+Often it is useful to calculate melodic intervals in purely
+numerical values, such as the number semitones or the number of cents.
+The
+<A HREF="commands/xdelta.html"><b>xdelta</b></A>
+command provides a general tool for calculating numerical differences
+between successive values within individual spines.
+In order to use
+<b>xdelta</b>
+to calculate semitone differences, we first need to transform
+our representation to
+<A HREF="representations/semits.rep.html"><code><big>**semits</big></code></A>
+(discussed in
+<A HREF="guide04.html">Chapter 4</A>).
+Recall that in the <code><big>**semits</big></code> representation, middle C
+is designated by the value zero, and all other pitches are
+represented by their (positive or negative) semitone distance.
+A C-major scale would appear as follows:
+<blockquote><TABLE>
+<TR><TD><code><big>**semits</TD></TR>
+<TR><TD><code><big>0</TD></TR>
+<TR><TD><code><big>2</TD></TR>
+<TR><TD><code><big>4</TD></TR>
+<TR><TD><code><big>5</TD></TR>
+<TR><TD><code><big>7</TD></TR>
+<TR><TD><code><big>9</TD></TR>
+<TR><TD><code><big>11</TD></TR>
+<TR><TD><code><big>12</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+We can transform this representation to semitone intervals as follows:
+</P>
+<P>
+<blockquote>
+<code><big>xdelta</code></big> <i>inputfile</i>
+</blockquote>
+</P>
+<P>
+For the above scale, the output would be:
+<blockquote><TABLE>
+<TR><TD><code><big>**Xsemits</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>2</TD></TR>
+<TR><TD><code><big>2</TD></TR>
+<TR><TD><code><big>1</TD></TR>
+<TR><TD><code><big>2</TD></TR>
+<TR><TD><code><big>2</TD></TR>
+<TR><TD><code><big>2</TD></TR>
+<TR><TD><code><big>1</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Notice that the initial numerical value has been replaced by a null token,
+and all subsequent values represent the numerical
+<i>difference</i>
+between successive values.
+If the scale had been descending in pitch, then the difference values
+would be negative.
+</P>
+<P>
+Notice also that the input interpretation (<code><big>**semits</big></code>) has been
+modified to <code><big>**Xsemits</big></code>).
+The input representation for
+<b>xdelta</b>
+does not matter.
+The output is always modified so the letter X is prepended to
+the representation.
+This means that
+<b>xdelta</b>
+could as easily be used to calculate differences in cents (<code><big>**Xcents</big></code>),
+frequency (<code><big>**Xfreq</big></code>) or any other representation that contains
+numbers.
+</P>
+<P>
+When
+<b>xdelta</b>
+encounters multiple-stops, it behaves in a manner similar to the
+<b>mint</b>
+command by calculating the numerical equivalent of unvoiced inner intervals.
+Consider the following example:
+<blockquote><TABLE>
+<TR><TD><code><big>**semits</TD></TR>
+<TR><TD><code><big>3</TD></TR>
+<TR><TD><code><big>2 5</TD></TR>
+<TR><TD><code><big>-1 7 14</TD></TR>
+<TR><TD><code><big>12</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The
+<b>xdelta</b>
+command produces the following output:
+<blockquote><TABLE>
+<TR><TD><code><big>**Xsemits</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>-1 2</TD></TR>
+<TR><TD><code><big>-3 (5) (2) 9</TD></TR>
+<TR><TD><code><big>13 5 -2</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Once again, the interpretation has been modified to <code><big>**Xsemits</big></code>
+and the leading value has been changed to a null token.
+In going from the value 3 to the values 2 and 5,
+the output differences are -1 and +2 respectively.
+In going from the values 2 and 5 to the values -1, 7 and 14,
+we see the outer differences (-1 - 2 = -3) and (14 - 5 = 9).
+The inner differences are output in parentheses:
+(7 - 2 = 5) and (7 - 5 = 2).
+</P>
+<P>
+Like the
+<b>mint</b>
+command,
+<b>xdelta</b>
+provides a
+<b>-b</b>
+option to break calculations of numerical differences
+and a
+<b>-s</b>
+option to skip or completely ignore certain data tokens when processing.
+An important use of the
+<b>-s</b>
+option is to ignore barlines.
+Consider the following example:
+<blockquote><TABLE>
+<TR><TD><code><big>**cents</TD></TR>
+<TR><TD><code><big>100</TD></TR>
+<TR><TD><code><big>400</TD></TR>
+<TR><TD><code><big>800</TD></TR>
+<TR><TD><code><big>=2</TD></TR>
+<TR><TD><code><big>600</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The proper way to calculate differences in cents is to ensure that
+measure numbers are ignored:
+</P>
+<P>
+<blockquote>
+<code><big>xdelta -s ^= inputfile</big></code>
+</blockquote>
+</P>
+<P>
+Failure to skip the barline will cause a difference to be calculated
+between 800 and =2 (i.e., -798) and between =2 and 600 (i.e., 598).
+</P>
+<P>
+Outputs from
+<b>xdelta</b>
+can be processed again using
+<b>xdelta</b>
+in order to calculate the differences of the differences.
+For example, we can calculate the second derivative of
+successive cents by using a pipeline containing two
+<b>xdelta</b>
+commands:
+</P>
+<P>
+<blockquote>
+<code><big>xdelta -s ^= <i>inputfile</i></code></big>
+<code><big>| xdelta -s ^= </code></big>
+</blockquote>
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+<P>
+Intervals come in a mind-boggling range of types and sizes.
+Interval sizes can be measured in a variety of ways.
+They can be characterized as diatonic qualities such
+as minor sevenths or augmented sixths.
+They can be measured in terms of semitone distance -- or
+even in cents or hertz (frequency difference).
+Only the diatonic size may be of interest (e.g., "a fifth"),
+and compound intervals (e.g., major tenth) can be expressed
+by their non-compound equivalents (major third).
+</P>
+<P>
+Melodic intervals can be described as ascending or descending,
+or as absolute distances without regard for direction.
+Types of melodic intervals can be distinguished according to
+how successive notes are voiced, and according to spans across rests
+or across less important pitches.
+We defined seven different types of melodic intervals including
+<i>voiced melodic intervals</i>,
+<i>interrupted melodic intervals</i>,
+<i>cross-voice melodic intervals</i>,
+<i>unvoiced outer intervals</i>,
+<i>unvoiced inner intervals</i>,
+<i>distance intervals</i>,
+and
+<i>tied note intervals</i>.
+</P>
+<P>
+In this chapter we have seen how to use the
+<A HREF="commands/mint.html"><b>mint</b></A>
+command to calculate these various kinds of intervals.
+Specifically, we have illustrated how to calculate
+voiced intervals, interrupted intervals, unvoiced outer intervals
+and unvoiced inner intervals.
+In
+<A HREF="guide26.html">Chapter 26</A>
+we will show how to calculate cross-voice intervals,
+and in
+<A HREF="guide35.html">Chapter 35</A>
+("Layers") we will consider how to
+calculate distance intervals.
+</P>
+<P>
+We have also seen how
+<A HREF="commands/xdelta.html"><b>xdelta</b></A>
+can be used to measure purely numerical distances between successive values.
+As we will see,
+<b>xdelta</b>
+will prove useful in many other applications apart from calculating
+pitch distances.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide12.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide10.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

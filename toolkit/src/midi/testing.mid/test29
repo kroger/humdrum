@@ -1,0 +1,32 @@
+!! midi Test #29
+!! Test of multiple stops; including rests in double-stops.
+**kern
+!! A simple scale.
+4c 4r
+4r 4d
+4e
+4f 4r
+4r 4g
+4a 4a
+4r 4b
+4cc 4r
+2r
+!! A scale in thirds.
+4c 4e
+4d 4f
+4e 4g
+4f 4a
+4g 4b
+4a 4cc
+4b 4dd
+4cc 4ee
+!! Another scale in thirds.
+4r 4c 4e
+4d 4r 4f
+4e 4g 4r
+4r 4f 4a
+4g 4b 4r
+4a 4cc 4r
+4b 4r 4dd
+4r 4cc 4ee
+*-

@@ -1,0 +1,145 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH proof 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +12
+.ti -12
+\fBproof\fR  --  check syntax of Humdrum \f(CR**kern\fR file
+.in -12
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+\fBproof\fR  [\fB-w\fR]  [\fIinputfile.krn\fR ...]
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "proof"
+command checks the syntax of \f(CR**kern\fR-encoded files.
+It may be used to assist in the detection
+and correction of \f(CR**kern\fR encoding errors.
+.sp 1
+.sp 1
+The
+.B "proof"
+command scans the input stream for ten types of errors:
+(1) consistency of incremented measure numbers, and measure-number agreement
+between concurrent parts,
+(2) incoherent pitch tokens (such as assigning two pitches to the same note),
+(3) incoherent durations (such as assigning two durations to the same note),
+(4) notes that have simultaneous sharp and flat accidentals,
+(5) repeat encodings of trills, mordents, inverted mordents, ties, pauses,
+staccato markings, and natural signs,
+(6) consistent phrase markings (e.g. `{' must precede and be
+matched with `}' etc. with the exception of elisions (&)),
+(7) consistent slur markings (e.g. `(' must precede and be
+matched with `)' etc. with the exception of elisions (&)),
+(8) tied notes which differ in pitch or pitch spelling,
+(9) unequal total durations for each voice within a measure, and
+(10) the presence of multiple-stops that do not share the same duration.
+In addition,
+.B "proof"
+issues a number of warnings of possible data errors:
+(11) warn of files which do not end with a double barline,
+(12) warn of material encoded following a double barline,
+(13) warn of measures which change meters unannounced,
+(14) warn of the presence of identical material in consecutive measures,
+(15) warn of the presence of pitches which are encoded without
+an accidental -- where the same pitch had previously received an
+accidental in the same measure, and
+(16) warn of the absence of meter, tempo, key, and key signature declarations.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "proof"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-w\fR	suppress output of warnings
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The
+.B "-w"
+option causes all warnings to be suppressed;
+only \f(CR**kern\fR error messages are output.
+.in -2
+.sp 1
+.sp 1
+.SH "DIAGNOSTICS"
+.in +2
+The following list tabulates all of the potential errors and warnings
+issued by the
+.B "proof"
+command.
+.sp 1
+.TS
+l.
+\f(CRError: Incoherent key signature, line \fIn\f(CR: assigned more than
+         one accidental to the same pitch.
+Error: Inconsistent barline indication across spines at line \fIn\f(CR.
+Error: Timing error in measure \fIx\f(CR, spine \fIy\f(CR, at line \fIn\f(CR
+Error: Double stops at line \fIx\f(CR in spine \fIn\f(CR do not have same duration.
+Error: Unmatched ties in spine \fIn\f(CR.
+Error: Incorrect pitch specification in spine \fIx\f(CR, line \fIn\f(CR
+Error: Incorrect duration specification in spine \fIx\f(CR, line \fIn\f(CR
+Error: Incorrect accidental specification in spine \fIx\f(CR, line \fIn\f(CR
+Error: Incorrect ornament specification in spine \fIx\f(CR, line \fIn\f(CR
+Error: Tie must begin on valid kern note, spine \fIn\f(CR
+Error: Incorrect tie encoding in spine \fIx\f(CR, line \fIn\f(CR
+Error: Tied notes inconsistent in spine \fIx\f(CR, line \fIn\f(CR
+Error: Incorrect tie specification in spine \fIx\f(CR, line \fIn\f(CR
+Error: Incorrect tie in spine \fIx\f(CR, line \fIn\f(CR
+Error: Incorrect slur, spine \fIx\f(CR, line \fIn\f(CR
+Error: Incorrect slur specification in spine \fIx\f(CR, line \fIn\f(CR
+Error: Incorrect phrase marking in spine \fIx\f(CR, line \fIn\f(CR
+Error: Incorrect phrase specification in spine \fIx\f(CR, line \fIn\f(CR
+Error: Only one pause permitted in data token. Spine \fIx\f(CR, line \fIn\f(CR
+Warning: No double barline in input.
+Warning: No meter declaration for spine \fIn\f(CR.
+Warning: No tempo declaration for spine \fIn\f(CR.
+Warning: No key declaration for spine \fIn\f(CR.
+Warning: No key signature declaration for spine \fIn\f(CR.
+Warning: Measure \fIn\f(CR may be out of place near line \fIn\f(CR
+Warning: Material follows after double barline at line \fIn\f(CR
+Warning: Measure \fIj\f(CR identical to measure \fIk\f(CR at line \fIn\f(CR
+Warning: Possible change of meter in measure \fIx\f(CR, line \fIn\f(CR
+Warning: Accidental may be missing in m.\fIx\f(CR, spine \fIy\f(CR, at line \fIn\f(CR
+Warning: No double barline in input.
+.TE
+.sp 1
+.ce
+.I "Potential errors and warnings issued by \fBproof\fR."
+.in -2
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBcensus\fR (1),
+\fBencode\fR (1), \fBhumdrum\fR (1), \fB**kern\fR (2)
+.in -2

@@ -1,0 +1,816 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter18}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Fingers, Footsteps and Frets}
+
+
+
+Throughout this book, our examples have tended to rely on
+just a handful of Humdrum representations -$\,$- \texttt{**kern}
+in particular.
+Of course the Humdrum syntax provides opportunities for an
+unlimited number of representations.
+In this chapter, we will consider some less common representations.
+Most of the chapter will deal with the
+\texttt{**fret}
+representation -$\,$- a pre-defined Humdrum
+representation for fretted instrument tablatures.
+However, we will begin with a grab-bag of unorthodox representations.
+
+
+\subsection*{Heart Beats and Other Esoterica}
+
+\par 
+The Humdrum syntax provides a framework within which different
+symbol systems can be defined.
+Each symbol system or representation scheme is denoted by a unique
+exclusive interpretation.
+There is no restriction on the number of schemes that can be used
+or created by the user.
+Each time you create a new exclusive interpretation,
+all of the alphanumeric characters can be redefined.
+A representation scheme springs into existence simply
+by encoding some data.
+
+\par 
+In research activities, it is common to create representation
+schemes for a specific task.
+A user might define a spine that represents the heart-rate
+(in beats per minute) of a music listener:
+
+\texttt{**cardio
+\texttt{76
+\texttt{76
+\texttt{74
+\texttt{73
+\texttt{73
+\texttt{*-}
+
+A scheme might be created to represent different types of
+contrapuntal motion:
+
+\texttt{**motion
+\texttt{similar
+\texttt{contrary
+\texttt{parallel
+\texttt{oblique
+\texttt{*-}
+
+
+\par 
+Chords might be classified -$\,$- using words:
+
+\texttt{**chords
+\texttt{minor
+\texttt{.
+\texttt{augmented
+\texttt{major
+\texttt{*-}
+
+
+\par 
+Or using abbreviations:
+
+\texttt{**chords
+\texttt{m
+\texttt{.
+\texttt{A
+\texttt{M
+\texttt{*-}
+
+
+\par 
+Fingerings might be represented.
+Each hand may have a separate spine:
+
+\texttt{**finger**finger
+\texttt{*left*right
+\texttt{.1
+\texttt{1 52
+\texttt{.3
+\texttt{.5
+\texttt{1 52 5
+\texttt{*-*-}
+
+
+\par 
+Or the hands might be combined in a single spine:
+
+\texttt{**finger
+\texttt{R1
+\texttt{L1 L5 R2
+\texttt{R3
+\texttt{5
+\texttt{L1 L5 R2 R5
+\texttt{*-}
+
+
+\par 
+Time-scales might be large:
+
+\texttt{**Periods
+\texttt{Medieval
+\texttt{Renaissance
+\texttt{Baroque
+\texttt{Classical
+\texttt{Romantic
+\texttt{*-}
+
+
+\par 
+Or miniscule:
+
+\texttt{**milliseconds
+\texttt{0.03
+\texttt{0.8
+\texttt{23.2
+\texttt{31.6
+\texttt{*-}
+
+
+\par 
+A user might define a highly refined special-purpose representation.
+For example, the following scheme is fashioned after the Benesh
+dance notation:
+
+\texttt{!! Kellom Tomlinson's\texttt{Gavot of 1720.
+\texttt{!! Transcribed from\texttt{Feuillet's notation.
+\texttt{**kern\texttt{**Benesh
+\texttt{*MM120\texttt{*MM120
+\texttt{*M2/2\texttt{*M2
+\texttt{*e:\texttt{*
+\texttt{!! First Couplet
+\texttt{!\texttt{! Half Coupee
+\texttt{4.gg\texttt{ | |u| | |
+\texttt{.\texttt{\%|+| | | |
+\texttt{.\texttt{ |=|v| | |
+\texttt{.\texttt{(| | | | |
+\texttt{.\texttt{(|-| | | |\{
+\texttt{8ff\#\texttt{ |\_| | | |2
+\texttt{=1\texttt{-$\,$-$\,$-$\,$-$\,$-$\,$-$\,$-$\,$-$\,$-$\,$-$\,$-
+\texttt{2ee\texttt{m| | | | |\}
+\texttt{!\texttt{! Bound
+\texttt{.\texttt{\_|\^{}| | | |\{
+\texttt{.\texttt{(|+| | | |
+\texttt{4.b\texttt{-| | | | |
+\texttt{.\texttt{(|+| | | |\}
+\texttt{.\texttt{\_| | | | |\{
+\texttt{8a\texttt{\_|+|+| | |
+\texttt{=2\texttt{-$\,$-$\,$-$\,$-$\,$-$\,$-$\,$-$\,$-$\,$-$\,$-$\,$-
+\texttt{!\texttt{! Bouree
+\texttt{4g\texttt{ | | | | |
+\texttt{.\texttt{ |=| | | |
+\texttt{4e\texttt{ |=| | | |\}
+\texttt{.\texttt{\_|=| | | |
+\texttt{4g\texttt{ |o| | | |
+\texttt{!\texttt{! Bouree
+\texttt{4a\texttt{\_|+|+| | |
+\texttt{=3\texttt{-$\,$-$\,$-$\,$-$\,$-$\,$-$\,$-$\,$-$\,$-$\,$-$\,$-
+\texttt{*-\texttt{*-}
+
+
+\par 
+Depending on the task, user-defined schemes can be either
+carefully designed, or "throw-away" concoctions
+created for momentary purposes.
+The
+\textit{Humdrum Reference Manual}
+provides detailed advice on how to go about designing
+special-purpose Humdrum representations.
+
+\par 
+For the remainder of this chapter we will examine a
+pre-defined representation scheme for fretted instrument tablatures.
+Although not all users will be interested in the \texttt{**fret}
+representation, it provides an instructive contrast to the score-
+and MIDI-based representations that we have relied on for most
+of the examples in this book.
+
+
+\subsection*{The \textit{**fret} Representation}
+
+\par 
+The
+\texttt{**fret}
+representation is a pre-defined Humdrum scheme that provides a comprehensive
+system for representing performance aspects for fretted instruments.
+The \texttt{**fret}
+scheme is suitable for representing tablature information for
+most fretted instruments, such as various guitars,
+lute, mandore, theorbo, chitarrone, mandoline, banjo, dulcimer, and
+even viols.
+The
+\texttt{**fret}
+interpretation is not limited to equal-temperament tuning,
+and so can be used to represent non-Western fretted instruments,
+such as the \textit{oud} and the \textit{sitar}.
+
+\par 
+The
+\texttt{**fret}
+representation is performance-oriented rather than notationally-oriented.
+Thus
+\texttt{**fret}
+is not suitable for distinguishing different visual renderings -$\,$-
+such as differences between traditional French or German lute tablatures.
+Some other Humdrum representation should be used if the user's
+goal is to distinguish different forms of visual signifiers.
+
+\par 
+The basic pitches produced by fretted instruments depend on three factors:
+(1) the relative tuning of the strings with respect to each other,
+(2) the absolute overall tuning of the instrument,
+and (3) the position of the frets.
+Three tandem interpretations allow the user to specify each of
+these aspects.
+
+\par 
+The absolute tuning of an instrument is indicated by encoding
+the pitch of the lowest string using the \texttt{*AT:} tandem interpretation.
+For the common six-string guitar, the lowest pitch is normally tuned
+to E2, and so would be encoded with the following tandem interpretation:
+
+\par 
+
+\texttt{*AT:E2}
+
+
+\par 
+The \texttt{*AT:} interpretation makes use of
+\texttt{**pitch}-type
+pitch designations and may also include cents deviation.
+For example, an instrument tuned 45 cents sharp might be represented as
+\texttt{*AT:E2+45}.
+Encoding the absolute tuning is optional with
+\texttt{**fret};
+when absent, a default tuning of E2 will be assumed
+by various processing tools.
+
+\par 
+A second tandem interpretation (\texttt{*RT:}) specifies the relative
+tuning as well as the number and arrangement of strings.
+Some instruments pair strings together in close physical proximity
+so that two strings are treated by the performer as a single
+virtual "string."
+Such paired strings are referred to as
+\textit{courses.}
+For example, the 12-string guitar is constructed using 6 courses,
+and is played much like a 6-string guitar -$\,$- except that two strings
+sound together, rather than a single string.
+
+\par 
+The \texttt{*RT:} tandem interpretation encodes the relative
+tuning of each string by specifying the number of semitones
+above the lowest string -$\,$- where each course is delineated by a colon (:).
+In Example 18.1 three sample tunings are shown.
+Example (a) defines the most common relative tuning for the six-string
+guitar.
+Successive strings are tuned 0, 5, 10, 15, 19, and
+24 semitones above the lowest string.
+\\
+\\
+\textbf{Example 18.1.  Sample Tunings for Fretted Instruments.}
+
+\par 
+(a) Common 6-string guitar.
+
+
+\\
+\\
+\texttt{*AT:E2}
+\\
+\texttt{*RT:0:5:10:15:19:24}
+
+
+(b) Common 12-string guitar.
+
+
+\\
+\\
+\texttt{*AT:E2}
+\\
+\texttt{*RT:0,12:5,17:10,22:15,27:19,19:24,24}
+
+
+(c) Vieil accord lute.
+
+
+\\
+\texttt{*AT:G2}
+\\
+\texttt{*RT:0,12:5,17:10,22:14,14:19,19:24,24}
+
+
+\par 
+Example (b) defines the most common relative tuning for the 12-string
+guitar.
+The six courses are delineated by colons and the tuning of strings
+withint courses are delineated by commas.
+In this case, the lower four courses consists of two strings tuned an
+octave apart, whereas the upper two courses consist of paired unison strings.
+
+\par 
+Example (c) shows the most common tuning of the 6-course
+\textit{lute} -$\,$- a tuning referred to as the so-called
+\textit{vieil accord}: G2, C3, F3, A3, D4, and G4.
+During the first half of the 16th century, it was common
+to tune the lower three courses in octaves.
+
+\par 
+For non-Western and other instruments, it is possible to encode non-integer
+semitone values for various strings, such as a string tuned 9.91 semitones
+above the lowest string.
+
+\par 
+In addition to the absolute and relative tunings,
+\texttt{**fret}
+also allows the user to specify the tuning of successive frets
+using the \texttt{FT:} tandem interpretation.
+In Western instruments, frets are normally placed in semitone increments.
+For a 12-fret instrument, this semitone arrangement may be explicitly
+represented using the following tandem interpretation:
+
+\par 
+
+\texttt{*FT:1,2,3,4,5,6,7,8,9,10,11,12}
+
+
+\par 
+Each successive numerical value indicates the number of semitones
+above the open string for successive fret positions.
+The interpretation begins with the tuning of the first fret
+rather than the tuning of the open string.
+The above interpretation is similar to the
+\textit{default fret tuning}
+-$\,$-  which is an increase of precisely one-$\,$- itone for each successive fret.
+The default fret tuning is not limited to 12 frets as in the above example.
+An instrument constructed with nine 1/4-tone fret positions can be encoded
+as follows:
+
+\par 
+
+\texttt{*FT:.5,1,1.5,2,2.5,3,3.5,4,4.5}
+
+
+\par 
+The only restriction imposed by \texttt{*FT:} is that all strings must have
+identical fret distances.
+That is, if the first fret is positioned 1 semitone above the open
+string, then this relative pitch arrangement must be true of all strings.
+
+\par 
+The
+\texttt{**fret}
+representation distinguishes three types of data tokens:
+tablature-tokens, rests, and barlines.
+\textit{Tablature-tokens}
+encode information regarding the fret/finger positions,
+the manner by which individual strings are plucked (or bowed),
+pitch-bending, vibrato, damping, harmonics, and other effects.
+The actions of individual fingers can also be represented.
+Each tablature-token consists of a several subtokens in the
+form of Humdrum multiple-stops.
+Subtokens are delimited by spaces and represent individual courses/strings.
+A six-string (or six-course) instrument will require six subtokens
+in each tablature-token.
+For example, the following tablature token encodes the plucking of
+the first and sixth string:
+
+\par 
+
+\texttt{| - - - - |}
+
+
+\par 
+Subtokens consist of up to five component elements:
+(1) the string/course status, (2) fret position,
+(3) bowing/strumming, (4) finger action, and (5) percussive effects.
+In addition, the tablature-token can encode bowing and strumming information.
+
+\par 
+In the
+\texttt{**fret}
+representation, the status of a string/course can occupy one of sixteen states.
+An
+\textit{inactive}
+string is signified by th-nus sign (\texttt{-}).
+An ordinary
+\textit{plucked}
+string is represented by the vertical line (\texttt{|}).
+Plucking near the bridge (\textit{plucked ponticello}) is represented by
+the slash character (\texttt{/}).
+Plucking near the tone-hole (\textit{plucked sul tasto}) is represented by
+the backslash character (\texttt{$\backslash$}).
+The repeated
+\textit{plucked-tremolo}
+(commonly used on the mandoline) is
+represented using the octothorpe or hash character (\texttt{\#}).
+\textit{Pizzicato}
+is represented by the small letter `\texttt{z}'.
+Normal bowing of a string is represented by the plus sign (\texttt{+});
+\textit{ponticello}
+bowing is represented by the open parenthesis `\texttt{(}' whereas
+\textit{sul tasto}
+bowing is represented by the closed parenthesis `\texttt{)}'.
+\textit{Spiccato}
+(bouncing the bow) is represented by the open curly brace `\texttt{\{}'.
+\textit{Col legno}
+(using the wood of the bow) is represented by the closed
+curly brace '\texttt{\}}'.
+\textit{Tremolo bowing}
+is represented by the ampersand (\texttt{\&}).
+\textit{Natural harmonics}
+and
+\textit{artificial harmonics}
+are represented by the lower-case `\texttt{o}' and upper-case `\texttt{O}'
+respectively.
+String
+\textit{ringing}
+is denoted by the colon (\texttt{:}), and the
+\textit{damping}
+of a string is denoted by the small letter `\texttt{x}'.
+
+\par 
+By way of illustration, the following tablature-token represents
+a six-string or six-course instrument, where the first through sixth
+strings are respectively (1 and 2) plucked, (3) damped, (4) bowed,
+(5) plucked sul tasto, (6) inactive.
+
+\par 
+
+\texttt{| | x + $\backslash$ -}
+
+
+\par 
+Note that the layout of the strings in a tablature-token always
+corresponds to the tuning specified in the relative-tuning interpretation.
+In most representations, the lower-pitched strings will be
+toward the left side of the tablature token.
+
+\par 
+\textit{Fret-position}
+information is indicated through the use of numbers,
+with the first fret signified by the number `1'.
+Fret-position numbers are encoded immediately to the right of their
+respective string/course.
+For example, the following tablature-token encodes a six-string/course
+instrument in which the second and third strings are both stopped at the
+second fret.
+
+\par 
+
+\texttt{| |2 |2 | | |}
+
+
+\par 
+Example 18.2 shows a sample passage for guitar with a corresponding
+\texttt{**fret} representation displayed beneath.
+The \texttt{**fret} representation does not encode duration
+information.
+It is common to join the \texttt{**fret} spine with a
+\texttt{**recip}
+spine representing the nominal duration data.
+In example 18.2 a
+\texttt{**kern}
+spine is also shown indicating
+the pitches in the \texttt{**fret} representation.
+\\\\
+\textbf{Example 18.2.}  J.S. Bach, \textit{Anna Magdalena Bach Notebook} Menuet II.  Guitar arr.
+
+
+
+\texttt{\texttt{**recip\texttt{**kern\texttt{**fret
+\texttt{**\texttt{*AT:G2
+\texttt{**\texttt{*RT:0,12:5,17:10,22:14,14:19,19:24,24
+\texttt{*M3/4\texttt{*\texttt{*M3/4
+\texttt{=1\texttt{=1\texttt{=1
+\texttt{4\texttt{E e g\texttt{- |4 - - - |0
+\texttt{8\texttt{c\texttt{- : : |3 : :
+\texttt{8\texttt{d\texttt{- : : : |0 x
+\texttt{8\texttt{D d e\texttt{- |2 : : |2 :
+\texttt{8\texttt{f\texttt{- : : : |3 :
+\texttt{=2\texttt{=2\texttt{=2
+\texttt{4\texttt{E e g\texttt{- |4 : : : |0
+\texttt{4\texttt{c\texttt{- : : |3 : :
+\texttt{4\texttt{c\texttt{- : : |3 : x
+\texttt{=3\texttt{=3\texttt{=3
+\texttt{4\texttt{F f a\texttt{- |5 : : : |2W
+\texttt{8\texttt{f\texttt{- : : : |3 :
+\texttt{8\texttt{g\texttt{- : : : : |0
+\texttt{8\texttt{a\texttt{- : : : : |2
+\texttt{8\texttt{b\texttt{- : : : : |4
+\texttt{=4\texttt{=4\texttt{=4
+\texttt{2\texttt{E e cc\texttt{- |4 : : : |5v
+\texttt{*-\texttt{*-\texttt{*-}
+
+
+\par 
+The \texttt{**fret}
+representation also provides several short-hand abbreviations
+for common ornaments and effects.
+Trills are indicated by the letters `t' (one semitone) and `T'
+(two semitones).
+Mordents are indicated by the letters `m' (one semitone) and `D'
+(two semitones).
+Inverted mordents are indicated by the letters `w' (one semitone) and `W'
+(two semitones).
+Turns are indicated by the letters `S' and `\$' (for the inverted
+"Wagnerian" turn).
+Two types of vibrato are distinguished: `v' for transverse vibrato
+and `V' for lateral vibrato.
+Pitch bending is signified by the tilde (~).
+
+\par 
+Apart from tablature-tokens,
+\texttt{**fret} also permits the encoding of rests and barlines.
+Rests tokens are denoted simply by the lower-case letter `r'.
+Barlines are represented using the "common system" for barlines
+used by \texttt{**kern} and other representations.
+
+
+\subsection*{Additional Features of \textit{**fret}}
+
+\par 
+\textit{Bowing-direction}
+and
+\textit{strumming}
+information is prepended to the beginning of the tablature-token.
+The direction of bowing/strumming is encoded using the left
+and right angle brackets:
+\texttt{>}
+means to bow/strum from the strings on the left side of the
+representation toward the strings on the right side of the representation.
+(On most instruments this means strumming
+"downward" -$\,$- from the lowest- to the highest-pitched strings.)
+The left angle bracket:
+\texttt{<}
+means to strum in the opposite direction.
+A rough indication of the speed of bowing/strumming can be
+represented by duplicating these signifiers.
+For example,
+\texttt{>>}
+means a slower "downward" bow/strum, and
+\texttt{<<<}
+means an especially slow "upward" bow/strum.
+The percent sign (\%) is used to signify the so-called
+\textit{rasgueado}
+-$\,$-  or flamboyant Spanish strum.
+Once again these signifiers appear at the beginning of a tablature-token
+-$\,$-  whenever they are encoded.
+Strumming all 6 open strings downward on a commonly-tuned guitar
+is represented as:
+
+\par 
+
+\texttt{*AT:E2
+\\
+*RT:0:5:10:15:19:24
+\\
+>| | | | | |}
+
+
+\par 
+Notice that there is no space between the right angle bracket and
+the first vertical bar.
+
+\par 
+The
+\texttt{**fret}
+representation also permits the optional encoding of
+\textit{fingering}
+information.
+For the plucking-hand (normally right hand),
+traditional musical abbreviations are used:
+\textit{P} (pollex) for the thumb, \textit{I} (index) for the index finger,
+\textit{M} (medius) for the middle finger, \textit{A} (annularis)
+for the ring finger, and \textit{Q} (quintus) for the little finger.
+In addition, the lower-case letter \textit{p} is used to signify
+the palm of the hand.
+Note that these letters are applied only to the `plucking' hand.
+In the case of the `fret-board' hand,
+the lower-case letters
+\textit{a-e}
+are used to denote the thumb, index finger,
+middle finger, ring finger, and little fingers, respectively.
+Like the fret information, fingering information is encoded
+immediately to the right of the string to which the information applies.
+By way of illustration, the finger actions used in the above example
+may be made explicit as follows:
+
+\par 
+
+\texttt{>|P |2bP |2cP |P |P |P}
+
+
+\par 
+The strum is carried out by the thumb, while the index and middle
+fingers of the fret-hand stop the second and third courses/strings
+at the second fret.
+In the following continuation of this representation,
+the first course/string is replucked by the thumb.
+With the exception of the second and third courses/strings,
+the other strings are allows to ring.
+
+\par 
+
+\texttt{>|P |2bP |2cP |P |P |P
+\\
+>|P xIM xIM : : :}
+
+
+\par 
+Notice that in damping the vibrations of the second and third strings,
+both the index and middle fingers of the `pluck' hand are used on
+both strings.
+
+\par 
+On rare occasions, guitarists will substitute fingers on the fret-board
+while a string remains sounding.
+The following example illustrates such a finger-substitution where
+the middle finger is replaced by the ring finger:
+
+\par 
+
+\texttt{| |2b |2c | | |
+\\
+: :2b :2d : : :}
+
+
+\par 
+Note that in the \texttt{**fret}
+representation, no special signifiers are provided for
+so-called `hammer-on' or (ascending-slur),
+nor for the so-called `pull-off' or (descending-slur).
+During the ascending-slur, the sound is produced simply
+by engaging the next fret.
+This can be represented in \texttt{**fret}
+by using the "let ring" signifier (:) in conjunction
+with the appropriate fret notation.
+The descending-slur can be similarly notated.
+
+\par 
+Four types of "percussion effects"
+can be represented using \texttt{**fret}.
+The two most common
+\textit{tambours}
+involve tapping on the bridge (represented by the lower-case letter `u')
+and tapping on the strings near the bridge (represented by the
+upper-case letter `U').
+A simple `tap' on the top-plate is represented by the lower-case letter `y',
+whereas a lower-pitched `thump' on the top-plate is represented by
+the upper-case letter `Y'.
+When sounded alone, these signifiers appear on a line by themselves.
+When sounded in conjunction with a plucked or (uncommonly) bowed string,
+these signifiers appear at the beginning of the tablature-token.
+
+\par 
+The complete system of signifiers used by
+\texttt{**fret}
+is summarized in Table 18.1.
+
+\par 
+\textbf{Table 18.1.}  Signifiers used by \textit{**fret}.
+
+\textbf{Fret-board (left) Hand}
+1first fret position
+2second fret position, ...
+11eleventh fret position, etc.
+0open string (not necessarily sounded)
+~bend up in pitch
+vvibrato (transverse)
+Vvibrato (lateral)
+
+ttrill (1 fret distance)
+Ttrill (2 frets distance)
+mmordent (1 fret distance)
+Dmordent (2 frets distance)
+winverted mordent (1 fret distance)
+Winverted mordent (2 frets distance)
+Sturn
+\$inverted (Wagnerian) turn
+
+athumb (of fret hand)
+bindex finger (of fret hand)
+cmiddle finger (of fret hand)
+dring finger (of fret hand)
+elittle finger (of fret hand)
+nno finger (of fret hand)
+
+\textbf{Pluck (right) Hand}
+-unplucked or unactivated string
+|plucked string (normal)
+/plucked string -$\,$- near bridge (ponticello)
+$\backslash$plucked string -$\,$- near tone-hole (sul tasto)
+\#tremolo (plucked, ala mandoline)
+zpizzicato
+:let string ring
+xdamp string
+onatural harmonic
+Oartificial harmonic
+
++bow (normal)
+(bow -$\,$- near bridge (ponticello)
+)bow -$\,$- toward fret-board (sul tasto)
+\{spiccato
+\}col legno (with wood of the bow)
+\&tremolo (bowed)
+
+>strum from low notes to high notes (= down-bow)
+<strum from high notes to low notes (= up-bow)
+>>slower down-strum; slower down-bow
+>>slower up-strum; slower up-bow
+>>>very slow down-strum; very slow down-bow
+<<<very slow up-strum; very slow up-bow
+\%rasgueado (Spanish strum)
+
+Ppollex: thumb (of pluck hand)
+Iindex: index finger (of pluck hand)
+Mmedius: middle finger (of pluck hand)
+Aannularis: ring finger (of pluck hand)
+Qquintus: little finger (of pluck hand)
+ppalm (of pluck hand)
+Nno finger (of pluck hand)
+
+utambour (tap on bridge)
+Utambour (tap on strings near bridge)
+y`tap' on top-plate
+Y`thump' on top-plate
+
+
+\textit{Summary of \textit{**fret} Signifiers}
+
+
+\par 
+A number of pitch-related Humdrum commands 
+accept \texttt{**fret} encoded data as inputs, including
+\textbf{cents},
+\textbf{freq},
+\textbf{kern},
+\textbf{pitch},
+\textbf{semits},
+\textbf{solfg},
+and
+\textbf{tonh}.
+
+
+
+\subsection*{Reprise}
+
+
+\par 
+In this chapter we have tried to reinforce the lesson that
+\texttt{**kern}
+is only one of an unbounded number of existing and possible Humdrum
+representations.
+As a Humdrum user, you are free to concoct your own representations
+to better address the kinds of information you are interested in
+manipulating.
+As long as the resulting representation conforms to the Humdrum syntax,
+the most important Humdrum tools can still be used to manipulate
+your data.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

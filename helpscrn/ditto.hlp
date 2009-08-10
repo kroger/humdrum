@@ -1,0 +1,18 @@
+
+DITTO     : Replace null tokens with previous data token.
+
+     This command accepts any Humdrum input, and replaces each null
+     token with the previous non-null data-token in the same spine.
+
+Syntax:
+
+     ditto [-p] [-s regexp] [-c chars] [inputfile ...]
+
+Options:
+
+     -c chars  : repeats only characters listed in chars
+     -p        : prints parentheses around all repeated tokens
+     -s regexp : skips lines matching the regexp regular expression
+
+  Refer to reference manual for further details.
+

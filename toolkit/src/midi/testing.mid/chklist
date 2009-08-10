@@ -1,0 +1,38 @@
+(5) Please spend time with internal documentation -- text-file
+    descriptions of how each program works, a sketch of the
+    algorithm, tips and warnings to other programmers.  Libraries
+    invoked, make-files, and other pertinent details.
+    As sobering as it may seem, it is possible that "yours truly"
+    will have to try making modifications.
+
+(7) The "simil" program was written by Keith Orpen.  It is a
+    fine program that needs to be included with the toolkit.
+    However, at the time it was designed, humdrum didn't
+    distinguish exclusive and tandem interpretations.  Even if it
+    takes you a couple of days, it is a high priority to have this
+    program recompiled.  Ask me to help you with this, since I
+    know where the files are, and am interested in seeing how
+    it's done.
+
+----------------------------------------------------------------------------
+
+RECORD -- BUGS & OBSERVATIONS:
+
+When you add a second spine (e.g. switch from Channel 1 to Channel 2),
+a null token is added to the data record before the spine-path
+and interpretations are added: e.g.
+
+**MIDI
+*Ch1
+39/-60/64	.
+*+
+*	**MIDI
+*	*Ch2
+.	 56/60/35
+.	 28/62/51
+.	 6/-60/64
+
+etc.
+
+Also, leading spaces are added to tokens in the other channels
+(as illustrated above).

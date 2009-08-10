@@ -1,0 +1,210 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- regexp</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>regexp</b>  --  interactive regular-expression tester
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>regexp</b>  [<i>inputfile</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>regexp</b>
+command invokes an interactive pattern-matcher
+that is useful for formulating and refining regular expressions.
+<i>Regular expressions</i>
+provide a generic means for defining patterns of characters
+(see tutorial in Section 6).
+Innumerable UNIX and Humdrum commands make use of
+regular expressions.
+The
+<b>regexp</b>
+command allows the user to test interactively various
+expressions using a sample text.
+If no sample text is supplied by the user
+<i>(inputfile)</i>
+then a short default text is used.
+</P>
+<P>
+Once invoked, the user may interactively input a regular expression
+followed by a carriage return.
+The sample text is scanned for occurrences of the defined
+regular expression.
+Any text lines containing the matched expression are displayed on
+the screen;
+<b>regexp</b>
+differs from the UNIX
+<b>grep</b>
+command in that the precise locations of the matched pattern
+are explicitly marked.
+(See EXAMPLES below.)
+Note that only the first occurrence of a matching pattern is identified
+in each line of text.
+(This is how most software tools make use of regular expressions.)
+</P>
+<P>
+The entire sample text file may be viewed by typing the regular
+expression <code><big>.*</big></code>  or by simply typing a carriage return.
+Viewing the sample text is helpful in identifying character-strings that are
+not identified by a given regular expression.
+</P>
+<P>
+The
+<b>regexp</b>
+command is terminated by typing an end-of-file marker
+(control-D on UNIX; control-Z on DOS or OS/2).
+</P>
+<P>
+The
+<b>regexp</b>
+command implements the same regular expression features found in
+the UNIX
+<b>awk</b>
+command.
+This includes all so-called "extended" regular expression
+features with the exception of \> and \<.
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>regexp</b>
+command provides only a help option:
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+Imagine the case where the sample text file specified in the command line
+contains the following three records:
+<blockquote>
+<code><big>
+The quick brown fox jumped over the lazy dogs.
+<br>
+Once upon a time, long, long ago ...
+<br>
+It was the best of times, it was the worst of times.
+</code></big>
+</blockquote>
+The following regular expression defines any character string
+beginning with the lower-case letter `b', followed by zero or
+one instance of any single character, followed by a lower-case vowel.
+</P>
+<P>
+<blockquote>
+<code><big>
+b.?[aeiou]
+</code></big>
+</blockquote>
+</P>
+<P>
+Given this regular expression,
+the corresponding output would appear as follows:
+</P>
+<P>
+<blockquote>
+<code><big>
+The quick brown fox jumped over the lazy dogs.
+<br>
+          ^ ^
+<br>
+It was the best of times, it was the worst of times.
+<br>
+           ^^
+</code></big>
+</blockquote>
+Notice that only those text lines matching the defined regular
+expression are displayed in the output.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+The regular-expression features provided by
+<b>regexp</b>
+depend on the local UNIX
+<b>awk</b>
+utility -- as accessed via the <code><big>AWK_VER</big></code> shell variable.
+Available features may change depending on the version of
+<b>awk</b>
+used.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>FILES</H3></FONT>
+The default text file is
+<code><big>
+$HUMDRUM/regexp.txt.
+</i></b></code></big>
+</i></b></code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<b>awk</b> (UNIX),
+<b>expr</b> (UNIX),
+<A HREF="patt.html">
+<b>patt</b></A> (4),
+<A HREF="pattern.html">
+<b>pattern</b></A> (4),
+<b>regexp</b> (6),
+<b>sed</b> (UNIX)
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

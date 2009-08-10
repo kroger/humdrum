@@ -1,0 +1,16 @@
+
+MIDRESET  : Reset MIDI controller card.
+
+     This command resets the MIDI controller card.  The MIDRESET command is
+     useful if a MIDI application has terminated abnormally -- leaving the
+     MIDI card unaccessable to further use. 
+
+     This command is for use on DOS systems only.  The MIDI card should be
+     compatible with the Roland MPU-401 standard.
+
+     See also TACET.
+
+Options:  None.
+
+  Refer to reference manual for further details.
+

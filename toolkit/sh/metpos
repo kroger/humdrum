@@ -1,0 +1,77 @@
+###################################################################
+# 						METPOS
+# Programmed by: David Huron        Date: ?
+# Copyright (c) 1993 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# June 16/94	Tim Racinsky	Modified to work with getopts (and other things)
+# July 12/94	Tim Racinsky	Changed options for metpos
+# 						
+#	This shell program receives input from the command line and after 
+# checking it, passes it to the program metpos.awk.
+#
+FILENAME=""
+OPTIONS=""
+METER=""
+TIMEBASE=""
+HELP=""
+FLAG=""
+STNDIN=""
+USAGE1="USAGE: metpos -h                (Help Screen)"
+USAGE2="       metpos [-m n/p] [-t n] [file ...]"
+while getopts hm:t: arg
+do
+	case "$arg" in
+	h) 	HELP="ON";;
+     m) 	METER="${OPTARG}" ;;
+     t) 	TIMEBASE="${OPTARG}" ;;
+	[?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/metpos.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/metpos.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' may be used
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "metpos: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+$AWK_VER -f ${HUMDRUM}/bin/metpos.awk "DUMMY" "${METER:-null}" "${TIMEBASE:-null}" $FILENAME

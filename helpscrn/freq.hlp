@@ -1,0 +1,24 @@
+
+FREQ      : Converts various pitch representations to frequency.
+
+     This command translates pitch, semits, cents and other pitch-
+     related units to **freq (i.e. frequency).
+
+Inputs processed:
+
+     **cbr,     **cents,   **cocho,   **freq,    **fret,    **kern,
+     **MIDI,    **pitch,   **semits,  **solfg,   **specC,   **Tonh
+
+Syntax:
+
+     freq [-p n] [-tx] [inputfile ...]
+
+Options:
+
+     -p n   : set output precision to n decimal places
+     -t     : suppress outputting of all but first note for groups of
+              tied notes
+     -x     : suppress outputting of non-freq data
+
+  Refer to reference manual for further details.
+

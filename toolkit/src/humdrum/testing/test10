@@ -1,0 +1,10 @@
+!! "humdrum: ERROR 10: Number of sub-comments in local comment "
+!! "does not match the number of currently active spines in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 10
+**ex	**ex	**ex
+a	b	c
+!Too	!Many	!Comments	!Here
+d	e	f
+!Not	!Enough
+*-	*-	*-

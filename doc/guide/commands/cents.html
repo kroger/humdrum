@@ -1,0 +1,298 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- cents</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>cents</b>  --  translate selected Humdrum pitch-related representations to cents
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>cents</b>  [<b>-p</b> <i>n</i>]  [<b>-tx</b>]  [<i>inputfile</i> ...]  [> <i>outputfile.cnt</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>cents</b>
+command transforms various pitch-related inputs to corresponding
+numerical values in hundredths of semitones.
+It outputs one or more Humdrum <code><big>**cents</big></code>
+spines containing values corresponding to the cents distance
+from middle C for pitch-related input tokens.
+Pitches above middle C produce positive output values,
+whereas pitches below middle C produce negative output values.
+For example, the <code><big>**pitch</big></code>
+token "C3" is transformed to -1200 (cents).
+</P>
+<P>
+The
+<b>cents</b>
+command is able to translate any of the pitch-related
+representations listed below.
+In each case, a tuning standard of A4 equals 440 hertz is assumed.
+For descriptions of the various input representations
+(including <code><big>**cents</big></code>) refer to Section 2
+<i>(Representation Reference)</i>
+of this reference manual.
+</P>
+<P>
+It is recommended that output files produced using the
+<b>cent</b>
+command should be given names with the distinguishing `.cnt' extension.
+<blockquote>
+<blockquote><TABLE>
+<TR><TD><code><big>**cents</big></code></TD><TD>hundredths of a semitone with respect to middle C=0</TD></TR>
+<TR><TD><code><big>**freq</big></code></TD><TD>fundamental frequency (in hertz)</TD></TR>
+<TR><TD><code><big>**fret</big></code></TD><TD>fretted-instrument pitch tablature</TD></TR>
+<TR><TD><code><big>**kern</big></code></TD><TD>core pitch/duration representation</TD></TR>
+<TR><TD><code><big>**MIDI</big></code></TD><TD>Music Instrument Digital Interface tablature</TD></TR>
+<TR><TD><code><big>**pitch</big></code></TD><TD>American National Standards Institute pitch notation (e.g. "A#4")</TD></TR>
+<TR><TD><code><big>**semits</big></code></TD><TD>equal-tempered semitones with respect to middle C=0 (e.g. 12 equals C5)</TD></TR>
+<TR><TD><code><big>**solfg</big></code></TD><TD>French solf&#232ge system (fixed `doh')</TD></TR>
+<TR><TD><code><big>**specC</big></code></TD><TD>spectral centroid (in hertz)</TD></TR>
+<TR><TD><code><big>**Tonh</big></code></TD><TD>German pitch system</TD></TR>
+</TABLE></blockquote>
+<CENTER>
+<i>Input representations processed by <b>cents</b>.</i>
+</CENTER>
+</blockquote>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>cents</b>
+command provides the following options:
+<blockquote>
+<blockquote><TABLE>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-p <i>n</i></TD><TD>output precision of <i>n</i> decimal places</TD></TR>
+<TR><TD><b>-t</b></TD><TD>suppresses printing of all but the first note of a group of tied <code><big>**kern</b> notes</TD></TR>
+<TR><TD><b>-x</b></TD><TD>suppresses printing of non-cents signifiers</TD></TR>
+</TABLE></blockquote>
+</blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The
+<b>-p</b>
+option can be used to set the precision of the output values to <i>n</i>
+decimal places.
+The default precision is integer values only (<i>n</i>=0).
+Note that
+<b>cents</b>
+is able to process <code><big>**cents</big></code>
+as input; this feature allows the user to round-off existing <code><big>**cents</big></code>
+data to a specified precision.
+</P>
+<P>
+The
+<b>-t</b>
+ensures that only a single output value is given for tied <code><big>**kern</big></code> notes;
+the output coincides with the first note of the tie.
+</P>
+<P>
+In the default operation,
+<b>cents</b>
+outputs non-pitch-related signifiers in addition to the cents value.
+For example, the <code><big>**pitch</big></code> token "A5zzz" will result in the output
+"2100zzz" -- that is, after translating A5 to 2100 cents,
+the "zzz" signifiers are retained in the output.
+For some applications, echoing non-pitch-related signifiers in the output
+is useful.
+However, in other situations, the result can prove confusing --
+especially, when the non-pitch-related signifiers are numbers.
+Consider the case of the <code><big>**kern</big></code> token "8aa";
+after translating `aa' to 2100 cents, the non-pitch-related signifier `8'
+will also be output, hence the value 82100 -- which will undoubtedly cause
+confusion.
+The
+<b>-x</b>
+option is useful for eliminating non-pitch-related signifiers from the output.
+For most <code><big>**kern</big></code> inputs, the
+<b>-x</b>
+option is recommended.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following example illustrates the use of
+<b>cents.</b>
+The input contains six pitch-related spines -- two of which
+(<code><big>**deg</big></code> and <code><big>**cocho</big></code>) cannot be processed by
+<b>cents.</b>
+In addition, there are two non-pitch-related spines
+(<code><big>**embell</big></code> and <code><big>**metpos</big></code>).
+<code><big>
+<blockquote><TABLE>
+<TR><TD><code><big>!! `cents' example.</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>**kern</TD><TD><code><big>**pitch</TD><TD><code><big>**MIDI</TD><TD><code><big>**deg</TD><TD><code><big>**metpos</TD><TD><code><big>**cocho</TD><TD><code><big>**Tonh</TD><TD><code><big>**embell</TD></TR>
+<TR><TD><code><big>*M2/4</TD><TD><code><big>*M2/4</TD><TD><code><big>*M2/4</TD><TD><code><big>*M2/4</TD><TD><code><big>*M2/4</TD><TD><code><big>*M2/4</TD><TD><code><big>*M2/4</TD><TD><code><big>*M2/4</TD></TR>
+<TR><TD><code><big>*</TD><TD><code><big>*</TD><TD><code><big>*</TD><TD><code><big>*</TD><TD><code><big>*tb8</TD><TD><code><big>*</TD><TD><code><big>*</TD><TD><code><big>*</TD></TR>
+<TR><TD><code><big>=1</TD><TD><code><big>=1</TD><TD><code><big>=1</TD><TD><code><big>=1</TD><TD><code><big>=1</TD><TD><code><big>=1</TD><TD><code><big>=1</TD><TD><code><big>=1</TD></TR>
+<TR><TD><code><big>8ee-</TD><TD><code><big>G#4foo</TD><TD><code><big>/60/bar</TD><TD><code><big>1foo</TD><TD><code><big>1</TD><TD><code><big>r</TD><TD><code><big>Gis2</TD><TD><code><big>ct</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>/-60/</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD></TR>
+<TR><TD><code><big>8ff</TD><TD><code><big>A3</TD><TD><code><big>/62/</TD><TD><code><big>2</TD><TD><code><big>3</TD><TD><code><big>9.89</TD><TD><code><big>H2</TD><TD><code><big>upt</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>/-62/</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD></TR>
+<TR><TD><code><big>8dd-</TD><TD><code><big>Ab3</TD><TD><code><big>/70/</TD><TD><code><big>1</TD><TD><code><big>2</TD><TD><code><big>7.07</TD><TD><code><big>B2</TD><TD><code><big>ct</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>/-70/</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD></TR>
+<TR><TD><code><big>8d-</TD><TD><code><big>C#4</TD><TD><code><big>/61/</TD><TD><code><big>6</TD><TD><code><big>3</TD><TD><code><big>7.135</TD><TD><code><big>Cis4</TD><TD><code><big>sus</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>/-61/</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD></TR>
+<TR><TD><code><big>=2</TD><TD><code><big>=2</TD><TD><code><big>=2</TD><TD><code><big>=2</TD><TD><code><big>=2</TD><TD><code><big>=2</TD><TD><code><big>=2</TD><TD><code><big>=2</TD></TR>
+<TR><TD><code><big>[4a-</TD><TD><code><big>r</TD><TD><code><big>.</TD><TD><code><big>5</TD><TD><code><big>1</TD><TD><code><big>r</TD><TD><code><big>r</TD><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>7</TD><TD><code><big>3</TD><TD><code><big>5.5</TD><TD><code><big>Heses2</TD><TD><code><big>ct</TD></TR>
+<TR><TD><code><big>4a-]</TD><TD><code><big>D4</TD><TD><code><big>/48/ /52/</TD><TD><code><big>1</TD><TD><code><big>2</TD><TD><code><big>8.11</TD><TD><code><big>C3</TD><TD><code><big>ct</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>/-48/</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>D4 F4</TD><TD><code><big>/-52/</TD><TD><code><big>2</TD><TD><code><big>3</TD><TD><code><big>7.33 6.4</TD><TD><code><big>C3 Es3</TD><TD><code><big>ct</TD></TR>
+<TR><TD><code><big>=3</TD><TD><code><big>=3</TD><TD><code><big>=3</TD><TD><code><big>=3</TD><TD><code><big>=3</TD><TD><code><big>=3</TD><TD><code><big>=3</TD><TD><code><big>=3</TD></TR>
+<TR><TD><code><big>r</TD><TD><code><big>G4</TD><TD><code><big>.</TD><TD><code><big>r</TD><TD><code><big>1</TD><TD><code><big>r</TD><TD><code><big>H2 D3</TD><TD><code><big>.</TD></TR>
+<TR><TD><code><big>===</TD><TD><code><big>===</TD><TD><code><big>===</TD><TD><code><big>===</TD><TD><code><big>===</TD><TD><code><big>===</TD><TD><code><big>===</TD><TD><code><big>===</TD></TR>
+<TR><TD><code><big>*-</TD><TD><code><big>*-</TD><TD><code><big>*-</TD><TD><code><big>*-</TD><TD><code><big>*-</TD><TD><code><big>*-</TD><TD><code><big>*-</TD><TD><code><big>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Executing the command
+</P>
+<P>
+<code><big>
+cents -tx input > output.cnt
+</i></b></code></big>
+</i></b></code></big>
+</P>
+<P>
+produces the following result:
+<code><big>
+<blockquote><TABLE>
+<TR><TD><code><big>!! `cents' example.</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>**cents</TD><TD><code><big>**cents</TD><TD><code><big>**cents</TD><TD><code><big>**deg</TD><TD><code><big>**metpos</TD><TD><code><big>**cocho</TD><TD><code><big>**cents</TD><TD><code><big>**embell</TD></TR>
+<TR><TD><code><big>*M2/4</TD><TD><code><big>*M2/4</TD><TD><code><big>*M2/4</TD><TD><code><big>*M2/4</TD><TD><code><big>*M2/4</TD><TD><code><big>*M2/4</TD><TD><code><big>*M2/4</TD><TD><code><big>*M2/4</TD></TR>
+<TR><TD><code><big>*</TD><TD><code><big>*</TD><TD><code><big>*</TD><TD><code><big>*</TD><TD><code><big>*tb8</TD><TD><code><big>*</TD><TD><code><big>*</TD><TD><code><big>*</TD></TR>
+<TR><TD><code><big>=1</TD><TD><code><big>=1</TD><TD><code><big>=1</TD><TD><code><big>=1</TD><TD><code><big>=1</TD><TD><code><big>=1</TD><TD><code><big>=1</TD><TD><code><big>=1</TD></TR>
+<TR><TD><code><big>1500</TD><TD><code><big>800</TD><TD><code><big>0</TD><TD><code><big>1foo</TD><TD><code><big>1</TD><TD><code><big>r</TD><TD><code><big>-1600</TD><TD><code><big>ct</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD>.</TD><TD><code><big>.</TD><TD><code><big>.</TD></TR>
+<TR><TD><code><big>1700</TD><TD><code><big>-300</TD><TD><code><big>200</TD><TD><code><big>2</TD><TD><code><big>3</TD><TD><code><big>9.89</TD><TD><code><big>-1300</TD><TD><code><big>upt</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD>.</TD><TD><code><big>.</TD><TD><code><big>.</TD></TR>
+<TR><TD><code><big>1300</TD><TD><code><big>-400</TD><TD><code><big>1000</TD><TD><code><big>1</TD><TD><code><big>2</TD><TD><code><big>7.07</TD><TD><code><big>-1400</TD><TD><code><big>ct</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD>.</TD><TD><code><big>.</TD><TD><code><big>.</TD></TR>
+<TR><TD><code><big>100</TD><TD><code><big>100</TD><TD><code><big>100</TD><TD><code><big>6</TD><TD><code><big>3</TD><TD><code><big>7.135</TD><TD><code><big>100</TD><TD><code><big>sus</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD>.</TD><TD><code><big>.</TD><TD><code><big>.</TD></TR>
+<TR><TD><code><big>=2</TD><TD><code><big>=2</TD><TD><code><big>=2</TD><TD><code><big>=2</TD><TD><code><big>=2</TD><TD><code><big>=2</TD><TD><code><big>=2</TD><TD><code><big>=2</TD></TR>
+<TR><TD><code><big>800</TD><TD><code><big>r</TD><TD><code><big>.</TD><TD><code><big>5</TD><TD><code><big>1</TD><TD><code><big>r</TD><TD><code><big>r</TD><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>7</TD><TD><code><big>3</TD><TD><code><big>5.5</TD><TD><code><big>-1500</TD><TD><code><big>ct</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>200</TD><TD><code><big>-1200 -800</TD><TD><code><big>1</TD><TD><code><big>2</TD><TD><code><big>8.11</TD><TD><code><big>-1200</TD><TD><code><big>ct</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD><TD><code><big>.</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>200 500</TD><TD><code><big>.</TD><TD><code><big>2</TD><TD><code><big>3</TD><TD><code><big>7.33 6.4</TD><TD><code><big>-1200 -900</TD><TD><code><big>ct</TD></TR>
+<TR><TD><code><big>=3</TD><TD><code><big>=3</TD><TD><code><big>=3</TD><TD><code><big>=3</TD><TD><code><big>=3</TD><TD><code><big>=3</TD><TD><code><big>=3</TD><TD><code><big>=3</TD></TR>
+<TR><TD><code><big>r</TD><TD><code><big>700</TD><TD><code><big>.</TD><TD><code><big>r</TD><TD><code><big>1</TD><TD><code><big>r</TD><TD><code><big>-1300 -1000</TD><TD><code><big>.</TD></TR>
+<TR><TD><code><big>===</TD><TD><code><big>===</TD><TD><code><big>===</TD><TD><code><big>===</TD><TD><code><big>===</TD><TD><code><big>===</TD><TD><code><big>===</TD><TD><code><big>===</TD></TR>
+<TR><TD><code><big>*-</TD><TD><code><big>*-</TD><TD><code><big>*-</TD><TD><code><big>*-</TD><TD><code><big>*-</TD><TD><code><big>*-</TD><TD><code><big>*-</TD><TD><code><big>*-</TD></TR>
+</TABLE></blockquote>
+</code></big>
+Both processed and unprocessed spines are output.
+Notice that the tied note at the beginning of measure 2 in the <code><big>**kern</big></code>
+spine has been rendered as a single note rather than as two notes
+(due to the
+<b>-t</b>
+option).
+Also notice that the non-pitch-related signifiers (e.g. foo)
+in the first notes of the <code><big>**pitch, **MIDI</big></code>, and <code><big>**cocho</big></code>
+spines have been stripped away (due to the
+<b>-x</b>
+option).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>FILES</H3></FONT>
+The file <code><big>x_option.awk</big></code>
+is used by this program when the
+<b>-x</b>
+option is invoked.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<b>**cents</b> (2),
+<b>**freq</b> (2),
+<A HREF="freq.html">
+<b>freq</b></A> (4),
+<b>**fret</b> (2),
+<b>**kern</b> (2),
+<A HREF="kern.html">
+<b>kern</b></A> (4),
+<b>**MIDI</b> (2),
+<A HREF="midi.html">
+<b>midi</b></A> (4),
+<b>**pitch</b> (2),
+<A HREF="pitch.html">
+<b>pitch</b></A> (4),
+<b>**semits</b> (2),
+<A HREF="semits.html">
+<b>semits</b></A> (4),
+<b>**solfg</b> (2),
+<A HREF="solfg.html">
+<b>solfg</b></A> (4),
+<b>**specC</b> (2),
+<A HREF="specC.html">
+<b>specC</b></A> (4),
+<b>**Tonh</b> (2),
+<A HREF="tonh.html">
+<b>tonh</b></A> (4)
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide04.html#Cents">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

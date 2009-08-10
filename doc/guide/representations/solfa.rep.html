@@ -1,0 +1,268 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Solfa Syllables</TITLE>
+<!-- Documentation for the **solfa Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **solfa Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,solfa syllables,solfege,software,theory,analysis,systematic musicology,computer representation,**solfa">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Solfa Syllables</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**solfa</b>  --  representation for tonic solfa syllables
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**solfa</b>
+representation permits the encoding of extended tonic solfa syllables
+for the "moveable doh" system of pitch naming.
+</P>
+<P>
+The
+<b>**solfa</b>
+representation distinguishes three types of data tokens:
+pitches, rests, and barlines.
+</P>
+<P>
+Pitches tokens are represented using the syllables
+<i>do, re, mi, fa, so, la,</i>
+and <i>ti</i> -- or their chromatic alterations:
+<i>di, da, ri, ra,</i>
+etc. (see table below).
+Tonic solfa syllables can be determined only with reference to some
+prevailing key.
+For example, the pitch C is the tonic (<code><big>do</big></code>) in
+the key of C major or C minor.
+</P>
+<P>
+The
+<b>**solfa</b>
+representation does not distinguish between major and minor modes.
+Only the tonic pitch is of importance when determining the
+representation for a given pitch.
+For example, in both C major and C minor,
+the pitch A-natural is represented as <code><big>la</big></code>
+while the pitch A-flat is represented as <code><big>le</big></code>.
+</P>
+<P>
+The amount of chromatic alteration is not represented by <b>**solfa</b>;
+once a pitch is "raised," raising it further will not
+change the note's representation.
+For example, where the tonic pitch is B-flat, both B-natural
+and B-sharp are represented by <code><big>di</big></code>.
+</P>
+<P>
+Octave designations are not represented in
+<b>**solfa.</b>
+However,
+<b>**solfa</b>
+provides limited capabilities for representing phrasing and slurs.
+</P>
+<P>
+Several pitches may be encoded concurrently in a single spine by using
+the Humdrum multiple-stop convention:
+pitches within multiple-stops are separated by single spaces.
+For example,
+the following example encodes a 4-note tonic major chord using two
+<b>**solfa</b>
+spines -- each spine containing a double-stop.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**solfa</TD><TD>**solfa</TD></TR>
+<TR><TD>*C:</TD><TD>*C:</TD></TR>
+<TR><TD>do mi</TD><TD>so do</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+Pitch tokens may be modified by the presence of additional signifiers.
+The open brace `{' denotes the beginning of a phrase.
+The closed brace `}' denotes the end of a phrase.
+The open parenthesis `(' denotes the beginning of a slur.
+The closed parenthesis `)' denotes the end of a slur.
+The semicolon `;' denotes a pause.
+</P>
+<P>
+Rest tokens are denoted by the lower-case letter `r'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+File type is dubbed `.sol'.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**solfa</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>do</TD><TD>(pronounced <i>doe</i>) tonic pitch</TD></TR>
+<TR><TD>di</TD><TD>(<i>dee</i>) raised tonic pitch</TD></TR>
+<TR><TD>de</TD><TD>(<i>day</i>) lowered tonic pitch</TD></TR>
+<TR><TD>re</TD><TD>(<i>ray</i>) supertonic pitch</TD></TR>
+<TR><TD>ri</TD><TD>(<i>ree</i>) raised supertonic pitch</TD></TR>
+<TR><TD>ra</TD><TD>(<i>raw</i>) lowered supertonic pitch</TD></TR>
+<TR><TD>mi</TD><TD>(<i>me</i>) mediant pitch</TD></TR>
+<TR><TD>my</TD><TD>(<i>my</i>) raised mediant pitch</TD></TR>
+<TR><TD>me</TD><TD>(<i>may</i>) lowered mediant pitch</TD></TR>
+<TR><TD>fa</TD><TD>(<i>fah</i>) subdominant pitch</TD></TR>
+<TR><TD>fi</TD><TD>(<i>fee</i>) raised subdominant pitch</TD></TR>
+<TR><TD>fe</TD><TD>(<i>fay</i>) lowered subdominant pitch</TD></TR>
+<TR><TD>so</TD><TD>(<i>so</i>) dominant pitch</TD></TR>
+<TR><TD>si</TD><TD>(<i>see</i>) raised dominant pitch</TD></TR>
+<TR><TD>se</TD><TD>(<i>say</i>) lowered dominant pitch</TD></TR>
+<TR><TD>la</TD><TD>(<i>la</i>) submediant pitch</TD></TR>
+<TR><TD>li</TD><TD>(<i>lee</i>) raised submediant pitch</TD></TR>
+<TR><TD>le</TD><TD>(<i>lay</i>) lowered submediant pitch</TD></TR>
+<TR><TD>ti</TD><TD>(<i>tee</i>) leading tone</TD></TR>
+<TR><TD>ty</TD><TD>(<i>tie</i>) raised leading tone</TD></TR>
+<TR><TD>te</TD><TD>(<i>tay</i>) lowered leading tone</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>(</TD><TD>slur start</TD></TR>
+<TR><TD>)</TD><TD>slur end</TD></TR>
+<TR><TD>{</TD><TD>phrase mark (start)</TD></TR>
+<TR><TD>}</TD><TD>phrase mark (end)</TD></TR>
+<TR><TD>;</TD><TD>pause sign</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**solfa</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>!! Johannes Brahms</TD></TR>
+<TR><TD>!! Waltz Opus 39, No. 15</TD></TR>
+<TR><TD>**solfa</TD><TD>**solfa</TD></TR>
+<TR><TD>*M3/4</TD><TD>*M3/4</TD></TR>
+<TR><TD>*A:</TD><TD>*A:</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>do</TD><TD>so mi</TD></TR>
+<TR><TD>so mi</TD><TD>.</TD></TR>
+<TR><TD>.</TD><TD>mi do</TD></TR>
+<TR><TD>mi so</TD><TD>mi do</TD></TR>
+<TR><TD>.</TD><TD>so mi</TD></TR>
+<TR><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD>do</TD><TD>la fa</TD></TR>
+<TR><TD>.</TD><TD>so</TD></TR>
+<TR><TD>.</TD><TD>fa</TD></TR>
+<TR><TD>fa fa</TD><TD>so mi</TD></TR>
+<TR><TD>la do</TD><TD>fa re</TD></TR>
+<TR><TD>=4</TD><TD>=4</TD></TR>
+<TR><TD>do</TD><TD>so mi</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum command accepts <b>**solfa</b> encoded data as inputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD><A HREF="../commands/vox.html"><b>vox</b></A></TD><TD>determine active and inactive voices in a Humdrum file</TD></TR>
+<TR><TD></TD></TR>
+</TABLE>
+</blockquote>
+The following Humdrum command produces <b>**solfa</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD valign="top"><A HREF="../commands/solfa.html"><b>solfa</b></A></TD><TD>translates <b>**kern</b>, <b>**pitch</b>, <b>**solfg</b>, <b>**Tonh</b></TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**solfa</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+<TR><TD>tempo</TD><TD><code><big>*MM96.3</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**solfa</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="deg.rep.html"><b>**deg</b></A>,
+<A HREF="degree.rep.html"><b>**degree</b></A>,
+<A HREF="kern.rep.html"><b>**kern</b></A>,
+<A HREF="pitch.rep.html"><b>**pitch</b></A>,
+<A HREF="solfg.rep.html"><b>**solfg</b></A>,
+<A HREF="Tonh.rep.html"><b>**Tonh</b></A>,
+<A HREF="../commands/vox.html"><b>vox</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

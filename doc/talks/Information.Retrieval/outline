@@ -1,0 +1,120 @@
+
+Information Retrieval Using the Humdrum Toolkit
+
+OUTLINE
+
+	* In the age of the internet, what is the relationship between librarians and
+	traditional researchers?
+	* Eliminating the "Reference Question Boundary"
+	* Goals of CCARH Web Site
+	* Organiztion of CCARH Web Site
+	* Use of Humdrum Toolkit
+	* Themefinder
+
+-------------------------------------------------------
+
+Traditional Division of Labors:
+
+LIBRARIANS
+
+	* acquisitions
+	* maintain collections
+	* provide pointers to information
+
+RESEARCHERS
+
+	* follow the pointers
+	* interpret the information
+	* generate new information
+
+-------------------------------------------------------
+
+THE (NEW?) REALITY
+
+LIBRARIANS
+
+	* Because librarians have access to information
+	and have an informed understanding of materials,
+	they are very well placed to do original research.
+	* Librarians often produce reference tools that are
+	themselves "primary sources".
+
+RESEARCHERS
+
+	* engaged in acquisitions (usually "personal collections")
+	* with the Web: citations are becoming direct links
+	(overlapping with the traditional task of reference librarians)
+
+-------------------------------------------------------
+
+THE REFERENCE QUESTION BOUNDARY
+
+QUESTIONS:
+
+What year did Dvorak write the New World Symphony?
+
+Where can I find works written for bassoon and string quartet?
+
+How many cantatas did Bach write?
+
+I'm looking for a list of works written in irregular meters - like 7/8.
+
+Do Italian sixth chords occur more commonly in Italian music?
+
+Are German drinking songs more likely to be in triple meter?
+
+Which English translation of a Schubert text best preserves
+the vowel coloration?
+
+I'm looking for an example where two different melodies
+use the same lyrics.
+
+When does a reference question become a research question?
+
+---------------------------------------------------------------
+
+GOALS OF CCARH WEB SITE
+
+	* to promote music performance and scholarship by providing
+	free access to high quality electronic musical data
+	from known sources
+
+	* to promote music scholarship by providing
+	computer-based  research tools
+
+LIMITATIONS
+
+	* music-notation related information (plus reference information)
+	* limited to copyright free sources
+	* limited to classical and traditional (folk) materials
+	* emphasis on 17th-19th century repertories
+	* limited to handful of data formats
+		* MIDI
+		* Humdrum
+		* MuseData
+
+---------------------------------------------------------------
+
+ORGANIZATION OF CCARH WEB SITE
+
+	* downloadable files
+	* provision for "editorial forum"
+		* Revision Control Problem:
+		* Humdrum "vertias" command
+
+---------------------------------------------------------------
+
+ROLE OF HUMDRUM TOOLKIT
+
+	* Use of Humdrum Toolkit
+	* Themefinder
+
+---------------------------------------------------------------
+
+AN EXAMPLE:  THEMEFINDER
+
+---------------------------------------------------------------
+
+Need for a Smooth Learning Gradient
+
+---------------------------------------------------------------

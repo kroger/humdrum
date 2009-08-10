@@ -1,0 +1,903 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter10}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{Musical Uses of Regular Expressions}
+
+
+
+Now that you have a better understanding of
+regular expressions, let's apply them.
+This chapter provides many examples of
+how regular expressions may be used to define musically useful patterns.
+In subsequent chapters, we'll make frequent use of regular expressions.
+
+
+\subsection*{The \textit{grep} Command (Again)}
+
+\par 
+Although regular expressions are used in a number of Humdrum commands,
+they are most frequently used in conjunction with the
+\textbf{grep}
+command encountered in
+Chapter 3.
+\textbf{grep}
+is a popular software tool that is available from a number of
+manufacturers and sources.
+Many versions of
+\textbf{grep}
+differ in the options provided.
+For example, the version of
+\textbf{grep}
+distributed by the GNU Software Foundation provides
+no fewer than 19 options.
+Some of the most common options for
+\textbf{grep}
+are identified in Table 10.1.
+\\\\
+\textbf{Table 10.1}
+
+-ccount the number of lines matching the regular expression
+-f \textit{file}search for patterns that are specified in \textit{file}
+-iignore differences of upper- and lower-case
+-ljust list the names of files containing a matching line
+-nprefix each output line with its line number
+-hsuppress file-name prefixes (headers) in output when searching more than one file
+-vdisplay all lines \textit{not} matching the regular expression
+-Llist names of files \textit{not} containing the regular expression
+
+
+\textit{Common options for the \textbf{grep} command.}
+
+\par 
+Many of the predefined Humdrum representations make use of the
+"common system" for representing barlines.
+The following command counts the number of barlines in the
+file \texttt{czech37.krn}.
+Note that the caret anchor (\texttt{\^{}}) is used to avoid inadvertent matches
+of the equals sign that might appear in Humdrum comments or interpretations.
+
+\par 
+
+\texttt{grep -c \^{}= czech37.krn}
+
+
+\par 
+Recall that the dollar sign (\texttt{\$}) can be used to anchor
+an expression to the end of the line.
+The following command determines whether numbered measure 9 is present in the
+file \texttt{france12.krn};
+the dollar sign ensures that measure 9 is not
+mistaken for measure 90, 930, etc.
+
+\par 
+
+\texttt{grep \^{}=9\$ france12.krn}
+
+
+\par 
+The asterisk means "zero or more" instances of the preceding
+expression.
+For example, the following regular expression will match any
+reference record or global comment in the file \texttt{clara29}:
+
+\par 
+
+\texttt{grep '\^{}!!!*' clara29}
+
+
+\par 
+Suppose we want to list all of the global comments for all files
+in the current directory:
+
+\par 
+
+\texttt{grep '\^{}!!!*' *}
+
+
+\par 
+Notice that the two asterisks serve different functions in the
+above command.
+The first asterisk means "zero or more instances" and is
+part of the regular expression passed to \textbf{grep}.
+The second asterisk means "all files in the current directory"
+and is expanded by the shell.
+The first asterisk is `protected' from the shell by the single quotes.
+Otherwise, the first asterisk might be expanded by the shell to a list
+of all files in the current directory.
+
+\par 
+In regular expressions, the period character (\texttt{.}) matches any single
+character.
+For example, the expression `\texttt{A.B}' will match strings such as
+`\texttt{AXB}' and `\texttt{AAB}' etc.
+The following command identifies all eighth-notes containing
+at least one flat, and whose pitch lies within an octave of middle C.
+
+\par 
+
+\texttt{grep 8.- *.krn}
+
+
+\par 
+Frequently it is necessary to turn off the special
+meanings for metacharacters such as \^{}, \$, and *.
+Recall that this can be done by inserting a backslash (\texttt{$\backslash$})
+immediately prior to the metacharacter.
+In the
+\texttt{**kern}
+representation the caret signifies an accent.
+In a monophonic input, we might count the number of notes
+that have a notated accent as follows:
+
+\par 
+
+\texttt{grep -c '$\backslash$\^{}' danmark3.krn}
+
+
+
+\par 
+In the following command we have used the backslash to escape
+the special meaning of the asterisk.
+The
+\textbf{-l}
+option causes
+\textbf{grep}
+to output only the names of any files that contain a line matching
+the pattern.
+Hence, the following command identifies those files in the
+current directory that encode music in 9/8 meter:
+
+\par 
+
+\texttt{grep -l '\^{}$\backslash$*M9/8' *}
+
+
+
+\par 
+Recall that square brackets can be used to indicate character classes
+where any of the characters in the class can be used to match the
+expression.
+The following command identifies those files in the current directory
+that encode music in either 3/8 or 9/8 meter:
+
+\par 
+
+\texttt{grep -l '$\backslash$*M[39]/8' *}
+
+
+
+\par 
+One of the most frequently used regular expressions consists of the
+period followed by the asterisk (\texttt{.*}).
+Recall that this expression will match
+\textit{any}
+string including the null string (i.e. nothing at all).
+This expression commonly appears between two other character strings.
+For example, we can identify all files in the current directory whose
+instrumentation includes a trumpet:
+
+\par 
+
+\texttt{grep -l '!!!AIN.*tromp' *}
+
+The \texttt{.*} expression is needed since we don't know what other
+instruments might be listed following \texttt{AIN} and before \texttt{tromp}.
+
+Instrumentation reference records require that instrument
+codes appear in alphabetical order.
+This makes it easier to conduct searches for combinations of instruments.
+For example, we can identify all scores in the current directory
+whose instrumentation includes both trumpet and cornet as follows:
+
+\par 
+
+\texttt{grep -l '!!!AIN.*cornt.*tromp' *}
+
+
+
+\par 
+There are many variants on the use of the \texttt{.*} expression.
+The following command identifies all files that contain
+a record having the word \texttt{Drei} followed by the word
+"\texttt{Koenige}".
+(Notice the use of the
+\textbf{-i}
+option in order to ignore the case of the letters.)
+
+\par 
+
+\texttt{grep -li 'Drei.*Koenige' *}
+
+
+\par 
+This command will match such strings as:
+\textit{Die Heiligen Drei Koenige},
+\textit{Drei Koenige,}
+\textit{Dreikoenigslied,}
+etc.
+
+
+\par 
+The `\texttt{!!!AGN}' reference record is
+used to encode genre-related keywords.
+The following command lists all files that are ballads.
+
+\par 
+
+\texttt{grep -l '!!!AGN.*Ballad' *}
+
+
+
+\par 
+List all files that have the word \texttt{Amour} in the title:
+
+\par 
+
+\texttt{grep -li '!!!OLT.*Amour' *}
+
+
+
+\par 
+List any works that bear a dedication:
+
+\par 
+
+\texttt{grep -l '!!!ODE:' *}
+
+
+
+\par 
+List those works that are in irregular meters:
+
+\par 
+
+\texttt{grep -l '!!!AMT.*irregular' *}
+
+
+\par 
+The
+\textbf{-L}
+option for
+\textbf{grep}
+causes the output to contain a list of files
+\textit{not}
+containing the regular expression.
+For example, we could identify those works that don't bear any dedication:
+
+\par 
+
+\texttt{grep -L '!!!ODE:' *}
+
+
+
+\par 
+List those works
+\textit{not}
+composed by Schumann:
+
+\par 
+
+\texttt{grep -L '!!!COM: Schumann' *}
+
+
+
+\par 
+Identify any works that don't contain any double barlines:
+
+\par 
+
+\texttt{grep -L '\^{}==' *}
+
+
+
+\par 
+How many works in the current directory are in simple-triple meter?
+
+\par 
+
+\texttt{grep -c '!!!AMT.*simple.*triple' *}
+
+
+
+\par 
+When searching for more complex patterns it may be necessary
+to use
+\textbf{grep}
+more than once.
+Consider, for example, the problem of identifying works
+whose titles contain both the words
+\texttt{Liebe} and \texttt{Tod}.
+The first of the following commands will identify only those titles
+that contain \texttt{Liebe} followed by \texttt{Tod},
+whereas the second command will identify only those titles that contain
+\texttt{Tod} followed by \texttt{Liebe}:
+
+\par 
+
+\texttt{grep '!!!OTL.*Liebe.*Tod' *}
+\\
+\texttt{grep '!!!OTL.*Tod.*Liebe' *}
+
+
+\par 
+A better solution is to pipe the output between two
+\textbf{grep}
+commands.
+Recall that the vertical bar (`|') conveyes or "pipes" the output
+from one command to the input of a subsequent command.
+The following command passes all opus-title records
+(\texttt{OTL}) containing the word \texttt{Liebe} to a second \textbf{grep},
+which passes only those records also containing the word \texttt{Tod}.
+Since both
+\textbf{grep}
+commands process the entire input line,
+it does not matter whether the word \texttt{Tod}
+precedes or follows the word \texttt{Liebe}:
+
+\par 
+
+\texttt{grep '!!!OTL.*Liebe' * | grep 'Tod'}
+
+
+\par 
+The
+\textbf{-v}
+option for
+\textbf{grep}
+causes a "reverse" or "negative" output.
+Instead of outputting all records that
+\textit{match}
+the specified regular expression, the
+\textbf{-v}
+option causes only those records to be output that do
+\textit{not}
+match the given regular expression.
+For example, the following command eliminates all comments
+from the file \texttt{polska24.krn}:
+
+\par 
+
+\texttt{grep -v '\^{}!' polska24.krn}
+
+
+\par 
+Similarly, the following command eliminates all whole-note rests:
+
+\par 
+
+\texttt{grep -v 1r *}
+
+
+
+\par 
+The
+\textbf{-v}
+option is especially convenient in pipelines.
+For example, the following command identifies all those files
+whose instrumentation includes a cornet but not a trumpet:
+
+\par 
+
+\texttt{grep '!!!AIN.*cornt' * | grep -v 'tromp'}
+
+
+
+\par 
+The following command identifies those works in compound meters
+that are not also quadruple meters:
+
+\par 
+
+\texttt{grep '!!!AMT.*compound' * | grep -v 'quadruple'}
+
+
+
+\par 
+Similarly, the following command identifies those notes that
+begin a phrase, but are not rests.
+
+\par 
+
+\texttt{grep '\^{}\{' * | grep -v r}
+
+
+
+\subsection*{German, French, Italian, and Neapolitan Sixths}
+
+\par 
+In conjunction with the
+\textbf{solfa}
+command,
+\textbf{grep}
+can be used to search for various types of special chords.
+Suppose, for example, that we wanted to identify occurrences of
+augmented sixth chords.
+An augmented sixth chord is characterized by an augmented sixth
+interval occurring between the lowered sixth scale-degree and
+the raised fourth scale-degree.
+In
+Chapter 4,
+we saw that the
+\textbf{solfa}
+command represents pitches with respect to an encoded tonic pitch.
+In the
+\texttt{**solfa}
+representation, the lowered sixth and raised fourth
+degrees will be represented as \texttt{6-} and \texttt{4+} respectively.
+First we translate the input to the
+\texttt{**solfa}
+representation,
+and then we search for records matching the appropriate regular expression:
+
+\par 
+
+\texttt{solfa input | grep '6-.*4+'}
+
+
+\par 
+Notice that the expression `\texttt{6-.*4+}' presumes that
+the lowered sixth degree is lower in pitch than the raised fourth degree.
+For augmented sixth chords, this is a reasonable presumption.
+In the unlikely situation that the raised fourth degree is
+lower in pitch than the lowered sixth degree, we would need to also search
+for the expression `\texttt{4+.*6-}'.
+Alternatively, we could use two separate
+\textbf{grep}
+commands, eliminating the constraint of order:
+
+\par 
+
+\texttt{solfa input | grep '6-' | grep '4+'}
+
+
+\par 
+Augmented sixth chords can be further classified as either
+German, French, or Italian sixths.
+The German sixth contains the lowered mediant whereas the French sixth
+contains the supertonic pitch;
+the Italian sixth contains neither:
+
+\par 
+
+\texttt{solfa input | grep '6-.*4+' | grep '3-'}		\# German sixth
+\\
+\texttt{solfa input | grep '6-.*4+' | grep '2'}		\# French sixth
+\\
+\texttt{solfa input | grep '6-.*4+' | grep -v '[23]'}	\# Italian sixth
+
+
+\par 
+A similar approach can be used to identify Neapolitan sixth chords.
+These chords are based on the lowered supertonic with the
+third of the chord (unaltered subdominant) in the bass.
+
+
+\par 
+
+\texttt{solfa input | grep '4[\^{}-+].*2-' | grep '6-'}	\# Neapolitan sixth
+
+
+\par 
+Depending on the key, Neapolitan chords are sometimes
+notated enharmonically as a raised tonic chord.
+Suppose we were looking for such enharmonically spelled Neapolitan chords:
+
+\par 
+
+\texttt{solfa input | grep '3+.*1+' | grep '5+'}
+
+
+
+\par 
+Occassionally, Neapolitan chords are missing the fifth of the chord
+(the lowered sixth degree of the scale).
+We might search for an example of such a chord:
+
+\par 
+
+\texttt{solfa input | grep '2-' | grep '4' | grep -v '6-'}
+
+
+
+\subsection*{AND-Searches Using the \textit{xargs} Command}
+
+\par 
+In some cases, we want to identify those files that match
+two entirely different patterns (in different records).
+Recall that the
+\textbf{-l}
+option causes
+\textbf{grep}
+to output the
+\textit{filename}
+rather than the matching record.
+If we could pass along these file names to another
+\textbf{grep}
+command, we could search those same files for yet another pattern.
+
+
+\par 
+The UNIX
+\textbf{xargs}
+command provides a useful way of transferring the output from one
+command to be used as final arguments
+for a subsequent command.
+For example, the following command takes each file whose opus title
+contains the word \texttt{Liebe} and counts the number of phrases.
+
+\par 
+
+\texttt{grep -l '!!!OTL:.*Liebe' * | xargs grep -c '\^{}\{'}
+
+
+\par 
+In this case the
+\textbf{grep -l}
+command outputs a list of names of files containing the string
+\texttt{Liebe} in an OTL reference record.
+The
+\textbf{xargs}
+command causes these filenames to be appended to the end of the following
+\textbf{grep}
+command.
+The
+\textbf{grep -c}
+command will thus be applied only to those files already identified by
+the previous
+\textbf{grep}
+as containing \texttt{Liebe} in the title.
+
+
+\par 
+A set of such pipelines can be used to answer more sophisticated
+questions.
+For example, are drinking songs more apt to be in triple meter?
+
+\par 
+
+\texttt{grep -l '!!!AMT.*triple'  *   | xargs grep -l '!!!AGN.*Trinklied'}
+\\
+\texttt{grep -l '!!!AMT.*duple'   *   | xargs grep -l '!!!AGN.*Trinklied'}
+\\
+\texttt{grep -l '!!!AMT.*quadruple' * | xargs grep -l '!!!AGN.*Trinklied'}
+
+
+
+\par 
+Similarly, the following commands determine whether files whose
+titles contain the word
+\textit{death}
+are more apt to be in minor keys:
+
+\par 
+
+\texttt{grep -li '!!!OTL.*death' * | xargs grep -c '\^{}$\backslash$*[a-g][\#-]*:'}
+\\
+\texttt{grep -li '!!!OTL.*death' * | xargs grep -c '\^{}$\backslash$*[A-G][\#-]*:'}
+
+
+
+\par 
+Note that the
+\textbf{xargs}
+command can be used again and again to
+continue propagating file names as arguments to subsequent searches.
+For example, the following command outputs the key signatures
+for all works originating from Africa that are written
+in 3/4 meter:
+
+\par 
+
+\texttt{grep -l '!!!ARE.*Africa' * | xargs grep -l '\^{}$\backslash$*M3/4' $\backslash$
+
+| xargs grep '\^{}$\backslash$*k$\backslash$['}
+
+
+
+
+\par 
+Similarly, the following command outputs the names of all files in
+the current directory that encode 17th century organ works containing
+passages in 6/8 meter:
+
+\par 
+
+\texttt{grep -l '!!!ODT.*16[0-9][0-9]/' | xargs grep -l $\backslash$
+
+ '!!!AIN.*organ' | xargs grep -l '$\backslash$*M6/8'}
+
+
+
+
+\par 
+Using the
+\textbf{-L}
+option allows us to form even more complex criteria by excluding
+certain works.
+For example, the following variation of the above command outputs the
+names of all files in the current directory that encode 17th century organ
+works that do not contain passages in 6/8 meter:
+
+\par 
+
+\texttt{grep -l '!!!ODT.*16[0-9][0-9]/' | xargs grep -l $\backslash$
+
+ '!!!AIN.*organ' | xargs grep -L '$\backslash$*M6/8'}
+
+
+
+
+\subsection*{OR-Searches Using the \textit{grep -f} Command}
+
+\par 
+In effect, the above pipelines provide logical \textbf{AND}
+structures:
+e.g. identify works composed in the 17th century AND written for organ AND
+containing a passage in 6/8 meter.
+The
+\textbf{-f}
+option for
+\textbf{grep}
+provides a way of creating logical \textbf{OR} searches.
+With the
+\textbf{-f}
+option, we specify a file containing the patterns being sought.
+For example, we might create a file called \texttt{criteria}
+containing the following three regular expressions:
+
+\par 
+
+\texttt{!!!ODT.*16[0-9][0-9]/
+\\
+!!!AIN.*organ
+\\
+$\backslash$*M6/8}
+
+
+
+We would invoke
+\textbf{grep}
+as follows:
+
+\par 
+
+\texttt{grep -l -f criteria *}
+
+
+\par 
+The
+\textbf{-f}
+option tells
+\textbf{grep}
+to fetch the file \texttt{criteria} and use the records in this
+file as regular expressions.
+A match is made if any of the regular expressions is found.
+
+
+\par 
+The output would consist of a list of all files in the current directory
+that encode works composed in the 17th century OR written for organ OR
+in 6/8 meter.
+The
+\textbf{-f}
+option is more typically used to specify several variations of the
+same idea.
+For example, suppose we were searching for D major
+triads in
+\texttt{**pitch}
+data.
+We could use a file containing the following regular expressions:
+
+\par 
+
+\texttt{[Dd].*[Ff]\#.*[Aa]
+\\
+[Dd].*[Aa].* [Ff]\#
+\\
+[Ff]\#.*[Aa].*[Dd]
+\\
+[Ff]\#.*[Dd].*[Aa]
+\\
+[Aa].*[Dd].*[Ff]\#
+\\
+[Aa].*[Ff]\#.*[Dd]}
+
+
+\par 
+Depending on the application,
+it may be easier to construct such pattern files than to use a
+lengthy pipeline.
+That is:
+
+\par 
+
+\texttt{grep -f Dmajor *}
+
+
+\par 
+may be less cumbersome than:
+
+\par 
+
+\texttt{grep [Dd] * | grep [Ff]\# | grep [Aa]}
+
+
+\par 
+The
+\textbf{-f}
+option can be combined with
+\textbf{-L}.
+For example, suppose we wanted to identify all works in the current
+directory that are not in the keys of C major, G major, B-flat major
+or D minor.
+Our regular expression file would contain the following regular expressions:
+
+\par 
+
+\texttt{\^{}$\backslash$*[CGd]:}
+\\
+\texttt{\^{}$\backslash$*B-:}
+
+
+\par 
+The corresponding command would be:
+
+\par 
+
+\texttt{grep -L -f criteria *}
+
+
+
+\par 
+Another way of thinking of the
+\textbf{-f}
+option is that it allows us to define equivalences.
+Consider, for example, the task of counting all of the notes in a
+\texttt{**kern} melody that belong to a particular whole-tone pitch set.
+Let's create two files, one called \texttt{whole1} and the
+other called \texttt{whole2}.
+The file \texttt{whole1} might contain the following regular expressions:
+
+\par 
+
+\\
+\texttt{[Cc]([\^{}-\#Cc]|\$)
+\\
+[Dd]([\^{}-\#Dd]|\$)
+\\
+[Ee]([\^{}-\#Ee]|\$)
+\\
+[Ff]\#([\^{}\#]|\$)
+\\
+[Gg]-([\^{}-]|\$)
+\\
+[Gg]\#([\^{}\#]|\$)
+\\
+[Aa]-([\^{}-]|\$)
+\\
+[Aa]\#([\^{}\#]|\$)
+\\
+[Bb]-([\^{}-]|\$)}
+
+
+\par 
+Notice that the regular expressions have been carefully defined.
+The first regular expression defines a pattern consisting of
+either an upper- or lower-case letter `C' followed either by
+a character that is neither a sharp (\#) nor a flat (-) nor another letter `C',
+nor is followed by the end of the line (\$).
+
+\par 
+Recall that parenthesis grouping (...) is part of the
+\textit{extended}
+regular expression syntax.
+Therefore, we should use the
+\textbf{egrep}
+rather than the
+\textbf{grep}
+command with the above expressions.
+We can count the number of notes in a monophonic \texttt{**kern}
+input that belong to this whole-tone set:
+
+\par 
+
+\texttt{egrep -c -f whole1 debussy}
+
+
+\par 
+If the file \texttt{whole2} contains regular expressions for the
+complementary pitch set, we could similarly count the number of
+pitches that belong to this alternative set:
+
+\par 
+
+\texttt{egrep -c -f whole2 debussy}
+
+
+
+
+\subsection*{Reprise}
+
+\par 
+The
+\textbf{grep}
+command is usually thought of as a way to find particular patterns
+in a file or input stream.
+However, the various options for
+\textbf{grep}
+(such as -v, -l, and -L) allow
+\textbf{grep}
+to be used for other purposes.
+It can be used to isolate data, to count occurrences of patterns,
+to eliminate unwanted lines, to identify files for processing,
+and to avoid files that contain certain information.
+
+\par 
+We have seen how the
+\textbf{xargs}
+command can be used to carry out \textbf{AND}-searches where
+each work must conform to multiple criteria.
+We have also seen how the
+\textbf{-f}
+option for
+\textbf{grep}
+can be used to permit \textbf{OR}-searches where a work needs to
+conform only to one of a set of possible criteria.
+
+\par 
+Although this chapter has focussed principally on the
+\textbf{grep}
+command, the ensuing chapters will show that regular expressions
+are used by a wide variety of commands.
+In
+Chapter 33,
+many more powerful examples will be discussed in
+conjunction with the
+\textbf{find}
+command.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

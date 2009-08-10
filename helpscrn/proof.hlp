@@ -1,0 +1,24 @@
+
+PROOF     : Check syntax of **kern file.
+
+     This command detects syntactical errors and other problems in **kern-
+     encoded files.  It checks for a variety of errors and problems including:
+     inconsistent measure numbers, incoherent pitches/accidentals, incoherent
+     durations, improper ornaments, inconsistent phrase, slur, or tie markings,
+     measure durations not matched with the meter, and improper multiple-stops.
+
+     In addition, PROOF warns of uncoded changes of meter, material encoded
+     following double barlines, files without double barlines, the presence
+     of identical consecutive measures, missing cautionary accidentals, and
+     missing meter, tempo, key, or key signature declarations.
+
+Syntax:
+
+     proof [-w] [inputfile ...]
+
+Options:
+
+     -w    : suppress warning messages
+
+  Refer to reference manual for further details.
+

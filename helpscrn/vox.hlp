@@ -1,0 +1,24 @@
+
+VOX       : Determine number of simultaneously active pitches.
+
+     This command calculates the number of tones sounding together at
+     successive moments in time.  It outputs a single Humdrum **vox# spine
+     where successive integers indicate the total number of concurrently
+     sounding pitches for each data record.  Note that null tokens are
+     interpreted as continuations of the previous non-null data token in
+     the spine.
+
+Inputs processed:
+
+     **cbr,     **cents,   **cocho,   **deg,     **degree,  
+     **freq,    **kern,    **pc,      **pitch,   **semits,
+     **solfa,   **solfg,   **specC,   **Tonh
+
+Syntax:
+
+     vox [inputfile ...]
+
+Options:    None.
+
+  Refer to reference manual for further details.
+

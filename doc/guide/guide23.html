@@ -1,0 +1,1075 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 23</TITLE>
+<!-- Chapter 23 (Rhythm) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:15:34 EST 2000">
+<meta name="description" content="Chapter 23 (Rhythm) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<body>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<br>
+
+<H1>Chapter23</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide22.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide24.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Rhythm</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+The subject of rhythm touches on nearly every aspect of music.
+Musical elements such as pitch, harmony, and dynamics
+can all be regarded from the point-of-view of temporal
+patterns of events.
+A number of complex tasks arise from rhythm-related
+In this chapter, two rhythm-related tools are introduced:
+<A HREF="commands/dur.html"><b>dur</b></A>
+and
+<A HREF="commands/metpos.html"><b>metpos</b></A>.
+</P>
+<A NAME="The_**recip_Representation">
+<H2>The <i>**recip</i> Representation</H2>
+</P>
+<P>
+For many types of processing tasks it is helpful to have a
+representation that encodes rhythmic information only.
+The
+<A HREF="representations/recip.rep.html"><code><big>**recip</big></code></A>
+representation is simply a subset of
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+that excludes all information apart from the nominal note durations
+and common system barlines.
+In addition, <code><big>**recip</big></code> distinguishes rests from notes by
+including the `<code><big>r</big></code>' signifier.
+Without an accompanying `<code><big>r</code></big>' a duration is assumed to pertain
+to a note.
+</P>
+<P>
+Generating <code><big>**recip</big></code> data from <code><big>**kern</big></code> is straightforward
+using
+<A HREF="commands/humsed.html"><b>humsed</b></A>.
+For a single-spine input, the following command will make the
+translation:
+</P>
+<P>
+<blockquote>
+<code><big>humsed '/^[^=]/s/[^0-9.r ]//g; s/^$/./' input.krn \
+<blockquote>
+| sed 's/\*\*kern/**recip/'</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+The first
+<b>humsed</b>
+substitution eliminates all data other than the numbers 0 to 9,
+the period, the lower-case <code><big>r</big></code>, and the space (for multiple-stops).
+Barlines remain untouched in the output.
+The second
+<b>humsed</b>
+substitution changes any empty lines to null data tokens;
+this might be necessary in the case of grace notes.
+The ensuing
+<b>sed</b>
+command is used simply to change the exclusive interpretation
+from <code><big>**kern</big></code> to <code><big>**recip</big></code>.
+</P>
+<P>
+A simple type of processing might entail creating an inventory
+of rhythmic patterns.
+Suppose we wanted to determine the most common rhythmic pattern
+spanning a measure.
+Using a monophonic <code><big>**recip</big></code> input, we could use
+<A HREF="commands/context.html"><b>context</b></A>
+to amalgamate the appropriate data tokens:
+</P>
+<P>
+<blockquote>
+<code><big>context -b ^= -o ^= input.recip | rid -GLId | sort \
+<blockquote>
+| uniq -c | sort -nr</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+The output for the combined voices of Bach's two-part
+Invention No. 5 shows just seven patterns.
+The most characteristic patterns are the second one:
+<code><big>8r 16 16 8 8 4 4</big></code> and the
+fourth one:
+<br>
+<code><big>8 16 16 8 8 4 4</big></code>.
+<blockquote><TABLE>
+<TR><TD><code><big>30</TD><TD>16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16</TD></TR>
+<TR><TD>12</TD><TD>8r 16 16 8 8 4 4</TD></TR>
+<TR><TD>11</TD><TD>8 8 8 8 16 16 16 16 8 8</TD></TR>
+<TR><TD>8</TD><TD>8 16 16 8 8 4 4</TD></TR>
+<TR><TD>1</TD><TD>8 8 8 8 2</TD></TR>
+<TR><TD>1</TD><TD>8 32 32 32 32 4 2</TD></TR>
+<TR><TD>1</TD><TD>4 4 16r 16 16 16 16 16 16 16</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<A NAME="The_dur_Command">
+<H2>The <i>dur</i> Command</H2>
+</P>
+<P>
+The
+<A HREF="commands/dur.html"><b>dur</b></A>
+command produces
+<A HREF="representations/dur.rep.html"><code><big>**dur</big></code></A>
+output from either a <code><big>**kern</big></code>
+or <code><big>**recip</big></code> input.
+The <code><big>**dur</big></code> representation scheme consists simply of
+the elapsed duration of notes and rests, expressed in seconds.
+The following example shows a simple <code><big>**dur</big></code> representation
+(right spine) with a corresponding <code><big>**kern</big></code> input:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD>**dur</TD></TR>
+<TR><TD>*</TD><TD>*MM60</TD></TR>
+<TR><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD>12g</TD><TD>0.3333</TD></TR>
+<TR><TD>12g</TD><TD>0.3333</TD></TR>
+<TR><TD>12g</TD><TD>0.3333</TD></TR>
+<TR><TD>4g</TD><TD>1.0000</TD></TR>
+<TR><TD>4r</TD><TD>1.0000r</TD></TR>
+<TR><TD>8g</TD><TD>0.5000</TD></TR>
+<TR><TD>8g</TD><TD>0.5000</TD></TR>
+<TR><TD>4g</TD><TD>1.0000</TD></TR>
+<TR><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+As in the case of <code><big>**recip</big></code>,
+the <code><big>**dur</big></code> representation designates rests via
+the lower-case <code><big>r</big></code> and uses the common system for barlines.
+Notice that <code><big>**dur</big></code> assumes a metronome indication of
+quarter-note equals 60 beats per minute if no other metronome
+marking is given.
+</P>
+<P>
+Suppose that we wanted to estimate the total duration of some monophonic
+passage (ignoring rubato).
+We can do this by translating the score to <code><big>**dur</big></code>,
+eliminating everything but notes and rests,
+and sending the output to the
+<b>stats</b>
+command:
+</P>
+<P>
+<blockquote>
+<code><big>dur -d inputfile.krn | rid -GLId | grep -v '^=' | stats</big></code>
+</blockquote>
+</P>
+<P>
+The
+<b>-d</b>
+option for
+<b>dur</b>
+suppresses the outputting of duplicate durations arising
+from multiple-stops.
+Note that outputs from
+<b>dur</b>
+will adapt to any changes of metronome marking found in the input,
+so if the work accelerates the durations will be reduced
+proportionally.
+</P>
+<A NAME="total_duration">
+<P>
+The
+<b>-M</b>
+option will over-ride any metronome markings found in the input
+stream.
+For example, if we wanted to estimate the duration of a monophonic
+passage for a metronome marking of 72 quarter-notes per minute
+we could use the command:
+</P>
+<P>
+<blockquote>
+<code><big>dur -M 72 -d input.krn | rid -GLId | grep -v '^=' | stats</big></code>
+</blockquote>
+</P>
+<A NAME="trumpet_duration">
+<P>
+Of course, the duration of a passage is not the same as
+the length of time a given instrument sounds.
+Suppose, for example, that we wanted to compare the duration
+of trumpet activity in the final movements of Beethoven's symphonies.
+We need to make a distinction between the duration of notes
+and the duration of rests.
+Since the duration values for rests are distinguished by the
+trailing letter `r', we can use
+<b>grep -v</b>
+to eliminate all rest tokens.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*Itromp' inputfile.krn | dur -d | rid -GLId \
+<blockquote>
+| grep -v '^=' | grep -v r | stats</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+The
+<A HREF="commands/dur.html"><b>dur</b></A>
+command provides a
+<b>-e</b>
+option that allows the user to echo specified signifiers in the output.
+The
+<b>-e</b>
+option is followed by a regular expression indicating what patterns
+are to be passed to the output.
+This option allows us to "mark" notes of special interest.
+For example, suppose we wanted to determine the longest duration
+note for which Mozart had marked a staccato.
+</P>
+<P>
+<blockquote>
+<code><big>dur -e \' inputfile | rid -GLId | grep \' | sed 's/\'//' \
+<blockquote>
+| stats</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Longest_Staccato">
+<P>
+The
+<b>-e</b>
+option ensures that <code><big>**kern</big></code> staccato marks (') are passed along
+to the output.
+The
+<A HREF="commands/rid.html"><b>rid</b></A>
+command eliminates everything but Humdrum data records.
+Then
+<b>grep</b>
+is used to isolate only those notes containing a staccato mark.
+The
+<b>sed</b>
+script is used to eliminate the apostrophe, and finally the numbers
+are passed to the
+<b>stats</b>
+command.
+The <code><big>max</big></code> value from
+<b>stats</b>
+will identify the duration (in seconds) of the longest note
+marked staccato.
+</P>
+<A NAME="Ends_of_Phrases">
+<P>
+This same basic pipeline can be used for a variety of similar problems.
+Suppose, for example, that we want to determine whether
+notes at the ends of phrases tend to be longer than notes
+at the beginnings of phrases -- and if so, how much longer?
+In this case, we want to have
+<b>dur</b>
+echo phrase-related signifiers:
+</P>
+<P>
+<blockquote>
+<code><big>dur -e '{' inputfile | rid -GLId | grep '{' | sed 's/{//' \
+<blockquote>
+| stats</big></code>
+</blockquote>
+<br>
+<code><big>dur -e '}' inputfile | rid -GLId | grep '{' | sed 's/{//' \
+<blockquote>
+| stats</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Trill_Durations">
+<P>
+Similarly, do semitone trills tend to be shorter than whole-tone trills?
+</P>
+<P>
+<blockquote>
+<code><big>dur -e 't' inputfile | rid -GLId | grep 't' | sed 's/{//' \
+<blockquote>
+| stats</big></code>
+</blockquote>
+<br>
+<code><big>dur -e 'T' inputfile | rid -GLId | grep 'T' | sed 's/{//' \
+<blockquote>
+| stats</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Duration_of_Recapitulation">
+<P>
+Of course, we can also use
+<A HREF="commands/dur.html"><b>dur</b></A>
+in conjunction with
+<A HREF="commands/yank.html"><b>yank</b></A>
+in order to investigate particular musical segments or passages.
+How much shorter is the recapitulation compared with the
+original exposition?
+</P>
+<P>
+<blockquote>
+<code><big>yank -s 'Exposition' -r 1 inputfile | dur | rid -GLId \
+<blockquote>
+| grep -v '=' | stats</big></code>
+</blockquote>
+<br>
+<code><big>yank -s 'Recapituation' -r 1 inputfile | dur | rid -GLId \
+<blockquote>
+| grep -v '=' | stats</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Do initial phrases in Schubert's vocal works tend to be shorter than final
+phrases?
+</P>
+<P>
+<blockquote>
+<code><big>yank -m { -r 1 lied | dur | rid -GLId | grep -v ^= | stats</big></code>
+<br>
+<code><big>yank -m { -r $ lied | dur | rid -GLId | grep -v ^= | stats</big></code>
+</blockquote>
+</P>
+<P>
+How much longer is a passage if all the repeats are played?
+</P>
+<P>
+<blockquote>
+<code><big>thru inputfile | dur | rid -GLID | stats -o ^=</big></code>
+</blockquote>
+</P>
+<P>
+Recall that the
+<A HREF="commands/xdelta.html"><b>xdelta</b></A>
+command can be used to calculate numerical differences between
+successive values.
+If the input to
+<b>xdelta</b>
+is <code><big>**dur</big></code> duration information, then we can determine
+rates of change of duration.
+Most music exhibits lengthy passages of similar duration notes --
+as in a sequence of sixteenth notes.
+In French overtures, successive notes are often of highly contrasting
+durations (longer, very-short, long, etc.).
+Using
+<b>xdelta</b>
+we can identify such large changes of duration.
+For example, the following pipeline can be used to determine
+the magnitude of the
+<i>differences</i>
+between successive notes.
+</P>
+<P>
+<blockquote>
+<code><big>dur inputfile | xdelta -s ^= | rid -GLId | stats -o ^=</big></code>
+</blockquote>
+</P>
+<P>
+A small <code><big>mean</big></code> from
+<b>stats</b>
+will be indicative of works that tend to have smoother or less
+angular note-to-note rhythms.
+</P>
+<A NAME="Classifying_Durations">
+<H2>Classifying Durations</H2>
+</P>
+<P>
+We can use the
+<A HREF="commands/recode.html"><b>recode</b></A>
+command to classify durations into a finite set of categories.
+Suppose, for example, we wish to create a inventory of
+long/short rhythmic patterns.
+We might use
+<b>recode</b>
+with reassignments such as the following:
+<blockquote><TABLE>
+<TR><TD><code><big>>=0.4</TD><TD>long</TD></TR>
+<TR><TD>else</TD><TD>short</big></code></TD></TR>
+</TABLE></blockquote>
+For a monophonic input,
+we can create an inventory of (say) 3-note long/short
+rhythmic patterns as follows:
+</P>
+<P>
+<blockquote>
+<code><big>dur inputfile | recode -f reassign -i '**dur' -s ^= | \
+<blockquote>
+context -n 3 -o = | rid -GLId | sort | uniq -c | sort -n</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+A typical output might appears as follows:
+<blockquote><TABLE>
+<TR><TD><code><big>230</TD><TD>long long long</TD></TR>
+<TR><TD>3422</TD><TD>short short short</TD></TR>
+<TR><TD>114</TD><TD>long long short</TD></TR>
+<TR><TD>202</TD><TD>short short long</TD></TR>
+<TR><TD>38</TD><TD>long short long</TD></TR>
+<TR><TD>117</TD><TD>short long long</TD></TR>
+<TR><TD>194</TD><TD>long short short</TD></TR>
+<TR><TD>114</TD><TD>short long short</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Notice that we might do a similar inventory based on durational
+<i>differences</i>
+rather than on durations.
+For example, the
+<A HREF="commands/xdelta.html"><b>xdelta</b></A>
+command will allow us to distinguish short<i>er</i> note relationships
+from long<i>er</i> relationships.
+Our reassignment file would be as follows:
+<blockquote><TABLE>
+<TR><TD><code><big>==0</TD><TD>equal</TD></TR>
+<TR><TD>>0</TD><TD>shorter</TD></TR>
+<TR><TD><0</TD><TD>longer</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+And our processing would be:
+</P>
+<P>
+<blockquote>
+<code><big>dur inputfile | xdelta -s ^= | recode -f reassign \
+<blockquote>
+-i '**Xdur' -s ^= | context -n 2 -o = \
+<br>
+| rid -GLId | sort | uniq -c | sort -n</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="Using_yank_with_the_timebase_Command">
+<H2>Using <i>yank</i> with the <i>timebase</i> Command</H2>
+</P>
+<P>
+Recall that the
+<A HREF="commands/timebase.html"><b>timebase</b></A>
+command can be used to reformat an input so that each data
+record represents an equivalent elapsed duration.
+For example, in a 4/4 meter, the following command will
+format the output so that each full measure consists of precisely
+16 data records (not including the barline itself):
+</P>
+<P>
+<blockquote>
+<code><big>timebase -t 16 input.krn</big></code>
+</blockquote>
+</P>
+<P>
+Suppose we wanted to isolate all sonorities in a 4/4 work that occur
+only on the fourth beat of a measure.
+If we use <b>timebase</b>, we can ensure that the fourth beat
+always occurs a certain number of data records following the barline.
+For example, with the following command, the onset of the fourth beat will
+always occur 4 records follow the barline:
+</P>
+<P>
+<blockquote>
+<code><big>timebase -t 4 input.krn</big></code>
+</blockquote>
+</P>
+<P>
+We can now use
+<b>yank -m</b>
+to extract all appropriate sonorities.
+The "marker" is the barline and the "range" is 4 records
+following the marker, hence:
+</P>
+<P>
+<blockquote>
+<code><big>timebase -t 4 input.krn | yank -m ^= -r 4</big></code>
+</blockquote>
+</P>
+<P>
+Note that this process will extract only those notes that
+begin sounding with the onset of the fourth beat.
+Some notes may have begun prior to the fourth beat and yet are
+sustained into the beat.
+If we want to extract the
+<i>sounded</i>
+sonority, we can use the
+<A HREF="commands/ditto.html"><b>ditto</b></A>
+command.
+Begin by expanding the work with a timebase that ensures all
+notes are present.
+For a work whose shortest note is a 32nd note, we can use
+an appropriately small timebase value.
+Then use the
+<b>ditto</b>
+command to propagate all sustained notes forward through the successive
+sonorities:
+</P>
+<P>
+<blockquote>
+<code><big>timebase -t 32 input.krn | ditto -s ^=</big></code>
+</blockquote>
+</P>
+<P>
+Now we can yank the data records that are of interest.
+Notice that the
+<b>-r</b>
+(range) option for
+<b>yank -m</b>
+allows us to select more than one record.
+This might allow us, say, to extract only those sonorities that
+occur on off-beats.
+For example, the following command extracts all notes played
+by the horns during beats 2 and 4 in a 4/4 meter work:
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*Icor' input.krn | timebase -t 16 \
+<blockquote>
+| yank -m ^= -r 5-8,13-16</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="First_Waltz_Sonority">
+<P>
+In some cases, we would like to yank materials that do not
+themselves contain explicit durational information.
+Suppose, for example, that for a waltz repertory,
+we want to contrast those chord functions that tend to occur on the
+first beat with those that happen on the third beat.
+We will need to have an input that includes both a
+<A HREF="representations/harm.rep.html"><code><big>**harm</big></code></A>
+spine encoding the Roman numeral harmonic analysis,
+as well as one or more <code><big>**kern</big></code> or <code><big>**recip</big></code> spines
+that include the durational information.
+We can use the
+<b>timebase</b>
+command to expand the output accordingly -- cuing on the duration
+information provided by <code><big>**kern</big></code> or <code><big>**recip</big></code>.
+Having suitable expanded the input, we can dispense with
+everything but the <code><big>**harm</big></code> spine.
+For works in 3/4 meter, the following pipeline would provide
+an inventory of chords occurring on the first beat of each bar:
+</P>
+<P>
+<blockquote>
+<code><big>timebase -t 8 input | extract -i '**harm' \
+<blockquote>
+| yank -m ^= -r 1 | rid -GLId | sort | uniq -c | sort -n</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+And the following variation would provide an inventory of chords
+occurring on the third beat of each bar.
+(There are 6 eighth durations in a bar of 3/4, therefore
+the beginning of the third beat will coincide with the 5th eighth --
+hence the range <code><big>-r 5</big></code>:
+</P>
+<P>
+<blockquote>
+<code><big>timebase -t 8 input | extract -i '**harm' \
+<blockquote>
+| yank -m ^= -r 5 | rid -GLId | sort | uniq -c | sort -n</big></code>
+</blockquote>
+</blockquote>
+</P>
+<A NAME="The_metpos_Command">
+<H2>The <i>metpos</i> Command</H2>
+</P>
+<P>
+The
+<A HREF="commands/metpos.html"><b>metpos</b></A>
+command generates a
+<A HREF="representations/metpos.rep.html"><code><big>**metpos</big></code></A>
+output spine containing
+numbers that indicate the metric strength of each sonority.
+By "metric position" we mean the position of importance
+in the metric hierarchy for a measure.
+</P>
+<P>
+The highest position in any given metric hierarchy is given by the
+value `1'.
+This value is assigned to the first event at the beginning of each
+measure.
+In duple and quadruple meters, the second level in the metric hierarchy
+occurs in the middle of the measure and is assigned the output value `2'.
+(In triple meters,
+<b>metpos</b>
+assumes that the second and third beats in the measure are both assigned
+to the second level in the metric hierarchy.)
+All other metric positions in the measure (beats, sub-beats,
+sub-sub-beats, etc.) are assigned successively increasing numerical
+values according to their placement in the metric hierarchy.
+In summary, larger <code><big>**metpos</big></code> values signify sonorities of
+<i>lesser</i>
+metric significance.
+</P>
+<P>
+By way of illustration, consider the case of successive eighth notes
+in a 2/4 meter.
+The metric hierarchy values for successive eighths are: 1, 3, 2, 3.
+In the case of successive sixteenth notes in 2/4, the
+metric hierarchy values are: 1,4,3,4,2,4,3,4.
+In the case of 6/8 meter, successive sixteenth durations exhibit
+a metric hierarchy of: 1,4,3,4,3,4,2,4,3,4,3,4.
+</P>
+<P>
+For correct operation, the
+<b>metpos</b>
+command must be supplied with an input that has been formatted using the
+<A HREF="commands/timebase.html"><b>timebase</b></A>
+command.
+That is, each data record (ignoring barlines) must represent an
+equivalent duration of time.
+In addition,
+<b>metpos</b>
+must be informed of both the
+<i>meter signature</i>
+and the
+<i>timebase</i>
+for the given input passage.
+This information can be specified via the command line,
+however it is usually available in the input stream via appropriate
+tandem interpretations.
+</P>
+<P>
+The following extract from Bart&#243k's "Two-Part Study" No. 121 from
+<i>Mikrokosmos</i>
+demonstrates the effect of the
+<b>metpos</b>
+command.
+The two left-most columns show the original input;
+all three columns show the corresponding output from <b>metpos</b>:
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD><TD>**metpos</TD></TR>
+<TR><TD>*tb8</TD><TD>*tb8</TD><TD>*tb8</TD></TR>
+<TR><TD>=16</TD><TD>=16</TD><TD>=16</TD></TR>
+<TR><TD>*M6/4</TD><TD>*M6/4</TD><TD>*M6/4</TD></TR>
+<TR><TD>8Gn</TD><TD>8b-</TD><TD>1</TD></TR>
+<TR><TD>8A</TD><TD>8ccn</TD><TD>4</TD></TR>
+<TR><TD>8B-</TD><TD>8cc#}</TD><TD>3</TD></TR>
+<TR><TD>8cn</TD><TD>{8f#</TD><TD>4</TD></TR>
+<TR><TD>8c#}</TD><TD>8gn</TD><TD>3</TD></TR>
+<TR><TD>{8F#</TD><TD>8a</TD><TD>4</TD></TR>
+<TR><TD>8G</TD><TD>8b-</TD><TD>2</TD></TR>
+<TR><TD>8A</TD><TD>8ccn</TD><TD>4</TD></TR>
+<TR><TD>8B-</TD><TD>4b-</TD><TD>3</TD></TR>
+<TR><TD>8cn</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>8c#}</TD><TD>8fn}</TD><TD>3</TD></TR>
+<TR><TD>8r</TD><TD>8r</TD><TD>4</TD></TR>
+<TR><TD>=17</TD><TD>=17</TD><TD>=17</TD></TR>
+<TR><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD>8d</TD><TD>2r</TD><TD>1</TD></TR>
+<TR><TD>4.d</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>3</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>{2d_</TD><TD>8dd</TD><TD>2</TD></TR>
+<TR><TD>.</TD><TD>4.dd</TD><TD>4</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>3</TD></TR>
+<TR><TD>.</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>=18</TD><TD>=18</TD><TD>=18</TD></TR>
+<TR><TD>8d</TD><TD>{1dd_</TD><TD>1</TD></TR>
+<TR><TD>8A</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>8F#</TD><TD>.</TD><TD>3</TD></TR>
+<TR><TD>8E</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>8D</TD><TD>.</TD><TD>2</TD></TR>
+<TR><TD>8BB</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>8D</TD><TD>.</TD><TD>3</TD></TR>
+<TR><TD>8E}</TD><TD>.</TD><TD>4</TD></TR>
+<TR><TD>=19</TD><TD>=19</TD><TD>=19</TD></TR>
+<TR><TD>*M3/2</TD><TD>*M3/2</TD><TD>*M3/2</TD></TR>
+<TR><TD>{8F#</TD><TD>8dd</TD><TD>1</TD></TR>
+<TR><TD>8A</TD><TD>8ffn</TD><TD>4</TD></TR>
+<TR><TD>8c#</TD><TD>8aa</TD><TD>3</TD></TR>
+<TR><TD>8A</TD><TD>8ff</TD><TD>4</TD></TR>
+<TR><TD>8F#</TD><TD>8dd</TD><TD>2</TD></TR>
+<TR><TD>8A</TD><TD>8ff</TD><TD>4</TD></TR>
+<TR><TD>8F#</TD><TD>8dd</TD><TD>3</TD></TR>
+<TR><TD>8E</TD><TD>8ccn</TD><TD>4</TD></TR>
+<TR><TD>8D</TD><TD>8b-</TD><TD>2</TD></TR>
+<TR><TD>8BBn</TD><TD>8gn</TD><TD>4</TD></TR>
+<TR><TD>8D</TD><TD>8b-</TD><TD>3</TD></TR>
+<TR><TD>8E}</TD><TD>8cc</TD><TD>4</TD></TR>
+<TR><TD>=20</TD><TD>=20</TD><TD>=20</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Notice that
+<A HREF="commands/metpos.html"><b>metpos</b></A>
+adapts to changing meter signatures, and
+correctly distinguishes between metric accent patterns such as 6/4 (measure 16)
+and 3/2 (measure 19).
+</P>
+<P>
+The
+<A HREF="representations/metpos.rep.html"><code><big>**metpos</big></code></A>
+values provide additional ways of
+addressing various rhythmic questions.
+We might use
+<A HREF="commands/recode.html"><b>recode</b></A>
+for example, to recode the numerical outputs from
+<b>metpos</b>
+into a smaller set of discrete categories.
+For example, we might classify metric positions using the
+following reassignment file:
+<blockquote><TABLE>
+<TR><TD><code><big>==1</TD><TD>strong</TD></TR>
+<TR><TD>>=3</TD><TD>secondary</TD></TR>
+<TR><TD>else</TD><TD>weak</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The words `strong', `secondary', and `weak' can then be sought by
+<b>grep</b>
+or
+<b>yank -m</b>,
+allowing us to isolate points of particular metric stress.
+Since
+<b>metpos</b>
+adapts to changing meters, we can confidently process inputs
+that may contain mixtures of meters.
+</P>
+<A NAME="Changes_of_Stress">
+<H2>Changes of Stress</H2>
+</P>
+<A NAME="Weak_to_Strong_Approach">
+<P>
+Once again we can make use of
+<A HREF="commands/xdelta.html"><b>xdelta</b></A>
+to identify relationships between successive metric position values.
+Suppose we had a collection of Hungarian melodies and we wanted to
+determine how each degree is approached in terms of metric strength.
+That is, we would like to count the number of tonic pitches that
+are approached by a weak-to-strong context versus the number of
+tonic pitches approached by a strong-to-weak context.
+We also want similar measures for supertonic, mediant,
+subdominant, etc. scale degrees.
+</P>
+<P>
+This task involves creating an inventory where fourteen
+different items are possible:
+(1) tonic strong-to-weak, (2) tonic weak-to-strong,
+(3) supertonic, strong-to-weak, etc.
+A suitable inventory will involve creating two spines of
+information -- scale-degree and relative metric strength.
+</P>
+<P>
+Assuming that our Hungarian melodies encode key information,
+creating a
+<A HREF="representations/deg.rep.html"><code><big>**deg</big></code></A>
+spine is straightforward.
+Recall that the
+<b>-a</b>
+option for
+<A HREF="commands/deg.html"><b>deg</b></A>
+avoids distinguishing the direction of approach (from above or below):
+</P>
+<P>
+<blockquote>
+<code><big>deg -a magyar*.krn > magyar.deg</big></code>
+</blockquote>
+</P>
+<P>
+Creating a spine encoding relative metric strength will be more
+involved.
+First we need to expand our input according to the shortest note.
+We use
+<A HREF="commands/census.html"><b>census -k</b></A>
+to determine the shortest duration, and then expand our input
+using <b>timebase</b>.
+</P>
+<P>
+<blockquote>
+<code><big>census -k magyar*.krn</big></code>
+<br>
+<code><big>timebase -t 16 magyar*.krn > magyar.tb</big></code>
+</blockquote>
+</P>
+<P>
+Using
+<b>metpos</b>
+will allow us to create a spine with the metric position data.
+</P>
+<P>
+<blockquote>
+<code><big>metpos magyar.tb > magyar.mp</big></code>
+</blockquote>
+</P>
+<P>
+Note that
+<b>metpos</b>
+automatically echoes the input along with the new <code><big>**metpos</big></code> spine.
+At this point, the result might look as follows:
+<blockquote><TABLE>
+<TR><TD><code><big>!!!OTL: Graf Friedrich In Oesterraaich sin di Gassen sou enge</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>**kern</TD><TD><code><big>**metpos</TD></TR>
+<TR><TD><code><big>*ICvox</TD><TD><code><big>*</TD></TR>
+<TR><TD><code><big>*Ivox</TD><TD><code><big>*</TD></TR>
+<TR><TD><code><big>*M3/4</TD><TD><code><big>*M3/4</TD></TR>
+<TR><TD><code><big>*k[f#]</TD><TD><code><big>*</TD></TR>
+<TR><TD><code><big>*G:</TD><TD><code><big>*</TD></TR>
+<TR><TD><code><big>*tb16</TD><TD><code><big>*tb16</TD></TR>
+<TR><TD><code><big>{8g</TD><TD><code><big>2</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>4</TD></TR>
+<TR><TD><code><big>8b</TD><TD><code><big>3</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>4</TD></TR>
+<TR><TD><code><big>=1</TD><TD><code><big>=1</TD></TR>
+<TR><TD><code><big>8dd</TD><TD><code><big>1</TD></TR>
+<TR><TD><code><big>.</TD><TD><code><big>4</big></code></TD></TR>
+<TR><TD>etc.</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+We want to be able to say that the relationship between the
+first eighth-note G and the eighth-note B is "strong-to-weak"
+and that the relationship between the eighth-note B and the eighth-note D
+is "weak-to-strong."
+In order to procede we need to eliminate all of the data records that
+contain only a metpos value -- that is, there is no pitch present in the
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+spine.
+We can do this using <b>humsed</b>;
+we simply delete all lines that begin with a period character:
+</P>
+<P>
+<blockquote>
+<code><big>humsed '/^\./d' magyar.mp</big></code>
+</blockquote>
+</P>
+<P>
+The result is as follows:
+<blockquote><TABLE>
+<TR><TD><code><big>!!!OTL: Graf Friedrich In Oesterraaich sin di Gassen sou enge</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD><code><big>**kern</TD><TD><code><big>**metpos</TD></TR>
+<TR><TD><code><big>*ICvox</TD><TD><code><big>*</TD></TR>
+<TR><TD><code><big>*Ivox</TD><TD><code><big>*</TD></TR>
+<TR><TD><code><big>*M3/4</TD><TD><code><big>*M3/4</TD></TR>
+<TR><TD><code><big>*k[f#]</TD><TD><code><big>*</TD></TR>
+<TR><TD><code><big>*G:</TD><TD><code><big>*</TD></TR>
+<TR><TD><code><big>*tb16</TD><TD><code><big>*tb16</TD></TR>
+<TR><TD><code><big>{8g</TD><TD><code><big>2</TD></TR>
+<TR><TD><code><big>8b</TD><TD><code><big>3</TD></TR>
+<TR><TD><code><big>=1</TD><TD><code><big>=1</TD></TR>
+<TR><TD><code><big>8dd</TD><TD><code><big>1</big></code></TD></TR>
+<TR><TD>etc.</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Notice that the successive <code><big>**metpos</big></code> values will now
+allow us to characterize the changes in stress between successive notes:
+2 followed by 3 indicates a strong-to-weak change of metric position,
+3 followed by 1 indicates a weak-to-strong change of metric position.
+We can use
+<A HREF="commands/xdelta.html"><b>xdelta</b></A>
+to calculate the differences in metric position values:
+positive differences will indicate weak-to-strong changes
+and negative differences will indicate strong-to-weak changes.
+If both values have the same metric position value, then the
+successive notes hold equal positions in the metric hierarchy.
+Before using
+<b>xdelta</b>
+we need to isolate the <code><big>**metpos</code></big> spine using <b>extract</b>:
+</P>
+<P>
+<blockquote>
+<code><big>humsed '/^\./d' magyar.mp | extract -i '**metpos' \
+<blockquote>
+| xdelta -s ^=</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+The result is:
+<blockquote><TABLE>
+<TR><TD><code><big>!!!OTL: Graf Friedrich In Oesterraaich sin di Gassen sou enge</TD></TR>
+<TR><TD><code><big>**Xmetpos</TD></TR>
+<TR><TD><code><big>*</TD></TR>
+<TR><TD><code><big>*</TD></TR>
+<TR><TD><code><big>*M3/4</TD></TR>
+<TR><TD><code><big>*</TD></TR>
+<TR><TD><code><big>*</TD></TR>
+<TR><TD><code><big>*tb16</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>1</TD></TR>
+<TR><TD><code><big>=1</TD></TR>
+<TR><TD><code><big>-2</big></code></TD></TR>
+<TR><TD>etc.</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Now we can use
+<A HREF="commands/recode.html"><b>recode</b></A>
+to classify the changes of metric position according.
+Our reassignment file (named <code><big>reassign</big></code>):
+<blockquote><TABLE>
+<TR><TD><code><big>>0</TD><TD>strong-to-weak</TD></TR>
+<TR><TD><0</TD><TD>weak-to-strong</TD></TR>
+<TR><TD>==0</TD><TD>equal</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Appending the appropriate command:
+</P>
+<P>
+<blockquote>
+<code><big>humsed '/^\./d' magyar.mp | extract -i '**metpos' \
+<blockquote>
+| xdelta -s ^= | recode -f reassign -i '**Xmetpos'  -s ^= > magyar.xmp</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+Now we can assemble the resulting metric change spine with our original
+<A HREF="representations/deg.rep.html"><code><big>**deg</big></code></A>
+spine.
+Each data record will contain the scale degree in the first spine and
+the change of metric position data in the second spine.
+The final task is to create an inventory using
+<A HREF="commands/rid.html"><b>rid</b></A>,
+<b>sort</b> and <b>uniq</b>:
+</P>
+<P>
+<blockquote>
+<code><big>assemble magyar.deg magyar.xmp | rid -GLId | grep -v ^= \
+<blockquote>
+| sort | uniq -c</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+The final result will appear as below.
+The first output line indicates that there were three instances
+of a tonic pitch approached by a note of equivalent position in
+the metric hierarchy.
+The second line indicates that there were twenty-five instances
+of a tonic pitch approached by a note having a stronger metric position:
+<blockquote><TABLE>
+<TR><TD><code><big>3</TD><TD>1</TD><TD>equal</TD></TR>
+<TR><TD>25</TD><TD>1</TD><TD>strong-to-weak</TD></TR>
+<TR><TD>30</TD><TD>1</TD><TD>weak-to-strong</TD></TR>
+<TR><TD>3</TD><TD>2</TD><TD>equal</TD></TR>
+<TR><TD>14</TD><TD>2</TD><TD>strong-to-weak</TD></TR>
+<TR><TD>13</TD><TD>2</TD><TD>weak-to-strong</TD></TR>
+<TR><TD>1</TD><TD>3</TD><TD>equal</TD></TR>
+<TR><TD>39</TD><TD>3</TD><TD>strong-to-weak</TD></TR>
+<TR><TD>34</TD><TD>3</TD><TD>weak-to-strong</TD></TR>
+<TR><TD>3</TD><TD>4</TD><TD>equal</TD></TR>
+<TR><TD>26</TD><TD>4</TD><TD>strong-to-weak</TD></TR>
+<TR><TD>17</TD><TD>4</TD><TD>weak-to-strong</TD></TR>
+<TR><TD>13</TD><TD>5</TD><TD>equal</TD></TR>
+<TR><TD>49</TD><TD>5</TD><TD>strong-to-weak</TD></TR>
+<TR><TD>42</TD><TD>5</TD><TD>weak-to-strong</TD></TR>
+<TR><TD>1</TD><TD>6</TD><TD>equal</TD></TR>
+<TR><TD>13</TD><TD>6</TD><TD>strong-to-weak</TD></TR>
+<TR><TD>14</TD><TD>6</TD><TD>weak-to-strong</TD></TR>
+<TR><TD>3</TD><TD>7</TD><TD>strong-to-weak</TD></TR>
+<TR><TD>6</TD><TD>7</TD><TD>weak-to-strong</TD></TR>
+<TR><TD>1</TD><TD>7-</TD><TD>weak-to-strong</TD></TR>
+<TR><TD>3</TD><TD>r</TD><TD>equal</TD></TR>
+<TR><TD>10</TD><TD>r</TD><TD>strong-to-weak</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Instead of scale degree, any other Humdrum spine might be used.
+For example, if the input contained functional harmony data (**harm) then
+the output inventory would identify how particular chord functions tend
+to be approached.
+For example, we could establish whether the submediant chord is more
+likely to be approached in a strong-to-weak or weak-to-strong rhythmic context.
+Similarly, this same technique can be used to determine whether particular
+melodic or harmonic intervals tend to be approached using particular stress relationships.
+</P>
+<P>
+In addition, our input spine might also be transformed via the
+<b>context</b>
+command.
+Given a **harm spine, for example,
+<b>context</b>
+could be used to generate two-chord harmonic progressions.
+This would permit us to determine, for example, whether a specific progression such
+as <i>ii-V</i> tends to fall in strong-to-weak or weak-to-strong contexts.
+</P>
+<hr>
+<A NAME="Reprise">
+<A NAME="Synco">
+<H2>Reprise</H2>
+</P>
+<P>
+There are a vast number of issues raised in rhythm-related processing.
+In this chapter we have touched on a few of the more basic tasks.
+These include identifying the durations of various passages using <b>dur</b>;
+classifying and contextualizing durations using
+<A HREF="commands/recode.html"><b>recode</b></A>
+and
+<A HREF="commands/context.html"><b>context</b></A>;
+isolating particular rhythmic moments using
+<A HREF="commands/timebase.html"><b>timebase</b></A>
+and
+<A HREF="commands/yank.html"><b>yank</b></A>
+<b>-m</b>;
+determining relative metric positions using
+<A HREF="commands/metpos.html"><b>metpos</b></A>;
+and characterizing metric syncopation using
+<A HREF="commands/synco.html"><b>synco</b></A>.
+</P>
+<P>
+Processing data that does not explicitly contain duration-related
+information (such as <code><big>**harm</big></code> or <code><big>**deg</big></code>) often requires
+some preparation.
+It is often useful to maintain a coordinated file
+where the spines of interest are linked with duration-related
+spines that assist in processing.
+</P>
+<P>
+One further topic related to rhythm remains to be discussed.
+The
+<b>accent</b>
+command allows the user to distinguish notes according to
+their estimated perceptual importance.
+We will consider
+<b>accent</b>
+in
+<A HREF="guide31.html">Chapter 31.</A>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide24.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide22.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

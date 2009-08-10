@@ -1,0 +1,24 @@
+
+SOLFA     : Converts various pitch representations to tonic solfa syllables.
+
+     This command translates pitch, French solfege, German Tonhoehe, or **kern
+     pitch representations to tonic solfa syllables (do, re, mi, fa, so, etc.).
+     Chromatic solfa syllables are also supported (e.g. di, ri, se, te, etc.).
+     Key contexts must be indicated in the input via key tandem interpretations.
+
+Inputs processed:
+
+     **kern,  **pitch,  **solfg,  **Tonh
+
+Syntax:
+
+     solfa [-tx] [inputfile ...]
+
+Options:
+
+     -t     : suppresses outputting of all but first note for groups of
+              tied notes
+     -x     : suppresses outputting of non-solfa data
+
+  Refer to reference manual for further details.
+

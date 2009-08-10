@@ -1,0 +1,12 @@
+!! "humdrum: ERROR 4: Trailing tab in line "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Test file for error number 4
+!! Trailing tab in exclusive interp.
+**ex	**ex	**ex					
+!! Trailing tab in data record
+a	b	c	
+!! Trailing tab in local comment
+!local	!local	!local	
+!! Trailing tab in global comment (should be OK)
+!! Global comment	
+*-	*-	*-	

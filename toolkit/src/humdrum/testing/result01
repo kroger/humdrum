@@ -1,0 +1,3 @@
+humdrum: ERROR 1: Record containing add-spine indicator has not been
+                  followed by exclusive interpretation for that spine
+                  in line 7, file test01.

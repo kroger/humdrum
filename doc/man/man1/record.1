@@ -1,0 +1,216 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH record 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +12
+.ti -12
+\fBrecord\fR  --  record live MIDI input in Humdrum \f(CR**MIDI\fR data format
+.in -12
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBrecord\fR  [\fB-i \fIhex\fR]  [\fB-q \fIn\fR]  [ > \fIoutputfile.hmd\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "record"
+command captures a stream of input MIDI data and translates this data into
+a simple Humdrum \f(CR**MIDI\fR representation.
+Input MIDI data is obtained through a Roland MPU-401 (or compatible)
+interface -- usually connected in turn to a MIDI synthesizer.
+The obtained \f(CR**MIDI\fR data can be manipulated using several Humdrum tools,
+or it can be played-back using the
+.B "perform"
+command.
+.sp 1
+.sp 1
+Recording commences as soon as the command is invoked.
+Recording ceases when any ASCII key is pressed -- with the exception
+of the space bar.
+Only MIDI key-press activity (including after-touch) information is recorded.
+MIDI system-exclusive instructions and other non-key-press data
+are not recorded.
+.sp 1
+.sp 1
+Each MIDI channel is represented using a separate Humdrum spine.
+New spines are added automatically during the recording -- in response
+to additional activity on new MIDI channels.
+Once a MIDI channel becomes active, the corresponding Humdrum spine continues
+to be output until the recording is terminated.
+.sp 1
+.sp 1
+At any time during the recording process, pressing the space bar
+will insert a \f(CR**MIDI\fR barline data token in the output stream.
+Measure numbers are incremented automatically beginning with measure 1.
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "record"
+command should be given names with the distinguishing `.hmd' extension.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "record"
+command provides the following option:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the
+	  command syntax
+\fB-i \fIhex\fR	assign MIDI interface input/output address
+	  to \fIhex\fR
+\fB-q \fIn\fR	invokes quantizing using a temporal window of
+	  \fIn\fR clock ticks
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The
+.B "-q"
+option invokes a quantizing function where timing information is
+rounded-off to a specified level of resolution.
+This option may be used to eliminate expressive timing information
+and assist in producing a canonical duration representation.
+The degree of quantizing is specified by the \fIn\fR argument to the
+.B "-q"
+option,
+where \fIn\fR represents the quantizing window in MIDI clock ticks.
+Recorded events occurring within this window are deemed to be
+simultaneous, and are recorded as Humdrum double-stops in the output.
+.sp 1
+.sp 1
+The
+.B "-i"
+option is used to specify the input/output address of the MIDI card.
+The default address is `330.'
+The address is specified as a hexadecimal number.
+.in -2
+.sp 1
+.sp 1
+.SH "SAMPLE OUTPUT"
+.in +2
+The following examples illustrate how
+.B "record"
+may be used.
+A simple command invocation is:
+.sp 1
+.sp 1
+.in +2
+record
+.in -2
+.sp 1
+.sp 1
+Output \f(CR**MIDI\fR data may appears as follows:
+.in +2
+.sp 1
+.TS
+l.
+!! Data from the MPU-401 MIDI card.
+**MIDI
+*Ch1
+236/67/64
+12/-67/64
+10/67/66
+11/-67/64
+13/67/51
+12/-67/64
+14/63/72
+263/-63/64
+84/65/61
+15/-65/64
+10/65/55
+15/-65/64
+11/65/51
+23/-65/64
+12/62/58
+171/-62/64
+*-
+.TE
+.sp 1
+.in -2
+Using the quantizing option:
+.sp 1
+.sp 1
+.in +2
+record -q 10
+.in -2
+.sp 1
+.sp 1
+might produce output such as the following \f(CR**MIDI\fR data.
+Notice the frequent occurrence of multiple-stops
+(more than one note-instruction in the spine).
+.in +2
+.sp 1
+.TS
+l s
+l s
+l l.
+!! Data from the MPU-401 MIDI card.
+!! Quantizing set at 10 clock ticks.
+**MIDI
+*Ch1
+303/50/39
+13/-50/64 13/74/55
+23/76/43
+15/-74/64 15/78/58 15/-76/64
+22/69/35 22/-78/64 22/62/43
+18/-62/64 18/78/43 18/-69/64
+22/76/35
+14/-78/64 14/74/58
+15/-76/64 15/-74/64
+12/81/48 12/54/77
+17/-54/64 17/74/69 17/-81/64
+23/76/48
+19/78/66 19/-74/64 19/-76/64
+21/62/43 21/69/69 21/-78/64
+14/-62/64 14/78/51 14/-69/64
+25/76/58
+17/-78/64 17/74/74 17/-76/64
+15/-74/64
+*-
+.TE
+.sp 1
+.in -2
+.in -2
+.SH "DIAGNOSTICS"
+.in +2
+The program is implemented as a four-state finite state machine.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with a Roland MPU-401 or compatible MIDI interface.
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBcents\fR (1), \fBencode\fR (1), \fBencode.rc\fR (5),
+\fBkern\fR (1), \fB**MIDI\fR (2), \fBmidi\fR (1),
+\fBperform\fR (1),
+\fBpitch\fR (1),
+\fBsemits\fR (1), \fBsmf\fR (1) \fBsolfg\fR (1),
+\fBtonh\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "REFERENCES"
+.in +2
+Use of the Music Quest Inc. MIDI library functions is gratefully
+acknowledged.
+.in -2

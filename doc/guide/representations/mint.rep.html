@@ -1,0 +1,239 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Melodic Interval</TITLE>
+<!-- Documentation for the **mint Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **mint Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,melodic intervals,software,theory,analysis,systematic musicology,computer representation,**mint">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Melodic Intervals</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**mint</b>  --  melodic interval representation
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**mint</b>
+representation provides a means for characterizing sequential
+(melodic) pitch distances.
+The
+<b>**mint</b>
+representation permits the encoding of four types of data tokens:
+interval tokens, pitch offsets, rests, and barlines.
+</P>
+<P>
+Interval tokens consist of up to three component parts:
+(1) interval direction, (2) diatonic interval size, and (3) interval quality.
+The interval direction is signified by a leading plus sign (+)
+for ascending motion, or a leading minus sign (-) for descending motion.
+No special signifier is provided to denote unison motion.
+Note that interval direction information is optional, and so is
+not a mandatory aspect of the
+<b>**mint</b>
+representation.
+</P>
+<P>
+The diatonic interval size is signified by integer values --
+1 for unison, 2 for second, 3 for third, 11 for eleventh, and so on.
+</P>
+<P>
+Interval qualities are signified as follows:
+the upper-case letter `M' for major intervals,
+lower-case `m' for minor intervals,
+upper-case `P' for perfect,
+lower-case 'd' for diminished,
+upper-case `A' for augmented.
+Doubly-diminished and doubly-augmented intervals are represented
+by `dd' and `AA' respectively.
+Triply- and quadruply- diminished or augmented intervals are
+similarly represented by character repetition, e.g. `AAA'.
+Note that interval quality information is optional, and so is not
+a mandatory aspect of the
+<b>**mint</b>
+representation.
+</P>
+<P>
+The normal or canonical order for data elements in a
+<b>**mint</b>
+interval token is as follows:
+(1) direction of interval motion, (2) diatonic interval size,
+(3) interval quality.
+Note that more than one interval token may appear within Humdrum
+multiple-stops.
+</P>
+<P>
+Pitch offsets indicate initial or starting absolute pitches from
+which successive pitch intervals arise.
+Pitch offsets are optional and need not appear in a
+<b>**mint</b>
+representation.
+Pitch offsets are distinguished by square brackets.
+Within the square brackets appears a pitch designation using
+any one of the following pitch-related representations:
+<A HREF="kern.rep.html"><b>**kern</b></A>,
+<A HREF="pitch.rep.html"><b>**pitch</b></A>,
+<A HREF="solfg.rep.html"><b>**solfg</b></A>
+or
+<A HREF="Tonh.rep.html"><b>**Tonh</b></A>.
+For example, the following
+<b>**mint</b>
+pitch offsets are considered equivalent: `b' (<b>**kern</b>), `B5'
+(<b>**pitch</b>), `si5' (<b>**solfg</b>), `H5' (<b>**Tonh</b>).
+Where necessary, several pitch offsets may appear as a Humdrum multiple-stop.
+</P>
+<P>
+Rests are denoted by the lower-case letter `r'.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**mint</big></code>
+data should be given names with the distinguishing `.mnt' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**mint</b>
+mappings of signifiers and signifieds.
+</P>
+<P>
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>interval size signifiers; measure numbers</TD></TR>
+<TR><TD>A</TD><TD>augmented interval quality</TD></TR>
+<TR><TD>d</TD><TD>diminished interval quality</TD></TR>
+<TR><TD>M</TD><TD>major interval quality</TD></TR>
+<TR><TD>m</TD><TD>minor interval quality</TD></TR>
+<TR><TD>P</TD><TD>perfect interval quality</TD></TR>
+<TR><TD>r</TD><TD>rest</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>-</TD><TD>descending interval</TD></TR>
+<TR><TD>+</TD><TD>ascending interval</TD></TR>
+<TR><TD>;</TD><TD>measure pause</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**mint</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+The following example shows a <code><big>**pitch</big></code> spine on the left
+and a corresponding <code><big>**mint</big></code> spine on the right.
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD><b>INPUT</b></TD><TD></TD><TD></TD><TD><b>OUTPUT</b></TD></TR>
+<TR><TD>!! Wagner, Tristan Prelude</TD><TD></TD><TD></TD><TD>!! Wagner, Tristan Prelude</TD></TR>
+<TR><TD>**pitch</TD><TD></TD><TD></TD><TD>**mint</TD></TR>
+<TR><TD>*M6/8</TD><TD></TD><TD></TD><TD>*M6/8</TD></TR>
+<TR><TD>A3</TD><TD></TD><TD></TD><TD>[A3]</TD></TR>
+<TR><TD>=1</TD><TD></TD><TD></TD><TD>=1</TD></TR>
+<TR><TD>F4</TD><TD></TD><TD></TD><TD>+m6</TD></TR>
+<TR><TD>.</TD><TD></TD><TD></TD><TD>.</TD></TR>
+<TR><TD>E4</TD><TD></TD><TD></TD><TD>-m2</TD></TR>
+<TR><TD>=2</TD><TD></TD><TD></TD><TD>=2</TD></TR>
+<TR><TD>F3 B3 D#4 G#4</TD><TD></TD><TD></TD><TD>-M7 -P4 -m2 +M3</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum command produces <b>**mint</b> data as outputs:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD valign="top"><A HREF="../commands/mint.html"><b>mint</b></A></TD><TD>produces <b>**mint</b> output from <b>**pitch</b>, <b>**kern</b>, <b>**solfg</b>,
+or <b>**Tonh</b> input</TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**mint</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+<TR><TD>key signatures</TD><TD><code><big>*k[f#c#]</big></code></TD></TR>
+<TR><TD>key</TD><TD><code><big>*c#:</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**mint</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="hint.rep.html"><b>**hint</b></A>,
+<A HREF="../commands/hint.html"><b>hint</b></A>,
+<A HREF="../commands/kern.html"><b>kern</b></A>,
+<A HREF="../commands/mint.html"><b>mint</b></A>,
+<A HREF="solfg.rep.html"><b>**solfg</b></A>,
+<A HREF="Tonh.rep.html"><b>**Tonh</b></A>,
+<A HREF="../commands/xdelta.html"><b>xdelta</b></A>,
+<A HREF="../commands/ydelta.html"><b>ydelta</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

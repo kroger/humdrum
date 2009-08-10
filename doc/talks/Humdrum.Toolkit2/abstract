@@ -1,0 +1,15 @@
+
+The Humdrum Toolkit: Software Tools for Music Research
+
+                    David Huron
+
+     Humdrum provides a general-purpose set of software tools that
+facilitates research-related music applications.  Humdrum is able to
+represent a large range of music information, from French lute tablatures
+to Dagomba dance gestures.  In addition, the toolkit provides software
+for searching, extracting, classifying, labeling, comparing, and otherwise
+manipulating the musical data.  The Humdrum tools are increasingly used to
+build more specific applications software.  The presentation will include
+a demonstration of "Themefinder" -- a web-based "name-that-tune" search
+engine created using Humdrum tools.
+

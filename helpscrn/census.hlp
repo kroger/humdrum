@@ -1,0 +1,22 @@
+
+CENSUS    : Provides statistical information about a Humdrum file.
+
+     This command outputs independent counts of the total number of:
+     records (lines), comments, data records, data tokens, null tokens,
+     unique interpretations, and multiple-stops in a file.
+
+     With the -k option, CENSUS also outputs the following **kern stats:
+     number of note-notes, number of notes, longest & shortest notes,
+     highest & lowest notes, number of rests, maximum number of concurrent
+     notes, number of single and double barlines.
+
+Syntax:
+
+     census [-k] [file ...]
+
+Options:
+
+     -k   : provide additional statistics about any **kern spines in the input
+
+  Refer to reference manual for further details.
+

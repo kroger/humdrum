@@ -1,0 +1,76 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH tacet 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +11
+.ti -11
+\fBtacet\fR  -- reset MIDI channels to ensure silence
+.in -11
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBtacet\fR  [\fB-i \fIhex\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "tacet"
+command resets the MIDI output.
+It sends \(odall-notes-off\(cd commands on MIDI channels 1-16.
+The
+.B "tacet"
+command is useful if a MIDI application has terminated
+abnormally -- leaving one or more sounding notes (\(odciphers\(cd)
+on a MIDI device.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "tacet"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-i \fIhex\fR	assign MIDI input/output address to \fIhex\fR
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The
+.B "-i"
+option is used to specify the input/output address of the MIDI card.
+The default address is `330.'
+The address is specified as a hexadecimal number.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up.
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBmidreset\fR (1), \fBperform\fR (1), \fBsmf\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "REFERENCES"
+.in +2
+Use of the Music Quest Inc. MIDI library functions is gratefully
+acknowledged.
+.in -2

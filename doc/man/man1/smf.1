@@ -1,0 +1,139 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH smf 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +8
+.ti -8
+\fBsmf\fR  -- generate standard MIDI file from Humdrum \f(CR**MIDI\fR input
+.in -8
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +8
+.ti -8
+\fBsmf\fR   [\fB-t \fIn.n\fR]   [\fB-v \fIn\fR]   \fIinputfile.hmd\fB   >   \fIoutputfile.smf\fR
+.in -8
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "smf"
+command allows the user to create \(odstandard MIDI files\(cd
+from Humdrum \f(CR**MIDI\fR-format files.
+Standard MIDI files (SMFs) are industry-standard binary files that
+can be imported by a variety of MIDI applications software packages,
+including sequencer programs and several music notation packages.
+.sp 1
+.sp 1
+The
+.B "smf"
+command accepts as input Humdrum files containing \f(CR**MIDI\fR
+representations.
+All \f(CR**MIDI\fR spines present in the input stream are translated
+to SMF MIDI.
+Non-\f(CR**MIDI\fR spines are ignored and will not affect the SMF output.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "smf"
+command provides the following command-line options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-t \fIn.n\fR	set initial tempo to \fIn.n\fR times the default tempo
+\fB-v \fIn\fR	specify default MIDI key-velocity value (0-127)
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The performance tempo may be specified either in the command line
+or in the input Humdrum representation.
+The tempo may be specified on the command line by using the
+.B "-t"
+option.
+The
+.B "-t"
+must be followed by an integer or real value between 0.13 and 3.80.
+A value of 1.0 corresponds to the default tempo of 66 quarter-notes
+per minute.
+A value of 2.0 doubles the tempo, whereas a value of 0.5 halves
+the tempo.
+Alternatively, tempo may be specified using the \f(CR**MIDI\fR tandem
+interpretation for metronome marking (e.g. \f(CR*MM96\fR).
+Minimum and maximum tempi are 8 and 250 quarter-notes per minute respectively.
+Tempo specifications found in the input representation take precedence over
+any tempo specified on the command line.
+If no tempo information is available,
+.B "smf"
+assumes a default tempo of 66 quarter-notes per minute.
+.sp 1
+.sp 1
+The
+.B "-v"
+option allows the user to specify a key-velocity default.
+MIDI instruments normally treat key-velocity data as
+dynamic or accent information --
+thus higher key-velocity values are associated with accented notes.
+Permissible key-velocity values range between 0 and 127.
+The
+.B "-v"
+option can be used to set the default key-velocity for
+key-on commands with unspecified key-velocities.
+In the absence of the
+.B "-v"
+option, the default key-velocity value is 64.
+.in -2
+.sp 1
+.sp 1
+.SH "DIAGNOSTICS"
+.in +2
+The
+.B "smf"
+command produces MIDI Standard \(odformat \o'0/'\(cd files.
+When used in conjunction with the
+.B "midi"
+command, the
+.B "midi -d"
+option should be invoked in order to ensure that all notes are turned off.
+.in -2
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up.
+\s-1DOS\s+1 2.0 and up.
+\s-1OS/2\s+1.
+\s-1UNIX\s+1.
+.in -2
+.sp 1
+.sp 1
+.SH "PROPOSED MODIFICATIONS"
+.in +2
+The program should be modified to allow inputs to contain
+MIDI control codes and MIDI system exclusive codes.
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fB**MIDI\fR (2),
+\fBmidi\fR (1),
+\fBperform\fR (1),
+\fBrecord\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "REFERENCES"
+.in +2
+Use of the Music Quest Inc. MIDI library functions is gratefully
+acknowledged.
+.in -2

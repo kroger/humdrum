@@ -1,0 +1,184 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Problems</TITLE>
+<link href="../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+<BODY>
+
+<table id="header" width="100%" border="0" cellspacing="0">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<H1>HUMDRUM PROBLEMS</H1>
+</CENTER>
+<P>
+<CENTER>
+<B>This document describes some known problems with the Humdrum Toolkit.</B>
+</CENTER>
+</P>
+
+<H2>Version Differences</H2>
+<blockquote>
+<P>
+The Humdrum Toolkit has undergone continuous revision
+and augmentation since 1989.
+Each version of the Toolkit is identified by a version number.
+</P>
+<P>
+If you have installed the Humdrum Toolkit,
+you can determine which version you are using by typing
+the <b>humver</b> command.
+</P>
+</blockquote>
+<H2>Official and Unofficial Versions</H2>
+<blockquote>
+<P>
+Several versions of the Humdrum Toolkit exist,
+both <i>official releases</i> and <i>unofficial versions</i>.
+</P>
+<P>
+In creating each <i>Official Release</i> of the Humdrum Toolkit,
+I have maintained a policy that we
+release only software that has been
+tested on multiple operating systems.
+Test systems have included AIX,
+BSD Unix,
+HPUX,
+Linux,
+Solaris
+and DOS/MKS Toolkit.
+</P>
+<P>
+Although software development is ongoing,
+we tend to revise and develop the software on a single operating system (mostly Linux).
+Since operating systems differ slightly, it is not always clear
+that new or revised software will work properly on other systems.
+We realize that testing on other systems is essential;
+in particular, we try to be careful to avoid introducing new bugs when
+fixing old ones.
+</P>
+<P>
+Unfortunately, running test suites on the various operating systems
+is cumbersome and time-consuming, and no one has volunteered
+to help with this.
+Consequently, running test suites relies on external grants to hire
+a programmer.
+The last time such funds were available was 1994.
+</P>
+<P>
+This explains why the most current version of the Humdrum Toolkit is 2.6
+whereas the currently <i>available official release</i> is 1.0.
+</P>
+</blockquote>
+<H2>Differences Between Humdrum Release 1.0 and Versions 2.X</H2>
+<blockquote>
+<H4>Documentation</H4>
+<blockquote>
+<P>
+Please note that much of the Humdrum Toolkit documentation
+(including the
+<i>Humdrum Users Guide</i>)
+describes Humdrum version 2.0 or beyond.
+In some cases, the documentation describes how the tools
+<i>ought</i> to function rather than how they <i>actually</i>
+function.
+For example, the <b>yank</b> command does not yet handle
+the system of <i>nested section labels</i> described in the
+<i>Humdrum Users Guide</i>.
+</P>
+</blockquote>
+<H4>The "ditto" and "fill" Commands</H4>
+<blockquote>
+<P>
+The old Humdrum <b>fill</b> command was renamed
+<b>ditto</b> with Version 2.0.
+</P>
+</blockquote>
+</blockquote>
+<hr>
+<H2>Reporting Bugs</H2>
+<blockquote>
+<P>
+Please do not report software bugs until further notice.
+I have a list of known bugs, and most users simply
+tell me what I already know.
+Unfortunately, I can no longer handle the volume of e-mail
+that I receive related to Humdrum.
+</P>
+<P>
+Obviously, a good solution would be to post the known bugs on
+the web, so users could refer to the list before submitting
+a bug report.
+However, I don't currently have the time to do this.
+Sorry.
+</P>
+</blockquote>
+<P>
+</P>
+<A NAME="TIPS">
+<hr>
+<H2>Trouble-Shooting Tips</H2>
+<P>
+The table below lists some common errors associated with
+faulty or incomplete installation of the Humdrum Toolkit.
+<blockquote><TABLE>
+<TR><TD></TD></TR>
+<TR><TD><b>Error</b></TD><TD><b>Possible cause</b></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>=</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>Bad command or file name</big></code></TD><TD>Kornshell has not been installed or PATH</TD></TR>
+<TR><TD></TD><TD>has not been properly set.</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>glob: EXEC error</big></code></TD><TD>Install invoked from Windows without</TD></TR>
+<TR><TD></TD><TD>opening a shell.</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><i><program><code><big> not found</i></TD><TD>PATH not set correctly or command has</TD></TR>
+<TR><TD></TD><TD>not been copied into the Humdrum directory.</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><i><progname> <number><code><big>: -f: not found</i></TD><TD>AWK_VER shell variable not set.</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><i><progname> <number><code><big>: awkl: not found</i></TD><TD>"awkl" not in current PATH (DOS/OS2).</TD></TR>
+<TR><TD><i><progname> <number><code><big>: nawk: not found</i></TD><TD>"nawk" not in current PATH (UNIX).</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>awkl: script file "<<i>progname.awk>":</i></TD><TD>HUMDRUM shell variable not set, or PATH</TD></TR>
+<TR><TD><code><big>no such file or directory</big></code></TD><TD>not set correctly.</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>_main: memory allocation failure</big></code></TD><TD>Input file(s) too big to handle; try breaking</TD></TR>
+<TR><TD></TD><TD>the input into smaller segments (using</TD></TR>
+<TR><TD></TD><TD>`<i>yank</i>'), and process each segment separately.</TD></TR>
+<TR><TD></TD><TD>Assemble back together by using `<i>cat</i>'.</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>pc: compiler error ...</big></code></TD><TD>Humdrum `pc' command conflicts with a</TD></TR>
+<TR><TD></TD><TD>Pascal language compiler named `pc'.</TD></TR>
+<TR><TD></TD><TD>Rename Humdrum `pc.ksh' and `pc.awk' files.</TD></TR>
+<TR><TD></TD></TR>
+</TABLE></blockquote>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="index.html">
+<B>Humdrum Toolkit Home Page</B></A>
+</ul>
+
+</BODY>
+</HTML>

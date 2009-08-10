@@ -1,0 +1,185 @@
+
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Representation Reference - Number of Voices</TITLE>
+<!-- Documentation for the **vox# Humdrum representation; software for music research. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:31:10 EST 2000">
+<meta name="description" content="Documentation for the **vox# Humdrum representaton; software for music research.">
+<meta name="keywords" content="music research,number of voices,software,theory,analysis,systematic musicology,computer representation,**vox#">
+<meta name="robots" content="all">
+
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<CENTER>
+<H1>Humdrum Representation for Number of Active Voices</H1>
+</CENTER>
+<FONT color="DD00FF"><H3>REPRESENTATION</H3></FONT>
+<blockquote>
+<b>**vox#</b>  --  representation of number of concurrently active voices
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>DESCRIPTION</H3></FONT>
+<blockquote>
+The
+<b>**vox#</b>
+representation permits the representation of the number of notes
+sounding together at successive moments in time.
+The
+<b>**vox#</b>
+representation distinguishes just two types of data tokens:
+number-tokens, and barlines.
+Each
+<b>**vox#</b>
+number-token consists of a single integer value
+indicating the total number of simultaneously sounding voices.
+</P>
+<P>
+Barlines are represented using the "common system" for barlines
+--  see <A HREF="barlines.rep.html"><b>barlines</b></A>.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>FILE TYPE</H3></FONT>
+<blockquote>
+It is recommended that files containing predominantly <code><big>**vox#</big></code>
+data should be given names with the distinguishing `.vox' extension.
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>SIGNIFIERS</H3></FONT>
+<blockquote>
+The following table summarizes the
+<b>**vox#</b>
+mappings of signifiers and signifieds.
+<blockquote>
+<TABLE>
+<TR><TD>0-9</TD><TD>integer values; measure numbers</TD></TR>
+<TR><TD>=</TD><TD>barline; == double barline</TD></TR>
+<TR><TD>;</TD><TD>pause (for barlines)</TD></TR>
+</TABLE>
+<CENTER>
+<i>Summary of <b>**vox#</b> Signifiers</i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>EXAMPLES</H3></FONT>
+<blockquote>
+A sample document is given below:
+<blockquote>
+<code><big>
+<TABLE>
+<TR><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**vox#</TD></TR>
+<TR><TD>=18</TD><TD>=18</TD><TD>=18</TD><TD>=18</TD><TD>=18</TD><TD>=18</TD></TR>
+<TR><TD>8r</TD><TD>8B</TD><TD>4.g</TD><TD>8g</TD><TD>8dd)</TD><TD>4</TD></TR>
+<TR><TD>8BBn</TD><TD>8B</TD><TD>.</TD><TD>8dd</TD><TD>8gg</TD><TD>5</TD></TR>
+<TR><TD>8BB</TD><TD>8B</TD><TD>.</TD><TD>8dd</TD><TD>8gg</TD><TD>5</TD></TR>
+<TR><TD>8BB</TD><TD>8B</TD><TD>8d</TD><TD>8g</TD><TD>8ff</TD><TD>5</TD></TR>
+<TR><TD>=19</TD><TD>=19</TD><TD>=19</TD><TD>=19</TD><TD>=19</TD><TD>=19</TD></TR>
+<TR><TD>4C</TD><TD>4c</TD><TD>4e-</TD><TD>4c 4g 4ee-</TD><TD>4ee-</TD><TD>7</TD></TR>
+<TR><TD>4r</TD><TD>4r</TD><TD>4r</TD><TD>4r</TD><TD>4r</TD><TD>0</TD></TR>
+<TR><TD>=20</TD><TD>=20</TD><TD>=20</TD><TD>=20</TD><TD>=20</TD><TD>=20</TD></TR>
+<TR><TD>4AA-</TD><TD>4AA-</TD><TD>4a-</TD><TD>4a- 4f# 4cc</TD><TD>4a- 4f# 4cc</TD><TD>9</TD></TR>
+<TR><TD>8.r</TD><TD>8.r</TD><TD>8.r</TD><TD>8.r</TD><TD>8.r</TD><TD>0</TD></TR>
+<TR><TD>=21</TD><TD>=21</TD><TD>=21</TD><TD>=21</TD><TD>=21</TD><TD>=21</TD></TR>
+<TR><TD>*</TD><TD>*</TD><TD>*</TD><TD>*</TD><TD>*^</TD><TD>*</TD></TR>
+<TR><TD>4GG</TD><TD>4GG</TD><TD>4G</TD><TD>4g 4d 4bn</TD><TD>4G 4d 4bn</TD><TD>2gg;</TD><TD>10</TD></TR>
+<TR><TD>4r</TD><TD>4r</TD><TD>4r</TD><TD>4r</TD><TD>4r</TD><TD>.</TD><TD>1</TD></TR>
+<TR><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+</TABLE>
+</code></big>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>PERTINENT COMMANDS</H3></FONT>
+<blockquote>
+The following Humdrum command produces <b>**vox#</b> data as output:
+<blockquote>
+<TABLE>
+<TR><TD></TD><TD valign="top"><A HREF="../commands/vox.html"><b>vox</b></A></TD><TD>determine number of concurrently active voices for <b>**cbr</b>, <b>**cents</b>,</TD></TR>
+<TR><TD></TD><TD></TD><TD><b>**cocho</b>, <b>**deg</b>, <b>**degree</b>, <b>**freq</b>, <b>**kern</b>, <b>**pc</b>,</TD></TR>
+<TR><TD></TD><TD></TD><TD><b>**pitch</b>, <b>**semits</b>, <b>**solfa</b>, <b>**solfg</b>, <b>**specC</b>, and <b>**Tonh</b></TD></TR>
+</TABLE>
+</blockquote>
+</blockquote>
+</P>
+<P>
+<FONT color="DD00FF"><H3>TANDEM INTERPRETATIONS</H3></FONT>
+<blockquote>
+The following tandem interpretations can be used in conjunction with
+<b>**vox#</b>:
+<blockquote>
+<TABLE>
+<TR><TD>meter signatures</TD><TD><code><big>*M6/8</big></code></TD></TR>
+</TABLE>
+<CENTER>
+<i>Tandem interpretations for <b>**vox#</b></i>
+</CENTER>
+</blockquote>
+</blockquote>
+<FONT color="DD00FF"><H3>SEE ALSO</H3></FONT>
+<blockquote>
+<code><big>
+<A HREF="barlines.rep.html"><b>barlines</b></A>,
+<A HREF="barks.rep.html"><b>**barks</b></A>,
+<A HREF="cbr.rep.html"><b>**cbr</b></A>,
+<A HREF="cents.rep.html"><b>**cents</b></A>,
+<A HREF="cocho.rep.html"><b>**cocho</b></A>,
+<A HREF="deg.rep.html"><b>**deg</b></A>,
+<A HREF="degree.rep.html"><b>**degree</b></A>,
+<A HREF="freq.rep.html"><b>**freq</b></A>,
+<A HREF="kern.rep.html"><b>**kern</b></A>,
+<A HREF="pc.rep.html"><b>**pc</b></A>,
+<A HREF="pitch.rep.html"><b>**pitch</b></A>,
+<A HREF="semits.rep.html"><b>**semits</b></A>,
+<A HREF="solfa.rep.html"><b>**solfa</b></A>,
+<A HREF="solfg.rep.html"><b>**solfg</b></A>,
+<A HREF="specC.rep.html"><b>**specC</b></A>,
+<A HREF="Tonh.rep.html"><b>**Tonh</b></A>,
+<A HREF="../commands/vox.html"><b>vox</b></A>
+</code></big>
+</blockquote>
+</P>
+</P>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide13.html#XXXXX">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../representations.toc.html">
+<B>Index to Humdrum Representations</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

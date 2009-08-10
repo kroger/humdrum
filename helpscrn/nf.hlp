@@ -1,0 +1,21 @@
+
+NF        : Converts pitch or set-theory information to normal forms.
+
+     This command determines the "normal form" for any of five set-theory
+     related inputs (see below).
+
+     When given **pc or **semits input, each data record is treated as
+     an separate pitch set.
+
+Inputs processed:
+
+     **iv,      **nf,      **pc,      **pcset,   **pf,      **semits
+
+Syntax:
+
+     nf [inputfile ...]
+
+Options:  None.
+
+  Refer to reference manual for further details.   See also PCSET
+

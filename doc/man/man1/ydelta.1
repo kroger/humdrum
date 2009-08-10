@@ -1,0 +1,187 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH ydelta 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +12
+.ti -12
+\fBydelta\fR  --  calculate numeric differences for concurrent Humdrum data
+.in -12
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBydelta\fR  [\fB-s  \fIregexp\fR]  \fB-i '\fI**interpretation\fB'  \fR[\fIinputfile\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "ydelta"
+command outputs a single spine containing numeric data representing
+the numeric differences for concurrent tokens in specified input spines.
+For example,
+.B "ydelta"
+may be used to characterize the semitone distances separating
+pitches in a given vertical sonority or chord.
+.sp 1
+.sp 1
+The user indicates which spines in the input stream are to be processed
+by specifying an interpretation via the
+.B "-i"
+option.
+The output interpretation is automatically assigned a new name by
+prepending the upper-case letter `Y' to the given input interpretation.
+For example, a specified input of
+**semits
+will result in an output interpretation named
+**Ysemits.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "ydelta"
+command provides the following option:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command
+	  syntax
+\fB-i \fI**interp\fR	process input spines with interpretations \fI**interp\fR
+\fB-s \fIregexp\fR	skip over records matching \fIregexp;\fR  If all target
+	  spines contain the same token; token is output.
+	  If the tokens differ, the entire record is out-
+	  put (although all tabs are replaced by spaces).
+.TE
+.sp 1
+Options are specified in the command line.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The operation of
+.B "ydelta"
+is best illustrated using an example.
+Consider the following input file called \f(CRpraetorius\fR:
+.sp 1
+.TS
+l s s s s
+l l l l l.
+!! Praetorius, Es ist ein' Ros' entsprungen.
+**semits	**semits	**text	**semits	**kern
+!bass	!tenor	!text	!alto	!soprano
+*M2/2	*M2/2	*M2/2	*M2/2	*M2/2
+*F:	*F:	*	*F:	*F:
+-7	0	Es	9	1cc
+-7	0	ist	9	2cc
+-7	-3	ein'	5	2cc
+-2	-2	Ros'	5	2dd
+-7	-3	ent-	5	2cc
+-12	-5	sprun-	4	1cc
+-10	-7	gen	2	1a
+-14	-7	aus	2	1b-
+-7	-3	ei-	0	2a
+-8	0	ner	.	1g
+-10	(-2	Wur-	2	.
+\.	-3)	.	.	1f
+\.	.	.	-3	.
+-12	.	zel	0	.
+\.	-5	.	.	2e
+-19	-3	zart,	0	1f
+\(eq	\(eq	\(eq	\(eq	\(eq
+*-	*-	*-	*-	*-
+.TE
+.sp 1
+Given the following command line:
+.sp 1
+.sp 1
+.in +2
+ydelta -i '**semits' praetorius > chords
+.in -2
+.sp 1
+.sp 1
+the above input file would result in the following output:
+.sp 1
+.TS
+l.
+!! Praetorius, Es ist ein' Ros' entsprungen.
+**Ysemits
+!
+*
+*
+[-7] 7 16
+[-7] 7 16
+[-7] 4 12
+[-2] 0 7
+[-7] 4 12
+[-12] 7 16
+[-10] 3 12
+[-14] 7 16
+[-7] 4 7
+[-8] 8
+[-10] 8 12
+[-3]
+[-3]
+[-12] 12
+[-5]
+[-19] 16 19
+\.
+*-
+.TE
+.sp 1
+Only those input spines labelled
+**semits
+have been processed;
+both
+**text
+and
+**kern
+have been ignored.
+The first value (given in square brackets) represents the lowest numerical
+value found in the processed spine(s) for the current data record.
+Successive numerical values indicate the differences between
+the lowest value and the remaining numeric values in the other spines.
+For example, the first input record contains the
+**semits
+values -7, 0, and 9.
+The lowest of these values is -7 -- which is placed in square brackets.
+The next lowest value (0) is 7 units above the lowest value,
+whereas the value 9 is 16 units above the lowest value.
+These other values are sorted and printed in ascending order in the output
+token.
+Notice that the output is typically in the form of Humdrum multiple stops.
+If only one numerical value is present in the processed input,
+a single value (in square brackets) will be output.
+If no numerical values are present, a null token (.) is output
+(see for example, the barlines).
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fBhint\fR (1), \fBregexp\fR (1),
+\fBxdelta\fR (1)
+.in -2

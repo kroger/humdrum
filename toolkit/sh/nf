@@ -1,0 +1,71 @@
+###################################################################
+# 					  NF.KSH
+# Programmed by: Tim Racinsky          Date: July, 1994
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+#
+# 	This shell program is used to invoke the awk program pcset.awk.
+#
+FILENAME=""
+HELP=""
+FLAG=""
+STNDIN=""
+#
+USAGE1="USAGE: nf -h                   (Help Screen)"
+USAGE2="       nf [file ...]"
+#
+while getopts h arg
+do
+	case "$arg" in
+	h) 	HELP="ON";;
+	[?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no options were specified, print a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/nf.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/nf.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Can only use '-' once for each command
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "nf: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+# Invoke pcset.awk with the -n option
+$AWK_VER -f ${HUMDRUM}/bin/pcset.awk "DUMMY" "n" $FILENAME

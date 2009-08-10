@@ -1,0 +1,645 @@
+% This file was converted from HTML to LaTeX with
+% Tomasz Wegrzanowski's <maniek@beer.com> gnuhtml2latex program
+% Version : 0.1
+\documentclass{article}
+\begin{document}
+
+
+
+  
+  
+    
+      
+      
+      
+    
+  
+
+
+
+\\
+\\
+
+\section*{Chapter8}
+
+
+[\textit{Previous Chapter}]
+[\textit{Contents}]
+[\textit{Next Chapter}]
+
+
+\section*{The Shell (I)}
+
+
+
+When you type commands, they are interpreted by a command
+\textit{shell.}
+The shell is a program that interprets user commands
+before passing them along to be executed.
+Command shells are quite sophisticated and provide a
+number of useful features.
+Although there is a lot to learn about shells,
+we will explore only those features that facilitate
+use of Humdrum.
+This chapter is the first of four chapters scattered throughout
+this book where we will pause and examine some
+of the more pertinent and valuable features of the shell.
+
+\par 
+In UNIX environments, many different shells
+have been developed over the years.
+The original UNIX shell was the \textit{C-shell} -$\,$-
+a shell whose syntax is similar to the C programming language.
+A later shell was developed by Stephen Bourne and is known as the
+\textit{Bourne shell.}
+Subsequent improvements by David Korn resulted in the
+\textit{Korn shell.}
+The Bourne shell was improved in light of many features
+introduced in the Korn shell, and resulted in the
+\textit{Bourne Again Shell}
+-$\,$-  known as \textit{Bash}.
+The Korn and Bash shells are the most popular and powerful of the
+current generation of shells.
+Although they were originally developed for the UNIX operating
+system, these shells are also available for DOS, Macintosh,
+Windows, Windows 98 and many other operating systems.
+
+\par 
+Shells themselves are advanced programming languages that
+provide complex control structures.
+When you type a command, you are already writing a program -$\,$-
+although most of your programs are just one line in length.
+
+
+\subsection*{Shell Special Characters}
+
+\par 
+The shell interprets a number of characters in a special manner.
+When you type a command, you should know that most shells treat
+the following characters as having a special meaning:
+the octothorpe (\#), the dollar-sign (\$), the semicolon (;),
+the ampersand (\&), the verticule (|), the asterisk (*),
+the apostrophe ('), the greve (`), the greater-than sign (>),
+the less-than sign (<), the question-mark (?),
+the double-quote ("), and the backslash ($\backslash$).
+We'll consider the function of each of these characters one at a time.
+
+
+\subsection*{File Redirection (>)}
+
+\par 
+Some of the special shell characters have already been discussed.
+The greater-than-sign (>) is a
+\textit{file redirection operator.}
+It must be followed by a user-specified filename;
+any output from the preceding command is placed in the specified file.
+For example, the following command sorts the file \texttt{inputfile}
+and places the sorted result in the file named \texttt{outputfile}:
+
+\par 
+
+\texttt{sort inputfile > outputfile}
+
+
+\par 
+If the file \texttt{outputfile} already existed, its contents
+will be destroyed and over-written with the new output.
+Be careful not to assign the output to the same file as the input,
+since this will destroy the original input file.
+
+\par 
+Sometimes it is useful to
+\textit{add}
+the results of an operation to some already existing file.
+The double greater-than-sign (>>) causes the new output to be
+appended to any data already in the named file.
+For example, the following command sorts the file \texttt{inputfile}
+and adds the sorted lines to the end of the file named \texttt{outputfile}.
+If the \texttt{outputfile} does not already exist,
+the command will create it.
+
+\par 
+
+\texttt{sort inputfile >> outputfile}
+
+
+
+\subsection*{Pipe (|)}
+
+\par 
+The vertical bar (|) is interpreted by the shell as a `pipe.'
+Pipes are used to join the output of one command to the input
+of a subsequent command.
+For example, in the following construction, the output of \texttt{command1}
+is routed as the input to \texttt{command2}:
+
+\par 
+
+\texttt{command1 | command2}
+
+
+\par 
+There is no practical limit to the length of a pipeline.
+Several pipes can be used to connect successive outputs
+to ensuing commands:
+
+\par 
+
+\texttt{command1 | command2 | command3 | command4}
+
+
+
+\subsection*{Shell Wildcard (*)}
+
+\par 
+The asterisk is interpreted by the shell as a "filename wildcard."
+When it appears by itself, the asterisk is `expanded' by the shell to
+a list of all files in the current directory (in alphabetical order).
+For example, if the current directory contained just three files:
+\texttt{alice}, \texttt{barry} and \texttt{chris} -$\,$- then the following
+command would be applied to all three files in consecutive order:
+
+\par 
+
+\texttt{command * > people}
+
+
+\par 
+The file expansion occurs at the moment when the command is invoked.
+So although the file \texttt{people} is added to the current directory,
+it is not included as its own input.
+However, if the above command was executed a second time,
+then the file expansion would include \texttt{people} -$\,$- even
+as the file itself is over-written to receive the output.
+Including the output file as input is never a good idea.
+
+
+\subsection*{Comment (\#)}
+
+\par 
+The octothorpe character (\#) indicates a shell \textit{comment}.
+Any characters following the \# (up to the end of the line)
+are simply ignored by the shell.
+The following is not a command:
+
+\par 
+
+\texttt{\#grep OTL: filename}
+
+
+\par 
+The comment can begin anywhere in the line.
+Here the comment begins after the filename:
+
+\par 
+
+\texttt{grep OTL: filename   \# (Search for Humdrum titles.)}
+
+
+\subsection*{Escape Character ($\backslash$)}
+
+\par 
+Sometimes we would like to have a special character treated literally.
+For example, suppose we wanted to search for records containing
+sharps in a
+\texttt{**kern}
+file.
+The following command will not work because the shell will
+insist on interpreting the octothorpe as beginning a comment:
+
+\par 
+
+\texttt{grep \# filename}
+
+
+\par 
+There are several ways to "turn off" the special meaning
+of a character.
+The simplest way is to precede the character by a backslash ($\backslash$)
+as in the following command:
+
+\par 
+
+\texttt{grep $\backslash$\# filename}
+
+
+\par 
+The backslash character itself can be treated literally by
+preceding it with another backslash.
+For example, the following command searches for down-stems
+in a \texttt{**kern} file:
+
+\par 
+
+\texttt{grep $\backslash$$\backslash$ filename}
+
+
+\subsection*{Escape Quotations (\texttt{'...}')}
+\par 
+Another way of escaping the special meaning of shell characters
+is to place the material in single quotes.
+For example, we can escape the meaning of the octothorpe (\#)
+by preceding and following it by single quotes:
+
+\par 
+
+\texttt{grep '\#' filename}
+
+
+
+
+\par 
+Single quotes are especially useful for binding spaces.
+For example, the following command searches for the phrase
+"Lennon and McCartney" in a file named \texttt{beatles}:
+
+\par 
+
+\texttt{grep 'Lennon and McCartney' beatles}
+
+
+\par 
+If the single quotes are omitted, the command means something
+completely different.
+The following command searches for the string "Lennon"
+in three files named \texttt{and},  \texttt{McCartney} and \texttt{beatles}:
+
+\par 
+
+\texttt{grep Lennon and McCartney beatles}
+
+
+\par 
+A common mistake is to fail to match quotation marks in a command.
+The shell will assume that the command is incomplete until
+all quotation marks are matched (both single quotes and double quotes).
+In the following example, we have failed to match the quotation mark.
+When we press the return key, the shell responds with a change of
+prompt indicating that it is waiting for us to complete the command.
+
+\par 
+
+\texttt{grep '\# inputfile > outputfile
+\\
+>}
+
+
+\par 
+
+\subsection*{Command Delimiter (;)}
+
+\par 
+The semicolon (;) indicates the end of a command.
+Its presence allows more than one command to be typed on a single line.
+For example, the following line:
+
+\par 
+
+\texttt{command1 ; command2}
+
+
+\par 
+is logically identical to:
+
+\par 
+
+\texttt{command1}
+\\
+\texttt{command2}
+
+
+\par 
+When both commands appear on the same line, they are still executed
+sequentially, so the second command doesn't begin until the first
+is completed.
+Although the ability to place two or more commands on a single line
+may seem redundant, there are a number of circumstances where this
+feature proves useful.
+
+
+\subsection*{Background Command (\&)}
+
+\par 
+After typing a command, the command begins executing as soon as
+you type the carriage return or "enter" key.
+When the command has finished executing, the shell will display
+a new command prompt.
+Sometimes a command can take a long time to execute so it will be
+awhile before the prompt is displayed again.
+Unfortunately, you must wait for the prompt before you can type
+a new command.
+On multitasking systems it is possible for the computer to
+execute more than one command concurrently.
+The ampersand (\&) can be used to execute a command as a
+\textit{background process}.
+When a command is ended by an ampersand, the shell creates an
+independent process to handle the command, and the shell immediately
+returns with a prompt for a new command from the user.
+UNIX systems provide sophisticated mechanisms for controlling
+concurrent processing of commands.
+For further information concerning these features,
+refer to a UNIX reference book.
+
+
+\subsection*{Shell Command Syntax}
+
+\par 
+Shell commands follow a special syntax.
+There are six possible components to a common command:
+\begin{itemize}
+\item 
+the command name,
+\item 
+one or more options,
+\item 
+one or more option parameters,
+\item 
+a command argument,
+\item 
+one or more input file names,
+\item 
+output redirection.
+\end{itemize}
+
+\par 
+Each of these components is separated by `blank space' (tabs or spaces).
+A command begins with the command name -$\,$- such as
+\textbf{uniq}, \textbf{sort}, or
+\textbf{pitch}.
+A command argument is a special requirement of only some commands.
+A good example of a command argument is the search pattern given
+to the
+\textbf{grep}
+command.
+In the following command,
+\textbf{grep}
+is the command name, "Lennon" is the command argument
+and \texttt{beatles} is the input file name:
+
+\par 
+
+\texttt{grep Lennon beatles}
+
+
+\par 
+For most commands, it is possible to process more than one
+input file.
+These files are simply listed at the end of the command.
+For example, the following
+\textbf{grep}
+command searches for the string "McCartney" in the file
+\texttt{beatles} and in the file \texttt{wings}:
+
+\par 
+
+\texttt{grep McCartney beatles wings}
+
+
+\par 
+Most commands provide
+\textit{options}
+that modify the behavior of the command in some way.
+Command options are designated by a leading dash character.
+The specific option is usually indicated by a single alphabetic letter,
+such as the
+\textbf{-b}
+option (spoken: "dash-B" option).
+In the
+\textbf{uniq}
+command, the
+\textbf{-c}
+option causes a count to be prepended to each output line.
+In the following command,
+\textbf{uniq}
+is the command name,
+\textbf{-c}
+is the option, and \texttt{ghana32} is the name of the input file:
+
+\par 
+
+\texttt{uniq -c ghana32}
+
+
+\par 
+In many cases, the option is followed by a \textit{parameter} that
+specifies further information pertaining to the invoked option.
+In the following command,
+\textbf{recode}
+is the command name,
+\textbf{-f}
+is the option, \textbf{reassign} is the parameter used by the
+\textbf{-f}
+option, and \textbf{gagaku} is the name of the input file:
+
+\par 
+
+\texttt{recode -f reassign gagaku}
+
+
+\par 
+Options and their accompanying parameters must be separated by
+blank space (i.e. one or more spaces and/or tabs).
+If more than one option is invoked, and none of the invoked options
+require a parameter, then the option-letters may be combined.
+For example, the
+\textbf{-a}
+and
+\textbf{-b}
+options might be invoked as
+\textbf{-ab}
+(or as
+\textbf{-ba)}
+-$\,$-  provided neither option requires a parameter.
+
+\par 
+Whenever an option requires a parameter,
+the option must be specified alone and followed immediately
+by the appropriate parameter.
+For example, in the following command,
+the command name is
+\textbf{trans},
+the
+\textbf{-d}
+option is followed by the numerical parameter \textbf{3};
+the parameter for the
+\textbf{-c}
+option is the number \textbf{4} and the input file is named \textbf{gambia21}.
+
+\par 
+
+\texttt{trans -d 3 -c 4 gambia21}
+
+
+\par 
+Since numerical parameters can sometimes be negative,
+it can be difficult to discern whether a negative number
+is a parameter or another option.
+In the following example, the
+\textbf{-3}
+is a parameter to the
+\textbf{-d}
+option rather than an option by itself.
+
+\par 
+
+\texttt{trans -d -3 -c 2 gambia21}
+
+
+
+\subsection*{Output Redirection}
+
+\par 
+Most commands support several input and output modes.
+Input to a command may come from three sources.
+In many cases the input will come from one or more existing files.
+Apart from existing files, input may also come from text typed manually
+at the terminal, or from the output of preceding commands.
+When input text is entered manually it must be
+terminated with an end-of-file character (control-D) on a separate line.
+(On Microsoft operating systems the end-of-file character
+is control-Z.)
+When input is received from preceding commands, the output is
+sent via a UNIX pipe (`|') as discussed above.
+
+\par 
+The different ways of providing input to a command are illustrated in
+the following examples.
+In the first example, the input (if any) is taken from the
+terminal (keyboard).
+In the second example, the input is \textit{explicitly} taken from a file named
+\texttt{input}.
+In the third example, the input is \textit{implicitly} taken from a file named
+\texttt{input}.
+In the fourth example, the input to
+\textbf{command2}
+comes from the output of
+\textbf{command1}.
+
+\par 
+
+\texttt{command}
+\\
+\texttt{command < input}
+\\
+\texttt{command input}
+\\
+\texttt{command1 | command2}
+
+
+\par 
+Outputs produced by commands may similarly be directed to a variety
+of locations.
+The default output from most commands is sent to the terminal screen.
+Alternatively, the output can be sent to another process (i.e. another command)
+using a pipe (|).
+Output can also be stored in a file using file redirection operator (`>') or
+\textit{added}
+to the end of a (potentially) existing file using the file-append
+operator (`>>').
+In the first example below, the output is sent to the screen.
+In the second example, the output is sent to the file \texttt{outfile};
+if the file \texttt{outfile}
+already exists, its contents will be overwritten.
+In the third example, the output is appended to the end of the file
+\texttt{outfile};
+if the file \texttt{outfile} does not already exist, it will be created.
+In the fourth example, the output is sent as input to the command
+\textbf{command2}.
+
+\par 
+
+\texttt{command
+\\
+command > outfile
+\\
+command >> outfile
+\\
+command1 | command2}
+
+
+\par 
+When two or more commands have their inputs and outputs linked together
+using the pipe operator (\texttt{|}), the entire command line is known as a
+\textit{pipeline.}
+Pipelines occur frequently in Humdrum applications.
+
+
+\subsection*{Tee}
+
+\par 
+A special shell command known as \textbf{tee} can be used to clone
+a copy of some output, so that two identical output streams are generated.
+In the first example below, the output is piped to \textbf{tee} which
+writes one copy of the output to the file
+\texttt{outfile}
+and the second copy appears on the screen.
+In the second example, the output from
+\textbf{command1}
+is split:
+one copy is piped to
+\textbf{command2}
+for further processing, while an identical copy is stored in the file
+\texttt{outfile1};
+if the file \texttt{outfile1} already exists, its contents will be overwritten.
+In the third example, the append option (\textbf{-a}) for \textbf{tee}
+has been invoked -$\,$- meaning that the output from \texttt{command}
+will be added to the end of any existing data in the file
+\texttt{outfile}.
+If the file \texttt{outfile} does not already exist, it will be created.
+
+\par 
+
+\texttt{command | tee outfile
+\\
+command1 | tee outfile1 | command2 > outfile2
+\\
+command | tee -a outfile}
+
+
+\par 
+The
+\textbf{tee}
+command is a useful way of recording or diverting
+some intermediate data in the middle of a pipeline.
+
+
+
+\subsection*{Reprise}
+
+\par 
+In this chapter we have noted that the shell interprets
+certain characters in a special way.
+We learned about the octothorpe (\#),
+the ampersand (\&), the verticule (|), the asterisk (*),
+the apostrophe ('), the greater-than sign (>),
+the semicolon (;), and the backslash ($\backslash$).
+In a later chapter we'll discuss the remaining
+special characters:
+the dollar-sign (\$), the apostrophe ('), the less-than sign (<),
+the question-mark (?), and the double-quote ("),
+
+\par 
+We have also reviewed the syntax for UNIX commands.
+Commands can include components such as the
+\textit{command name}, \textit{options}, \textit{parameters},
+\textit{command arguments}, \textit{input files} and
+\textit{output redirection}.
+
+\\
+\begin{itemize}
+\item 
+
+\textbf{Next Chapter}
+\item 
+
+\textbf{Previous Chapter}
+\item 
+
+\textbf{Table of Contents}
+\item 
+
+\textbf{Detailed Contents}
+\\\\
+
+© Copyright 1999 David Huron
+\end{document}

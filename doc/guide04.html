@@ -1,0 +1,1036 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 4</TITLE>
+<!-- Chapter 4 (Basic Pitch Translations) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:13:40 EST 2000">
+<meta name="description" content="Chapter 4 (Basic Pitch Translations) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<H1>Chapter4</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide03.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide05.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Basic Pitch Translations</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+Many musical processes entail some sort of data translation in which
+one form of representation is transformed into another form of representation.
+There are innumerable examples of such musical "translations."
+For example, we might rewrite guitar tablatures as notated pitches.
+Pitches might be translated to tonic-solfa syllables.
+Scale-degrees might be analyzed as Roman-numeral harmonies.
+Figured bass notations might be "realized" as pitches.
+Successive pitches might be characterized as melodic intervals.
+Intervals might be rewritten as semitone distances.
+Pitch-class sets might be transformed to interval-class vectors.
+</P>
+<P>
+In this chapter we introduce some basic musical translations.
+We will limit this initial discussion to translating between
+various representations related to pitch.
+These will include French, German, and international pitch designations,
+frequency, semitones, cents, solf&#232ge, scale-degree and MIDI pitch
+representations.
+In later chapters we will describe additional types of translations.
+</P>
+<A NAME="Pitch_Representation">
+<H2>ISO Pitch Representation</H2>
+</P>
+<P>
+The best-known system for representing equally-tempered pitches
+is the International Standards Organization (ISO) format consisting of
+a letter (A-G) followed by an optional sharp or flat,
+followed by an octave number.
+According to the ISO representation middle C is designated C4.
+Octave numbers change between B and C so that the B a semitone below C4 is B3.
+Humdrum provides a predefined ISO-like representation called
+<A HREF="representations/pitch.rep.html"><code><big>**pitch</big></code></A>
+illustrated below.
+Here we see an ascending chromatic scale in the left spine,
+with a concurrent descending chromatic scale in the right spine:
+<blockquote><TABLE>
+<TR><TD><code><big>**pitch</TD><TD>**pitch</TD></TR>
+<TR><TD>C4</TD><TD>C5</TD></TR>
+<TR><TD>C#4</TD><TD>B4</TD></TR>
+<TR><TD>D4</TD><TD>Bb4</TD></TR>
+<TR><TD>D#4</TD><TD>A4</TD></TR>
+<TR><TD>E4</TD><TD>Ab4</TD></TR>
+<TR><TD>F4</TD><TD>G4</TD></TR>
+<TR><TD>F#4</TD><TD>Gb4</TD></TR>
+<TR><TD>G4</TD><TD>F4</TD></TR>
+<TR><TD>G#4</TD><TD>E4</TD></TR>
+<TR><TD>A4</TD><TD>Eb4</TD></TR>
+<TR><TD>A#4</TD><TD>D4</TD></TR>
+<TR><TD>B4</TD><TD>Db4</TD></TR>
+<TR><TD>C5</TD><TD>C4</TD></TR>
+<TR><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Notice that only upper-case letters are used for pitch-name and
+that the flat is represented by the lower-case letter `<code><big>b</big></code>'.
+The small letter `<code><big>x</big></code>' can be used to indicate double-sharps
+and the double-flat is represented by two small successive letters `<code><big>bb</big></code>'.
+If a given pitch deviates from equal temperament,
+cents deviation can be indicated by trailing integers preceded
+by either a plus sign (tuned sharp) or a minus sign (tuned flat).
+The unit of the
+<i>cent</i>
+is one one-hundredth of a semitone,
+so the distance between C4 and C#4 is 100 cents.
+For example, the pitch corresponding to a tuning of A-435 Hz is
+19 cents flat compared with the standard A-440,
+hence it is represented in <code><big>**pitch</big></code> as:
+</P>
+<P>
+<blockquote>
+<code><big>A4-19</big></code>
+</blockquote>
+</P>
+<A NAME="Translate_to_Pitch">
+<P>
+Other pitch representations (such as <code><big>**kern</big></code>) can be
+translated to the ISO-inspired <code><big>**pitch</big></code> representation by invoking the
+<A HREF="commands/pitch.html"><b>pitch</b></A>
+command.
+For example, consider the following <code><big>**kern</big></code> input:
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>4g</TD></TR>
+<TR><TD>4g#</TD></TR>
+<TR><TD>4a</TD></TR>
+<TR><TD>4cc</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+It can be translated to this <code><big>**pitch</big></code> output:
+<blockquote><TABLE>
+<TR><TD><code><big>**pitch</TD></TR>
+<TR><TD>=1</TD></TR>
+<TR><TD>G4</TD></TR>
+<TR><TD>G#4</TD></TR>
+<TR><TD>A4</TD></TR>
+<TR><TD>C5</TD></TR>
+<TR><TD>=2</TD></TR>
+<TR><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+using the following command:
+</P>
+<P>
+<blockquote>
+<code><big>pitch filename</big></code>
+</blockquote>
+</P>
+<P>
+Notice that the
+<A HREF="representations/pitch.rep.html"><code><big>**pitch</big></code></A>
+representation uses the same
+system for representing barlines as <code><big>**kern</big></code>.
+In fact, all of the pitch-related representations described
+in this chapter make use of the so-called `common system' for
+representing barlines.
+</P>
+<A NAME="German_Ton&#246he">
+<H2>German Tonh&#246he</H2>
+</P>
+<P>
+The German system of pitch designations (<i>Tonh&#246he</i>)
+is available in the Humdrum
+<A HREF="representations/Tonh.rep.html"><code><big>**Tonh</big></code></A>
+representation.
+The German system is similar to the ISO system with the following
+exceptions.
+The pitch letter names include A,B,C,D,E,F,G,H and S.
+Sharps and flats are indicated by suffixes: `<code><big>is</big></code>' for sharps
+and `<code><big>es</big></code>' for flats,
+hence `<code><big>Cis</big></code>' for C-sharp and `<code><big>Ges</big></code>' for G-flat.
+Suffixes are repeated for double and triple sharps and flats.
+Special exceptions include the following: `<code><big>B</big></code>' for B-flat,
+`<code><big>H</big></code>' for B-natural, `<code><big>Heses</big></code>' for B double-flat
+(rather than `<code><big>Bes</big></code>'), and `<code><big>As</big></code>' and `<code><big>Es</big></code>'
+rather than `<code><big>Aes</big></code>' or `<code><big>Ees</big></code>'.
+`<code><big>S</big></code>' is a short-hand for `<code><big>Es</big></code>' (E-flat).
+As in the ISO pitch system, octaves are indicated by integer
+numbers with middle C represented as C4.
+</P>
+<P>
+Although modern German practice has gravitated toward the
+ISO system, the traditional German system for
+representing pitches remains important in historically
+related studies, such as searching for `B-A-C-H' and
+the pitch signature used by Dmitri Shostakovich (`D-S-C-H').
+</P>
+<P>
+Data in the
+<A HREF="representations/pitch.rep.html"><code><big>**pitch</big></code></A>
+or
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+representations
+can be translated to
+<A HREF="representations/Tonh.rep.html"><code><big>**Tonh</big></code></A>
+via the
+<A HREF="commands/tonh.html"><b>tonh</b></A>
+command:
+</P>
+<P>
+<blockquote>
+<code><big>tonh filename</big></code>
+</blockquote>
+</P>
+<A NAME="French_Solf&#232ge">
+<H2>French Solf&#232ge</H2>
+</P>
+<P>
+The common French system for pitch naming uses a so-called
+"fixed-do" method of diatonic pitch designations:
+<i>do, r&#233, mi, fa, sol, la</i>
+and
+<i>si</i>
+(rather than <i>ti</i>), where
+<i>do</i>
+corresponds to the English/German `C'.
+In the Humdrum
+<A HREF="representations/solfg.rep.html"><code><big>**solfg</big></code></A>
+representation, solf&#232ge
+pitch names are used.
+Flats (<i>b&#233mol</i>) and sharps (<i>di&#232se</i>) are
+abbreviated
+<i>b</i>
+and
+<i>d</i>
+respectively.
+When accidentals are encoded, the tilde character (<code><big>~</big></code>)
+is encoded following the solf&#232ge syllable and before
+the accidental.
+Double and triple sharps and flats are encoded via repetition.
+Hence, `do di&#232se' (<code><big>do~d</big></code>) for C-sharp, `la b&#233mol'
+(<code><big>la~b</big></code>) for A-flat, `sol double-di&#232se' (<code><big>sol~dd</big></code>)
+for G double-sharp, `si double-b&#233mol' (<code><big>si~bb</big></code>)
+for B double-flat, and so on.
+As with the German and ISO pitch representations, octave is designated
+by integers with <code><big>do4</big></code> representing middle C.
+</P>
+<A NAME="Frequency">
+<H2>Frequency</H2>
+</P>
+<P>
+For acoustic-related applications it may be helpful to
+translate to frequency.
+The Humdrum
+<A HREF="representations/freq.rep.html"><code><big>**freq</big></code></A>
+representation can be used to
+represent frequencies for either pure or complex tones.
+Frequencies are encoded in
+<i>hertz</i>
+(abbreviated <i>Hz</i>)
+where 440 Hz means 440 cycles per second.
+In the <code><big>**freq</big></code> representation frequencies may be
+specified as integer or real values (with a decimal point).
+</P>
+<A NAME="Cents">
+<H2>Cents</H2>
+</P>
+<P>
+The
+<A HREF="representations/cents.rep.html"><code><big>**cents</big></code></A>
+representation provides a means for
+representing pitches in absolute units with respect to middle C (= 0 cents).
+In the <code><big>**cents</big></code> representation,
+all pitches are represented with respect to this
+reference.
+Thus C#4 is represented by the number 100,
+A4 is represented by 900, and A3 is represented by -300.
+As in the case of <code><big>**freq</big></code>, cents may be specified as integer
+numbers or as real values (with a decimal point).
+</P>
+<A NAME="Semitones">
+<H2>Semitones</H2>
+</P>
+<P>
+A related pitch representation is
+<A HREF="representations/semits.rep.html"><code><big>**semits</big></code></A>.
+In this case, all pitches are represented in numerical semitones
+with respect to middle C (= 0 semits).
+An ascending chromatic scale beginning on C4 would be represented
+by the ascending integers from 0 to 12.
+Pitches below middle C are represented by negative values.
+Fractional values can be represented using decimal points.
+</P>
+<A NAME="MIDI">
+<H2>MIDI</H2>
+</P>
+<P>
+Another way of representing pitch is provided by the Humdrum
+<A HREF="representations/MIDI.rep.html"><code><big>**MIDI</big></code></A>
+representation.
+This representation closely mimics
+the commercial MIDI specification.
+The <code><big>**MIDI</big></code> representation allows MIDI inputs and outputs
+to be exported or imported by various Humdrum tools.
+A complete description of <code><big>**MIDI</big></code> will be given in
+<A HREF="guide07.html">Chapter 7.</A>
+</P>
+<A NAME="Scale_Degree">
+<H2>Scale Degree -- <i>**solfa</i> and <i>**deg</i></H2>
+</P>
+<P>
+Two different Humdrum representations are provided to
+describe scale-degree related information:
+<A HREF="representations/deg.rep.html"><code><big>**deg</big></code></A>
+and
+<A HREF="representations/solfa.rep.html"><code><big>**solfa</big></code></A>.
+Both of these representations emphasize slightly different
+aspects of scale-degree information.
+Both representations assume some established or pre-defined
+tonal center or tonic pitch.
+</P>
+<P>
+The <code><big>**solfa</big></code> representation represents pitch according
+to tonic solfa syllables.
+Pitches are designated by the syllables
+<i>do, re, mi, fa, so, la</i>
+and
+<i>ti</i>
+or their chromatic alterations as indicated in the following
+table:
+<blockquote><TABLE>
+<TR><TD>basic</TD><TD>raised</TD><TD>lowered</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>do (<i>doe</i>)</TD><TD>di (<i>dee</i>)</TD><TD>de (<i>day</i>)</TD></TR>
+<TR><TD>re (<i>ray</i>)</TD><TD>ri (<i>ree</i>)</TD><TD>ra (<i>raw</i>)</TD></TR>
+<TR><TD>mi (<i>me</i>)</TD><TD>my (<i>my</i>)</TD><TD>me (<i>may</i>)</TD></TR>
+<TR><TD>fa (<i>fah</i>)</TD><TD>fi (<i>fee</i>)</TD><TD>fe (<i>fay</i>)</TD></TR>
+<TR><TD>so (<i>so</i>)</TD><TD>si (<i>see</i>)</TD><TD>se (<i>say</i>)</TD></TR>
+<TR><TD>la (<i>la</i>)</TD><TD>li (<i>lee</i>)</TD><TD>le (<i>lay</i>)</TD></TR>
+<TR><TD>ti (<i>tee</i>)</TD><TD>ty (<i>tie</i>)</TD><TD>te (<i>tay</i>)</TD></TR>
+</TABLE></blockquote>
+<blockquote>
+<i>Summary of <b>solfa</b> Signifiers</i>
+</blockquote>
+The
+<A HREF="representations/deg.rep.html"><code><big>**deg</big></code></A>
+representation identifies scale-degrees by
+the numbers 1 (tonic) to 7 (leading-tone).
+These values may be chromatically altered by raising (+)
+or lowering (-).
+The
+<i>amount</i>
+of chromatic alteration is not indicated;
+for example, both a raised supertonic and a doubly-raised supertonic
+are represented as <code><big>2+</big></code>.
+A lowered dominant is represented as <code><big>5-</big></code>.
+</P>
+<P>
+The
+<A HREF="representations/solfa.rep.html"><code><big>**solfa</big></code></A>
+representation differs from
+<A HREF="representations/deg.rep.html"><code><big>**deg</big></code></A>
+in that pitches are represented without regard to major or minor
+<i>mode.</i>
+For example, in the key of C major, <code><big>**deg</big></code>
+will characterize A-flat as a lowered sixth scale
+degree (<code><big>6-</big></code>),
+whereas the same pitch will be a normal (unaltered) sixth scale
+degree in the key of C minor (<code><big>6</big></code>).
+In the case of <code><big>**solfa</big></code>, the A-flat will be represented
+as <code><big>le</big></code> -- whether or not the key is C major or C minor.
+Like <code><big>**deg</big></code>, the amount of chromatic alteration is not
+represented in <code><big>**solfa</big></code>.
+Once a pitch is raised, raising it further will not
+change the representation.
+For example, if the tonic is B-flat, then both B-natural and B-sharp
+will be represented by <code><big>di</big></code> in the <code><big>**solfa</big></code> representation.
+</P>
+<P>
+In the case of the minor mode, <code><big>**deg</big></code> characterizes scale
+degrees with respect to the
+<i>harmonic minor</i>
+scale only.
+</P>
+<P>
+Another difference between
+<A HREF="representations/solfa.rep.html"><code><big>**solfa</big></code></A>
+and
+<A HREF="representations/deg.rep.html"><code><big>**deg</big></code></A>
+is that the <code><big>**deg</big></code> representation provides a way for encoding
+<i>melodic approach.</i>
+The caret (<code><big>^</big></code>) denotes an ascending melodic approach to
+the current note, whereas the lower-case letter <code><big>v</big></code> denotes
+a descending melodic approach.
+Repeated pitches carry no melodic approach signifier.
+</P>
+<P>
+Some of the differences between the <code><big>**solfa</big></code> and
+<code><big>**deg</big></code> representations are illustrated in Example 4.1.
+(The corresponding
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+representation is given in the first spine.)
+Notice that <code><big>**solfa</big></code> does not encode any octave information.
+The <code><big>**deg</big></code> representation does not encode the octave of
+the starting pitch, but it does indicate contour information
+using the caret (<code><big>^</big></code>) for ascending and the lower-case
+<code><big>v</big></code> for descending pitches.
+Notice also the different ways of characterizing accidentals.
+<br>
+<br>
+<b>Example 4.1</b>
+
+<blockquote><TABLE>
+<TR><TD><code><big>!! Comparison</TD><TD>of pitch-related</TD><TD>representations.</TD></TR>
+<TR><TD><code><big>**kern</TD><TD>**solfa</TD><TD>**deg</TD></TR>
+<TR><TD><code><big>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD></TR>
+<TR><TD><code><big>*c:</TD><TD>*c:</TD><TD>*c:</TD></TR>
+<TR><TD><code><big>8.cc</TD><TD>do</TD><TD>1</TD></TR>
+<TR><TD><code><big>16dd</TD><TD>re</TD><TD>^2</TD></TR>
+<TR><TD><code><big>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD><code><big>8.ee-</TD><TD>me</TD><TD>^3</TD></TR>
+<TR><TD><code><big>16dd</TD><TD>re</TD><TD>v2</TD></TR>
+<TR><TD><code><big>4een</TD><TD>mi</TD><TD>^3+</TD></TR>
+<TR><TD><code><big>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD><code><big>8r</TD><TD>r</TD><TD>r</TD></TR>
+<TR><TD><code><big>8b-</TD><TD>te</TD><TD>v7-</TD></TR>
+<TR><TD><code><big>8an</TD><TD>la</TD><TD>v6+</TD></TR>
+<TR><TD><code><big>8cc</TD><TD>do</TD><TD>^1</TD></TR>
+<TR><TD><code><big>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD><code><big>2bn</TD><TD>ti</TD><TD>v7</TD></TR>
+<TR><TD><code><big>==</TD><TD>==</TD><TD>==</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+<A NAME="Pitch_Translations">
+<H2>Pitch Translations</H2>
+</CENTER>
+</P>
+<P>
+Humdrum provides a number of commands for translating
+between the various pitch-related representations described above.
+Typically, the command name is the same as the name of the output
+representation.
+For example, translating to
+the
+<A HREF="representations/solfg.rep.html"><code><big>**solfg</big></code></A>
+representation can be accomplished with:
+</P>
+<P>
+<blockquote>
+<code><big>solfg inputfile > outputfile</big></code>
+</blockquote>
+</P>
+<A NAME="German_pitch_translation">
+<P>
+Translating to the German
+<A HREF="representations/Tonh.rep.html"><code><big>**Tonh</big></code></A>
+representation:
+</P>
+<P>
+<blockquote>
+<code><big>tonh inputfile > outputfile</big></code>
+</blockquote>
+</P>
+<P>
+Translating to ISO
+<A HREF="representations/pitch.rep.html"><code><big>**pitch</big></code></A>:
+</P>
+<P>
+<blockquote>
+<code><big>pitch inputfile > outputfile</big></code>
+</blockquote>
+</P>
+<A NAME="Frequency_Translation">
+<A NAME="Cents_Translation">
+<P>
+Similarly, the
+<A HREF="commands/freq.html"><b>freq</b></A>
+command translates pitch-related inputs to the
+<A HREF="representations/freq.rep.html"><code><big>**freq</big></code></A>
+representation, the
+<A HREF="commands/cents.html"><b>cents</b></A>
+command translates appropriate inputs to the
+<A HREF="representations/cents.rep.html"><code><big>**cents</big></code></A>
+representation, and so on.
+</P>
+<A NAME="Translate_to_MIDI">
+<P>
+In a few cases, the command names are slightly modified.
+All Humdrum command names employ lower-case letters only,
+so
+<A HREF="representations/MIDI.rep.html"><code><big>**MIDI</big></code></A>
+output is generated by the
+<A HREF="commands/midi.html"><b>midi</b></A>
+command (rather than the <b>MIDI</b> command),
+and <code><big>**Tonh</big></code> output is generated by the
+<A HREF="commands/tonh.html"><b>tonh</b></A>
+command.
+</P>
+<P>
+Examples 4.2 and 4.3 compare several parallel
+representations of the same pitch-related information.
+In both examples, the pitch information has been derived from the
+<code><big>**kern</big></code> data shown in the left-most spine.
+The duration information in the <code><big>**kern</big></code> data is not
+available in the other representations.
+However, the `common system' for barlines is used throughout.
+</P>
+<P>
+Example 4.2 shows four pitch naming systems:
+ISO pitch, German Tonh&#246he, French solf&#232ge,
+as well as <code><big>**kern</big></code>.
+Notice the different ways of treating accidentals such as the
+D-sharp and B-flat.
+Also note the German use of H for B-natural.
+<br>
+<br>
+<b>Example 4.2</b>
+
+<blockquote><TABLE>
+<TR><TD><code><big>!! Comparison</TD><TD>of pitch-related</TD><TD>representations.</TD></TR>
+<TR><TD><code><big>**kern</TD><TD>**pitch</TD><TD>**Tonh</TD><TD>**solfg</TD></TR>
+<TR><TD><code><big>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD></TR>
+<TR><TD><code><big>*C:</TD><TD>*C:</TD><TD>*C:</TD><TD>*C:</TD></TR>
+<TR><TD><code><big>8.cc</TD><TD>C5</TD><TD>C5</TD><TD>do5</TD></TR>
+<TR><TD><code><big>16dd</TD><TD>D5</TD><TD>D5</TD><TD>re5</TD></TR>
+<TR><TD><code><big>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD><code><big>8.ee</TD><TD>E5</TD><TD>E5</TD><TD>mi5</TD></TR>
+<TR><TD><code><big>16dd#</TD><TD>D#5</TD><TD>Dis5</TD><TD>re~d5</TD></TR>
+<TR><TD><code><big>4ee</TD><TD>E5</TD><TD>E5</TD><TD>mi5</TD></TR>
+<TR><TD><code><big>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD><code><big>8r</TD><TD>r</TD><TD>r</TD><TD>r</TD></TR>
+<TR><TD><code><big>8b-</TD><TD>Bb4</TD><TD>B4</TD><TD>si~b4</TD></TR>
+<TR><TD><code><big>8a</TD><TD>A4</TD><TD>A4</TD><TD>la4</TD></TR>
+<TR><TD><code><big>8c</TD><TD>C4</TD><TD>C4</TD><TD>do4</TD></TR>
+<TR><TD><code><big>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD><code><big>2bn</TD><TD>B4</TD><TD>H4</TD><TD>si4</TD></TR>
+<TR><TD><code><big>==</TD><TD>==</TD><TD>==</TD><TD>==</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+In Example 4.3 four of the more technical representations are
+illustrated, including frequency and cents.
+Notice that the
+<A HREF="representations/MIDI.rep.html"><code><big>**MIDI</big></code></A>
+representation uses key-numbers to represent pitch:
+key-on events are indicated by positive integers (between two slashes)
+and key-off events are indicated by negative integers.
+More detail concerning <code><big>**MIDI</big></code> is given in
+<A HREF="guide07.html">Chapter 7.</A>
+<br>
+<br>
+<b>Example 4.3</b>
+
+<blockquote><TABLE>
+<TR><TD><code><big>!! Comparison</TD><TD>of pitch-related</TD><TD>representations</TD><TD>(continued).</TD></TR>
+<TR><TD><code><big>**kern</TD><TD>**semits</TD><TD>**cents</TD><TD>**MIDI</TD><TD>**freq</TD></TR>
+<TR><TD><code><big>*M2/4</TD><TD>*M2/4</TD><TD>*M2/4</TD><TD>*Ch1</TD><TD>*M2/4</TD></TR>
+<TR><TD><code><big>*C:</TD><TD>*C:</TD><TD>*C:</TD><TD>*M2/4</TD><TD>*C:</TD></TR>
+<TR><TD><code><big>*</TD><TD>*</TD><TD>*</TD><TD>*C:</TD><TD>*</TD></TR>
+<TR><TD><code><big>8.cc</TD><TD>12</TD><TD>1200</TD><TD>/72/</TD><TD>523.25</TD></TR>
+<TR><TD><code><big>16dd</TD><TD>14</TD><TD>1400</TD><TD>/-72/ /74/</TD><TD>587.33</TD></TR>
+<TR><TD><code><big>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD><code><big>8.ee</TD><TD>16</TD><TD>1600</TD><TD>/-74/ /76/</TD><TD>659.26</TD></TR>
+<TR><TD><code><big>16dd#</TD><TD>15</TD><TD>1500</TD><TD>/-76/ /75/</TD><TD>622.25</TD></TR>
+<TR><TD><code><big>4ee</TD><TD>16</TD><TD>1600</TD><TD>/-75/ /76/</TD><TD>659.26</TD></TR>
+<TR><TD><code><big>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD><code><big>8r</TD><TD>r</TD><TD>r</TD><TD>/-76/</TD><TD>r</TD></TR>
+<TR><TD><code><big>8b-</TD><TD>10</TD><TD>1000</TD><TD>/70/</TD><TD>466.16</TD></TR>
+<TR><TD><code><big>8a</TD><TD>9</TD><TD>900</TD><TD>/-70/ /69/</TD><TD>440.00</TD></TR>
+<TR><TD><code><big>8c</TD><TD>0</TD><TD>0</TD><TD>/-69/ /60/</TD><TD>261.63</TD></TR>
+<TR><TD><code><big>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD><code><big>2bn</TD><TD>11</TD><TD>1100</TD><TD>/-60/ /71/</TD><TD>493.88</TD></TR>
+<TR><TD><code><big>==</TD><TD>==</TD><TD>==</TD><TD>==</TD><TD>==</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>.</TD><TD>/-71/</TD><TD>.</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Not all of the above pitch-related representations can be translated
+directly from one to another.
+Table 4.1 shows the possible translations supported by Humdrum Release 2.0
+commands.
+The input representations are listed from right to left.
+Under each column, those commands that will translate
+<i>from</i>
+the given format are identified.
+For example, the
+<A HREF="representations/cents.rep.html"><code><big>**cents</big></code></A>
+representation can be translated
+to <code><big>**freq</big></code>,
+<code><big>**kern</big></code>,
+<code><big>**pitch</big></code>,
+<code><big>**semits</big></code>,
+<code><big>**solfg</big></code>,
+and <code><big>**tonh</big></code>.
+Notice that <code><big>**deg</big></code> data cannot be translated to any other
+format since <code><big>**deg</big></code> representations do not encode absolute
+pitch height.
+Note also that when translating to the <code><big>**kern</big></code> representation,
+only pitch-related information is translated:
+duration, articulation marks, and other <code><big>**kern</big></code> signifiers are
+not magically generated.
+<br>
+<br>
+<b>Table 4.1</b>
+<br>
+<br>
+<CENTER>
+<b>Input Representation</b>
+</CENTER>
+
+<blockquote><TABLE>
+<TR><TD></TD><TD>**cents</TD><TD>**deg</TD><TD>**freq</TD><TD>**kern</TD><TD>**MIDI</TD><TD>**pitch</TD><TD>**semits</TD><TD>**solfa</TD><TD>**solfg</TD><TD>**Tonh</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>cents</TD><TD></TD><TD></TD><TD>&#164</TD><TD>&#164</TD><TD></TD><TD>&#164</TD><TD>&#164</TD><TD></TD><TD>&#164</TD><TD>&#164</TD></TR>
+<TR><TD>cocho</TD><TD></TD><TD></TD><TD>&#164</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD></TR>
+<TR><TD>deg</TD><TD></TD><TD></TD><TD></TD><TD>&#164</TD><TD></TD><TD>&#164</TD><TD></TD><TD></TD><TD>&#164</TD><TD>&#164</TD></TR>
+<TR><TD>freq</TD><TD>&#164</TD><TD></TD><TD></TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD></TD><TD>&#164</TD><TD>&#164</TD></TR>
+<TR><TD>kern</TD><TD>&#164</TD><TD></TD><TD>&#164</TD><TD></TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD></TR>
+<TR><TD>midi</TD><TD></TD><TD></TD><TD></TD><TD>&#164</TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD><TD></TD></TR>
+<TR><TD>pitch</TD><TD>&#164</TD><TD></TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD></TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD></TR>
+<TR><TD>semits</TD><TD>&#164</TD><TD></TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD></TD><TD></TD><TD>&#164</TD><TD>&#164</TD></TR>
+<TR><TD>solfa</TD><TD></TD><TD></TD><TD></TD><TD>&#164</TD><TD></TD><TD>&#164</TD><TD></TD><TD></TD><TD>&#164</TD><TD>&#164</TD></TR>
+<TR><TD>solfg</TD><TD>&#164</TD><TD></TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD></TD><TD>&#164</TD></TR>
+<TR><TD>tonh</TD><TD>&#164</TD><TD></TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD>&#164</TD><TD></TD></TR>
+</TABLE></blockquote>
+</P>
+<A NAME="Transposition_Using_the_trans_Command">
+<H2>Transposition Using the <i>trans</i> Command</H2>
+</P>
+<A NAME="Transpose_up_a_minor_third">
+<P>
+A common pitch-related manipulation is transposition.
+The 
+<A HREF="commands/trans.html"><b>trans</b></A>
+command has the user specify a
+<i>diatonic offset</i>
+and a <i>chromatic offset</i>.
+The diatonic offset affects the pitch-letter name used to spell
+a note.
+The chromatic offset affects the number of semitones shifted
+from the original pitch height.
+The two types of offset are completely independent of each other.
+For common transpositions, both the diatonic and chromatic offsets
+will need to be specified.
+For example, in transposing up a minor third (e.g. C to E-flat),
+the diatonic offset is `up two pitch-letter names,'
+and the chromatic offset is `up three semitones.'
+The appropriate command invocation is:
+</P>
+<P>
+<blockquote>
+<code><big>trans -d +2 -c +3 input > output</big></code>
+</blockquote>
+</P>
+<P>
+The diatonic offset can be a little confusing because
+traditional terminology labels perfect unisons by the number 1 (e.g. P1)
+rather than zero.
+So transposing up a perfect fifth involves a diatonic offset of +4
+letter names, and a chromatic offset of +7 semitones:
+</P>
+<P>
+<blockquote>
+<code><big>trans -d +4 -c +7 input > output</big></code>
+</blockquote>
+</P>
+<A NAME="Transpose_down_an_augmented_unison">
+<P>
+We can transpose without changing the diatonic pitch names.
+For example, the following command will transpose down an augmented unison
+(e.g. C# to C):
+</P>
+<P>
+<blockquote>
+<code><big>trans -d 0 -c -1 input > output</big></code>
+</blockquote>
+</P>
+<A NAME="Transpose_Enharmonically">
+<P>
+Conversely, we can respell the diatonic pitches without changing the overall
+pitch height.
+For example, the following transposition will transpose "up"
+a diminished second (e.g. from F-sharp to G-flat):
+</P>
+<P>
+<blockquote>
+<code><big>trans -d +1 -c 0 input > output</big></code>
+</blockquote>
+</P>
+<A NAME="Dorian_Transposition">
+<P>
+Modal transpositions are also possible by omitting the chromatic offset
+option.
+Consider, for example, the following C major scale:
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD>d</TD></TR>
+<TR><TD>e</TD></TR>
+<TR><TD>f</TD></TR>
+<TR><TD>g</TD></TR>
+<TR><TD>a</TD></TR>
+<TR><TD>b</TD></TR>
+<TR><TD>cc</TD></TR>
+<TR><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+We can transform this using the following diatonic transposition:
+</P>
+<P>
+<blockquote>
+<code><big>trans -d +1</big></code>
+</blockquote>
+</P>
+<P>
+The resulting output is the Dorian mode:
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD>*Trd1</TD></TR>
+<TR><TD>d</TD></TR>
+<TR><TD>e</TD></TR>
+<TR><TD>f</TD></TR>
+<TR><TD>g</TD></TR>
+<TR><TD>a</TD></TR>
+<TR><TD>b</TD></TR>
+<TR><TD>cc</TD></TR>
+<TR><TD>dd</TD></TR>
+<TR><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+When using the
+<b>-d</b>
+option alone,
+<b>trans</b>
+eliminates all accidentals in the input.
+This can be potentially confusing, but it is often useful.
+Suppose you have a passage in the key of E major which
+you would like to translate to E Dorian.
+First transpose so the tonic is D using only the
+<b>-d</b>
+option; then transpose exactly so the tonic is E again:
+</P>
+<P>
+<blockquote>
+<code><big>trans -d -1 Emajor | trans -d +1 -c +2 > Edorian</big></code>
+</blockquote>
+</P>
+<P>
+For some changes of mode (such as melodic to harmonic minor),
+you may need to use the
+<A HREF="commands/humsed.html"><b>humsed</b></A>
+command described in
+<A HREF="guide14.html">Chapter 14</A>
+to modify accidentals for specific
+scale degrees.
+</P>
+<P>
+Notice the addition of a "tandem interpretation" to the
+above example (<code><big>*Trd1</big></code>).
+Whenever
+<b>trans</b>
+is invoked, it adds a record indicating
+that the encoding is no longer at the original pitch.
+<i>Transposition tandem interpretations</i>
+are similar in syntax to the
+<b>trans</b>
+command itself.
+In the above example, <code><big>*Trd1</big></code> indicates a diatonic shift up
+one letter name.
+The tandem interpretation <code><big>*Trd-1c-2</big></code>
+would indicate that a score has been transposed down a major second.
+The
+<b>trans</b>
+command also provides a
+<b>-k</b>
+option that allows the user to specify a replacement key signature
+for the output.
+</P>
+<P>
+The
+<b>trans</b>
+command can be used in conjunction with any of the appropriate
+pitch-related representations, such as <code><big>**pitch</big></code>, <code><big>**kern</big></code>,
+<code><big>**Tonh</big></code>, and <code><big>**solfg</big></code>.
+</P>
+<A NAME="Key_Interpretations">
+<H2>Key Interpretations</H2>
+</P>
+<P>
+In order for the
+<b>solfa</b>
+or
+<b>deg</b>
+commands to translate from other pitch representations,
+the encoded music must contain an explicit key indication.
+Keys are explicitly represented by a single asterisk, followed by
+an upper- or lower-case letter, followed by an optional
+accidental, followed by a colon.
+The octothorpe (<code><big>#</big></code>) indicates a sharp and the
+hyphen (<code><big>-</big></code>) indicates a flat.
+</P>
+<P>
+Upper-case letters indicate major keys;
+lower-case letters indicate minor keys.
+By way of illustration, the following key interpretations
+indicate the keys of C major, C minor, B-flat major,
+and F-sharp minor:
+<blockquote><TABLE>
+<TR><TD><code><big>*C:</TD></TR>
+<TR><TD>*c:</TD></TR>
+<TR><TD>*B-:</TD></TR>
+<TR><TD>*f#:</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Key interpretations usually appear near the beginning of
+a representation, and key interpretations can be redefined
+at any place in a score.
+</P>
+<A NAME="Pitch_Processing">
+<H2>Pitch Processing</H2>
+</P>
+<P>
+Apart from transposition, 
+translating from one representation to another provides
+opportunities for different sorts of processing.
+Suppose, for example, we wanted to know whether the subdominant
+pitch occurs more frequently in one vocal repertory than in
+another repertory.
+We can use
+<b>solfa</b>
+in conjunction with <b>grep</b>'s
+<b>-c</b>
+option to count the number of occurrences.
+(For the following examples, we will assume that the inputs
+consist of only a single spine, that barlines are absent,
+and that appropriate interpretations are provided indicating
+the key of each work.)
+First we need to count the total number of notes in each repertory.
+</P>
+<P>
+<blockquote>
+<code><big>census -k repertory1.krn</big></code>
+<br>
+<code><big>census -k repertory2.krn</big></code>
+</blockquote>
+</P>
+<P>
+Next we translate the scores to the
+<b>solfa</b>
+representation and use
+<b>grep -c</b>
+to count the number of occurrences of the number `fa':
+</P>
+<P>
+<blockquote>
+<code><big>solfa repertory1.krn | grep -c fa</big></code>
+<br>
+<code><big>solfa repertory2.krn | grep -c fa</big></code>
+</blockquote>
+</P>
+<P>
+The proportion of subdominant pitches can be calculated by
+simply comparing the resulting pattern count with the number
+of notes identified by
+<A HREF="commands/census.html"><b>census</b>.</A>
+</P>
+<P>
+Recall that one of the differences between the
+<A HREF="representations/solfa.rep.html"><code><big>**solfa</big></code></A>
+and
+<A HREF="representations/deg.rep.html"><code><big>**deg</big></code></A>
+representations is that the <code><big>**deg</big></code>
+output contains an indication of the direction of melodic
+approach.
+The caret (<b>^</b>) indicates approach from below, whereas
+the lower-case <b>v</b> indicates approach from above.
+Suppose we wanted to determine whether the dominant pitch
+is more commonly approached from above or from below.
+Assuming a monophonic input, we can once again use
+<b>grep</b>
+to answer this question.
+First let's count how many dominant pitches (`5') are approached
+from above (`v'):
+</P>
+<P>
+<blockquote>
+<code><big>deg repertory.krn | grep -c v5</big></code>
+</blockquote>
+</P>
+<P>
+The caret has a special meaning for
+<b>grep</b>
+which will be discussed in
+<A HREF="guide09.html">Chapter 9.</A>
+We can escape the special meaning by preceding the caret by
+a backslash.
+In order to count the number of dominant pitches approached
+from below we can use the following:
+</P>
+<P>
+<blockquote>
+<code><big>deg repertory.krn | grep -c \^5</big></code>
+</blockquote>
+</P>
+<P>
+Recall that some scale tones are spelled differently depending 
+on whether the mode is major or minor.
+For example, in A major the mediant pitch is C sharp; but in A minor
+the mediant pitch is C natural.
+The
+<b>deg</b>
+and
+<b>solfa</b>
+commands produce subtly contrasting outputs that make one or
+the other command better suited depending on the user's goal.
+The
+<b>deg</b>
+command would represent C sharp in A major, and C natural in A minor
+by the same scale degree -- <code><big>3</big></code>.
+In the key of A major, C natural would be characterized as a
+lowered mediant (<code><big>3-</big></code>) and in A minor, C sharp would be
+characterized as a raised mediant (<code><big>3+</big></code>).
+By contrast, the
+<b>solfa</b>
+command characterizes pitches with respect to the tonic alone
+and ignores the mode.
+Hence,
+<b>solfa</b>
+would designate C sharp as `<code><big>mi</big></code>' whether the key was A major or
+A minor.
+Similarly, C natural would be designated `<code><big>me</big></code>' in both A major
+and A minor.
+The differences between
+<b>deg</b>
+and
+<b>solfa</b>
+allow users to distinguish chromatically altered scale tones in
+a manner appropriate to the task.
+</P>
+<A NAME="Uses_for_Pitch_Translations">
+<H2>Uses for Pitch Translations</H2>
+</P>
+<P>
+Occasionally it is useful to process a given representation
+to the
+<i>same</i>
+representation.
+The
+<A HREF="commands/kern.html"><b>kern</b></A>
+command translates various pitch-related representations to the <code><big>**kern</big></code>
+format.
+The
+<b>-x</b>
+option eliminates any input data that do not pertain to pitch.
+When applied to a <code><big>**kern</big></code> input, this option allows us to
+filter out durations, articulation marks,
+phrasing, and other non-pitch data.
+Suppose, for example, that we wanted to determine the proportion
+of successively repeated notes in a vocal melody:
+how often is a pitch followed immediately by the same pitch?
+We might begin by first determining the total number of notes in the melody
+using <b>census</b> with the <b>-k</b> option.
+</P>
+<P>
+<blockquote>
+<code><big> census -k melody.krn</big></code>
+</blockquote>
+</P>
+<P>
+We can use the
+<b>uniq</b>
+command to eliminate successive repeated pitches -- but only
+if the note tokens are identical.
+First we can use
+<A HREF="commands/kern.html"><b>kern -x</b></A>
+to translate "from <code><big>**kern</big></code> to <code><big>**kern</big></code>" while
+eliminating non-pitch-related data.
+Then we need to remove barlines so they don't interfere with
+pitches that are repeated across the measure.
+Using
+<b>uniq</b>
+will then eliminate all of the successively duplicated records,
+so a sequence of six G's will be reduced to a single G.
+Finally, we pipe the output to
+<b>census -k</b>
+to count the total number of notes.
+</P>
+<P>
+<blockquote>
+<code><big>kern -x melody.krn | uniq | census -k</big></code>
+</blockquote>
+</P>
+<A NAME="Standardize_Enharmonic_Pitches"
+<P>
+A variation on this approach would entail translating to a
+representation that does not distinguish enharmonic pitches.
+For example, translating our melody to
+<A HREF="representations/semits.rep.html"><code><big>**semits</big></code></A>
+and
+then back to
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+will standarize all of the enharmonic spellings.
+If our melody contains a G-sharp that undergoes an enharmonic
+shift to A-flat, then the pitches will be deemed identical.
+The following command carries out the same task as above,
+but ignores possible enharmonic spellings:
+</P>
+<P>
+<blockquote>
+<code><big>semits melody.krn | kern | uniq | census -k</big></code>
+</blockquote>
+</P>
+<P>
+Incidentally, given <code><big>**semits</big></code> input, the
+<b>kern</b>
+command will spell pitches according to any key or key signatures
+it encounters.
+For example, if the key signature contains sharps, then G-sharp
+will be output;
+if the key or key signature contains flats,
+then A-flat will be output.
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+In this chapter we have introduced a number of pre-defined
+pitch-related representations.
+Simple commands can be used to translate from one representation to another.
+Which representation is most appropriate depends on the user's goal.
+</P>
+<P>
+There is a wealth of other representation formats related to
+pitch distances, tablatures, timing, and other types of musical information.
+These representations will be explored in later chapters.
+In addition, we'll describe how to design your own representations
+--  representations that may be better tailored to a specific application.
+However, before we continue discussing further representations,
+this is an appropriate point to present a more formal description
+of the general Humdrum representation syntax.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide05.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide03.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

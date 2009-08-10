@@ -1,0 +1,24 @@
+
+PERFORM   : Play Humdrum **MIDI files (DOS systems only).
+
+    This command provides an interactive, stream-oriented MIDI-sequencer for
+    proof-listening and auditioning of **MIDI-format inputs.
+
+Some Interactive commands:                         <cr>: return to beginning
+    <ESC>       : terminate perform                  p : panic reset
+    <space>     : pause; suspend playback            < : reduce tempo
+    /<string>   : search forward for string          > : increase tempo
+    ?<string>   : search backward for string    <num>- : back <num> measures
+    <num><cr>   : go to measure <num>           <num>+ : forward <num> measures
+
+Syntax:
+
+    perform [-g] [-i hex] [-t n.n] [-v n] [inputfile]
+
+Options:
+
+    -g     : suppress echoing of global comments on standard output
+    -i hex : assign MIDI input/output address to hex
+    -t n.n : set initial tempo to n.n times the default tempo
+    -v n   : set default MIDI key-velocity value: 0 (slow) to 127 (fast)
+

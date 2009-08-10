@@ -1,0 +1,592 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Command Reference -- yank</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</P>
+</P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>COMMAND</H3></FONT>
+<b>yank</b>  --  extract passages from a Humdrum input
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SYNOPSIS</H3></FONT>
+<code><big>
+<b>yank</b>  [<b>-c</b>]  <b>-l  -r</b>  <i>range</i>  [<i>inputfile ...</i>]
+<br>
+<b>yank</b>  [<b>-c</b>]  <b>-m</b>  <i>regexp</i>  <b>-r</b>  <i>range</i>  [<i>inputfile ...</i>]
+<br>
+<b>yank</b>  [<b>-c</b>]  <b>-n</b>  <i>regexp</i>  <b>-r</b>  <i>range</i>  [<i>inputfile ...</i>]
+<br>
+<b>yank</b>  [<b>-c</b>]  <b>-o</b>  <i>regexp</i>  [<b>-e</b>  <i>regexp</i>]  <b>-r</b>  <i>range</i>  [<i>inputfile ...</i>]
+<br>
+<b>yank</b>  [<b>-c</b>]  <b>-s</b>  <i>section_label</i>  <b>-r</b>  <i>range</i>  [<i>inputfile ...</i>]
+</code></big>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>DESCRIPTION</H3></FONT>
+The
+<b>yank</b>
+command permits the selective extraction of segments or passages
+from a Humdrum input.
+Yanked material may consist of specified input records
+--  addressed by absolute line number, or relative to some marker.
+In addition,
+<b>yank</b>
+is able to output logical segments
+(such as measures, phrases, or labelled sections),
+and is able to output material according to content.
+The output always consists of complete records;
+<b>yank</b>
+never outputs partial contents of a given input record.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>OPTIONS</H3></FONT>
+The
+<b>yank</b>
+command provides the following options:
+<blockquote><TABLE>
+<TR><TD><b>-c</b></TD><TD>include all comments prior to the yanked material in the output</TD></TR>
+<TR><TD><b>-e <i>regexp</i></TD><TD>define end-delimiter for yanked segments as <i>regexp</i>; used with <b>-o</i></TD></TR>
+<TR><TD><b>-h</b></TD><TD>displays a help screen summarizing the command syntax</TD></TR>
+<TR><TD><b>-l</i></TD><TD>yank all lines whose line numbers appear in <b>-r <i>range</i></TD></TR>
+<TR><TD><b>-m <i>regexp</i></TD><TD>yank lines matching <i>regexp</i> listed in <b>-r <i>range</i></TD></TR>
+<TR><TD><b>-n <i>regexp</i></TD><TD>yank segments delineated by <i>regexp</i> according to cardinal <b>-r <i>range</i></TD></TR>
+<TR><TD><b>-o <i>regexp</i></TD><TD>yank segments delineated by <i>regexp</i> according to ordinal <b>-r <i>range</i></TD></TR>
+<TR><TD><b>-r <i>range</i></TD><TD>yank section in ranges listed in <i>range</i>; used with <b>-l</i>, <b>-m</i>, <b>-n</i>, <b>-o</i> and <b>-s</i></TD></TR>
+<TR><TD><b>-s <i>section</i></TD><TD>yank section labelled <i>section</i> according to <b>-r <i>range</i></TD></TR>
+</TABLE></blockquote>
+Options are specified in the command line.
+</P>
+<P>
+The simplest operation for <b>yank</b> occurs when the
+<b>-l</b>
+option is specified.
+In this case
+<b>yank</b>
+echoes those lines in the input stream whose line-numbers appear in
+a specified
+<i>range.</i>
+The
+<i>range</i>
+consists of one of more integers separated by commas;
+inclusive ranges can be specified by separating two integers by a dash (-).
+For example, the following command selects lines, 5, 13, 23, 24, 25, and 26
+from the file named <code><big>dvorak</big></code>:
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -l -r 5,13,23-26 dvorak
+</blockquote>
+</code></big>
+</P>
+<P>
+The dollar sign ($) can be used to refer to the last record
+in the input.
+For example, the following command yanks the first and last
+records from the file <code><big>verdi</big></code>.
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -l -r '1,$' verdi
+</blockquote>
+</code></big>
+</P>
+<P>
+(Note that single quotes may be needed in regular expressions
+and range specifications in order to prevent the shell from
+misinterpreting characters such as the dollar sign or the asterisk.)
+Records prior to the end of the input can be specified by subtracting
+some value from $.
+For example, the following command yanks the first 20 records
+of the last 30 records contained in the file <code><big>ginastera</big></code>.
+(Notice that the dash/minus sign is used both to convey a range
+and as an arithmetic operator.)
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -l -r '$-30-$-10' ginastera
+</blockquote>
+</code></big>
+</P>
+<P>
+In addition to the specified output lines,
+<b>yank</b>
+also outputs interpretations and comments as described below
+(see <A HREF="#INTERPRETATIONS AND COMMENTS">INTERPRETATIONS AND COMMENTS</A>).
+</P>
+<P>
+Alternatively,
+<b>yank</b>
+can output lines relative to some user-defined
+<i>marker.</i>
+This mode of operation can be invoked using the
+<b>-m</b>
+option.
+Markers are specified as regular expressions.
+The following command outputs the first and third data records
+following each occurrence of the string "XXX" in the file <code><big>wieck</big></code>.
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -m XXX -r 1,3 wieck
+</blockquote>
+</code></big>
+</P>
+<P>
+The
+<b>-r</b>
+option is used to specify the range.
+If the value zero ("0") is specified in the range, then the record containing
+the marker is itself output.
+</P>
+<P>
+Since markers are interpreted by
+<b>yank</b>
+as regular expressions, complex markers can be defined.
+For example, the following command yanks the first data record
+following all occurrences of any record in the file <code><big>franck</big></code>
+beginning with a letter and ending with a number:
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -m '^[a-zA-Z].*[0-9]$' -r 1 franck
+</blockquote>
+</b></code></big>
+</P>
+<P>
+In musical applications, it is often convenient to yank
+material according to logical segments such as measures or phrases.
+In order to access such segments, the user must specify a segment
+<i>delimiter</i>
+using the
+<b>-o</b>
+or the
+<b>-o</b>
+and
+<b>-e</b>
+options.
+For example, common system barlines are represented by
+the presence of an equals-sign (=)
+at the beginning of a data token.
+Thus the user might yank specific measures from a
+<code><big>
+**kern
+</code></big>
+file by defining the appropriate barline delimiter and providing a range of
+(measure) numbers.
+Consider the following command:
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -o ^= -r 1,12-13,25 joplin
+</blockquote>
+</code></big>
+</P>
+<P>
+Unlike the
+<b>-m</b>
+option, the
+<b>-o</b>
+option interprets the range list as ordinal occurrences of segments
+delineated by the delimiter.
+Whole segments are output rather than specified records as
+is the case with
+<b>-m.</b>
+As in the case of markers, delimiters are interpreted according to
+regular expression syntax.
+Each input record containing the delimiter is regarded as the
+<i>start</i>
+of the next logical segment.
+In the above command, the command-line range specifies that the first,
+twelfth, thirteenth, and twenty-fifth logical segments (measures)
+are to be yanked from the file named <code><big>joplin</big></code>.
+All records starting with the delimiter record are output up to,
+but not including the next occurrence of a delimiter record.
+</P>
+<P>
+Where the input stream contains data prior to the first delimiter record,
+this data may be addressed as logical segment "zero."
+For example,
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -o '^=' -r 0 mahler
+</blockquote>
+</code></big>
+</P>
+<P>
+can be used to yank all records prior to the first common system barline.
+With the
+<b>-o</b>
+option, notice that
+<i>actual</i>
+measure numbers are irrelevant:
+<b>yank</b>
+selects segments according to their
+<i>ordinal</i>
+position in the input stream rather than according to their
+<i>cardinal</i>
+label.
+</P>
+<P>
+When the
+<b>-n</b>
+option is invoked, however,
+<b>yank</b>
+expects a numerical value to be present in the input immediately following the
+user-specified delimiter.
+In this case,
+<b>yank</b>
+selects segments based on their numbered label rather than their ordinal
+position in the input.
+For example,
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -n ^= -r 12 goldberg
+</blockquote>
+</b></code></big>
+</P>
+<P>
+will yank all segments begining with the label <code><big>=12</big></code> in the input
+file <code><big>goldberg</big></code>.
+If more than one segment carries the specified segment number(s),
+all such segment are output.
+Note that the dollar-sign anchor cannot be used in the range expression
+for the
+<b>-n</b>
+option.
+Note also that input tokens containing non-numeric characters appended
+to the number will have no effect on the pattern match.
+For example, input tokens such as <code><big>=12a, =12b</big></code>, or <code><big>=12</big></code>;
+will be treated as equivalent to <code><big>=12</big></code>.
+</P>
+<P>
+As in the case of the
+<b>-o</b>
+option, the value zero ("0") addresses material prior to the first
+delimiter record.
+Like the
+<b>-o</b>
+option, the value zero may be reused for each specified input file.
+Thus, if <code><big>file1, file2</big></code> and <code><big>file3</big></code> are Humdrum files:
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -n ^= -r 0 file1 file2 file3
+</blockquote>
+</code></big>
+</P>
+<P>
+will yank any leading (anacrusis) material in each of the three files.
+</P>
+<P>
+When the
+<b>-s</b>
+option is invoked,
+<b>yank</b>
+extracts passages according to Humdrum section labels
+encoded in the input.
+Humdrum section labels are tandem interpretations that conform to
+the syntax:
+</P>
+<P>
+<code><big>
+*><i>label_name</i>
+</code></big>
+</P>
+<P>
+Labels are frequently used to indicate formal divisions, such as,
+coda, exposition, bridge, second ending, trio, minuet, etc.
+The following command yanks the second instance of a section
+labelled <code><big>First Theme</code></big> in the file <code><big>haydn08</code></big>:
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -s 'First Theme' -r 2 haydn08
+</blockquote>
+</code></big>
+</P>
+<P>
+Note that with "through-composed" Humdrum files
+it is possible to have more than one section containing
+the same section-label.
+(See the
+<A HREF="thru.html"><b>thru</b></A>
+command.)
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<A NAME="INTERPRETATIONS AND COMMENTS">
+<FONT color="0000FF"><H3>INTERPRETATIONS AND COMMENTS</H3></FONT>
+If
+<b>yank</b>
+is given a Humdrum input, it always produces a syntactically
+correct Humdrum output.
+All interpretations prior to and within the yanked
+material are echoed in the output.
+The
+<b>yank</b>
+command also appends the appropriate spine-path terminators at
+the end of the yanked segment.
+</P>
+<P>
+Any comments
+<i>prior</i>
+to the yanked passage may be included in
+the output by specifying the
+<b>-c</b>
+option.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>EXAMPLES</H3></FONT>
+The following examples illustrate how the
+<b>yank</b>
+command may be used.
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -l -r 1120 messiaen
+</blockquote>
+</code></big>
+</P>
+<P>
+yanks line 1120 in the file <code><big>messiaen</big></code>.
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -n ^= -r 27 sinfonia
+</blockquote>
+</code></big>
+</P>
+<P>
+yanks numbered measures 27 from the <code><big>**kern</big></code> file <code><big>sinfonia</big></code>.
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -n ^= -r 10-20 minuet waltz
+</blockquote>
+</b></code></big>
+</P>
+<P>
+yanks numbered measures 10 to 20 from
+<i>both</i>
+the <code><big>**kern</big></code> files <code><big>minuet</big></code> and <code><big>waltz</big></code>.
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -o ^= -r '0,$' fugue ricercar
+</blockquote>
+</b></code></big>
+</P>
+<P>
+yanks any initial anacrusis material plus the final measure
+of both <code><big>fugue</big></code> and <code><big>ricercar</big></code>.
+</P>
+<P>
+<code><big>
+cat fugue ricercar | yank -o ^= -r '0,$'
+</code></big>
+</P>
+<P>
+yanks any initial anacrusis material from the file <code><big>fugue</big></code> followed
+by the final measure of <code><big>ricercar</big></code>.
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -n 'Rehearsal Marking ' -r 5-7 fugue ricercar
+</blockquote>
+</code></big>
+</P>
+<P>
+yanks segments beginning with the strings
+<code><big>
+"Rehearsal Marking 5," "Rehearsal Marking 6,"
+</code></big>
+and
+<code><big>
+"Rehearsal Marking 7."
+</code></big>
+Segments are deemed to end when a record is encountered containing
+the string
+<code><big>
+"Rehearsal Marking ".
+</code></big>
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -o { -e } -r '1-$' webern
+</blockquote>
+</code></big>
+</P>
+<P>
+yanks all segments in the file <code><big>webern</big></code> beginning with a record
+containing "{" and ending with a record containing "}."
+The command:
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -o { -e } -r '1-4,$-3-$' faure
+</blockquote>
+</code></big>
+</P>
+<P>
+yanks the first four and last four segments in the file <code><big>faure</big></code>
+--  where segments begin with an open brace ({) and end with a
+closed brace (}).
+In the <code><big>**kern</big></code> representation, this would extract the
+first and last four phrases in the file.
+</P>
+<P>
+<code><big>
+<blockquote>
+yank -s Coda -r 1 stamitz
+</blockquote>
+</code></big>
+</P>
+<P>
+will yank the first occurrence of a section labelled <code><big>Coda</big></code>
+in the file <code><big>stamitz</big></code>.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>WARNINGS</H3></FONT>
+Where integer ranges are specified in the
+<b>yank</b>
+range-list, overlapping values are collapsed.
+For example, the command <code><big>yank -l -r 5-7,6-8</big></code> is interpreted as
+equivalent to <code><big>yank -l -r 5-8</big></code>;
+lines 6 and 7 will be echoed only once in the output stream.
+If the user wishes to have multiple occurrences of material in the
+output stream, the
+<b>yank</b>
+command can be invoked more than once
+(e.g. <code><big>yank -l -r 5-7 ...; yank -l -r 6-8 ...</big></code>).
+</P>
+<P>
+Note that yanked segments cannot be output in an order other
+than their order in the input.
+For example, assuming that measure numbers in an input stream
+increase sequentially,
+<b>yank</b>
+is unable to output measure number 6 prior to outputting measure number 5.
+Once again, the order of output material can be rearranged by
+invoked the
+<b>yank</b>
+command more than once
+(e.g. <code><big>yank -l -r 100 ...; yank -l -r 99 ...;
+yank -l -r 98 ...</big></code>).
+</P>
+<P>
+In the case of the
+<b>-m</b>
+option, note that range elements cannot address records more than one
+marker away from the current marker.
+For example, in a file where markers occur every 10 records,
+range expressions such as <code><big>`25'</big></code> and <code><big>`$-17'</big></code> will result
+in no output.
+In addition, range expressions such as <code><big>`1-25'</big></code>
+and <code><big>`$-17-$'</big></code> will have the same effect as <code><big>`1-10'</big></code>
+and <code><big>`$-9-$</big></code>.
+Note also that for the same input file, the range expression <code><big>`6-$-7'</big></code>
+will result in no output.
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>FILES</H3></FONT>
+The files <code><big>find_reg.awk</big></code>, <code><big>findpair.awk</big></code> and <code><big>number.awk</big></code>
+are used by
+<b>yank.</b>
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>PORTABILITY</H3></FONT>
+DOS 2.0 and up, with the MKS Toolkit.
+OS/2 with the MKS Toolkit.
+UNIX systems supporting the
+<i>Korn</i>
+shell or
+<i>Bourne</i>
+shell command interpreters, and revised
+<i>awk</i>
+(1985).
+</P>
+<P>
+<center><HR WIDTH=500></center>
+<FONT color="0000FF"><H3>SEE ALSO</H3></FONT>
+<code><big>
+<b>awk</b> (UNIX),
+<A HREF="extract.html">
+<b>extract</b></A> (4),
+<b>grep</b> (UNIX),
+<b>egrep</b> (UNIX),
+<A HREF="patt.html">
+<b>patt</b></A> (4),
+<A HREF="pattern.html">
+<b>pattern</b></A> (4),
+<A HREF="regexp.html">
+<b>regexp</b></A> (4),
+<b>regexp</b> (6),
+<A HREF="timebase.html">
+<b>timebase</b></A> (4),
+<A HREF="thru.html">
+<b>thru</b></A> (4)
+</i></b></code></big>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="../guide12.html#Extracting_Passages:_The_yank_Command">
+<B>Pertinent description in the Humdrum User Guide</B></A>
+<li>
+<A HREF="../commands.toc.html">
+<B>Index to Humdrum Commands</B></A>
+<li>
+<A HREF="../guide.toc.html">
+<B>Table for Contents for Humdrum User Guide</B></A>
+</ul>
+<br><br>
+
+</BODY>
+</HTML>

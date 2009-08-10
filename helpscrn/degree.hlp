@@ -1,0 +1,23 @@
+
+
+DEGREE     : Converts various pitch representations to absolute scale degree.
+
+     This command translates kern, pitch, solfg and other pitch-
+     related units to **degree (i.e. absolute scale degree).
+
+Inputs processed:
+
+     **kern,    **pitch,   **solfg,   **Tonh
+
+Syntax:
+
+     degree [-tx] [file ...]
+
+Options:
+
+     -t     : suppresses outputting of all but first note for groups of
+              tied notes
+     -x     : suppresses outputting of non-degree data
+
+  Refer to reference manual for further details.
+

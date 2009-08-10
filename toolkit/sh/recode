@@ -1,0 +1,112 @@
+###################################################################
+# 					RECODE.KSH
+# Programmed by: Tim Racinsky        Date: July, 1993
+# Copyright (c) 1993 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+# June 7/94	Tim Racinsky	Modified to use with getopts
+#
+#
+# 	This shell program is used to invoke the awk recode program.awk.
+#
+# These variables will be used in the shell script
+FILENAME=""
+OPTIONS=""
+HELP=""
+FLAG=""
+STNDIN=""
+REG_EXP=""
+INTERP=""
+REASSIGN=""
+#
+# Fill in the appropriate command usage here
+USAGE1="USAGE: recode -h                 (Help Screen)"
+USAGE2="       recode [-x] [-s reg_exp] -i **interpretation -f reassign [file ...]"
+# 
+while getopts f:hi:s:x arg
+do
+	case "$arg" in
+	s) 	OPTIONS="$OPTIONS${arg}"
+		REG_EXP="${OPTARG}";;
+	i) 	INTERP="${OPTARG}";;
+	h) 	HELP="ON";;
+	f)	if [ ! -f "${OPTARG}" ]
+		then
+			echo "recode: ERROR: Invalid filename specified with -f." 1>&2
+			echo "" 1>&2
+			echo "$USAGE1" 1>&2
+			echo "$USAGE2" 1>&2
+			exit
+		else
+			REASSIGN="${OPTARG}"
+		fi;;
+     x)	OPTIONS="$OPTIONS${arg}";;
+	[?])
+		echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If no parameters were specified, print out a help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/recode.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/recode.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Must specify a target interpretation
+if [ "X$INTERP" = X ]
+then
+	echo "recode: ERROR: Must specify a target interpretation." 1>&2
+	echo "" 1>&2
+	echo "$USAGE1" 1>&2
+	echo "$USAGE2" 1>&2
+	exit
+fi
+# Must specify a reassign file
+if [ "X$REASSIGN" = X ]
+then
+	echo "recode: ERROR: Must specify a reassign file." 1>&2
+	echo "" 1>&2
+	echo "$USAGE1" 1>&2
+	echo "$USAGE2" 1>&2
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' may be used
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "recode: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ "X$FILENAME" = X -a -n "$FLAG" ]
+then
+	exit
+fi	
+$AWK_VER -f ${HUMDRUM}/bin/recode.awk "DUMMY" "${OPTIONS:-null}" "${REG_EXP:-null}" "$INTERP" "$REASSIGN" $FILENAME

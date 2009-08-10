@@ -1,0 +1,293 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH key 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+\fBkey\fR  --  estimate the key for a Humdrum passage
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+\fBkey\fR  [\fB-af\fR]  [\fIinputfile\fR ...]
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "key"
+command estimates the key of a given musical passage using
+Krumhansl's tonal hiearchy method.
+The command is restricted to identifying only those keys within
+the common major/minor tonal system.
+Modes outside the major/minor system are not recognized.
+.sp 1
+.sp 1
+The input may be either
+**semits
+or
+**kern
+representations.
+The program adapts to input having varying
+numbers spines each with a different interpretation.
+.sp 1
+.sp 1
+The non-optional output consists of three items of information:
+.AL
+.LI
+the
+.I "estimated key"
+for the passage,
+.LI
+a
+.I "coefficient of correlation"
+(Pearson's \(odr\(cd) that measures how well the pitch organization of the
+musical passage conforms to an idealized major or minor key template, and
+.LI
+a
+.I "confidence score"
+that indicates how distinctive the key-match is compared with other
+competing keys.
+A confidence score of 100% indicates a very strong confidence in the
+key estimate;
+low confidence scores indicate that there is at least one other key that
+is a good alternative candidate.
+.LE
+.sp 1
+.sp 1
+The algorithm is based on Krumhansl's perceptually-based key-finding method
+(see reference).
+This method compares a given pitch-class
+frequency profile with two perceptually-determined prototypes
+(one each for major and minor modes).
+The coefficients used for these prototypes are those
+determined by Krumhansl & Kessler (1982).
+In order for the algorithm to work properly, durational information
+ought to be provided.
+When using
+**semits
+format input, best results are achieved when
+the input has a
+.I "time-base"
+format.
+(See the
+.B "timebase (1)"
+command.)
+.sp 1
+.sp 1
+The
+.B "key"
+command is poor at distinguishing less common enharmonic keys.
+For example, it is unable to distinguish the following enharmonic spellings
+for tonic pitches: C-flat, B-sharp, E-sharp, F-flat.
+Also,
+.B "key"
+is unable to distinguish enharmonic spellings involving
+double- or triple- sharps or flats.
+That is, G double-sharp major is identified as A major.
+KEY is able to distinguish the
+more common enharmonic spellings (such as E-flat versus D-sharp).
+.sp 1
+.sp 1
+There is no special output file-type designation.
+.in -2
+.sp 1
+.sp 1
+.SH "OPTIONS"
+.in +2
+The
+.B "key"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-a\fR	output correlation values for all keys
+\fB-f\fR	output frequencies for all pitch-classes
+\fB-h\fR	displays a help screen summarizing the command syntax
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The
+.B "-a"
+option will show all of the correlation coefficients
+for all 24 of the (enharmonic) major and minor keys.
+.sp 1
+.sp 1
+The
+.B "-f"
+option will output the relative frequencies for each of
+the twelve chromatic pitch classes (in quarter-note durations).
+.in -2
+.sp 1
+.sp 1
+.SH "SAMPLE OUTPUT"
+.in +2
+Without any options, typical outputs are of the following form:
+.sp 1
+.sp 1
+.in +2
+Estimated key: B minor (r=0.8442)  confidence: 51.3%
+.in -2
+.sp 1
+.sp 1
+With both the
+.B "-f"
+and
+.B "-a"
+options invoked, a typical output is given below.
+The
+.B "-f"
+option causes 12 pitch-class tallies to be outputted.
+These values are given in acculumated whole-note durations.
+For example, the output: \(odPC[5]: 4.25\(cd means that the
+enharmonic pitch-class \(odF\(cd appears in the passage for the
+equivalent of 4 whole-notes plus a quarter-note duration.
+If inputs do not include durational information (such as in
+**semits
+input), each note is assigned the nominal duration of a quarter-note.
+.in +2
+PC[0]: 5.50617
+.br
+PC[1]: 0.375
+.br
+PC[2]: 6.1875
+.br
+PC[3]: 0
+.br
+PC[4]: 5.625
+.br
+PC[5]: 4.25
+.br
+PC[6]: 1.25
+.br
+PC[7]: 5.6875
+.br
+PC[8]: 0.5
+.br
+PC[9]: 4.625
+.br
+PC[10]: 0.625
+.br
+PC[11]: 4.40625
+.br
+Tonic[0]  major  0.791744     minor  0.0962456
+.br
+Tonic[1]  major -0.747033     minor -0.337397
+.br
+Tonic[2]  major  0.506935     minor  0.535771
+.br
+Tonic[3]  major -0.404982     minor -0.720203
+.br
+Tonic[4]  major  0.0308014    minor  0.64007
+.br
+Tonic[5]  major  0.475928     minor -0.13113
+.br
+Tonic[6]  major -0.735928     minor -0.157988
+.br
+Tonic[7]  major  0.772586     minor  0.205276
+.br
+Tonic[8]  major -0.574103     minor -0.487743
+.br
+Tonic[9]  major  0.232566     minor  0.66303
+.br
+Tonic[10] major -0.014411     minor -0.625767
+.br
+Tonic[11] major -0.334105     minor  0.319835
+.br
+Estimated key: C major  (r=0.7917)   confidence:   5.7%
+.in -2
+The
+.B "-a"
+option causes the tonic major and minor correlations to be
+printed for each pitch-class.
+Good key matches have a high positive correlation;
+the maximum value is 1.0.
+.sp 1
+.sp 1
+In the above sample output, notice that the confidence score for the
+predicted key of C major (Tonic[0]) is quite low.
+The reason for this is that the correlation coefficient for A minor
+(Tonic[9]) is rather close to that for C major (0.791744 versus 0.66303)
+Note that confidence scores may be used as a simple index
+for estimating the tonal ambiguity or degree of chromaticism for a passage.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fB**kern\fR (2), \fBkern\fR (1), \fB**semits\fR (2),
+\fBsemits\fR (1), \fBtimebase\fR (1)
+.in -2
+.sp 1
+.sp 1
+.SH "WARNINGS"
+.in +2
+As noted,
+.B "key"
+is very limited.
+When used to find \(odthe key\(cd of a particular work,
+it frequently produces incorrect results.
+In particular, for much tonal music,
+.B "key"
+has a tendency to mistakenly identify the dominant of the
+key rather than the tonic.
+See also the discussion under \(odproposed modifications.\(cd
+.in -2
+.sp 1
+.sp 1
+.SH "BUGS"
+.in +2
+The current version does not handle multiple stops in
+**kern
+spines.
+.in -2
+.sp 1
+.sp 1
+.SH "NOTES"
+.in +2
+Currently the program is sensitive to
+**semits
+and
+**kern
+interpretations.
+If no recognizable interpretation is
+given in the input stream,
+.B "key"
+assumes
+**kern
+compatible input.
+This may lead to erroneous results.
+.in -2
+.sp 1
+.sp 1
+.SH "REFERENCES"
+.in +2
+Krumhansl, C.
+.I "Cognitive Foundations of Musical Pitch,"
+Oxford: Oxford University Press, 1990, Chapter 4.
+.sp 1
+.sp 1
+Krumhansl, C. L. & Kessler, E. J.
+\(odTracing the dynamic changes in perceived tonal organization in a spatial
+representation of musical keys,\(cd
+.I "Psychological Review,"
+Vol. 89 (1982) pp.334-368.
+.in -2

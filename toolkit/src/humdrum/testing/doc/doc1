@@ -1,0 +1,34 @@
+!! This is a global comment.
+!! The following line specifies three
+!! interpretations called "inter":
+**inter	**inter	**inter
+!! The next line has three local comments
+! flute	! oboe	! fingering
+We	are	ASCII
+data	tokens	.
+We are	data as	well.
+!! The above three lines are data records.
+!! More examples of data records:
+76.3	x+y	L(-)%4^
+_ _ _	_ _	_ _ _ _ _
+>	<	|||
+!! The next data record contains
+!! only null tokens:
+.	.	.
+!! Some spine-path exchanges:
+!Spine1	!Spine2	!Spine3
+*x	*x	*
+*	*x	*x
+!Spine2	!Spine3	!Spine1
+Monday	Tuesday	Wednesday
+4:00	5:00	6:00PM
+!! Some null comments follow:
+!!
+!	!	!
+!! New exclusive interpretations:
+**foo	**bar	**ding
+!! A tandem interpretation in spine #2:
+*	*bop	*
+More	data	tokens.
+!! Some spine-path terminators:
+*-	*-	*-

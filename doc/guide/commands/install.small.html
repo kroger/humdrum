@@ -1,0 +1,1763 @@
+<HTML>
+<HEAD>
+<TITLE>Humdrum Toolkit Installation Guide</TITLE>
+<link href="../../Humdrum.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+
+<BODY>
+
+<table id="header" width="100%">
+  <caption></caption>
+  <tbody>
+    <tr>
+      <td valign="middle"><img alt=" " src="../../HumdrumIcon.gif"></td>
+      <td align="center" valign="middle"><img alt="Humdrum "
+        src="../../HumdrumHeader.gif"></td>
+      <td align="right" valign="middle"><img alt=" "
+        src="../../HumdrumSpacer.gif"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<br>
+<CENTER>
+<H1>Installing Individual Humdrum Commands</H1>
+</CENTER>
+<P>
+<CENTER>
+<B>This document provides quick assistance for installing
+individual Humdrum commands.</B>
+<br>
+<br>
+<B>If you wish to install the complete Humdrum Toolkit, please
+refer to the full-text <A HREF="../install.html">Installation Guide.</A></B>
+</CENTER>
+</P>
+
+Click on one of the following options:
+<ul>
+<li>
+<B><A HREF="#First Time Installation">I am installing a Humdrum tool
+for the first time.</A></B>
+<br>
+<br>
+<li>
+<B><A HREF="#Adding a New Tool">I already have some Humdrum tools
+working on my system and want to add a new tool.</A></B>
+</ul>
+<hr>
+<A NAME="Adding a New Tool">
+<H2>Adding a New Tool</H2>
+<P>
+If you have previously installed Humdrum tools on
+your system, then the following actions should make
+the tool available for use on your system:
+<blockquote>
+cp <commandname> $HUMDRUM/bin
+<br>
+cp <commandname.awk> $HUMDRUM/bin
+<br>
+chmod +x $HUMDRUM/bin/commandname
+</blockquote>
+</P>
+<P>
+Note that most Humdrum commands consist of two files.
+The first file is the same as the name of the command
+(e.g. <code><big>census</big></code>).
+The second file typically adds the <code><big>.awk</big></code>
+extension.
+</P>
+For example, the "census" command might be installed
+by typing:
+<blockquote>
+cp census $HUMDRUM/bin
+<br>
+cp census.awk $HUMDRUM/bin
+<br>
+chmod +x $HUMDRUM/bin/census
+</blockquote>
+</P>
+<hr>
+<hr>
+<A NAME="First Time Installation">
+<H2>First Time Installation</H2>
+
+<P>
+Indicate which operation system you are using:
+<ul>
+<li><A HREF="#Unix">Unix, Linux, Solaris, HPUX, BSD,
+or other Unix system</A></B>
+<br>
+<br>
+<li><A HREF="#Windows">DOS, OS/2, Windows, Windows95/98,
+Windows 2000, Windows NT</A></B>
+<br>
+<br>
+<li><A HREF="#OSX">Macintosh OS X</A></B>
+<br>
+<br>
+<li><A HREF="#Mac">Other Macintosh system</A></B>
+</ul>
+</P>
+<blockquote>
+<ul>
+<li>
+<A HREF="#HAVE">What You Should Have.</A>
+<li>
+<A HREF="#NEED">What You Need.</A>
+<li>
+<A HREF="#PRELIMINARIES">Installation Preliminaries.</A>
+<li>
+<A HREF="#DOS">Automatic Installation on Windows NT, Windows 95/98, Windows 3.X, DOS and OS/2.</A>
+<li>
+<A HREF="#UNIX">Automatic Installation on UNIX.</A>
+<li>
+<A HREF="#UNIX_MORE">Additional Information for UNIX Users.</A>
+<li>
+<A HREF="#MAC">Installation on Apple Systems Using MachTEN.</A>
+<li>
+<A HREF="#MIDI">MIDI Configuration.</A>
+<li>
+<A HREF="#QUICK">Quick-Start Tutorial.</A>
+<li>
+<A HREF="#HOW_WORKS">How Humdrum Works.</A>
+<li>
+<A HREF="linux.perform.html">Installing Version 2.0 of the "perform" command.</A>
+<li>
+<A HREF="#TIPS">Trouble-Shooting Tips.</A>
+</ul>
+</blockquote>
+</P>
+<P>
+<b>IMPORTANCE NOTICE:</b>
+PLEASE READ THIS INSTALLATION GUIDE CAREFULLY BEFORE YOU BEGIN.
+Since this software is not a commercial product,
+no user support is available.
+Your comments and suggestions are welcome, although we cannot
+guarantee that your correspondence will be answered.
+This
+<i>Installation Guide</i>
+and the
+<A HREF="index.html">
+<B>associated documentation</B></A>
+are your principal sources of information.
+</P>
+<A NAME="DOS">
+<hr>
+<P>
+The Humdrum tools were designed to work under the UNIX operating system.
+The Humdrum tools will also work under Windows 95/98/NT, DOS
+or OS/2 environments
+provided the user has access to UNIX utilities
+for DOS or OS/2.
+In all systems, the Humdrum tools must be invoked using the
+<i>Kornshell</i>
+or
+<i>Bourne shell</i>
+command interpreters.
+Under LINUX the compatible
+<i>Bash</i>
+shell interpreter can be used provided the shell <code><big>getopts</big></code>
+function is available.
+The Humdrum Tools can also be run under the C-shell (csh) or TC-shell (tsch)
+with some modifications.
+</P>
+</P>
+<A NAME="NEED">
+<hr>
+<H2>What You Need</H2>
+<P>
+<blockquote>
+<b>UNIX Users:</b>
+<blockquote><TABLE>
+<TR><TD></TD></TR>
+<TR><TD>If you are using UNIX, you need the following:</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD>(1)</TD><TD>At least 5 megabytes of free disk space</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>(2)</TD><TD><i>AWK</i> (1985 revision) -- also known as <i>nawk</i>, <i>gawk</i></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>(3)</TD><TD>Either the <i>Kornshell</i> or <i>Bourne</i> shell command interpreter</TD></TR>
+<TR><TD></TD></TR>
+</TABLE></blockquote>
+<b>Windows 95/98/NT, Windows 3.X, DOS Users:</b>
+<blockquote><TABLE>
+<TR><TD></TD></TR>
+<TR><TD>If you are using DOS, you need the following:</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD>(1)</TD><TD>An IBM-PC or PC-compatible computer</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>(2)</TD><TD>At least 5 megabytes of free disk space</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>(3)</TD><TD>At least 512 kilobytes of internal memory</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>(4)</TD><TD>DOS operating system; version 2.1 or later</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>(5)</TD><TD>UNIX utilities for DOS, including <i>AWK</i> and <i>Kornshell</i>&#167     </TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>(6)</TD><TD>Roland MPU-401 or compatible MIDI card (optional)</TD></TR>
+<TR><TD></TD></TR>
+</TABLE></blockquote>
+</blockquote>
+<CENTER>
+&#167 These utilities are available from
+<A HREF="http://www.mks.com/solution/tk/"><B>Mortice Kern Systems.</B></A>
+</CENTER>
+<blockquote>
+<b>Macintosh Classic, Quadra, Power Macs, Powerbook, G3 Users:</b>
+<blockquote><TABLE>
+<TR><TD></TD></TR>
+<TR><TD>If you are using Apple System 7, you need the following:</TD></TR>
+</TABLE>
+<TABLE>
+<TR><TD></TD></TR>
+<TR><TD>(1)</TD><TD>An Apple computer or compatible clone</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>(2)</TD><TD>At least 5 megabytes of free disk space</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>(3)</TD><TD>At least 512 kilobytes of internal memory</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>(4)</TD><TD>System 7 or later operating system</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>(5)</TD><TD>UNIX utilities for Apple systems, including <i>AWK</i> and <i>Kornshell</i>&#167     </TD></TR>
+<TR><TD></TD></TR>
+</TABLE></blockquote>
+</blockquote>
+<CENTER>
+&#167 These utilities are available from
+<A HREF="http://www.tenon.com/products/machten/"><B>Tenon Intersystems.</B></A>
+</CENTER>
+</P>
+<A NAME="PRELIMINARIES">
+<hr>
+<H2>Installation Preliminaries</H2>
+<P>
+The Humdrum tools are designed for use with UNIX, Windows 95/98/NT, DOS,
+or OS/2 environments.
+However, there are some differences of implementation between these
+systems that affect the configuration and performance.
+On UNIX systems, the
+Humdrum tools pertaining to MIDI input and output are currently unavailable.
+On Windows NT, Windows 95/98, Windows 3.X, DOS and OS/2 systems
+the Humdrum Toolkit is able to work
+only if the software has access to crucial UNIX utilities
+<b>not provided with the toolkit.</b>
+In particular, the Humdrum tools will not work under Windows, DOS
+or OS/2 without access to the
+<i>AWK</i>
+pattern-action language and the <i>Kornshell</i>
+or
+<i>Bourne shell</i>
+command interpreters.
+Several versions of both
+<i>AWK</i>
+and
+<i>ksh</i>
+are available for Windows 95/98/NT, DOS and OS/2.
+Both commercial software and freeware are available.
+Reliable versions of the necessary utilities are available in the
+<A HREF="http://www.mks.com/solution/tk/"><B>MKS Toolkit</B></A>
+manufactured by <A HREF="http://www.mks.com/">
+<B>Mortice Kern Systems</B></A>,
+AT<font size=1>&</font>T's
+<A HREF="http://www.research.att.com/sw/tools/uwin/"><B>UWIN</B></A>
+utilities, Microsoft's
+<A HREF="http://www.interix.com/"><B>Interix</B></A>,
+and GNU's
+<A HREF="http://sources.redhat.com/cygwin"><B>cygwin</B></A>,
+These, or comparable UNIX utilities, must be installed on
+your Windows 95/98/NT, DOS or OS/2 system <b>before</b>
+the Humdrum Toolkit can be successfully installed.
+The Humdrum installation procedure itself makes use of various
+UNIX utilities.
+</P>
+<P>
+Presuming that you have installed the "MKS Toolkit,"
+"UWIN", "Interix", or "cygwin",
+on your Windows 95/98/NT, DOS or OS/2 system,
+you can continue with the Humdrum installation.
+</P>
+<P>
+You may install the Humdrum Toolkit
+by using the automatic installation program --
+<code><big>
+install
+</code></big>
+--  provided with Humdrum.
+</P>
+<A NAME="DOS">
+<hr>
+<H2>Installation on Windows NT, Windows 95/98, Windows 3.X, DOS or OS/2</H2>
+<P>
+Before you begin installation, you need to carry out a few
+preliminary tasks.
+<ul>
+<li>
+First, you must ensure that either
+<A HREF="http://www.mks.com/solution/tk/"><B>MKS Toolkit</B></A>,
+<A HREF="http://www.research.att.com/sw/tools/uwin/"><B>UWIN</B></A>,
+<A HREF="http://www.interix.com/"><B>Interix</B></A>,
+or
+<A HREF="http://sources.redhat.com/cygwin"><B>cygwin</B></A>,
+has been installed and
+configured on your Windows NT, Windows 95/98, Windows 3.X, DOS or OS/2 system.
+These utilities will provide an user-selectable environment that it is
+similar to the UNIX operating system.
+Note that the presence of these UNIX utilities will not interfere
+with running other Windows 95/98/NT, DOS or OS/2 applications.
+</P>
+<P>
+N.B. Users unfamiliar with UNIX should be prepared for a
+period of learning and adjustment.
+It is not recommended that you install the Humdrum Toolkit
+until you have developed some facility with the following basic UNIX
+commands:
+<code><big>
+cd, chmod, cp, ls, mkdir, more, man, mv, pwd, rm,
+</code></big>
+and
+<code><big>
+whence.
+</code></big>
+In addition, some facility with a text editor, such as
+<code><big>
+vi
+</code></big>
+or
+<code><big>
+emacs
+</code></big>
+is recommended.
+<br>
+<br>
+<li>
+Secondly, insert the first distribution disk and read the
+<code><big>
+readme
+</code></big>
+file.
+The
+<code><big>
+readme
+</code></big>
+file may contain important last-minute information that is not
+contained in this printed document.
+Since the size of the Humdrum Toolkit
+varies from release to release, the
+<code><big>
+readme
+</code></big>
+file also indicates the size of the current release.
+You need to ensure that sufficient space is available on your
+system for successful installation.
+</P>
+<P>
+If your floppy disk-drive is configured as disk `A',
+you can read the
+<code><big>
+readme
+</code></big>
+file by typing the DOS or OS/2 command
+</P>
+<P>
+<blockquote>
+<code><big>
+type a:readme
+</code></big>
+</blockquote>
+</P>
+<P>
+If you have installed the UNIX utilities (as you should)
+you can read the
+<i>readme</i>
+file by typing one of the pertinent UNIX commands:
+</P>
+<P>
+<blockquote>
+<code><big>
+more a:readme
+</code></big>
+</blockquote>
+</P>
+<P>
+or
+</P>
+<P>
+<blockquote>
+<code><big>
+pg a:readme
+</code></big>
+</blockquote>
+</P>
+<P>
+<li>
+Thirdly, you need to make a directory that will receive the
+Humdrum files.
+The recommended directory name is
+<code><big>
+/humdrum
+</code></big>
+under your home or root directory,
+but you are free to use any directory you wish.
+N.B. The
+<code><big>
+install
+</code></big>
+program does not automatically create a default directory.
+Use the
+<code><big>
+`mkdir'
+</code></big>
+command to make the appropriate directory prior to running the
+<code><big>
+install
+</code></big>
+program.
+For example, if your hard disk is designated `c:' you might issue the
+command:
+</P>
+<P>
+<blockquote>
+<code><big>
+mkdir c:/humdrum
+</code></big>
+</blockquote>
+</P>
+<P>
+<li>
+Fourthly, you need to find out where your
+<code><big>
+profile.ksh
+</code></big>
+is located.
+For single-user set-ups the profile is normally kept in
+<code><big>
+/etc/profile.ksh,
+</code></big>
+however,
+if you are unsure of the whereabouts of
+<code><big>
+profile.ksh
+</code></big>
+type the UNIX command
+</P>
+<P>
+<blockquote>
+<code><big>
+find / -name profile.ksh
+</code></big>
+</blockquote>
+</P>
+<P>
+If you find more than one
+<code><big>
+profile.ksh
+</code></big>
+you will need to resolve which is most applicable to your use of Humdrum.
+If necessary, refer to your MKS reference manual for further
+information.
+</ul>
+</P>
+<P>
+Having successfully completed these preliminaries, you are ready
+to begin installation.
+</P>
+<P>
+<ul>
+<li>
+If you are installing the Humdrum Toolkit
+under Microsoft Windows for DOS or under OS/2,
+open a kornshell window.
+If you are installing the Humdrum Toolkit
+under DOS without Microsoft Windows, invoke the kornshell by typing:
+</P>
+<P>
+<blockquote>
+<code><big>
+sh
+</code></big>
+</blockquote>
+</P>
+<P>
+<li>
+Invoke the Humdrum
+<code><big>
+install
+</code></big>
+program.
+If your floppy disk-drive is configured as disk `A',
+you can run
+<code><big>
+install
+</code></big>
+by typing:
+</P>
+<P>
+<blockquote>
+<code><big>
+a:install
+</code></big>
+</blockquote>
+</P>
+<P>
+The
+<code><big>
+install
+</code></big>
+program will ask a series of questions to which you will need to respond.
+If at any time, you wish to terminate the install procedure,
+type `quit' in response to any of the questions,
+or hold the control-key (CTRL) down while typing the letter `c'.
+<br>
+<br>
+<li>
+You will be asked to specify a directory in which to install
+the Humdrum toolkit.
+The Humdrum software will reside in this so-called
+<i>target</i>
+directory.
+As noted earlier (iii),
+for single-user systems the recommended directory is
+<code><big>
+/humdrum
+</code></big>
+on your main hard disk.
+If the target directory does not already exist, the
+<code><big>
+install
+</code></big>
+program will terminate, and will ask you to create such a directory;
+after you have created the appropriate
+<i>target</i>
+directory for the Humdrum tools, you should restart the
+<code><big>
+install
+</code></big>
+program and continue with the installation.
+<br>
+<br>
+<li>
+You will be asked to specify the location (disk-drive or directory)
+where the distribution disk has been loaded.
+For example, if you have inserted the distribution disk in drive `A',
+you would answer:
+</P>
+<P>
+<blockquote>
+<code><big>
+a:
+</code></big>
+</blockquote>
+</P>
+<P>
+<li>
+Before the process of copying the files begins,
+<code><big>
+install
+</code></big>
+will ask you to confirm the
+<i>source</i>
+(copy from) and
+<i>target</i>
+(copy to) directories.
+<br>
+<br>
+<li>
+Once you have specified a directory to install the Humdrum Toolkit, the
+<code><big>
+install
+</code></big>
+program will check to determine whether a copy of Humdrum
+is already installed in the specified directory.
+If so, the
+<code><big>
+install
+</code></big>
+program determines which
+<i>version</i>
+of the Humdrum Toolkit,
+is already present, and which version resides on the distribution disk.
+<code><big>
+Install
+</code></big>
+will then issue a message telling you which version you already have,
+which version is on the distribution disk, and ask you whether you
+wish to over-write the existing Humdrum tools.
+If you answer `yes', the toolkit will be copied over the existing files.
+If you answer `no', the
+<code><big>
+install
+</code></big>
+program will terminate.
+<br>
+<br>
+<li>
+The files will be uncompressed and copied into the appropriate directory.
+Each file is listed as it is copied.
+In addition to the files copied to the target directory, the
+installation procedure will create subdirectories to hold C source-code,
+spectral data for instrument tones, and sample musical scores.
+Insert successive distribution disks as prompted by
+<code><big>
+install.
+</code></big>
+<br>
+<br>
+<li>
+Having installed the Humdrum Toolkit, the
+<code><big>
+install
+</code></big>
+program will check to determine whether your
+environment is suitably configured for running the Humdrum tools.
+In order to run properly, four kornshell environment variables must be set.
+</P>
+<P>
+<blockquote>
+The shell variable
+<code><big>
+`HUMDRUM'
+</code></big>
+(note the use of upper-case letters) must be set to the directory in
+which you installed the Humdrum tools.
+</P>
+<P>
+The shell variable
+<code><big>
+`AWK_VER'
+</code></big>
+must be set to the name of
+the AWK interpreter to be invoked by the Humdrum commands.
+</P>
+<P>
+The shell variable
+<code><big>
+`TMPDIR'
+</code></big>
+must be set to the name of a permanent directory suitable for
+storing temporary files.
+We recommend
+<code><big>
+/tmp
+</code></big>
+on your main hard disk, or
+<code><big>
+/tmp
+</code></big>
+on a RAM disk for greater speed.
+</P>
+<P>
+The shell variable
+<code><big>
+`CON'
+</code></big>
+must be set to indicate where error messages should be directed.
+On Windows 95/98/NT, DOS or OS/2 systems <code><big>CON</big></code> would normally be assigned
+to <code><big>con</big></code>.
+</blockquote>
+</P>
+<P>
+On Windows 95/98/NT, DOS or OS/2 systems,
+the above shell variables would normally be assigned as follows:
+</P>
+<P>
+<blockquote>
+<code><big>
+export TMPDIR=c:/tmp
+<br>
+export HUMDRUM=c:/humdrum
+<br>
+export AWK_VER=awk
+<br>
+export CON=con
+</code></big>
+</blockquote>
+</P>
+<P>
+On Windows 95/98/NT, DOS or OS/2 systems, the MKS Toolkit provides
+a `large model' version of AWK, dubbed
+<code><big>
+awkl.
+</code></big>
+When using the MKS Toolkit, the
+<code><big>
+AWK_VER
+</code></big>
+variable should be set to
+<code><big>
+awkl.
+</code></big>
+Most of the Humdrum tools will not work if the `small model' version
+(<code><big>awk</big></code>) is used.
+If the GNU awk interpreter is used, set
+<code><big>
+AWK_VER=gawk.
+</code></big>
+</P>
+<P>
+The
+<code><big>
+install
+</code></big>
+program will determine whether any of the above shell variables
+have been set, and issue a message indicating which have not been set.
+If you wish,
+<code><big>
+install
+</code></big>
+will set all of the above shell variables automatically.
+First, it will ask you whether you wish to have your kornshell
+"profile" modified.
+On Windows 95/98/NT, DOS or OS/2 systems running with the MKS Toolkit,
+the profile information is maintained in a file
+<code><big>
+profile.ksh.
+</code></big>
+If you wish to change your
+<code><big>
+profile.ksh,
+</code></big>
+answer
+</P>
+<P>
+<blockquote>
+<code><big>
+yes
+</code></big>
+</blockquote>
+</P>
+<P>
+<code><big>
+Install
+</code></big>
+will ask you to specify the location (path) of your profile file.
+You should have already determined its location in preliminary task iv) above.
+On most Windows 95/98/NT, DOS or OS/2 systems using the MKS Toolkit, the default
+<code><big>
+profile.ksh
+</code></big>
+will reside on the main disk in
+<code><big>
+/etc/profile.ksh.
+</code></big>
+If you have specified a correct location for
+<code><big>
+profile.ksh
+</code></big>
+the appropriate modifications will be made.
+A backup copy of your previous profile will be created, named
+<code><big>
+profile.old.
+</code></big>
+</P>
+<P>
+N.B. If the shell variables have already been properly set,
+<code><big>
+install
+</code></big>
+will not attempt to modify your
+<code><big>
+profile.ksh,
+</code></big>
+nor will it over-write the
+<code><big>
+profile.old.
+</code></big>
+<br>
+<br>
+<li>
+One further change needs to be made before the Humdrum Toolkit
+is operational.
+You must modify your PATH so that the Humdrum commands can be accessed.
+The
+<code><big>
+install
+</code></big>
+program will
+<i>not</i>
+modify your PATH automatically.
+The appropriate modification must be made manually.
+</code></big>
+On Windows 95/98/NT, DOS or OS/2 systems, your PATH may be set in
+<code><big>
+autoexec.bat
+</code></big>
+or
+<code><big>
+/etc/profile.ksh.
+</code></big>
+By way of example, the following DOS PATH includes five directories
+--  searched in the following order: (1) c:/bin,
+(2) the current directory (;;),
+(3) c:/humdrum/bin,
+(4) c:/windows,
+and
+(5) c:/dos.
+</P>
+<P>
+<blockquote>
+<code><big>
+export PATH="c:/bin;;c:/humdrum/bin;c:/windows;c:/dos"
+</code></big>
+</blockquote>
+</P>
+<P>
+You will want to organize the PATH so that the most frequently used
+commands appear earliest in the directory list.
+<br>
+<br>
+<li>
+In order to run the Humdrum tools,
+you must be sure that the
+<i>shell</i>
+command interpreter has been invoked.
+On Windows 95/98/NT, DOS and OS/2 with the MKS Toolkit,
+this can be done by typing:
+</P>
+<P>
+<blockquote>
+<code><big>
+sh
+</code></big>
+</blockquote>
+</P>
+<P>
+If this command fails on Windows 95/98/NT, DOS or OS/2,
+you do not have the MKS Toolkit installed correctly.
+</ul>
+</P>
+<P>
+In order to confirm that your Humdrum Toolkit
+has been successfully installed, type the
+<A HREF="commands/humver.html"><B>humver</B></A>
+command.
+This command will simply echo the version of the toolkit currently installed.
+The Humdrum tools should be ready for use.
+</P>
+<P>
+If you intend to make use of the Humdrum
+MIDI tools, refer to the
+<A HREF="#MIDI"><B>MIDI Configuration</B></A> section of this installation guide.
+</P>
+<A NAME="UNIX">
+<hr>
+<H2>Installation on UNIX</H2>
+<P>
+Before you begin installation, you need to carry out a few
+preliminary tasks.
+Not all UNIX systems are equipped with a floppy disk drive.
+It may be necessary to copy the entire contents of the distribution disks
+in raw form into a temporary directory on your UNIX userid.
+This may be done via
+<b>uucp, ftp, tar, procom, kermit,</b>
+or some other file-transfer utility.
+(Refer to the UNIX reference manual for your facility.)
+Copy the contents of all of the distribution disks into a single directory.
+Note that most of the files are in compressed form.
+<ul>
+<li>
+Begin by reading the
+<code><big>
+readme
+</code></big>
+file.
+The
+<code><big>
+readme
+</code></big>
+file may contain important last-minute information that is not
+contained in this printed document.
+Since the size of the Humdrum Toolkit varies from release to release, the
+<code><big>
+readme
+</code></big>
+file also indicates the size of the current release.
+You need to ensure that sufficient space is available on your
+system once all of the files are uncompressed.
+</P>
+<P>
+On UNIX systems you can read the
+<i>readme</i>
+file by typing one of the pertinent UNIX commands such as:
+</P>
+<P>
+<blockquote>
+<code><big>
+more readme
+</code></big>
+</blockquote>
+</P>
+<P>
+<li>
+Secondly, you need to make a directory that will receive the Humdrum files.
+The preferred directory name is
+<code><big>
+/humdrum
+</code></big>
+under your home directory,
+but you are free to use any directory you wish.
+You can use the UNIX
+<code><big>
+`mkdir'
+</code></big>
+command to make the appropriate directory.
+For example, you might issue the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+mkdir $HOME/humdrum
+</code></big>
+</blockquote>
+</P>
+<P>
+to make a directory off your home directory.
+<br>
+<br>
+<li>
+Thirdly, you need to know where your<code><big> .profile</big></code> is kept.
+For multi-user systems, the pertinent<code><big> .profile</big></code> is normally kept in
+the directory
+<code><big>
+$HOME.
+</code></big>
+However,
+if you are unsure of the whereabouts of<code><big> .profile</big></code>
+type the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+find $HOME -name .profile
+</code></big>
+</blockquote>
+</P>
+<P>
+If you find more than one<code><big> .profile</big></code>
+you will need to resolve which is most applicable to your use of Humdrum.
+</ul>
+</P>
+<P>
+Having successfully completed these preliminaries, you are ready
+to begin installation.
+</P>
+<P>
+<ul>
+<li>
+Invoke the
+<i>kornshell</i>
+command interpreter by typing the command
+</P>
+<P>
+<blockquote>
+<code><big>
+sh
+</code></big>
+</blockquote>
+</P>
+<P>
+On LINUX systems you may use the
+<code><big>
+bash
+</code></big>
+shell.
+<br>
+<br>
+<li>
+If you are installing the Humdrum Toolkit
+under UNIX ensure that the
+<code><big>
+humunix, humver.ksh
+</code></big>
+and
+<code><big>
+install
+</code></big>
+programs are executable by adding execute permissions.
+Type the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+chmod a+x humunix humver.ksh install.ksh
+</code></big>
+</blockquote>
+</P>
+<P>
+You may need to give the full pathname of the directory in which you've
+down-loaded the Humdrum files.
+<br>
+<br>
+<li>
+Run the
+<code><big>
+install
+</code></big>
+program by typing:
+</P>
+<P>
+<blockquote>
+<code><big>
+install.ksh
+</code></big>
+</blockquote>
+</P>
+<P>
+Once again, you may need to specify the full pathname.
+</P>
+<P>
+The
+<code><big>
+install.ksh
+</code></big>
+program will ask a series of questions to which you will need to respond.
+If at any time, you wish to terminate the install procedure,
+type `quit' in response to any of the questions,
+or hold the control-key (CTRL) down while typing the letter `c'.
+<br>
+<br>
+<li>
+You will be asked to specify a directory in which to install
+the Humdrum toolkit.
+The Humdrum software will reside in this so-called
+<i>target</i>
+directory.
+On UNIX systems, appropriate locations might be
+<code><big>
+bin/humdrum
+</code></big>
+or
+<code><big>
+humdrum
+</code></big>
+under your home directory
+<code><big>
+($HOME).
+</code></big>
+If the target directory does not already exist, the
+<code><big>
+install
+</code></big>
+program will terminate, and will ask you to create such a directory;
+after you have created the appropriate
+<i>target</i>
+directory for the Humdrum tools, you should restart the
+<code><big>
+install.ksh
+</code></big>
+program and continue with the installation.
+<br>
+<br>
+<li>
+You will then be asked to specify the location (directory)
+where the distribution files have been loaded.
+For example, if you have down-loaded the files into the directory
+<code><big>
+/tmp/humdrum.temporary
+</code></big>
+you would answer:
+</P>
+<P>
+<blockquote>
+<code><big>
+/tmp/humdrum.temporary
+</code></big>
+</blockquote>
+</P>
+<P>
+<li>
+Before the process of copying the files begins,
+<code><big>
+install.ksh
+</code></big>
+will ask you to confirm the
+<i>source</i>
+(copy from) and
+<i>target</i>
+(copy to) directories.
+<br>
+<br>
+<li>
+Once you have specified a directory to install the Humdrum Toolkit, the
+<code><big>
+install.ksh
+</code></big>
+program will check to determine whether a copy of Humdrum
+is already installed in the specified directory.
+If so, the
+<code><big>
+install.ksh
+</code></big>
+program determines which
+<i>version</i>
+of the Humdrum Toolkit,
+is already present, and which version you are intending to install.
+<code><big>
+Install.ksh
+</code></big>
+will then issue a message telling you which version you already have,
+which version is in the source directory, and ask you whether you
+wish to over-write the existing Humdrum tools.
+If you answer `yes', the toolkit will be copied over the existing files.
+If you answer `no', the
+<code><big>
+install
+</code></big>
+program will terminate.
+<br>
+<br>
+<li>
+The files will be uncompressed and copied into the appropriate
+directory.
+Each file is listed as it is copied.
+In addition to the files copied to the target directory, the
+installation procedure will create subdirectories to hold C source-code,
+spectral data for instrument tones, and sample musical scores.
+<br>
+<br>
+<li>
+Having installed the Humdrum Toolkit, the
+<code><big>
+install.ksh
+</code></big>
+program will check to determine whether your
+environment is suitably configured for running the Humdrum tools.
+In order to run properly, four kornshell environment variables must be set.
+</P>
+<P>
+<blockquote>
+The shell variable
+<code><big>
+`HUMDRUM'
+</code></big>
+must be set to the directory
+in which you installed the Humdrum tools.
+</P>
+<P>
+The shell variable
+<code><big>
+`AWK_VER'
+</code></big>
+must be set to the name of
+the AWK interpreter to be invoked by the Humdrum commands.
+</P>
+<P>
+The shell variable
+<code><big>
+`TMPDIR'
+</code></big>
+must be set to the name of
+a permanent directory suitable for storing temporary files.
+We recommend
+<code><big>
+/tmp
+</code></big>
+(provided it exists on your system).
+</P>
+<P>
+The shell variable
+<code><big>
+`CON'
+</code></big>
+must be set to indicate where error messages should be directed.
+On UNIX systems, <code><big>CON</big></code> would normally be assigned
+to <code><big>/dev/stderr</big></code>.
+</blockquote>
+</P>
+<P>
+On UNIX systems,
+the above shell variables might be assigned as follows:
+</P>
+<P>
+<blockquote>
+<code><big>
+export TMPDIR; TMPDIR=/tmp
+<br>
+export HUMDRUM; HUMDRUM=$HOME/humdrum
+<br>
+export AWK_VER; AWK_VER=nawk
+<br>
+export CON; CON=/dev/stderr
+</code></big>
+</blockquote>
+</P>
+<P>
+On most UNIX systems, the
+<code><big>
+AWK_VER
+</code></big>
+variable should be set to
+<code><big>
+nawk;
+</code></big>
+"nawk" is a frequent designation for "new AWK"
+(the 1985 revision of the AWK programming language).
+On some UNIX systems, the old version of the AWK interpreter
+has been deleted, and so new-awk is designated simply as "awk."
+On these UNIX systems,
+<code><big>
+AWK_VER
+</code></big>
+should be set to
+<code><big>
+awk.
+</code></big>
+</P>
+<P>
+The
+<code><big>
+install.ksh
+</code></big>
+program will determine whether any of the above shell variables
+have been set, and issue a message indicating which have not been set.
+If you wish,
+<code><big>
+install.ksh
+</code></big>
+will set all of the above kornshell variables automatically.
+First, it will ask you whether you wish to have your kornshell
+"profile" modified.
+On UNIX systems, profile information is maintained in a file
+called<code><big> .profile</big></code> in the user's home directory.
+If you wish to change your<code><big> .profile,</big></code> answer
+</P>
+<P>
+<blockquote>
+<code><big>
+yes
+</code></big>
+</blockquote>
+</P>
+<P>
+<code><big>
+Install
+</code></big>
+will ask you to specify the location (path) of your<code><big> .profile</big></code> file.
+On UNIX systems, the default<code><big> .profile</big></code>
+will be in the user's home directory.
+If you have specified a correct location for<code><big> .profile</big></code>
+the appropriate modifications will be made.
+<br>
+<br>
+<li>
+One further change needs to be made before the Humdrum Toolkit
+is operational.
+You must modify your PATH so that the Humdrum commands can be accessed.
+The
+<code><big>
+install.ksh
+</code></big>
+program will
+<i>not</i>
+modify your PATH automatically.
+The appropriate modification must be made manually.
+On UNIX systems, your PATH is typically set in<code><big> .profile.</big></code>
+By way of example, the following UNIX PATH includes four directories
+--  searched in the following order: (1) /usr/bin,
+(2) the current directory (::),
+(3) $HOME/bin,
+and
+(4) $HUMDRUM/bin:
+</P>
+<P>
+<blockquote>
+<code><big>
+export PATH=/usr/bin::$HOME/bin:$HUMDRUM/bin
+</code></big>
+</blockquote>
+</P>
+<P>
+You will want to organize the PATH so that the most frequently used
+commands appear earliest in the directory list.
+<br>
+<br>
+<li>
+In order to run the Humdrum tools,
+you must be sure to invoke the
+<i>kornshell</i>
+command interpreter.
+On UNIX, this can be done by typing:
+</P>
+<P>
+<blockquote>
+<code><big>
+sh
+</code></big>
+</blockquote>
+</P>
+<P>
+If this command fails,
+you do not have the kornshell selected.
+</ul>
+</P>
+<P>
+In order to confirm that your Humdrum Toolkit
+has been successfully installed, type the
+<A HREF="commands/humver.html"><B>humver</B></A>
+command.
+This command will simply echo the version of the toolkit currently
+installed.
+The Humdrum tools should be ready for use.
+</P>
+<A NAME="UNIX_MORE">
+<hr>
+<H2>Additional Information for UNIX Users</H2>
+<P>
+Some transfer programs -- such as
+<b>ftp</b>
+--  will preserve carriage returns as a carriage-return/line-feed combination,
+rather than transforming them into simple line-feeds expected by UNIX.
+You may encounter problems with control-M characters (^M) inserted at
+the end of each record for all of your Humdrum files.
+These characters must be eliminated in order for the
+Humdrum tools to be operational.
+If you are an experienced UNIX user, you can use the
+<code><big>
+sed
+</code></big>
+stream-editor to eliminate all control-M characters.
+Execute the sed script:
+</P>
+<P>
+<blockquote>
+<code><big>
+sed 's/^V^M//' inputfile > outputfile
+</code></big>
+</blockquote>
+</P>
+<P>
+for each file -- remembering to rename the output file as the input file.
+(The string "^V^M" represents control-V followed by control-M.)
+If you are not an experienced UNIX user, you may want to
+seek the assistance of a local UNIX expert or consultant.
+<P>
+While it is possible to distribute executable files
+<code><big>
+(.exe)
+</code></big>
+for Windows 95/98/NT, DOS and OS/2 systems, the variety of
+UNIX platforms precludes distributing executable files
+for various C programs.
+Consequently, UNIX users must compile a handful of programs
+so that they will work on your specific machine.
+Five programs are involved:
+<A HREF="commands/assemble.html"><B>assemble</B></A>,
+<A HREF="commands/humdrum.html"><B>humdrum_</B></A>,
+<A HREF="commands/midi.html"><B>midi</B></A>,
+<A HREF="commands/rid.html"><B>rid</B></A>,
+and
+<A HREF="commands/simil.html"><B>simil</B></A>.
+These programs can be compiled by (1) changing directory to each of
+the source-code subdirectories for each of these tools (i.e. csource),
+and (2) executing the
+<i>make</i>
+command for each tool.
+Simply type the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+make
+</code></big>
+</blockquote>
+</P>
+<P>
+--  once in each of the five subdirectories.
+Once you have made an executable file, move it to your main Humdrum
+directory (<code><big>$HUMDRUM/bin</big></code>) -- using the UNIX
+<code><big>
+mv
+</code></big>
+command.
+This will ensure that these programs reside in your PATH.
+Finally, use the UNIX
+</P>
+<P>
+<blockquote>
+<code><big>
+chmod a+x *
+</code></big>
+</blockquote>
+</P>
+<P>
+command to ensure that all files in the <code><big>$HUMDRUM/bin</big></code>
+directory are executable.
+</P>
+<P>
+Note that since there is no standard MIDI interface for UNIX systems,
+the Humdrum MIDI input and output tools cannot be used on UNIX.
+These tools include
+<A HREF="commands/encode.html"><B>encode,</B></A>
+<A HREF="commands/record.html"><B>record,</B></A>
+<A HREF="commands/smf.html"><B>smf,</B></A>
+and
+<A HREF="commands/tacet.html"><B>tacet.</B></A>
+Version 2.0 of the "perform" command can be
+<A HREF="linux.perform.html">installed and configured</A>
+on Linux systems.
+</P>
+<A NAME="MAC">
+<hr>
+<H2>Installation on Apple Systems Using MachTEN</H2>
+<P>
+Since Apple computer systems do not provide basic UNIX
+utilities, the Humdrum Toolkit cannot be run on native Apple systems.
+</P>
+<P>
+However, the Humdrum Toolkit can be installed if users purchase
+a commercial set of UNIX utilities for Apple Systems.
+<A HREF="http://www.tenon.com">
+<B>Tenon Intersystems</B></A>
+distributes a suitable product called
+<A HREF="http://www.tenon.com/products/machten/">
+<B>MachTEN.</B></A>
+A
+<A HREF="http://www.opus1.com/www/jms/machten.html">
+<B>review of the MachTEN software</B></A>
+(including a comparison with A/UX)
+was published in <I>Advanced Systems Magazine</I>
+(formerly <I>Sun World Magazine</I>).
+</P>
+<P>
+Assuming that MachTEN or similar software has been installed,
+users should follow the instructions given for UNIX installation
+of the Humdrum Toolkit.
+</P>
+<A NAME="MIDI">
+<hr>
+<H2>MIDI Configuration</H2>
+<P>
+The Humdrum MIDI tools can be used
+on Windows 95/98/NT, DOS and OS/2 systems provided the computer is
+fitted with a Roland MPU-401 or compatible MIDI card.
+The Humdrum MIDI tools are not currently available
+under UNIX.
+Note that the MIDI software tools support only the following
+interrupts: 2/9, 3, 5, and 7.
+Interrupts 10, 11, and 12 will not work.
+If necessary, refer to the manufacturer's hardware manual for details
+concerning how to change interrupt settings on your MIDI board.
+</P>
+<P>
+When using Microsoft
+<i>Windows,</i>
+the Humdrum MIDI tools are able to access the MIDI card
+only if
+<i>Windows</i>
+is invoked in "standard mode" rather than "386 enhanced mode."
+From the DOS prompt type:
+</P>
+<P>
+<blockquote>
+<code><big>
+win /s
+</code></big>
+</blockquote>
+</P>
+<P>
+and select the MKS Kornshell icon.
+Once in the Kornshell, be sure that your
+<code><big>
+profile.ksh
+</code></big>
+has been executed.
+If not, type the command
+</P>
+<P>
+<blockquote>
+<code><big>
+  . /etc/profile.ksh
+</code></big>
+</blockquote>
+</P>
+<A NAME="QUICK">
+<hr>
+<H2>Quick-Start Tutorial</H2>
+<P>
+Having installed the Humdrum Toolkit, you will be eager to
+see Humdrum in action.
+Begin by changing directories to the Humdrum demonstration directory.
+This is located in the subdirectory
+<i>demo</i>
+under the directory where you installed Humdrum.
+In most cases, you can change directories by typing the command:
+</P>
+<P>
+<blockquote>
+<code><big>
+cd /humdrum/demo
+</code></big>
+</blockquote>
+</P>
+<P>
+This directory holds a number of tutorial files,
+and also includes a subdirectory containing
+a selection of musical scores encoded in various Humdrum formats.
+</P>
+<P>
+Begin by typing:
+</P>
+<P>
+<blockquote>
+<code><big>
+demo
+</code></big>
+</blockquote>
+</P>
+<P>
+This demonstration will first ask you whether you have an appropriate
+MIDI set-up (see MIDI Configuration).
+Answer `yes' only if your system runs Windows 95/98/NT, DOS or OS/2
+and has a Roland MPU-401-compatible MIDI card with a MIDI synthesizer
+connected for sound output.
+(Answering `no' will restrict the demonstration to outputs that don't
+involve sound.)
+</P>
+<P>
+The Humdrum <code><big>demo</big></code> will provide a menu of ten sample problems.
+Each problem will pose and answer some analytic question
+in real-time.
+(On older machines, some of the sample calculations may take several
+minutes to execute.)
+You can stop the demo at any time by typing one or more control-Cs.
+</P>
+<P>
+If your system is configured for MIDI output, you might also
+try changing directories to the <code><big>scores</big></code> subdirectory
+and playing one of the scores.
+A MIDI version of the first movement of Haydn's string quartet Opus 76, No. 3,
+is encoded in the file <code><big>haydn76.hmd</big></code>.
+</P>
+<P>
+Begin by typing the command:
+</P>
+<P>
+<blockquote>
+<A HREF="commands/perform.html"><big><code>perform</code></big></A>
+<code><big>
+misc/haydn76.hmd
+</code></big>
+</blockquote>
+</P>
+<P>
+If your MIDI system is properly configured, you should hear a deadpan
+performance of the work.
+Try typing various numbers followed by <enter>.
+This will move the performance immediately to the corresponding numbered
+measure.
+(If you enter a number greater than the total number of measures, playback
+will terminate.)
+Type plus (+) or minus (-) to move ahead or backward one measure at a time.
+Press the space-bar to interrupt play.
+Also try typing `<' and `>' to slow-down or speed-up the tempo.
+(Notice that you don't have to use the shift-key when typing `<', `>' or `+'.)
+You might also want to explore the search commands.
+Try typing a slash (/) followed by the word `Development', followed by <enter>.
+To search backward from the current score position, use the question mark (?)
+rather than the slash -- as in `?Exposition' <enter>.
+To end, type the escape key <ESC>.
+If your MIDI instrument continues to sound after the
+<A HREF="commands/perform.html"><B>perform</B></A>
+program has ended, type:
+</P>
+<P>
+<blockquote>
+<code><big>
+<A HREF="commands/tacet.html"><B>tacet</B></A>
+</code></big>
+</blockquote>
+</P>
+<P>
+This will turn-off any sounding tones.
+</P>
+<P>
+You may want to view the accompanying videocassette in order to
+further familiarize yourself with the capabilities of the Humdrum Toolkit.
+Ultimately, you will need to begin reading the Humdrum
+<i>Users' Guide</i>
+and start working through the tutorial exercises.
+As with the study of a musical instrument, practice is essential
+to developing a skill.
+</P>
+<A NAME="HOW_WORKS">
+<hr>
+<H2>How HUMDRUM Works</H2>
+<P>
+Some users may be interested in gaining a basic understanding
+how the Humdrum tools work.
+The following description provides a general outline of the
+operation of the Humdrum tools.
+</P>
+<P>
+The Humdrum tools were developed with several criteria in mind.
+The foremost criterion was that the tools needed to be easy to program.
+Most of the tools are written in the AWK programming language --
+a "fast prototyping language" whose syntax is very similar to that
+of the C programming language.
+AWK was developed by Alfred Aho, Brian Kernighan, and Peter Weinberger
+(hence the name AWK).
+AWK is especially well suited to musical applications
+since AWK provides extensive, yet simple-to-use facilities
+for matching and manipulating strings patterns.
+</P>
+<P>
+Since AWK is an interpreted language, AWK programs must
+invoke the AWK interpreter each time they are executed.
+The command-line syntax for invoking AWK programs is cumbersome.
+In order to simplify the command-line syntax, special-purpose
+"shell scripts" have been used to massage the command invocation,
+to parse the options, and to provide help screens where appropriate.
+</P>
+<P>
+Most Humdrum commands cause a shell-script to be executed.
+Each script invokes the AWK interpreter and calls the appropriate
+AWK program.
+The shell-scripts were written in the well-known UNIX
+<i>Kornshell.</i>
+On Windows 95/98/NT, DOS and OS/2 these scripts are held in
+files designated by the
+<i>.ksh</i>
+extension.
+These scripts can also be executed from the
+<i>Bourne</i>
+shell,
+but they are not compatible with the UNIX
+<i>C</i>
+shell.
+</P>
+<P>
+A typical Humdrum command, such as the
+<A HREF="commands/kern.html"><B>kern</B></A>
+command, is associated with two files:
+<i>kern.ksh</i>
+(or just
+<i>kern</i>
+on UNIX)
+and
+<i>kern.awk.</i>
+The<code><big> .awk</big></code> script acts as both the "source" code and
+the "executable" code.
+Both<code><big> .ksh</big></code> and<code><big> .awk</big></code> files are ordinary ASCII files,
+and so can be examined and (potentially) modified by the user.
+</P>
+<P>
+Some more complicated Humdrum commands have been partitioned into several
+subprograms.
+For example, the Humdrum
+<A HREF="commands/extract.html"><B>extract</B></A>
+command consists of four separate programs,
+<i>extract1.awk, extract2.awk,</i>
+and so on.
+The associated shell script
+<i>(extract.ksh)</i>
+determines which of the
+<b>extract</b>
+programs should be invoked, on the basis of the user-selected options.
+</P>
+<P>
+More computationally intensive programs have been written
+in the C programming language.
+These include Humdrum commands such as
+<A HREF="commands/perform.html"><B>perform</B></A>
+and
+<A HREF="commands/simil.html"><B>simil.</B></A>
+On Windows 95/98/NT, DOS, the <code><big>perform.exe, simil.exe,</big></code> ... files
+are executable files, compiled from C programs.
+The Humdrum distribution disks include the complete source code
+(.c files) for all of these commands.
+</P>
+<P>
+In order to be able to execute Humdrum commands,
+several conditions need to be satisfied.
+First, either the
+<i>Kornshell</i> or
+<i>Bourne</i>
+shell command interpreter must be available.
+Second, the <i>AWK</i>
+language interpreter must be available.
+Third, four pieces of information must be accessible
+to the shell:
+(1) the shell must know where to find the Humdrum commands,
+(2) it must know where to find the AWK interpreter,
+(3) it must know where it can store temporary files, and
+(4) it must be told where to direct standard error outputs
+(on UNIX normally <code><big>/dev/tty</big></code>;
+on Windows 95/98/NT, DOS this is <code><big>con</big></code>.
+Each of these four pieces of information need to be stored in
+shell "environment" variables.
+The variables are named PATH, AWK_VER, TMP,
+and  CON.
+</P>
+<P>
+When you boot your system, these variables need to be assigned properly,
+otherwise the installed Humdrum tools will fail to work.
+</P>
+<A NAME="TIPS">
+<hr>
+<H2>Trouble-Shooting Tips</H2>
+<P>
+The table below lists some common errors associated with
+faulty or incomplete installation of the Humdrum Toolkit.
+<A HREF="humdrum.problems.html"><b>Further information</b></A> is available to help with trouble-shooting.
+.cs I 18
+<blockquote><TABLE>
+<TR><TD></TD></TR>
+<TR><TD><b>Error</b></TD><TD><b>Possible cause</b></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD>=</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>Bad command or file name</big></code></TD><TD>Kornshell has not been installed or PATH</TD></TR>
+<TR><TD></TD><TD>has not been properly set.</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>glob: EXEC error</big></code></TD><TD>Install invoked from Windows without</TD></TR>
+<TR><TD></TD><TD>opening a shell.</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><i><program><code><big> not found</i></TD><TD>PATH not set correctly or command has</TD></TR>
+<TR><TD></TD><TD>not been copied into the Humdrum directory.</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><i><progname> <number><code><big>: -f: not found</i></TD><TD>AWK_VER shell variable not set.</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><i><progname> <number><code><big>: awk: not found</i></TD><TD>"awk" not in current PATH (DOS/OS2).</TD></TR>
+<TR><TD><i><progname> <number><code><big>: nawk: not found</i></TD><TD>"nawk" not in current PATH (UNIX).</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>awk: script file "<<i>progname.awk>":</i></TD><TD>HUMDRUM shell variable not set, or PATH</TD></TR>
+<TR><TD><code><big>no such file or directory</big></code></TD><TD>not set correctly.</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>_main: memory allocation failure</big></code></TD><TD>Input file(s) too big to handle; try breaking</TD></TR>
+<TR><TD></TD><TD>the input into smaller segments (using</TD></TR>
+<TR><TD></TD><TD>`<i>yank</i>'), and process each segment separately.</TD></TR>
+<TR><TD></TD><TD>Assemble back together by using `<i>cat</i>'.</TD></TR>
+<TR><TD></TD></TR>
+<TR><TD></TD></TR>
+<TR><TD><code><big>pc: compiler error ...</big></code></TD><TD>Humdrum `pc' command conflicts with a</TD></TR>
+<TR><TD></TD><TD>Pascal language compiler named `pc'.</TD></TR>
+<TR><TD></TD><TD>Rename Humdrum `pc.ksh' and `pc.awk' files.</TD></TR>
+<TR><TD></TD></TR>
+</TABLE></blockquote>
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="index.html">
+<B>Humdrum Toolkit Home Page</B></A>
+</ul>
+
+<CENTER>
+Copyright &copy; 1993, 1999 David Huron
+</CENTER>
+
+</BODY>
+</HTML>

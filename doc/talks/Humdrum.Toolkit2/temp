@@ -1,0 +1,417 @@
+.po 1.00i
+.ll 6.50i
+.PH "'''SIGIR'99: Music Information Retrieval'"
+.PF "''''"
+.S 24
+.I "	"
+.sp 4
+.ce
+.B "The Humdrum Toolkit:"
+.ce
+.B "Software Tools for Music Research"
+.sp 4
+.ce
+.B "David Huron"
+
+
+.ce
+School of Music
+.ce
+Ohio State University
+.ce
+&
+.ce
+Center for Computer Assisted Research in the Humanities
+.ce
+Stanford University
+
+.bp
+
+
+.ce
+.B "PROBLEM"
+
+How does one design software that enhances
+research productivity in music?
+
+
+.ce
+.B "DESIGN APPROACH"
+
+.AL
+.LI \(bu
+Machine-like software vs Tool-like software:
+
+.AL
+.LI \(bu
+design Machine-like software when problem area is well-defined
+
+.LI \(bu
+design Tool-like software when problem area is not well-defined
+
+.LI \(bu
+music scholarship not well-defined -- hence need for
+software tools
+.LE
+
+
+.bp
+.ce
+.B "MUSIC REPRESENTATION"
+.AL
+.LI \(bu
+representation (a venerable if uninteresting problem)
+
+<img src="humdrum.01b.gif">
+
+.LE
+.B "Structure Problem"
+.AL
+.LI \(bu
+traditional approach: raster scan
+
+
+either vertical:</B>
+
+<img src="humdrum.01b.gif">
+
+E5 E5 G4 C4 F5 D5 F4 G4 E5 C5 G4 E4 C6 C6 C4 E3 G#5 F4 C4 A5 E5 F5 etc.</B>
+
+
+or horizontal:</B>
+
+<img src="humdrum.01c.gif">
+
+E5 E5 F5 D5 E5 C5 C6 C6 G#5 A5 E5 F5 D5 B4 C4 G4 G4 G4 C4 F4 F4 E4 etc.</B>
+
+
+.LI \(bu
+Humdrum approach:  2D format</B>
+.TS
+l l l l l l l l l l l l l l l.
+E5	E5	F5	D5	E5	C5	C6	C6	G#5	A5	E5	F5	D5	B4	C5
+.	G4	.	G4	.	G4	.	C4	F4	.	.	.	F4	.	E4
+.	C4	.	F4	.	E4	.	E3	C4	.	.	.	G4	.	C4
+.TE
+.LE
+
+.B "Structure Solution"
+
+Use 2D representation structure to facilitate data manipulation.</B>
+
+
+.bp
+.ce
+.B "SEMIOTIC PROBLEM"
+
+
+What do we represent?
+
+.AL
+.LI \(bu 
+notated pitch?
+.LI \(bu 
+concert pitch?
+.LI \(bu 
+relative pitch?
+.LI \(bu 
+fundamental frequency?
+.LI \(bu
+cents?
+.LI \(bu
+interval?
+.LI \(bu
+scale degrees?
+.LI \(bu
+MIDI?
+.LI \(bu
+visual appearance in score? ("orthography")
+.LE
+
+ANSWER: ... yes, all of them
+
+.B "Semiotic Solution:"
+
+Provide a means for representing whatever
+the user wants to represent.
+
+
+.bp
+.ce
+.B "HOW DO WE LET USER'S REPRESENT ANYTHING?"
+
+.AL
+.LI \(bu
+.ce
+Humdrum "interpretations". E.g.
+
+.TS
+l l l l l.
+**pitch	**intervals	**scale	**Korean	**anything
+C4	.	DO	tae	abc
+A4	+M6	LA	hwang	%G&()
+F4	-M3	FA	chung	34.5
+E4	-m2	MI	nam	Q@-7
+.TE
+
+.bp
+.ce
+.B "HOW DO WE MANIPULATE SUCH REPRESENTATIONS?"
+
+Two kinds of tools:
+
+.AL
+.LI \(bu
+Tools that manipulate any representation conforming to the Humdrum Syntax.
+.br
+(Similar to grep, cat, sed, cut ...)
+
+.LI \(bu
+Tools that translate or modify pre-defined representations.
+.br
+E.g.  pitch -> frequency -> cochlear coordinates -> solfg -> pitch -> semits</BIG></B>
+.LE
+
+.bp
+.ce
+.B "WHAT REPRESENTATIONS ARE PRE-DEFINED?"
+
+
+.AL
+.LI \(bu
+ANSI pitch, French solf&#232ge, German Tonh&#246he, pitch-class
+
+.LI \(bu
+semitones, cents, MIDI, critical bands, cochlear coordinates
+
+.LI \(bu
+melodic interval, harmonic interval
+
+.LI \(bu
+absolute time, relative time, duration, epoch, date
+
+.LI \(bu
+tablatures: guitar, lute, banjo, sitar ...
+
+.LI \(bu
+amplitude, dB, dynamic markings
+
+.LI \(bu
+harmony, embellishments
+
+.LI \(bu
+text, underlay, phonetics (IPA)
+.LE
+
+.bp
+.ce
+.B "EXAMPLES OF USER-DEFINED REPRESENTATIONS"
+
+
+.AL
+.LI \(bu
+Gregorian Chant (Royal)
+
+.LI \(bu
+Balinese Cipher Notation (von Hippel)
+
+.LI \(bu
+Trumpet Biomechanics (Berec)
+
+.LI \(bu
+Spectral content in orchestral scores (Smythe)
+
+.LI \(bu
+Sensory Dissonance (Mashinter)
+
+.LI \(bu
+Korean Court music (Nam)
+
+.LI \(bu
+Cajun Button Accordion (DeWitt)
+
+.LI \(bu
+Indian Ragas and Talas (Chordia)
+
+.LI \(bu
+many others ...
+.LE
+
+
+.bp
+.ce
+.B "The Reference-Question Boundary"
+
+QUESTIONS:
+.AL
+.LI \(bu
+What year did Dvorak write the New World Symphony?
+
+.LI \(bu
+Where can I find works written for bassoon and string quartet?
+
+.LI \(bu
+How many cantatas did Bach write?
+
+.LI \(bu
+I'm looking for a list of works written in irregular meters - like 7/8.
+
+.LI \(bu
+Do Italian sixth chords occur more commonly in Italian music?
+
+.LI \(bu
+Are German drinking songs more likely to be in triple meter?
+
+.LI \(bu
+Which English translation of a Schubert text best preserves
+the vowel coloration?
+.LE
+
+When does a reference question become a research question?
+
+.bp
+.ce
+.B "The Reference/Research Continuum"
+
+.AL
+.LI \(bu
+What year did Dvorak write the New World Symphony?
+.in +2
+grep -li '!!!.*New World' Dvorak* | xargs grep '!!!ODT'
+.in -2
+
+.LI \(bu
+Where can I find works written for bassoon and string quartet?
+.in +2
+find . -name '*' | xargs grep -l '!!!AIN: cello fagot viola violn'
+.in -2
+
+.LI \(bu
+How many cantatas did Bach write?
+.in +2
+grep -il '!!!.*cantata Bach* | wc -l
+.in -2
+
+.LI \(bu
+I'm looking for a list of works written in irregular meters - like 7/8.
+.in +2
+grep -l '\*M[57]/' *
+.in -2
+
+.LI \(bu
+Do Italian sixth chords occur more commonly in Italian music?
+.in +2
+solfa input | grep '6-.*4+' | grep -v '[23]'  Italian.scores*
+.br
+solfa input | grep '6-.*4+' | grep -v '[23]'  NonItalian.scores*
+.in -2
+
+.LI \(bu
+Are German drinking songs more likely to be in triple meter?
+.in +2
+grep -l '!!!AMT.*triple' * | xargs grep -l '!!!AGN.*Trinklied'
+.br
+grep -l '!!!AMT.*duple' * | xargs grep -l '!!!AGN.*Trinklied'
+.br
+grep -l '!!!AMT.*quadruple' * | xargs grep -l '!!!AGN.*Trinklied'
+.in -2
+
+.LI \(bu
+Which English translation of a Schubert text best preserves
+the vowel coloration?
+.in +2
+timebase -t 16 Schubert | extract -i '**IPA' \ 
+.br
+| humsed 's/[^@VR&AaEiIoOWuUy]//' | humsed 's/./& /g; \ 
+.br
+s/ / /; s/ $//' | humsed -f vowel.map | rid -GLId | stats 
+.in -2
+.LE
+
+.bp
+.ce
+.B "HUMDRUM RESOURCES"
+
+
+.AL
+.LI \(bu
+Over 8000 encoded works:
+
+.LI \(bu
+MIDI input/output
+
+.LI \(bu
+Humdrum to Finale / Finale to Humdrum
+
+.LI \(bu
+ESAC to Humdrum Translator
+
+.LI \(bu
+MuseData to Humdrum Translator
+
+.LI \(bu
+Humdrum to Mup
+
+.LI \(bu
+Others
+.LE
+
+
+.bp
+.ce
+.B "PROJECTS USING HUMDRUM"
+
+
+.AL
+.LI \(bu
+Classical Themefinder
+
+.LI \(bu
+Melodic Modeling
+
+.LI \(bu
+Geographical/Cultural Correlates in European Folksong
+
+.LI \(bu
+Native American Musical Database</BIG></B>
+
+.LI \(bu
+Stream Segregation (Contrapuntal Transcription) Modeling</BIG></B>
+
+.LI \(bu
+Beethoven Orchestration</BIG></B>
+
+.LI \(bu
+Currently more than 35 published projects</BIG></B>
+.LE
+
+
+.bp
+.ce
+.B "What Future Should We Aim For?"
+
+.AL
+.LI
+Large, accessible, high quality, well-documented, cheap, multi-use,
+downloadable musical databases.
+
+.LI
+Powerful, open sources, easy-to-use software that raises few bumps in
+the learning curve.
+
+.LI
+A community of scholars who can revise,
+discuss, and criticize evolving database materials.
+.LE
+
+
+.bp
+.ce
+.B "The Learning Curve"
+
+
+The barrier between reference & research questions has
+a parallel in computer systems in the barrier between
+applications software & software tools:
+
+

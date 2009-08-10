@@ -1,0 +1,25 @@
+
+YDELTA    : Calculate numeric differences for concurrent data.
+
+     This command accepts as input one more more specified spines having the
+     same interpretation.  It outputs a single spine of numbers representing
+     the numeric differences between concurrent numbers in the specified spines.
+     For example, YDELTA may be used to characterize the semitone distances
+     separating pitches in a given vertical sonority or chord.
+
+     The output interpretation is automatically assigned a new name by pre-
+     pending the letter `Y' to the given input interpretation, e.g. **Ysemits.
+
+Syntax:
+
+     ydelta [-o] [-s regexp] -i '**interp' [inputfile ...]
+
+Options:
+
+     -o            : in square brackets output lowest value ("origin")
+     -s regexp     : skip lines matching the given regular expression;
+                     output input tokens as multiple stops, or single token
+     -i '**interp' : process input spines having specified interpretation
+
+  Refer to reference manual for further details.
+

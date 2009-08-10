@@ -1,0 +1,1059 @@
+<HTML>
+<HEAD>
+<TITLE> Humdrum Toolkit User's Guide -- Chapter 13</TITLE>
+<!-- Chapter 13 (Assembling Scores) of the User Guide for the Humdrum Toolkit music research software. -->
+<meta name="author" content="David Huron">
+<meta name="creation-date" content="Tue Sep  1 10:17:29 EDT 1998">
+<meta name="revision-date" content="Thu Feb  3 10:14:37 EST 2000">
+<meta name="description" content="Chapter 13 (Assembling Scores) of the User Guide for the Humdrum Toolkit music research software.">
+<meta name="keywords" content="music research,software,theory,analysis,systematic musicology,computer,software">
+<meta name="robots" content="all">
+</HEAD>
+<BODY bgcolor=#FFFFFF link="FF0000" alink="FF8O8O" vlink="008DDD">
+<img src="guide.gif"><br>
+<br>
+<br>
+
+<H1>Chapter13</H1>
+<CENTER>
+<SMALL>
+[<A HREF="guide12.html"><i>Previous Chapter</i></A>]
+[<A HREF="guide.toc.html"><i>Contents</i></A>]
+[<A HREF="guide14.html"><i>Next Chapter</i></A>]
+</SMALL>
+<center><HR WIDTH=500></center>
+<H1>Assembling Scores</H1>
+<center><HR WIDTH=500></center>
+</CENTER>
+</P>
+In the previous chapter we learned how to extract parts
+and passages from Humdrum files.
+In this chapter we discuss the reverse procedures:
+how to assemble and coordinate larger
+documents from individual segments and parts.
+We will discuss four tools: the UNIX
+<b>cat</b>
+command, and the Humdrum
+<A HREF="commands/assemble.html"><b>assemble</b></A>,
+<A HREF="commands/timebase.html"><b>timebase</b></A>
+and
+<A HREF="commands/rid.html"><b>rid</b></A>
+commands.
+</P>
+<A NAME="The_cat_Command">
+<H2>The <i>cat</i> Command</H2>
+</P>
+<A NAME="Join_movements">
+<P>
+The UNIX
+<b>cat</b>
+command allows two or more inputs to be concatenated together.
+If we concatenate two files, the output will consist of the
+contents of the first file, followed immediately by the contents
+of the second file.
+For example, the following command will concatenate together the
+files <code><big>mov.1</big></code>, <code><big>mov.2</big></code> and <code><big>mov.3</big></code>
+and place the result in the file <code><big>complete</big></code>.
+The order of concatenation is the same as the order of file names
+given on the command line:
+</P>
+<P>
+<blockquote>
+<code><big>cat mov.1 mov.2 mov.3 > complete</big></code>
+</blockquote>
+</P>
+<P>
+If each of the concatenated files conforms to the Humdrum syntax,
+then the resulting combined file is guaranteed to conform
+to the Humdrum syntax.
+However, in many cases, there may be redundant information
+present in the concatenated output.
+Suppose we had three files, each of which encoded a single measure of music.
+Concatenating them together might result in an output such as the following:
+<blockquote><TABLE>
+<TR><TD><code><big>!! File 1</TD></TR>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD></TR>
+<TR><TD><code><big>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD><code><big>*G:</TD><TD>*G:</TD><TD>*G:</TD><TD>*G:</TD></TR>
+<TR><TD><code><big>*k[f#]</TD><TD>*k[f#]</TD><TD>*k[f#]</TD><TD>*k[f#]</TD></TR>
+<TR><TD><code><big>4GG</TD><TD>4B</TD><TD>4d</TD><TD>4g</TD></TR>
+<TR><TD><code><big>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD><code><big>4GG</TD><TD>4d</TD><TD>4g</TD><TD>4b</TD></TR>
+<TR><TD><code><big>4FF#</TD><TD>4d</TD><TD>[4a</TD><TD>4dd</TD></TR>
+<TR><TD><code><big>8GG</TD><TD>4d</TD><TD>8a]</TD><TD>4b</TD></TR>
+<TR><TD><code><big>8BB</TD><TD>.</TD><TD>[8g</TD><TD>.</TD></TR>
+<TR><TD><code><big>4D</TD><TD>4d</TD><TD>8g]</TD><TD>4a</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>8f#</TD><TD>.</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+<TR><TD><code><big>!! File 2</TD></TR>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD></TR>
+<TR><TD><code><big>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD><code><big>*k[f#]</TD><TD>*k[f#]</TD><TD>*k[f#]</TD><TD>*k[f#]</TD></TR>
+<TR><TD><code><big>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD><code><big>8G</TD><TD>4d</TD><TD>4g</TD><TD>4b</TD></TR>
+<TR><TD><code><big>8F#</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>4E</TD><TD>4e</TD><TD>4g</TD><TD>4cc#</TD></TR>
+<TR><TD><code><big>4D;</TD><TD>4A;</TD><TD>4f#;</TD><TD>4dd;</TD></TR>
+<TR><TD><code><big>8A</TD><TD>4cn</TD><TD>4a</TD><TD>4ee</TD></TR>
+<TR><TD><code><big>8G</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD></TR>
+<TR><TD><code><big>!! File 3</TD></TR>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD></TR>
+<TR><TD><code><big>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD><code><big>*k[f#]</TD><TD>*k[f#]</TD><TD>*k[f#]</TD><TD>*k[f#]</TD></TR>
+<TR><TD><code><big>*k[f#]</TD><TD>*k[f#]</TD><TD>*k[f#]</TD><TD>*k[f#]</TD></TR>
+<TR><TD><code><big>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD><code><big>4F#</TD><TD>4d</TD><TD>[4a</TD><TD>8dd</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>.</TD><TD>8cc</TD></TR>
+<TR><TD><code><big>4G</TD><TD>4d</TD><TD>8a]</TD><TD>4b</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>[8g</TD><TD>.</TD></TR>
+<TR><TD><code><big>8C#</TD><TD>8e</TD><TD>8g]</TD><TD>4a</TD></TR>
+<TR><TD><code><big>8D#</TD><TD>4B</TD><TD>8f#</TD><TD>.</TD></TR>
+<TR><TD><code><big>8E</TD><TD>.</TD><TD>8e</TD><TD>8g</TD></TR>
+<TR><TD><code><big>8F#</TD><TD>8A</TD><TD>8d</TD><TD>8a</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Notice that each complete measure ends with spine-path terminators
+and that the
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+exclusive interpretations are repeated.
+This organization has a number of repercussions for various
+Humdrum tools.
+For example, the
+<A HREF="commands/mint.html"><b>mint</b></A>
+command calculates melodic intervals between successive notes
+within a spine.
+However,
+<b>mint</b>
+will not calculate intervals between pitches that are separated by
+a spine-path terminator.
+In other words, in the above output,
+<b>mint</b>
+will fail to calculate the melodic intervals between notes
+in successive measures.
+</P>
+<A NAME="The_rid_Command">
+<H2>The <i>rid</i> Command</H2>
+</P>
+<P>
+This problem can be resolved by using the Humdrum
+<A HREF="commands/rid.html"><b>rid</b></A>
+command.
+The
+<b>rid</b>
+command can be used to eliminate various kinds of records.
+Each option for
+<b>rid</b>
+eliminates a different class of records.
+Here are the record classes with their associated options:
+<blockquote><TABLE>
+<TR><TD>-G</TD><TD>eliminate all global comments</TD></TR>
+<TR><TD>-g</TD><TD>eliminate only global comments that are empty</TD></TR>
+<TR><TD>-L</TD><TD>eliminate all local comments</TD></TR>
+<TR><TD>-l</TD><TD>eliminate only local comments that are empty</TD></TR>
+<TR><TD>-I</TD><TD>eliminate all interpretations</TD></TR>
+<TR><TD>-i</TD><TD>eliminate only null interpretations</TD></TR>
+<TR><TD>-D</TD><TD>eliminate all data records</TD></TR>
+<TR><TD>-d</TD><TD>eliminate only null data records</TD></TR>
+<TR><TD>-T</TD><TD>eliminate all tandem interpretations</TD></TR>
+<TR><TD>-t</TD><TD>eliminate duplicate (repeated) tandem interpretations</TD></TR>
+<TR><TD>-U</TD><TD>eliminate unnecessary exclusive interpretations (see below)</TD></TR>
+<TR><TD>-u</TD><TD>same as -U</TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Null records are devoid of content.
+For example,
+null interpretations consist of a single asterisk in each spine;
+null data record consists of just null data tokens (.) in each spine;
+null local comments consist of a single exclamation mark in each spine.
+Null global comments contain just two exclamation marks at
+the beginning of a record.
+</P>
+<P>
+Upper- and lower-case options are used to distinguish
+<i>all</i>
+records
+of a certain class (upper-case) from <i>empty</i>, <i>null</i> or
+<i>repeated</i>
+records of a certain class (lower-case).
+</P>
+<P>
+By way of example, the following command will eliminate all global
+comments (including reference records) from the input:
+</P>
+<P>
+<blockquote>
+<code><big>rid -G Saint-Saens</big></code>
+</blockquote>
+</P>
+<P>
+Similarly, the following command will eliminate all tandem interpretations
+from an input:
+</P>
+<P>
+<blockquote>
+<code><big>rid -T Vaughan-Williams</big></code>
+</blockquote>
+</P>
+<P>
+Options can be combined.
+The following command eliminates all global and local comments,
+interpretations, and null data records:
+</P>
+<P>
+<blockquote>
+<code><big>rid -GLId</big></code>
+</blockquote>
+</P>
+<P>
+The option combination <b>-GLId</b> is very common with
+<b>rid</b>
+since only non-null data records are retained in the output.
+</P>
+<P>
+With the
+<b>-u</b>
+option,
+<b>rid</b>
+will remove "unnecessary" exclusive interpretations.
+Exclusive interpretations are deemed unnecessary if they
+don't change the current status of the data.
+In the following example, the second <code><big>**psaltery</big></code>
+interpretation is redundant.
+The <b>rid -u</b> command would remove the first spine-path terminator
+and the second exclusive interpretation -- leaving a continuous
+data spine.
+<blockquote><TABLE>
+<TR><TD><code><big>**psaltery</TD></TR>
+<TR><TD><code><big>.</big></code></TD></TR>
+<TR><TD><code><big>.</big></code></TD></TR>
+<TR><TD><code><big>.</big></code></TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+<TR><TD><code><big>**psaltery</TD></TR>
+<TR><TD><code><big>.</big></code></TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+In addition,
+<b>rid</b>
+provides a
+<b>-t</b>
+option which removes "duplicate" or repeated
+tandem interpretations.
+In the above example there is no need to repeat the meter signature
+and key signature in each measure.
+<A NAME="Join_three_measures">
+The following command will concatenate each of the three measures
+together, and then eliminate the unwanted interpretations:
+</P>
+<P>
+<blockquote>
+<code><big>cat bar1 bar2 bar3 | rid -ut</big></code>
+</blockquote>
+</P>
+<P>
+The resulting output is given below:
+<blockquote><TABLE>
+<TR><TD><code><big>!! File 1</TD></TR>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD></TR>
+<TR><TD><code><big>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD><TD>*M4/4</TD></TR>
+<TR><TD><code><big>*k[f#]</TD><TD>*k[f#]</TD><TD>*k[f#]</TD><TD>*k[f#]</TD></TR>
+<TR><TD><code><big>4GG</TD><TD>4B</TD><TD>4d</TD><TD>4g</TD></TR>
+<TR><TD><code><big>=1</TD><TD>=1</TD><TD>=1</TD><TD>=1</TD></TR>
+<TR><TD><code><big>4GG</TD><TD>4d</TD><TD>4g</TD><TD>4b</TD></TR>
+<TR><TD><code><big>4FF#</TD><TD>4d</TD><TD>[4a</TD><TD>4dd</TD></TR>
+<TR><TD><code><big>8GG</TD><TD>4d</TD><TD>8a]</TD><TD>4b</TD></TR>
+<TR><TD><code><big>8BB</TD><TD>.</TD><TD>[8g</TD><TD>.</TD></TR>
+<TR><TD><code><big>4D</TD><TD>4d</TD><TD>8g]</TD><TD>4a</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>8f#</TD><TD>.</TD></TR>
+<TR><TD><code><big>!! File 2</TD></TR>
+<TR><TD><code><big>=2</TD><TD>=2</TD><TD>=2</TD><TD>=2</TD></TR>
+<TR><TD><code><big>8G</TD><TD>4d</TD><TD>4g</TD><TD>4b</TD></TR>
+<TR><TD><code><big>8F#</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>4E</TD><TD>4e</TD><TD>4g</TD><TD>4cc#</TD></TR>
+<TR><TD><code><big>4D;</TD><TD>4A;</TD><TD>4f#;</TD><TD>4dd;</TD></TR>
+<TR><TD><code><big>8A</TD><TD>4cn</TD><TD>4a</TD><TD>4ee</TD></TR>
+<TR><TD><code><big>8G</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>!! File 3</TD></TR>
+<TR><TD><code><big>=3</TD><TD>=3</TD><TD>=3</TD><TD>=3</TD></TR>
+<TR><TD><code><big>4F#</TD><TD>4d</TD><TD>[4a</TD><TD>8dd</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>.</TD><TD>8cc</TD></TR>
+<TR><TD><code><big>4G</TD><TD>4d</TD><TD>8a]</TD><TD>4b</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>[8g</TD><TD>.</TD></TR>
+<TR><TD><code><big>8C#</TD><TD>8e</TD><TD>8g]</TD><TD>4a</TD></TR>
+<TR><TD><code><big>8D#</TD><TD>4B</TD><TD>8f#</TD><TD>.</TD></TR>
+<TR><TD><code><big>8E</TD><TD>.</TD><TD>8e</TD><TD>8g</TD></TR>
+<TR><TD><code><big>8F#</TD><TD>8A</TD><TD>8d</TD><TD>8a</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Of course care should be exercised when
+concatenating inputs together.
+Although an output may conform to the Humdrum syntax,
+the result can nevertheless violate conventions for a specific
+representation such as <code><big>**kern</big></code>.
+For example, if we were to concatenate measure 85 to measure 87,
+it is possible that tied-notes won't match up, or that phrases will
+begin without ending, etc.
+These anomalies may cause problems with subsequent processing.
+</P>
+<A NAME="Assembling_Parts_Using_the_assemble_Command">
+<H2>Assembling Parts Using the <i>assemble</i> Command</H2>
+</P>
+<P>
+Assembling parts into a full score is slightly more challenging
+than concatenating together musical segments.
+The principle tool for joining spines together is the
+<A HREF="commands/assemble.html"><b>assemble</b></A>
+command.
+Consider the following two files:
+<blockquote><TABLE>
+<TR><TD><code><big>!! Assemble example</TD></TR>
+<TR><TD><code><big>!! File 1</TD></TR>
+<TR><TD><code><big>**Letters</TD></TR>
+<TR><TD><code><big>! A to E</TD></TR>
+<TR><TD><code><big>A</TD></TR>
+<TR><TD><code><big>B</TD></TR>
+<TR><TD><code><big>C</TD></TR>
+<TR><TD><code><big>D</TD></TR>
+<TR><TD><code><big>E</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+<blockquote><TABLE>
+<TR><TD><code><big>!! Assemble example</TD></TR>
+<TR><TD><code><big>!! File 2</TD></TR>
+<TR><TD><code><big>**Numbers</TD></TR>
+<TR><TD><code><big>! 1 to 5</TD></TR>
+<TR><TD><code><big>1</TD></TR>
+<TR><TD><code><big>2</TD></TR>
+<TR><TD><code><big>3</TD></TR>
+<TR><TD><code><big>4</TD></TR>
+<TR><TD><code><big>5</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+These two files can be aligned side by side using
+<b>assemble</b>:
+</P>
+<P>
+<blockquote>
+<code><big>assemble letters numbers</big></code>
+</blockquote>
+</P>
+<P>
+The resulting output is:
+<blockquote><TABLE>
+<TR><TD><code><big>!! Assemble example</TD></TR>
+<TR><TD><code><big>!! File 1</TD></TR>
+<TR><TD><code><big>!! File 2</TD></TR>
+<TR><TD><code><big>**Letters</TD><TD>**Numbers</TD></TR>
+<TR><TD><code><big>! A to E</TD><TD>! 1 to 5</TD></TR>
+<TR><TD><code><big>A</TD><TD>1</TD></TR>
+<TR><TD><code><big>B</TD><TD>2</TD></TR>
+<TR><TD><code><big>C</TD><TD>3</TD></TR>
+<TR><TD><code><big>D</TD><TD>4</TD></TR>
+<TR><TD><code><big>E</TD><TD>5</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Note the following:
+(1) The spines are joined side by side from left to right in the
+same order as specified on the command line.
+(2) Local comments are preserved in their appropriate spines.
+(3) When identical global comments occur at the same
+location in both files, only a single instance of the comment is output.
+(4) Dissimilar global comments are output successively.
+</P>
+<P>
+The files joined by
+<b>assemble</b>
+are not confined to a single spine.
+For example, one input file may contain 2 spines and a second file
+may contain 20 spines.
+The resulting output will contain 22 spines.
+There is no limit to the number of files that can be
+assembled at one time.
+</P>
+<P>
+In many cases, the input files will have dissimilar lengths.
+The
+<b>assemble</b>
+command will correctly terminate the appropriate spines.
+For example, in the above case, if the <code><big>numbers</big></code> file
+contained only the numbers 1 to 3, the assembled output would
+appear as follows:
+<blockquote><TABLE>
+<TR><TD><code><big>!! Assemble example</TD></TR>
+<TR><TD><code><big>!! File 1</TD></TR>
+<TR><TD><code><big>!! File 2</TD></TR>
+<TR><TD><code><big>**Letters</TD><TD>**Numbers</TD></TR>
+<TR><TD><code><big>! A to E</TD><TD>! 1 to 3</TD></TR>
+<TR><TD><code><big>A</TD><TD>1</TD></TR>
+<TR><TD><code><big>B</TD><TD>2</TD></TR>
+<TR><TD><code><big>C</TD><TD>3</TD></TR>
+<TR><TD><code><big>*</TD><TD>*-</TD></TR>
+<TR><TD><code><big>D</TD></TR>
+<TR><TD><code><big>E</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+If the order of the input files was reversed,
+<b>assemble</b>
+would produce an output with the appropriate spine-path changes:
+<blockquote><TABLE>
+<TR><TD><code><big>!! Assemble example</TD></TR>
+<TR><TD><code><big>!! File 2</TD></TR>
+<TR><TD><code><big>!! File 1</TD></TR>
+<TR><TD><code><big>**Numbers</TD><TD>**Letters</TD></TR>
+<TR><TD><code><big>! 1 to 3</TD><TD>! A to E</TD></TR>
+<TR><TD><code><big>1</TD><TD>A</TD></TR>
+<TR><TD><code><big>2</TD><TD>B</TD></TR>
+<TR><TD><code><big>3</TD><TD>C</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*</TD></TR>
+<TR><TD><code><big>D</TD></TR>
+<TR><TD><code><big>E</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Note that if all of the input files conform to the Humdrum syntax,
+then
+<A HREF="commands/assemble.html"><b>assemble</b></A>
+guarantees that the assembled output will also conform to the Humdrum syntax.
+</P>
+<A NAME="Aligning_Durations_Using_the_timebase_Command">
+<H2>Aligning Durations Using the <i>timebase</i> Command</H2>
+</P>
+<P>
+Suppose now that we wanted to join two hypothetical files containing
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+data.
+The first file contains two quarter notes,
+whereas the second file contains four eighth notes:
+<blockquote><TABLE>
+<TR><TD><code><big>!! File 1</TD></TR>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD><code><big>4c</TD></TR>
+<TR><TD><code><big>4d</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+<blockquote><TABLE>
+<TR><TD><code><big>!! File 2</TD></TR>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD><code><big>8e</TD></TR>
+<TR><TD><code><big>8g</TD></TR>
+<TR><TD><code><big>8f</TD></TR>
+<TR><TD><code><big>8g</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Using
+<b>assemble</b>
+to paste them together will clearly lead to an uncoordinated result.
+The two quarter notes in file 1 will be incorrectly matched with the
+first two eighth notes in file 2.
+</P>
+<P>
+The Humdrum
+<A HREF="commands/timebase.html"><b>timebase</b></A>
+command can be used to reformat either
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+or
+<A HREF="representations/recip.rep.html"><code><big>**recip</big></code></A>
+inputs so that each output data record represents an
+equivalent slice (elapsed duration) of time.
+(Barlines are ignored by <b>timebase</b>.)
+The
+<b>timebase</b>
+command achieves this by padding an input with null data records.
+In the above case, we would preprocess file 1 as follows:
+</P>
+<P>
+<blockquote>
+<code><big>timebase -t 8 file1 > file1.tb</big></code>
+</blockquote>
+</P>
+<P>
+The new file would look like this:
+<blockquote><TABLE>
+<TR><TD><code><big>!! File 1</TD></TR>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD><code><big>4c</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>4d</TD></TR>
+<TR><TD><code><big>.</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The
+<b>-t</b>
+option is used to indicate the "time base" -- in this
+case, an eighth duration.
+Since all non-barline data records in both files represent elapsed
+durations of an eighth-note, we can continue by using the
+<b>assemble</b>
+command as before.
+The command:
+</P>
+<P>
+<blockquote>
+<code><big>assemble file1.tb file2</big></code>
+</blockquote>
+</P>
+<P>
+will result in the following two-part score:
+<blockquote><TABLE>
+<TR><TD><code><big>!! File 1</TD></TR>
+<TR><TD><code><big>!! File 2</TD></TR>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD></TR>
+<TR><TD><code><big>4c</TD><TD>8e</TD></TR>
+<TR><TD><code><big>.</TD><TD>8g</TD></TR>
+<TR><TD><code><big>4d</TD><TD>8f</TD></TR>
+<TR><TD><code><big>.</TD><TD>8g</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Suppose that <code><big>file2</big></code> also contained a quarter-note.
+For example, consider a revised <code><big>file2</big></code>:
+<blockquote><TABLE>
+<TR><TD><code><big>!! File 2</TD></TR>
+<TR><TD><code><big>**kern</TD></TR>
+<TR><TD><code><big>8e</TD></TR>
+<TR><TD><code><big>8g</TD></TR>
+<TR><TD><code><big>4f</TD></TR>
+<TR><TD><code><big>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Before assembling the two parts, we would need to apply the
+<b>timebase</b>
+command to this file (using the same 8th-note time-base value).
+Assembling the two "time-based" files would produce the
+following result:
+<blockquote><TABLE>
+<TR><TD><code><big>!! File 1</TD></TR>
+<TR><TD><code><big>!! File 2</TD></TR>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD></TR>
+<TR><TD><code><big>4c</TD><TD>8e</TD></TR>
+<TR><TD><code><big>.</TD><TD>8g</TD></TR>
+<TR><TD><code><big>4d</TD><TD>4f</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+Notice that we have a spurious null data record in the last line;
+both parts encode null tokens.
+For most processing, the presence of null data records is inconsequential.
+However, if we wish, these null data records can be eliminated using the
+<b>rid</b>
+command with the
+<b>-d</b>
+option.
+In fact it is common to follow an
+<b>assemble</b>
+command with
+<b>rid -d</b>
+to strip away unnecessary null data records.
+The command:
+</P>
+<P>
+<blockquote>
+<code><big>assemble file1.tb file2.tb | rid -d</big></code>
+</blockquote>
+</P>
+<P>
+would result in the following output:
+<blockquote><TABLE>
+<TR><TD><code><big>!! File 1</TD></TR>
+<TR><TD><code><big>!! File 2</TD></TR>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD></TR>
+<TR><TD><code><big>4c</TD><TD>8e</TD></TR>
+<TR><TD><code><big>.</TD><TD>8g</TD></TR>
+<TR><TD><code><big>4d</TD><TD>4f</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+</P>
+<P>
+The
+<A HREF="commands/timebase.html"><b>timebase</b></A>
+command can be applied to multi-spine inputs as well as
+single-spine inputs.
+Consider, the following input:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**commentary</TD></TR>
+<TR><TD><code><big>4g</TD><TD>8.r</TD><TD>8.cc</TD><TD>16ee</TD><TD>2nd inversion</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>.</TD><TD>8ff</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>32b</TD><TD>16cc</TD><TD>16gg</TD><TD>clash</TD></TR>
+<TR><TD><code><big>.</TD><TD>32a</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>8f</TD><TD>8cc</TD><TD>8dd</TD><TD>8ff</TD><TD>suspension</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+The following command will cause the addition of null data records
+so that each data record represents an elapsed time of a 32nd duration.
+Incidentally, notice that any spine contain non-rhythmic data
+--  such as the <code><big>**commentary</big></code> spine in the above example --
+is also transformed so that synchronous data is maintained.
+</P>
+<P>
+<blockquote>
+<code><big>timebase -t 32 Corelli</big></code>
+</blockquote>
+</P>
+<P>
+The corresponding output is as follows.
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**kern</TD><TD>**commentary</TD></TR>
+<TR><TD><code><big>*tb32</TD><TD>*tb32</TD><TD>*tb32</TD><TD>*tb32</TD><TD>*tb32</TD></TR>
+<TR><TD><code><big>4g</TD><TD>8.r</TD><TD>8.cc</TD><TD>16ee</TD><TD>2nd inversion</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>.</TD><TD>8ff</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>32b</TD><TD>16cc</TD><TD>16gg</TD><TD>clash</TD></TR>
+<TR><TD><code><big>.</TD><TD>32a</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>8f</TD><TD>8cc</TD><TD>8dd</TD><TD>8ff</TD><TD>suspension</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>.</TD><TD>.</TD><TD>.</TD><TD>.</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+Notice that
+<b>timebase</b>
+has added a tandem interpretation (<code><big>*tb32</big></code>).
+This indicates that the output has been processed
+so that each non-barline data record represents
+an elapsed duration equivalent to a thirty-second note.
+</P>
+<A NAME="Assembling_N-tuplets">
+<H2>Assembling N-tuplets</H2>
+</P>
+<P>
+Typically, one can simply use the shortest duration present
+as a guide for a suitable time-base value.
+The shortest duration can be determined using the
+<A HREF="commands/census.html"><b>census</b></A> -k
+command described in
+<A HREF="guide04.html">Chapter 4.</A>
+However, tuplets require a little more sophistication.
+Suppose we wanted to assemble two parts, one containing
+just eighth-notes and the other containing just quarter-note triplets.
+(The quarter-note triplets will be encoded as three notes in the time
+of a half-note, or "6th" notes.)
+We need to create an output whose rhythmic structure will appear
+as follows:
+<br><br>
+<blockquote><TABLE>
+<TR><TD><code><big>**kern</TD><TD>**kern</TD></TR>
+<TR><TD><code><big>*M2/4</TD><TD>*M2/4</TD></TR>
+<TR><TD><code><big>=1</TD><TD>=1</TD></TR>
+<TR><TD><code><big>6</TD><TD>8</TD></TR>
+<TR><TD><code><big>.</TD><TD>8</TD></TR>
+<TR><TD><code><big>6</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>8</TD></TR>
+<TR><TD><code><big>6</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>8</TD></TR>
+<TR><TD><code><big>=2</TD><TD>=2</TD></TR>
+<TR><TD><code><big>6</TD><TD>8</TD></TR>
+<TR><TD><code><big>.</TD><TD>8</TD></TR>
+<TR><TD><code><big>6</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>8</TD></TR>
+<TR><TD><code><big>6</TD><TD>.</TD></TR>
+<TR><TD><code><big>.</TD><TD>8</TD></TR>
+<TR><TD><code><big>=3</TD><TD>=3</TD></TR>
+<TR><TD><code><big>*-</TD><TD>*-</big></code></TD></TR>
+</TABLE></blockquote>
+In this case, choosing a time-base according to the shortest
+duration (8th) will not work since a 6th note is not an
+integral multiple of the eighth duration.
+We need to find a
+<i>common duration factor</i>
+for both values.
+The shortest common duration is a 24th note (there are three 24th notes
+in an 8th note, and four 24th notes in a 6th note).
+Applying the time-base value `24' to both files will allow us to
+coordinate them properly.
+Remember that
+<b>rid -d</b>
+can be used to eliminate unnecessary null data records once we
+have finished assembling the spines.
+In the worst case, you can determine a common duration factor by
+simply multiplying together the shortest notes in the files
+to be assembled.
+For example, 6 x 8 = 48;
+so a time-base of 48 will be guaranteed to work for both files.
+</P>
+<A NAME="Checking_an_Assembled_Score_Using_proof">
+<H2>Checking an Assembled Score Using <i>proof</i></H2>
+</P>
+<P>
+In assembling any score from a set of parts, there is always
+the danger of using the wrong time-base value.
+When parts are miscoordinated, it is typically the consequence
+of one or more notes being discarded by <b>timebase</b>.
+Fortunately, such miscoordinations are easily detected by applying the
+<A HREF="commands/proof.html"><b>proof</b></A>
+command to any assembled <code><big>**kern</big></code> output.
+The
+<b>proof</b>
+utility checks <code><big>**kern</big></code> representations for a wide
+variety of possible encoding errors or ambiguities:
+</P>
+<P>
+<blockquote>
+<code><big>proof fullscore</big></code>
+</blockquote>
+</P>
+<P>
+By way of summary, creating a full score from a set of
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+parts involves the following five tasks:
+(1) Identify a common duration factor for all the parts.
+Use
+<A HREF="commands/census.html"><b>census</b></A>
+to determine the shortest duration;
+if any of the parts contains an N-tuplet, then the common duration
+factor may be smaller than the shortest note.
+(2) Use the
+<A HREF="commands/timebase.html"><b>timebase</b></A>
+command to expand each input file separately using the common duration
+factor.
+(3) Assemble the parts using
+<A HREF="commands/assemble.html"><b>assemble</b>.</A>
+(4) If desired, eliminate unnecessary null data records usingi
+<A HREF="commands/rid.html"><b>rid -d</b>.</A>
+(5) Check the assembled score for rhythmic coherence using the
+<A HREF="commands/proof.html"><b>proof</b></A>
+command.
+</P>
+<A NAME="Other_Uses_for_the_timebase_Command">
+<H2>Other Uses for the <i>timebase</i> Command</H2>
+</P>
+<P>
+The most common use of
+<b>timebase</b>
+is as a way of expanding a file by padding it with null data records.
+However,
+<b>timebase</b>
+can also be used to contract a file, giving us only those
+sonorities that lie a fixed duration apart.
+For example, specifying a time-base of
+<b>-t 2</b>
+will cause only those sonorities that are separated by a half-note
+duration to be output.
+This sort of rhythmic reduction can be useful in certain circumstances.
+For example, suppose you suspect there may be a hemiola
+tendency in a given work by Brahms, where the duration separating
+hemiola notes is a dotted-quarter.
+The command:
+</P>
+<P>
+<blockquote>
+<code><big>timebase -t 4. brahms</big></code>
+</blockquote>
+</P>
+<P>
+can be used to extract only those sonorities that are separated by
+a dotted-quarter duration.
+</P>
+<P>
+Similarly, suppose we want to extract all sonorities falling
+on the third beat of a waltz written in 3/2 meter.
+First we would edit the input file so it begins
+on the third beat of some measure.
+Then we could use the following command:
+</P>
+<P>
+<blockquote>
+<code><big>grep -v ^= waltz | timebase -t 1. > 3rd_beat</big></code>
+</blockquote>
+</P>
+<P>
+Note that the use of
+<b>grep</b>
+here is essential in order to eliminate barlines.
+The
+<b>timebase</b>
+command resets itself with each barline, so time-base durations
+are calculated from the beginning of the bar.
+When barlines are eliminated,
+<b>timebase</b>
+cannot synchronize to the beginning of each bar and so simply floats
+along at the fixed time-base.
+</P>
+<A NAME="Additional_Uses_of_aassemble_and_timebase">
+<H2>Additional Uses of <i>assemble</i> and <i>timebase</i></H2>
+</P>
+<P>
+Although we normally assemble parts together,
+sometimes it is useful to assemble entire scores together.
+Suppose we wanted to listen to a theme at the same time as one
+of its variations.
+We might first use
+<A HREF="commands/yank.html"><b>yank</b></A>
+to extract the appropriate sections.
+At the same time we might determine a common duration factor
+and expand them using <b>timebase</b>.
+</P>
+<P>
+<blockquote>
+<code><big>yank -s Theme -r 1 blacksmith | timebase -t 32 > temp1</big></code>
+<br>
+<code><big>yank -s 'Variation 1' -r 1 blacksmith | timebase -t 32 > temp2</big></code>
+</blockquote>
+</P>
+<P>
+Then we assemble the two sections together, translate to
+the
+<A HREF="representations/MIDI.rep.html"><code><big>**MIDI</big></code></A>
+representation and use
+<A HREF="commands/perform.html"><b>perform</b></A>
+to listen to both sections at the same time:
+</P>
+<P>
+<blockquote>
+<code><big>assemble temp1 temp2 | midi | perform</big></code>
+</blockquote>
+</P>
+<P>
+Similarly, suppose we would like to compare the bass lines
+for each variation in some set.
+We might extract each of the bass lines, assemble them into a single
+score, and then use the
+<b>ms</b>
+and
+<b>ghostview</b>
+commands to allow us to see all of the bass lines for all of the
+variations concurrently.
+</P>
+<P>
+<blockquote>
+<code><big>yank -s 'Variation 1' -r 1 goldberg | timebase -t 16 > temp1</big></code>
+<br>
+<code><big>yank -s 'Variation 2' -r 1 goldberg | timebase -t 16 > temp2</big></code>
+<br>
+     etc.   ...
+<br>
+<code><big>assemble temp1 temp2 temp3 ... | rid -d | ms > basslines.ps</big></code>
+<br>
+<code><big>ghostview basslines.ps</big></code>
+</blockquote>
+</P>
+<P>
+The most common use of
+<b>assemble</b>
+is not to assemble parts, but to assemble different types of
+concurrent information.
+Suppose we would like to determine whether descending minor seconds
+are more likely to be <i>fa-mi</i> rather than <i>do-ti</i>.
+We can use the
+<A HREF="commands/mint.html"><b>mint</b></A>
+command to characterize melodic intervals, and the
+<A HREF="commands/solfa.html"><b>solfa</b></A>
+command to characterize scale degrees.
+Assume that our input is monophonic:
+</P>
+<P>
+<blockquote>
+<code><big>mint melodies > temp1</big></code>
+<br>
+<code><big>solfa melodies > temp2</big></code>
+</blockquote>
+</P>
+<P>
+The files <code><big>temp1</big></code> and <code><big>temp2</big></code> will have the same
+length, so we can assemble them together.
+This will generate an output consisting of two spines,
+<A HREF="representations/mint.rep.html"><code><big>**mint</big></code></A>
+and
+<A HREF="representations/solfa.rep.html"><code><big>**solfa</big></code></A>.
+In effect, the <code><big>**mint</big></code> spine data will tell us the interval
+used to approach the scale degree encoded in the <code><big>**solfa</big></code> spine.
+We can use
+<b>grep</b>
+to search for the appropriate combinations of interval and scale degree
+and count the number of occurrences:
+</P>
+<P>
+<blockquote>
+<code><big>assemble temp1 temp2 | grep -c '-m2.*mi'</big></code>
+<br>
+<code><big>assemble temp1 temp2 | grep -c '-m2.*ti'</big></code>
+</blockquote>
+</P>
+<A NAME="Subdominant_Rising_Third_Sixth">
+<P>
+This same approach can be used to address (innumerable) questions
+pertaining to concurrent patterns.
+For example, suppose we have a
+<A HREF="representations/harm.rep.html"><code><big>**harm</big></code></A>
+spine that identifies
+the `Roman numeral' functional harmony for some choral work.
+We can identify complex situations such as the following:
+for the soprano voice, count how many subdominant pitches are approached
+by an interval of a rising third or a rising sixth and coincide with a
+dominant seventh chord.
+First, let's extract the soprano line and create a corresponding
+scale degree representation using <b>deg</b>.
+We can use the
+<b>-a</b>
+option to avoid outputting the melodic direction
+signifiers (<code><big>^</big></code> and <code><big>v</big></code>):
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*Isopran' howells | deg -a > temp1</big></code>
+</blockquote>
+</P>
+<P>
+Next, let's again extract the soprano voice and create a
+corresponding melodic interval representation using <b>mint</b>.
+Since we are not interested in interval qualities we can invoke the
+<b>-d</b>
+option to output only diatonic interval sizes.
+</P>
+<P>
+<blockquote>
+<code><big>extract -i '*Isopran' howells | mint -d > temp2</big></code>
+<br>
+<code><big>extract -i '**harm' howells > temp3</big></code>
+</blockquote>
+</P>
+<P>
+We have also extracted the <code><big>**harm</big></code> spine and placed
+it in the file <code><big>temp3</big></code>.
+If we assemble together our three temporary files, the result will
+have three spines: <code><big>**deg</big></code>, <code><big>**mint</big></code> and <code><big>**harm</big></code>.
+We can now use
+<b>grep</b>
+to search and count all instances of subdominant pitches that are
+approached by ascending thirds/sixths and that coincide with dominant
+seventh chords (in the <code><big>**kern</big></code> representation: `<code><big>V7</big></code>'):
+</P>
+<P>
+<blockquote>
+<code><big>assemble temp1 temp2 temp3 | grep -c '^4</code></big><i><tab></i><code><big>+[36]</code></big><i><tab></i><code><big>V7</code></big>
+</blockquote>
+</P>
+<A NAME="Secondary_dominants">
+<P>
+The
+<b>timebase</b>
+command can also be used for tasks other than assembling parts
+together.
+Suppose we would like to determine whether secondary dominant
+chords are more likely to appear on the third beat than other
+beats in a triple meter work.
+The
+<b>timebase</b>
+command can be used to reformat a score so that each measure
+occupies the same number of data records.
+For example, in a 3/4 meter, an eighth-note time-base will mean
+that each measure will contain six data records, and the fifth
+data record will correspond to the onset of the third beat.
+Recall from
+<A HREF="guide12.html">Chapter 12</A>
+that the
+<b>yank -m</b>
+command allows us to extract particular data records following
+a specified marker.
+In the following command, we have defined the marker as a barline
+(<code><big>-m ^=</big></code>) and instructed
+<b>yank</b>
+to fetch the fifth line following each occurrence of the marker (<code><big>-r 5</big></code>).
+In our example, the
+<b>grep</b>
+command is being used to count V/V chords occurring on third beats:
+</P>
+<P>
+<blockquote>
+<code><big>timebase -t 8 strauss | solfa | yank -m = -r 5 | grep re \
+<blockquote>
+| grep fe | grep -c la</big></code>
+</blockquote>
+</blockquote>
+</P>
+<P>
+We can repeat this command for beats one and two by changing the
+<b>-r</b>
+parameter to 1 and 3 respectively.
+</P>
+<hr>
+<A NAME="Reprise">
+<H2>Reprise</H2>
+</P>
+<P>
+In this chapter we have learned how to concatenate musical passages
+together using the
+<b>cat</b>
+command.
+We also learned how to eliminate redundant exclusive and
+tandem interpretations from concatenated outputs using the
+<b>-u</b>
+and
+<b>-t</b>
+options for
+<A HREF="commands/rid.html"><b>rid</b></A>.
+In addition, we learned how to assemble two or more spines into
+a single output file using
+<A HREF="commands/assemble.html"><b>assemble</b></A>.
+In the case of
+<A HREF="representations/kern.rep.html"><code><big>**kern</big></code></A>
+and
+<A HREF="representations/recip.rep.html"><code><big>**recip</big></code></A>
+representations, we learned how to use the
+<A HREF="commands/timebase.html"><b>timebase</b></A>
+command to preprocess each constituent file so that all data records
+represent equivalent elapsed durations.
+Having assembled a full score from parts,
+<b>rid</b>
+<b>-d</b>
+can be used to eliminate any residual or unnecessary null data records.
+The
+<A HREF="commands/proof.html"><b>proof</b></A>
+command can be used to ensure that any assembled <code><big>**kern</big></code>
+data is correctly aligned.
+</P>
+<P>
+Finally, we learned that the
+<b>timebase</b>
+command can be used for other analytic purposes.
+Specifically, it can be used to reduce a score rhythmically
+so only particular onset points or beats are retained.
+In
+<A HREF="guide23.html">Chapter 23</A>
+we will see additional uses of
+<b>timebase</b>
+for a variety of types of rhythmic tasks.
+<hr>
+<br>
+<ul>
+<li>
+<A HREF="guide14.html">
+<B>Next Chapter</B></A>
+<li>
+<A HREF="guide12.html">
+<B>Previous Chapter</B></A>
+<li>
+<A HREF="guide.toc.html">
+<B>Table of Contents</B></A>
+<li>
+<A HREF="guide.toc.detailed.html">
+<B>Detailed Contents</B></A>
+<br><br>
+
+&copy; Copyright 1999 David Huron
+</BODY>
+</HTML>

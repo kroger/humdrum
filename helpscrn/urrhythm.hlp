@@ -1,0 +1,25 @@
+
+URRHYTHM  : Characterize rhythmic prototypes in a passage.
+
+     This command outputs a single **URrhym spine identifying the
+     rhythmic prototypes for a passage according to a variation of
+     the Johnson-Laird theory.  Each beat in the passage is character-
+     ized as one of three prototypes:  "N" (note), "S" (syncopation),
+     or "O" (other).
+
+Inputs processed:
+
+     The input must contain precisely two spines:  **kern (or **recip),
+     and **metpos.
+
+Syntax:
+
+     urrhythm [inputfile ...]
+
+Options:
+
+     None.
+
+  Refer to reference manual for further details.
+
+

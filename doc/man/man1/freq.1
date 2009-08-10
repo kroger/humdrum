@@ -1,0 +1,258 @@
+\"    This documentation is copyright 1994 David Huron.
+.TH freq 1 "1994 Dec. 4"
+.AT 3
+.sp 2
+.SH "NAME"
+.in +2
+.in +10
+.ti -10
+\fBfreq\fR  --  translate selected Humdrum pitch-related representations to frequency
+.in -10
+.in -2
+.sp 1
+.sp 1
+.SH "SYNOPSIS"
+.in +2
+.in +7
+.ti -7
+\fBfreq\fR  [\fB-p \fIn\fR]  [\fB-tx\fR]  [\fIinputfile\fR ...]  [> \fIoutputfile.frq\fR]
+.in -7
+.in -2
+.sp 1
+.sp 1
+.SH "DESCRIPTION"
+.in +2
+The
+.B "freq"
+command transforms various pitch-related inputs to corresponding
+frequency representations.
+It outputs one or more Humdrum \f(CR**freq\fR
+spines containing numerical values (in hertz) corresponding to the
+fundamental frequency for pitch-related input tokens.
+For example, the \f(CR**pitch\fR
+token \(odC4\(cd is transformed to 261.63 (hertz).
+.sp 1
+.sp 1
+The
+.B "freq"
+command is able to translate any of the pitch-related
+representations listed below.
+In each case, a tuning standard of A4 equals 440 hertz is assumed.
+For descriptions of the various input representations
+(including \f(CR**freq\fR)
+refer to Section 2
+.I "(Representation Reference)"
+of this reference manual.
+.sp 1
+.sp 1
+It is recommended that output files produced using the
+.B "freq"
+command should be given names with the distinguishing `.frq' extension.
+.sp 1
+.TS
+l l.
+\f(CR**cbr\fR	critical band rate (in equivalent rectangular
+	bandwidth units)
+\f(CR**cents\fR	hundredths of a semitone with respect to middle C=0
+	(e.g. 1200 equals C5)
+\f(CR**cocho\fR	cochlear coordinates (in millimeters)
+\f(CR**freq\fR	fundamental frequency (in hertz)
+\f(CR**fret\fR	fretted-instrument pitch tablature
+\f(CR**kern\fR	core pitch/duration representation
+\f(CR**MIDI\fR	Music Instrument Digital Interface tablature
+\f(CR**pitch\fR	American National Standards Institute pitch notation
+	(e.g. \(odA#4\(cd)
+\f(CR**semits\fR	equal-tempered semitones with respect to middle C=0
+	(e.g. -12 equals C3)
+\f(CR**solfg\fR	French solf\o'e\(ga'ge system (fixed `doh')
+\f(CR**specC\fR	spectral centroid (in hertz)
+\f(CR**Tonh\fR	German pitch system
+.TE
+.sp 1
+.ce
+.I "Input representations processed by \fBfreq\fR."
+.in -2
+.SH "OPTIONS"
+.in +2
+The
+.B "freq"
+command provides the following options:
+.sp 1
+.TS
+l l.
+\fB-h\fR	displays a help screen summarizing the command syntax
+\fB-p \fIn\fR	output precision of \fIn\fR decimal places
+\fB-t\fR	suppresses printing of all but the first note of a
+	group of tied \f(CR**kern\fR notes
+\fB-x\fR	suppresses printing of non-frequency signifiers
+.TE
+.sp 1
+Options are specified in the command line.
+.sp 1
+.sp 1
+The
+.B "-p"
+option can be used to set the precision of the output values to \fIn\fR
+decimal places.
+The default precision is two decimal places.
+Note that
+.B "freq"
+is able to process \f(CR**freq\fR
+as input; this feature allows the user to round-off existing \f(CR**freq\fR
+data to a specified precision.
+.sp 1
+.sp 1
+The
+.B "-t"
+option ensures that only a single output value is given for tied \f(CR**kern\fR notes;
+the output coincides with the first note of the tie.
+.sp 1
+.sp 1
+In the default operation,
+.B "freq"
+outputs non-pitch-related signifiers in addition to the frequency value.
+For example, the \f(CR**pitch\fR
+token \(odA6zzz\(cd will result in the output
+\(od1760.00zzz\(cd -- that is, after translating A6 to 1760.00 hertz,
+the \(odzzz\(cd signifiers are retained in the output.
+For some applications, echoing non-pitch-related signifiers in the output
+is useful.
+However, in other situations, the result can prove confusing --
+especially, when the non-pitch-related signifiers are numbers.
+Consider the case of the \f(CR**kern\fR token \(od8aaa\(cd;
+after translating `aaa' to 1760.00 hertz, the non-pitch-related signifier `8'
+will also be output, hence the value 81760.00 -- which will undoubtedly cause
+confusion.
+The
+.B "-x"
+option is useful for eliminating non-pitch-related signifiers from the output.
+For most \f(CR**kern\fR inputs, the
+.B "-x"
+option is recommended.
+.in -2
+.sp 1
+.sp 1
+.SH "EXAMPLES"
+.in +2
+The following example illustrates the use of
+.B "freq."
+The input contains six pitch-related spines -- one of which (\f(CR**deg\fR)
+cannot be processed by
+.B "freq."
+.sp 1
+.TS
+l s s l l l
+l l l l l l.
+!! `freq' example.
+**kern	**pitch	**MIDI	**deg	**cocho	**Tonh
+*M2/4	*M2/4	*M2/4	*M2/4	*M2/4	*M2/4
+*	*	*	*	*	*
+\(eq1	\(eq1	\(eq1	\(eq1	\(eq1	\(eq1
+8ee-	G#4foo	/60/bar	1foo	r	Gis2
+\.	.	/-60/	.	.	.
+8ff	A3	/62/	2	9.89	H2
+\.	.	/-62/	.	.	.
+8dd-	Ab3	/70/	1	7.07	B2
+\.	.	/-70/	.	.	.
+8d-	C#4	/61/	6	7.135	Cis4
+\.	.	/-61/	.	.	.
+\(eq2	\(eq2	\(eq2	\(eq2	\(eq2	\(eq2
+[4a-	r	.	5	r	r
+\.	.	.	7	5.5	Heses2
+4a-]	D4	/48/ /52/	1	8.11	C3
+\.	.	/-48/	.	.	.
+\.	D4 F4	/-52/	2	7.33 6.4	C3 Es3
+\(eq3	\(eq3	\(eq3	\(eq3	\(eq3	\(eq3
+r	G4	.	r	r	H2 D3
+===	===	===	===	===	===
+*-	*-	*-	*-	*-	*-
+.TE
+.sp 1
+Executing the command
+.sp 1
+.sp 1
+.in +2
+freq -tx input > output.frq
+.in -2
+.sp 1
+.sp 1
+produces the following result:
+.sp 1
+.TS
+l s s l l l
+l l l l l l.
+!! `freq' example.
+**freq	**freq	**freq	**deg	**freq	**freq
+*M2/4	*M2/4	*M2/4	*M2/4	*M2/4	*M2/4
+*	*	*	*	*	*
+\(eq1	\(eq1	\(eq1	\(eq1	\(eq1	\(eq1
+622.25	415.30	261.63	1foo	r	103.83
+\.	.	.	.	.	.
+698.46	220.00	293.66	2	481.97	123.47
+\.	.	.	.	.	.
+554.37	207.65	466.16	1	273.21	116.54
+\.	.	.	.	.	.
+277.18	277.18	277.18	6	277.16	277.18
+\.	.	.	.	.	.
+\(eq2	\(eq2	\(eq2	\(eq2	\(eq2	\(eq2
+415.30	r	.	5	r	r
+\.	.	.	7	187.76	110.00
+\.	293.66	130.81 164.81	1	340.92	130.81
+\.	.	.	.	.	.
+\.	293.66 349.23	.	2	289.24 234.47	130.81 155.56
+\(eq3	\(eq3	\(eq3	\(eq3	\(eq3	\(eq3
+r	392.00	.	r	r	123.47 146.83
+===	===	===	===	===	===
+*-	*-	*-	*-	*-	*-
+.TE
+.sp 1
+Both processed and unprocessed spines are output.
+Notice that the tied note at the beginning of measure 2 in the \f(CR**kern\fR
+spine has been rendered as a single note rather than as two notes
+(due to the
+.B "-t"
+option).
+Also notice that the non-pitch-related signifiers (e.g. foo)
+in the first notes of the \f(CR**pitch, **MIDI\fR, and \f(CR**cocho\fR
+spines have been stripped away (due to the
+.B "-x"
+option).
+.in -2
+.sp 1
+.sp 1
+.SH "FILES"
+.in +2
+The file \f(CRx_option.awk\fR
+is used by this program when the
+.B "-x"
+option is invoked.
+.in -2
+.sp 1
+.sp 1
+.SH "PORTABILITY"
+.in +2
+\s-1DOS\s+1 2.0 and up, with the \s-1MKS\s+1 Toolkit.
+\s-1OS/2\s+1 with the \s-1MKS\s+1 Toolkit.
+\s-1UNIX\s+1 systems supporting the
+.I "Korn"
+shell or
+.I "Bourne"
+shell command interpreters, and revised
+.I "awk"
+(1985).
+.in -2
+.sp 1
+.sp 1
+.SH "SEE ALSO"
+.in +2
+\fB**cbr\fR (2), \fBcbr\fR (1),
+\fB**cents\fR (2), \fBcents\fR (1), \fB**cocho\fR (2), \fBcocho\fR (1),
+\fB**freq\fR (2),
+.br
+\fB**fret\fR (2), \fB**kern\fR (2), \fBkern\fR (1),
+\fB**MIDI\fR (2), \fBmidi\fR (1),
+\fB**pitch\fR (2), \fBpitch\fR (1),
+\fB**semits\fR (2), \fBsemits\fR (1),
+\fB**solfg\fR (2), \fBsolfg\fR (1), \fB**specC\fR (2) \fBspecC\fR (1),
+\fB**Tonh\fR (2), \fBtonh\fR (1)
+.in -2

@@ -1,0 +1,129 @@
+Improv 2.4: Interactive MIDI Programming in C++
+
+README for Windows 95/98/ME/NT/2000/XP operating systems
+This version was created Thu Dec 30 11:23:55 PST 2004
+Craig Stuart Sapp <craig@ccrma.stanford.edu>
+
+The latest version of improv for windows is avaliable at
+   http://improv.sapp.org
+or
+   http://www-ccrma.stanford.edu/~craig/improv
+
+
+The Improv code will compile in Visual C++ 5.0 and 6.0.  It has not be
+compiled nor tested with other compilers for Windows.  There are basic
+instructions at the bottom of this file describing how to compile the
+library file and example program.
+
+
+Description of various files/directories in this directory tree:
+
+examples -- directory of source code for example programs which use the 
+   improv library.
+include -- directory containing header files for use when compiling
+   programs with the improv++ library.
+src -- directory which contains the source code for making the
+   compiled improv library file.  The source code is not
+   necessary for compiling programs written using the improv library,
+   and it may be deleted if not needed
+
+
+========================================================================
+
+            Making a Visual C++ 6.0 project for the Improv library
+                   (Similar procedures in Visual C++ 5.0)
+     _________________________________________________________________
+
+    Preliminaries:
+    a. know where the include directory for the source files is located,
+       e.g.: c:\user\craig\improv\include
+       This directory contains all of the necessary header files for the
+       library.
+    b. know where the source directory is located, e.g.:
+       c:\user\craig\improv\src
+       This directory contains all of the necesary source files which
+       will be compiled into a single library file.
+    c. know where you want the library file to go, e.g.:
+       c:\user\craig\improv\lib\improv.lib
+       This is the file which will be made ultimately by the project. It
+       is used to compile programs by linking to the library which will
+       find the compiled definition of functions needed in the programs.
+
+    1. open Visual C++ version 6.0
+    2. Create a project for a static library
+       menu: file --> New --> tab: Projects --> "Win 32 Static Library"
+       Location: put a directory location for the workspace here.
+       Project name: fill in with a name for the project.
+       button:ok, button:finish, button:ok.
+    3. Set the compilation output to release.
+       Menu: Build --> Set Active Configuration... --> "Win 32 Release"
+       --> Ok.
+    4. Add compiler definition and include path
+       Projects --> Settings... --> Tab: C/C++ ---> Project options:
+       in project options, add these lines:
+                /D"VISUAL"
+                /I"C:\user\craig\improv\include"
+       /D"VISUAL" defines the preprocessor variable so that the compiler
+       know it is supposed to include Visual C++ sections of library
+       code. /I"C:\user\craig\improv\include" tells the compiler where
+       the include files for the code exists. Put in the appropriate
+       directory name here.
+       (Button: OK )
+    5. Add source code to project:
+             How to create a improv library project in Visual C++ 6.0 (p3 of 4)
+       Menu: Project --> Add to Project --> Files... --> Find...
+       Add all .h and .cpp files in the source directory.
+    6. Optionally add include files into project:
+       Menu: Project --> Add to Project --> Files... --> Find...
+       Add all .h files in the include directory.
+    7. build the library (which will be called for example:
+       c:\user\craig\lib\improv.lib) menu: build --> F7
+       The default library location is in ...Release/projectname.lib
+       To compile source files one at a time, you can press control-F7
+       after highlighting each source file.
+    8. The library should now be created and ready to use.
+
+
+========================================================================
+
+
+    Making a Visual C++ v 5.0 project for compiling example Improv programs
+                   (Similar procedures in Visual C++ 6.0)
+     _________________________________________________________________
+
+    Preliminaries:
+    a. Know where the library file is located, e.g.:
+       c:\user\craig\improv\lib\improv.lib
+    b. Know where the include directory is located, e.g:
+       c:\user\craig\improv\include
+
+
+    1. open visual C++ (version 5.0)
+    2. menu: file --> new --> projects --> Win 32 Console Application:
+       give name and location, e.g.: name: program, location:
+       c:\user\craig\improv\projects
+    3. menu: build --> set active configuration --> Win 32 Release So
+       that the program runs outside of the Visual C++ integrated
+       development environment.
+    4. menu: project --> settings --> C/C++ --> project options: add:
+       /D"VISUAL" and /I"c:\user\craig\improv\include". The define "VISUAL"
+       is needed to compile code specific to the Visual C++ compiler (as
+       opposed to "LINUX" for the linux gnu C++ compiler).
+    5. menu: project --> settings --> link --> object/library modules:
+       add: winmm.lib , and down further add:
+       /I"c:\user\craig\improv\include"
+    6. menu: project --> add to project --> files: add library file:
+       e.g.: c:\user\craig\improv\lib\improv.lib (note that you will have
+       to change the selection filter to see the files that end in .lib).
+    7. Add a program source file or create a new program file. menu:
+       project --> add to project --> files: add program file: e.g.:
+       c:\user\craig\improv\doc\examples\synthImprov\switch.cpp
+    8. menu: build --> F7 to compile the example program.
+    9. The file should now be created in the directory
+       Release/program.exe relative to the location of the project
+       directory. (type shift-F5 to run it while in Visual C++, or go to
+       MSDOS window)
+
+========================================================================
+
+
