@@ -4,11 +4,11 @@ all: humdrum improv humextra
 
 include base.mk
 
-install: $(prefix)/$(bindir)/
+install: $(prefix)/$(bindir)/helpscrn/
 	for dir in toolkit/src/*; do $(MAKE) -C $$dir install; done
-	$(INSTALL_PROGRAM) sh/* $(prefix)/$(bindir)/ 
-	$(INSTALL_PROGRAM) awk/* $(prefix)/$(bindir)/
-	$(INSTALL_PROGRAM) helpscrn/* $(prefix)/$(bindir)/helpscrn/
+	$(INSTALL_PROGRAM) toolkit/sh/* $(prefix)/$(bindir)/ 
+	$(INSTALL_PROGRAM) toolkit/awk/* $(prefix)/$(bindir)/
+	$(INSTALL_PROGRAM) toolkit/helpscrn/* $(prefix)/$(bindir)/helpscrn/
 	$(INSTALL_PROGRAM) humextra/bin/* $(prefix)/$(bindir)/
 
 humdrum:

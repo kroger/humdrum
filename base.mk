@@ -18,10 +18,10 @@ endif
 $(PROJ): $(SRC) $(INCS)
 	$(CC) $(CFLAGS) -o $@ $<
 
-$(prefix)/$(bindir):
-	mkdir -p $(prefix)/$(bindir)/
+$(prefix)/$(bindir)/helpscrn:
+	mkdir -p $(prefix)/$(bindir)/helpscrn
 
-install: $(prefix)/$(bindir)/
+install: $(prefix)/$(bindir)/helpscrn
 	$(INSTALL_PROGRAM) -s $(PROJ) $(prefix)/$(bindir)/
 
 clean:	
