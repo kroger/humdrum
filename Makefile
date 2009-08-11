@@ -22,7 +22,7 @@ humextra:
 	$(MAKE) -C humextra library programs
 
 improv:
-	$(MAKE) -C improv library programs
+	$(MAKE) -C improv library
 
 get-improv:
 	wget http://improv.sapp.org/cgi-bin/improv -O improv-$$(date --iso).tar.bz2
