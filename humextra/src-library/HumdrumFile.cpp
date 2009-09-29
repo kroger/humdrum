@@ -37,6 +37,7 @@
 // Last Modified: Tue Oct 14 16:56:54 PDT 2008 (added 'Q' groupetto parsing)
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
 // Last Modified: Fri Jun 19 23:24:03 PDT 2009 (fixed malformed meter parsing)
+// Last Modified: Sat Sep  5 22:03:28 PDT 2009 (ArrayInt to Array<int>)
 // Filename:      ...sig/src/sigInfo/HumdrumFile.cpp
 // Web Address:   http://sig.sapp.org/src/sigInfo/HumdrumFile.cpp
 // Syntax:        C++ 
@@ -2623,7 +2624,7 @@ double HumdrumFile::determineDuration(HumdrumRecord& aRecord,
                   lastdurations[count] = Convert::kernToDuration(aRecord[i]);
                   if (strchr(aRecord[i], 'P') != NULL) {
                      // remove appogiatura durations for summations
-                     lastdurations[count] = 0;
+                     // lastdurations[count] = 0;
                   } else if ((strchr(aRecord[i], 'q') != NULL) ||
                              (strchr(aRecord[i], 'Q') != NULL)) {
                      // remove gracenote durations from summations
@@ -2836,7 +2837,7 @@ int HumdrumFile::analyzeCliche(Array<int>& cliche, double duration,
    Array<int> di;  // data index list for score data lines
    score.analyzeDataIndex(di);
 
-   Array<ArrayInt> pitchset;
+   Array<Array<int> > pitchset;
    int starti = 0;
 // cout << "di get size = " << di.getSize() << endl;
 
@@ -2854,7 +2855,7 @@ int HumdrumFile::analyzeCliche(Array<int>& cliche, double duration,
    }
 
    int i, j;
-   Array<ArrayInt> allnotes;
+   Array<Array<int> > allnotes;
    allnotes.setSize(endi-starti+1);
    for (i=0; i<endi-starti+1; i++) {
       score.getNoteList(allnotes[i], di[i], nlflag);
@@ -2906,7 +2907,7 @@ int HumdrumFile::analyzeCliche(Array<int>& cliche, double duration,
 // private: HumdrumFile::attemptMatch -- for use with analyzeCliche
 //
 
-int HumdrumFile::attemptMatch(Array<ArrayInt>& allnotes, Array<int>& di, 
+int HumdrumFile::attemptMatch(Array<Array<int> >& allnotes, Array<int>& di, 
       int starti, int i, int j, double duration) {
    HumdrumFile& score = *this;
 

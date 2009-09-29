@@ -9,6 +9,9 @@
 // Last Modified: Mon Jul 20 16:32:01 PDT 2009 (added 8ba treble clef)
 // Last Modified: Mon Jul 20 16:32:01 PDT 2009 (added M:none time signature)
 // Last Modified: Wed Jul 22 13:03:44 PDT 2009 (added editorial slur dashing)
+// Last Modified: Mon Aug 24 14:00:34 PDT 2009 (more work on 8ba treble clef)
+// Last Modified: Mon Sep 21 17:13:53 PDT 2009 (added --no-tempo option)
+// Last Modified: Mon Sep 21 17:29:50 PDT 2009 (accidental spelling by octave)
 // Filename:      ...sig/examples/all/hum2abc.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/hum2abc.cpp
 // Syntax:        C++; museinfo
@@ -468,6 +471,7 @@ const char* directoryname = ".";  // used with --dir option
 const char* filemask = ".krn";    // used with --mask option
 int    nonaturalQ  = 0;           // used with --nn option
 int    linebreakQ  = 0;           // used with --linebreak option
+int    notempoQ    = 0;           // used with --no-tempo option
 
 Array<char*> Header;
 
@@ -1042,7 +1046,7 @@ void printLayer(int layer, ostream& out, const VoiceMap& voiceinfo,
    int ilayer = layer - 1;
    const char* token;
 
-   Array<int> accident(7);
+   Array<int> accident(7*9);
    accident.allowGrowth(0);
    accident.setAll(0);
    setAccidentals(accident, measureinfo.currkey);
@@ -2234,6 +2238,7 @@ void adjustAccidentalStates2(Array<int>& accident, HumdrumFile& infile,
    int diatonic;
    int base40;
    int i;
+   int octave;
 
    for (i=0; i<count; i++) {
       infile[row].getToken(buffer, col, i);
@@ -2249,9 +2254,10 @@ void adjustAccidentalStates2(Array<int>& accident, HumdrumFile& infile,
          continue;
       }
       base40 = Convert::kernToBase40(buffer);
+      octave = base40 / 40;
       acci = Convert::base40ToAccidental(base40);
       diatonic = Convert::base40ToDiatonic(base40);
-      accident[diatonic] = acci;
+      accident[diatonic+7*octave] = acci;
    }
 }
 
@@ -2274,21 +2280,25 @@ void setAccidentals(Array<int>& accident, int key) {
    #define XAX 5
    #define XBX 6
 
-   if (key <= -7) { accident[XFX] = -1; }
-   if (key <= -6) { accident[XCX] = -1; }
-   if (key <= -5) { accident[XGX] = -1; }
-   if (key <= -4) { accident[XDX] = -1; }
-   if (key <= -3) { accident[XAX] = -1; }
-   if (key <= -2) { accident[XEX] = -1; }
-   if (key <= -1) { accident[XBX] = -1; }
+   int octaves = accident.getSize() / 7;
 
-   if (key >= +7) { accident[XBX] = +1; }
-   if (key >= +6) { accident[XEX] = +1; }
-   if (key >= +5) { accident[XAX] = +1; }
-   if (key >= +4) { accident[XDX] = +1; }
-   if (key >= +3) { accident[XGX] = +1; }
-   if (key >= +2) { accident[XCX] = +1; }
-   if (key >= +1) { accident[XFX] = +1; }
+   for (int i=0; i<octaves; i++) {
+      if (key <= -7) { accident[XFX+i*7] = -1; }
+      if (key <= -6) { accident[XCX+i*7] = -1; }
+      if (key <= -5) { accident[XGX+i*7] = -1; }
+      if (key <= -4) { accident[XDX+i*7] = -1; }
+      if (key <= -3) { accident[XAX+i*7] = -1; }
+      if (key <= -2) { accident[XEX+i*7] = -1; }
+      if (key <= -1) { accident[XBX+i*7] = -1; }
+
+      if (key >= +7) { accident[XBX+i*7] = +1; }
+      if (key >= +6) { accident[XEX+i*7] = +1; }
+      if (key >= +5) { accident[XAX+i*7] = +1; }
+      if (key >= +4) { accident[XDX+i*7] = +1; }
+      if (key >= +3) { accident[XGX+i*7] = +1; }
+      if (key >= +2) { accident[XCX+i*7] = +1; }
+      if (key >= +1) { accident[XFX+i*7] = +1; }
+   }
 }
 
 
@@ -2359,6 +2369,10 @@ void printKernTokenAsAbc(ostream& out, HumdrumFile& infile, int row, int col,
       infile[row].getToken(buffer, col, i);
       base40 = Convert::kernToBase40(buffer);
       base40 += clefstates[infile[row].getPrimaryTrack(col)];
+
+// cout << "CLEFSTATES" << infile[row].getPrimaryTrack(col) << " is "  << 
+// clefstates[infile[row].getPrimaryTrack(col)] << endl;
+
       if ((strchr(buffer, 'r') != NULL) && (strchr(buffer, 'y') != NULL)) {
          strcpy(pitchbuffer, invisiblerest);      
       } else {
@@ -2636,6 +2650,7 @@ void printAccidental(ostream& out, int base40, const char* token,
    if (base40 < 0) {
       return;  // ignore rests
    }
+   int octave = base40 / 40;
    if (strchr(token, 'n') != NULL) {
       out << "=";
       return;
@@ -2658,7 +2673,7 @@ void printAccidental(ostream& out, int base40, const char* token,
 
    int acci = Convert::base40ToAccidental(base40);
    int diatonic = Convert::base40ToDiatonic(base40);
-   if ((!cautionary) && (acci == accident[diatonic])) {
+   if ((!cautionary) && (acci == accident[diatonic+7*octave])) {
       return;   // the accidental matches the current display, so don't print
    }
 
@@ -3771,7 +3786,11 @@ void printAbcExtendedInformationFields(ostream& out, HumdrumFile& infile) {
    // doesn't look so good for monophonic parts, so turn off
    // if there is only one voice
    if ((Voicemap.getSize() > 1) && graceQ) {   
-      out << "%%gracespace 0 6 6\n";
+      if ((parameterstring != NULL) && 
+          (strstr(parameterstring, "gracespace") == NULL)) {
+         // only print default gracespace if not in -p option
+         out << "%%gracespace 0 6 6\n";
+      }
    }
 
    // it would be nice to be able to control the indent from the
@@ -4045,7 +4064,7 @@ void printAbcKeySignature(ostream& out, int keynum) {
 
 //////////////////////////////
 //
-// printVoiceDeclaration --
+// printVoiceDeclaration -- Consider coordinating with printAbcClef().
 //
 
 void printVoiceDeclaration(ostream& out, VoiceMap vmap, int voicenum, 
@@ -4068,6 +4087,9 @@ void printVoiceDeclaration(ostream& out, VoiceMap vmap, int voicenum,
             }
             if (strcmp(infile[i][j], "*clefG2") == 0) {
                strcpy(clef, "clef=treble");
+            } else if (strcmp(infile[i][j], "*clefGv2") == 0) {
+               strcpy(clef, "clef=treble-8");
+               clefstates[infile[i].getPrimaryTrack(j)] = +40;
             } else if (strcmp(infile[i][j], "*clefF4") == 0) {
                strcpy(clef, "clef=bass");
             } else if (strcmp(infile[i][j], "*clefC3") == 0) {
@@ -4273,7 +4295,7 @@ void parseBibliographic(Array<char*>& header, HumdrumFile& infile) {
       Array<char> QRecord;
       QRecord.setSize(0);
       if (strcmp(header[QQ], "") == 0) {
-         if (tempo > 0 || (strcmp(omdstring, "") != 0)) {
+         if ((!notempoQ) && tempo > 0 || (strcmp(omdstring, "") != 0)) {
             if (options.getBoolean("q")) {
                calculateQRecord(QRecord, -1, omdstring, top, bot);
             } else {
@@ -4590,7 +4612,7 @@ void calculateQRecord(Array<char>& QRecord, double tempo,
 
    sprintf(tempostring, "%d/%d=%d", temportop, temporbot, tempoint);
 
-   if (tempoint > 0) {
+   if ((!notempoQ) && (tempoint > 0)) {
       length = strlen(tempostring);
       for (i=0; i<length; i++) {
          ch = tempostring[i];
@@ -5151,8 +5173,9 @@ void storeOptionSet(Options& opts) {
    opts.define("no-veritas=b", "Don't calculate veritas data");
    opts.define("filenum=s:",   "Prepend a filenumber value infront of title");
    opts.define("filetitle=b",  "Print filename at start of title field");
-   opts.define("TT=s:",        "Title expantion");
+   opts.define("TT=s:",        "Title expansion");
    opts.define("no-grace=b",   "Suppress gracespace redefinition");
+   opts.define("no-tempo=b",   "Suppress tempo marking at start of music");
    opts.define("nn|no-auto-natural=b",   "Suppress automatic naturals");
    opts.define("linebreak=b",   "Break lines at !linebreak tokens");
 
@@ -5321,6 +5344,7 @@ void checkOptions(Options& opts, int argc, char* argv[], int fcount,
 
    labelQ    = opts.getBoolean("label");
    graceQ    = !opts.getBoolean("no-grace");
+   notempoQ  = opts.getBoolean("no-tempo");
    veritasQ  = !opts.getBoolean("no-veritas");
    boxQ      = opts.getBoolean("box");
    if (strchr(opts.getString("barnums"), 'b') != NULL) {
@@ -5477,4 +5501,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 80d0183c5387270a876e80057d19ae05 hum2abc.cpp [20090807]
+// md5sum: 406377c7277b7911841fa5a0440789fe hum2abc.cpp [20090909]

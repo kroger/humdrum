@@ -12,6 +12,7 @@
 // Last Modified: Mon May  4 12:11:13 PDT 2009 (fixed new? bug in dot analysis)
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
 // Last Modified: Mon Jun 22 15:03:44 PDT 2009 (added Humdrum/Http URIs)
+// Last Modified: Wed Sep  2 21:48:23 PDT 2009 (fixed problem with *x again)
 // Filename:      ...sig/src/sigInfo/HumdrumFileBasic.cpp
 // Web Address:   http://sig.sapp.org/src/sigInfo/HumdrumFileBasic.cpp
 // Syntax:        C++ 
@@ -1254,8 +1255,8 @@ void HumdrumFileBasic::readjustDotArrays(Array<int>& lastline,
          newspine[outindex] = lastspine[inindex+1];
          newline[outindex+1] = lastline[inindex];
          newspine[outindex+1] = lastspine[inindex];
-         outindex++;
-         outindex++;
+         outindex+=2;
+         inindex++;
       } else if (strcmp("*v", record[inindex]) == 0) {
          subcount = 1;
          newline[outindex] = lastline[outindex];

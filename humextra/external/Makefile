@@ -2,7 +2,7 @@
 ##
 ## Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 ## Creation Date: Mon Jun 29 18:12:35 PDT 2009
-## Last Modified: Mon Jun 29 18:12:37 PDT 2009
+## Last Modified: Wed Sep  9 23:57:43 PDT 2009
 ## Filename:      ...humextra/external/Makefile
 ##
 ## Description: This Makefile compiles external libraries used in
@@ -48,7 +48,7 @@ cleancenterpoint:
 	(cd centerpoint; make clean)
 
 cleanpcre:
-	(cd $(PCRE); make clean)
+#	(cd $(PCRE); make clean)
 
 
 

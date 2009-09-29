@@ -187,6 +187,8 @@ class MusicXmlFile {
       static int getMeasureTickDuration   (CSL::XML::CXMLObject* object);
       static int getStaffCountFromPart    (CSL::XML::CXMLObject* object);
       static int getClefStaffNumber       (CSL::XML::CXMLObject* object);
+      static ostream& printGraceNoteRhythm(ostream& out, _MusicXmlItem& item);
+      static ostream& printGraceMarker    (ostream& out, _MusicXmlItem& item);
       static char* getLyricText           (char* buffer, 
                                            CSL::XML::CXMLObject* object);
       int        getStaffNumber           (CSL::XML::CXMLObject* object);

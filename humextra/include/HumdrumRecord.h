@@ -20,6 +20,7 @@
 #define _HUMDRUMRECORD_H_INCLUDED
 
 #include "SigCollection.h"
+#include "Array.h"
 #include "EnumerationEI.h"
 #include "Enum_humdrumRecord.h"
 
@@ -71,6 +72,10 @@ class HumdrumRecord {
       int               getFieldCount      (int exinterp) const;
       char*             getBibKey          (char* buffer, int maxsize = 0);
       char*             getBibValue        (char* buffer, int maxsize = 0);
+      const char*       getBibLangIso639_2 (const char* string = NULL);
+      static const char*getLanguageName    (const char* code);
+      static const char*getBibliographicMeaning(Array<char>& output, 
+                                            const char* code);
       const char*       getLine            (void); 
       int               getLineNum         (void) const; 
       int               getPrimaryTrack    (int spineNumber);
@@ -99,6 +104,7 @@ class HumdrumRecord {
       int               isComment          (void) const;
       int               isTandem           (void) const;
       int               isSpineManipulator (int index);
+      int               isSpineManipulator (void);
       int               isExInterp         (int index, const char* string);
       int               hasSpines          (void) const;
 
@@ -159,6 +165,7 @@ class HumdrumRecord {
       int               determineType      (const char* aLine) const;
       void              makeRecordString   (void);
       void              storeRecordFields  (void);
+
 
 };
    

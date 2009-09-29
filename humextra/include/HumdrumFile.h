@@ -16,6 +16,7 @@
 // Last Modified: Wed Jun 16 21:15:06 PDT 2004 (indep. tracks in analyzeKeyKS)
 // Last Modified: Mon Jun  5 06:59:27 PDT 2006 (add fixIrritatingPickupProblem)
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
+// Last Modified: Sat Sep  5 22:03:28 PDT 2009 (ArrayInt to Array<int>)
 // Filename:      ...sig/include/sigInfo/HumdrumFile.h
 // Web Address:   http://sig.sapp.org/include/sigInfo/HumdrumFile.h
 // Syntax:        C++ 
@@ -39,8 +40,6 @@
 #else
    #include <iostream.h>
 #endif
-
-typedef Array<int> ArrayInt;
 
 
 //////////////////////////////
@@ -235,7 +234,7 @@ class HumdrumFile : public HumdrumFileBasic {
                        HumdrumFile& B, int debug = 0);
                           
       // private function for analyzeCliche:
-      int attemptMatch(Array<ArrayInt>& allnotes, Array<int>& di, int
+      int attemptMatch(Array<Array<int> >& allnotes, Array<int>& di, int
          starti, int i, int j, double duration);
 
 

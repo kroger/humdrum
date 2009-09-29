@@ -13,6 +13,9 @@
 // Last Modified: Sun Jun 27 16:57:06 PDT 2004 (add lyric translation)
 // Last Modified: Mon Sep 13 02:45:45 PDT 2004 (added basic cresc processing)
 // Last Modified: Fri Jul 25 16:22:10 PDT 2008 (adjusted newlineQ case)
+// Last Modified: Mon Sep 21 15:02:14 PDT 2009 (fixed cut-time identification)
+// Last Modified: Mon Sep 21 15:50:43 PDT 2009 (differentiate q and Q graces)
+// Last Modified: Mon Sep 21 16:27:49 PDT 2009 (removed elided slur ident.)
 //
 // Filename:      ...sig/include/sigInfo/MusicXmlFile.h
 // Web Address:   http://sig.sapp.org/include/sigInfo/MusicXmlFile.h
@@ -55,7 +58,7 @@
 //                stem directions (all)
 //                beams (all)
 //                barlines (repeat indicators)
-//                slurs (check elided however)
+//                slurs (check elided however -- better to just fix manually)
 //
 
 #include "MusicXmlFile.h"
@@ -183,6 +186,106 @@ int MusicXmlFile::getStaffCount(void) {
 
 //////////////////////////////
 //
+// MusicXmlFile::getGraceNoteRhythm(ostream& out, 
+//
+
+ostream& MusicXmlFile::printGraceNoteRhythm(ostream& out, _MusicXmlItem& item) {
+   CXMLObject*        entry   = item.obj;
+   CXMLObject*        current = NULL;
+   CXMLElement*       element = NULL;
+   CXMLCharacterData* cdata   = NULL;
+   XMLString string;
+   char buffer[1024] = {0};
+
+   // read the elements in the object and search for <type></type> data
+   entry = entry->Zoom();
+   while (entry != NULL) {
+      if (entry->GetType() == xmlElement) {
+         element = (CXMLElement*)entry;
+         // cout << "ELEMENT NAME: " << element->GetName() << endl;
+         if (element->GetName() == "type") {
+            current = element;
+            current = current->Zoom();
+            while (current != NULL) {
+               if (current->GetType() == xmlCharacterData) {
+                  cdata = (CXMLCharacterData*)current;
+                  string = cdata->GetData();
+                  strncpy(buffer, string.c_str(), 512);
+                  removeBorderSpaces(buffer);
+                  if (strcmp(buffer, "128th") == 0) {
+                     out << "128";
+                     return out;
+                  } else if (strcmp(buffer, "64nd") == 0) {
+                     out << "64";
+                     return out;
+                  } else if (strcmp(buffer, "32nd") == 0) {
+                     out << "32";
+                     return out;
+                  } else if (strcmp(buffer, "16th") == 0) {
+                     out << "16";
+                     return out;
+                  } else if (strcmp(buffer, "8th") == 0) {
+                     out << "8";
+                     return out;
+                  } else if (strcmp(buffer, "quarter") == 0) {
+                     out << "4";
+                     return out;
+                  } else if (strcmp(buffer, "half") == 0) {
+                     out << "2";
+                     return out;
+                  } else if (strcmp(buffer, "whole") == 0) {
+                     out << "1";
+                     return out;
+                  } else {
+                     return out;
+                  }
+               }
+               current = current->GetNext();
+	    }
+         } 
+      }
+      entry = entry->GetNext();
+   }
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// printGraceMarker -- print "q" if the grace note requires a slash.
+//     print "Q" if the grace note does not require a slash.
+//
+
+ostream& MusicXmlFile::printGraceMarker(ostream& out, _MusicXmlItem& item) {
+   CXMLObject*   entry   = item.obj;
+   CXMLElement*  element = NULL;
+
+   entry = entry->Zoom();
+   while (entry != NULL) {
+      if (entry->GetType() == xmlElement) {
+         element = (CXMLElement*)entry;
+         for (int i=0; i<element->GetAttributes().GetLength(); i++) {
+            if (element->GetAttributes().GetName(i) == "slash") {
+               if (element->GetAttributes().GetValue(i) == "yes") {
+                  out << "q";
+                  return out;
+               }
+               break;
+            }
+         }
+      }
+      entry = entry->GetNext();
+   }
+
+   out << "Q";
+   return out;
+}
+
+
+
+//////////////////////////////
+//
 // MusicXmlFile::getPartStaffCount -- return the number of staves
 //   which a part contains.
 //
@@ -281,9 +384,7 @@ char* MusicXmlFile::getPartName(char* buffer, int partnum) {
    do {
       if (object->GetType() == xmlElement) {
          element = (CXMLElement*)object;
-
          if (element->GetName() == "part-name") {
-
             object = object->Zoom();
             if (object == NULL) {
                break;
@@ -2188,14 +2289,23 @@ void MusicXmlFile::humdrumPart(HumdrumFile& hfile, int staffno, int debugQ) {
                if (humdrumDynamics && partdynamics[staffno]) {
                   if (i < partdata[staffno].getSize()-1) {
                      if (partdata[staffno][i].ticktime != 
-                         // time for something else, but no dynamic/lyric found
                          partdata[staffno][i+1].ticktime) {
+                        // time for something else, but no dynamic/lyric found
                         (*tempstream) << "\t.\n"; humline++;
                      } else if (isGraceNote(partdata[staffno][i].obj)) {
                         (*tempstream) << "\t.\n"; humline++;
                      } else {
                         // new case added 2008Jul25
-	                (*tempstream) << "\t.\n";
+                        if (partdata[staffno][i+1].type == MXI_dynamic) {
+                           if (humdrumDynamics && partdynamics[staffno]) {
+                              printDynamic(*tempstream, staffno, ++i);
+                              (*tempstream) << "\n"; humline++;
+                           } else {
+	                      (*tempstream) << "\t.\n"; humline++;
+                           }
+                        } else {
+	                   (*tempstream) << "\t.\n"; humline++;
+                        }
 	             }
                   } else {
                      (*tempstream) << "\t.\n"; humline++;
@@ -2600,6 +2710,8 @@ void MusicXmlFile::printDynamic(ostream& out, int staffno, int index) {
          obj2 = obj2->GetNext();
       }
    }
+
+   // out << " [" << partdata[staffno][index-1].ticktime <<  "]";
 
    out << "\t";
    out << buffer;
@@ -3163,11 +3275,10 @@ char* MusicXmlFile::getKernTimeMet(char* buffer, CXMLObject* object) {
          if (element->GetAttributes().GetValue(i) == "common") {
             strcpy(buffer, "*met(C)");
             return buffer;
-         } else if (element->GetAttributes().GetName(i) == "cut") {
-            // unknown if "cut" is the right symbol, check it later...
+         } else if (element->GetAttributes().GetValue(i) == "cut") {
             strcpy(buffer, "*met(C|)");
             return buffer;
-         }
+         } 
       }
    }
 
@@ -3424,6 +3535,13 @@ void MusicXmlFile::getKernNoteProperties(_NoteState& ns, CXMLObject* object,
                      // ignoring slurs of more than level 2 for now...
                   }
                }
+               if (type == 0) {
+                  ns.slurstart = 1;
+               }
+               if (type == 1) {
+                  ns.slurend = 1;
+               }
+	       /*
                if ((type == 0) && (number == 1)) {
                   ns.slurstart = 1;
                }
@@ -3431,11 +3549,14 @@ void MusicXmlFile::getKernNoteProperties(_NoteState& ns, CXMLObject* object,
                   ns.slurend = 1;
                }
                if ((type == 1) && (number == 2)) {
-                  ns.elidedslurstart = 1;
+		  // doesn't work so well: 2 could just mean a separate voice
+                  // ns.elidedslurstart = 1;
                }
                if ((type == 1) && (number == 2)) {
-                  ns.elidedslurend = 1;
+		  // doesn't work so well: 2 could just mean a separate voice
+                  // ns.elidedslurend = 1;
                }
+	       */
             } else if (elem2->GetName() == "articulations") {
                obj3 = elem2->Zoom();
                while (obj3 != NULL) {
@@ -3601,6 +3722,7 @@ int MusicXmlFile::printKernNote(ostream& out, int staffno, int index,
    int m;
    int lastnoteindex = 0;
    if (index > 0) {
+   // out << "{" << partdata[staffno][index].ticktime << "}";
       voice = partdata[staffno][index].voice;
       if (voice > 4) {   // temporary method for SharpEye piano part parsing
          voice -= 4;
@@ -3675,6 +3797,9 @@ int MusicXmlFile::printKernNote(ostream& out, int staffno, int index,
    if (duration > 0) {
       // print duration only if not a gracenote.
       out << Convert::durationToKernRhythm(buffer, duration);
+   } else {
+       // print duration even if a grace note (used for visual display)
+       printGraceNoteRhythm(out, partdata[staffno][index]);
    }
 
    // canonical item #8: pitch or rest marker
@@ -3701,7 +3826,7 @@ int MusicXmlFile::printKernNote(ostream& out, int staffno, int index,
       out << "\'";
    }
    if (cs.staccatissimo) {
-      out << "\'\'";
+      out << "`";
    }
    if (cs.accent) {
       out << "^";
@@ -3714,7 +3839,7 @@ int MusicXmlFile::printKernNote(ostream& out, int staffno, int index,
 
    // canonical item #15: acciaccatura marker
    if (cs.gracenote) {
-      out << "q";
+      printGraceMarker(out, partdata[staffno][index]);
    }
 
    // canonical item #16: groupetto marker

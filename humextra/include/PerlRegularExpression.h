@@ -26,9 +26,13 @@ class PerlRegularExpression {
            PerlRegularExpression    (void);
 	  ~PerlRegularExpression    ();
 	    
+      int  search                   (Array<char>& input, 
+		                     const char* searchstring,
+				     const char* optionstring = NULL);
       int  search                   (const char* input, 
 		                     const char* searchstring,
 				     const char* optionstring = NULL);
+      int  search                   (Array<char>& input);
       int  search                   (const char* input);
 
       int  searchAndReplace         (Array<char>& output, const char* input,

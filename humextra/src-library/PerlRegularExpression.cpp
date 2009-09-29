@@ -723,6 +723,13 @@ int PerlRegularExpression::searchAndReplace(Array<char>& output,
 //     default value: optionstring = NULL
 //
 
+int PerlRegularExpression::search(Array<char>& input, const char* searchstring,
+      const char* optionstring) {
+   return PerlRegularExpression::search(input.getBase(), searchstring,
+         optionstring);
+}
+
+
 int PerlRegularExpression::search(const char* input, const char* searchstring,
       const char* optionstring) {
 
@@ -763,6 +770,10 @@ int PerlRegularExpression::search(const char* input, const char* searchstring,
 //   otherwise returns the index+1 of the first match found.  Uses the
 //   previous used/specified search pattern and options.
 //
+
+int PerlRegularExpression::search(Array<char>& input) {
+   return PerlRegularExpression::search(input.getBase());
+}
 
 int PerlRegularExpression::search(const char* input) {
    if (valid == 0) {
