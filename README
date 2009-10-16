@@ -1,10 +1,18 @@
-To install humdrum type
+To install humdrum you need to have a compiler and the alsa
+development libraries installed. The following command should work on
+ubuntu and debian:
+
+  sudo apt-get install gcc libasound2 libasound2-dev gawk
+
+Download the humdrum distribution from the following link:
+
+ http://git.genos.mus.br/cgit.cgi?url=humdrum/snapshot/humdrum-master.tar.gz
+
+Uncompact the .tar.gz file and inside the humdrum directory type the
+following commands:
 
   make
-
-and as root
-
-  make install
+  sudo make install
 
 then, put the following lines in your ~/.bashrc
 
