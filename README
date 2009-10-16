@@ -4,9 +4,11 @@ ubuntu and debian:
 
   sudo apt-get install gcc libasound2 libasound2-dev gawk
 
-Download the humdrum distribution from the following link:
+Download the humdrum distribution go to the following page on the github repository:
 
- http://git.genos.mus.br/cgit.cgi?url=humdrum/snapshot/humdrum-master.tar.gz
+  http://github.com/genos/humdrum/
+
+and clique on the "download" button.
 
 Uncompact the .tar.gz file and inside the humdrum directory type the
 following commands:
