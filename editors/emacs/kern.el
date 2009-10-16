@@ -61,12 +61,13 @@
 
 (defun kern-newline ()
   (interactive "*")
-  (save-excursion
-    (previous-line)
-    (copy-region-as-kill (point) (line-end-position)))
-  (loop for x from 1 to (count ?\t (first kill-ring)) do
-        (insert "\t."))
-  (delete-horizontal-space t)
+  (unless (= (line-number-at-pos) 1)
+    (save-excursion
+      (previous-line)
+      (copy-region-as-kill (point) (line-end-position)))
+    (loop for x from 1 to (count ?\t (first kill-ring)) do
+          (insert "\t."))
+    (delete-horizontal-space t))
   (newline))
 
 (defun kill-column ()
