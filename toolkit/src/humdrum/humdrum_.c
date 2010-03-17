@@ -1,9 +1,10 @@
 /****************************************************************************/
-/*                     HUMDRUM_.C                            					*/
-/*	Programmer: Tim Racinsky	Date: July 1993								*/
-/*	This file contains the main program for the humdrum     				*/
-/* command.                                                 				*/  
-/*																			*/
+/*                     HUMDRUM_.C                            		*/
+/*	Programmer: Tim Racinsky	Date: July 1993			*/
+/*	This file contains the main program for the humdrum     	*/
+/* command.                                                 		*/  
+/*									*/
+/*      Bug fix related to a newer compiler by Craig Sapp 28 Sep 2006   */
 /****************************************************************************/
 
 #include <stdio.h>
@@ -25,7 +26,7 @@
 /*																			*/
 /****************************************************************************/
 
-void main (int argc,char *argv[]) {
+int main (int argc,char *argv[]) {
 
 	/* Initialize any global variables and data structures */
 
@@ -42,9 +43,9 @@ void main (int argc,char *argv[]) {
 	}
 
 	/* Free any allocated memory and close any open files */
-
 	clean_up();
-	exit(0);
+
+   return 0;
 }
 
 /****************************************************************************/
@@ -212,10 +213,10 @@ void clean_up() {
 	free(old_file);
 
 	while (next_file != NULL) {
-		fclose(next_file->stream);
-		old_file = next_file;
-		next_file = next_file->next_file;
-		free(old_file);
+          /* fclose(next_file->stream); */
+          old_file = next_file;
+          next_file = next_file->next_file;
+          free(old_file);
 	}
 
 	/* Free the interpretation list */
@@ -245,6 +246,7 @@ void clean_up() {
 		free(deleter);
 	}
 }
+
 
 /****************************************************************************/
 /*						Function print_help									*/
@@ -1312,3 +1314,5 @@ void print_error(char *message,char *args) {
 
 	fprintf(stderr,message,args);
 }
+
+
