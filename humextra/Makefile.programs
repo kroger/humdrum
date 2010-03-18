@@ -52,18 +52,22 @@
 #OSTYPE = LINUX
 #OSTYPE = OSXPC
 #OSTYPE = OSXOLD
+ARCH = 
 
 # if OSTYPE is not defined, then this if statement will be run:
 ifeq ($(origin OSTYPE), undefined)
    ifeq ($(shell uname),Darwin)
       OSTYPE = OSXPC
+      ARCH = -m32 -arch i386
    else 
       OSTYPE = LINUX
+      ARCH = -m32 -arch i386
    endif
 endif
 # Next if statement needed for some versions of make which already set OSTYPE:
 ifeq ($(OSTYPE),linux)
    OSTYPE = LINUX
+   ARCH = -m32 -arch i386
 endif
 
 # Cygwin (and MinGW?) adds the string ".exe" to the end of compiled programs.
@@ -126,7 +130,7 @@ LIBDIR    = lib
 LIBFILE   = humextra
 TARGDIR   = bin
 # LANG=C: Nuts to the GCC error beautification committee.
-COMPILER  = LANG=C g++
+COMPILER  = LANG=C g++ $(ARCH)
 
 # MinGW compiling setup (used to compile for Microsoft Windows but actual
 # compiling can be done in Linux). You have to install MinGW and these
@@ -240,7 +244,7 @@ info:
 
 bin:
 ifeq ($(wildcard $(TARGDIR)),)
-	-mkdir $(TARGDIR)
+	-mkdir -p $(TARGDIR)
 endif
 
 ###########################################################################
@@ -275,14 +279,14 @@ endif
 
 $(TARGDIR)/% : $(notdir %.cpp)
 ifeq ($(wildcard $(TARGDIR)),)
-	-mkdir $(TARGDIR)
+	-mkdir -p $(TARGDIR)
 endif
 	$(COMPILER) $(PREFLAGS) -o $@ $< $(POSTFLAGS) \
 	&& strip $@$(EXTEN)
 
 % : $(notdir %.cpp)
 ifeq ($(wildcard $(TARGDIR)),)
-	-mkdir $(TARGDIR)
+	-mkdir -p $(TARGDIR)
 endif
 	$(COMPILER) $(PREFLAGS) -o $(TARGDIR)/$@ $< $(POSTFLAGS) \
 	&& strip $(TARGDIR)/$@$(EXTEN)

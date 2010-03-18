@@ -46,18 +46,22 @@
 #OSTYPE = LINUX
 #OSTYPE = OSXPC
 #OSTYPE = OSXOLD
+ARCH =
 
 # if OSTYPE is not defined, then this if statement will be run:
 ifeq ($(origin OSTYPE), undefined)
    ifeq ($(shell uname),Darwin)
       OSTYPE = OSXPC
+      ARCH = -m32 -arch i386
    else 
       OSTYPE = LINUX
+      ARCH = -m32 -arch i386
    endif
 endif
 # Next if statement needed for some versions of make which already set OSTYPE:
 ifeq ($(OSTYPE),linux)
    OSTYPE = LINUX
+   ARCH = -m32 -arch i386
 endif
 
 
@@ -72,7 +76,7 @@ INCDIR    = include
 LIBDIR    = lib
 LIBFILE   = libhumextra.a
 # LANG=C: Nuts to the GCC error beautification committee.
-COMPILER  = LANG=C g++
+COMPILER  = LANG=C g++ $(ARCH)
 AR        = ar
 RANLIB    = ranlib
 

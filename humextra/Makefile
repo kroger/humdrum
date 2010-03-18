@@ -56,7 +56,7 @@ programs:
 	$(MAKE) -f Makefile.programs
 
 %: 
-	-mkdir bin
+	-mkdir -p bin
 	@echo compiling file $@
 	$(MAKE) -f Makefile.programs $@
 	

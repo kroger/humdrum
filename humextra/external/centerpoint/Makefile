@@ -32,11 +32,13 @@ SRCDIR   = src
 INCDIR   = include
 LIBDIR   = lib
 OBJDIR   = obj
+ARCH     = -m32 -arch i386
+#ARCH     = 
 
 # Tools
-CC     = gcc
+CC     = gcc $(ARCH)
 #CC    = cc
-CXX    = g++
+CXX    = g++ $(ARCH)
 #CXX   = aCC +W361
 #CXX   = c++
 LIB    = ar -cr

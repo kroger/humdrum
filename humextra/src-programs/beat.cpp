@@ -2,6 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Oct 22 15:33:41 PDT 2000
 // Last Modified: Sun May 26 19:39:01 PDT 2002 (mostly finished)
+// Last Modified: Tue Mar 16 05:53:19 PST 2010 (added *M meter description)
 // Filename:      ...sig/examples/all/beat.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/beat.cpp
 // Syntax:        C++; museinfo
@@ -54,6 +55,7 @@ void      checkOptions       (Options& opts, int argc, char* argv[]);
 void      example            (void);
 void      usage              (const char* command);
 void      printOutput        (HumdrumFile& file);
+double    getPickupDuration  (HumdrumFile& file);
 
 // global variables
 Options   options;             // database for command-line arguments
@@ -99,6 +101,24 @@ int main(int argc, char* argv[]) {
 
 ///////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////
+//
+// getPickupDuration --
+//
+
+double getPickupDuration(HumdrumFile& file) {
+   int i;
+   for (i=0; i<file.getNumLines(); i++) {
+      if (!file[i].isMeasure()) {
+         continue;
+      }
+      return file[i].getAbsBeat();
+   }
+
+   return -1;
+}
+
+
 
 //////////////////////////////
 //
@@ -107,6 +127,7 @@ int main(int argc, char* argv[]) {
 
 void printOutput(HumdrumFile& file) {
    int lastmeasureline = -1;
+   int pickupstate = 0;
 
    for (int i=0; i<file.getNumLines(); i++) {
       switch (file[i].getType()) {
@@ -150,7 +171,10 @@ void printOutput(HumdrumFile& file) {
             } else if (strcmp(file[i][0], "*-") == 0) {
                cout << "*-";
             } else {
-               if (appendQ || prependQ) {
+               if ((strncmp(file[i][0], "*M", 2) == 0) && 
+                  (strchr(file[i][0], '/') != NULL)) {
+	          cout << file[i][0];	     
+               } else if (appendQ || prependQ) {
                   cout << "*";
                } else {
                   cout << "*";
@@ -169,6 +193,9 @@ void printOutput(HumdrumFile& file) {
             if (appendQ) {
                cout << file[i] << "\t";
             } 
+            if (file[i][0][0] == '=') {
+               pickupstate++;
+            }
 
             if (durQ) {
                cout << file[i].getDuration();
@@ -177,6 +204,11 @@ void printOutput(HumdrumFile& file) {
             } else if (sumQ) {
                if (lastmeasureline > 0) {
                   cout << fabs(file[lastmeasureline].getBeat());
+                  pickupstate++;
+                  lastmeasureline = -1;
+               } else if (pickupstate < 1) {
+                  cout << getPickupDuration(file);
+                  pickupstate++;
                   lastmeasureline = -1;
                } else {
                   if (appendQ || prependQ) {

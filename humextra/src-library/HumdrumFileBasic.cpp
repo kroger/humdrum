@@ -49,10 +49,10 @@ char HumdrumFileBasic::empty[1] = {0};
 //
 
 HumdrumFileBasic::HumdrumFileBasic(void) {
-   records.setSize(10000);          // initial storage size 1000 lines
+   records.setSize(100000);          // initial storage size 100000 lines
    records.setSize(0);
    records.allowGrowth();          
-   records.setAllocSize(10000);     // grow in increments of 1000 lines
+   records.setAllocSize(100000);     // grow in increments of 100000 lines
    maxtracks = 0;
    trackexinterp.setSize(0);
    trackexinterp.allowGrowth(0);
@@ -60,10 +60,10 @@ HumdrumFileBasic::HumdrumFileBasic(void) {
 
 
 HumdrumFileBasic::HumdrumFileBasic(const HumdrumFileBasic& aHumdrumFileBasic) {
-   records.setSize(10000);          // initial storage size 1000 lines
+   records.setSize(100000);          // initial storage size 100000 lines
    records.setSize(0);
    records.allowGrowth();          
-   records.setAllocSize(10000);     // grow in increments of 1000 lines
+   records.setAllocSize(100000);     // grow in increments of 100000 lines
    maxtracks = 0;
    trackexinterp.setSize(0);
    trackexinterp.allowGrowth(0);
@@ -73,10 +73,10 @@ HumdrumFileBasic::HumdrumFileBasic(const HumdrumFileBasic& aHumdrumFileBasic) {
 
 
 HumdrumFileBasic::HumdrumFileBasic(const char* filename) {
-   records.setSize(10000);          // initial storage size 1000 lines
+   records.setSize(100000);          // initial storage size 100000 lines
    records.setSize(0);
    records.allowGrowth();          
-   records.setAllocSize(10000);     // grow in increments of 1000 lines
+   records.setAllocSize(100000);     // grow in increments of 100000 lines
    maxtracks = 0;
    trackexinterp.setSize(0);
    trackexinterp.allowGrowth(0);

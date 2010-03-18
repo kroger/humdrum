@@ -5,6 +5,10 @@
 // Last Modified: Thu Feb 24 22:43:17 PST 2005 (added -k option)
 // Last Modified: Wed Jun 24 15:39:58 PDT 2009 (updated for GCC 4.4)
 // Last Modified: Sun Sep 13 12:34:51 PDT 2009 (added -s option)
+// Last Modified: Wed Nov 18 14:01:20 PST 2009 (added *Tr markers)
+// Last Modified: Thu Nov 19 14:08:32 PST 2009 (added -q, -d and -c options)
+// Last Modified: Thu Nov 19 15:12:01 PST 2009 (added -I options and *ITr marks)
+// Last Modified: Thu Nov 19 19:28:26 PST 2009 (added -W and -C options)
 // Filename:      ...sig/examples/all/transpose.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/transpose.cpp
 // Syntax:        C++; museinfo
@@ -17,6 +21,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
 #ifndef OLDCPP
    #include <iostream>
@@ -26,6 +31,8 @@
    #include <fstream.h>
 #endif
 
+#define STYLE_CONCERT 0
+#define STYLE_WRITTEN 1
 
 // function declarations:
 void      checkOptions          (Options& opts, int argc, char** argv);
@@ -33,13 +40,27 @@ void      example               (void);
 void      usage                 (const char* command);
 void      printFile             (HumdrumFile& infile);
 void      processFile           (HumdrumFile& infile, Array<int>& spines);
-void      printNewKernString    (const char* string);
-void      printHumdrumKernToken (HumdrumRecord& record, int index);
+void      printNewKernString    (const char* string, int transval);
+void      printHumdrumKernToken (HumdrumRecord& record, int index, 
+                                 int transval);
 void      printHumdrumDataRecord(HumdrumRecord& record, 
                                  Array<int>& spineprocess);
 int       getBase40ValueFromInterval(const char* string);
-void      printNewKeyInterpretation(HumdrumRecord& aRecord, int index);
+void      printNewKeyInterpretation(HumdrumRecord& aRecord, int index,
+                                  int transval);
 void      printNewKeySignature   (const char* keysig, int trans);
+void      convertScore           (HumdrumFile& infile, int style);
+void      printTransposedToken   (HumdrumFile& infile, int row, int col, 
+                                  int transval);
+void      processInterpretationLine(HumdrumFile& infile, int line, 
+                                  Array<int>& tvals, int style);
+int       isKeyMarker            (const char* string);
+int       getTransposeInfo       (HumdrumFile& infile, int row, int col);
+int       hasTrMarkers           (HumdrumFile& infile, int line);
+void      convertToWrittenPitches(HumdrumFile& infile, int line, 
+                                  Array<int>& tvals);
+void      convertToConcertPitches(HumdrumFile& infile, int line, 
+                                  Array<int>& tvals);
 
 // auto transpose functions:
 double    pearsonCorrelation     (int size, double* x, double* y);
@@ -97,6 +118,10 @@ int         debugQ       = 0;    // used with --debug option
 int         spineQ       = 0;    // used with -s option
 const char* spinestring  = "";   // used with -s option
 int         octave       = 0;    // used with -o option
+int         concertQ     = 0;    // used with -C option
+int         writtenQ     = 0;    // used with -W option
+int         quietQ       = 0;    // used with -q option
+int         instrumentQ  = 0;    // used with -I option
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -135,8 +160,11 @@ int main(int argc, char** argv) {
       }
    }
 	    
-
-   if (autoQ) {
+   if (concertQ) {
+      convertScore(infile, STYLE_CONCERT);
+   } else if (writtenQ) {
+      convertScore(infile, STYLE_WRITTEN);
+   } else if (autoQ) {
       doAutoTransposeAnalysis(infile);
    } else {
       processFile(infile, spineprocess);
@@ -146,6 +174,243 @@ int main(int argc, char** argv) {
 }
 
 //////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////
+//
+// convertScore -- create a concert pitch score from
+//     a written pitch score.  The function will search for *Tr
+//     interpretations in spines, and convert them to *ITr interpretations
+//     as well as transposing notes, and transposing key signatures and
+//     key interpretations.  Or create a written score from a 
+//     concert pitch score based on the style parameter.
+//
+
+void convertScore(HumdrumFile& infile, int style) {
+   Array<int> tvals;  // transposition values for each spine
+   tvals.setSize(infile.getMaxTracks() + 1);
+   tvals.setAll(0);
+
+   int ptrack;
+   int i, j;
+   for (i=0; i<infile.getNumLines(); i++) {
+      switch (infile[i].getType()) {
+         case E_humrec_interpretation:
+            // scan the line for transposition codes
+            // as well as key signatures and key markers
+            processInterpretationLine(infile, i, tvals, style);
+            break;
+
+         case E_humrec_data:
+	    // transpose notes according to tvals data
+	    for (j=0; j<infile[i].getFieldCount(); j++) {
+               ptrack = infile[i].getPrimaryTrack(j);
+               if (tvals[ptrack] == 0) {
+                  cout << infile[i][j];
+               } else {
+                  printTransposedToken(infile, i, j, tvals[ptrack]);
+               }
+               if (j < infile[i].getFieldCount() - 1) {
+                  cout << "\t";
+               }
+            }
+            cout << "\n";
+            break;
+
+         case E_humrec_data_comment:
+         case E_humrec_data_kern_measure:
+         case E_humrec_none:
+         case E_humrec_empty:
+         case E_humrec_global_comment:
+         case E_humrec_bibliography:
+         default:
+            cout << infile[i] << "\n";
+            break;
+      }
+   }
+}
+
+
+
+//////////////////////////////
+//
+// processInterpretationLine --  Used in converting between 
+//   concert pitch and written pitch scores.
+//
+
+void processInterpretationLine(HumdrumFile& infile, int line, 
+     Array<int>& tvals, int style) {
+
+   PerlRegularExpression pre;
+
+   int j;
+   int ptrack;
+
+   if (hasTrMarkers(infile, line)) {
+      switch (style) {
+         case STYLE_CONCERT:
+            convertToConcertPitches(infile, line, tvals);
+            break;
+         case STYLE_WRITTEN:
+            convertToWrittenPitches(infile, line, tvals);
+            break;
+         default: cout << infile[line];
+      }
+      cout << "\n";
+      return;
+   }
+
+   for (j=0; j<infile[line].getFieldCount(); j++) {
+      ptrack = infile[line].getPrimaryTrack(j);
+
+      // check for *ITr or *Tr markers
+      // ignore *ITr markers when creating a Concert-pitch score
+      // ignore *Tr  markers when creating a Written-pitch score
+
+      if (pre.search(infile[line][j], "^\\*k\\[([a-gA-G\\#-]*)\\]", "")) {
+         // transpose *k[] markers if necessary
+         if (tvals[ptrack] != 0) {
+            printNewKeySignature(pre.getSubmatch(1), tvals[ptrack]);
+         } else {
+            cout << infile[line][j];
+         }
+
+      } else if (isKeyMarker(infile[line][j])) {
+         // transpose *C: markers and like if necessary
+         if (tvals[ptrack] != 0) {
+            printNewKeyInterpretation(infile[line], j, tvals[ptrack]);
+         } else {
+            cout << infile[line][j];
+         }
+
+      } else {
+         // other interpretations just echoed to output:
+         cout << infile[line][j];
+      }
+      if (j<infile[line].getFieldCount()-1) {
+         cout << "\t";
+      }
+   }
+   cout << "\n";
+
+}
+
+
+
+//////////////////////////////
+//
+// convertToWrittenPitches --
+//
+
+void convertToWrittenPitches(HumdrumFile& infile, int line, Array<int>& tvals) {
+   PerlRegularExpression pre;
+   int j;
+   int base;
+   int ptrack;
+   char buffer1[128] = {0};
+   char buffer2[128] = {0};
+   for (j=0; j<infile[line].getFieldCount(); j++) {
+      if (pre.search(infile[line][j], "^\\*ITrd[+-]?\\d+c[+-]?\\d+$", "")) {
+         base = Convert::transToBase40(infile[line][j]);
+	 strcpy(buffer1, "*Tr");
+	 strcat(buffer1, Convert::base40ToTrans(buffer2, base));
+         cout << buffer1;
+         ptrack = infile[line].getPrimaryTrack(j);
+         tvals[ptrack] = base;
+      } else {
+         cout << infile[line][j];
+      }
+      if (j < infile[line].getFieldCount() - 1) {
+         cout << "\t";
+      }
+   }
+}
+
+
+
+//////////////////////////////
+//
+// convertToConcertPitches --
+//
+
+void convertToConcertPitches(HumdrumFile& infile, int line, Array<int>& tvals) {
+   PerlRegularExpression pre;
+   int j;
+   int base;
+   int ptrack;
+   char buffer1[128] = {0};
+   char buffer2[128] = {0};
+   for (j=0; j<infile[line].getFieldCount(); j++) {
+      if (pre.search(infile[line][j], "^\\*Trd[+-]?\\d+c[+-]?\\d+$", "")) {
+         base = Convert::transToBase40(infile[line][j]);
+	 strcpy(buffer1, "*ITr");
+	 strcat(buffer1, Convert::base40ToTrans(buffer2, base));
+         cout << buffer1;
+         ptrack = infile[line].getPrimaryTrack(j);
+         tvals[ptrack] = -base;
+      } else {
+         cout << infile[line][j];
+      }
+      if (j < infile[line].getFieldCount() - 1) {
+         cout << "\t";
+      }
+   }
+}
+
+
+
+//////////////////////////////
+//
+// hasTrMarkers -- returns true if there are any tokens
+//    which start with *ITr or *Tr and contains c and d
+//    with numbers after each of them.
+//
+
+int hasTrMarkers(HumdrumFile& infile, int line) {
+   PerlRegularExpression pre;
+   int j;
+   for (j=0; j<infile[line].getFieldCount(); j++) {
+      if (pre.search(infile[line][j], "^\\*I?Trd[+-]?\\d+c[+-]?\\d+$", "")) {
+         return 1;
+      } 
+   }
+
+   return 0;
+}
+
+
+
+//////////////////////////////
+//
+// isKeyMarker -- returns true if the interpretation is
+//    a key description, such as *C: for C major, or *a:.
+//
+
+int isKeyMarker(const char* string) {
+   PerlRegularExpression pre;
+   return pre.search(string, "^\\*[a-g]?[\\#-]?:", "i");
+}
+
+
+
+//////////////////////////////
+//
+// printTransposedToken -- print a Humdrum token with the given
+//    base-40 transposition value applied.  Only **kern data is
+//    know now to transpose, other data types are currently not
+//    allowed to be transposed (but could be added here later).
+//
+
+void printTransposedToken(HumdrumFile& infile, int row, int col, int transval) {
+   if (strcmp("**kern", infile[col].getExInterp(col)) != 0) {
+      // don't know how to transpose this type of data, so leave it as is
+      cout << infile[row][col]; 
+      return;
+   }
+
+   printHumdrumKernToken(infile[row], col, transval);
+}
+
 
 
 //////////////////////////////
@@ -221,6 +486,179 @@ int calculateTranspositionFromKey(int targetkey, HumdrumFile& infile) {
 
 //////////////////////////////
 //
+// printTransposeInformation -- collect and print *Tr interpretations
+//      at the start of the spine.  Looks for *Tr markers at the start
+//      of the file before any data.
+//
+
+void printTransposeInformation(HumdrumFile& infile, Array<int>& spineprocess,
+      int line, int transval) {
+   int j;
+   int ptrack;
+
+   Array<int> startvalues;
+   startvalues.setSize(infile.getMaxTracks()+1);
+   startvalues.setAll(0);
+
+   Array<int> finalvalues;
+   finalvalues.setSize(infile.getMaxTracks()+1);
+   finalvalues.setAll(0);
+
+   for (j=0; j<infile[line].getFieldCount(); j++) {
+      ptrack = infile[line].getPrimaryTrack(j);
+      startvalues[ptrack] = getTransposeInfo(infile, line, j);
+      // cout << "Found transpose value " << startvalues[ptrack] << endl;
+   }
+
+   int entry = 0;
+   // check if any spine will be transposed after final processing
+   for (j=0; j<infile[line].getFieldCount(); j++) {
+      ptrack = infile[line].getPrimaryTrack(j);
+      if (spineprocess[ptrack-1]) {
+	 finalvalues[ptrack] = transval;
+	 if (!instrumentQ) {
+            finalvalues[ptrack] += startvalues[ptrack];
+	 }
+	 // cout << "New value is: " << finalvalues[ptrack] << endl;
+         if (finalvalues[ptrack] != 0) {
+            entry = 1;
+         }
+      } else {
+         finalvalues[ptrack] = startvalues[ptrack];
+         if (finalvalues[ptrack] != 0) {
+            entry = 1;
+         }
+      }
+   }
+
+   if (!entry) {
+      return;
+   }
+
+   char buffer[1024] = {0};
+   for (j=0; j<infile[line].getFieldCount(); j++) {
+      ptrack = infile[line].getPrimaryTrack(j);
+      if (finalvalues[ptrack] == 0) {
+         cout << "*";
+      } else {
+         if (instrumentQ) {
+            cout << "*ITr";
+            cout << Convert::base40ToTrans(buffer, -finalvalues[ptrack]);
+         } else {
+            cout << "*Tr";
+            cout << Convert::base40ToTrans(buffer, finalvalues[ptrack]);
+         }
+      }
+      if (j < infile[line].getFieldCount()-1) {
+         cout << "\t";
+      }
+
+   }
+   cout << "\n";
+}
+
+
+
+//////////////////////////////
+//
+// getTransposeInfo -- returns the Transpose information found in 
+//    the specified spine starting at the current line, and searching
+//    until data is found (or a *- record is found). Return value is a
+//    base-40 number.
+//
+
+int getTransposeInfo(HumdrumFile& infile, int row, int col) {
+   int i, j;
+   int track = infile[row].getPrimaryTrack(col);
+   int ptrack;
+
+   PerlRegularExpression pre;
+
+   int base;
+   int output = 0;
+ 
+   for (i=row; i<infile.getNumLines(); i++) {
+      if (infile[i].isData()) {
+         break;
+      }
+      if (!infile[i].isInterpretation()) { 
+         continue;
+      }
+      for (j=0; j<infile[i].getFieldCount(); j++) {
+         ptrack = infile[i].getPrimaryTrack(j);
+         if (ptrack != track) {
+            continue;
+         }
+         if (pre.search(infile[i][j], "^\\*Trd[+-]?\\d+c[+-]?\\d+$", "")) {
+            base = Convert::transToBase40(infile[i][j]);
+	    output += base;
+	    // erase the *Tr value because it will be printed elsewhere
+	    infile[i].changeField(j, "*deletedTr");
+         }
+
+      }
+
+   }
+
+   return output;
+}
+
+
+
+//////////////////////////////
+//
+// checkForDeletedLine -- check to see if a "*deletedTr
+//
+
+int checkForDeletedLine(HumdrumFile& infile, int line) {
+   int j;
+   if (!infile[line].isInterpretation()) {
+      return 0;
+   }
+
+   int present = 0;
+   int composite = 0;
+   for (j=0; j<infile[line].getFieldCount(); j++) {
+      if (strstr(infile[line][j], "deletedTr") != NULL) {
+         present = 1;
+      } else if (strcmp(infile[line][j], "*") == 0) {
+         // do nothing: not composite
+      } else {
+         // not a *deletedTr token or a * token, so have to print line later
+         composite = 1;
+      }
+   }
+
+   if (present == 0) {
+      // no *deletedTr records found on the currnet line, so process normally
+      return 0;
+   }
+
+   if (composite == 0) {
+      // *deletedTr found, but no other important data found on line.
+      return 1;
+   }
+
+   // print non-deleted elements in line.
+   for (j=0; j<infile[line].getFieldCount(); j++) {
+      if (strcmp(infile[line][j], "*deletedTr") == 0) {
+         cout << "*";
+      } else {
+         cout << infile[line][j];
+      }
+      if (j < infile[line].getFieldCount() - 1) {
+         cout << "\t";
+      }
+   }
+   cout << "\n";
+
+   return 1;
+}
+
+
+
+//////////////////////////////
+//
 // processFile --
 //
 
@@ -231,8 +669,17 @@ void processFile(HumdrumFile& infile, Array<int>& spineprocess) {
    int j;
    PerlRegularExpression pre;
    const char* ptr;
+   int interpstart = 0;
 
    for (i=0; i<infile.getNumLines(); i++) {
+      if (!quietQ && (interpstart == 1)) {
+	 interpstart = 2;
+	 printTransposeInformation(infile, spineprocess, i, transval);
+      }
+      if (checkForDeletedLine(infile, i)) {
+         continue;
+      }
+
       switch (infile[i].getType()) {
 
          case E_humrec_data:
@@ -243,6 +690,9 @@ void processFile(HumdrumFile& infile, Array<int>& spineprocess) {
          case E_humrec_interpretation:
 
             for (j=0; j<infile[i].getFieldCount(); j++) {
+	       if (strncmp(infile[i][j], "**", 2) == 0) {
+                  interpstart = 1;
+               }
 
                // check for key signature in a spine which is being
                // transposed, and adjust it.
@@ -270,7 +720,7 @@ void processFile(HumdrumFile& infile, Array<int>& spineprocess) {
 
                diatonic = tolower(infile[i][j][1]) - 'a';
                if (diatonic >= 0 && diatonic <= 6) {
-                  printNewKeyInterpretation(infile[i], j);
+                  printNewKeyInterpretation(infile[i], j, transval);
                   if (j<infile[i].getFieldCount()-1) {
                      cout << "\t";
                   }
@@ -327,7 +777,8 @@ void printNewKeySignature(const char* keysig, int trans) {
 // printNewKeyInterpretation -- 
 //
 
-void printNewKeyInterpretation(HumdrumRecord& aRecord, int index) {
+void printNewKeyInterpretation(HumdrumRecord& aRecord, int index, 
+      int transval) {
 
    int mode = 0;
    if (islower(aRecord[index][1])) {
@@ -376,7 +827,7 @@ void printHumdrumDataRecord(HumdrumRecord& record, Array<int>& spineprocess) {
          continue;
       }
 
-      printHumdrumKernToken(record, i);
+      printHumdrumKernToken(record, i, transval);
       if (i<record.getFieldCount()-1) {
          cout << "\t";
       }
@@ -392,7 +843,7 @@ void printHumdrumDataRecord(HumdrumRecord& record, Array<int>& spineprocess) {
 // printHumdrumKernToken --
 //
 
-void printHumdrumKernToken(HumdrumRecord& record, int index) {
+void printHumdrumKernToken(HumdrumRecord& record, int index, int transval) {
    if (strcmp(record[index], ".") == 0) {
       // null record element (no pitch).
       cout << ".";
@@ -405,7 +856,7 @@ void printHumdrumKernToken(HumdrumRecord& record, int index) {
 
    for (k=0; k<tokencount; k++) {
       record.getToken(buffer, index, k);
-      printNewKernString(buffer);
+      printNewKernString(buffer, transval);
       if (k<tokencount-1) {
          cout << " ";
       }         
@@ -419,8 +870,9 @@ void printHumdrumKernToken(HumdrumRecord& record, int index) {
 // printNewKernString --
 //
 
-void printNewKernString(const char* string) {
+void printNewKernString(const char* string, int transval) {
    if (strchr(string, 'r') != NULL) {
+      // don't transpose rests...
       cout << string;
       return;
    }
@@ -455,13 +907,19 @@ void printNewKernString(const char* string) {
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
-   opts.define("b|base40=i:0", "The base-40 transposition value");
-   opts.define("o|octave=i:0", "The octave addition to tranpose value");
-   opts.define("t|transpose=s", "musical interval transposition value");
-   opts.define("k|setkey=s", "Transpose to the given key");
-   opts.define("auto=b", "Auto. transpose inst. parts to concert pitch");
-   opts.define("debug=b", "print debugging statements");
-   opts.define("s|spines=s", "transpose only specified spines");
+   opts.define("b|base40=i:0",    "the base-40 transposition value");
+   opts.define("d|diatonic=i:0",  "the diatonic transposition value");
+   opts.define("c|chromatic=i:0", "the chromatic transposition value");
+   opts.define("o|octave=i:0",     "the octave addition to tranpose value");
+   opts.define("t|transpose=s",    "musical interval transposition value");
+   opts.define("k|setkey=s",       "transpose to the given key");
+   opts.define("auto=b",         "auto. trans. inst. parts to concert pitch");
+   opts.define("debug=b",        "print debugging statements");
+   opts.define("s|spines=s",     "transpose only specified spines");
+   opts.define("q|quiet=b",      "suppress *Tr interpretations in output");
+   opts.define("I|instrument=b", "insert instrument code (*ITr) as well");
+   opts.define("C|concert=b",    "transpose written score to concert pitch");
+   opts.define("W|written=b",    "trans. concert pitch score to written score");
 
    opts.define("author=b",  "author of program"); 
    opts.define("version=b", "compilation info");
@@ -475,7 +933,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
            << "craig@ccrma.stanford.edu, 12 Apr 2004" << endl;
       exit(0);
    } else if (opts.getBoolean("version")) {
-      cout << argv[0] << ", version: 12 Apr 2004" << endl;
+      cout << argv[0] << ", version: 17 Nov 2009" << endl;
       cout << "compiled: " << __DATE__ << endl;
       cout << MUSEINFO_VERSION << endl;
       exit(0);
@@ -487,15 +945,33 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       exit(0);
    }
 
-   transval    = opts.getInteger("base40");
-   ssetkeyQ    = opts.getBoolean("setkey");
-   ssetkey     = Convert::kernToBase40(opts.getString("setkey"));
-   autoQ       = opts.getBoolean("auto");
-   debugQ      = opts.getBoolean("debug");
-   spineQ      = opts.getBoolean("spines");
-   spinestring = opts.getString("spines");
-   octave      = opts.getInteger("octave");
+   transval     = opts.getInteger("base40");
+   ssetkeyQ     = opts.getBoolean("setkey");
+   ssetkey      = Convert::kernToBase40(opts.getString("setkey"));
+   autoQ        = opts.getBoolean("auto");
+   debugQ       = opts.getBoolean("debug");
+   spineQ       = opts.getBoolean("spines");
+   spinestring  = opts.getString("spines");
+   octave       = opts.getInteger("octave");
+   concertQ     = opts.getBoolean("concert");
+   writtenQ     = opts.getBoolean("written");
+   quietQ       = opts.getBoolean("quiet");
+   instrumentQ  = opts.getBoolean("instrument");
 
+   switch (opts.getBoolean("diatonic") + opts.getBoolean("chromatic")) {
+      case 1:
+         cerr << "Error: both -d and -c options must be specified" << endl;
+         exit(1);
+         break;
+      case 2:
+         {
+            char buffer[128] = {0};
+            sprintf(buffer, "d%dc%d", opts.getInt("d"), opts.getInt("c"));
+            transval = Convert::transToBase40(buffer);
+         }
+         break;
+   }
+	     
    ssetkey = ssetkey % 40;
 
    if (opts.getBoolean("transpose")) {
@@ -1600,4 +2076,4 @@ transpose -b -80 file.krn
 */
 
 
-// md5sum: 28a5b69adb369d26bcba3835299da2a8 transpose.cpp [20090626]
+// md5sum: 2c93658e59ed90255f78c9f5544d8a2a transpose.cpp [20091123]

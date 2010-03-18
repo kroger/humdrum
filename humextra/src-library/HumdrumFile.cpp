@@ -38,6 +38,7 @@
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
 // Last Modified: Fri Jun 19 23:24:03 PDT 2009 (fixed malformed meter parsing)
 // Last Modified: Sat Sep  5 22:03:28 PDT 2009 (ArrayInt to Array<int>)
+// Last Modified: Mon Oct 12 15:49:27 PDT 2009 (fixed "*clef *v *v" type cases)
 // Filename:      ...sig/src/sigInfo/HumdrumFile.cpp
 // Web Address:   http://sig.sapp.org/src/sigInfo/HumdrumFile.cpp
 // Syntax:        C++ 
@@ -320,7 +321,7 @@ int HumdrumFile::assemble(HumdrumFile& output, int count, HumdrumFile* pieces) {
 
 //////////////////////////////
 //
-// HumdrumFile::combine -- 
+// HumdrumFile::combine --
 //
 
 int HumdrumFile::combine(HumdrumFile& output, HumdrumFile& A, HumdrumFile& B,
@@ -648,9 +649,6 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
 
          }
 
-
-
-
          if ((A[a].getType() != E_humrec_data_interpretation) &&
              (B[b].getType() != E_humrec_data_interpretation)) {
             sout << A[a].getLine() << "\t" << B[b].getLine() << "\n";
@@ -746,8 +744,42 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
                a++;
                continue;
             }
-         }
 
+	    // prevent regular tandem interpretations from aligning
+	    // with spine manipulator interpretations
+            if ((A[a].isTandem() && B[b].isSpineManipulator())) {
+               int ii;
+               sout << A[a];
+               for (ii=0; ii<B[b].getFieldCount(); ii++) {
+                  sout << "\t*";
+               }
+               sout << "\n";
+               for (ii=0; ii<A[a].getFieldCount(); ii++) {
+                  sout << "*\t";
+               }
+               sout << B[b];
+               sout << '\n';
+               a++;
+               b++;
+               continue;
+            } else if ((A[a].isSpineManipulator() && B[b].isTandem())) {
+               int ii;
+               for (ii=0; ii<A[a].getFieldCount(); ii++) {
+                  sout << "*\t";
+               }
+               sout << B[b];
+               sout << '\n';
+
+               sout << A[a];
+               for (ii=0; ii<B[b].getFieldCount(); ii++) {
+                  sout << "\t*";
+               }
+               sout << "\n";
+               a++;
+               b++;
+               continue;
+            } 
+         }
 
          // make sure that both lines do not contain *v spine indicators
          // should also check for *^, but that can be done later ...

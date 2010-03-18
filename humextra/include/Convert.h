@@ -9,6 +9,7 @@
 // Last Modified: Wed Dec  1 01:36:29 PST 2004 (added base40ToIntervalAbbr())
 // Last Modified: Sun Jun  4 21:04:50 PDT 2006 (added base40ToPerfViz())
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
+// Last Modified: Wed Nov 18 16:40:33 PST 2009 (added base40/trans converts)
 // Filename:      ...sig/include/sigInfo/Convert.h
 // Web Address:   http://sig.sapp.org/include/sigInfo/Convert.h
 // Syntax:        C++ 
@@ -91,6 +92,8 @@ class Convert {
                                                    int base40value);
       static char*     base40ToPerfViz            (char* output, 
                                                    int base40value);
+      static char*     base40ToTrans              (char* buffer, int base40);
+      static int       transToBase40              (const char* buffer);
 
    // conversions dealing with MIDI base-12 system 
    

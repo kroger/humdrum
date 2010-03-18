@@ -28,15 +28,16 @@
 //                logical repeat marks
 //                first, second endings 
 //                preserve hard-coded system breaks 
-//                some more articulations & fix stacattissimo
+//                some more articulations 
 //                general solution to multiple voices in a part.
+//                generalize **kern data extraction for more than two voices
 //                figure out how beaming is indicated with chords.
 //                fix dynamic spine syntax when dynamic comes between notes
-//                generalize **kern data extraction for more than two voices
 //                fix assemble code so that grace notes are aligned correctly
 //
 // Done:	  
 //                lyrics (convert to spines to right of music spine)
+//                fixed stacattissimo
 //                explicit natural sign
 //                don't print initial barline when pickup (use fixMeasure)
 //                dynamics (only fff, ff, f, mf, mp, p, pp, ppp)
@@ -2813,11 +2814,16 @@ void MusicXmlFile::processSpineChanges(SSTREAM& newstream, SSTREAM& oldstream,
             newstream << "\n";
             // newstream << "iii";
          } else if ((tabcount[i-1] == 1) && (tabcount[i] == 0)) {
-            newstream << "*v\t*v";
-            if (humdrumDynamics && partdynamics[staffno]) {
-               newstream << "\t*";
+            if (strstr(strings[i], "clef") != NULL) {
+               newstream << strings[i] << '\t';
+	       tabcount[i] = 1;
+            } else {
+               newstream << "*v\t*v";
+               if (humdrumDynamics && partdynamics[staffno]) {
+                  newstream << "\t*";
+               }
+               newstream << "\n";
             }
-            newstream << "\n";
          } 
 
          // process multiple spine changes:

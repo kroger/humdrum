@@ -17,6 +17,7 @@
 // Last Modified: Mon Jun 15 15:55:22 PDT 2009 (fixed bug in getPrimaryTrack)
 // Last Modified: Thu Jun 18 15:29:49 PDT 2009 (modified getExInterp behavior)
 // Last Modified: Thu Jun 18 15:57:53 PDT 2009 (added hasSpines())
+// Last Modified: Mon Nov 23 14:30:35 PST 2009 (fixed equalDataQ())
 // Filename:      ...sig/src/sigInfo/HumdrumRecord.cpp
 // Webpage:       http://sig.sapp.org/src/sigInfo/HumdrumRecord.cpp
 // Syntax:        C++ 
@@ -280,12 +281,13 @@ void HumdrumRecord::copySpineInfo(SigCollection<char*>& aCollection, int line) {
 
 //////////////////////////////
 //
-// HumdrumRecord::equalDataQ --
+// HumdrumRecord::equalDataQ -- return true if all tokens on a line
+//      match to aValue.
 //
 
 int HumdrumRecord::equalDataQ(const char* aValue) {
    int output = 1;
-   for (int i=1; i<getFieldCount(); i++) {
+   for (int i=0; i<getFieldCount(); i++) {
       if (strcmp(recordFields[i], aValue) != 0) {
          output = 0;
          break;

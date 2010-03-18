@@ -14,6 +14,7 @@
 // Last Modified: Tue Oct 14 16:56:54 PDT 2008 (added 'Q' groupetto parsing)
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
 // Last Modified: Sun Jun 21 11:35:40 PDT 2009 (updated for GCC 4.3)
+// Last Modified: Wed Nov 18 16:40:33 PST 2009 (added base40/trans converts)
 // Filename:      ...sig/src/sigInfo/Convert.cpp
 // Web Address:   http://sig.sapp.org/src/sigInfo/Convert.cpp
 // Syntax:        C++ 
@@ -186,6 +187,14 @@ char* Convert::durationToKernRhythm(char* output, double input, int timebase) {
       return output;
    }
 
+   // handle special rounding cases primarily for SCORE which
+   // only stores 4 digits for a duration
+   if (input == 0.0833) {
+      // triplet 32nd note, which has a real duration of 0.0833333 etc.
+      strcat(output, "48");
+      return output;
+   }
+	    
    if (diff < 0.002) {
       sprintf(buffer, "%d", (int)basic);
       strcat(output, buffer);
@@ -1392,7 +1401,7 @@ int Convert::kernToBase40Class(const char* kernfield) {
 
 //////////////////////////////
 //
-// kernNoteToBase40 -- returns the absolute base 40 pitch number of
+// Convert::kernNoteToBase40 -- returns the absolute base 40 pitch number of
 //      a kern pitch.  Returns -1 on error or null token.
 //
 
@@ -1460,6 +1469,236 @@ int Convert::kernNoteToBase40(const char* name) {
       exit(1);
    }
 }
+
+
+
+//////////////////////////////
+//
+// Convert::transToBase40 -- convert the Humdrum Toolkit program
+//     trans's binomial notation for intervals into base-40.
+//  The input can be in three formats:
+//     d1c2      == no prepended text on information
+//     *Trd1c2   == Transposition interpretation marker prefixed
+//     *ITrd1c2  == Instrumental transposition marker prefixed
+//
+
+int Convert::transToBase40(const char* buffer) {
+   int dval = 0;
+   int cval = 0;
+   if (sscanf(buffer, "d%dc%d", &dval, &cval) != 2) {
+      if (sscanf(buffer, "*Trd%dc%d", &dval, &cval) != 2) {
+         if (sscanf(buffer, "*ITrd%dc%d", &dval, &cval) != 2) {
+            // cerr << "Cannot find correct information" << endl;
+            return 0;
+         }
+      }
+   }
+
+   int dsign = 1;
+   int csign = 1;
+   if (dval < 0) {
+      dsign = -1;
+   } 
+   if (cval < 0) {
+      csign = -1;
+   } 
+
+   int doctave = dsign * dval / 7;
+   // int coctave = csign * cval / 12;
+
+   int base = 0;
+
+        if ((dval==0)  && (cval==0))   { base =	 0; }
+   else if ((dval==0)  && (cval==1))   { base =	 1; }
+   else if ((dval==0)  && (cval==2))   { base =	 2; }
+   else if ((dval==1)  && (cval==0))   { base =	 4; }
+   else if ((dval==1)  && (cval==1))   { base =	 5; }
+   else if ((dval==1)  && (cval==2))   { base =	 6; }
+   else if ((dval==1)  && (cval==3))   { base =	 7; }
+   else if ((dval==1)  && (cval==4))   { base =	 8; }
+   else if ((dval==2)  && (cval==2))   { base =	 10; }
+   else if ((dval==2)  && (cval==3))   { base =	 11; }
+   else if ((dval==2)  && (cval==4))   { base =	 12; }
+   else if ((dval==2)  && (cval==5))   { base =	 13; }
+   else if ((dval==2)  && (cval==6))   { base =	 14; }
+   else if ((dval==3)  && (cval==3))   { base =	 15; }
+   else if ((dval==3)  && (cval==4))   { base =	 16; }
+   else if ((dval==3)  && (cval==5))   { base =	 17; }
+   else if ((dval==3)  && (cval==6))   { base =	 18; }
+   else if ((dval==3)  && (cval==7))   { base =	 19; }
+   else if ((dval==4)  && (cval==5))   { base =	 21; }
+   else if ((dval==4)  && (cval==6))   { base =	 22; }
+   else if ((dval==4)  && (cval==7))   { base =	 23; }
+   else if ((dval==4)  && (cval==8))   { base =	 24; }
+   else if ((dval==4)  && (cval==9))   { base =	 25; }
+   else if ((dval==5)  && (cval==7))   { base =	 27; }
+   else if ((dval==5)  && (cval==8))   { base =	 28; }
+   else if ((dval==5)  && (cval==9))   { base =	 29; }
+   else if ((dval==5)  && (cval==10))  { base =	 30; }
+   else if ((dval==5)  && (cval==11))  { base =	 31; }
+   else if ((dval==6)  && (cval==9))   { base =	 33; }
+   else if ((dval==6)  && (cval==10))  { base =	 34; }
+   else if ((dval==6)  && (cval==11))  { base =	 35; }
+   else if ((dval==6)  && (cval==12))  { base =	 36; }
+   else if ((dval==6)  && (cval==13))  { base =	 37; }
+   else if ((dval==7)  && (cval==10))  { base =	 38; }
+   else if ((dval==7)  && (cval==11))  { base =	 38; }
+   else if ((dval==-0) && (cval==-0))  { base =	 -0; }
+   else if ((dval==-0) && (cval==-1))  { base =	 -1; }
+   else if ((dval==-0) && (cval==-2))  { base =	 -2; }
+   else if ((dval==-1) && (cval==1))   { base =	 -3; }
+   else if ((dval==-1) && (cval==-0))  { base =	 -4; }
+   else if ((dval==-1) && (cval==-1))  { base =	 -5; }
+   else if ((dval==-1) && (cval==-2))  { base =	 -6; }
+   else if ((dval==-1) && (cval==-3))  { base =	 -7; }
+   else if ((dval==-2) && (cval==-1))  { base =	 -9; }
+   else if ((dval==-2) && (cval==-2))  { base =	-10; }
+   else if ((dval==-2) && (cval==-3))  { base =	-11; }
+   else if ((dval==-2) && (cval==-4))  { base =	-12; }
+   else if ((dval==-2) && (cval==-5))  { base =	-13; }
+   else if ((dval==-3) && (cval==-3))  { base =	-15; }
+   else if ((dval==-3) && (cval==-4))  { base =	-16; }
+   else if ((dval==-3) && (cval==-5))  { base =	-17; }
+   else if ((dval==-3) && (cval==-6))  { base =	-18; }
+   else if ((dval==-3) && (cval==-7))  { base =	-19; }
+   else if ((dval==-4) && (cval==-5))  { base =	-21; }
+   else if ((dval==-4) && (cval==-6))  { base =	-22; }
+   else if ((dval==-4) && (cval==-7))  { base =	-23; }
+   else if ((dval==-4) && (cval==-8))  { base =	-24; }
+   else if ((dval==-4) && (cval==-9))  { base =	-25; }
+   else if ((dval==-5) && (cval==-6))  { base =	-26; }
+   else if ((dval==-5) && (cval==-7))  { base =	-27; }
+   else if ((dval==-5) && (cval==-8))  { base =	-28; }
+   else if ((dval==-5) && (cval==-9))  { base =	-29; }
+   else if ((dval==-5) && (cval==-10)) { base =	-30; }
+   else if ((dval==-6) && (cval==-8))  { base =	-32; }
+   else if ((dval==-6) && (cval==-9))  { base =	-33; }
+   else if ((dval==-6) && (cval==-10)) { base =	-34; }
+   else if ((dval==-6) && (cval==-11)) { base =	-35; }
+   else if ((dval==-6) && (cval==-12)) { base =	-36; }
+   else if ((dval==-7) && (cval==-10)) { base =	-38; }
+   else if ((dval==-7) && (cval==-11)) { base =	-39; }
+   else { // some error occurred or accidentals out of range
+      // cerr << "Problem occured in transToBase40()" << endl;
+      base = 0; 
+   }  
+	     
+   base += 40 * doctave * dsign;
+   
+   return base;
+}
+
+
+
+//////////////////////////////
+//
+// Convert::base40ToTrans -- convert a base 40 interval into
+//    a trans program's diatonic/chromatic alteration marker
+//
+
+
+char* Convert::base40ToTrans(char* buffer, int base40) {
+   int sign = 1;
+   int chroma;
+   int octave;
+   if (base40 < 0) {
+      sign = -1;
+      chroma = -base40 % 40;
+      octave = -base40 / 40;
+   } else {
+      sign = +1;
+      chroma = base40 % 40;
+      octave = base40 / 40;
+   }
+
+   int cval = 0;
+   int dval = 0;
+   
+   switch (chroma * sign) {
+      case   0:	dval=0;  cval=0;	break; //	C -> C
+      case   1:	dval=0;  cval=1;	break; //	C -> C#
+      case   2:	dval=0;  cval=2;	break; //	C -> C##
+      case   4:	dval=1;  cval=0;	break; //	C -> D--
+      case   5:	dval=1;  cval=1;	break; //	C -> D-
+      case   6:	dval=1;  cval=2;	break; //	C -> D
+      case   7:	dval=1;  cval=3;	break; //	C -> D#
+      case   8:	dval=1;  cval=4;	break; //	C -> D##
+      case  10:	dval=2;  cval=2;	break; //	C -> E--
+      case  11:	dval=2;  cval=3;	break; //	C -> E-
+      case  12:	dval=2;  cval=4;	break; //	C -> E
+      case  13:	dval=2;  cval=5;	break; //	C -> E#
+      case  14:	dval=2;  cval=6;	break; //	C -> E##
+      case  15:	dval=3;  cval=3;	break; //	C -> F--
+      case  16:	dval=3;  cval=4;	break; //	C -> F-
+      case  17:	dval=3;  cval=5;	break; //	C -> F
+      case  18:	dval=3;  cval=6;	break; //	C -> F#
+      case  19:	dval=3;  cval=7;	break; //	C -> F##
+      case  21:	dval=4;  cval=5;	break; //	C -> G--
+      case  22:	dval=4;  cval=6;	break; //	C -> G-
+      case  23:	dval=4;  cval=7;	break; //	C -> G
+      case  24:	dval=4;  cval=8;	break; //	C -> G#
+      case  25:	dval=4;  cval=9;	break; //	C -> G##
+      case  27:	dval=5;  cval=7;	break; //	C -> A--
+      case  28:	dval=5;  cval=8;	break; //	C -> A-
+      case  29:	dval=5;  cval=9;	break; //	C -> A
+      case  30:	dval=5;  cval=10;	break; //	C -> A#
+      case  31:	dval=5;  cval=11;	break; //	C -> A##
+      case  33:	dval=6;  cval=9;	break; //	C -> B--
+      case  34:	dval=6;  cval=10;	break; //	C -> B-
+      case  35:	dval=6;  cval=11;	break; //	C -> B
+      case  36:	dval=6;  cval=12;	break; //	C -> B#
+      case  37:	dval=6;  cval=13;	break; //	C -> B##
+      case  38:	dval=7;  cval=10;	break; //	C -> c--
+      case  39:	dval=7;  cval=11;	break; //	C -> c-
+      case  -1:	dval=-0; cval=-1;	break; //	c -> c-
+      case  -2:	dval=-0; cval=-2;	break; //	c -> c--
+      case  -3:	dval=-1; cval=1;	break; //	c -> B##
+      case  -4:	dval=-1; cval=-0;	break; //	c -> B#
+      case  -5:	dval=-1; cval=-1;	break; //	c -> B
+      case  -6:	dval=-1; cval=-2;	break; //	c -> B-
+      case  -7:	dval=-1; cval=-3;	break; //	c -> B--
+      case  -9:	dval=-2; cval=-1;	break; //	c -> A##
+      case -10:	dval=-2; cval=-2;	break; //	c -> A#
+      case -11:	dval=-2; cval=-3;	break; //	c -> A
+      case -12:	dval=-2; cval=-4;	break; //	c -> A-
+      case -13:	dval=-2; cval=-5;	break; //	c -> A-
+      case -15:	dval=-3; cval=-3;	break; //	c -> G##
+      case -16:	dval=-3; cval=-4;	break; //	c -> G#
+      case -17:	dval=-3; cval=-5;	break; //	c -> G
+      case -18:	dval=-3; cval=-6;	break; //	c -> G-
+      case -19:	dval=-3; cval=-7;	break; //	c -> G--
+      case -21:	dval=-4; cval=-5;	break; //	c -> F##
+      case -22:	dval=-4; cval=-6;	break; //	c -> F#
+      case -23:	dval=-4; cval=-7;	break; //	c -> F
+      case -24:	dval=-4; cval=-8;	break; //	c -> F-
+      case -25:	dval=-4; cval=-9;	break; //	c -> F--
+      case -26:	dval=-5; cval=-6;	break; //	c -> E##
+      case -27:	dval=-5; cval=-7;	break; //	c -> E#
+      case -28:	dval=-5; cval=-8;	break; //	c -> E
+      case -29:	dval=-5; cval=-9;	break; //	c -> E-
+      case -30:	dval=-5; cval=-10;	break; //	c -> E--
+      case -32:	dval=-6; cval=-8;	break; //	c -> D##
+      case -33:	dval=-6; cval=-9;	break; //	c -> D#
+      case -34:	dval=-6; cval=-10;	break; //	c -> D
+      case -35:	dval=-6; cval=-11;	break; //	c -> D-
+      case -36:	dval=-6; cval=-12;	break; //	c -> D--
+      case -38:	dval=-7; cval=-10;	break; //	c -> C##
+      case -39:	dval=-7; cval=-11;	break; //	c -> C#
+      default:
+         dval=0; cval=0;
+   }
+
+   if (octave > 0) {
+      dval = dval + sign * octave * 7;
+      cval = cval + sign * octave * 12;
+   }
+
+   sprintf(buffer, "d%dc%d", dval, cval);
+
+   return buffer;
+}
+
+
 
 
 //////////////////////////////
