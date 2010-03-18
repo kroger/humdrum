@@ -58,16 +58,16 @@ ARCH =
 ifeq ($(origin OSTYPE), undefined)
    ifeq ($(shell uname),Darwin)
       OSTYPE = OSXPC
-      ARCH = -m32 -arch i386
+      ARCH = -m32 
    else 
       OSTYPE = LINUX
-      ARCH = -m32 -arch i386
+      ARCH = -m32 
    endif
 endif
 # Next if statement needed for some versions of make which already set OSTYPE:
 ifeq ($(OSTYPE),linux)
    OSTYPE = LINUX
-   ARCH = -m32 -arch i386
+   ARCH = -m32 
 endif
 
 # Cygwin (and MinGW?) adds the string ".exe" to the end of compiled programs.

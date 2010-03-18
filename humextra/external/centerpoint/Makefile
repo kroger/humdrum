@@ -32,7 +32,7 @@ SRCDIR   = src
 INCDIR   = include
 LIBDIR   = lib
 OBJDIR   = obj
-ARCH     = -m32 -arch i386
+ARCH     = -m32
 #ARCH     = 
 
 # Tools
