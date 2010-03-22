@@ -7,10 +7,10 @@ To install ubuntu in a 64bit ubuntu you need to install a chroot:
 Edit /etc/schroot/schroot.conf. You should add a section to
 /etc/schroot/schroot.conf that looks like this:
 
-  [intrepid-32]
+  [karmic-32]
   type=directory
   description=Intrepid 32-bit
-  location=/home/YOUR_USERNAME/chroots/intrepid-32
+  location=/home/YOUR_USERNAME/chroots/karmic-32
   priority=3
   users=YOUR_USERNAME,root
   groups=YOUR_USERNAME,root
@@ -21,11 +21,11 @@ Edit /etc/schroot/schroot.conf. You should add a section to
 
 Give sudo permission:
 
-  sudo cp /etc/sudoers ~/chroots/intrepid-32/etc/sudoers
+  sudo cp /etc/sudoers ~/chroots/karmic-32/etc/sudoers
 
 To enter the chroot run the command:
 
-  schroot -c intrepid-32
+  schroot -c karmic-32
 
 And run the commands in the README document. Instead of "make install"
 you may want to copy the binaries compiled in the chroot to
