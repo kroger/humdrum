@@ -4,7 +4,8 @@
   (let ((kern-mode-map (make-keymap)))
     (define-key kern-mode-map "\C-j" 'newline-and-indent)
     (define-key kern-mode-map [tab] 'kern-insert-tab)
-    (define-key kern-mode-map "\r" 'kern-newline)
+    ;;(define-key kern-mode-map "\r" 'kern-newline)
+    (define-key kern-mode-map "\r" 'newline)
     (define-key kern-mode-map (kbd "C-M-n") 'next-measure)
     (define-key kern-mode-map (kbd "C-M-p") 'previous-measure)
     (define-key kern-mode-map (kbd "C-M-m") 'go-to-measure)
@@ -126,20 +127,54 @@
   '(("^!.*" . 'kern-global-comment-face)
     ("^\\*\\*.*" . 'kern-exclusive-face)
     ("^\\*.*" . 'kern-interpretation-face)
-    ("=[0-9]*\t?" . 'kern-bar-face)
+    ("=[0-9]*[:!|]*\t?" . 'kern-bar-face)
+    ("[0-9.]+[a-grA-G#n-]+" . 'kern-notes)
    ))
 
-(defmacro* makeface (name foreground &optional background overline)
-  "foo"
-  `(defface ,name
-       '((t (:foreground ,foreground :background ,background :overline ,overline)))
-     "Face used for level 1 markdown headings"
-     :group 'kern))
+(defface kern-bar-face
+    '((((class color) (background dark))
+       (:background "dim gray" :foreground "yellow"))
+      (((class color) (background light))
+       (:foreground "red" :background "LightSteelBlue1"))
+      (t (:italic t)))
+    "Face used for bars"
+    :group 'kern)
 
-(makeface kern-bar-face "red" "LightSteelBlue1" "red")
-(makeface kern-global-comment-face "Firebrick")
-(makeface kern-exclusive-face "Blue1")
-(makeface kern-interpretation-face "ForestGreen")
+(defface kern-global-comment-face
+    '((((class color) (background dark))
+       (:foreground "Firebrick"))
+      (((class color) (background light))
+       (:foreground "Firebrick"))
+      (t (:italic t)))
+    "Face used for global comments"
+    :group 'kern)
+
+(defface kern-exclusive-face
+    '((((class color) (background dark))
+       (:foreground "Blue1"))
+      (((class color) (background light))
+       (:foreground "Blue1"))
+      (t (:italic t)))
+    "Face used for exclusive interpretation"
+    :group 'kern)
+
+(defface kern-interpretation-face
+    '((((class color) (background dark))
+       (:foreground "ForestGreen"))
+      (((class color) (background light))
+       (:foreground "ForestGreen"))
+      (t (:italic t)))
+    "Face used for interpretation"
+    :group 'kern)
+
+(defface kern-notes
+    '((((class color) (background dark))
+       (:foreground "Orange"))
+      (((class color) (background light))
+       (:foreground "dark orange"))
+      (t (:italic t)))
+    "Face used for notes and duration"
+    :group 'kern)
 
 ;; (defvar kern-mode-syntax-table
 ;;   (let ((kern-mode-syntax-table (make-syntax-table)))
@@ -158,7 +193,7 @@
   (setq indent-tabs-mode t)
   (setq major-mode 'kern-mode)
   (setq mode-name "KERN")
-  (setq default-tab-width 10)
+  (setq default-tab-width 12)
   (setq comment-start "!")
   (run-hooks 'kern-mode-hook))
 
