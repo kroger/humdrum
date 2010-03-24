@@ -2,7 +2,7 @@ To install humdrum you need to have a compiler and the alsa
 development libraries installed. The following command should work on
 ubuntu and debian:
 
-  sudo apt-get install gcc libasound2 libasound2-dev gawk
+  sudo apt-get install gcc g++ libasound2 libasound2-dev gawk
 
 Download the humdrum distribution go to the following page on the github repository:
 
