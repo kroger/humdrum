@@ -75,13 +75,13 @@ BEGIN {
 	octave_class = "[0-9]"
 	indicators = "^(\\*\\+|\\*\\-|\\*\\^|\\*v|\\*x)$"
 	input_interps = "^(\\*\\*kern|\\*\\*pitch|\\*\\*Tonh|\\*\\*solfg)$"
-	key_reg = "^\\*(([A-Ga-g](#?|-?))|(\\?)|(X)|(Cx)|(cx)|(Dx)):$"
-	pc_key_sig = "^\\*k\\[([a-g]((n)|(#)|(x+(#?))|(-)+))*\\]$"
-	ph_key_sig = "^\\*K\\[([A-G]((n)|(#)|(x+(#?))|(-)+)*[1-9])*\\]$"
+	key_reg = "^\\*(([ABCDEFGabcdefg](#?|-?))|(\\?)|(X)|(Cx)|(cx)|(Dx)):$"
+	pc_key_sig = "^\\*k\\[([abcdefg]((n)|(#)|(x+(#?))|(-)+))*\\]$"
+	ph_key_sig = "^\\*K\\[([ABCDEFG]((n)|(#)|(x+(#?))|(-)+)*[1-9])*\\]$"
 	repetition = "(a.*a)|(b.*b)|(c.*c)|(d.*d)|(e.*e)|(f.*f)|(g.*g)"
-	pc_note = "[a-g]((n)|(#)|(x+#?)|(-+))"
-	pitch_reg = "[a-g]"
-	kern_pitch_token = "[a-gA-G]+[-#n]*"
+	pc_note = "[abcdefg]((n)|(#)|(x+#?)|(-+))"
+	pitch_reg = "[abcdefg]"
+	kern_pitch_token = "[abcdefgABCDEFG]+[-#n]*"
 	null_interps = "^\\*(	\\*)*$"
 	pc_index = 1
 	diatonic = 0
@@ -775,7 +775,7 @@ function process_pitch(data_token,spine,  return_token,arraya,j,split_num,\
 				sub(/b+/,"",arraya[j])
 				}
 			else current_note[3] = ""
-			if (match(arraya[j],/[A-G]/))
+			if (match(arraya[j],/[ABCDEFG]/))
 				{
 				current_note[2] = substr(arraya[j],RSTART,RLENGTH)
 				sub(/[ABCDEFG]/,"",arraya[j])
@@ -1142,10 +1142,10 @@ function process_kern(data_token,spine,  return_token,arrayd,j,split_num,\
 			#
 			# Determine the ocatave class
 			#
-			if (arrayd[j] ~ /[A-G]/)
-				current_note[1] = 4 - gsub(/[A-G]/,"",arrayd[j])
+			if (arrayd[j] ~ /[ABCDEFG]/)
+				current_note[1] = 4 - gsub(/[ABCDEFG]/,"",arrayd[j])
 			else
-				current_note[1] = 3 + gsub(/[a-g]/,"",arrayd[j])
+				current_note[1] = 3 + gsub(/[abcdefg]/,"",arrayd[j])
 			#
 			# Remove any naturals
 			#

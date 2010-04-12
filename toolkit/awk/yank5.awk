@@ -55,7 +55,7 @@ BEGIN {
 	# Define regular expressions
 	#
 	NUMBER = "^[1-9][0-9]*$"
-	s_label = "[A-Za-z0-9 _+.#@~-]"
+	s_label = "[[:alnum:] _+.#@~-]"
 	section_label = "^\\*>[^\\]\\[,\t]+(\t\\*>" s_label "+)*$"
 	exclusive_record = "^\\*\\*[^\t]+(\t\\*\\*[^\t]+)*$"
 	spine_terminate = "^\\*-(\t\\*-)*$"
@@ -87,10 +87,11 @@ if (FNR == 1)
 	MORE_TO_PRINT = TRUE
 	last_occurrence = 0
 	occurrence_count = 0
-	system("$AWK_VER -f ${HUMDRUM}/bin/number.awk '" LABEL "' " FILENAME " > $TMPDIR/yank5$")
-	"cat $TMPDIR/yank5$" | getline max_occurrences
-	close("cat $TMPDIR/yank5$")
-	max_occurrences = max_occurrences + 0
+	# system("$AWK_VER -f ${HUMDRUM}/bin/number.awk '" LABEL "' " FILENAME " > $TMPDIR/yank5$")
+	# "cat $TMPDIR/yank5$" | getline max_occurrences
+	# close("cat $TMPDIR/yank5$")
+	#max_occurrences = max_occurrences + 0
+    ("$AWK_VER -f ${HUMDRUM}/bin/number.awk '" LABEL "' " FILENAME ) | getline max_occurrences
 	determine_range(RANGE,max_occurrences)
 	}
 #
@@ -120,7 +121,7 @@ END	{
 		for (i = 1; i <= number_of_fields - 1; i += 1)
 			last_line = last_line "\t*-"
 		print last_line
-		system("rm $TMPDIR/yank5$")
+		#system("rm $TMPDIR/yank5$")
 		}
 }
 

@@ -88,12 +88,12 @@ BEGIN {
 				 "|\\*\\*solfg|\\*\\*semits|\\*\\*cents|\\*\\*MIDI"\
 				 "|\\*\\*fret|\\*\\*freq)$"
 	kern_pitch = "a+|b+|c+|d+|e+|f+|g+|A+|B+|C+|D+|E+|F+|G+"
-	pitch_pitch = "[A-G]"
-	Tonh_pitch = "Es|As|[A-HS]"
+	pitch_pitch = "[ABCDEFG]"
+	Tonh_pitch = "Es|As|[ABCDEFGHS]"
 	solfg_pitch = "do|re|mi|fa|sol|la|si"
 	octave_class = "[0-9]"
 	fret_index = 1
-	abs_tuning = "^\\*AT:[A-G][#b]?[0-9]+(" deviation ")?$"
+	abs_tuning = "^\\*AT:[ABCDEFG][#b]?[0-9]+(" deviation ")?$"
 	rel_tuning = "^\\*RT:" uftp "(," uftp ")*(:" uftp "(," uftp ")*)*$"
 	fret_tuning = "^\\*FT:" uftp "(," uftp ")*$"
 	#
@@ -639,7 +639,7 @@ function process_kern(data_token,  arrayc,j,semits,return_token,found\
 			if (match(arrayc[j],kern_pitch))
 				{
 				pitch = substr(arrayc[j],RSTART,1)
-				if (pitch ~ /[a-g]/)
+				if (pitch ~ /[abcdefg]/)
 					semits = kern_array[pitch]+(12*(RLENGTH-1))
 				else semits = kern_array[pitch]-(12*(RLENGTH-1))
 				sub(kern_pitch,SUBSEP,arrayc[j])

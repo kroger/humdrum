@@ -451,7 +451,7 @@ function process_kern(token,  pitch,semits,kern_dur,duration,dots,half,\
 	else
 		{
 		pitch = substr(token,RSTART,1)
-		if (pitch ~ /[a-g]/) semits = kern_array[pitch]+(12*(RLENGTH-1))
+		if (pitch ~ /[abcdefg]/) semits = kern_array[pitch]+(12*(RLENGTH-1))
 		else semits = kern_array[pitch]-(12*(RLENGTH-1))
 		#
 		# Next determine the value of any flats or sharps

@@ -72,8 +72,8 @@ BEGIN {
 	deviation = "[+-][1-9][0-9]*"
 	input_interps = "^(\\*\\*kern|\\*\\*pitch|\\*\\*Tonh|\\*\\*solfg)$"
 	kern_pitch = "a+|b+|c+|d+|e+|f+|g+|A+|B+|C+|D+|E+|F+|G+"
-	pitch_pitch = "[A-G]"
-	Tonh_pitch = "Es|As|[A-HS]"
+	pitch_pitch = "[ABCDEFG]"
+	Tonh_pitch = "Es|As|[ABCDEFGHS]"
 	solfg_pitch = "do|re|mi|fa|sol|la|si"
 	octave_class = "[^+-][0-9]"
 	options = ""
@@ -491,7 +491,7 @@ function process_kern(token    ,arraya,split_num,j,semits,note\
 			if (match(arraya[j],kern_pitch))
 				{
 				pitch = substr(arraya[j],RSTART,1)
-				if (pitch ~ /[a-g]/)
+				if (pitch ~ /[abcdefg]/)
 					semits = kern_array[pitch]+(12*(RLENGTH-1))
 				else
 					semits = kern_array[pitch]-(12*(RLENGTH-1))
@@ -1047,9 +1047,9 @@ function get_diatonic(last_pitch,this_pitch,last_semits,this_semits,\
 		{
 		pold = substr(last_pitch,1,1)
 		pnew = substr(this_pitch,1,1)
-		if (last_pitch ~ /[A-G]/) last_oc = length(last_pitch) * -1
+		if (last_pitch ~ /[ABCDEFG]/) last_oc = length(last_pitch) * -1
 		else last_oc = length(last_pitch) - 1
-		if (this_pitch ~ /[A-G]/) this_oc = length(this_pitch) * -1
+		if (this_pitch ~ /[ABCDEFG]/) this_oc = length(this_pitch) * -1
 		else this_oc = length(this_pitch) - 1
 		}
 	else

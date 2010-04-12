@@ -476,8 +476,6 @@ function process_echo(   i,j,one_match,match_found,terminate,spine_count\
 		print "!! Pattern found at line " \
 		      FNR - (buffer_length-pattern_start) " of file " file_name
 		if (past_interp[interp_tail] != "") print past_interp[interp_tail]
-		if (past_tand_interp[tand_interp_tail] != "") print past_tand_interp[tand_interp_tail]	# NEWLY ADDED
-		for (x in current_tand_interp) print current_tand_interp[x]	# NEWLY ADDED
 		#
 		# Print out only the data records that were matched by the pattern
 		# (may be less than pattern_length because of -x option)
@@ -601,7 +599,6 @@ function store_new_interps(      j)
 		# Store exclusive interpretations in current_interp[]
 		#
 		if ($j ~ /^\*\*/) current_interp[j] = $j
-		else if ($j ~ /^\*/) current_tand_interp[j] = $j	# NEWLY ADDED
 		}
 	}
 
@@ -653,8 +650,8 @@ function process_indicators(    i)
 			#
 			ins_array_pos(i+1)
 			path_indicator[i+1] = "*"
-			current_interp[i+1] = current_interp[i]	# Copy interpretations to the new spine.
-			current_tand_interp[i+1] = current_tand_interp[i]	# Copy tandem interpretations to the new spine.	# NEWLY ADDED.
+			current_interp[i+1] = current_interp[i]	# Copy interpretations
+											# to the new spine.
 			}
 		#
 		# If a spine-termination indicator occurred
@@ -708,7 +705,6 @@ function process_indicators(    i)
 			#
 			ins_array_pos(i+1)
 			current_interp[i+1] = ""
-			current_tand_interp[i+1] = ""	# NEWLY ADDED.
 			}
 		i++
 		}
@@ -725,7 +721,6 @@ function ins_array_pos(current_element,     j)
 		{
 		path_indicator[j] = path_indicator[j-1]
 		current_interp[j] = current_interp[j-1]	
-		current_tand_interp[j] = current_tand_interp[j-1]	# NEWLY ADDED.
 		}
 	path_indicator[current_element-1] = "*"	# (Avoid possibility of
 	path_indicator[current_element] = "*"	#  reprocessing the old spine.)
@@ -742,11 +737,9 @@ function del_array_pos(current_element,     j)
 		{
 		path_indicator[j] = path_indicator[j+1]
 		current_interp[j] = current_interp[j+1]
-		current_tand_interp[j] = current_tand_interp[j+1]	# NEWLY ADDED.
 		}
 	delete path_indicator[j]
 	delete current_interp[j]
-	delete current_tand_interp[j]
 	current_no_of_spines--
 	} 
 
@@ -772,9 +765,4 @@ function exchange_spines(    j,count,arraya,temp)
 	temp = current_interp[arraya[1]]
 	current_interp[arraya[1]] = current_interp[arraya[2]]
 	current_interp[arraya[2]] = temp
-
-	# Similarly, exchange tandem interpretations.	# NEWLY ADDED.
-	temp = current_tand_interp[arraya[1]]	# NEWLY ADDED.
-	current_tand_interp[arraya[1]] = current_interp[arraya[2]]	# NEWLY ADDED.
-	current_tand_interp[arraya[2]] = temp	# NEWLY ADDED.
 	}

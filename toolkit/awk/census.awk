@@ -443,7 +443,10 @@ function process_data(      i,j,multiple_count,voice_count,single,double\
 		# If the user selected the -k option and the current spine is
 		# a kern spine, collect data on it.
 		#
-		if (options ~ /k/ && current_interp[j] == "**kern")
+		# Craig changed && on following line to ||
+		# probably causes secondary bugs, but needed for 
+		# piping from PERL programs for some reason...
+		if (options ~ /k/ || current_interp[j] == "**kern")
 			{
 			current_voice_count = 0
 			#

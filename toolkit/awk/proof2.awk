@@ -672,7 +672,7 @@ function	find_meter( token )
 
 function	find_pitch( token, name )
 {
-	if (match ( token, /[A-Ga-g]+/ ))
+	if (match ( token, /[ABCDEFGabcdefg]+/ ))
 		name = substr ( token, RSTART, RLENGTH )
 	else
 		name = ""

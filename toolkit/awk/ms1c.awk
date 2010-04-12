@@ -18,7 +18,7 @@
 #
 {
 # Replace bars containing rests only with whole-measure rests ("mr;").
-if ($0 ~ /^[0-9][0-9]* [0-9][0-9]*:/ && $0 !~ /[a-gs]/) gsub(":.*",": mr;",$0)
+if ($0 ~ /^[0-9][0-9]* [0-9][0-9]*:/ && $0 !~ /[abcdefgs]/) gsub(":.*",": mr;",$0)
 # Store all of the input records.
 input[NR] = $0
 }

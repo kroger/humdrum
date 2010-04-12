@@ -67,7 +67,7 @@ if ($0 ~/^!/)
 		{
 		movement_number = $0
 		gsub("^!!!OMV: *","",movement_number)
-		gsub("[Mm]ov[[:lower:]]*[.]*","Mov.",movement_number) # Standardize to "Mov."
+		gsub("[Mm]ov[a-z]*[.]*","Mov.",movement_number) # Standardize to "Mov."
 		gsub("\.$","",movement_number)
 		next
 		}
@@ -140,7 +140,7 @@ if ($0 == "*")	{next}	# (Eliminate null interpretations.)
 if ($0 ~ /^\*[^\*]/)
 	{
 	# INSTRUMENT
-	if ($0 ~ /^\*I[^[:upper:]]/)
+	if ($0 ~ /^\*I[^A-Z]/)
 		{
 		if ($0 ~/^\*I"/)	# Literal instrument name takes precedent.
 			{
@@ -257,10 +257,10 @@ if ($0 ~ /^\*[^\*]/)
 		next
 		}
 	# KEYS
-	if ($0 ~/^\*[abcdefgABCDEFG][-#]*:/)
+	if ($0 ~/^\*[a-gA-G][-#]*:/)
 		{
-		if ($0 ~ /[ABCDEFG]/)	MODE = "major"
-		if ($0 ~ /[abcdefg]/)	MODE = "minor"
+		if ($0 ~ /[A-G]/)	MODE = "major"
+		if ($0 ~ /[a-g]/)	MODE = "minor"
 	
 		if (HEADER_PRINTED)
 			{
@@ -304,7 +304,7 @@ if ($0 ~/^=\|\|*:1$/)	# Watch for initial "repeat" barlines.
 	REPEATSTART = TRUE
 	next
 	}
-if ($0 ~/^=([0-9]+[[:lower:]]*)*$/)	next	# (The general case of an isolated barline.)
+if ($0 ~/^=([0-9]+[a-z]*)*$/)	next	# (The general case of an isolated barline.)
 
 ###############################################################################
 #                          Print the MUP file header.
@@ -610,14 +610,14 @@ if (OPTIONS ~/e/ || OPTIONS ~/U/)
 	n=split(duration_line,array,";")
 	gsub("^ *","",array[1])	# Eliminate leading blanks.
 	gsub(" .*","",array[1])	# Eliminate subsequent multiple-stops.
-	gsub("[abcdefgrs].*",";",array[1])	# Eliminate all but leading duration code.
+	gsub("[a-grs].*",";",array[1])	# Eliminate all but leading duration code.
 	duration_line = array[1]
 	for (i=2; i<=n; i++)
 		{
 		#if (array[i] ~ /with/) {i++; continue}	# Skip "with" "string".
 		gsub("^ *","",array[i])	# Eliminate leading blanks.
 		gsub(" .*","",array[i])	# Eliminate subsequent multiple-stops.
-		gsub("[abcdefgrs].*",";",array[i])	# Eliminate subsequent multiple-stops.
+		gsub("[a-grs].*",";",array[i])	# Eliminate subsequent multiple-stops.
 		#gsub("[^0-9.;]","",array[i])
 		duration_line = duration_line " " array[i]
 		}
@@ -673,7 +673,7 @@ else
 	# Numbered barlines.
 	else
 		{
-		gsub("[^0-9[:lower:]]","",$NF)
+		gsub("[^0-9a-z]","",$NF)
 		if (OPTIONS ~ /m/)
 			{
 			if ($NF != "") print ++bar_number "XXXbar"
@@ -880,11 +880,11 @@ function pad_measure(record,measure_duration,        temp)
 #
 function determine_pitch(token)
 	{
-	if (token ~ /[abcdefg]/) octave = 4
-	if (token ~ /[ABCDEFG]/) octave = 3
-	if (token ~ /[abcdefg][abcdefg]/)
+	if (token ~ /[a-g]/) octave = 4
+	if (token ~ /[A-G]/) octave = 3
+	if (token ~ /[a-g][a-g]/)
 		{
-		while (token ~ /[abcdefg][abcdefg]/)
+		while (token ~ /[a-g][a-g]/)
 			{
 			sub("aa","a",token)
 			sub("bb","b",token)
@@ -896,10 +896,10 @@ function determine_pitch(token)
 			octave++
 			}
 		}
-	if (token ~ /[ABCDEFG][ABCDEFG]/)
+	if (token ~ /[A-G][A-G]/)
 		{
 		octave = 3
-		while (token ~ /[ABCDEFG][ABCDEFG]/)
+		while (token ~ /[A-G][A-G]/)
 			{
 			sub("AA","A",token)
 			sub("BB","B",token)
@@ -953,7 +953,7 @@ function process_accidentals(value)
 		# Eliminate accidentals that occurred previously in the measure.
 		# Determine the type of modification for the current pitch.
 		subscript = value
-		gsub("[^ABCDEFGabcdefg#n-]","",subscript)
+		gsub("[^A-Ga-g#n-]","",subscript)
 		if (value ~ /#/) modification = gsub("#","",subscript) " #"
 		if (value ~ /-/) modification = gsub("-","",subscript) " &"
 		if (value ~ /n/) modification = gsub("n","",subscript) " n"
@@ -981,7 +981,7 @@ function process_accidentals(value)
 	else
 		{
 		subscript = value
-		gsub("[^ABCDEFGabcdefg]","",subscript)
+		gsub("[^A-Ga-g]","",subscript)
 		if (bar_accident[subscript] ~ /[#&]/)
 			{
 			value = value "n"

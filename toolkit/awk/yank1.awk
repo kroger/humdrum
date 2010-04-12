@@ -90,10 +90,13 @@ if (FNR == 1)
 	# Note that a different temporary file must be used for every
 	# different input file (otherwise EOF is always true)
 	#
-	system("$AWK_VER 'END{print NR}' " FILENAME " > $TMPDIR/linenum" ++i)
-	"cat $TMPDIR/linenum" i | getline no_of_lines
-	no_of_lines = no_of_lines + 0
-	system("rm $TMPDIR/linenum" i)
+	#system("$AWK_VER 'END{print NR}' " FILENAME " > $TMPDIR/linenum" ++i)
+	#"cat $TMPDIR/linenum" i | getline no_of_lines
+	#no_of_lines = no_of_lines + 0
+	#system("rm $TMPDIR/linenum" i)
+	  cmd = "$AWK_VER 'END{print NR}' " FILENAME
+	  cmd | getline no_of_lines
+	  close(cmd)
 	#
 	# Determine the lines of the current file to print
 	#

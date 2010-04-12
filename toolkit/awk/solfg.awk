@@ -96,18 +96,18 @@ BEGIN {
 	input_interps = "^(\\*\\*specC|\\*\\*pitch|\\*\\*Tonh|\\*\\*kern"\
 				 "|\\*\\*semits|\\*\\*cents|\\*\\*MIDI|\\*\\*fret"\
 				 "|\\*\\*freq|\\*\\*degree)$"
-	key_reg = "^\\*(([A-Ga-g](#?|-?))|(\\?)|(X)|(Cx)|(cx)|(Dx)):$"
-	pc_key_sig = "^\\*k\\[([a-g]((n)|(#)|(x+(#?))|(-)+))*\\]$"
+	key_reg = "^\\*(([ABCDEFGabcdefg](#?|-?))|(\\?)|(X)|(Cx)|(cx)|(Dx)):$"
+	pc_key_sig = "^\\*k\\[([abcdefg]((n)|(#)|(x+(#?))|(-)+))*\\]$"
 	repetition = "(a.*a)|(b.*b)|(c.*c)|(d.*d)|(e.*e)|(f.*f)|(g.*g)"
-	ph_key_sig = "^\\*K\\[([A-G][1-9]((n)|(#)|(x+(#?))|(-)+))*\\]$"
-	pc_note = "[a-g]((n)|(#)|(x+#?)|(-+))"
-	pitch_reg = "[a-g]"
-	ph_note = "[A-G][1-9]((n)|(#)|(x+#?)|(-+))"
-	pitch_class = "[A-G][1-9]"
+	ph_key_sig = "^\\*K\\[([ABCDEFG][1-9]((n)|(#)|(x+(#?))|(-)+))*\\]$"
+	pc_note = "[abcdefg]((n)|(#)|(x+#?)|(-+))"
+	pitch_reg = "[abcdefg]"
+	ph_note = "[ABCDEFG][1-9]((n)|(#)|(x+#?)|(-+))"
+	pitch_class = "[ABCDEFG][1-9]"
 	octave_class = "[0-9]"
 	kern_pitch = "a+|b+|c+|d+|e+|f+|g+|A+|B+|C+|D+|E+|F+|G+"
-	pitch_pitch = "[A-G]"
-	abs_tuning = "^\\*AT:[A-G][#b]?[0-9]+(" deviation ")?$"
+	pitch_pitch = "[ABCDEFG]"
+	abs_tuning = "^\\*AT:[ABCDEFG][#b]?[0-9]+(" deviation ")?$"
 	rel_tuning = "^\\*RT:" uftp "(," uftp ")*(:" uftp "(," uftp ")*)*$"
 	fret_tuning = "^\\*FT:" uftp "(," uftp ")*$"
 	ph_index = pc_index = fret_index = 1
@@ -1572,7 +1572,7 @@ function process_kern(data_token,  return_token,arrayc,j,split_num,not_found,
 			if (match(arrayc[j],kern_pitch))
 				{
 				current_note[2] = substr(arrayc[j],RSTART,1)
-				if (current_note[2] ~ /[a-g]/)
+				if (current_note[2] ~ /[abcdefg]/)
 					{
 					current_note[2] = to_upper(current_note[2])
 					current_note[1] = 3 + RLENGTH

@@ -143,7 +143,7 @@ if ($0 ~ /^$/)  # Blank lines separate individual pieces.
 	meter_classification = ""
 	next         # Eliminate empty lines.
 	}
-if ($0 ~/^[A-Z]+$/)  # Single upper-case words appear to indicate the
+if ($0 ~/^[[:upper:]]+$/)  # Single upper-case words appear to indicate the
 	{            # type of database.
 	end_comments[lines++] = "!!!ONB: ESAC (Essen Associative Code) Database: " $0
 	next
@@ -187,14 +187,14 @@ if ($0 ~/^ETH/)  # The "ETH" keyword denotes the "ethnicity" of the piece.
 	print $0
 	next
 	}
-if ($0 ~/^F[^A-Z]/)  # The "F" keyword denotes the database name to which
+if ($0 ~/^F[^[:upper:]]/)  # The "F" keyword denotes the database name to which
 	{         # the piece belongs.
 	gsub("^F\\[","",$0)
 	single_record = gsub("\]$","",$0)
 	end_comments[lines++] = "!!!ONB: ESAC (Essen Associative Code) Database: " $0
 	next
 	}
-if ($0 ~/^FA[^A-Z]/)  # The "FA" keyword denotes unknown information.
+if ($0 ~/^FA[^[:upper:]]/)  # The "FA" keyword denotes unknown information.
 	{
 	gsub("^FA\\[","!! ",$0)
 	single_record = gsub("\]$","",$0)
@@ -368,7 +368,7 @@ if ($0 ~/^TTR/)  # The "TTR" keyword denotes unknown information.
 	print $0
 	next
 	}
-if ($0 ~/^ZZ[^A-Z]/)  # The "ZZ" keyword denotes unknown information.
+if ($0 ~/^ZZ[^[:upper:]]/)  # The "ZZ" keyword denotes unknown information.
 	{
 	gsub("^ZZ\\[","!!ZZ ",$0)
 	single_record = gsub("\]$","",$0)

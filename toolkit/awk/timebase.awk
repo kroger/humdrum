@@ -406,11 +406,12 @@ function find_duration(token,    duration,arraya)
 		#
 		# Determine duration for all notes except breve
 		#
-		if (duration != "0") proportion = 1 / duration+0
+		if ((duration != "0")&&(duration != "00")) {proportion = 1 / duration+0}
 		#
 		# Assign breve duration
 		#
-		else proportion = 2
+		if (duration == "0") { proportion = 2}
+		if (duration == "00") {proportion = 4}
 		half = proportion / 2
 		#
 		# Change duration according to number of dots

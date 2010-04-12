@@ -14,7 +14,7 @@ BEGIN	{
 	type[05] = open_tie             = "\\[";        replace[05] = "["
 	type[06] = duration             = "[0-9]+";     replace[06] = ""
 	type[07] = augmentation_dot     = "\\.+";       replace[07] = ""
-	type[08] = pitch_or_rest        = "[a-gA-Gr]+"; replace[08] = ""
+	type[08] = pitch_or_rest        = "[abcdefgABCDEFGr]+"; replace[08] = ""
 	type[09] = sharp                = "#+";         replace[09] = ""
 	type[10] = flat                 = "-+";         replace[10] = ""
 	type[11] = natural              = "n";          replace[11] = "n"

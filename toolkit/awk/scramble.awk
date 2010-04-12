@@ -8,7 +8,6 @@
 # June 7/94	Tim Racinsky	Modified to work with getopts
 # July 20/94	Tim Racinsky	Added -r, -t, and -m options
 # March 23/95	David Huron	Fixed seeding of random numbers.
-# Dec 5/00	David Huron	Renamed temporary file using process ID
 #
 # 	The purpose of this program is to randomize (or scramble) the order of
 # data records within a humdrum file.  Only data records are scrambled.
@@ -61,8 +60,8 @@ BEGIN {
 	#
 	if (options ~ /r/)
 		{
-		"echo $TMPDIR/scr001.$$" | getline output_file
-		close("echo $TMPDIR/scr001.$$")
+		"echo $TMPDIR/scr001" | getline output_file
+		close("echo $TMPDIR/scr001")
 		printf("") > output_file
 		}
 	}

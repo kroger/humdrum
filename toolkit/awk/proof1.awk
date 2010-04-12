@@ -74,15 +74,15 @@ BEGIN {
 	tempo_interp = "^\\*MM((" question_mark ")|(" number ")|(" range ")"\
 				"|(" words "))$"
 	meter_sig = "^\\*M(([1-9]+((\\+)([1-9]+))*(\\/)([0-9]+)(\\.)*)|(\\?)|(X))$"
-	KEY = "^\\*(([A-Ga-g](#?|-?))|(\\?)|(X)|(Cx)|(cx)|(Dx)):$"
-#	PC_KEY_SIGNATURE = "^\\*k\\[([a-g]((n)|(#)|(x+(#?))|(-)+))*\\]$"
-	PC_KEY_SIGNATURE = "^\\*k\\[([a-g]((n)|(#)+|(-)+))*\\]$"
-	PH_KEY_SIGNATURE = "^\\*K\\[([A-G][1-9]((n)|(#)|(x+(#?))|(-)+))*\\]$"
-#	KEY = "^\\*(([A-Ga-g](((x)*(#)?)|(-+)))|(\\?)|(X)):$"
-#	PC_KEY_SIGNATURE = "^\\*k\\[([a-g]((n)|(#)|(x+(#?))|(-)+))*\\]$"
-#	PH_KEY_SIGNATURE = "^\\*K\\[([A-G][1-9]((n)|(#)|(x+(#?))|(-)+))*\\]$"
+	KEY = "^\\*(([ABCDEFGabcdefg](#?|-?))|(\\?)|(X)|(Cx)|(cx)|(Dx)):$"
+#	PC_KEY_SIGNATURE = "^\\*k\\[([abcdefg]((n)|(#)|(x+(#?))|(-)+))*\\]$"
+	PC_KEY_SIGNATURE = "^\\*k\\[([abcdefg]((n)|(#)+|(-)+))*\\]$"
+	PH_KEY_SIGNATURE = "^\\*K\\[([ABCDEFG][1-9]((n)|(#)|(x+(#?))|(-)+))*\\]$"
+#	KEY = "^\\*(([ABCDEFGabcdefg](((x)*(#)?)|(-+)))|(\\?)|(X)):$"
+#	PC_KEY_SIGNATURE = "^\\*k\\[([abcdefg]((n)|(#)|(x+(#?))|(-)+))*\\]$"
+#	PH_KEY_SIGNATURE = "^\\*K\\[([ABCDEFG][1-9]((n)|(#)|(x+(#?))|(-)+))*\\]$"
 	REPETITION = "(a.*a)|(b.*b)|(c.*c)|(d.*d)|(e.*e)|(f.*f)|(g.*g)"
-	SINGLEBAR = "^=([0-9]+[a-z]?)?;?(:?[|!'`\"]+:?)?-?@?$"
+	SINGLEBAR = "^=([0-9]+[[:lower:]]?)?;?(:?[|!'`\"]+:?)?-?@?$"
 	DOUBLEBAR = "^==;?(:?[|!'`\"]+)?-?@?$"
 
 	###########################################################################
@@ -303,7 +303,7 @@ BEGIN {
 	
 			if ($0 ~ /==/) next
 
-			gsub (/[^0-9a-z\t]/, "" )
+			gsub (/[^0-9[:lower:]\t]/, "" )
 	
 			#####################################################
 			# Checks for barline numbers out of sequence.
@@ -326,10 +326,10 @@ BEGIN {
 						#  E:     1z                   2
 						#  F:     1z                   2a
 
-						if (current_bar_no !~/[a-z]/)	# Process purely numeric current bars.
+						if (current_bar_no !~/[[:lower:]]/)	# Process purely numeric current bars.
 						{
 							# CASE A:
-							if (previous_bar_no !~ /[a-z]/)
+							if (previous_bar_no !~ /[[:lower:]]/)
 							{
 								if (current_bar_no != previous_bar_no+1 && options !~ /w/)
 									print "proof: Warning: Measure " current_bar_no ", may be out"\
@@ -340,7 +340,7 @@ BEGIN {
 							{
 								# CASE E:
 								previous_number_temp = previous_bar_no
-								gsub("[a-z]","",previous_number_temp)
+								gsub("[[:lower:]]","",previous_number_temp)
 								if (current_bar_no == previous_number_temp+1) {}
 								else
 								{
@@ -352,13 +352,13 @@ BEGIN {
 						else	# Process mixed alphabetic/numeric bar numbers.
 						{
 
-							if (previous_bar_no !~ /[a-z]/)
+							if (previous_bar_no !~ /[[:lower:]]/)
 							{
 								current_number_temp = current_bar_no
-								gsub("[a-z]","",current_number_temp)
+								gsub("[[:lower:]]","",current_number_temp)
 
 								previous_number_temp = previous_bar_no
-								gsub("[a-z]","",previous_number_temp)
+								gsub("[[:lower:]]","",previous_number_temp)
 
 								previous_alpha_temp = previous_bar_no
 								gsub("[0-9]","",previous_alpha_temp)

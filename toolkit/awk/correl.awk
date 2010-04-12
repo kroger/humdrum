@@ -6,7 +6,6 @@
 # Modifications:
 #   Date:      Programmer:    Description:
 # 1995 May 29  David Huron    Fixed divide by zero when input values are sparse.
-# 1996 Sept.   Paul von Hippel Added ability to handle exponent input notation.
 #
 # The purpose of this program is to calculate the numerical 
 # correlation between two spines.

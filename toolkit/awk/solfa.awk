@@ -74,12 +74,12 @@ BEGIN {
 	cont_tie_reg = "\\]|_"
 	indicators = "^(\\*\\+|\\*\\-|\\*\\^|\\*v|\\*x)$"
 	input_interps = "^(\\*\\*pitch|\\*\\*Tonh|\\*\\*solfg|\\*\\*kern)$"
-	key_reg = "^\\*(([A-Ga-g](#?|-?))|(\\?)|(X)|(Cx)|(cx)|(Dx)):$"
-	pc_key_sig = "^\\*k\\[([a-g]((n)|(#)|(x+(#?))|(-)+))*\\]$"
-	ph_key_sig = "^\\*K\\[([A-G][1-9]((n)|(#)|(x+(#?))|(-)+))*\\]$"
+	key_reg = "^\\*(([ABCDEFGabcdefg](#?|-?))|(\\?)|(X)|(Cx)|(cx)|(Dx)):$"
+	pc_key_sig = "^\\*k\\[([abcdefg]((n)|(#)|(x+(#?))|(-)+))*\\]$"
+	ph_key_sig = "^\\*K\\[([ABCDEFG][1-9]((n)|(#)|(x+(#?))|(-)+))*\\]$"
 	kern_pitch = "a+|b+|c+|d+|e+|f+|g+|A+|B+|C+|D+|E+|F+|G+"
-	pitch_pitch = "[A-G]"
-	Tonh_pitch = "Es|As|[A-HS]"
+	pitch_pitch = "[ABCDEFG]"
+	Tonh_pitch = "Es|As|[ABCDEFGHS]"
 	solfg_pitch = "do|re|mi|fa|sol|la|si"
 	octave_class = "[0-9]"
 	#
@@ -352,7 +352,7 @@ function store_new_interps(      j,interp_line)
 #
 function min_to_maj(this_key)
 	{
-	if (this_key ~ /[a-g]/)
+	if (this_key ~ /[abcdefg]/)
 		{
 		sub(/a/,"A",this_key)
 		sub(/b/,"B",this_key)
@@ -934,7 +934,7 @@ function process_kern(data_token,position,  arrayd,j,return_token,found,new\
 			if (match(arrayd[j],kern_pitch))
 				{
 				current_note[1] = substr(arrayd[j],RSTART,1)
-				if (current_note[1] ~ /[a-g]/)
+				if (current_note[1] ~ /[abcdefg]/)
 					{
 					current_note[3] = RLENGTH + 3
 					current_note[2] \

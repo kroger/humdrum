@@ -73,7 +73,7 @@ BEGIN {
 	close("echo $CON")
 
 	bar = 0
-	notnote = "[^A-Ga-g]+"
+	notnote = "[^ABCDEFGabcdefg]+"
 	ornaments = "[mMwWtTOS]"
 	accidentals = "[#n-]"
 	ties = "[][_]"
@@ -539,11 +539,11 @@ function exchange_spines(    j,count,arraya,temp)
 
 function	check_pitch( token, num, found )
 {
-	if ( match ( token, /[A-Ga-g]/ ))
+	if ( match ( token, /[ABCDEFGabcdefg]/ ))
 	{
 		name = substr ( token, RSTART, 1 )
 		gsub ( name, "", token )
-		if ( token ~ /[A-Ga-g]/ )
+		if ( token ~ /[ABCDEFGabcdefg]/ )
 		{
 			print "proof: Error: Incorrect pitch specification in spine "\
 				  num ", line " FNR ", \"" $num "\""
@@ -581,7 +581,7 @@ function	check_accidentals( token, num )
 	if ( match ( token, accidentals ))
 	{
 		acc_start = RSTART
-		match ( token, /[A-Ga-g]+/ )
+		match ( token, /[ABCDEFGabcdefg]+/ )
 		note_start = RSTART
 		if (note_start > acc_start)
 		{
@@ -1070,7 +1070,7 @@ function check_markings( token, num, name )
 			print "proof: Error: Only one arpeggiation designator (:) permitted in data token."\
 				"  Spine " num ", line " FNR ", \"" $num "\""
 		}
-		num = gsub ( "\~", "\~", token )
+		num = gsub ( "~", "~", token )
 		if (num > 1)
 		{
 			print "proof: Error: Only one tenuto mark (~) permitted in data token."\
@@ -1085,10 +1085,10 @@ function check_markings( token, num, name )
 		num = gsub ( "\\^", "\\^", token )
 		if (num > 1)
 		{
-			print "proof: Error: Only one accent mark (\^) permitted in data token."\
+			print "proof: Error: Only one accent mark (^) permitted in data token."\
 				"  Spine " num ", line " FNR ", \"" $num "\""
 		}
-		num = gsub ( "\'", "\'", token )
+		num = gsub ( "'", "'", token )
 		if (num > 1)
 		{
 			print "proof: Error: Only one staccato (') permitted in data token."\
@@ -1141,7 +1141,7 @@ function check_markings( token, num, name )
 
 function	find_pitch( token, name )
 {
-	if (match ( token, /[A-Ga-g]+/ ))
+	if (match ( token, /[ABCDEFGabcdefg]+/ ))
 		name = substr ( token, RSTART, RLENGTH )
 	else
 		name = ""

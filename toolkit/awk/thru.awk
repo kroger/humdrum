@@ -68,7 +68,7 @@ BEGIN {
 	tandem_interp = "([vx+^-][^\t]+)|([^*vx+\t^-][^\t]*)"
 	tandem_record = "^\\*(" tandem_interp ")?(\t\\*(" tandem_interp ")?)*$"
 	spine_terminate = "^\\*-(\t\\*-)*$"
-	s_label = "[A-Za-z0-9 _+.#@~-]"
+	s_label = "[[:alnum:] _+.#@~-]"
 	section_label_name = "(^|\t)\\*>" s_label "+($|\t)"
 	expansion_list_name="(^|\t)\\*>" s_label "*\\[" s_label "+(," s_label "+)*\\](\t|$)"
 	thru_record = "(^|\t)\\*thru(\t|$)"
@@ -305,8 +305,12 @@ function process_section_label(   good_record,label)
 		#
 		if (!(label in files))
 			{
-			"echo $TMPDIR/thru" section_count | getline output_file
-			close("echo $TMPDIR/thru" section_count)
+			#"echo $TMPDIR/thru" section_count | getline output_file
+			#close("echo $TMPDIR/thru" section_count)
+			cmd = "echo $TMPDIR/thru-$$-" section_count
+			cmd | getline output_file
+			close(cmd)
+
 			files[label] = output_file
 			section_count += 1
 			storing = TRUE

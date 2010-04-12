@@ -109,16 +109,17 @@ if (FNR == 1)
 	# Use the program 'findpair.awk' to find all pairs of regular
 	# expressions in the current input file
 	#
-	system("$AWK_VER -f ${HUMDRUM}/bin/findpair.awk '" REGEXP1 "' '" REGEXP2 "' " FILENAME " > $TMPDIR/temp" ++i)
+	("echo $TMPDIR/temp-$$-" ++i) | getline tmpname
+	system("$AWK_VER -f ${HUMDRUM}/bin/findpair.awk '" REGEXP1 "' '" REGEXP2 "' " FILENAME " > " tmpname)
 	#
 	# Store the numbers in the array possible_lines
 	#
-	while ("cat $TMPDIR/temp" i | getline line_number > 0)
+	while (("cat " tmpname) | getline line_number > 0)
 		{
 		possible_lines[line_number] = ""
 		max_number++
 		}
-	system("rm $TMPDIR/temp" i)
+	system("rm " tmpname)
 	#
 	# If there are no occurrences of REGEXP in the current file, print error
 	#

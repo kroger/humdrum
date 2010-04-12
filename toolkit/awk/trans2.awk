@@ -74,11 +74,11 @@ BEGIN {
 	indicators = "^(\\*\\+|\\*\\-|\\*\\^|\\*v|\\*x)$"
 	input_interps = "^(\\*\\*kern|\\*\\*pitch|\\*\\*Tonh|\\*\\*solfg)$"
 	kern_pitch = "a+|b+|c+|d+|e+|f+|g+|A+|B+|C+|D+|E+|F+|G+"
-	kern_pitch_token = "[a-gA-G]+[-#n]*"
-	pc_key_sig = "^\\*k\\[([a-g]((n)|(#)|(x+(#?))|(-)+))*\\]$"
-	ph_key_sig = "^\\*K\\[([A-G]((n)|(#)|(x+(#?))|(-)+)*[1-9])*\\]$"
-	pitch_pitch = "[A-G]"
-	Tonh_pitch = "Es|As|[A-HS]"
+	kern_pitch_token = "[abcdefgABCDEFG]+[-#n]*"
+	pc_key_sig = "^\\*k\\[([abcdefg]((n)|(#)|(x+(#?))|(-)+))*\\]$"
+	ph_key_sig = "^\\*K\\[([ABCDEFG]((n)|(#)|(x+(#?))|(-)+)*[1-9])*\\]$"
+	pitch_pitch = "[ABCDEFG]"
+	Tonh_pitch = "Es|As|[ABCDEFGHS]"
 	solfg_pitch = "do|re|mi|fa|sol|la|si"
 	octave_class = "[0-9]"
 	null_interps = "^\\*(	\\*)*$"
@@ -497,7 +497,7 @@ function process_kern(data_token,  arraya,j,return_token,found,split_num,pitch)
 			if (match(arraya[j],kern_pitch))
 				{
 				pitch = substr(arraya[j],RSTART,1)
-				if (pitch ~ /[a-g]/)
+				if (pitch ~ /[abcdefg]/)
 					{
 					current_note[2] = kern_array[pitch]+(12*(RLENGTH-1))
 					current_note[4] = 3 + RLENGTH

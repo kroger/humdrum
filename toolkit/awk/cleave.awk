@@ -118,12 +118,14 @@ function parse_command()
 		if (delim_reg ~ /\]/)
 			{
 			gsub(/]/,"",delim_reg)
-			delim_reg = "\]" delim_reg
+			#delim_reg = "\]" delim_reg
+			delim_reg = "]" delim_reg
 			}
 		if (delim_reg ~ /\^/)
 			{
 			gsub(/\^/,"",delim_reg)
-			delim_reg = delim_reg "\^"
+			#delim_reg = delim_reg "\^"
+			delim_reg = delim_reg "^"
 			}
 		}
 	set_input_array(ARGV[4])

@@ -33,7 +33,7 @@ if (record ~ / /)
 	transfer = ""
 	for (i=1; i<=num; i++)
 		{
-		gsub("[0-9.A-Ga-g#n-]","",token[i])
+		gsub("[0-9.ABCDEFGabcdefg#n-]","",token[i])
 		if (i > 1 && length(token[i]) == 0) continue
 		if (token[i] == token[1]) continue
 		else transfer = transfer token[i]
@@ -46,7 +46,7 @@ if (record ~ / /)
 		{
 		# Eliminate everything but the pitch and
 		# accidental information.
-		gsub("[^A-Ga-g#n-]","",token[i])
+		gsub("[^ABCDEFGabcdefg#n-]","",token[i])
 		record = record "+++" token[i]
 		}
 	}

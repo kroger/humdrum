@@ -80,11 +80,11 @@ BEGIN {
 	cont_tie_reg = "\\]|_"
 	indicators = "^(\\*\\+|\\*\\-|\\*\\^|\\*v|\\*x)$"
 	input_interps = "^(\\*\\*pitch|\\*\\*Tonh|\\*\\*solfg|\\*\\*kern)$"
-	key_reg = "^\\*(([A-Ga-g](#?|-?))|(\\?)|(X)|(Cx)|(cx)|(Dx)):$"
-	pc_key_sig = "^\\*k\\[([a-g]((n)|(#)|(x+(#?))|(-)+))*\\]$"
-	ph_key_sig = "^\\*K\\[([A-G][1-9]((n)|(#)|(x+(#?))|(-)+))*\\]$"
+	key_reg = "^\\*(([ABCDEFGabcdefg](#?|-?))|(\\?)|(X)|(Cx)|(cx)|(Dx)):$"
+	pc_key_sig = "^\\*k\\[([abcdefg]((n)|(#)|(x+(#?))|(-)+))*\\]$"
+	ph_key_sig = "^\\*K\\[([ABCDEFG][1-9]((n)|(#)|(x+(#?))|(-)+))*\\]$"
 	kern_pitch = "a+|b+|c+|d+|e+|f+|g+|A+|B+|C+|D+|E+|F+|G+"
-	pitch_pitch = "[A-G]"
+	pitch_pitch = "[ABCDEFG]"
 	solfg_pitch = "do|re|mi|fa|sol|la|si"
 	octave_class = "[0-9]"
 	#
@@ -967,7 +967,7 @@ function process_kern(data_token,position,  return_token,arrayd,j,split_num,\
 			if (match(arrayd[j],kern_pitch))
 				{
 				current_note[2] = substr(arrayd[j],RSTART,1)
-				if (current_note[2] ~ /[a-g]/)
+				if (current_note[2] ~ /[abcdefg]/)
 					{
 					current_note[2] = to_upper(current_note[2])
 					current_note[1] = 3 + RLENGTH

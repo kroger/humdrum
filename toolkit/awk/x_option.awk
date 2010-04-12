@@ -57,8 +57,8 @@ BEGIN {
 				 "|\\*\\*solfg|\\*\\*semits|\\*\\*cents|\\*\\*cbr"\
 				 "|\\*\\*barks|\\*\\*cocho|\\*\\*freq|\\*\\*pc)$"
 	kern_pitch = "a+|b+|c+|d+|e+|f+|g+|A+|B+|C+|D+|E+|F+|G+"
-	pitch_pitch = "[A-G]"
-	Tonh_pitch = "Es|As|[A-HS]"
+	pitch_pitch = "[ABCDEFG]"
+	Tonh_pitch = "Es|As|[ABCDEFGHS]"
 	solfg_pitch = "do|re|mi|fa|sol|la|si"
 	octave_class = "[0-9]"
 	pc_number = "(1[01])|[0-9]|([AB])|([TE])"

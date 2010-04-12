@@ -324,10 +324,10 @@ function initialize_arrays(    j)
 #
 function reset_arrays(    j)
 	{
-	for (j in previous_array) delete previous_array[j]
-	for (j in current_array) delete current_array[j]
-	for (j in previous_temp) delete previous_temp[j]
-	for (j in current_temp) delete current_temp[j]
+#	for (j in previous_array) delete previous_array[j]
+#	for (j in current_array) delete current_array[j]
+#	for (j in previous_temp) delete previous_temp[j]
+#	for (j in current_temp) delete current_temp[j]
 	}
 
 ######################################################################

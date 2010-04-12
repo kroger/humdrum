@@ -110,13 +110,14 @@ if (FNR == 1)
 	# Use the program 'find_reg.awk' in order to get a list of the number
 	# of data records between each set of regular expression records
 	#
-	system("$AWK_VER -f ${HUMDRUM}/bin/find_reg.awk '" REGEXP "' " FILENAME " > $TMPDIR/temp" ++i)
+	("echo $TMPDIR/temp-$$-" ++i) | getline tmpname
+   	system("$AWK_VER -f ${HUMDRUM}/bin/find_reg.awk '" REGEXP "' " FILENAME " > " tmpname)
 	#
 	# Store the values in the array number_of_lines
 	#
-	while ("cat $TMPDIR/temp" i | getline no_of_lines > 0)
+	while (("cat " tmpname) | getline no_of_lines > 0)
 		number_of_lines[++next_line] = no_of_lines
-	system("rm $TMPDIR/temp" i)
+	system("rm " tmpname)
 	#
 	# If there is more than one entry, then at least one record matches REGEXP
 	#

@@ -6,7 +6,6 @@
 # Modifications:
 #   Date:      Programmer:       Description:
 # June 7/94	Tim Racinsky	Modified parse_command to work with getopts
-# Aug 24/98	David Huron	Added -o option
 #
 #
 #	This program is called from ydelta.ksh and its purpose is to determine
@@ -37,7 +36,7 @@
 #  -current_no_of_spines:  Holds how many spines are currently active.
 #  -interpretation:  holds the target interpretation for the program to key
 #   on.  It is specified by the user.
-#  -options:  holds the 's' option and/or 'o' option if specified.
+#  -options:  holds the 's' option if specified.
 #  -reg_exp:  holds the regular expression for the 's' option if specified.
 #  -first_token:  holds the token in the first spine of a record that matches
 #   the regular expression for the 's' option if specified.
@@ -54,7 +53,7 @@
 #
 BEGIN {
 	USAGE="\nUSAGE: ydelta -h                   (Help Screen)\n       ydel"\
-		 "ta [-o] [-s reg_exp] -i interpretation [file ...]"
+		 "ta [-s reg_exp] -i interpretation [file ...]"
 	NUMBER = "[+-]?([0-9]+([.][0-9]+)?|[.][0-9]+)"
 	FS = OFS = "\t"
 	TRUE = 1; FALSE = 0
@@ -206,11 +205,7 @@ function parse_command()
 		exit
 		}
 	interpretation = ARGV[3]
-	if (ARGV[4] ~ "o")
-		{
-		options = options "o"
-		}
-	ARGV[1] = ARGV[2] = ARGV[3] = ARGV[4] = ""
+	ARGV[1] = ARGV[2] = ARGV[3] = ""
 	}
 
 ##############################################################
@@ -491,30 +486,16 @@ function process_data(     j,i,current_line,arrayb,sort_index)
 		#
 		if (sort_array[1] == ".") current_line = "."
 		#
-		# Otherwise, each element of the array should be output.
-		# If the -o option is specified then the first element
-		# should appear in square ([]) brackets -- otherwise
-		# the first element is omitted.
+		# Otherwise, each element of the array should be output with the first
+		# element appearing in square ([]) brackets.
 		#
 		else
 			{
-			if (options ~ /o/)
+			current_line = "[" sort_array[1] "]"
+			for (j = 2; j <= sort_index; j++)
 				{
-				current_line = "[" sort_array[1] "]"
-				for (j = 2; j <= sort_index; j++)
-					{
-					if (sort_array[j] == ".") break
-					current_line = current_line " " sort_array[j]
-					}
-				}
-			else
-				{
-				current_line = sort_array[2]
-				for (j = 3; j <= sort_index; j++)
-					{
-					if (sort_array[j] == ".") break
-					current_line = current_line " " sort_array[j]
-					}
+				if (sort_array[j] == ".") break
+				current_line = current_line " " sort_array[j]
 				}
 			}
 		}

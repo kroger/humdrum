@@ -39,10 +39,10 @@ if (!process && $0 !~/^\*MZ/)
 		gsub("00","0",$0)
 		first = second = $0
 		gsub("00","[0",first)
-		gsub("[^{(0A-Ga-g#-]","",first)
-		gsub("[^})0A-Ga-g#-]","",second)
+		gsub("[^{(0ABCDEFGabcdefg#-]","",first)
+		gsub("[^})0ABCDEFGabcdefg#-]","",second)
 		gsub("0","[&",first)
-		gsub("[A-Ga-g#-]+","&]",second)
+		gsub("[ABCDEFGabcdefg#-]+","&]",second)
 		print first
 		print second
 		}
@@ -73,10 +73,10 @@ else
 					gsub("00","0",$0)
 					first = second = $0
 					gsub("00","[0",first)
-					gsub("[^{(0A-Ga-g#-]","",first)
-					gsub("[^})0A-Ga-g#-]","",second)
+					gsub("[^{(0ABCDEFGabcdefg#-]","",first)
+					gsub("[^})0ABCDEFGabcdefg#-]","",second)
 					gsub("0","[&",first)
-					gsub("[A-Ga-g#-]+","&]",second)
+					gsub("[ABCDEFGabcdefg#-]+","&]",second)
 					record[lines++] = first
 					record[lines++] = second
 					}
@@ -116,10 +116,10 @@ else
 						gsub("00","0",$0)
 						first = second = $0
 						gsub("00","[0",first)
-						gsub("[^{(0A-Ga-g#-]","",first)
-						gsub("[^})0A-Ga-g#-]","",second)
+						gsub("[^{(0ABCDEFGabcdefg#-]","",first)
+						gsub("[^})0ABCDEFGabcdefg#-]","",second)
 						gsub("0","[&",first)
-						gsub("[A-Ga-g#-]+","&]",second)
+						gsub("[ABCDEFGabcdefg#-]+","&]",second)
 						record[lines++] = first
 						record[lines++] = second
 						}
