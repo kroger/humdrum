@@ -1,0 +1,72 @@
+#########################################################################
+#                                  DISS
+# Programmed by: Keith Mashinter        Date: 1995, January
+# Copyright (c) 1994, 1995 Keith Mashinter
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+#
+#
+#	This shell program receives input from the command line and after 
+# checking it, passes it to the program diss.awk.
+#
+FILENAME=""
+HELP=""
+FLAG=""
+STNDING=""
+USAGE1="USAGE: diss -h                 (Help Screen)"
+USAGE2="       diss [file ...]"
+#
+while getopts h arg
+do
+	case "$arg" in
+	h) 	HELP="ON";;
+     [?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit ;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If the help variable has been specified, print the help screen
+if [ -n "$HELP" ]
+then
+	if [ -f ${HUMDRUM}/bin/helpscrn/diss.hlp ]
+	then
+		cat ${HUMDRUM}/bin/helpscrn/diss.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' is allowed
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "diss: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ -z "$FILENAME" -a -n "$FLAG" ]
+then
+	exit
+fi	
+$AWK_VER -f ${HUMDRUM}/bin/diss.awk $FILENAME

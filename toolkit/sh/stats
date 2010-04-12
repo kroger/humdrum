@@ -1,0 +1,72 @@
+#########################################################################
+#                                  STATS
+# Programmed by: David Huron         Date: December, 1994
+# Copyright (c) 1993 David Huron
+#
+# Modifications:
+#   Date:      Programmer:       Description:
+#
+#
+#	This shell program receives input from the command line and after 
+# checking it, passes it to the program stats.awk.
+#
+FILENAME=""
+HELP=""
+FLAG=""
+STNDING=""
+USAGE1="USAGE: stats -h                 (Help Screen)"
+USAGE2="       stats [file ...]"
+#
+while getopts h arg
+do
+	case "$arg" in
+	h) 	HELP="ON";;
+     [?]) echo "" 1>&2
+		echo "$USAGE1" 1>&2
+		echo "$USAGE2" 1>&2
+		exit ;;
+	esac
+done
+shift `expr $OPTIND - 1`
+# If the help variable has been specified, print the help screen
+if [ -n "$HELP" ]
+then
+	if [ -f /home/dhuron/bin/stats.hlp ]
+	then
+		cat /home/dhuron/bin/stats.hlp
+	else
+		echo "No help available on this command."
+	fi
+	exit
+fi
+# Process any remaining filenames
+while [ "$#" -ne 0 ]
+do
+	# A '-' specifies standard input
+	if [ x"$1" = x- ]
+	then
+		# Only one '-' is allowed
+		if [ -z "$STNDIN" ]
+		then
+			FILENAME="$FILENAME $1"
+			STNDIN="ON"
+			shift
+		else
+			shift
+		fi
+	elif [ -f "$1" ]
+	then
+		FILENAME="$FILENAME $1"
+		shift
+	else
+		echo "stats: ERROR: File not found: $1" 1>&2
+		FLAG="ON"
+		shift
+	fi
+done	
+# If only invalid files specified, exit
+if [ -z "$FILENAME" -a -n "$FLAG" ]
+then
+	exit
+fi	
+$AWK_VER -f /usr/local/bin/stats.awk $FILENAME
