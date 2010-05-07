@@ -69,4 +69,4 @@ if [ -z "$FILENAME" -a -n "$FLAG" ]
 then
 	exit
 fi	
-$AWK_VER -f /usr/local/bin/stats.awk $FILENAME
+$AWK_VER -f ${HUMDRUM}/bin/stats.awk $FILENAME
