@@ -24,8 +24,8 @@
 class MuseRecord : public MuseRecordBasic {
    public:
                         MuseRecord                  (void);
-                        MuseRecord                  (const char* aLine);
-                        MuseRecord                  (const MuseRecord& aRecord);
+                        MuseRecord                  (char* aLine);
+                        MuseRecord                  (MuseRecord& aRecord);
                        ~MuseRecord                  ();
 
 
@@ -43,14 +43,18 @@ class MuseRecord : public MuseRecordBasic {
       char*            getPitchClass                (char* output);
       int              getAccidental                (void);
       char*            getAccidental                (char* output);
+      int              getBase40                    (void);
 
       // columns 6 -- 9: duration field information
-      char*            getDurationField             (char* output);
-      char*            getDuration                  (char* output);
-      int              getDuration                  (void);
+      char*            getTickDurationField         (char* output);
+      char*            getTickDuration              (char* output);
+      int              getTickDurationField         (void);
+      int              getLineTickDuration          (void);
+      int              getNoteTickDuration          (void);
       char*            getTie                       (char* output);
       int              getTie                       (void);
       int              tieQ                         (void);
+      int              getTicks                     (void);
 
       // columns 10 -- 12 ---> blank
 

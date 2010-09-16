@@ -159,6 +159,13 @@ int main(int argc, char** argv) {
          cout << "!!Key TRANSVAL = " << transval;
       }
    }
+
+   if (options.getBoolean("rotation")) {
+      // returns the base-12 pitch transposition for use in conjunction
+      // with the mkeyscape --rotate option
+      cout << (12-Convert::base40ToMidiNoteNumber(transval+2)%12) << endl;
+      exit(0);
+   }
 	    
    if (concertQ) {
       convertScore(infile, STYLE_CONCERT);
@@ -920,6 +927,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("I|instrument=b", "insert instrument code (*ITr) as well");
    opts.define("C|concert=b",    "transpose written score to concert pitch");
    opts.define("W|written=b",    "trans. concert pitch score to written score");
+   opts.define("rotation=b",     "display transposition in half-steps");
 
    opts.define("author=b",  "author of program"); 
    opts.define("version=b", "compilation info");
@@ -979,6 +987,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    }
 
    transval += 40 * octave;
+
 }
 
 
@@ -1790,7 +1799,7 @@ void removeDollarsFromString(Array<char>& buffer, int maxtrack) {
    }
 
    while (pre.search(buffer.getBase(), "\\$(-?\\d+)")) {
-      value2 = maxtrack - abs(strtol(pre.getSubmatch(1), NULL, 10));
+      value2 = maxtrack - (int)fabs(strtol(pre.getSubmatch(1), NULL, 10));
       sprintf(buf2, "%d", value2);
       pre.sar(buffer, "\\$-?\\d+", buf2);
    }
@@ -2076,4 +2085,4 @@ transpose -b -80 file.krn
 */
 
 
-// md5sum: 2c93658e59ed90255f78c9f5544d8a2a transpose.cpp [20091123]
+// md5sum: e92e0977d1f92f5fa48d3d3dc2bcacfb transpose.cpp [20100602]

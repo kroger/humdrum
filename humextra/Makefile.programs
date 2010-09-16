@@ -2,7 +2,7 @@
 ##
 ## Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 ## Creation Date: Sun Apr  3 15:34:28 PDT 2005
-## Last Modified: Thu Jun 18 13:24:31 PDT 2009
+## Last Modified: Wed Aug 25 14:29:18 PDT 2010
 ## Filename:      ...humextra/Makefile.programs
 ##
 ## Description:   This Makefile creates the Humdrum Extras library 
@@ -10,9 +10,10 @@
 ##                Also, gives basic guidelines of how to compile for Windows 
 ##                using MinGW.
 ##
-## To run this makefile, type (without quotes) "make -f Makefile.programs",
-## Although it is intended to be used the file "Makefile" which runs this
-## makefile with the command "make programs".  Note that you have to first
+## To run this makefile, type (without quotes) "make -f Makefile.programs"
+## (or "gmake -f Makefile.programs" on FreeBSD computers), although it 
+## is intended to be used the file "Makefile" which runs this makefile 
+## with the command "make programs".  Note that you have to first
 ## create the library file with the makefile "Makefile.library". 
 ##
 ## Without arguments, this makefile will compile all programs.
@@ -58,16 +59,21 @@ ARCH =
 ifeq ($(origin OSTYPE), undefined)
    ifeq ($(shell uname),Darwin)
       OSTYPE = OSXPC
-      ARCH = -m32 
+      # use the following to compile for 32-bit architecture on 64-bit comps:
+      #ARCH = -m32 -arch i386
    else 
       OSTYPE = LINUX
-      ARCH = -m32 
+      # use the following to compile for 32-bit architecture on 64-bit comps:
+      # (you will need 32-bit libraries in order to do this)
+      # ARCH = -m32 
    endif
 endif
 # Next if statement needed for some versions of make which already set OSTYPE:
 ifeq ($(OSTYPE),linux)
    OSTYPE = LINUX
-   ARCH = -m32 
+   # use the following to compile for 32-bit architecture on 64-bit comps:
+   # (you will need 32-bit libraries in order to do this)
+   # ARCH = -m32 
 endif
 
 # Cygwin (and MinGW?) adds the string ".exe" to the end of compiled programs.
@@ -153,6 +159,7 @@ PREFLAGS  = -O3 -Wall -I$(INCDIR) $(DEFINES)
 #PREFLAGS += -DOLDCPP
 
 # Add -static flag to compile without dynamics libraries for better portability:
+# (-static flag doesn't work well with gethostbyname() used in Humdrum parser)
 #PREFLAGS += -static
 
 POSTFLAGS ?= -L$(LIBDIR) -l$(LIBFILE)
@@ -265,9 +272,9 @@ endif
 # Programs which need the centerpoint XML library:
 ifeq ($(origin CENTERPOINT),undefined)
 bin/xml2hum:
-	@echo Skipping compilation of humplay since improv library not found.
+	@echo Skipping compilation of xml2hum since centerpoint library not found.
 xml2hum:
-	@echo Skipping compilation of humplay since improv library not found.
+	@echo Skipping compilation of xml2hum since centerpoint library not found.
 endif
 
 

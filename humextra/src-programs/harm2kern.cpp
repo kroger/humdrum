@@ -2,6 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Jul 27 11:57:21 PDT 2003
 // Last Modified: Thu Jul 31 22:00:31 PDT 2003
+// Last Modified: Sun May  2 22:26:31 PDT 2010 (added **recip rhythm spec.)
 // Filename:      ...sig/examples/all/harm2root.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/harm2root.cpp
 // Syntax:        C++; museinfo
@@ -10,6 +11,7 @@
 //
 
 #include "humdrum.h"
+#include "PerlRegularExpression.h"
 
 #include <string.h>
 #include <ctype.h>
@@ -28,14 +30,20 @@ void      printChordInfo    (const char* token,  int rootinterval,
 int       getInversion      (const char* token);
 int       getScaleDegree    (const char* harm);
 int       adjustKeyMode     (int keymode, int keyroot, const char* lastpart);
+int       getRecipField     (int line, HumdrumFile& infile, int recip);
+double    getRecipDuration  (HumdrumFile& infile, int line, int primarySpine);
+int       checkForKeyDesignation(HumdrumFile& infile, int line);
+int       checkForTimeSignature(HumdrumFile& infile, int line);
 
 // global variables
 Options   options;           // database for command-line arguments
 int       debugQ       = 0;  // used with --debug option
 int       appendQ      = 0;  // used with -a option
 int       octave       = 2;  // used with -o option
-int       rhythmQ      = 1;  // used with -R option
+int       rhythmQ      = 1;  // used with --RR option
 int       rootQ        = 1;  // used with -r option 
+int       recip        = -1; // used with -R option
+int       recipField   = -1; // used with -R option
 const char *instrument = ""; // used with -I option
 
 ///////////////////////////////////////////////////////////////////////////
@@ -127,6 +135,7 @@ void generateAnalysis(HumdrumFile& infile, Array<double>& durs) {
    int testpitch = 0;
    char buffer[128] = {0};
    int rindex = 0;
+   double rdur;
 
    for (i=0; i<infile.getNumLines(); i++) {
       if (appendQ) {
@@ -159,9 +168,13 @@ void generateAnalysis(HumdrumFile& infile, Array<double>& durs) {
                      }
                   } else {
                      // print entire chord
-                     if (durs.getSize() > 0) {
+                     if ((recipField <= 0) && (durs.getSize() > 0)) {
                         printChordInfo(infile[i][j], rootinterval, keyroot, 
                            keymode, durs[rindex++]);
+                     } else if (recipField > 0) { 
+                        rdur = getRecipDuration(infile, i, recipField);
+                        printChordInfo(infile[i][j], rootinterval, keyroot, 
+                           keymode, rdur);
                      } else {
                         printChordInfo(infile[i][j], rootinterval, keyroot, 
                            keymode, -1);
@@ -190,6 +203,9 @@ void generateAnalysis(HumdrumFile& infile, Array<double>& durs) {
             } else {
                cout << "**kern";
             }
+	    if (recip >= 0) {
+               recipField = getRecipField(i, infile, recip);
+            }
          } else if (strncmp(infile[i][0], "*I", 2) == 0) {
             if (instrument[0] == '\0') {
                cout << "*";
@@ -209,7 +225,14 @@ void generateAnalysis(HumdrumFile& infile, Array<double>& durs) {
                cout << infile[i][0];
             }
          } else {
-            cout << "*";
+            int status = 0;
+            status = checkForKeyDesignation(infile, i);
+            if (status == 0) {
+               status = checkForTimeSignature(infile, i);
+            } 
+            if (status == 0) {
+               cout << "*";
+            }
          }
       } else if (infile[i].isMeasure()) {
          if (appendQ) {
@@ -232,6 +255,124 @@ void generateAnalysis(HumdrumFile& infile, Array<double>& durs) {
          cout << "\n";
       }
    }
+}
+
+
+
+//////////////////////////////
+//
+// checkForKeyDesignation -- look for a key designation on the current
+//   line, and echo it in the output spine.
+//
+
+int checkForKeyDesignation(HumdrumFile& infile, int line) {
+   if (!infile[line].isInterpretation()) {
+      return 0;
+   }
+   PerlRegularExpression pre;
+   int j;
+   for (j=0; j<infile[line].getFieldCount(); j++) {
+      if (pre.search(infile[line][j], "^\\*[A-G]([#-]*):", "i")) {
+         cout << infile[line][j];
+         return 1;
+      }
+   }
+
+   return 0;
+}
+
+
+
+//////////////////////////////
+//
+// checkForTimeSignature -- look for a time signature on the current
+//   line in the input **recip data if it exists, and echo it in 
+//   the output spine.
+//
+
+int checkForTimeSignature(HumdrumFile& infile, int line) {
+   if (!infile[line].isInterpretation()) {
+      return 0;
+   }
+   if (recipField <= 0) {
+      return 0;
+   }
+
+   PerlRegularExpression pre;
+   int j;
+   for (j=0; j<infile[line].getFieldCount(); j++) {
+      if (recipField != infile[line].getPrimaryTrack(j)) {
+         continue;
+      }
+      if (pre.search(infile[line][j], "^\\*M\\d+/\\d+$")) {
+         cout << infile[line][j];
+         return 1;
+      }
+   }
+
+   return 0;
+}
+
+
+
+//////////////////////////////
+//
+// getRecipDuration -- 
+//
+
+double getRecipDuration(HumdrumFile& infile, int line, int primarySpine) {
+   int ii, jj;
+   int j;
+   for (j=0; j<infile[line].getFieldCount(); j++) {
+      if (primarySpine != infile[line].getPrimaryTrack(j)) {
+         continue;
+      }
+      if (!infile[line].isExInterp(j, "**recip")) {
+         // maybe also allow **kern spines to define rhythm here someday.
+         return -1;
+      }
+      if (strcmp(infile[line][j], ".") == 0) {
+         ii = infile[line].getDotLine(j);
+         jj = infile[line].getDotSpine(j);
+      } else {
+         ii = line;
+         jj = j;
+      }
+      return Convert::kernToDuration(infile[ii][jj]);
+   }
+
+   return -1.0;
+}
+
+
+
+//////////////////////////////
+//
+// getRecipField -- get the primary spine number of the nth (offset from 1)
+//     **recip spine from left to right in the file.
+//
+
+int getRecipField(int line, HumdrumFile& infile, int recip) {
+   if (recip < 1) {
+      return -1;
+   }
+
+   int output = -1;
+   int counter = 0;
+   int j;
+   for (j=0; j<infile[line].getFieldCount(); j++) {
+      if (infile[line].isExInterp(j, "**recip")) {
+         counter++;
+         if (counter == recip) {
+            return j+1;
+         }
+      }
+   }
+   if (counter > 0) {
+      output = 1;
+   }
+ 
+   return output;
 }
 
 
@@ -290,7 +431,6 @@ void getChordPitches(Array<int>& pitches, const char* token, int root,
 
    int oct = octave + 2;
    int inversion = getInversion(token);
-
 
    pitches.setSize(0);
 
@@ -390,9 +530,12 @@ void getChordPitches(Array<int>& pitches, const char* token, int root,
       // major key
       int degrees[7] = {0, 6, 12, 17, 23, 29, 35};
       pitches[3] = (keyroot + degrees[seventhdegree]) % 40 + oct * 40;
-      if (base % 40 > 25) {
+      if (pitches[3] - base < 25) {
          pitches[3] += 40;
       } 
+      //if (base % 40 > 25) {
+      //   pitches[3] += 40;
+      //}
    } else {
       // minor key (harmonic minor used)
       int degrees[7] = {0, 6, 11, 17, 23, 28, 35};
@@ -590,12 +733,13 @@ int makeRootInterval(const char* harmdata, int keyroot, int keymode) {
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
-   opts.define("a|append=b",       "append analysis data to input");
-   opts.define("o|octave=i:2",     "octave to output root pitch");
-   opts.define("R|no-rhythm=b",    "don't try to do any rhythm analysis");
-   opts.define("r|root=b",         "extract only root information");
+   opts.define("a|append=b",         "append analysis data to input");
+   opts.define("o|octave=i:2",       "octave to output root pitch");
+   opts.define("RR|no-rhythm=b",     "don't try to do any rhythm analysis");
+   opts.define("R|recip=i:-1",       "use **recip column for rhythm");
+   opts.define("r|root=b",           "extract only root information");
    opts.define("b|bass|bass-line=b", "extract only bass-line information");
-   opts.define("I|instrument=s",   "instrument to play music on");
+   opts.define("I|instrument=s",     "instrument to play music on");
 
    opts.define("debug=b",          "trace input parsing");   
    opts.define("author=b",         "author of the program");   
@@ -628,6 +772,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    octave     =  opts.getInteger("octave");
    rootQ      =  opts.getBoolean("root");
    instrument =  opts.getString("instrument");
+   recip      =  opts.getInteger("recip");
 }
 
 
@@ -657,4 +802,4 @@ void usage(const char* command) {
 }
 
 
-// md5sum: 4cf098015250cf735e7ed0e3ee308c5b harm2kern.cpp [20050403]
+// md5sum: 89e0dd0ee8fac22256dac44d0f7d9bdb harm2kern.cpp [20100505]

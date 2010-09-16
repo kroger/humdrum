@@ -31,17 +31,21 @@ using namespace std;
 //
 
 template<class type>
-Array<type>::Array(void) : SigCollection<type>(4) { }
+Array<type>::Array(void) : SigCollection<type>(4) { 
+}
 
 template<class type>
-Array<type>::Array(int arraySize) : SigCollection<type>(arraySize) { }
+Array<type>::Array(int arraySize) : SigCollection<type>(arraySize) { 
+}
 
 template<class type>
-Array<type>::Array(Array<type>& anArray) : SigCollection<type>(anArray) { }
+Array<type>::Array(Array<type>& anArray) : SigCollection<type>(anArray) { 
+}
 
 template<class type>
 Array<type>::Array(int arraySize, type *anArray) : 
-   SigCollection<type>(arraySize, anArray) { }
+   SigCollection<type>(arraySize, anArray) { 
+}
 
 
 
@@ -52,7 +56,8 @@ Array<type>::Array(int arraySize, type *anArray) :
 //
 
 template<class type>
-Array<type>::~Array() { }
+Array<type>::~Array() { 
+} 
 
 
 
@@ -385,4 +390,4 @@ Array<type> Array<type>::operator/(const Array<type>& anArray) const {
 
 
 
-// md5sum: 4b4e3403e364c7fd5951cf5344bd0207 Array.cpp [20090613]
+// md5sum: 22ff238f1ccb1e4cb517a1e9259227bb Array.cpp [20100511]

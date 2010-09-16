@@ -30,7 +30,7 @@
    #include <fstream.h>
 #endif
 
-
+typedef long TEMP64BITFIX;
 
 //////////////////////////////
 //
@@ -166,7 +166,8 @@ int ScorePageBase::findStaff(int staffno) {
    if (searchresult == NULL) {
       return -1;
    } else {
-      int start = ((int)searchresult - (int)data.getBase())/sizeof(ScoreRecord);
+      int start = ((TEMP64BITFIX)searchresult - 
+                   (TEMP64BITFIX)data.getBase())/sizeof(ScoreRecord);
       int i;
       for (i=start; i>=0; i++) {
          if ((int)data[i].getPValue(2) != staffno) {

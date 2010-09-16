@@ -7,6 +7,9 @@
 // Last Modified: Sun Aug  8 18:44:36 PDT 2004 (added more rhythm features)
 // Last Modified: Thu Oct 30 10:38:19 PST 2008 (closedir fix for OSX)
 // Last Modified: Wed Jul  1 16:11:07 PDT 2009 (added polyphonic extraction)
+// Last Modified: Mon Aug 30 13:57:51 PDT 2010 (3... rhythm disallowed in dur)
+// Last Modified: Mon Aug 30 13:57:51 PDT 2010 (-2147483648 rhythm --> X)
+// Last Modified: Wed Sep  1 13:37:32 PDT 2010 (added metric position)
 // Filename:      ...museinfo/examples/all/themebuilderx.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/themebuilderx.cpp
 // Syntax:        C++; museinfo
@@ -34,18 +37,31 @@
 //  @    = metric gross contour
 //  `    = metric refined contour
 //  '    = metric level
+//  =    = metric position
 //
 
 #include "humdrum.h"
+#include "PerlRegularExpression.h"
 
 #ifndef OLDCPP
    #include <iostream>
    #include <fstream>
+   #include <sstream>
+   #define SSTREAM stringstream
+   #define CSTRING str().c_str()
    using namespace std;
 #else
    #include <iostream.h>
    #include <fstream.h>
+   #ifdef VISUAL
+      #include <strstrea.h>     /* for windows 95 */
+   #else
+      #include <strstream.h>
+   #endif
+   #define SSTREAM strstream
+   #define CSTRING str()
 #endif
+
 
 // includes needed for file/directory processing:
 #include <sys/types.h>
@@ -153,7 +169,8 @@ void      extractPitchSequence   (Array<int>& pitches, HumdrumFile& hfile,
                                   int track);
 void      extractDurationSequence(Array<double>& durations, HumdrumFile& hfile,
                                   int track);
-void      extractMetricSequence  (Array<double>& metriclevel, 
+void      extractMetricSequence  (Array<double>& metriclevels, 
+                                  Array<RationalNumber>& metricpositions,
                                   HumdrumFile& hfile, int track);
 void      getKey                 (HumdrumFile& hfile, int& mode, int& tonic);
 void      printKey               (int mode, int tonic);
@@ -176,6 +193,7 @@ void      printMetricRefinedContour     (Array<double>& levels);
 void      printMetricGrossContour (Array<double>& levels);
 void      printBeatLevel          (Array<double>& levels);
 void      printDuration           (Array<double>& levels);
+void      printMetricPosition     (Array<RationalNumber>& positions);
 
 void      extractFeatureSet      (const char* features);
 int       is_directory           (const char* path);
@@ -218,6 +236,7 @@ int pstate[PSTATESIZE] = {0};   // true for printing of particular feature
 #define pMetricLevel           12
 #define pMetricRefinedContour  13
 #define pMetricGrossContour    14
+#define pMetricPosition        15
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -411,6 +430,7 @@ void createIndexEnding(HumdrumFile& hfile, int index) {
    Array<int>    pitches;
    Array<double> durations;
    Array<double> metriclevels;
+   Array<RationalNumber> metricpositions;
    extractPitchSequence(pitches, hfile, index);
 
    int mode = 0;
@@ -456,7 +476,7 @@ void createIndexEnding(HumdrumFile& hfile, int index) {
 
    if (rhythmQ) {
       extractDurationSequence(durations, hfile, index);
-      extractMetricSequence(metriclevels, hfile, index);
+      extractMetricSequence(metriclevels, metricpositions, hfile, index);
       if (pstate[pDurationGrossContour]) {
          cout << '\t';	printGrossContourRhythm(durations);
       }
@@ -483,6 +503,10 @@ void createIndexEnding(HumdrumFile& hfile, int index) {
    
       if (pstate[pMetricGrossContour]) {
          cout << '\t';	printMetricGrossContour(metriclevels);
+      }
+
+      if (pstate[pMetricPosition]) {
+         cout << '\t';	printMetricPosition(metricpositions);
       }
    }
 }
@@ -571,13 +595,14 @@ void printDuration(Array<double>& durations) {
    int len;
    char buffer[128] = {0};
    cout << "!";
+   SSTREAM temps;
    int count;
    for (i=0; i<durations.getSize(); i++) {
       Convert::durationToKernRhythm(buffer, durations[i]);
       if (durations[i] > 0 && (buffer[0] == 'q')) {
          count = (int)durations[i];
          for (j=0; j<count; j++) {
-            cout << "4";
+            temps << "4";
          }
          if (durations[i] - count > 0) {
             Convert::durationToKernRhythm(buffer, durations[i]-count);
@@ -585,25 +610,38 @@ void printDuration(Array<double>& durations) {
 	 len = strlen(buffer);
 	 for (k=0; k<len; k++) {
             if (buffer[k] == '.') {
-               cout << "d";
+               temps << "d";
             } else {
-               cout << buffer[k];
+               temps << buffer[k];
             }
          }
-         cout << " ";
+         temps << " ";
          
       } else {
 	 len = strlen(buffer);
 	 for (k=0; k<len; k++) {
             if (buffer[k] == '.') {
-               cout << "d";
+               temps << "d";
             } else {
-               cout << buffer[k];
+               temps << buffer[k];
             }
          }
-         cout << " ";
+         temps << " ";
       }
    }
+
+   temps << ends;
+   Array<char> temps2;
+   temps2.setSize(strlen(temps.CSTRING)+1);
+   strcpy(temps2.getBase(), temps.CSTRING);
+
+   PerlRegularExpression pre;
+   // disallow 3.., and 3... rhythms
+   pre.sar(temps2, "3\\.\\.+", "X", "g");
+   // convert unknown rhythms into X:
+   pre.sar(temps2, "-2147483648", "X", "g");
+
+   cout << temps2.getBase() << flush;
 }
 
 
@@ -628,6 +666,25 @@ void printMetricLevel(Array<double>& levels) {
          ivalue = -ivalue;
       }
       cout << ivalue << " ";
+   }
+}
+
+
+
+//////////////////////////////
+//
+// printMetricPosition --
+//
+
+void printMetricPosition(Array<RationalNumber>& positions) {
+   int i;
+   cout << "=";
+   RationalNumber value;
+   for (i=0; i<positions.getSize(); i++) {
+      value = positions[i];
+      cout << "x";
+      value.printTwoPart(cout, "_");
+      cout << ' ';
    }
 }
 
@@ -1084,10 +1141,11 @@ void printPitch(Array<int>& pitches) {
 // extractMetricSequence --
 //
 
-void extractMetricSequence(Array<double>& metriclevels, HumdrumFile& hfile,
-      int track) {
+void extractMetricSequence(Array<double>& metriclevels, 
+      Array<RationalNumber>& metricpositions, HumdrumFile& hfile, int track) {
    Array<int> metlev;
    hfile.analyzeMetricLevel(metlev);
+   hfile.analyzeRhythm();  // should already be done
 
    int i, j;
    metriclevels.setSize(metlev.getSize());
@@ -1095,6 +1153,12 @@ void extractMetricSequence(Array<double>& metriclevels, HumdrumFile& hfile,
    metriclevels.setSize(1000);
    metriclevels.setSize(0);
    metriclevels.allowGrowth();
+
+   metricpositions.setSize(1000);
+   metricpositions.setSize(0);
+   metricpositions.allowGrowth();
+
+   RationalNumber aposition;
 
    double level;
    for (i=0; i<hfile.getNumLines(); i++) {
@@ -1121,7 +1185,9 @@ void extractMetricSequence(Array<double>& metriclevels, HumdrumFile& hfile,
                   break;
                }
                level = -(double)metlev[i];
+               aposition = hfile[i].getBeatR();
                metriclevels.append(level);
+               metricpositions.append(aposition);
                break;
             }
             break;
@@ -1134,7 +1200,8 @@ void extractMetricSequence(Array<double>& metriclevels, HumdrumFile& hfile,
 
 //////////////////////////////
 //
-// extractDurationSequence --
+// extractDurationSequence -- Disallow 3... rhythms from being stored
+//    (equivalent to dotted half tied to eighth note?)
 //
 
 void extractDurationSequence(Array<double>& durations, HumdrumFile& hfile, 
@@ -1196,6 +1263,7 @@ void extractDurationSequence(Array<double>& durations, HumdrumFile& hfile,
             break;
       }
    }
+
 }
 
 
@@ -1363,6 +1431,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       pstate[pMetricLevel]            = rhythmQ;
       pstate[pMetricRefinedContour]   = rhythmQ;
       pstate[pMetricGrossContour]     = rhythmQ;
+      pstate[pMetricPosition]         = rhythmQ;
    }
 }
 
@@ -1420,6 +1489,7 @@ void extractFeatureSet(const char* features) {
       else if (strcmp(ptr, "MLV") == 0) { pstate[pMetricLevel]            = 1; }
       else if (strcmp(ptr, "MLI") == 0) { pstate[pMetricRefinedContour]   = 1; }
       else if (strcmp(ptr, "MGC") == 0) { pstate[pMetricGrossContour]     = 1; }
+      else if (strcmp(ptr, "MPS") == 0) { pstate[pMetricGrossContour]     = 1; }
       else if (strcmp(ptr, "P"  ) == 0) { pstate[pPitch]                  = 1; }
 
       ptr = strtok(NULL, " :;-\n\t");
@@ -1485,4 +1555,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 4ad2dcabec0db1dba683b921b0830f14 themebuilderx.cpp [20090807]
+// md5sum: 54788cc8480d3e60fb4eaabb5cf07c60 themebuilderx.cpp [20100903]

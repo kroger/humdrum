@@ -2,18 +2,16 @@
 ##
 ## Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 ## Creation Date: Sun Apr  3 00:44:44 PST 2005
-## Last Modified: Sun Jun 21 12:17:38 PDT 2009
+## Last Modified: Wed Aug 25 14:24:19 PDT 2010
 ## Filename:      ...humextra/Makefile
 ##
 ## Description: This Makefile can create the Humdrum Extras library or 
 ##              programs which use the Humdrum Extras library with linux 
 ##              using g++ (gcc 2.7.2.1 or later).
 ##
-## To run this makefile, type (without quotes) "make library", then
-## "make programs".
+## To run this makefile, type (without quotes) "make library" (or 
+## "gmake library" on FreeBSD computers), then "make programs".
 ##
-
-MAKE = make
 
 # targets which don't actually refer to files
 .PHONY : src-programs lib src-library include bin

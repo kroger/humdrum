@@ -25,12 +25,13 @@
    #include <iomanip.h>
 #endif
 
+typedef long TEMP64BITFIX;
 
 class SKINI {
    public:
       int message;
       double time;
-      int    chan;
+      TEMP64BITFIX chan;
       double note;
       double vel;
       double id;
@@ -216,9 +217,9 @@ void generateSkini(HumdrumFile& hfile, SigCollection<SKINI>& skini) {
          tempskini.message = COMMENT;
          tempskini.time = currentmillisecond/1000.0;
          if (hfile[i][0][2] == ' ') {
-            tempskini.chan = (int)(&hfile[i][0][3]);
+            tempskini.chan = (TEMP64BITFIX)(&hfile[i][0][3]);
          } else {
-            tempskini.chan = (int)(&hfile[i][0][2]);
+            tempskini.chan = (TEMP64BITFIX)(&hfile[i][0][2]);
          }
          tempskini.note = 0;
          tempskini.vel  = 0;
@@ -232,9 +233,9 @@ void generateSkini(HumdrumFile& hfile, SigCollection<SKINI>& skini) {
          tempskini.message = INFO;
          tempskini.time = currentmillisecond/1000.0;
          if (hfile[i][0][3] == ' ') {
-            tempskini.chan = (int)(&hfile[i][0][4]);
+            tempskini.chan = (TEMP64BITFIX)(&hfile[i][0][4]);
          } else {
-            tempskini.chan = (int)(&hfile[i][0][3]);
+            tempskini.chan = (TEMP64BITFIX)(&hfile[i][0][3]);
          }
          tempskini.note = 0;
          tempskini.vel  = 0;
@@ -347,7 +348,7 @@ void generateSkini(HumdrumFile& hfile, SigCollection<SKINI>& skini) {
                   islower(hfile[i][j][2])) {
                tempskini.message = INSTRUMENT;
                tempskini.time = currentmillisecond/1000.0;
-               tempskini.chan = (int)&hfile[i][j][2];
+               tempskini.chan = (TEMP64BITFIX)&hfile[i][j][2];
                tempskini.note = hfile[i].getPrimaryTrack(j);
                tempskini.vel  = tempskini.time;
                tempskini.id   = idcounter;
@@ -507,7 +508,7 @@ ostream& operator<<(ostream& out, SKINI skini) {
    }
 
    if (skini.message == KEYSIG) {
-      out << "// Keysig " << abs(skini.chan);
+      out << "// Keysig " << labs(skini.chan);
       if (skini.chan == 0) {
          out << " accidentals";
       } else if (skini.chan < 0) {
@@ -515,7 +516,7 @@ ostream& operator<<(ostream& out, SKINI skini) {
       } else {
          out << " sharp";
       }
-      if (abs(skini.chan) > 1) {
+      if (labs(skini.chan) > 1) {
          out << "s";
       }
       return out;
@@ -575,4 +576,4 @@ int skinicompare(const void* a, const void* b) {
     
 
 
-// md5sum: 4e88ee80141aaeb8441bee4c4326dfad kern2skini.cpp [20090615]
+// md5sum: 810dfce9fe34da8fae775599337dfbb3 kern2skini.cpp [20100905]

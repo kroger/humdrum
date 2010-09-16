@@ -145,6 +145,19 @@ SigCollection<int> ChordQuality::getNotesInChord(void) const {
 }
 
 
+void ChordQuality::getNotesInChord(SigCollection<int>& notes) const {
+   notes.setSize(0);
+   if ((chordType != E_chord_unknown) && (chordNotes.getSize() > 0)) {
+      notes.setSize(chordNotes.getSize());
+      for (int i=0; i<notes.getSize(); i++) {
+         notes[i] = chordNotes[i];
+      }
+   } else {
+      Convert::chordQualityToNoteSet(notes, *this);
+   }
+}
+
+
 
 //////////////////////////////
 //

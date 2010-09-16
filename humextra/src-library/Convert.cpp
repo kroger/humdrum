@@ -15,6 +15,7 @@
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
 // Last Modified: Sun Jun 21 11:35:40 PDT 2009 (updated for GCC 4.3)
 // Last Modified: Wed Nov 18 16:40:33 PST 2009 (added base40/trans converts)
+// Last Modified: Sat May 22 11:05:59 PDT 2010 (added RationalNumber)
 // Filename:      ...sig/src/sigInfo/Convert.cpp
 // Web Address:   http://sig.sapp.org/src/sigInfo/Convert.cpp
 // Syntax:        C++ 
@@ -32,6 +33,7 @@
 
 #include "Convert.h"
 #include "HumdrumEnumerations.h"
+#include "PerlRegularExpression.h"
 
 #ifndef OLDCPP
    #include <sstream>
@@ -138,6 +140,64 @@ int Convert::kernToMidiNoteNumber(const char* aKernString) {
 
 //////////////////////////////
 //
+// Convert::durationRToKernRhythm -- not allowed to have more than
+//	three rhythmic dots.
+//	default value: timebase = 1;
+//	input is quarter note duration == 1;
+//
+
+char* Convert::durationRToKernRhythm(char* output, RationalNumber input, 
+      int timebase) {
+
+   output[0] = '\0';
+
+   // dividing by 4 to convert from whole note units to quarter note units.
+   RationalNumber newdur = (input/4) * timebase;
+
+   // handle very long notes:
+   if (newdur == 8)  { strcat(output, "0");    return output; }
+   if (newdur == 12) { strcat(output, "0.");   return output; }
+   if (newdur == 16) { strcat(output, "00");   return output; }
+   if (newdur == 24) { strcat(output, "00.");  return output; }
+   if (newdur == 32) { strcat(output, "000");  return output; }
+   if (newdur == 48) { strcat(output, "000."); return output; }
+
+   // handle rhythms which are not dotted
+   if (newdur.getNumerator() == 1) {
+      sprintf(output, "%d", newdur.getDenominator());
+      return output;
+   }
+
+   // check for single dot rhythms
+   RationalNumber dotless1dur = (newdur*2)/3;
+   if (dotless1dur.getNumerator() == 1) {
+      sprintf(output, "%d.", dotless1dur.getDenominator());
+      return output;
+   }
+
+   // check for double dot rhythms
+   RationalNumber dotless2dur = (newdur*4)/7;
+   if (dotless2dur.getNumerator() == 1) {
+      sprintf(output, "%d..", dotless2dur.getDenominator());
+      return output;
+   }
+
+   // check for triple dot rhythms
+   RationalNumber dotless3dur = (newdur*8)/15;
+   if (dotless3dur.getNumerator() == 1) {
+      sprintf(output, "%d..", dotless3dur.getDenominator());
+      return output;
+   }
+
+   // unknown rhythm, so output a qqq string to intdicate a grace note...
+   strcpy(output, "qqq");
+   return output;
+}
+
+
+
+//////////////////////////////
+//
 // Convert::durationToKernRhythm -- not allowed to have more than
 //	three rhythmic dots
 //	default value: timebase = 1;
@@ -157,35 +217,12 @@ char* Convert::durationToKernRhythm(char* output, double input, int timebase) {
       basic += 0.002;
    }
 
-   if (input == 8.0) {
-      strcat(output, "0");
-      return output;
-   }
-
-   if (input == 12.0) {
-      strcat(output, "0.");
-      return output;
-   }
-
-   if (input == 16.0) {
-      strcat(output, "00");
-      return output;
-   }
-
-   if (input == 24.0) {
-      strcat(output, "00.");
-      return output;
-   }
-
-   if (input == 32.0) {
-      strcat(output, "000");
-      return output;
-   }
-
-   if (input == 48.0) {
-      strcat(output, "000.");
-      return output;
-   }
+   if (input == 8.0)  { strcat(output, "0");    return output; }
+   if (input == 12.0) { strcat(output, "0.");   return output; }
+   if (input == 16.0) { strcat(output, "00");   return output; }
+   if (input == 24.0) { strcat(output, "00.");  return output; }
+   if (input == 32.0) { strcat(output, "000");  return output; }
+   if (input == 48.0) { strcat(output, "000."); return output; }
 
    // handle special rounding cases primarily for SCORE which
    // only stores 4 digits for a duration
@@ -246,20 +283,63 @@ char* Convert::durationToKernRhythm(char* output, double input, int timebase) {
 //
 
 double Convert::kernToDuration(const char* aKernString) {
+    RationalNumber value = Convert::kernToDurationR(aKernString);
+    return value.getFloat();
+}
+
+
+RationalNumber Convert::kernToDurationR(const char* aKernString) {
+    RationalNumber zero(0,1);
+
+    PerlRegularExpression pre;
 
    // check for grace notes
    if ((strchr(aKernString, 'q') != NULL) ||
        (strchr(aKernString, 'Q') != NULL)) {
-      return 0.0;
+      return zero;
    }
 
+   // check for dots to modify rhythm
+   // also add an exit if a space is found, so that dots
+   // from multiple notes in chord notes do not get accidentally
+   // get counted together (input to this function should be a
+   // single note, but chords may accidentally be sent to this
+   // function instead).
+   int dotcount = 0;
    int index = 0;
+   while (aKernString[index] != '\0') {
+      if (aKernString[index] == '.') {
+         dotcount++;
+      }
+      if (aKernString[index] == ' ') {
+         break;
+      }
+      index++;
+   }
+
+   // parse special rhythms which can't be represented in
+   // classical **kern definition.  A non-standard rhythm
+   // consists of two numbers separated by any character.
+   if (pre.search(aKernString, "(\\d+)[^\\d](\\d+)", "")) {
+      int rtop = atoi(pre.getSubmatch(1));
+      int rbot = atoi(pre.getSubmatch(2));
+      RationalNumber original(rbot, rtop);  // duration is inverse
+      RationalNumber output(rbot, rtop);    // duration is inverse
+      original *= 4;  // adjust to quarter note count;
+      output *= 4;    // adjust to quarter note count;
+      for (int i=0; i<dotcount; i++) {
+         output += original / (int)(pow(2.0, (double)(i+1)));
+      }
+      return output;
+   }
+
+   index = 0;
    while (aKernString[index] != '\0' && !isdigit(aKernString[index])) {
       index++;
    }
    if (aKernString[index] == '\0') {
       // no rhythm data found
-      return 0.0;
+      return zero;
    }
    
    // should now be at start of kern rhythm
@@ -270,14 +350,7 @@ double Convert::kernToDuration(const char* aKernString) {
       index++;
    }
 
-   // check for dots to modify rhythm
-   int dotcount = 0;
-   while (aKernString[index] != '\0' && aKernString[index] == '.') {
-      dotcount++;
-      index++;
-   }
-
-   double oduration;
+   RationalNumber oduration;
    if (strchr(aKernString, '0') != NULL && 
        strchr(aKernString, '1') == NULL && 
        strchr(aKernString, '2') == NULL && 
@@ -289,26 +362,27 @@ double Convert::kernToDuration(const char* aKernString) {
        strchr(aKernString, '8') == NULL && 
        strchr(aKernString, '9') == NULL    ) {
       if (strstr(aKernString, "000") != NULL) {
-         oduration = 32.0;
+         oduration = 32;
       } else if (strstr(aKernString, "00") != NULL) {
-         oduration = 16.0;
+         oduration = 16;
       } else {
-         oduration = 8.0;
+         oduration = 8;
       }
 
    } else {
 
       // now know everything to create a duration
       if (orhythm == 0) {
-         oduration = 8.0;
+         oduration = 8;
       } else {
-         oduration = 4.0 / orhythm;
+         oduration = 4;
+	 oduration /= orhythm;
       }
    }
 
-   double duration = oduration;
+   RationalNumber duration = oduration;
    for (int i=0; i<dotcount; i++) {
-      duration += oduration * pow(2.0, (double)-(i+1));
+      duration += oduration / (int)(pow(2.0, (double)(i+1)));
    }
 
    return duration;
@@ -611,6 +685,7 @@ void Convert::chordQualityToNoteSet(SigCollection<int>& noteSet,
    output[0] = 0;
    
    switch (aQuality.getType()) {
+      case E_chord_rest:     break;
       case E_chord_note:     break;
       case E_chord_incmin:   output[1] = 11; break;
       case E_chord_incmaj:   output[1] = 12; break;
@@ -1944,6 +2019,51 @@ double Convert::kotoToDuration(const char* aKotoString) {
    double baseduration = duration;
    for (i=0; i<dots; i++) {
       duration += baseduration * pow(2.0, -(i+1));
+   }
+
+   return duration;
+}
+
+
+
+//////////////////////////////
+//
+// kotoToDurationR -- convert a **koto value into a duration
+//   with 1.0 being a quarter note.
+//
+
+RationalNumber Convert::kotoToDurationR(const char* aKotoString) {
+   int length = strlen(aKotoString);
+   int bars   = 0;
+   int dashes = 0;
+   int dots   = 0;
+   int i;
+
+   for (i=0; i<length; i++) {
+      if (aKotoString[i] == '|') {
+         bars++;
+      }
+      if (aKotoString[i] == '.') {
+         dots++;
+      }
+      if (aKotoString[i] == '-') {
+         dashes++;
+      }
+      if (aKotoString[i] == ' ') {
+         break;   // only look at first note in a chord or arpeggio
+      }
+   }
+
+   // now know everything to create a duration
+
+   RationalNumber duration = 1;
+   for (i=0; i<bars; i++) {
+      duration /= 2;
+   }
+   
+   RationalNumber baseduration = duration;
+   for (i=0; i<dots; i++) {
+      duration += baseduration / ((int)pow(2.0, (double)-(i+1)));
    }
 
    return duration;

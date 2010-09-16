@@ -617,7 +617,7 @@ void removeDollarsFromString(Array<char>& buffer, int maxtrack) {
    }
 
    while (pre.search(buffer.getBase(), "\\$(-?\\d+)")) {
-      value2 = maxtrack - abs(strtol(pre.getSubmatch(1), NULL, 10));
+      value2 = maxtrack - (int)fabs(strtol(pre.getSubmatch(1), NULL, 10));
       sprintf(buf2, "%d", value2);
       pre.sar(buffer, "\\$-?\\d+", buf2);
    }
@@ -1922,4 +1922,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 0c61bacdfce1312ffc1d8c7048d8a113 extractx.cpp [20090508]
+// md5sum: 8f6fcc6f926d12d34ff366f25c8f0bcf extractx.cpp [20100722]

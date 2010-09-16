@@ -1,5 +1,5 @@
 //
-// Copyright 1998-2000 by Craig Stuart Sapp, All Rights Reserved.
+// Copyright 1998-2010 by Craig Stuart Sapp, All Rights Reserved.
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Jun  8 00:38:46 PDT 1998
 // Last Modified: Tue Jun 23 14:00:23 PDT 1998
@@ -10,6 +10,7 @@
 // Last Modified: Sun Jun  4 21:04:50 PDT 2006 (added base40ToPerfViz())
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
 // Last Modified: Wed Nov 18 16:40:33 PST 2009 (added base40/trans converts)
+// Last Modified: Sat May 22 11:02:12 PDT 2010 (added RationalNumber)
 // Filename:      ...sig/include/sigInfo/Convert.h
 // Web Address:   http://sig.sapp.org/include/sigInfo/Convert.h
 // Syntax:        C++ 
@@ -25,6 +26,7 @@
 #include "HumdrumEnumerations.h"
 #include "ChordQuality.h"
 #include "SigCollection.h"
+#include "RationalNumber.h"
 
 
 class Convert {
@@ -47,7 +49,11 @@ class Convert {
       static int       kernToMidiNoteNumber      (const char* aKernString);
       static char*     durationToKernRhythm      (char* output, double input, 
                                                    int timebase = 1);
+      static char*     durationRToKernRhythm     (char* output, 
+                                                  RationalNumber input, 
+                                                  int timebase = 1);
       static double    kernToDuration            (const char* aKernString);
+      static RationalNumber kernToDurationR      (const char* aKernString);
       static double    kernTimeSignatureTop      (const char* aKernString);
       static double    kernTimeSignatureBottomToDuration   
                                                  (const char* aKernString);
@@ -106,6 +112,7 @@ class Convert {
 
    // conversions dealing with **koto data
       static double    kotoToDuration             (const char* aKotoString);
+      static RationalNumber kotoToDurationR       (const char* aKotoString);
 
    protected:
 

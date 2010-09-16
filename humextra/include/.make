@@ -13,6 +13,7 @@ done
 
 # classes borrowed from sigBase:
 ln -s $SRCBASE/sigBase/Array.cpp
+ln -s $SRCBASE/sigBase/RationalNumber.h
 ln -s $SRCBASE/sigBase/Array.h
 ln -s $SRCBASE/sigBase/PosixRegularExpression.h
 ln -s $SRCBASE/sigBase/PerlRegularExpression.h

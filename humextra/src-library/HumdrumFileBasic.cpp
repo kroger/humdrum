@@ -13,6 +13,7 @@
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
 // Last Modified: Mon Jun 22 15:03:44 PDT 2009 (added Humdrum/Http URIs)
 // Last Modified: Wed Sep  2 21:48:23 PDT 2009 (fixed problem with *x again)
+// Last Modified: Wed May 12 22:29:42 PDT 2010 (added embedded PDF parsing)
 // Filename:      ...sig/src/sigInfo/HumdrumFileBasic.cpp
 // Web Address:   http://sig.sapp.org/src/sigInfo/HumdrumFileBasic.cpp
 // Syntax:        C++ 
@@ -24,6 +25,7 @@
 
 #include "Convert.h"
 #include "HumdrumFileBasic.h"
+#include "PDFFile.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -198,8 +200,11 @@ void HumdrumFileBasic::appendLine(HumdrumRecord* aRecord) {
 
 void HumdrumFileBasic::clear(void) {
    int i;
-   for (i=0; i<getNumLines(); i++) {
-      delete records[i];
+   for (i=0; i<records.getSize(); i++) {
+      if (records[i] != NULL) {
+         // delete [] records[i];
+         delete records[i];
+      }
       records[i] = NULL;
    }
    records.setSize(0);
@@ -207,8 +212,8 @@ void HumdrumFileBasic::clear(void) {
    for (i=0; i<trackexinterp.getSize(); i++) {
       if (trackexinterp[i] != NULL) {
          delete [] trackexinterp[i];
-         trackexinterp[i] = NULL;
       }
+      trackexinterp[i] = NULL;
    }
    trackexinterp.setSize(0);
    trackexinterp.allowGrowth(0);
@@ -477,6 +482,13 @@ void HumdrumFileBasic::read(const char* filename) {
       exit(1);
    }
 
+   if (infile.peek() == '%') {
+      SSTREAM embeddedData;
+      extractEmbeddedDataFromPdf(embeddedData, infile);
+      read(embeddedData);
+      return;
+   }
+
    char templine[4096];
    while (!infile.eof()) {
       infile.getline(templine, 4096, '\n');
@@ -495,6 +507,14 @@ void HumdrumFileBasic::read(istream& inStream) {
    char* templine;
    templine = new char[4096];
    int linecount = 0;
+
+   if (inStream.peek() == '%') {
+      SSTREAM embeddedData;
+      extractEmbeddedDataFromPdf(embeddedData, inStream);
+      read(embeddedData);
+      return;
+   }
+
    while (!inStream.eof()) {
       inStream.getline(templine, 4096);
 #ifdef USING_URI
@@ -1315,6 +1335,26 @@ void HumdrumFileBasic::readjustDotArrays(Array<int>& lastline,
 
 
 
+//////////////////////////////
+//
+// HumdrumFileBasic::extractEmbeddedDataFromPdf --
+//
+
+void HumdrumFileBasic::extractEmbeddedDataFromPdf(ostream& outputData, 
+      istream& inputData) {
+   PDFFile pdffile;
+   pdffile.process(inputData);
+   int filecount = pdffile.getEmbeddedFileCount();
+   int i;
+   for (i=0; i<filecount; i++) {
+      if (pdffile.isEmbeddedHumdrumFile(i)) {
+         pdffile.getEmbeddedFileContents(i, outputData);
+      }
+   }
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 //
 // Code for downloading data from the internet.
@@ -1441,7 +1481,9 @@ void HumdrumFileBasic::readFromHttpURI(const char* webaddress) {
    // cout << "-------------------------------------------------" << endl;
 
    int socket_id = open_network_socket(hostname.getBase(), 80);
-   ::write(socket_id, request.CSTRING, strlen(request.CSTRING));
+   if (::write(socket_id, request.CSTRING, strlen(request.CSTRING)) == -1) {
+      exit(-1);
+   }
    #define URI_BUFFER_SIZE (10000)
    char buffer[URI_BUFFER_SIZE];
    int message_len;
@@ -1697,8 +1739,8 @@ void HumdrumFileBasic::prepare_address(struct sockaddr_in *address,
 
 int HumdrumFileBasic::open_network_socket(const char *hostname, 
       unsigned short int port) {
-   int inet_socket;                 /* socket descriptor */
-   struct sockaddr_in servaddr;     /* IP/port of the remote host */
+   int inet_socket;                 // socket descriptor 
+   struct sockaddr_in servaddr;     // IP/port of the remote host 
 
    prepare_address(&servaddr, hostname, port);
 
@@ -1725,9 +1767,10 @@ int HumdrumFileBasic::open_network_socket(const char *hostname,
    return inet_socket;
 }
 
-
-
 #endif
+
+
+
 
 
 // md5sum: ade20f80d810702755a5e2aac8395c32 HumdrumFileBasic.cpp [20050403]

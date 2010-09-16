@@ -116,6 +116,7 @@ void     fillSurroundedBlanks   (Array<Array<Array<HISTTYPE> > >& histograms,
                                  Array<Array<int> >& mask, 
 				 Array<int> blanksonrow);
 void     trimEdges              (Array<Array<Array<HISTTYPE> > >& histograms);
+int      hasdigit               (const char* strang);
 
 // User interface variables:
 Options   options;
@@ -124,6 +125,7 @@ int       rawQ         = 0;     // used with -r option
 int       histQ        = 0;     // used with --hist option
 int       khistQ       = 0;     // used with --khist option
 int       transpose    = 0;     // used with -t option
+int       rrotate      = 0;     // used with --rotate option
 int       corQ         = 0;     // used with --cor option
 int       corlevel     = 4;     // used with --cor option
 int       blankQ       = 0;     // used with -b option
@@ -1554,9 +1556,19 @@ void printLegend(int legendheight, int legendwidth) {
       }
    }
 
+   Array<const char*> transcolor;
+   transcolor.setSize(26);
+   transcolor.setAll(0);
+   transcolor[24] = colorindex[24];
+   transcolor[25] = colorindex[25];
+   for (i=0; i<12; i++) {
+      transcolor[i] = colorindex[(i+transpose+rrotate) % 12];
+      transcolor[i+12] = colorindex[((i+transpose+rrotate) % 12)+12];
+   }
+
    for (i=0; i<legend.getSize(); i++) {
       for (j=0; j<legend[i].getSize(); j++) {
-         cout << ' ' << colorindex[legend[i][j]];
+         cout << ' ' << transcolor[legend[i][j]];
       }
       cout << "\n";
    }
@@ -2234,6 +2246,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("f|fill=b", "fill in blanked regions with second best key");
    opts.define("average=b",        "average multiple weightings results");
    opts.define("t|transpose=i:0",  "Transposition by half-steps");
+   opts.define("rotate=s:",        "Rotate color map (external transpose)");
    opts.define("s|segments=i:300", "The height in pixel of the output plot");
    opts.define("r|raw=b",          "Display the analyzed keys");
    opts.define("c|colorfile=s",    "key to color mapping specification");
@@ -2299,6 +2312,22 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       exit(1);
    } 
 
+   if (opts.getInteger("rotate")) {
+      const char* strang = opts.getString("rotate");
+      if (hasdigit(strang)) {
+         rrotate = atol(strang);
+         if (rrotate < 0) {
+            rrotate += 1200;
+         }
+         rrotate = rrotate % 12;
+      } else {
+         rrotate = Convert::kernToMidiNoteNumber(strang) % 12;
+      }
+      rrotate = 12 - rrotate;
+      if (rrotate < 0) {
+         cerr << "Error: funny value for rotation: " << strang << endl;
+      }
+   }
 
    if (trimQ) {  // turn on filling if trim is specified
       fillQ = 1;
@@ -2349,6 +2378,23 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    if (opts.getBoolean("mapping")) {
       changeColorMapping(colorindex, opts.getString("mapping"));
    }
+}
+
+
+
+//////////////////////////////
+//
+// hasdigit --
+//
+
+int hasdigit(const char* strang) {
+   int i=0;
+   while (strang[i] != '\0') {
+      if (isdigit(strang[i])) {
+         return 1;
+      }
+   }
+   return 0;
 }
 
 
@@ -2780,4 +2826,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 9788d673fe14f9a1f383ecdcb26abab6 mkeyscape.cpp [20090626]
+// md5sum: f1af4069666510dbf20b3b6a5df077f9 mkeyscape.cpp [20100602]

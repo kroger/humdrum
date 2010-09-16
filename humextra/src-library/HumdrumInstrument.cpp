@@ -22,6 +22,8 @@
    using namespace std;
 #endif
 
+typedef long TEMP64BITFIX;
+
 // declare static variables
 SigCollection< _HumdrumInstrument > HumdrumInstrument::data(0);
 int HumdrumInstrument::classcount = 0;
@@ -261,6 +263,7 @@ void HumdrumInstrument::initialize(void) {
    afi("feme",	GM_CHOIR_AAHS,	"female voice");
    afi("fife",	GM_BLOWN_BOTTLE,	"fife");
    afi("fingc",	GM_REVERSE_CYMBAL,	"finger cymbal");
+   afi("flt",	GM_FLUTE,	"flute");
    afi("flt_a",	GM_FLUTE,	"alto flute");
    afi("flt_b",	GM_FLUTE,	"bass flute");
    afi("fltda",	GM_RECORDER,	"alto recorder");
@@ -268,7 +271,6 @@ void HumdrumInstrument::initialize(void) {
    afi("fltdn",	GM_RECORDER,	"sopranino recorder");
    afi("fltds",	GM_RECORDER,	"soprano recorder");
    afi("fltdt",	GM_RECORDER,	"tenor recorder");
-   afi("flt",	GM_FLUTE,	"flute");
    afi("flugh",	GM_FRENCH_HORN,	"flugelhorn");
    afi("forte",	GM_HONKYTONK_PIANO,	"fortepiano");
    afi("glock",	GM_GLOCKENSPIEL,	"glockenspiel");
@@ -408,7 +410,7 @@ int HumdrumInstrument::find(const char* Hname) {
    if (searchResult == NULL) {
       return -1;
    } else {
-      return (((int)(searchResult)) - ((int)(data.getBase())))/
+      return (((TEMP64BITFIX)(searchResult)) - ((TEMP64BITFIX)(data.getBase())))/
          sizeof(_HumdrumInstrument);
    }
 }

@@ -507,7 +507,7 @@ void unusual_thing(Array<Array<double> >& results,
       int sublen) {
 
    int i, j;
-   int len = abs(sourcedata.getSize() - sublen + 1);
+   int len = (int)fabs(sourcedata.getSize() - sublen + 1);
    int subcount = templatedata.getSize() - sublen + 1;
 
    results.setSize(0);
@@ -728,7 +728,7 @@ void printSequence(Array<Array<char> >& sourcedata, int index, int size,
 void usual_thing(Array<double>& results, Array<Array<char> >& sourcedata, 
       Array<Array<char> >& templatedata) {
 
-   int len = abs(sourcedata.getSize() - templatedata.getSize() + 1);
+   int len = (int)fabs(sourcedata.getSize() - templatedata.getSize() + 1);
 
    results.setSize(0);
    if (len <= 0) {
@@ -1051,4 +1051,4 @@ double dlvcharstar(char** set1, int len1, char** set2, int len2) {
 }
 
 
-// md5sum: fb87cbae54a293e6444e75e50dc086ad simil.cpp [20091123]
+// md5sum: 9d1b6764bcd4aa329ba525b7385aa3f2 simil.cpp [20100722]

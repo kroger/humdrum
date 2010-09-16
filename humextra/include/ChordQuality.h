@@ -44,6 +44,7 @@ class ChordQuality {
       int                getInversion     (void) const;
       const char*        getInversionName (void) const;
       SigCollection<int> getNotesInChord  (void) const;
+      void               getNotesInChord  (SigCollection<int>& notes) const;
       ostream&           printPitchClasses(ostream& out);
       void               setPitchClasses  (Array<int>& newnotes);
       void               setPitchClasses  (SigCollection<int>& newnotes);

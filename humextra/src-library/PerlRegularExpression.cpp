@@ -1,4 +1,3 @@
-//
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Jun 29 14:25:53 PDT 2009
 // Last Modified: Mon Jun 29 14:26:01 PDT 2009
@@ -192,6 +191,7 @@ PerlRegularExpression::PerlRegularExpression(void) {
    extendedQ   = 1;  // always extended for PCRE
    ignorecaseQ = 0;
    studyQ      = 0;
+   anchorQ     = 0;
 
    output_substrings.setSize(3 * 100);  // has to be a multiple of 3
    output_substrings.setAll(0);
@@ -238,6 +238,39 @@ void PerlRegularExpression::setReplaceString(const char* replacestring) {
    int len = strlen(replacestring);
    replace_string.setSize(len+1);
    strcpy(replace_string.getBase(), replacestring);
+}
+
+
+
+//////////////////////////////
+//
+// PerlRegularExpression::getSubmatchStart -- returns the character
+//    byte offset into the search string for the index-th match.
+//
+
+int PerlRegularExpression::getSubmatchStart(int index) {
+   int output = -1;
+   if (index < 100) {
+      output = output_substrings[index*2];
+   }
+   return output;
+}
+
+
+
+//////////////////////////////
+//
+// PerlRegularExpression::getSubmatchEnd -- returns the character
+//    byte offset of the character after the last character in search 
+//    string for the index-th match.
+//
+
+int PerlRegularExpression::getSubmatchEnd(int index) {
+   int output = -1;
+   if (index < 100) {
+      output = output_substrings[index*2+1];
+   }
+   return output;
 }
 
 
@@ -358,7 +391,34 @@ void PerlRegularExpression::setBasicSyntax(void) {
 
 
 
-///////////////////////////////
+//////////////////////////////
+//
+// PerlRegularExpression::setAnchor -- set the anchor option which
+//    will cause any regular expression search to only match the
+//    start of the input string (even if the search pattern does not
+//    include ^ at the start of it).
+//
+
+void PerlRegularExpression::setAnchor(void) {
+     anchorQ = 1;
+}
+
+
+
+//////////////////////////////
+//
+// PerlRegularExpression::setNoAnchor -- turn off the anchor option
+//     which will require the "^" operator in a regular expression in
+//     order to force a match from the start of a line.
+//
+
+void PerlRegularExpression::setNoAnchor(void) {
+    anchorQ = 0;
+}
+
+
+
+//////////////////////////////
 //
 // PerlRegularExpression::setIgnoreCase --
 //
@@ -397,6 +457,9 @@ void PerlRegularExpression::initializeSearch(void) {
    // PCRE always uses extended regular expressions
    if (ignorecaseQ) {
       compflags |= PCRE_CASELESS;
+   }
+   if (anchorQ) {
+      compflags |= PCRE_ANCHORED;
    }
 
    if (pre != NULL) {

@@ -6,6 +6,7 @@
 // Last Modified: Wed Nov 29 12:14:41 PST 2000 (use internal analysis)
 // Last Modified: Tue Apr 21 00:41:11 PDT 2009 (fixed spine manip printing)
 // Last Modified: Thu May 14 20:25:17 PDT 2009 (-U option added)
+// Last Modified: Mon Apr 26 06:21:58 PDT 2010 (-n, -s options added)
 // Filename:      ...sig/examples/all/sonority2.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/sonority2.cpp
 // Syntax:        C++; museinfo
@@ -26,17 +27,30 @@
 
 
 // function declarations
-void         checkOptions(Options& opts, int argc, char* argv[]);
-void         example(void);
-void         processRecords(HumdrumFile& infile, HumdrumFile& outfile);
-void         usage(const char* command);
+void    checkOptions        (Options& opts, int argc, char* argv[]);
+void    example             (void);
+void    processRecords      (HumdrumFile& infile);
+void    usage               (const char* command);
+void    fillStringWithNotes (char* string, ChordQuality& quality, 
+                             HumdrumFile& infile, int line);
+int     identifyBassNote    (SigCollection<int>& notes, 
+                             HumdrumFile& infile, int line,
+                             Array<int>& sounding);
+int     transitionalSonority(ChordQuality& quality, HumdrumFile& infile, 
+                             int line);
 
 
 // global variables
 Options      options;            // database for command-line arguments
 char         unknown[256] = {0}; // space for unknown chord simplification
 int          chordinit;          // for initializing chord detection function
-int          explicitQ = 0;      // for use with -U option
+int          explicitQ = 0;      // used with -U option
+int          notesQ    = 0;      // used with -n option
+int          suppressQ = 0;      // used with -s option
+int          parenQ    = 1;      // used with -P option
+int          appendQ   = 0;      // used with -a option
+int          octaveVal = -100;   // used with -o option
+const char*  notesep   = " ";    // used with -N option
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -54,7 +68,6 @@ int main(int argc, char* argv[]) {
    for (int i=0; i<numinputs || i==0; i++) {
       chordinit = 1;
       infile.clear();
-      outfile.clear();
 
       // if no command-line arguments read data file from standard input
       if (numinputs < 1) {
@@ -64,14 +77,8 @@ int main(int argc, char* argv[]) {
       }
 
       // analyze the input file according to command-line options
-      processRecords(infile, outfile);
-
-      // check to see if only the analysis spine is required
-      if (!options.getBoolean("assemble")) {
-         outfile = outfile.extract(-1);
-      }
-
-      outfile.write(cout);
+      processRecords(infile);
+       
    }
 
    return 0;
@@ -90,11 +97,17 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("t|type=b",          "show only chord type");
    opts.define("i|inversion=b",     "show only chord inversion");
    opts.define("r|root=b",          "show only chord root");
-   opts.define("a|assemble=b",      "assemble analysis with input");
+   opts.define("a|assemble|append=b", "append analysis to input data");
    opts.define("f|format=s:t:i:r",  "control display style");
    opts.define("u|unknown=s:X",     "control display of unknowns");
    opts.define("U|unknown-pcs=b",   "print pcs of unknown sonrities");
    opts.define("d|debug=b",         "determine bad input line num");
+   opts.define("n|notes=b",         "display pitch classes in sonority");
+   opts.define("s|suppress=b",      "suppress data if overlapping sonority");
+   opts.define("P|paren-off=b",     "suppress parentheses for overlapping");
+   opts.define("N|separator=s: ",   "characters to separate pitch classes");
+   opts.define("o|octave=i:4",      "characters to separate pitch classes");
+
    opts.define("author=b",          "author of program");
    opts.define("version=b",         "compilation info");
    opts.define("example=b",         "example usages");
@@ -139,7 +152,17 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    strcat(unknown, ":");
    strncat(unknown, opts.getString("unknown"), 64);
 
-   explicitQ = opts.getBoolean("unknown-pcs");
+   explicitQ =  opts.getBoolean("unknown-pcs");
+   notesQ    =  opts.getBoolean("notes");
+   suppressQ =  opts.getBoolean("suppress");
+   parenQ    = !opts.getBoolean("paren-off");
+   appendQ   =  opts.getBoolean("append");
+   if (opts.getBoolean("separator")) {
+      notesep   =  opts.getString("separator");
+   }
+   if (opts.getBoolean("octave")) {
+      octaveVal =  opts.getInteger("octave");
+   }
 }
 
 
@@ -173,79 +196,95 @@ void example(void) {
 //	sonority quality;
 //
 
-void processRecords(HumdrumFile& infile, HumdrumFile& outfile) {
+void processRecords(HumdrumFile& infile) {
    Array<ChordQuality> cq;
    infile.analyzeSonorityQuality(cq);
    ChordQuality quality;
 
    int foundstart = 0;
-   char aString[256] = {0};
+   char aString[512] = {0};
 
    for (int i=0; i<infile.getNumLines(); i++) {
       if (options.getBoolean("debug")) {
          cout << "processing line " << (i+1) << " of input ..." << endl;
+	 cout << "LINE IS: " << infile[i] << endl;
       }
       switch (infile[i].getType()) {
          case E_humrec_none:
          case E_humrec_empty:
          case E_humrec_bibliography:
          case E_humrec_global_comment:
-            outfile.appendLine(infile[i]);
+            cout << infile[i] << endl;
             break;
          case E_humrec_data_comment:
+            if (appendQ) {
+	       cout << infile[i] << "\t";
+            } 
             if (infile[i].equalFieldsQ("**kern")) {
-               infile[i].appendField(infile[i][0]);
+               cout << infile[i][0];
             } else {
-               infile[i].appendField("!");
+               cout << "!";
             }
-            outfile.appendLine(infile[i]);
+            cout << endl;
             break;
          case E_humrec_data_interpretation:
+            if (appendQ) {
+               cout << infile[i] << "\t";
+            }
             if (!foundstart && infile[i].hasExclusiveQ()) {
                foundstart = 1;
-               infile[i].appendField("**qual");
+               cout << "**qual";
             } else {
                if (infile[i].equalFieldsQ("**kern") && 
                    (!infile[i].isSpineManipulator(0))) {
-                  infile[i].appendField(infile[i][0]);
+                  cout << infile[i][0];
                } else {
-                  infile[i].appendField("*");
+                  cout << "*";
                }
             }
-            outfile.appendLine(infile[i]);
+	    cout << endl;
             break;
          case E_humrec_data_kern_measure:
-            if (infile[i].equalFieldsQ("**kern")) {
-               infile[i].appendField(infile[i][0]);
-            } else {
-               infile[i].appendField("=");
+            if (appendQ) {
+               cout << infile[i] << "\t";
             }
-            outfile.appendLine(infile[i]);
+            cout << infile[i][0];
+            cout << endl;
             break;
          case E_humrec_data:
+            if (appendQ) {
+               cout << infile[i] << "\t";
+            }
             // handle null fields
             if (infile[i].equalFieldsQ("**kern", ".")) {
-               infile[i].appendField(".");
-               outfile.appendLine(infile[i]);
+	       cout << "." << endl;
                break;
             }
-            quality = cq[i];
-            quality.makeString(aString, explicitQ);
-            if (strcmp(aString, "") != 0) {
-               if (strcmp(aString, unknown) == 0 || (
-                     quality.getType()==E_chord_note && 
-                           options.getBoolean("root"))
-                     ) {
-                  char tempbuffer[128] = {0};
-		  strcpy(tempbuffer, aString);
-                  strcpy(aString, options.getString("unknown"));
-		  strcat(aString, tempbuffer);
+            if (notesQ == 0) {
+               quality = cq[i];
+               quality.makeString(aString, explicitQ);
+               if (strcmp(aString, "") != 0) {
+                  if (strcmp(aString, unknown) == 0 || (
+                        quality.getType()==E_chord_note && 
+                              options.getBoolean("root"))
+                        ) {
+                     char tempbuffer[128] = {0};
+	             strcpy(tempbuffer, aString);
+                     strcpy(aString, options.getString("unknown"));
+	             strcat(aString, tempbuffer);
+                  }
+		  if (suppressQ && transitionalSonority(quality, infile, i)) {
+                     strcpy(aString, ".");
+                  }
+               } else {
+                  strcpy(aString, "rest");
                }
             } else {
-               strcpy(aString, "rest");
+               quality = cq[i];
+               fillStringWithNotes(aString, quality, infile, i);
             }
-            infile[i].appendField(aString);
-            outfile.appendLine(infile[i]);
+	    cout << aString << endl;
+
             break;
          default:
             cerr << "Error on line " << (i+1) << " of input" << endl;
@@ -253,6 +292,209 @@ void processRecords(HumdrumFile& infile, HumdrumFile& outfile) {
             exit(1);
       }
    }
+
+}
+
+
+
+//////////////////////////////
+//
+// transitionalSonority --
+//
+
+int transitionalSonority(ChordQuality& quality, HumdrumFile& infile, int line) {
+   SigCollection<int> notes;
+   quality.getNotesInChord(notes);
+
+   Array<int> octave;
+   octave.setSize(notes.getSize());
+   octave.allowGrowth(0);
+   octave.setAll(0);
+
+   Array<int> sounding;
+   sounding.setSize(notes.getSize());
+   sounding.allowGrowth(0);
+   sounding.setAll(0);
+
+   // int bassindex = identifyBassNote(notes, infile, line, sounding);
+
+   int i;
+   for (i=0; i<sounding.getSize(); i++) {
+      if (sounding[i] == 0) {
+         return 1;
+      }
+   }
+
+   return 0;
+}
+
+
+
+//////////////////////////////
+//
+// fillStringWithNotes --
+//
+
+void fillStringWithNotes(char* string, ChordQuality& quality, 
+      HumdrumFile& infile, int line) {
+
+   string[0] = '\0';
+
+   SigCollection<int> notes;
+   quality.getNotesInChord(notes);
+
+   Array<int> octave;
+   octave.setSize(notes.getSize());
+   octave.allowGrowth(0);
+   octave.setAll(0);
+
+   Array<int> sounding;
+   sounding.setSize(notes.getSize());
+   sounding.allowGrowth(0);
+   sounding.setAll(0);
+
+   int bassindex = identifyBassNote(notes, infile, line, sounding);
+   if (bassindex >= 0) {
+      octave[bassindex] = -1;
+      if (notes[bassindex] >= 40) {
+         octave[bassindex] += -2;
+      }
+   }
+
+   int i;
+   if (suppressQ) {
+      for (i=0; i<sounding.getSize(); i++) {
+         if (sounding[i] == 0) {
+            strcpy(string, ".");
+            return;
+         }
+      }
+   }
+
+   string[0] = '\0';
+   char buffer[32] = {0};
+   for (i=0; i<notes.getSize(); i++) {
+      if (octaveVal >= 0) {
+         Convert::base40ToKern(buffer, (notes[i]%40) + octaveVal * 40);
+      } else {
+         Convert::base40ToKern(buffer, notes[i] + ((octave[i]+4) * 40));
+      }
+      if (parenQ && (sounding[i] == 0)) {
+         strcat(string, "(");
+      }
+      strcat(string, buffer);
+      if (parenQ && (sounding[i] == 0)) {
+         strcat(string, ")");
+      }
+      if (i < notes.getSize() - 1) {
+         strcat(string, notesep);
+      }
+   }
+
+}
+
+
+
+//////////////////////////////
+//
+// identifyBassnote --
+//
+
+int identifyBassNote(SigCollection<int>& notes, HumdrumFile& infile, 
+      int line, Array<int>& sounding) {
+   int j, k;
+   int output = -1;
+   int minval = 1000000;
+   int value;
+   int tcount;
+   char buffer[128] = {0};
+
+   Array<int> soundQ(40);
+   soundQ.setAll(0);
+
+   sounding.setSize(notes.getSize());
+   sounding.setAll(0);
+
+   int pline;
+   int pspine;
+
+   int dotQ = 0;
+
+   if (notes.getSize() == 0) {
+      return -1;
+   }
+
+   for (j=0; j<infile[line].getFieldCount(); j++) {
+      if (!infile[line].isExInterp(j, "**kern")) {
+         continue;
+      }
+      dotQ = 0;
+      if (strcmp(infile[line][j], ".") == 0) {
+         pline  = infile[line].getDotLine(j);
+         pspine = infile[line].getDotSpine(j);
+         dotQ = 1;
+      } else {
+         pline = line;
+         pspine = j;
+      }
+      tcount = infile[pline].getTokenCount(pspine);
+      for (k=0; k<tcount; k++) {
+         infile[pline].getToken(buffer, pspine, k);
+         if (strchr(buffer, 'r') != NULL) {
+            continue;
+         }
+	 if (strcmp(buffer, ".") == 0) {
+            // shouldn't get here...
+            continue;
+         }
+	 value = Convert::kernToMidiNoteNumber(buffer);
+         if (value < 0) {
+            continue;
+         }
+         if (value < minval) {
+            minval = value;
+         }
+         if (dotQ) {
+            continue;
+         }
+         if (strchr(buffer, '_') != NULL) {
+            continue;
+         }
+         if (strchr(buffer, ']') != NULL) {
+            continue;
+         }
+	 value = Convert::kernToBase40(buffer);
+         if (value < 0) {
+            continue;
+         }
+         soundQ[value % 40] = 1;
+      }
+   }
+
+   if (minval > 100000) {
+      return -1;
+   }
+
+   minval = minval % 12;
+   int i;
+   int tval;
+   for (i=0; i<notes.getSize(); i++) {
+      if (notes[i] >= 0) {
+         if (soundQ[notes[i]%40]) {
+            sounding[i] = 1;
+         }
+      }
+      tval = Convert::base40ToMidiNoteNumber(notes[i]);
+      if (tval < 0) {
+         continue;
+      }
+      tval = tval % 12;
+      if (tval == minval) {
+         output = i;
+         // break;  need to supress this because of sounding tests
+      }
+   }
+   return output;
 }
 
 
@@ -283,4 +525,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 3ba44d5108fa6b105d672a9f307be510 sonority.cpp [20090518]
+// md5sum: 71deb39b03840b1ae8917c862eae7648 sonority.cpp [20100905]

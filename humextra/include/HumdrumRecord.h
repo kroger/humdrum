@@ -8,6 +8,7 @@
 // Last Modified: Tue Apr 28 14:34:13 PDT 2009 (added isTandem)
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
 // Last Modified: Sat Aug  8 23:50:10 PDT 2009 (added isExInterp)
+// Last Modified: Sat May 22 10:13:30 PDT 2010 (added RationalNumber)
 // Filename:      ...sig/include/sigInfo/HumdrumRecord.h
 // Webpage:       http://sig.sapp.org/include/sigInfo/HumdrumRecord.h
 // Syntax:        C++ 
@@ -23,6 +24,7 @@
 #include "Array.h"
 #include "EnumerationEI.h"
 #include "Enum_humdrumRecord.h"
+#include "RationalNumber.h"
 
 #ifndef OLDCPP
    #include <iostream>
@@ -61,10 +63,13 @@ class HumdrumRecord {
       int               equalFieldsQ       (const char* anInterp,
                                               const char* compareString);
       double            getAbsBeat         (void) const;
+      RationalNumber    getAbsBeatR        (void) const;
       double            getBeat            (void) const;
+      RationalNumber    getBeatR           (void) const;
       int               getDotLine         (int index);
       int               getDotSpine        (int index);
       double            getDuration        (void) const;
+      RationalNumber    getDurationR       (void) const;
       int               getExInterpNum     (int fieldIndex) const;
       const char*       getExInterp        (int fieldIndex) const;
       int               getFieldCount      (void) const;
@@ -129,10 +134,22 @@ class HumdrumRecord {
       HumdrumRecord&    operator=          (const char* aRecord);
       const char*       operator[]         (int index) const;
       void              setAbsBeat         (double aValue);
+      void              setAbsBeat         (int top, int bottom);
+      void              setAbsBeatR        (int top, int bottom);
+      void              setAbsBeat         (const RationalNumber& aValue);
+      void              setAbsBeatR        (const RationalNumber& aValue);
       void              setBeat            (double aValue);
+      void              setBeat            (int top, int bottom);
+      void              setBeatR           (int top, int bottom);
+      void              setBeat            (const RationalNumber& aValue);
+      void              setBeatR           (const RationalNumber& aValue);
       void              setDotLine         (int index, int value);
       void              setDotSpine        (int index, int value);
       void              setDuration        (double aValue);
+      void              setDuration        (int top, int bottom);
+      void              setDurationR       (int top, int bottom);
+      void              setDuration        (RationalNumber aValue);
+      void              setDurationR       (RationalNumber aValue);
       void              setExInterp        (int fieldIndex, int interpretation);
       void              setExInterp        (int fieldIndex, 
                                               const char* interpretation);
@@ -157,8 +174,11 @@ class HumdrumRecord {
 
       // data storage for rhythmic analysis in relation to entire Humdrum File.
       float             duration;       // duration of the record 
+      RationalNumber    durationR;      // duration of the record 
       float             meterloc;       // metric position of the record
+      RationalNumber    meterlocR;      // metric position of the record
       float             absloc;         // absolute beat location of the record
+      RationalNumber    abslocR;        // absolute beat location of the record
       
       // private functions
       int               determineFieldCount(const char* aLine) const;

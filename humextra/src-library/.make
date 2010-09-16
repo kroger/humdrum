@@ -15,6 +15,7 @@ done
 ln -s $SRCBASE/sigBase/PosixRegularExpression.cpp
 ln -s $SRCBASE/sigBase/PerlRegularExpression.cpp
 ln -s $SRCBASE/sigBase/FileIO.cpp
+#ln -s $SRCBASE/sigBase/RationalNumber.cpp
 ln -s $SRCBASE/sigBase/Options.cpp
 ln -s $SRCBASE/sigBase/Options_private.cpp
 ln -s $SRCBASE/sigBase/PixelColor.cpp

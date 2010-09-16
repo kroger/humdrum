@@ -18,6 +18,7 @@
 // Last Modified: Thu Jun 18 15:29:49 PDT 2009 (modified getExInterp behavior)
 // Last Modified: Thu Jun 18 15:57:53 PDT 2009 (added hasSpines())
 // Last Modified: Mon Nov 23 14:30:35 PST 2009 (fixed equalDataQ())
+// Last Modified: Sat May 22 10:29:39 PDT 2010 (added RationalNumber)
 // Filename:      ...sig/src/sigInfo/HumdrumRecord.cpp
 // Webpage:       http://sig.sapp.org/src/sigInfo/HumdrumRecord.cpp
 // Syntax:        C++ 
@@ -57,8 +58,11 @@
 
 HumdrumRecord::HumdrumRecord(void) {
    duration = 0.0;
+   durationR.zero();
    meterloc = 0.0;
+   meterlocR.zero();
    absloc   = 0.0;
+   abslocR.zero();
    spinewidth = 0;
 
    type = E_unknown;
@@ -67,32 +71,35 @@ HumdrumRecord::HumdrumRecord(void) {
    modifiedQ = 0;
    lineno = -1;
 
-   recordFields.allowGrowth();
+   recordFields.allowGrowth(1);
    recordFields.setSize(32);   
-   recordFields.setGrowth(32);   
+   recordFields.setGrowth(132);   
    recordFields.setSize(0);   
 
-   interpretation.allowGrowth();
+   interpretation.allowGrowth(1);
    interpretation.setSize(32);
-   interpretation.setGrowth(32);
+   interpretation.setGrowth(132);
    interpretation.setSize(0);
 
-   spineids.allowGrowth();
+   spineids.allowGrowth(1);
    spineids.setSize(32);
-   spineids.setGrowth(32);
+   spineids.setGrowth(132);
    spineids.setSize(0);
 
    dotline.setSize(0);
    dotspine.setSize(32);
-   dotspine.setGrowth(32);
+   dotspine.setGrowth(132);
    dotspine.setSize(0);
 }
 
 
 HumdrumRecord::HumdrumRecord(const char* aLine, int aLineNum) {
    duration = 0.0;
+   durationR.zero();
    meterloc = 0.0;
+   meterlocR.zero();
    absloc   = 0.0;
+   abslocR.zero();
    spinewidth = 0;
 
    lineno = aLineNum;
@@ -100,13 +107,25 @@ HumdrumRecord::HumdrumRecord(const char* aLine, int aLineNum) {
    recordString = new char[1];
    recordString[0] = '\0';
    modifiedQ = 0;
-   interpretation.allowGrowth();
+   interpretation.allowGrowth(1);
+   interpretation.setSize(32);
+   interpretation.setGrowth(132);
    interpretation.setSize(0);
-   recordFields.allowGrowth();
+   recordFields.allowGrowth(1);
+   recordFields.setSize(32);
+   recordFields.setGrowth(132);
    recordFields.setSize(0);
-   spineids.allowGrowth();
+   spineids.allowGrowth(1);
+   spineids.setSize(32);
+   spineids.setGrowth(132);
    spineids.setSize(0);
+   dotline.allowGrowth(1);
    dotline.setSize(0);
+   dotline.setSize(32);
+   dotline.setGrowth(132);
+   dotspine.allowGrowth(1);
+   dotspine.setSize(32);
+   dotspine.setGrowth(132);
    dotspine.setSize(0);
    setLine(aLine);
 }
@@ -114,8 +133,11 @@ HumdrumRecord::HumdrumRecord(const char* aLine, int aLineNum) {
 
 HumdrumRecord::HumdrumRecord(const HumdrumRecord& aRecord) {
    duration = aRecord.duration;
+   durationR= aRecord.durationR;
    meterloc = aRecord.meterloc;
+   meterlocR= aRecord.meterlocR;
    absloc   = aRecord.absloc;
+   abslocR  = aRecord.abslocR;
    spinewidth = aRecord.spinewidth;
    type = aRecord.type;
    lineno = aRecord.lineno;
@@ -154,7 +176,6 @@ HumdrumRecord::~HumdrumRecord() {
       delete [] recordString;
       recordString = NULL;
    }
-
    int i;
    for (i=0; i<recordFields.getSize(); i++) {
       if (recordFields[i] != NULL) {
@@ -221,12 +242,14 @@ void HumdrumRecord::changeField(int aField, const char* aString) {
 
    if (recordFields[aField] != NULL) {
       delete [] recordFields[aField];
+      recordFields[aField] = NULL;
    }
    recordFields[aField] = new char[strlen(aString) + 1];
    strcpy(recordFields[aField], aString);
    
    modifiedQ = 1;
 }
+
 
 
 //////////////////////////////
@@ -449,11 +472,17 @@ char* HumdrumRecord::getBibValue(char* buffer, int maxsize) {
 // HumdrumRecord::getAbsBeat -- returns the absolute beat location
 //    in the file.  This value is by default 0, but can be set
 //    manally with the setAbsBeat() function, or by calling
-//    HumdrumFile::analyzeRhythm().
+//    HumdrumFile::analyzeRhythm().  abslocR() returns the rational
+//    value of the absolute beat.
 //
 
 double HumdrumRecord::getAbsBeat(void) const { 
-   return absloc;
+   return abslocR.getFloat();
+}
+
+
+RationalNumber HumdrumRecord::getAbsBeatR(void) const { 
+   return abslocR;
 }
 
 
@@ -491,7 +520,12 @@ int HumdrumRecord::getDotSpine(int index) {
 //
 
 double HumdrumRecord::getBeat(void) const { 
-   return meterloc;
+   return meterlocR.getFloat();
+}
+
+
+RationalNumber HumdrumRecord::getBeatR(void) const { 
+   return meterlocR;
 }
 
 
@@ -505,7 +539,11 @@ double HumdrumRecord::getBeat(void) const {
 //
 
 double HumdrumRecord::getDuration(void) const { 
-   return duration;
+   return durationR.getFloat();
+}
+
+RationalNumber HumdrumRecord::getDurationR(void) const { 
+   return durationR;
 }
 
 
@@ -1188,8 +1226,11 @@ HumdrumRecord& HumdrumRecord::operator=(const HumdrumRecord& aRecord) {
    }   
 
    duration = aRecord.duration;
+   durationR= aRecord.durationR;
    meterloc = aRecord.meterloc;
+   meterlocR= aRecord.meterlocR;
    absloc   = aRecord.absloc;
+   abslocR  = aRecord.abslocR;
 
    int i;
    type = aRecord.type;
@@ -1227,8 +1268,10 @@ HumdrumRecord& HumdrumRecord::operator=(const HumdrumRecord& aRecord) {
           interpretation[i] = aRecord.interpretation[i];
       }
       allocSize = strlen(aRecord.recordFields[i]) + 1;
+
       recordFields[i] = new char[allocSize];
       strcpy(recordFields[i], aRecord.recordFields[i]);
+
       spineids[i] = new char[strlen(aRecord.spineids[i]) + 1];
       strcpy(spineids[i], aRecord.spineids[i]);
    }
@@ -1245,8 +1288,11 @@ HumdrumRecord& HumdrumRecord::operator=(const HumdrumRecord* aRecord) {
 
 HumdrumRecord& HumdrumRecord::operator=(const char* aLine) {
    duration = 0.0;
+   durationR.zero();
    meterloc = 0.0;
+   meterlocR.zero();
    absloc   = 0.0;
+   abslocR.zero();
    setLine(aLine);   
    return *this;
 }
@@ -1278,7 +1324,29 @@ const char* HumdrumRecord::operator[](int index) const {
 //
 
 void HumdrumRecord::setAbsBeat(double aValue) { 
+   cerr << "ERROR not allowed to use HumdrumRecord::setAbsBeat at the moment" 
+        << endl;
    absloc = (float)aValue;
+   // this function cannot co-exists with the following one
+   // and will have to be removed.
+}
+
+void HumdrumRecord::setAbsBeat(const RationalNumber& aValue) { 
+   abslocR = aValue;
+   absloc = abslocR.getFloat();
+}
+
+void HumdrumRecord::setAbsBeatR(const RationalNumber& aValue) { 
+   abslocR = aValue;
+   absloc = abslocR.getFloat();
+}
+
+void HumdrumRecord::setAbsBeatR(int top, int bottom) {
+   abslocR.setValue(top, bottom);
+}
+
+void HumdrumRecord::setAbsBeat(int top, int bottom) {
+   abslocR.setValue(top, bottom);
 }
 
 
@@ -1292,7 +1360,25 @@ void HumdrumRecord::setAbsBeat(double aValue) {
 //
 
 void HumdrumRecord::setBeat(double aValue) { 
+   cerr << "ERROR not allowed to use HumdrumRecord::setBeat at the moment" 
+        << endl;
    meterloc = (float)aValue;
+}
+
+void HumdrumRecord::setBeat(int top, int bottom) { 
+   meterlocR.setValue(top, bottom);
+}
+
+void HumdrumRecord::setBeatR(int top, int bottom) { 
+   meterlocR.setValue(top, bottom);
+}
+
+void HumdrumRecord::setBeat(const RationalNumber& aValue) { 
+   meterlocR = aValue;
+}
+
+void HumdrumRecord::setBeatR(const RationalNumber& aValue) { 
+   meterlocR = aValue;
 }
 
 
@@ -1326,7 +1412,25 @@ void HumdrumRecord::setDotSpine(int index, int value) {
 //
 
 void HumdrumRecord::setDuration(double aValue) { 
+   cerr << "Error: not allowed to use HumdrumRecord::setDuration at the moment"
+        << endl;
    duration = (float)aValue;
+}
+
+void HumdrumRecord::setDuration(int top, int bottom) {
+   durationR.setValue(top, bottom);
+}
+
+void HumdrumRecord::setDuration(RationalNumber aValue) { 
+   durationR = aValue;
+}
+
+void HumdrumRecord::setDurationR(int top, int bottom) {
+   durationR.setValue(top, bottom);
+}
+
+void HumdrumRecord::setDurationR(RationalNumber aValue) { 
+   durationR = aValue;
 }
 
 
@@ -3442,6 +3546,7 @@ void HumdrumRecord::makeRecordString(void) {
 
    if (recordString != NULL) {
       delete [] recordString;
+      recordString = NULL;
    }
    recordString = new char[strlen(temp.CSTRING) + 1];
    strcpy(recordString, temp.CSTRING);

@@ -17,6 +17,7 @@
 // Last Modified: Mon Jun  5 06:59:27 PDT 2006 (add fixIrritatingPickupProblem)
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
 // Last Modified: Sat Sep  5 22:03:28 PDT 2009 (ArrayInt to Array<int>)
+// Last Modified: Sun Jun 20 13:42:12 PDT 2010 (Added rhythm list)
 // Filename:      ...sig/include/sigInfo/HumdrumFile.h
 // Web Address:   http://sig.sapp.org/include/sigInfo/HumdrumFile.h
 // Syntax:        C++ 
@@ -105,11 +106,18 @@ class HumdrumFile : public HumdrumFileBasic {
       HumdrumFile            extract          (int aField);
       double                 getPickupDuration(void);
       double                 getPickupDur     (void);
+      RationalNumber         getPickupDurationR(void);
+      RationalNumber         getPickupDurR    (void);
       int                    getStartIndex    (double startbeat);
+      int                    getStartIndex    (RationalNumber startbeat);
       int                    getStopIndex     (double stopbeat);
+      int                    getStopIndex     (RationalNumber startbeat);
       double                 getAbsBeat       (int index);
+      RationalNumber         getAbsBeatR      (int index);
       double                 getBeat          (int index);
+      RationalNumber         getBeatR         (int index);
       double                 getDuration      (int index);
+      RationalNumber         getDurationR     (int index);
       const char*            getLastDatum     (int index, int spine, 
                                                int options = 0);
       const char*            getNextDatum     (int index, int spine, 
@@ -137,9 +145,14 @@ class HumdrumFile : public HumdrumFileBasic {
                                                int endLine = 0);
       double                 getTiedDuration  (int linenum, int field, 
                                                  int token = 0);
+      RationalNumber         getTiedDurationR (int linenum, int field, 
+                                               int token = 0);
       double                 getTiedStartBeat (int linenum, int field,
                                                  int token = 0);
+      RationalNumber         getTiedStartBeatR(int linenum, int field,
+                                                 int token = 0);
       double                 getTotalDuration (void);
+      RationalNumber         getTotalDurationR(void);
       HumdrumFile&           operator=        (const HumdrumFile& aFile);
       void                   read             (const char* filename);
       void                   read             (istream& inStream);
@@ -149,6 +162,7 @@ class HumdrumFile : public HumdrumFileBasic {
                                                  int debug = 0);
       int                    getMinTimeBase   (void);
       int                    rhythmQ          (void);
+      void                   getRhythms       (Array<int>& rhys);
 
       //
       // analyses that generate external data
@@ -182,9 +196,10 @@ class HumdrumFile : public HumdrumFileBasic {
             int rhythmQ = 1, int binaryQ = 0, int tracknum = -1);
 
    protected:
-      int rhythmcheck;         // 1 = rhythm analysis has been done
-      int minrhythm;           // the least common multiple of all rhythms
-      double pickupdur;        // duration of a pickup measure
+      int rhythmcheck;          // 1 = rhythm analysis has been done
+      int minrhythm;            // the least common multiple of all rhythms
+      Array<int> localrhythms;  // used with rhythmanalysis
+      RationalNumber pickupdur; // duration of a pickup measure
 
    private:
       static int intcompare(const void* a, const void* b);
@@ -201,25 +216,28 @@ class HumdrumFile : public HumdrumFileBasic {
 
       // rhythm analysis functions:
       void       privateRhythmAnalysis(const char* base = "", int debug = 0);
-      double     determineDuration(HumdrumRecord& aRecord,
-                         int& init, SigCollection<double>& lastdurations, 
-                         SigCollection<double>& runningstatus,
+      RationalNumber determineDurationR(HumdrumRecord& aRecord,
+                        int& init, SigCollection<RationalNumber>& lastdurations,
+                         SigCollection<RationalNumber>& runningstatus,
                          Array<int>& rhythms, Array<int>& ignore);
       void       adjustForSpinePaths(HumdrumRecord& aRecord, 
-                         SigCollection<double>& lastdurations, 
-                         SigCollection<double>& runningstatus, int& init,
-                         int& datastart, Array<int>& ignore);
+                         SigCollection<RationalNumber>& lastdurations, 
+                         SigCollection<RationalNumber>& runningstatus, 
+			 int& init, int& datastart, Array<int>& ignore);
       void       adjustForRhythmMarker(HumdrumRecord& aRecord,
                          int state, int spine, 
-                         SigCollection<double>& lastdurations, 
-                         SigCollection<double>& runningstatus, int& init, 
-                         int& datastart, Array<int>& ignore);
+                         SigCollection<RationalNumber>& lastdurations, 
+                         SigCollection<RationalNumber>& runningstatus, 
+			 int& init, int& datastart, Array<int>& ignore);
       void       fixIncompleteBarMeter(SigCollection<double>& meterbeats, 
                          SigCollection<double>& timebase);
+      void       fixIncompleteBarMeterR(
+		         SigCollection<RationalNumber>& meterbeats, 
+                         SigCollection<RationalNumber>& timebase);
       void       fixIrritatingPickupProblem(void);
       void       spaceEmptyLines(void);
-      void       initializeTracers(SigCollection<double>& lastduration,
-                         SigCollection<double>& runningstatus, 
+      void       initializeTracers(SigCollection<RationalNumber>& lastduration,
+                         SigCollection<RationalNumber>& runningstatus, 
                          HumdrumRecord& currRecord);
       int        GCD      (int a, int b);
       int        findlcm  (Array<int>& rhythms);

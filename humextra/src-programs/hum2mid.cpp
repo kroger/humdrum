@@ -416,7 +416,7 @@ void insertBendData(MidiFile& outfile, double* bendbypc) {
 
 void adjustEventTimes(MidiFile& outfile, int starttick) {
    int i, j;
-   _MFEvent* eventptr;
+   MFEvent* eventptr;
    int atime;
    int minval = 1000000000;
    for (i=0; i<outfile.getTrackCount(); i++) {
@@ -1377,9 +1377,9 @@ void storeMidiData(HumdrumFile& infile, MidiFile& outfile) {
                      continue;
                   }
 
-                  accentQ    = (int)strchr(buffer1, '^');
-                  sforzandoQ = (int)strchr(buffer1, 'z');
-                  staccatoQ  = (int)strchr(buffer1, '\'');
+                  accentQ    = strchr(buffer1, '^')  == NULL ? 0 : 1;
+                  sforzandoQ = strchr(buffer1, 'z')  == NULL ? 0 : 1;
+                  staccatoQ  = strchr(buffer1, '\'') == NULL ? 0 : 1;
 
                   if (shortenQ) {
                      duration -= shortenamount;
@@ -2755,4 +2755,4 @@ void printPerfVizTempo(double approxtempo) {
 
 
 
-// md5sum: 2d643880b1eb43b89e42cb1ba5801fd7 hum2mid.cpp [20090518]
+// md5sum: f5547387884e8014cbc9dddf936c615f hum2mid.cpp [20100905]

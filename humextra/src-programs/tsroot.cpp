@@ -220,16 +220,26 @@ void processFile(const char* filename, HumdrumFile& infile) {
    // delete temporary files
    if (harmonyQ) {
       sprintf(commandbuffer, "rm -f %s", tmpname);
-      system(commandbuffer);
+      if (system(commandbuffer) == -1) {
+         exit(-1);
+      }
       sprintf(commandbuffer, "rm -f %s", tmpname2);
-      system(commandbuffer);
+      if (system(commandbuffer) == -1) {
+         exit(-1);
+      }
       sprintf(commandbuffer, "rm -f %s", harmonytmpname);
-      system(commandbuffer);
+      if (system(commandbuffer) == -1) {
+         exit(-1);
+      }
       sprintf(commandbuffer, "rm -f %s", parametertmpname);
-      system(commandbuffer);
+      if (system(commandbuffer) == -1) {
+         exit(-1);
+      }
    } else {
       sprintf(commandbuffer, "rm -f %s", tmpname);
-      system(commandbuffer);
+      if (system(commandbuffer) == -1) {
+         exit(-1);
+      }
    }
 }
 

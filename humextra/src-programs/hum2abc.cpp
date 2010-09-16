@@ -1023,7 +1023,6 @@ void printLayer(int layer, ostream& out, const VoiceMap& voiceinfo,
       const MeasureInfo& measureinfo, HumdrumFile& infile,
       Array<Array<Coordinate> >& address, Array<Coordinate>& meterclef) {
 
-
    if (debugQ) {
       cout << "\%\% Printing measure";
       if (measureinfo.measurenum  > 0) {
@@ -1142,7 +1141,7 @@ void printLayer(int layer, ostream& out, const VoiceMap& voiceinfo,
 
 	 currentbeat = infile[row].getAbsBeat() + notedurs[counter];
 
-         if ((layer == 1) && 
+         if ((layer == 1) && (meterclef.getSize() > 0) &&
              (row > meterclef[meterclef.getSize()-1].row)) {
             printMeterAndClefChanges(out, row, meterclef, infile);
          }
@@ -4295,7 +4294,7 @@ void parseBibliographic(Array<char*>& header, HumdrumFile& infile) {
       Array<char> QRecord;
       QRecord.setSize(0);
       if (strcmp(header[QQ], "") == 0) {
-         if ((!notempoQ) && tempo > 0 || (strcmp(omdstring, "") != 0)) {
+         if (((!notempoQ) && (tempo > 0)) || ((strcmp(omdstring, "") != 0))) {
             if (options.getBoolean("q")) {
                calculateQRecord(QRecord, -1, omdstring, top, bot);
             } else {
@@ -5501,4 +5500,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: e10db8c2efb03c048f256ac6621f8d9e hum2abc.cpp [20091117]
+// md5sum: bfdac6de32e1f83df0996a4ebf6bae56 hum2abc.cpp [20100905]

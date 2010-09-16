@@ -4,6 +4,7 @@
 // Last Modified: Sat Mar 13 21:37:30 PST 2004
 // Last Modified: Thu May  6 00:42:02 PDT 2004 (added measure renumbering)
 // Last Modified: Thu Jun  3 18:01:43 PDT 2004 (added -p option)
+// Last Modified: Sat Jun 26 16:49:06 PDT 2010 (added middle syllable markers)
 // Filename:      ...sig/examples/all/xml2hum.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/xml2hum.cpp
 // Syntax:        C++; museinfo
@@ -14,6 +15,7 @@
 #include "humdrum.h"
 #include "MusicXmlFile.h"
 #include "Options.h"
+#include "PerlRegularExpression.h"
 
 #include <iostream>
 
@@ -199,4 +201,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 5c295e35ba6c515705c27b09a4d793fb xml2hum.cpp [20050403]
+// md5sum: f890ed97b6d9d1f27575bf15b06de328 xml2hum.cpp [20100628]

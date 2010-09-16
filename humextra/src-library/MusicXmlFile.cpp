@@ -16,6 +16,7 @@
 // Last Modified: Mon Sep 21 15:02:14 PDT 2009 (fixed cut-time identification)
 // Last Modified: Mon Sep 21 15:50:43 PDT 2009 (differentiate q and Q graces)
 // Last Modified: Mon Sep 21 16:27:49 PDT 2009 (removed elided slur ident.)
+// Last Modified: Sat Jun 26 16:53:21 PDT 2010 (added syllabic middle parsing)
 //
 // Filename:      ...sig/include/sigInfo/MusicXmlFile.h
 // Web Address:   http://sig.sapp.org/include/sigInfo/MusicXmlFile.h
@@ -1272,6 +1273,8 @@ void MusicXmlFile::parseMeasure(CXMLObject* entry, int partnum,
             parseDirection(element, partnum, ticktime);
          } else if (element->GetName() == "barline") {
             parseBarline(element, partnum, ticktime);
+         } else if (element->GetName() == "print") {
+            parsePrint(element, partnum, ticktime);
          } else if (element->GetName() == "backup") {
             parseBackup(element, partnum, ticktime);
          } else if (element->GetName() == "forward") {
@@ -1503,6 +1506,36 @@ void MusicXmlFile::parseBackup(CXMLObject* object,
 
    ticktime -= duration;
 }
+
+
+
+//////////////////////////////
+//
+// MusicXmlFile::parsePrint -- Print suggestions.
+//
+
+void MusicXmlFile::parsePrint(CXMLObject* entry, int partnum, int ticktime) {
+   if (entry == NULL) {
+      return;
+   }
+   if (entry->GetType() != xmlElement) {
+      return;
+   }
+   CXMLElement* element = (CXMLElement*)entry;
+   if (element->GetName() != "print") {
+      return;
+   }
+
+   _MusicXmlItem tempitem;
+   tempitem.type     = MXI_print;
+   tempitem.obj      = entry;
+   tempitem.ticktime = ticktime;
+   tempitem.serialnum= parseserialnum++;
+   tempitem.divisions = parsedivisions;
+   
+   appendAllPartStaves(partnum, tempitem);
+}
+
 
 
 
@@ -2044,6 +2077,12 @@ int MusicXmlFile::staffcompare(const void* A, const void* B) {
       // put clef marks before time and key signatures
       // put key signatures before time signatures
       // put metronome markings after time signatures.
+      if ((a.type == MXI_measure) && (b.type == MXI_print)) return -1;
+      if ((a.type == MXI_print) && (b.type == MXI_measure)) return +1;
+
+      if ((a.type == MXI_print) && (b.type != MXI_print)) return -1;
+      if ((a.type != MXI_print) && (b.type == MXI_print)) return +1;
+      
       if ((a.type == MXI_clef) && (b.type == MXI_time)) return -1;
       if ((a.type == MXI_time) && (b.type == MXI_clef)) return +1;
 
@@ -2204,6 +2243,10 @@ void MusicXmlFile::humdrumPart(HumdrumFile& hfile, int staffno, int debugQ) {
                }
                (*tempstream) << "\n"; humline++;
             }
+            break;
+         case MXI_print:
+	    humline += printSystemBreak((*tempstream), partdata[staffno][i].obj);
+	    humline += printPageBreak((*tempstream), partdata[staffno][i].obj);
             break;
          case MXI_barline:
             if (printMeasureStyle(buffer, staffno, i)) {
@@ -2390,7 +2433,7 @@ void MusicXmlFile::addLyrics(HumdrumFile& hfile, int staffno) {
                // add "*", "**text", or "*-" token
                // cout << "Adding a interpretation element" << endl;
                if (strncmp(hfile[i][0], "**", 2) == 0) {
-               hfile[i].appendField("**text", E_unknown, "1");
+               hfile[i].appendField("**silbe", E_unknown, "1");
                } else if (strncmp(hfile[i][0], "*-", 2) == 0) {
                   hfile[i].appendField("*-", E_unknown, "1");
                } else if (strncmp(hfile[i][0], "*staff", 6) == 0) {
@@ -2547,10 +2590,20 @@ char* MusicXmlFile::getLyricText(char* buffer, CXMLObject* object) {
    if (strcmp(formatstring.c_str(), "end") == 0) {
       strcat(buffer, "-");
    }
+   if (strcmp(formatstring.c_str(), "middle") == 0) {
+      strcat(buffer, "-");
+   }
    strncat(buffer, string.c_str(), 1024);
    if (strcmp(formatstring.c_str(), "begin") == 0) {
       strcat(buffer, "-");
    }
+   if (strcmp(formatstring.c_str(), "middle") == 0) {
+      strcat(buffer, "-");
+   }
+
+   // <extend/> is used to place underscore starting on current
+   // syllable.
+   
    return buffer;
 }
 
@@ -2934,6 +2987,72 @@ char* MusicXmlFile::getKernKey(char* buffer, CXMLObject* object) {
 }
 
 
+
+//////////////////////////////
+//
+// MusicXmlFile::printSystemBreak -- search for an attribute called
+// new-system="yes"
+//
+
+int MusicXmlFile::printSystemBreak(ostream& out, CXMLObject* object) {
+   int output = 0;
+   if (object == NULL) {
+      return output;
+   }
+   if (object->GetType() != xmlElement) {
+      return output;
+   }
+   CXMLElement* element = (CXMLElement*)object;
+   if (element->GetName() != "print") {
+      return output;
+   }   
+
+   int i;
+   for (i=0; i<element->GetAttributes().GetLength(); i++) {
+      if (element->GetAttributes().GetName(i) == "new-system") {
+         if (element->GetAttributes().GetValue(i) == 
+               "yes") {
+            out << "!!linebreak:default\n";
+	    output++;
+         }
+      }
+   }
+   return output;
+}
+
+
+
+//////////////////////////////
+//
+// MusicXmlFile::printPageBreak -- search for an attribute called
+// new-system="yes"
+//
+
+int MusicXmlFile::printPageBreak(ostream& out, CXMLObject* object) {
+   int output = 0;
+   if (object == NULL) {
+      return output;
+   }
+   if (object->GetType() != xmlElement) {
+      return output;
+   }
+   CXMLElement* element = (CXMLElement*)object;
+   if (element->GetName() != "print") {
+      return output;
+   }   
+
+   int i;
+   for (i=0; i<element->GetAttributes().GetLength(); i++) {
+      if (element->GetAttributes().GetName(i) == "new-page") {
+         if (element->GetAttributes().GetValue(i) == 
+               "yes") {
+            out << "!!pagebreak:default\n";
+	    output++;
+         }
+      }
+   }
+   return output;
+}
 
 //////////////////////////////
 //

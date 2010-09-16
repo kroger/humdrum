@@ -299,7 +299,7 @@ type& SigCollection<type>::operator[](int elementIndex) {
          this->grow();
       }
       this->size++;
-   } else if (elementIndex >= this->size) {
+   } else if ((elementIndex >= this->size) || (elementIndex < 0)) {
       std::cerr << "Error: accessing invalid array location " 
            << elementIndex 
            << " Maximum is " << this->size-1 << std::endl;
@@ -316,7 +316,7 @@ type& SigCollection<type>::operator[](int elementIndex) {
 
 template<class type>
 type SigCollection<type>::operator[](int elementIndex) const {
-   if (elementIndex >= this->size) {
+   if ((elementIndex >= this->size) || (elementIndex < 0)) {
       std::cerr << "Error: accessing invalid array location " 
            << elementIndex 
            << " Maximum is " << this->size-1 << std::endl;

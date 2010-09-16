@@ -101,6 +101,8 @@ class HumdrumFileBasic {
       Array<char*>  trackexinterp;
       static char   empty[1];
 
+      void          extractEmbeddedDataFromPdf(ostream& outputData, 
+                                               istream& inputData);
    private:
       static int intcompare(const void* a, const void* b);
 

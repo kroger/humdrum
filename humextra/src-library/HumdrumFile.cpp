@@ -1,5 +1,5 @@
 //
-// Copyright 1998-2004 by Craig Stuart Sapp, All Rights Reserved.
+// Copyright 1998-2010 by Craig Stuart Sapp, All Rights Reserved.
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon May 18 13:43:47 PDT 1998
 // Last Modified: Thu Jul  1 16:19:35 PDT 1999
@@ -39,6 +39,7 @@
 // Last Modified: Fri Jun 19 23:24:03 PDT 2009 (fixed malformed meter parsing)
 // Last Modified: Sat Sep  5 22:03:28 PDT 2009 (ArrayInt to Array<int>)
 // Last Modified: Mon Oct 12 15:49:27 PDT 2009 (fixed "*clef *v *v" type cases)
+// Last Modified: Sat May 22 10:52:36 PDT 2010 (added RationalNumber)
 // Filename:      ...sig/src/sigInfo/HumdrumFile.cpp
 // Web Address:   http://sig.sapp.org/src/sigInfo/HumdrumFile.cpp
 // Syntax:        C++ 
@@ -91,7 +92,8 @@
 HumdrumFile::HumdrumFile(void) : HumdrumFileBasic() {
    rhythmcheck = 0;
    minrhythm = 0;
-   pickupdur = -1.0;
+   pickupdur = -1;
+   localrhythms.setSize(0);
 }
 
 
@@ -99,21 +101,24 @@ HumdrumFile::HumdrumFile(const HumdrumFile& aHumdrumFile) :
    HumdrumFileBasic(aHumdrumFile) {
    rhythmcheck = 0;
    minrhythm = 0;
-   pickupdur = -1.0;
+   pickupdur = -1;
+   localrhythms.setSize(0);
 }
 
 HumdrumFile::HumdrumFile(const HumdrumFileBasic& aHumdrumFile) :
    HumdrumFileBasic(aHumdrumFile) {
    rhythmcheck = 0;
    minrhythm = 0;
-   pickupdur = -1.0;
+   pickupdur = -1;
+   localrhythms.setSize(0);
 }
 
 
 HumdrumFile::HumdrumFile(const char* filename) : HumdrumFileBasic(filename) {
    rhythmcheck = 0;
    minrhythm = 0;
-   pickupdur = -1.0;
+   pickupdur = -1;
+   localrhythms.setSize(0);
 }
 
 
@@ -160,10 +165,18 @@ int HumdrumFile::getMinTimeBase(void) {
 //
 
 double HumdrumFile::getPickupDuration(void) {
-   return pickupdur;
+   return pickupdur.getFloat();
 }
 
 double HumdrumFile::getPickupDur(void) {
+   return pickupdur.getFloat();
+}
+
+RationalNumber HumdrumFile::getPickupDurationR(void) {
+   return pickupdur;
+}
+
+RationalNumber HumdrumFile::getPickupDurR(void) {
    return pickupdur;
 }
 
@@ -197,6 +210,29 @@ int HumdrumFile::getStartIndex(double startbeat) {
  
    return score.getNumLines() - 1;
 }
+ 
+
+int HumdrumFile::getStartIndex(RationalNumber startbeat) {
+   HumdrumFile& score = *this;
+   int index = 1;
+   while (index < score.getNumLines() - 1) {
+      if (score[index+1].getAbsBeatR() == score[index].getAbsBeatR()) {
+         index++;
+         continue;
+      }
+      if ((startbeat < score[index].getAbsBeatR()) &&
+          (startbeat > score[index-1].getAbsBeatR() ) ) {
+         return index;
+      }
+      if ((startbeat > score[index].getAbsBeatR()) &&
+          (startbeat < score[index+1].getAbsBeatR() ) ) {
+         return index;
+      }
+      index++;
+   }
+ 
+   return score.getNumLines() - 1;
+}
 
 
 
@@ -206,7 +242,7 @@ int HumdrumFile::getStartIndex(double startbeat) {
 //    occuring on that beat.  If there is no items at that time,
 //    then return the first item before the specified time.
 //
- 
+
 int HumdrumFile::getStopIndex(double stopbeat) {
    HumdrumFile& score = *this;
    int index = 1;
@@ -217,6 +253,26 @@ int HumdrumFile::getStopIndex(double stopbeat) {
       }
       if (stopbeat > score[index].getAbsBeat() + ROUNDERR &&
           stopbeat < score[index+1].getAbsBeat() - ROUNDERR) {
+         return index;
+      }
+      index++;
+   }
+ 
+   return score.getNumLines() - 1;
+}         
+
+
+
+int HumdrumFile::getStopIndex(RationalNumber stopbeat) {
+   HumdrumFile& score = *this;
+   int index = 1;
+   while (index < score.getNumLines()) {
+      if ((stopbeat <= score[index].getAbsBeatR() ) &&
+          (stopbeat > score[index-1].getAbsBeatR() ) ) {
+         return index;
+      }
+      if ((stopbeat > score[index].getAbsBeatR() ) &&
+          (stopbeat < score[index+1].getAbsBeatR() ) ) {
          return index;
       }
       index++;
@@ -321,6 +377,21 @@ int HumdrumFile::assemble(HumdrumFile& output, int count, HumdrumFile* pieces) {
 
 //////////////////////////////
 //
+// HumdrumFile::getRhythms -- return a list of the rhythms found in the
+//      file.
+
+
+void HumdrumFile::getRhythms(Array<int>& rhys) {
+   if (rhythmQ() == 0) {
+      analyzeRhythm("4");
+   }
+   rhys = this->localrhythms;
+}
+
+
+
+//////////////////////////////
+//
 // HumdrumFile::combine --
 //
 
@@ -419,9 +490,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
          continue;
       } else if (A[a].getType() == E_humrec_global_comment) {
          i = b;
-         double basetime = B[b].getAbsBeat();
+         RationalNumber basetime = B[b].getAbsBeatR();
          i++;
-         while (B[i].getAbsBeat() == basetime) {
+         while (B[i].getAbsBeatR() == basetime) {
             if (strcmp(A[a][0], B[i][0]) == 0) {
                a++;
                continue;
@@ -528,11 +599,11 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
          continue;
       }
 
-      double adur = A[a].getAbsBeat();
-      double bdur = B[b].getAbsBeat();
+      RationalNumber adur = A[a].getAbsBeatR();
+      RationalNumber bdur = B[b].getAbsBeatR();
       // cout << "A BEAT = " << adur << "\tB BEAT = " << bdur << endl;
 
-      if (fabs(adur - bdur) < 0.0001) {
+      if ((adur - bdur) < 0) {
          // data lines are supposed to occur at the same time
 
          // handle unequal measures
@@ -936,7 +1007,8 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
 void HumdrumFile::clear(void) {
    HumdrumFileBasic::clear();
    rhythmcheck = 0;
-   pickupdur = -1.0;
+   pickupdur = -1;
+   localrhythms.setSize(0);
 }
 
 
@@ -961,6 +1033,9 @@ double HumdrumFile::getDuration(int index) {
    return (*this)[index].getDuration();
 }
 
+RationalNumber HumdrumFile::getDurationR(int index) {
+   return (*this)[index].getDurationR();
+}
 
 
 //////////////////////////////
@@ -1057,21 +1132,21 @@ const char* HumdrumFile::getNextDatum(int index, int spine, int options) {
 int HumdrumFile::getNextDatumLine(int& nspine, int index, int spine, 
       int options) { 
    HumdrumFile& file = *this;
-   double duration = 0.0;
+   RationalNumber duration(0,1);
    int nextline = -1;
    if (options == 0) {
       // search for next note based on the tied duration of the current note
-      duration = getTiedDuration(index, spine);
+      duration = getTiedDurationR(index, spine);
    } else {
       // search for next note based including tied notes (ignore ties)
-      duration = Convert::kernToDuration(file[index][spine]);
+      duration = Convert::kernToDurationR(file[index][spine]);
    }
 
-   if (duration >= getTotalDuration() - ROUNDERR) {
+   if (duration >= getTotalDurationR()) {
       nspine = -1;
       return -1;
    }
-   nextline = getStartIndex(getAbsBeat(index) + duration);
+   nextline = getStartIndex(getAbsBeatR(index) + duration);
    while (nextline < getNumLines() && getType(nextline) != E_humrec_data ) {
       nextline++;
    }
@@ -1115,6 +1190,10 @@ double HumdrumFile::getBeat(int index) {
    return (*this)[index].getBeat();
 }
 
+RationalNumber HumdrumFile::getBeatR(int index) {
+   return (*this)[index].getBeatR();
+}
+
 
 
 //////////////////////////////
@@ -1125,6 +1204,10 @@ double HumdrumFile::getBeat(int index) {
 
 double HumdrumFile::getAbsBeat(int index) {
    return (*this)[index].getAbsBeat();
+}
+
+RationalNumber HumdrumFile::getAbsBeatR(int index) {
+   return (*this)[index].getAbsBeatR();
 }
 
 
@@ -1666,21 +1749,29 @@ void HumdrumFile::convertKernStringToArray(Array<int>& array,
 //
 
 double HumdrumFile::getTiedDuration(int linenum, int field, int token) {
+   RationalNumber anum;
+   anum = getTiedDurationR(linenum, field, token);
+   return anum.getFloat();
+}
+
+
+RationalNumber HumdrumFile::getTiedDurationR(int linenum, int field, 
+      int token) {
    HumdrumFile& file = *this;
    int length = file.getNumLines();
    char buffer[128] = {0};
-   double duration = 0.0;   // total duration of tied notes.
-   int done = 0;            // true when end of tied note is found
-   int startpitch = 0;      // starting pitch of the tie
-   int matchpitch = 0;      // current matching pitch of the tie
+   RationalNumber duration(0,1); // total duration of tied notes.
+   int done = 0;                 // true when end of tied note is found
+   int startpitch = 0;           // starting pitch of the tie
+   int matchpitch = 0;           // current matching pitch of the tie
    
    file[linenum].getToken(buffer, field, token);
    if (strchr(buffer, '[')) {
-      duration = Convert::kernToDuration(buffer);
+      duration = Convert::kernToDurationR(buffer);
       // allow for enharmonic ties:
       startpitch = Convert::kernToMidiNoteNumber(buffer);
    } else {
-      return Convert::kernToDuration(buffer);
+      return Convert::kernToDurationR(buffer);
    }
 
 // not quite perfect: if two primary tracks with common ties, will have prob:
@@ -1702,7 +1793,7 @@ double HumdrumFile::getTiedDuration(int linenum, int field, int token) {
          if (strchr(file[currentLine][m], '_')) {
             matchpitch = Convert::kernToMidiNoteNumber(file[currentLine][m]);
             if (startpitch == matchpitch) {
-               duration += Convert::kernToDuration(file[currentLine][m]);
+               duration += Convert::kernToDurationR(file[currentLine][m]);
             } else {
                done = 1;
             }
@@ -1710,7 +1801,7 @@ double HumdrumFile::getTiedDuration(int linenum, int field, int token) {
          } else if (strchr(file[currentLine][m], ']')) {
             matchpitch = Convert::kernToMidiNoteNumber(file[currentLine][m]);
             if (startpitch == matchpitch) {
-               duration += Convert::kernToDuration(file[currentLine][m]);
+               duration += Convert::kernToDurationR(file[currentLine][m]);
                done = 1;
             } else {
                done = 1;
@@ -1733,22 +1824,30 @@ double HumdrumFile::getTiedDuration(int linenum, int field, int token) {
 //
 
 double HumdrumFile::getTiedStartBeat(int linenum, int field, int token) {
-   double startbeat = -1.0;
+   RationalNumber anum;
+   anum = getTiedStartBeatR(linenum, field, token);
+   return anum.getFloat();
+}
+
+
+RationalNumber HumdrumFile::getTiedStartBeatR(int linenum, int field, 
+      int token) {
+   RationalNumber startbeat = -1;
    HumdrumFile& file = *this;
    int length = file.getNumLines();
    char buffer[128] = {0};
-   double duration = 0.0;   // total duration of tied notes.
-   int done = 0;            // true when end of tied note is found
-   int startpitch = 0;      // starting pitch of the tie
-   int matchpitch = 0;      // current matching pitch of the tie
+   RationalNumber duration = 0;   // total duration of tied notes.
+   int done = 0;                  // true when end of tied note is found
+   int startpitch = 0;            // starting pitch of the tie
+   int matchpitch = 0;            // current matching pitch of the tie
    
    file[linenum].getToken(buffer, field, token);
    if (strchr(buffer, '[') != NULL) {
-      duration = Convert::kernToDuration(buffer);
+      duration = Convert::kernToDurationR(buffer);
       // allow for enharmonic ties:
       startpitch = Convert::kernToMidiNoteNumber(buffer);
    } else {
-      startbeat = file[linenum].getAbsBeat();
+      startbeat = file[linenum].getAbsBeatR();
       return startbeat;
    }
 
@@ -1769,7 +1868,7 @@ double HumdrumFile::getTiedStartBeat(int linenum, int field, int token) {
          if (strchr(file[currentLine][m], '_')) {
             matchpitch = Convert::kernToMidiNoteNumber(file[currentLine][m]);
             if (startpitch == matchpitch) {
-               duration += Convert::kernToDuration(file[currentLine][m]);
+               duration += Convert::kernToDurationR(file[currentLine][m]);
             } else {
                done = 1;
             }
@@ -1777,7 +1876,7 @@ double HumdrumFile::getTiedStartBeat(int linenum, int field, int token) {
          } else if (strchr(file[currentLine][m], ']')) {
             matchpitch = Convert::kernToMidiNoteNumber(file[currentLine][m]);
             if (startpitch == matchpitch) {
-               duration += Convert::kernToDuration(file[currentLine][m]);
+               duration += Convert::kernToDurationR(file[currentLine][m]);
                done = 1;
             } else {
                done = 1;
@@ -1800,9 +1899,15 @@ double HumdrumFile::getTiedStartBeat(int linenum, int field, int token) {
 //
 
 double HumdrumFile::getTotalDuration(void) {
+   RationalNumber anum;
+   anum = getTotalDurationR();
+   double output = ((int)(anum.getFloat() * 10000 + 0.5))/10000.0;
+   return output;
+}
+
+RationalNumber HumdrumFile::getTotalDurationR(void) {
    HumdrumFile& score = *this;
-   double output = score[score.getNumLines()-1].getAbsBeat();
-   output = ((int)(output * 10000 + 0.5))/10000.0;
+   RationalNumber output = score[score.getNumLines()-1].getAbsBeatR();
    return output;
 }
 
@@ -1834,6 +1939,7 @@ HumdrumFile& HumdrumFile::operator=(const HumdrumFile& aFile) {
 
    rhythmcheck = aFile.rhythmcheck;
    maxtracks = aFile.maxtracks;
+   localrhythms = aFile.localrhythms;
    return *this;
 }
 
@@ -1893,15 +1999,15 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
    rhythms.allowGrowth(1);
 
    HumdrumFile& infile = *this;
-   double summation = 0;           // for summing measure duration
-   double duration;
+   RationalNumber summation(0,1);  // for summing measure duration
+   RationalNumber duration;
    HumdrumRecord tempRecord;       // for *beat: interpretation
    const char* slash;              // for metronome marking
-   double measureBeats = 0.0;
+   RationalNumber measureBeats(0,1);
    // for fixing meter locations:
 
-   SigCollection<double> meterbeats; 
-   SigCollection<double> timebaseC;
+   SigCollection<RationalNumber> meterbeats; 
+   SigCollection<RationalNumber> timebaseC;
 
    meterbeats.setSize(getNumLines());
    timebaseC.setSize(getNumLines());
@@ -1913,11 +2019,11 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
    ignore.setAll(0);
 
    // for analyzing record durations:
-   SigCollection<double> lastdurations;
-   SigCollection<double> runningstatus;
+   SigCollection<RationalNumber> lastdurations;
+   SigCollection<RationalNumber> runningstatus;
 
    int fixedTimebase = 0;
-   double timebase = 4.0;
+   RationalNumber timebase = 4;
    if (strcmp(base, "") != 0) {
       fixedTimebase = 1;
       int tempval;
@@ -1926,17 +2032,17 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
  
       // check for prolongation dot.  Ignore any double dots
       if (strchr(base, '.') != NULL) {
-         timebase = timebase * 2.0/3.0;
+         timebase = (timebase*2)/3;
       }
    }
 
-   double fractional; // for duration correction
-   double durc = 0.0; // duration correction
    HumdrumRecord currRecord;
+   int measurecount = 0;
    int ii, jj;
    int nonblank = 0;
    int foundstart = 0;
-   for (int i=0; i<infile.getNumLines(); i++) {
+   int i;
+   for (i=0; i<infile.getNumLines(); i++) {
       if (debug != 0) {
          cout << "processing line " << (i+1) << " of input ..." << endl;
          cout << infile[i] << endl;
@@ -1948,13 +2054,13 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
          case E_humrec_bibliography:
          case E_humrec_global_comment:
          case E_humrec_data_comment:
-            infile[i].setDuration(0.0);
+            infile[i].setDurationR(0,1);
             if (i+1 < infile.getNumLines()) {
-               infile[i+1].setAbsBeat(infile[i].getAbsBeat());
-               infile[i+1].setBeat(infile[i].getBeat());
+               infile[i+1].setAbsBeatR(infile[i].getAbsBeatR());
+               infile[i+1].setBeatR(infile[i].getBeatR());
             }
             if (datainit == 0) {
-               infile[i].setBeat(0.0);
+               infile[i].setBeatR(0,1);
             }
             break;
 
@@ -1962,10 +2068,10 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
             if (debug) {
                cout << "line is an interpretation" << endl;
             }
-            infile[i].setDuration(0.0);
+            infile[i].setDurationR(0,1);
             if (i+1 < infile.getNumLines()) {
-               infile[i+1].setAbsBeat(infile[i].getAbsBeat());
-               infile[i+1].setBeat(infile[i].getBeat());
+               infile[i+1].setAbsBeatR(infile[i].getAbsBeatR());
+               infile[i+1].setBeatR(infile[i].getBeatR());
             }
             if (debug) {
                cout << "Beat position of line is " 
@@ -1980,11 +2086,12 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
                slash = strchr(infile[i][0], '/');
                if ((infile[i][0][1] == 'M') && isdigit(infile[i][0][2]) &&
                      (slash != NULL)) {
-                  measureBeats = atof(&infile[i][0][2]);
+                  measureBeats = atoi(&infile[i][0][2]);
                   if (!fixedTimebase) {
-                     timebase = atof(&slash[1]);
+                     timebase = atoi(&slash[1]);
                   } else {
-                     measureBeats *= 4.0 / atof(&slash[1]);
+                     measureBeats *= 4;
+                     measureBeats /= atoi(&slash[1]);
                   }
                }
    
@@ -2003,7 +2110,7 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
                      init, datainit, ignore);
             }
             //if (datainit == 0) {
-            //   infile[i].setBeat(0.0);
+            //   infile[i].setBeatR(0,1);
             //   if (debug) {
             //      cout << "The music needs to be initialized " << endl;
             //   }
@@ -2011,14 +2118,15 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
             break;
 
          case E_humrec_data_measure:
-            summation = 0;
-            infile[i].setDuration(0.0);
+            summation.setValue(0,1);
+            infile[i].setDurationR(0,1);
             if (i+1 < infile.getNumLines()) {
-               infile[i+1].setAbsBeat(infile[i].getAbsBeat());
-               // infile[i+1].setBeat(summation);
-               infile[i+1].setBeat(summation + 1);
-               // infile[i].setBeat(0.0);
+               infile[i+1].setAbsBeatR(infile[i].getAbsBeatR());
+               // infile[i+1].setBeatR(summation);
+               infile[i+1].setBeatR(summation + 1);
+               // infile[i].setBeatR(0,1);
             }
+	    measurecount++;
             break;
 
          case E_humrec_data:
@@ -2041,10 +2149,10 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
                }
             }
             if (nonblank == 0) {
-               infile[i].setDuration(0.0);
+               infile[i].setDurationR(0,1);
                if (i+1 < infile.getNumLines()) {
-                  infile[i+1].setAbsBeat(infile[i].getAbsBeat());
-                  infile[i+1].setBeat(infile[i].getBeat());
+                  infile[i+1].setAbsBeatR(infile[i].getAbsBeatR());
+                  infile[i+1].setBeatR(infile[i].getBeatR());
                }
                break;
             }
@@ -2053,29 +2161,18 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
                infile[i].equalFieldsQ("**koto", ".")) {
             }
 
-            duration = determineDuration(infile[i], init,
-               lastdurations, runningstatus, rhythms, ignore) * timebase / 4.0;
+            duration = (determineDurationR(infile[i], init,
+               lastdurations, runningstatus, rhythms, ignore) * timebase) / 4;
 
-            // correct duration for small rounding errors accumulating
-            // in the score (particularly for triplets and tuplets)
-            fractional = duration + infile[i].getAbsBeat();
-            if (fractional-(int)fractional < ROUNDERR) {
-               durc -= fractional - (int)fractional;
-            } else if (1.0-(fractional-(int)fractional) < ROUNDERR) {
-               durc += 1.0 - (fractional - (int)fractional);
-            } else {
-               durc = 0.0;
-            }
-
-            infile[i].setDuration(duration);
+            infile[i].setDurationR(duration);
             if (datainit && i+1 < infile.getNumLines()) {
-               infile[i+1].setAbsBeat(infile[i].getAbsBeat() + duration + durc);
-               infile[i+1].setBeat(infile[i].getBeat() + duration);
+               infile[i+1].setAbsBeatR(infile[i].getAbsBeatR() + duration);
+               infile[i+1].setBeatR(infile[i].getBeatR() + duration);
             } else if (datainit == 0) {
                datainit = 1;
-               infile[i+1].setAbsBeat(infile[i].getAbsBeat() + duration + durc);
-               infile[i].setBeat(1);
-               infile[i+1].setBeat(infile[i].getBeat() + duration);
+               infile[i+1].setAbsBeatR(infile[i].getAbsBeatR() + duration);
+               infile[i].setBeatR(1);
+               infile[i+1].setBeatR(infile[i].getBeatR() + duration);
             }
 
             break;
@@ -2088,27 +2185,21 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
       timebaseC[i] = timebase;
    }
 
-   fixIncompleteBarMeter(meterbeats, timebaseC);
-   fixIrritatingPickupProblem();
-
+   fixIncompleteBarMeterR(meterbeats, timebaseC);
+   // fixIrritatingPickupProblem();
    minrhythm = findlcm(rhythms);
-
+   localrhythms = rhythms;
    spaceEmptyLines();
 
-   int im;
-   double fraction;
-   for (im=0; im<getNumLines(); im++) {
-      if (getType(im) == E_humrec_data_measure) {
-         // make the round-off on barlines a little better...
-         fraction = getBeat(im) - (int)getBeat(im);
-         if (fraction < 0.0002) {
-            ((*this)[im]).setBeat((int)getBeat(im));
-         } else if (fraction > 0.9998) {
-            ((*this)[im]).setBeat((int)getBeat(im)+1);
-         } 
+   // add offset of +1 if there are no barlines present in the file
+   if (measurecount == 0) {
+      for (i=0; i<infile.getNumLines(); i++) {
+         if (infile[i].getType() != E_humrec_data) {
+            continue;
+         }
+         infile[i].setBeatR(infile[i].getBeatR()+1);
       }
    }
-
 }
 
 
@@ -2124,7 +2215,7 @@ void HumdrumFile::fixIrritatingPickupProblem(void) {
 
    int numerator;
    int denominator;
-   double beatsperbar = 0.0;
+   RationalNumber beatsperbar(0,1);
    int j;
 
    for (bari=0; bari<getNumLines(); bari++) {
@@ -2132,7 +2223,7 @@ void HumdrumFile::fixIrritatingPickupProblem(void) {
          for (j=0; j<(*this)[bari].getFieldCount(); j++) {
             if (sscanf((*this)[bari][j], "*M%d/%d", &numerator, &denominator) 
                   == 2) {
-               beatsperbar = numerator * 4.0 / denominator;
+               beatsperbar.setValue(numerator * 4, denominator);
                break;
             }
          }
@@ -2149,24 +2240,24 @@ void HumdrumFile::fixIrritatingPickupProblem(void) {
          return;
       }
 
-      if (getBeat(bari) > 0.0) {
+      if (getBeatR(bari).isPositive()) {
          return;
       }
 
-      if (getBeat(bari) == 0.0 && getAbsBeat(bari) == 0.0) {
+      if (getBeatR(bari).isZero() && getAbsBeatR(bari).isZero()) {
          return;
       }
 
-      if (beatsperbar == 0.0) {
+      if (beatsperbar.isZero()) {
          return;
       }
    }
 
    int i;
-   double sum = 0.0;
+   RationalNumber sum = 0;
    for (i=bari-1; i>=0; i--) {
-      sum += getDuration(i);      
-      (*this)[i].setBeat(beatsperbar - sum + 1.0);
+      sum += getDurationR(i);      
+      (*this)[i].setBeatR(beatsperbar - sum + 1);
    }
 
 }
@@ -2199,9 +2290,11 @@ void HumdrumFile::spaceEmptyLines(void) {
 
    int j;
    int count = 0;
-   double newduration = 0.0;
-   double startbeat = 0.0;
-   double basebeat = 0.0;
+   RationalNumber newduration;
+   newduration.zero();
+   RationalNumber startbeat(0,1);
+   RationalNumber basebeat(0,1);
+   index.allowGrowth(0);
    for (i=0; i<index.getSize(); i++) {
       if ((i > 0) && ((*this)[index[i]].getDuration() == 0)
                   && ((*this)[index[i]].getType() != E_humrec_data_measure)) {
@@ -2213,55 +2306,61 @@ void HumdrumFile::spaceEmptyLines(void) {
             count++;
             j++;
          }
-         newduration = (*this)[index[i-1]].getDuration() / (count+1.0);
-         basebeat = (*this)[index[i-1]].getBeat();
+         // newduration = (*this)[index[i-1]].getDuration() / (count+1.0);
+         newduration = (*this)[index[i-1]].getDurationR() / (count+1);
+         basebeat = (*this)[index[i-1]].getBeatR();
          for (j=0; j<count+1; j++) {
-            (*this)[index[i-1+j]].setDuration(newduration);
+            (*this)[index[i-1+j]].setDurationR(newduration);
             // adjust the metric position
-            (*this)[index[i-1+j]].setBeat(basebeat + j * newduration);
+            RationalNumber value = basebeat;  
+            value += newduration * j;
+
+            (*this)[index[i-1+j]].setBeatR(basebeat + newduration * j);
          }
 
-         startbeat = (*this)[index[i-1]].getAbsBeat();
+         startbeat = (*this)[index[i-1]].getAbsBeatR();
          for (j=0; j<count; j++) {
-            (*this)[index[i+j]].setAbsBeat(startbeat+(j+1)*newduration);
+            RationalNumber value = startbeat + newduration*(j+1);
+            (*this)[index[i+j]].setAbsBeatR(value);
          }
 
       }
    }
 
-
    // adjust other elements which may be out of absbeat order now
-   double lastpos = (*this)[getNumLines()-1].getAbsBeat();
-   double lastbeat = (*this)[getNumLines()-1].getBeat();
+   RationalNumber lastpos = (*this)[getNumLines()-1].getAbsBeatR();
+   RationalNumber lastbeat = (*this)[getNumLines()-1].getBeatR();
    for (i=getNumLines()-1; i>=0; i--) {
-      if ((*this)[i].getAbsBeat() > lastpos) {
-         (*this)[i].setAbsBeat(lastpos);
+      if ((*this)[i].getAbsBeatR() > lastpos) {
+         (*this)[i].setAbsBeatR(lastpos);
          // adjust the metric position
-         (*this)[i].setBeat(lastbeat);
+         (*this)[i].setBeatR(lastbeat);
       } else {
-         lastpos = (*this)[i].getAbsBeat();
-         lastbeat = (*this)[i].getBeat();
+         lastpos = (*this)[i].getAbsBeatR();
+         lastbeat = (*this)[i].getBeatR();
       }
 
       // adjust the number of beats found in the measure
       if (i < getNumLines() - 1) {
          if ((*this)[i+1].getType() == E_humrec_data_measure) {
-            (*this)[i+1].setBeat(lastbeat + (*this)[i].getDuration() - 1);
+            (*this)[i+1].setBeatR(lastbeat + (*this)[i].getDurationR() - 1);
          }
       }
    }
 
    // adjust the duration markers for each measure
-   lastbeat = (*this)[getNumLines()-1].getAbsBeat();
-   double curbeat = 0.0;
+   lastbeat = (*this)[getNumLines()-1].getAbsBeatR();
+   RationalNumber curbeat(0,1);
    for (i=getNumLines()-1; i>=0; i--) {
       if ((*this)[i].getType() == E_humrec_data_measure) {
-         curbeat = (*this)[i].getAbsBeat(); 
-         (*this)[i].setBeat(lastbeat - curbeat);
+         curbeat = (*this)[i].getAbsBeatR(); 
+         (*this)[i].setBeatR(lastbeat - curbeat);
          lastbeat = curbeat;
          // mark pickup-beats with a negative duration
-         if ((*this)[i].getAbsBeat() < (*this)[i].getBeat()) {
-            (*this)[i].setBeat(-1 * (*this)[i].getBeat());
+         if ((*this)[i].getAbsBeatR() < (*this)[i].getBeatR()) {
+            if (!(*this)[i].getAbsBeatR().isZero()) {
+               (*this)[i].setBeatR((*this)[i].getBeatR() * -1);
+            }
          }
       }
 
@@ -2312,13 +2411,14 @@ int HumdrumFile::GCD(int a, int b) {
 //     functions.
 //
 
-void HumdrumFile::initializeTracers(SigCollection<double>& lastdurations,
-      SigCollection<double>& runningstatus, HumdrumRecord& currRecord) {
+void HumdrumFile::initializeTracers(
+      SigCollection<RationalNumber>& lastdurations,
+      SigCollection<RationalNumber>& runningstatus, HumdrumRecord& currRecord) {
    lastdurations.allowGrowth(1);
    runningstatus.allowGrowth(1);
    lastdurations.setSize(0);
    runningstatus.setSize(0);
-   double zero = 0.0;
+   RationalNumber zero(0,1);
    int i;
    for (i=0; i<currRecord.getFieldCount(); i++) {
       if (currRecord.getExInterpNum(i) == E_KERN_EXINT ||
@@ -2335,23 +2435,27 @@ void HumdrumFile::initializeTracers(SigCollection<double>& lastdurations,
 
 //////////////////////////////
 //
-// HumdrumFile::fixIncompleteBarsMeter -- resolve when incomplete bars are
+// HumdrumFile::fixIncompleteBarMeterR -- resolve when incomplete bars are
 //    supposed to be the ends of measures rather than the
 //    beginnings of measures.
 //
 
-void HumdrumFile::fixIncompleteBarMeter(SigCollection<double>& meterbeats,
-      SigCollection<double>& timebase) {
+void HumdrumFile::fixIncompleteBarMeterR(
+      SigCollection<RationalNumber>& meterbeats,
+      SigCollection<RationalNumber>& timebase) {
 
    int sumstatus = 0;
    int lasti = 0;
    int init = 0;
    int k;
-   for (int i=0; i<getNumLines(); i++) {
+   int i;
+   RationalNumber mb(0,1);
+   
+   for (i=0; i<getNumLines(); i++) {
 
       // at each measure line determine one of three cases:
       // (1) all ok -- the summation of durations in the measure
-      //     matches the current time sign
+      //     matches the current time signature.
       // (2) a partial measure -- the measure durations do not
       //     add up to the time signature, but the measure is
       //     at the start/end of a musical section such as the
@@ -2367,48 +2471,62 @@ void HumdrumFile::fixIncompleteBarMeter(SigCollection<double>& meterbeats,
       }
 
       // case 2a: start of piece
-      double newsum = 0.0;
+      RationalNumber difference;
       if (init == 0) {
          init = 1;
          lasti = i;
-         ((*this)[i]).setBeat(getBeat(i)-1);
-         if (pickupdur == -1.0) {
-            pickupdur = getBeat(i);
+         (*this)[i].setBeatR(getBeatR(i)-1);
+         if (pickupdur.isNegative()) {
+            pickupdur = getAbsBeatR(i);
          }
-         if (getBeat(i) < meterbeats[i]) {
+	 if (pickupdur == meterbeats[i]) {
+            pickupdur.zero();
+         }
+         if (pickupdur.isPositive()) {
             k = i-1;
-            while (k >= 0 && (getType(k) != E_humrec_data_interpretation)) {
-               newsum += (*this).getDuration(k);
-               ((*this)[k]).setBeat(meterbeats[k] - newsum + 1);
+	    RationalNumber sum(0,1);
+            while (k >= 0) {
+               if (mb.isZero()) {
+                  mb = meterbeats[k];
+               }
+	       sum += getDurationR(k);
+               ((*this)[k]).setBeatR(mb - sum + 1);
                k--;
             }
-         } 
-         if (pickupdur == -1.0) {
-            pickupdur = getBeat(i);
+         } else if (pickupdur.isZero()) {
+            // fix offset from zero to offset from one
+            k=i-1;
+            while (k >= 0)  {
+               if (getType(k) == E_humrec_data) {
+                  (*this)[k].setBeatR((*this)[k].getBeatR()+1);
+               }
+               k--;
+            }
          }
          continue;
       }
 
       // case 1: measure sum is complete
-      if (getBeat(i) == meterbeats[i] + 1) {
-         if (pickupdur == -1.0) {
-            pickupdur = 0.0;
+      if (getBeatR(i) == meterbeats[i] + 1) {
+         if (pickupdur.isNegative()) {
+            pickupdur = 0;
          }
          lasti = i;
-         ((*this)[i]).setBeat(getBeat(i)-1);
+         ((*this)[i]).setBeatR(getBeatR(i)-1);
          sumstatus = 0;
          continue;
       }
  
       // case 2b: repeat bar or something splitting up a regular bar
-      if (getBeat(i) < meterbeats[i] + 1) {
-         ((*this)[i]).setBeat(getBeat(i)-1);
-         if (pickupdur == -1.0) {
-            pickupdur = getBeat(i);
+      if (getBeatR(i) < meterbeats[i] + 1) {
+         ((*this)[i]).setBeatR(getBeatR(i)-1);
+         if (pickupdur.isNegative()) {
+            pickupdur = getBeatR(i);
          }
-         if (sumstatus == 1 && (getBeat(i) + getBeat(lasti) == meterbeats[i])) {
+         if (sumstatus == 1 && (getBeatR(i) + 
+				 getBeatR(lasti) == meterbeats[i])) {
             for (k=i-1; k>lasti; k--) {
-               ((*this)[k]).setBeat(getBeat(lasti) + getBeat(k));
+               ((*this)[k]).setBeatR(getBeatR(lasti) + getBeatR(k));
             }
          } 
          lasti = i;
@@ -2418,6 +2536,18 @@ void HumdrumFile::fixIncompleteBarMeter(SigCollection<double>& meterbeats,
       // case 3: incorrect measure duration: ignore this error 
 
    }
+
+   if (pickupdur.isZero()) {
+      for (i=0; i<getNumLines(); i++) {
+         if (!(((*this)[i].getType() == E_humrec_data) 
+               || ((*this)[i].getType() == E_humrec_data_measure))) {
+            (*this)[i].setBeatR(0,1);
+         } else {
+            break;
+         }
+      }
+   }
+
 }
 
 
@@ -2428,12 +2558,12 @@ void HumdrumFile::fixIncompleteBarMeter(SigCollection<double>& meterbeats,
 //
 
 void HumdrumFile::adjustForRhythmMarker(HumdrumRecord& aRecord,
-      int state, int spine, SigCollection<double>& lastdurations, 
-      SigCollection<double>& runningstatus, int& init, int& datastart,
+      int state, int spine, SigCollection<RationalNumber>& lastdurations, 
+      SigCollection<RationalNumber>& runningstatus, int& init, int& datastart,
       Array<int>& ignore) {
 
-   SigCollection<double> newdurations;
-   SigCollection<double> newstatus;
+   SigCollection<RationalNumber> newdurations;
+   SigCollection<RationalNumber> newstatus;
    newdurations.setSize(lastdurations.getSize() + 4);
    newstatus.setSize(runningstatus.getSize() + 4);
    newdurations.setGrowth(newdurations.getSize());
@@ -2460,7 +2590,7 @@ void HumdrumFile::adjustForRhythmMarker(HumdrumRecord& aRecord,
          } else {
             // stop ignoring
             ignore[aRecord.getPrimaryTrack(i)-1] = 0;
-            double zero = 0.0;
+            RationalNumber zero(0,1);
             lastdurations.append(zero);
             runningstatus.append(zero);
          }
@@ -2499,16 +2629,16 @@ void HumdrumFile::adjustForRhythmMarker(HumdrumRecord& aRecord,
 //
 
 void HumdrumFile::adjustForSpinePaths(HumdrumRecord& aRecord, 
-      SigCollection<double>& lastdurations, 
-      SigCollection<double>& runningstatus,
+      SigCollection<RationalNumber>& lastdurations, 
+      SigCollection<RationalNumber>& runningstatus,
       int& init, int& datastart, Array<int>& ignore) {
 
    int spinecount = aRecord.getFieldCount();
    int subcount;
    int inindex = 0;
 
-   SigCollection<double> newdurations;
-   SigCollection<double> newstatus;
+   SigCollection<RationalNumber> newdurations;
+   SigCollection<RationalNumber> newstatus;
    newdurations.allowGrowth();
    newstatus.allowGrowth();
    newstatus.setSize(runningstatus.getSize() + 4);
@@ -2570,9 +2700,9 @@ void HumdrumFile::adjustForSpinePaths(HumdrumRecord& aRecord,
          }
       } else if (strncmp("**", aRecord[inindex], 2) == 0) {
          newdurations.setSize(newdurations.getSize()+1);
-         newdurations[newdurations.getSize()+1] = 0.0;
+         newdurations[newdurations.getSize()+1] = 0;
          newstatus.setSize(newdurations.getSize()+1);
-         newstatus[newdurations.getSize()+1] = 0.0;
+         newstatus[newdurations.getSize()+1] = 0;
       } else {
          newdurations.append(lastdurations[inindex]);
          newstatus.append(runningstatus[inindex]);
@@ -2603,13 +2733,13 @@ void HumdrumFile::adjustForSpinePaths(HumdrumRecord& aRecord,
 
 //////////////////////////////
 //
-// HumdrumFile::determineDuration -- determines the duration of the **kern
+// HumdrumFile::determineDurationR -- determines the duration of the **kern
 //	entries before a new **kern entry.  Also works on **koto spines.
 //
 
-double HumdrumFile::determineDuration(HumdrumRecord& aRecord,
-      int& init, SigCollection<double>& lastdurations, 
-      SigCollection<double>& runningstatus,
+RationalNumber HumdrumFile::determineDurationR(HumdrumRecord& aRecord,
+      int& init, SigCollection<RationalNumber>& lastdurations, 
+      SigCollection<RationalNumber>& runningstatus,
       Array<int>& rhythms, Array<int>& ignore) {
    int i;
    // initialization:
@@ -2620,17 +2750,18 @@ double HumdrumFile::determineDuration(HumdrumRecord& aRecord,
       lastdurations.setSize(size);
       runningstatus.setSize(size);
       for (i=0; i<size; i++) {
-         lastdurations[i] = 0;
-         runningstatus[i] = 0;
+         lastdurations[i].zero();
+         runningstatus[i].zero();
       }
    }
 
    // Step (1): if lastdurations == runningstatus, then zero running
    // status.
+   RationalNumber zero(0,1);
    for (i=0; i<runningstatus.getSize(); i++) {
-      // be careful of roundoff errors that accumulate during a measure
-      if (fabs(runningstatus[i] - lastdurations[i]) < ROUNDERR) {
-         runningstatus[i] = 0.0;
+      if ((runningstatus[i] - lastdurations[i]) == zero) {
+         runningstatus[i].zero();
+      } else {
       }
    }
  
@@ -2653,7 +2784,7 @@ double HumdrumFile::determineDuration(HumdrumRecord& aRecord,
          if (strcmp(aRecord[i], ".") != 0) {
             switch (stype) {
                case 1:
-                  lastdurations[count] = Convert::kernToDuration(aRecord[i]);
+                  lastdurations[count] = Convert::kernToDurationR(aRecord[i]);
                   if (strchr(aRecord[i], 'P') != NULL) {
                      // remove appogiatura durations for summations
                      // lastdurations[count] = 0;
@@ -2664,7 +2795,7 @@ double HumdrumFile::determineDuration(HumdrumRecord& aRecord,
                   } 
                   break;
                case 2:
-                  lastdurations[count] = Convert::kotoToDuration(aRecord[i]);
+                  lastdurations[count] = Convert::kotoToDurationR(aRecord[i]);
                   if ((strchr(aRecord[i], 'q') != NULL) ||
                       (strchr(aRecord[i], 'Q') != NULL)) {
                      // remove gracenote durations from summations
@@ -2673,11 +2804,11 @@ double HumdrumFile::determineDuration(HumdrumRecord& aRecord,
                   break;
             }
 
-            if (lastdurations[count] != 0.0) {
+            if (lastdurations[count] != 0) {
                // have a legitimate rhythm, store it in the rhythms array.
-               double sss = lastdurations[count];
-               Convert::durationToKernRhythm(rbuff, sss);
-               int rbase = atoi(rbuff);
+               RationalNumber sss = lastdurations[count];
+               Convert::durationRToKernRhythm(rbuff, sss);
+               int rbase  = atoi(rbuff);
                int length = strlen(rbuff);
                int z;
                for (z=length-1; z>0; z--) {
@@ -2702,9 +2833,6 @@ double HumdrumFile::determineDuration(HumdrumRecord& aRecord,
 
             }
 
-            if (runningstatus[count] < 0 && runningstatus[count] > -ROUNDERR) {
-               runningstatus[count] = 0;
-            }
             if (strstr(aRecord[i], "--") != NULL && runningstatus[count] != 0) {
                cout << "Error in rhythm on line: " << aRecord.getLineNum()
                     << endl;
@@ -2736,30 +2864,16 @@ double HumdrumFile::determineDuration(HumdrumRecord& aRecord,
    }
 
    // Step (3): find minimum duration by subtracting last from running
-   double min = 99999999;
-   double test;
-
-//xxx  FOR DEBUGGING:
-//cout << "\n\t" << aRecord.getLine() << endl;
-//cout << "D";
-//for (q=0; q<lastdurations.getSize(); q++) {
-//   cout << "\t" << lastdurations[q]; 
-//}
-//cout << endl;
-//cout << "RT";
-//for (q=0; q<runningstatus.getSize(); q++) {
-//   cout << "\t" << runningstatus[q]; 
-//}
-//cout << endl;
+   RationalNumber min(99999999,1);
+   RationalNumber testval;
 
    for (i=0; i<lastdurations.getSize(); i++) {
-      test = lastdurations[i] - runningstatus[i];
-      if (test < -ROUNDERR) {   // -ROUNDERR for rounding errors
- 
+      testval = lastdurations[i] - runningstatus[i];
+      if (testval.isNegative()) {   
          cout << "Error on line: " << aRecord.getLineNum() 
               << ": problem with rhythm in **kern spine " 
               << i+1 << endl;
-         cout << "Line min duration is measured to be: " << test << endl;
+         cout << "Line min duration is measured to be: " << testval << endl;
   
          cout << "Durations on this line: " << endl;
          for (q=0; q<lastdurations.getSize(); q++) {
@@ -2775,11 +2889,9 @@ double HumdrumFile::determineDuration(HumdrumRecord& aRecord,
          cout << aRecord << endl;
   
          exit(1);
-      } else if (test < 0.0) {
-         test = 0;
       }
-      if (test < min) {
-         min = test;
+      if (testval < min) {
+         min = testval;
       }
    }
 

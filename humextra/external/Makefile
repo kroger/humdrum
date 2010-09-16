@@ -10,8 +10,8 @@
 ##              (1) Centerpoint XML parsing code
 ##              (2) Perl-Compatible Regular Expressions
 ##
-## To run this makefile, type (without quotes) "make".
-## This makefile is typically run automatically from the
+## To run this makefile, type (without quotes) "make", or "gmake" on
+## FreeBSD computers.  This makefile is typically run automatically from the
 ## parent directory's Makefile.
 ##
 
@@ -22,7 +22,7 @@ PCRE = $(wildcard pcre-*.*)
 all: centerpoint pcre
 
 centerpoint:
-	(cd centerpoint; make static_release)
+	(cd centerpoint; $(MAKE) static_release)
 	-mkdir ../lib
 	cp centerpoint/lib/libcslxml.a ../lib
 ifneq ($(wildcard ../lib),)
@@ -33,7 +33,7 @@ endif
 
 pcre:
 	(cd $(PCRE); ./configure)
-	(cd $(PCRE); make)
+	(cd $(PCRE); $(MAKE))
 	-mkdir ../lib
 	cp $(PCRE)/.libs/libpcre.a ../lib
 ifneq ($(wildcard ../lib),)
@@ -45,10 +45,10 @@ endif
 clean: cleancenterpoint cleanpcre
 
 cleancenterpoint:
-	(cd centerpoint; make clean)
+	(cd centerpoint; $(MAKE) clean)
 
 cleanpcre:
-#	(cd $(PCRE); make clean)
+#	(cd $(PCRE); $(MAKE) clean)
 
 
 

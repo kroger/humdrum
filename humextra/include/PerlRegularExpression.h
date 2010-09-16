@@ -58,6 +58,8 @@ class PerlRegularExpression {
 
       const char* getSubmatch       (int index);
       const char* getSubmatch       (void);
+      int  getSubmatchStart         (int index);
+      int  getSubmatchEnd           (int index);
 
       // set regex compile options:
       void setExtendedSyntax        (void);
@@ -66,6 +68,8 @@ class PerlRegularExpression {
       void setNoIgnoreCase          (void);
       void setSingle                (void);
       void setGlobal                (void);
+      void setAnchor                (void);
+      void setNoAnchor              (void);
 
       void setSearchString          (const char* searchstring);
       void setReplaceString         (const char* replacestring);
@@ -74,6 +78,7 @@ class PerlRegularExpression {
       char  ignorecaseQ;
       char  extendedQ;
       char  globalQ;
+      char  anchorQ;                // true if anchored search
       int   valid;
       int   studyQ;
 

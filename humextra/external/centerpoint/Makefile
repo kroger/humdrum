@@ -32,8 +32,21 @@ SRCDIR   = src
 INCDIR   = include
 LIBDIR   = lib
 OBJDIR   = obj
-ARCH     = -m32
-#ARCH     = 
+ARCH     = 
+ifeq ($(origin OSTYPE), undefined)
+   ifeq ($(shell uname),Darwin)
+      # use the following to compile for 32-bit architecture on 64-bit comps:
+      #ARCH = -m32 -arch i386
+   else 
+      # use the following to compile for 32-bit architecture on 64-bit comps:
+      # (you will need 32-bit libraries in order to do this)
+      # ARCH = -m32 
+   endif
+else
+      # use the following to compile for 32-bit architecture on 64-bit comps:
+      # (you will need 32-bit libraries in order to do this)
+      # ARCH = -m32 
+endif
 
 # Tools
 CC     = gcc $(ARCH)

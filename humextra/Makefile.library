@@ -1,7 +1,7 @@
 ##
 ## Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 ## Creation Date: Sun Apr  3 00:51:10 PST 2005
-## Last Modified: Thu Jun 18 13:14:14 PDT 2009
+## Last Modified: Sat Sep  4 11:13:10 PDT 2010
 ## Filename:      ...humextra/Makefile.library
 ##
 ## Description:   This Makefile creates the Humdrum Extras library 
@@ -10,10 +10,10 @@
 ##                using MinGW.
 ##
 ## To run this makefile, type (without quotes) "make -f Makefile.library",
-## Although it is intended to be used the file "Makefile" which runs this
-## makefile with the command "make library".  After the library file is 
-## created, you can compile specific programs with the Makefile.programs
-## file.
+## (or "gmake -f Makefile.library" on FreeBSD computers). Although it is 
+## intended to be used the file "Makefile" which runs this makefile with 
+## the command "make library".  After the library file is created, you 
+## can compile specific programs with the Makefile.programs file.
 ##
 
 ###########################################################################
@@ -52,16 +52,21 @@ ARCH =
 ifeq ($(origin OSTYPE), undefined)
    ifeq ($(shell uname),Darwin)
       OSTYPE = OSXPC
-      ARCH = -m32 
+      # use the following to compile for 32-bit architecture on 64-bit comps:
+      #ARCH = -m32 -arch i386
    else 
       OSTYPE = LINUX
-      ARCH = -m32 
+      # use the following to compile for 32-bit architecture on 64-bit comps:
+      # (you will need 32-bit libraries in order to do this)
+      # ARCH = -m32 
    endif
 endif
 # Next if statement needed for some versions of make which already set OSTYPE:
 ifeq ($(OSTYPE),linux)
    OSTYPE = LINUX
-   ARCH = -m32 
+   # use the following to compile for 32-bit architecture on 64-bit comps:
+   # (you will need 32-bit libraries in order to do this)
+   # ARCH = -m32 
 endif
 
 
@@ -168,7 +173,7 @@ makedirs:
 	-mkdir $(LIBDIR)
 
 external: 
-	(cd external; make)
+	(cd external; $(MAKE))
 
 
 ###########################################################################

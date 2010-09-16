@@ -40,19 +40,20 @@
 // MusicXmlItem allowed types:
 
 #define MXI_unknown    0
-#define MXI_divisions  1
-#define MXI_measure    2
-#define MXI_barline    3
-#define MXI_clef       4
-#define MXI_key        5  /* key signatures  */
-#define MXI_timemet    6  /* metrical display for time signatures */
-#define MXI_time       7  /* time signatures */
-#define MXI_tempo      8  /* tempo markings  */
-#define MXI_forward    9
-#define MXI_backup    10
-#define MXI_note      11
-#define MXI_dynamic   12  /* dynamic marking */
-#define MXI_lyric     13  /* text underlay of notes */
+#define MXI_print      1  /* printing suggestions */
+#define MXI_divisions  2
+#define MXI_measure    3
+#define MXI_barline    4
+#define MXI_clef       5
+#define MXI_key        6  /* key signatures  */
+#define MXI_timemet    7  /* metrical display for time signatures */
+#define MXI_time       8  /* time signatures */
+#define MXI_tempo      9  /* tempo markings  */
+#define MXI_forward   10
+#define MXI_backup    11
+#define MXI_note      12
+#define MXI_dynamic   13  /* dynamic marking */
+#define MXI_lyric     14  /* text underlay of notes */
 
 #define MAXLYRIC      32  /* maximum lyric number allowed */
 
@@ -229,6 +230,8 @@ class MusicXmlFile {
                                            int partnum, long& ticktime);
       void      parseMeasure              (CSL::XML::CXMLObject* entry, 
                                            int partnum, long& ticktime);
+      void      parsePrint                (CSL::XML::CXMLObject* entry, 
+                                           int partnum, int ticktime);
       void      parseBarline              (CSL::XML::CXMLObject* entry, 
                                            int partnum, int ticktime);
       void      parseNote                 (CSL::XML::CXMLObject* entry, 
@@ -245,6 +248,10 @@ class MusicXmlFile {
                                            int partnum, long& ticktime);
       void      printDynamic              (ostream& out, int staffno, 
                                            int index);
+      int       printSystemBreak          (ostream& out, 
+                                           CSL::XML::CXMLObject* object);
+      int       printPageBreak            (ostream& out, 
+                                           CSL::XML::CXMLObject* object);
 
       // kern conversion functions
       int       printKernNote             (ostream& out, int staffno, 

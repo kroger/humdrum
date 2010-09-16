@@ -32,6 +32,7 @@
    #include "IntervalWeight.h"
    #include "RootSpectrum.h"
    #include "Maxwell.h"
+   #include "RationalNumber.h"
 
 // support classes borrowed from sig++
    #include "SigCollection.h"

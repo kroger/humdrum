@@ -4,6 +4,7 @@
 // Last Modified: Tue May  4 23:11:52 PDT 2009 (added -t, -c, -B, --sep options)
 // Last Modified: Tue May  5 09:54:01 PDT 2009 (added -p, -P, --and options)
 // Last Modified: Mon May 11 20:56:43 PDT 2009 (fix initial beat for comments)
+// Last Modified: Wed Apr 28 18:49:29 PDT 2010 (added -T and -D options)
 // Filename:      ...sig/examples/all/hgrep.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/hgrep.cpp
 // Syntax:        C++; museinfo
@@ -70,6 +71,8 @@ int         beatQ           = 0;     // used with -b option
 int         measureQ        = 0;     // used with -m option
 int         quietQ          = 0;     // used with -q option
 int         exinterpQ       = 0;     // used with -x option
+int         tokenizeQ       = 0;     // used with -T option
+int         datastopQ       = 0;     // used with -D option
 const char* exinterps       = "";    // used with -x option
 char        separator[1024] = {0};   // used with --sep option
 Array<regex_t> Andlist;              // used with --and option
@@ -154,6 +157,9 @@ void doSearch(const char* searchstring, HumdrumFile& infile,
    int matchcount = 0;
    
    for (i=0; i<infile.getNumLines(); i++) {
+      if (datastopQ && infile[i].isData()) {
+         break;
+      }
       if (infile[i].isEmpty()) { continue; }
       if (infile[i].isMeasure()) {
          sscanf(infile[i][0],"=%lf", &measure);
@@ -198,7 +204,17 @@ void doSearch(const char* searchstring, HumdrumFile& infile,
          }
 
       } else { // search entire line as a single unit
-         status = regexec(&re, infile[i].getLine(), 0, NULL, 0);
+         if (tokenizeQ) {
+            status = 0;
+            for (int ii=0; ii<infile[i].getFieldCount(); ii++) {
+               status = tokenSearch(ii, infile, i, re);
+               if (status == 0) {
+                  break;
+               }
+            }
+         } else {
+            status = regexec(&re, infile[i].getLine(), 0, NULL, 0);
+         }
          if (Andlist.getSize() > 0) {
             for (int aa=0; aa<Andlist.getSize(); aa++) {
                int newstatus = regexec(&Andlist[aa], infile[i].getLine(), 
@@ -476,6 +492,8 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("s|spine=b",         "display spine number of match");
    opts.define("m|measure=b",       "display measure number of match");
    opts.define("x|exinterp=s",      "search only listed exinterps");
+   opts.define("T|tokenize=b",      "search tokens independently");
+   opts.define("D|data-stop=b",     "stop search at first data record");
    opts.define("sep|separator=s::", "data separator string");
    opts.define("and=s:",            "anded search strings");
 
@@ -539,6 +557,8 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    bibliographicQ= opts.getBoolean("bibliographic");
    spineQ        = opts.getBoolean("spine");
    measureQ      = opts.getBoolean("measure");
+   tokenizeQ     = opts.getBoolean("tokenize");
+   datastopQ     = opts.getBoolean("data-stop");
    exinterpQ     = opts.getBoolean("exinterp");
    exinterps     = opts.getString("exinterp");
    char tempbuffer[1024] = {0};

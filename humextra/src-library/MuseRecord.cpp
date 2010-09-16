@@ -9,6 +9,8 @@
 // 
 // Description:   A class that stores one line of data for a Musedata file.
 //
+// To do: check on gracenotes/cuenotes with chord notes.
+//
 
 #include "Convert.h"
 #include "MuseRecord.h"
@@ -39,16 +41,9 @@
 // MuseRecord::MuseRecord --
 //
 
-MuseRecord::MuseRecord(void) : MuseRecordBasic() {
-}
-
-
-MuseRecord::MuseRecord(const char* aLine) : MuseRecordBasic(aLine) {
-}
-
-
-MuseRecord::MuseRecord(const MuseRecord& aRecord) : MuseRecordBasic(aRecord) {
-}
+MuseRecord::MuseRecord(void) : MuseRecordBasic() { }
+MuseRecord::MuseRecord(char* aLine) : MuseRecordBasic(aLine) { }
+MuseRecord::MuseRecord(MuseRecord& aRecord) : MuseRecordBasic(aRecord) { }
 
 
 
@@ -240,25 +235,51 @@ char* MuseRecord::getAccidental(char* output) {
 
 //////////////////////////////
 //
-// MuseRecord::getDurationField -- returns the string containing the duration,
-//	and tie information
+// MuseRecord::getBase40 -- return the base40 pitch value of the data
+// line.  Middle C set to 40 * 4 + 2;  Returns -100 for non-pitched items.
+// (might have to update for note_cur_chord and note_grace_chord which
+// do not exist yet.
 //
 
-char* MuseRecord::getDurationField(char* output) {
+int MuseRecord::getBase40(void) {
+   switch (getType()) {
+      case E_muserec_note_regular:
+      case E_muserec_note_chord:
+      case E_muserec_note_cue:
+      case E_muserec_note_grace:
+         break;
+      default:
+         return -100;
+   }
+   return getPitch();
+}
+
+
+
+//////////////////////////////
+//
+// MuseRecord::getTickDurationField -- returns the string containing the 
+//      duration, and tie information.
+//
+
+char* MuseRecord::getTickDurationField(char* output) {
    switch (getType()) {
       case E_muserec_figured_harmony:
       case E_muserec_note_regular:
       case E_muserec_note_chord:
       case E_muserec_rest:
+      case E_muserec_backward:
+      case E_muserec_forward:
          extract(output, 6, 9);
          break;
       // these record types do not have duration, per se:
       case E_muserec_note_cue:
       case E_muserec_note_grace:
       default:
-         cerr << "Error: cannot use getDurationField function on line: " 
-              << getLine() << endl;
-         exit(1);
+         output[0] = '\0';
+         // cerr << "Error: cannot use getTickDurationField function on line: " 
+         //      << getLine() << endl;
+         // exit(1);
    }
 
    return output;
@@ -268,11 +289,11 @@ char* MuseRecord::getDurationField(char* output) {
 
 //////////////////////////////
 //
-// MuseRecord::getDuration -- returns the string containing the duration,
+// MuseRecord::getTickDuration -- returns the string containing the duration,
 //
 
-char* MuseRecord::getDuration(char* output) {
-   getDurationField(output);
+char* MuseRecord::getTickDuration(char* output) {
+   getTickDurationField(output);
    int length = strlen(output);
    int i = length - 1;
    while (i>0 && (output[i] == '-' || output[i] == ' ')) {
@@ -297,10 +318,58 @@ char* MuseRecord::getDuration(char* output) {
 }
 
 
-int MuseRecord::getDuration(void) {
+
+//////////////////////////////
+//
+// MuseRecord::getTickDurationField -- return the tick value found
+//    in columns 6-8 in some data type, returning 0 if the record
+//    type does not have a duration field.
+//
+
+int MuseRecord::getTickDurationField(void) {
    char recordInfo[16];
-   getDuration(recordInfo);
+   getTickDuration(recordInfo);
    return atoi(recordInfo);
+}
+
+
+
+//////////////////////////////
+//
+// MuseRecord::getLineTickDuration -- returns the logical duration of the
+//      data line.  Supresses the duration field of secondary chord notes.
+//
+
+int MuseRecord::getLineTickDuration(void) {
+   if (getType() == E_muserec_note_chord) {
+      return 0;
+   }
+
+   char recordInfo[16];
+   getTickDuration(recordInfo);
+   int value = atoi(recordInfo);
+   if (getType() == E_muserec_backspace) {
+      return -value;
+   }
+   return value;
+}
+
+
+
+//////////////////////////////
+//
+// MuseRecord::getNoteTickDuration -- Similar to getLineTickDuration,
+//    but do not suppress the duration of secondary chord-tones.
+//
+
+int MuseRecord::getNoteTickDuration(void) {
+   char recordInfo[16];
+   getTickDuration(recordInfo);
+   int value = atoi(recordInfo);
+   if (getType() == E_muserec_backspace) {
+      return -value;
+   }
+   return value;
 }
 
 
@@ -330,14 +399,18 @@ int MuseRecord::getTie(void) {
 
 //////////////////////////////
 //
-// MuseRecord::tieQ --
+// MuseRecord::tieQ -- returns true if the current line contains
+//   a tie to a note in the future.  Does not check if there is a tie
+//   to a note in the past.
 //
 
 int MuseRecord::tieQ(void) {
    int output = 0;
    switch (getType()) {
-      case 'A': case ' ':
-      case 'g': case 'c':
+      case E_muserec_note_regular:
+      case E_muserec_note_chord:
+      case E_muserec_note_cue:
+      case E_muserec_note_grace:
          if (getColumn(9) == '-') {
             output = 1;
          } else if (getColumn(9) == ' ') {
@@ -347,9 +420,7 @@ int MuseRecord::tieQ(void) {
          }
          break;
       default:
-         cerr << "Error: cannot use tieQ function on line: "
-              << getLine() << endl;
-         exit(1);
+         return 0;
    }
 
    return output;
@@ -765,7 +836,7 @@ int MuseRecord::prolongationQ(void) {
 
 char* MuseRecord::getNotatedAccidentalField(char* output) {
    allowNotesOnly("getNotatedAccidentalField");
-   if (length < 19) {
+   if (getLength() < 19) {
       strcpy(output, " ");
    } else {
       output[0] = getColumn(19);
@@ -1864,7 +1935,7 @@ char* MuseRecord::getKernRestStyle(char* output, int quarter) {
       // add any dots of prolongation to the output string
       strcat(output, getStringProlongation(temp));
    } else {   // stage 1 data:
-      dnotetype = (float)getDuration() / quarter;
+      dnotetype = (float)getTickDurationField() / quarter;
       Convert::durationToKernRhythm(rhythmstring, dnotetype);
       strcat(output, rhythmstring);
    }
@@ -2078,7 +2149,7 @@ char* MuseRecord::getAttributeList(char* output) {
    int ending = 0;
    int index = 0;
    int tempcol;
-   for (int column=4; column <= length; column++) {
+   for (int column=4; column <= getLength(); column++) {
       if (getColumn(column) == ':') {
          tempcol = column - 1;
          while (tempcol > 0 && getColumn(tempcol) != ' ') {
@@ -2102,6 +2173,8 @@ char* MuseRecord::getAttributeList(char* output) {
     
    return output;
 }
+
+
 
 //////////////////////////////
 //
@@ -2165,7 +2238,7 @@ int MuseRecord::getAttributeInt(char attribute) {
    int index = 0;
    int tempcol;
    int column;
-   for (column=4; column <= length; column++) {
+   for (column=4; column <= getLength(); column++) {
       if (getColumn(column) == ':') {
          tempcol = column - 1;
          while (tempcol > 0 && getColumn(tempcol) != ' ') {
@@ -2217,7 +2290,7 @@ int MuseRecord::getAttributeString(char* output, const char* attribute) {
    int index = 0;
    int tempcol;
    int column;
-   for (column=4; column <= length; column++) {
+   for (column=4; column <= getLength(); column++) {
       if (getColumn(column) == ':') {
          tempcol = column - 1;
          while (tempcol > 0 && getColumn(tempcol) != ' ') {
@@ -2656,7 +2729,7 @@ int MuseRecord::getAddElementIndex(int& index, char* output, char* input) {
 //
  
 char* MuseRecord::zerase(char* output, int num) {
-   length = strlen(output);
+   int length = strlen(output);
    if (num >= length) {
       output[0] = '\0';
    } else {
