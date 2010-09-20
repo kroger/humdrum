@@ -5,6 +5,7 @@
 // Last Modified: Wed Jul  7 11:44:50 PDT 1999 (added setAll() function)
 // Last Modified: Wed Mar 30 13:58:18 PST 2005 (Fixed for compiling in GCC 3.4)
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
+// Last Modified: Wed Sep  8 17:26:13 PDT 2010 (added operator<< for chars)
 // Filename:      ...sig/maint/code/base/Array/Array.cpp
 // Web Address:   http://sig.sapp.org/src/sigBase/Array.cpp
 // Syntax:        C++ 
@@ -31,17 +32,21 @@ using namespace std;
 //
 
 template<class type>
-Array<type>::Array(void) : SigCollection<type>(4) { }
+Array<type>::Array(void) : SigCollection<type>(4) { 
+}
 
 template<class type>
-Array<type>::Array(int arraySize) : SigCollection<type>(arraySize) { }
+Array<type>::Array(int arraySize) : SigCollection<type>(arraySize) { 
+}
 
 template<class type>
-Array<type>::Array(Array<type>& anArray) : SigCollection<type>(anArray) { }
+Array<type>::Array(Array<type>& anArray) : SigCollection<type>(anArray) { 
+}
 
 template<class type>
 Array<type>::Array(int arraySize, type *anArray) : 
-   SigCollection<type>(arraySize, anArray) { }
+   SigCollection<type>(arraySize, anArray) { 
+}
 
 
 
@@ -52,7 +57,8 @@ Array<type>::Array(int arraySize, type *anArray) :
 //
 
 template<class type>
-Array<type>::~Array() { }
+Array<type>::~Array() { 
+} 
 
 
 
@@ -98,7 +104,7 @@ type Array<type>::sum(int loIndex, int hiIndex) {
 
 //////////////////////////////
 //
-// Array::zero(-1, -1)
+// Array::zero -- (-1, -1)
 //
 
 template<class type>
@@ -126,6 +132,11 @@ void Array<type>::zero(int minIndex, int maxIndex) {
 //
 
 
+//////////////////////////////
+//
+// Array::operator== --
+//
+
 template<class type>
 int Array<type>::operator==(const Array<type>& aArray) {
    if (this->getSize() != aArray.getSize()) {
@@ -145,7 +156,7 @@ int Array<type>::operator==(const Array<type>& aArray) {
 
 //////////////////////////////
 //
-// Array::operator=
+// Array::operator= --
 //
 
 template<class type>
@@ -381,8 +392,9 @@ Array<type> Array<type>::operator/(const Array<type>& anArray) const {
 }
 
 
+
 #endif  /* _ARRAY_CPP_INCLUDED */
 
 
 
-// md5sum: 4b4e3403e364c7fd5951cf5344bd0207 Array.cpp [20090613]
+// md5sum: 22ff238f1ccb1e4cb517a1e9259227bb Array.cpp [20100511]

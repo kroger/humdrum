@@ -70,10 +70,8 @@ int main(int argc, char** argv) {
       i++;
    }
 
-
    outputfile.sortTracks();         // make sure data is in correct order
    outputfile.write("twinkle.mid"); // write Standard MIDI File twinkle.mid
-
    return 0;
 }
 
@@ -128,4 +126,4 @@ void sortTracks(void);
 
 
 
-// md5sum: 6d17e9a7bb8cfab64818e3df9fe2a494 createmidifile.cpp [20050403]
+// md5sum: 89b83de0fbe279cccd183ef8c1583f62 createmidifile.cpp [20100703]

@@ -2,12 +2,13 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue Jan 22 22:09:46 PST 2002
 // Last Modified: Thu Nov 20 17:09:08 PST 2003
-// Last Modified: Mon Sep  6 23:21:17 PDT 2004 (changed pow(2) into pow(2.0))
-// Filename:      ...sig/examples/all/midi2text.cpp
-// Web Address:   http://sig.sapp.org/examples/museinfo/midi/midi2text.cpp
+// Last Modified: Mon Sep  6 23:21:17 PDT 2004 (changed pow(2) to pow(2.0))
+// Last Modified: Fri Jul 23 12:32:31 PDT 2010 (generalized tempo parsing)
+// Filename:      ...sig/examples/all/mid2mat.cpp
+// Web Address:   http://sig.sapp.org/examples/museinfo/midi/mid2mat.cpp
 // Syntax:        C++; museinfo
 //
-// Description:   Description: Converts a MIDI file into a text based notelist.
+// Description:   Converts a MIDI file into a text-based note matrix.
 //
 // directives:
 //    note    = note data
@@ -33,19 +34,30 @@
    #include <iomanip.h>
 #endif
 
-#define TICK 1
-#define BEAT 2
-#define SEC  3
-#define MSEC 4
+// Four types of event time display:
+#define TICK 1            /* time units are MIDI file ticks (absolute)     */
+#define BEAT 2            /* time units are Beats (quarter note, absolute) */
+#define SEC  3            /* time units are seconds (absolute)             */
+#define MSEC 4            /* time units are millisecodns (absolute)        */
 
-#define OP_NOTE    1000
-#define OP_CONTROL 2000
-#define OP_INSTR   3000
-#define OP_TEMPO   4000
-#define OP_METER   5000
-#define OP_KEYSIG  6000
+// Data which can be found in the final data array:
+#define OP_NOTE    1000   /* Note Event                  */
+#define OP_CONTROL 2000   /* Continuous-Controller Event */
+#define OP_INSTR   3000   /* Instrument Change Event     */
+#define OP_TEMPO   4000   /* Tempo Meta Event            */
+#define OP_METER   5000   /* Meter Meta Event            */
+#define OP_KEYSIG  6000   /* Key Signature Event         */
+
+#define OP_NOTE_NAME    "NOTE"
+#define OP_CONTROL_NAME "CONT"
+#define OP_CONT_NAME    "CONT"
+#define OP_INSTR_NAME   "INSTR"
+#define OP_TEMPO_NAME   "TEMPO"
+#define OP_METER_NAME   "METER"
+#define OP_KEYSIG_NAME  "KEYSIG"
 
 
+// General MIDI instrument names:
 const char *GMinstrument[128] = {
    "acpiano",   "britepno",  "synpiano",  "honkytonk", "epiano1",   "epiano2",
    "hrpschrd",  "clavinet",  "celeste",   "glocken",   "musicbox",  "vibes",
@@ -88,6 +100,7 @@ int     msecQ    = 0;           // used with -m option
 double  unused   = -1000.0;     // used with -u option
 char    arrayname[1024] = {0};  // used with -n option
 int     timetype = SEC;
+int     numQ     = 0;
 double  tempo    = 60.0;
 int     maxcount = 100000;
 Array<Array<double> > matlabarray;
@@ -95,11 +108,11 @@ Array<Array<double> > matlabarray;
 // function declarations:
 void      convertMidiFile       (MidiFile& midifile, 
                                  Array<Array<double> >& matlab);
-void      setTempo              (MidiFile& midifile, int index, double& tempo);
+//void    setTempo              (MidiFile& midifile, int index, double& tempo);
 void      checkOptions          (Options& opts, int argc, char** argv);
 void      example               (void);
 void      usage                 (const char* command);
-double    getTime               (int ticks, double tempo, int tpq);
+double    getTime               (int ticks, MidiFile& midifile);
 void      processMetaEvent      (MidiFile& midifile, int i, 
                                  Array<double>& event);
 void      printEvent            (Array<double>& event);
@@ -108,6 +121,8 @@ void      printMatlabArray      (MidiFile& midifile,
                                  Array<Array<double> >& matlab);
 void      sortArray             (Array<Array<double> >& matlab);
 int       eventcmp              (const void* a, const void* b);
+void      printOpcodeVariables  (Array<int> opcodes);
+void      printOpName           (int code);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -127,6 +142,7 @@ int main(int argc, char* argv[]) {
 
    checkOptions(options, argc, argv);
    MidiFile midifile(options.getArg(1));
+
    convertMidiFile(midifile, matlabarray);
    if (!verboseQ) {
       printMatlabArray(midifile, matlabarray);
@@ -139,12 +155,52 @@ int main(int argc, char* argv[]) {
 
 //////////////////////////////
 //
+// printOpcodeVariables -- create variables for each type of 
+//  data found in the following array (for readability).
+//
+
+void printOpcodeVariables(Array<int> opcodes) {
+   int i;
+   for (i=0; i<opcodes.getSize(); i++) {
+      if (!opcodes[i]) {
+         continue;
+      }
+      switch (i) {
+         case 1:
+            cout << OP_NOTE_NAME << " = "    << OP_NOTE    << ";" << endl;
+            break;
+         case 2:
+            cout << OP_CONTROL_NAME << " = " << OP_CONTROL << ";" << endl;
+            break;
+         case 3:
+            cout << OP_INSTR_NAME << " = "   << OP_INSTR   << ";" << endl;
+            break;
+         case 4:
+            cout << OP_TEMPO_NAME << " = "   << OP_TEMPO   << ";" << endl;
+            break;
+         case 5:
+            cout << OP_METER_NAME << " = "   << OP_METER   << ";" << endl;
+            break;
+         case 6:
+            cout << OP_KEYSIG_NAME << " = "  << OP_KEYSIG  << ";" << endl;
+            break;
+      }
+   }
+}
+
+
+
+//////////////////////////////
+//
 // convertMidiFile --
 //
 
 void convertMidiFile(MidiFile& midifile, Array<Array<double> >& matlab) {
    midifile.absoluteTime();
    midifile.joinTracks();
+   if (secQ || msecQ) {
+      midifile.doTimeInSecondsAnalysis();
+   }
    Array<double> event(7);
    event.allowGrowth(0);
 
@@ -176,15 +232,13 @@ void convertMidiFile(MidiFile& midifile, Array<Array<double> >& matlab) {
          // store note-on velocity and time
          key = midifile.getEvent(0, i).data[1];
          vel = midifile.getEvent(0, i).data[2];
-         ontimes[key] = getTime(midifile.getEvent(0, i).time, tempo, 
-            midifile.getTicksPerQuarterNote());
+         ontimes[key] = getTime(midifile.getEvent(0, i).time, midifile);
 
          onvelocities[key] = vel;
       } else if (command == 0x90 || command == 0x80) {
          // note off command write to output
          key = midifile.getEvent(0, i).data[1];
-         offtime = getTime(midifile.getEvent(0, i).time, tempo, 
-            midifile.getTicksPerQuarterNote());
+         offtime = getTime(midifile.getEvent(0, i).time, midifile);
          legend_opcode[OP_NOTE/1000] = 1;
 
          if (verboseQ) {
@@ -211,8 +265,7 @@ void convertMidiFile(MidiFile& midifile, Array<Array<double> >& matlab) {
          legend_opcode[OP_CONTROL/1000] = 1;
 
          if (verboseQ) {
-            cout << getTime(midifile.getEvent(0,i).time, tempo,
-                       midifile.getTicksPerQuarterNote())
+            cout << getTime(midifile.getEvent(0,i).time, midifile)
                  << "\tcontrol" 
                  << "\ttype="  << (int)midifile.getEvent(0, i).data[1]
                  << "\tval="   << (int)midifile.getEvent(0, i).data[2]
@@ -220,8 +273,7 @@ void convertMidiFile(MidiFile& midifile, Array<Array<double> >& matlab) {
                  << "\ttrack=" << midifile.getEvent(0, i).track
                  << "\n";
          } else {
-            event[0] = getTime(midifile.getEvent(0,i).time, tempo,
-                          midifile.getTicksPerQuarterNote());
+            event[0] = getTime(midifile.getEvent(0,i).time, midifile);
             event[1] = OP_CONTROL;
             event[2] = (int)midifile.getEvent(0,i).data[1];
             event[3] = (int)midifile.getEvent(0,i).data[2];
@@ -233,8 +285,7 @@ void convertMidiFile(MidiFile& midifile, Array<Array<double> >& matlab) {
          legend_opcode[OP_INSTR/1000] = 1;
 
          if (verboseQ) {
-         cout << getTime(midifile.getEvent(0,i).time, tempo,
-                    midifile.getTicksPerQuarterNote())
+         cout << getTime(midifile.getEvent(0,i).time, midifile)
               << "\tinstr" 
               << "\tname="  << GMinstrument[midifile.getEvent(0,i).data[1]]
               << "\tnum="   << (int)midifile.getEvent(0, i).data[1]
@@ -242,8 +293,7 @@ void convertMidiFile(MidiFile& midifile, Array<Array<double> >& matlab) {
               << "\ttrack=" << midifile.getEvent(0, i).track
               << "\n";
          } else {
-            event[0] = getTime(midifile.getEvent(0,i).time, tempo,
-                    midifile.getTicksPerQuarterNote());
+            event[0] = getTime(midifile.getEvent(0,i).time, midifile);
             event[1] = OP_INSTR;
             event[2] = (int)midifile.getEvent(0, i).data[1];
             event[5] = (midifile.getEvent(0, i).data[0] & 0x0f);
@@ -251,12 +301,10 @@ void convertMidiFile(MidiFile& midifile, Array<Array<double> >& matlab) {
          }
       } else if (command == 0xff) {
          if (verboseQ) {
-            cout << getTime(midifile.getEvent(0,i).time, tempo,
-                       midifile.getTicksPerQuarterNote())
+            cout << getTime(midifile.getEvent(0,i).time, midifile)
                  << "\t";
          } else {
-            event[0] = getTime(midifile.getEvent(0,i).time, tempo,
-                       midifile.getTicksPerQuarterNote());
+            event[0] = getTime(midifile.getEvent(0,i).time, midifile);
          }
          processMetaEvent(midifile, i, event);
          if (verboseQ) {
@@ -264,12 +312,14 @@ void convertMidiFile(MidiFile& midifile, Array<Array<double> >& matlab) {
          }
       }
 
+      /* no longer needed 
       // check for tempo indication
       if (midifile.getEvent(0, i).data[0] == 0xff &&
                  midifile.getEvent(0, i).data[1] == 0x51) {
          setTempo(midifile, i, tempo);
          
       }
+      */
 
       if (event[1] != unused) {
          matlab.append(event);
@@ -282,13 +332,20 @@ void convertMidiFile(MidiFile& midifile, Array<Array<double> >& matlab) {
 
 //////////////////////////////
 //
-// processMetaEvent -- print the meta event
+// processMetaEvent -- Handle meta events.
 //
 
 void processMetaEvent(MidiFile& midifile, int i, Array<double>& event) {
-   Array<uchar>& data = midifile.getEvent(0,i).data;
+   MFEvent& mfevent = midifile.getEvent(0, i);
+   Array<uchar>& data = mfevent.data;
 
    switch (data[1]) {
+      case 0x51:  // tempo change
+         legend_opcode[OP_TEMPO/1000] = 1;
+         event[1] = OP_TEMPO;
+         event[2] = mfevent.getTempoBPM();
+         break;
+
       case 0x58:  // time signature
          // 58 04 nn dd cc bb 
          //  nn=numerator of time sig.
@@ -297,7 +354,7 @@ void processMetaEvent(MidiFile& midifile, int i, Array<double>& event) {
          //  cc=number of ticks in metronome click
          //  bb=number of 32nd notes to the quarter note
          if (verboseQ) {
-            cout << "meter\t" << (int)data[2] << "/" << pow(2.0, data[3]);
+            cout << "%meter\t" << (int)data[2] << "/" << pow(2.0, data[3]);
          } else {
             legend_opcode[OP_METER/1000] = 1;
             event[1] = OP_METER;
@@ -305,12 +362,13 @@ void processMetaEvent(MidiFile& midifile, int i, Array<double>& event) {
             event[3] = pow(2.0, data[3]);
          }
          break;
+
       case 0x59:  // key signature
          // 59 02 sf mi   
          // sf=sharps/flats (-7=7 flats, 0=key of C, 7=7 sharps)
          // mi=major/minor (0=major, 1=minor)
          if (verboseQ) {
-            cout << "keysig\t";
+            cout << "%keysig\t";
             if (data[3]==0) {
                switch (data[2]) {
                   case 0: cout << "C-major"; break;
@@ -343,7 +401,7 @@ void processMetaEvent(MidiFile& midifile, int i, Array<double>& event) {
          break;
       default: 
          if (verboseQ) {
-            cout << "meta\t0x" << hex << (int)data[1] << dec;
+            cout << "%meta\t0x" << hex << (int)data[1] << dec;
          }
    }
 }
@@ -355,22 +413,24 @@ void processMetaEvent(MidiFile& midifile, int i, Array<double>& event) {
 // getTime -- return the time in command-line specified time unit
 //
 
-double getTime(int ticks, double tempo, int tpq) {
+double getTime(int ticks, MidiFile& midifile) {
+   int tpq = midifile.getTicksPerQuarterNote();
    switch (timetype) {
       case TICK:
          return ticks;
       case BEAT:
          return (double)ticks/tpq;
       case SEC:
-         return ticks*60.0/tempo/tpq;
+         return midifile.getTimeInSeconds(ticks);
       case MSEC:
-         return ticks*60.0/tempo/tpq*1000.0;
+         return 1000 * midifile.getTimeInSeconds(ticks);
    }
    return 0.0;
 }
 
 
 
+/* obsolete function
 //////////////////////////////
 //
 // setTempo -- set the current tempo
@@ -385,7 +445,7 @@ void setTempo(MidiFile& midifile, int index, double& tempo) {
    event.allowGrowth(0);
    event.setAll(unused);
 
-   _MFEvent& mididata = midifile.getEvent(0, index);
+   MFEvent& mididata = midifile.getEvent(0, index);
 
    int microseconds = 0;
    microseconds = microseconds | (mididata.data[3] << 16);
@@ -397,14 +457,12 @@ void setTempo(MidiFile& midifile, int index, double& tempo) {
       tempo = newtempo;
    } else if (tempo != newtempo) {
       if (verboseQ) {
-         cout << getTime(midifile.getEvent(0,index).time, tempo,
-                 midifile.getTicksPerQuarterNote())
+         cout << getTime(midifile.getEvent(0,index).time, midifile);
               << "\t"
               << "tempo\t" << newtempo << endl;
       } else {
          legend_opcode[OP_TEMPO/1000] = 1;
-         event[0] = getTime(midifile.getEvent(0,index).time, tempo,
-                 midifile.getTicksPerQuarterNote());
+         event[0] = getTime(midifile.getEvent(0,index).time, midifile);
          event[1] = OP_TEMPO;
          event[2] = newtempo;
          matlabarray.append(event); 
@@ -412,6 +470,7 @@ void setTempo(MidiFile& midifile, int index, double& tempo) {
    }
    tempo = newtempo;
 }
+*/
 
 
 
@@ -421,12 +480,13 @@ void setTempo(MidiFile& midifile, int index, double& tempo) {
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
-   opts.define("u|unused=d:-1000.0",              "unused parameter indicator");
+   opts.define("u|unused=d:-1000.0",             "unused parameter indicator");
    opts.define("n|name=s:data",                     "name for data array");
    opts.define("t|ticks|tick=b",                    "display time in ticks");
    opts.define("s|sec|second|seconds=b",            "display time in seconds");
    opts.define("m|msec|millisecond|milliseconds=b", "display time in msec");
    opts.define("b|beat|beats=b",                    "display time in beats");
+   opts.define("num=b",                        "display opcodes as numbers");
    opts.define("v|verbose=b",                       "display verbose data");
 
    opts.define("author=b",  "author of program"); 
@@ -456,9 +516,10 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       exit(0);
    }
 
-   unused = opts.getDouble("unused");
-   debugQ = opts.getBoolean("debug");
+   unused   = opts.getDouble("unused");
+   debugQ   = opts.getBoolean("debug");
    maxcount = opts.getInteger("max"); 
+   numQ     = opts.getBoolean("num");
 
    if (opts.getArgCount() != 1) {
       usage(opts.getCommand());
@@ -668,17 +729,19 @@ void printLegend(MidiFile& midifile) {
    cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
    cout << "%% DATA LEGEND                                               %%\n";
    cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
+   cout << "%%Filename: " << midifile.getFilename() << endl;
+   cout << "%%Ticks per quarter note: " << midifile.getTicksPerQuarterNote() 
+        << "\n";
+   cout << "%%Time units used in column 1: ";
    switch (timetype) {
-      case TICK: cout << "% time unit: ticks\n";         break;
-      case BEAT: cout << "% time unit: beat\n";          break;
-      case SEC:  cout << "% time unit: seconds\n";       break;
-      case MSEC: cout << "% time unit: milliseconds\n";  break;
-      default:   cout << "% time unit: unknown\n";
+      case TICK: cout << "ticks\n";         break;
+      case BEAT: cout << "beat\n";          break;
+      case SEC:  cout << "seconds\n";       break;
+      case MSEC: cout << "milliseconds\n";  break;
+      default:   cout << "unknown\n";
  
    }
-   cout << "% Ticks per quarter note: " << midifile.getTicksPerQuarterNote() 
-        << "\n";
-   cout << "% unused parameter marker: " << unused << "\n";
+   // cout << "% unused parameter marker: " << unused << "\n";
    // check for opcodes used in data:
    sum = 0;
    for (i=0; i<legend_opcode.getSize(); i++) {
@@ -691,56 +754,56 @@ void printLegend(MidiFile& midifile) {
             switch (i*1000) {
                case OP_NOTE:
                   cout << "%\topcode " << OP_NOTE << "\t= note\n";
-                  cout << "%\t\tp1 = start time of note\n";
-                  cout << "%\t\tp2 = opcode for note\n";
-                  cout << "%\t\tp3 = duration of note\n";
-                  cout << "%\t\tp4 = MIDI key number\n";
-                  cout << "%\t\tp5 = MIDI attack velocity\n";
-                  cout << "%\t\tp6 = MIDI channel\n";
-                  cout << "%\t\tp7 = MIDI-file track number\n";
+                  cout << "%\t   column 1 = start time of note\n";
+                  cout << "%\t   column 2 = opcode for note\n";
+                  cout << "%\t   column 3 = duration of note\n";
+                  cout << "%\t   column 4 = MIDI key number\n";
+                  cout << "%\t   column 5 = MIDI attack velocity\n";
+                  cout << "%\t   column 6 = MIDI channel\n";
+                  cout << "%\t   column 7 = MIDI-file track number\n";
                   break;
                case OP_TEMPO:
                   cout << "%\topcode " << OP_TEMPO << "\t= tempo change\n";
-                  cout << "%\t\tp1 = start time of tempo\n";
-                  cout << "%\t\tp2 = opcode for tempo\n";
-                  cout << "%\t\tp3 = number of beats per minute\n";
-                  cout << "%\t\tp4-p7 = unused\n";
+                  cout << "%\t   column 1 = start time of tempo\n";
+                  cout << "%\t   column 2 = opcode for tempo\n";
+                  cout << "%\t   column 3 = number of beats per minute\n";
+                  cout << "%\t   column 4-7 = unused\n";
                   break;
                case OP_CONTROL:
                   cout << "%\topcode " << OP_CONTROL
                        << "\t= continuous controller\n";
-                  cout << "%\t\tp1 = action time of controller\n";
-                  cout << "%\t\tp2 = opcode for controller\n";
-                  cout << "%\t\tp3 = controller number\n";
-                  cout << "%\t\tp4 = controller value\n";
-                  cout << "%\t\tp5 = unused\n";
-                  cout << "%\t\tp6 = MIDI channel\n";
-                  cout << "%\t\tp7 = MIDI-file track number\n";
+                  cout << "%\t   column 1 = action time of controller\n";
+                  cout << "%\t   column 2 = opcode for controller\n";
+                  cout << "%\t   column 3 = controller number\n";
+                  cout << "%\t   column 4 = controller value\n";
+                  cout << "%\t   column 5 = unused\n";
+                  cout << "%\t   column 6 = MIDI channel\n";
+                  cout << "%\t   column 7 = MIDI-file track number\n";
                   break;
                case OP_INSTR:
                   cout << "%\topcode " << OP_INSTR << "\t= instrument\n";
-                  cout << "%\t\tp1 = start time of instrument on channel\n";
-                  cout << "%\t\tp2 = opcode for instrument\n";
-                  cout << "%\t\tp3 = instrument number\n";
-                  cout << "%\t\tp4-p5 = unused\n";
-                  cout << "%\t\tp6 = MIDI channel\n";
-                  cout << "%\t\tp7 = MIDI-file track number\n";
+                  cout << "%\t   column 1 = start time of instrument on channel\n";
+                  cout << "%\t   column 2 = opcode for instrument\n";
+                  cout << "%\t   column 3 = instrument number\n";
+                  cout << "%\t   column 4-5 = unused\n";
+                  cout << "%\t   column 6 = MIDI channel\n";
+                  cout << "%\t   column 7 = MIDI-file track number\n";
                   break;
                case OP_METER:
                   cout << "%\topcode " << OP_METER << "\t= meter signature\n";
-                  cout << "%\t\tp1 = start time of meter signature\n";
-                  cout << "%\t\tp2 = opcode for meter\n";
-                  cout << "%\t\tp3 = numerator of meter\n";
-                  cout << "%\t\tp4 = denominator of meter\n";
-                  cout << "%\t\tp5-p7 = unused\n";
+                  cout << "%\t   column 1 = start time of meter signature\n";
+                  cout << "%\t   column 2 = opcode for meter\n";
+                  cout << "%\t   column 3 = numerator of meter\n";
+                  cout << "%\t   column 4 = denominator of meter\n";
+                  cout << "%\t   column 5-7 = unused\n";
                   break;
                case OP_KEYSIG:
                   cout << "%\topcode " << OP_KEYSIG << "\t= key signature\n";
-                  cout << "%\t\tp1 = start time of key signature\n";
-                  cout << "%\t\tp2 = opcode for key signature\n";
-                  cout << "%\t\tp3 = number of sharps (positive) or flats (negative)\n";
-                  cout << "%\t\tp4 = mode (0=major, 1=minor)\n";
-                  cout << "%\t\tp5-p7 = unused\n";
+                  cout << "%\t   column 1 = start time of key signature\n";
+                  cout << "%\t   column 2 = opcode for key signature\n";
+                  cout << "%\t   column 3 = number of sharps (positive) or flats (negative)\n";
+                  cout << "%\t   column 4 = mode (0=major, 1=minor)\n";
+                  cout << "%\t   column 5-7 = unused\n";
                   break;
                default:
                   cout << "%\topcode " << i*1000 << "\t= unknown\n";
@@ -756,7 +819,11 @@ void printLegend(MidiFile& midifile) {
       sum += legend_instr[i];
    }
    if (sum > 0) {
-      cout << "% " << sum << " instrument timbres are present in the data:\n";
+      if (sum == 1) {
+         cout << "% " << sum << " instrument timbre is present in the data:\n";
+      } else {
+         cout << "% " << sum << " instrument timbres are present in the data:\n";
+      }
       for (i=0; i<legend_instr.getSize(); i++) {
          if (legend_instr[i]) {
             cout << "%\tinstrument number " << i << "\t= " 
@@ -771,7 +838,11 @@ void printLegend(MidiFile& midifile) {
       sum += legend_controller[i];
    }
    if (sum > 0) {
+      if (sum == 1) {
+      cout << "% " << sum << " type of controller is present in the data:\n";
+      } else {
       cout << "% " << sum << " types of controllers are present in the data:\n";
+      }
       for (i=0; i<legend_controller.getSize(); i++) {
          if (legend_controller[i]) {
             cout << "%\tcontroller " << GMcontrollers[i] << "\n";
@@ -780,6 +851,7 @@ void printLegend(MidiFile& midifile) {
    }
 
    cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
+   cout << endl;
 
 }
 
@@ -793,12 +865,15 @@ void printLegend(MidiFile& midifile) {
 void printMatlabArray(MidiFile& midifile, Array<Array<double> >& matlab) {
    int i;
    sortArray(matlab);
+   printLegend(midifile);
+   if (!numQ) {
+      printOpcodeVariables(legend_opcode);
+   }
    cout << arrayname << " = [\n";
    for (i=0; i<matlab.getSize(); i++) {
       printEvent(matlab[i]);
    }
    cout << "];\n";
-   printLegend(midifile);
 }
 
 
@@ -838,13 +913,59 @@ int eventcmp(const void* a, const void* b) {
 
 //////////////////////////////
 //
+// printOpName -- print the OpCode's symbolic name for better
+// readability.
+//
+
+void printOpName(int code) {
+   switch (code) {
+
+      case OP_NOTE:
+         cout << OP_NOTE_NAME;
+         break;
+      case OP_CONTROL:
+         cout << OP_CONT_NAME;
+         break;
+      case OP_INSTR:
+         cout << OP_INSTR_NAME;
+         break;
+      case OP_TEMPO:
+         cout << OP_TEMPO_NAME;
+         break;
+      case OP_METER:
+         cout << OP_METER_NAME;
+         break;
+      case OP_KEYSIG:
+         cout << OP_KEYSIG_NAME;
+         break;
+      default:
+         cout << code;
+
+   }
+}
+
+
+
+//////////////////////////////
+//
 // printEvent -- print the event
 //
 
 void printEvent(Array<double>& event) {
    int i;
    for (i=0; i<event.getSize(); i++) {
+      if ((i == 1) && (!numQ)) {
+         printOpName(event[i]);
+         cout << ",\t";
+         continue;
+      }
       cout << event[i];
+      // if ((i==0) && (event[i] - (int)event[i] == 0.0)) {
+      //    cout << ".0000";
+      //    if (event[i] < 10) {
+      //       cout << "0";
+      //    }
+      // }
       if (i<event.getSize()-1) {
          cout << ",\t";
       }
@@ -854,4 +975,4 @@ void printEvent(Array<double>& event) {
 
 
 
-// md5sum: 971459c3cfe75ad0ae0b596327a0d30d mid2mat.cpp [20090626]
+// md5sum: 123b79d89bacdd1c99a03dd3951eb332 mid2mat.cpp [20100726]

@@ -3,6 +3,7 @@
 // Creation Date: Wed Feb  5 19:42:53 PST 1997
 // Last Modified: Tue Apr 22 20:28:16 GMT-0800 1997
 // Last Modified: Fri Sep 14 15:50:52 PDT 2001 (added last() function)
+// Last Modified: Wed Sep  8 17:18:15 PDT 2010 (added getGrowth())
 // Filename:      ...sig/maint/code/base/SigCollection/SigCollection.h
 // Web Address:   http://sig.sapp.org/include/sigBase/SigCollection.h
 // Documentation: http://sig.sapp.org/doc/classes/SigCollection
@@ -39,11 +40,13 @@ class SigCollection {
       type     *pointer           (void);
       void      setAllocSize      (long aSize);
       void      setGrowth         (long growth);
+      long      getGrowth         (void) { return growthAmount; }
       void      setSize           (long newSize);
       type&     operator[]        (int arrayIndex);
       type      operator[]        (int arrayIndex) const;
       void      grow              (long growamt = -1);
       type&     last              (void);
+      int       increase          (int addcount);
 
 
    protected:

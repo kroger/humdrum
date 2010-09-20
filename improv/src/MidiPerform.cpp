@@ -3,7 +3,7 @@
 // Creation Date: Sat Nov 27 14:10:32 PST 1999
 // Last Modified: Wed Dec  1 11:35:37 PST 1999
 // Filename:      ...sig/maint/code/info/MidiPerform/MidiPerform.cpp
-// Syntax:        C++ 
+// Syntax:        C++
 //
 // Description:   A class which performs a MIDI file with various
 //                types of tempo and volume controls built in.
@@ -19,7 +19,7 @@
 // MidiPerform::MidiPerform --
 //
 
-MidiPerform::MidiPerform(void) { 
+MidiPerform::MidiPerform(void) {
    tempo = 120.0;
    performanceTimer.setTempo(tempo);
    beatTimer.setTempo(tempo);
@@ -33,7 +33,7 @@ MidiPerform::MidiPerform(void) {
 }
 
 
-MidiPerform::MidiPerform(char* aFile) { 
+MidiPerform::MidiPerform(char* aFile) {
    tempo = 120.0;
    performanceTimer.setTempo(tempo);
    beatTimer.setTempo(tempo);
@@ -44,7 +44,7 @@ MidiPerform::MidiPerform(char* aFile) {
    readIndex = 0;
    tempoMethod = TEMPO_METHOD_AUTOMATIC;
    amp = 1.0;
-  
+
    read(aFile);
 }
 
@@ -54,7 +54,7 @@ MidiPerform::MidiPerform(char* aFile) {
 // MidiPerform::~MidiPerform --
 //
 
-MidiPerform::~MidiPerform() { 
+MidiPerform::~MidiPerform() {
    // do nothing
 }
 
@@ -62,10 +62,10 @@ MidiPerform::~MidiPerform() {
 
 //////////////////////////////
 //
-// MidiPerform::beat -- 
+// MidiPerform::beat --
 //
 
-void MidiPerform::beat(void) { 
+void MidiPerform::beat(void) {
    double aNewTime = millisecTimer.getTime();
    beatTimes.insert(aNewTime);
 
@@ -108,7 +108,7 @@ void MidiPerform::beat(void) {
          beat_automatic();
    }
 
-   cout << " Current Tempo: " << tempo << "\t\t Current Beat: " 
+   cout << " Current Tempo: " << tempo << "\t\t Current Beat: "
         << performanceTimer.getPeriodCount() << endl;
 }
 
@@ -123,7 +123,7 @@ void MidiPerform::beat_automatic(void) {
 cout << "Beat AUTOMATIC" << endl;
    // do nothing
 }
-   
+
 
 //////////////////////////////
 //
@@ -147,7 +147,7 @@ cout << "Beat CONSTANT" << endl;
 //////////////////////////////
 //
 // MidiPerform::beat_tracktempo -- averages the past
-//    x number of beat's tempos as the current tempo 
+//    x number of beat's tempos as the current tempo
 //    of the next beat to be performed.
 //
 
@@ -196,7 +196,7 @@ int MidiPerform::getMaxAmp(void) {
 
 //////////////////////////////
 //
-// MidiPerform::getAverageTempo -- 
+// MidiPerform::getAverageTempo --
 //
 
 double MidiPerform::getAverageTempo(int count) {
@@ -218,7 +218,7 @@ double MidiPerform::getAverageTempo(int count) {
 
 //////////////////////////////
 //
-// MidiPerform::channelCollapse -- 
+// MidiPerform::channelCollapse --
 //
 
 int MidiPerform::channelCollapse(int aSetting) {
@@ -233,12 +233,12 @@ int MidiPerform::channelCollapse(int aSetting) {
 
 //////////////////////////////
 //
-// MidiPerform::xcheck -- 
+// MidiPerform::xcheck --
 //
 
 void MidiPerform::xcheck(void) {
    int quitQ = 0;
-   _MFEvent* event = NULL;
+   MFEvent* event = NULL;
    if (beatTimer.expired()) {   // waiting for the next beat, so don't continue
       if (getTempoMethod() != TEMPO_METHOD_AUTOMATIC) {
          return;
@@ -291,7 +291,7 @@ void MidiPerform::xcheck(void) {
 //   waiting for next beat to occur.
 //
 
-double MidiPerform::getBeatFraction(void) { 
+double MidiPerform::getBeatFraction(void) {
    return beatTimer.getPeriod();
 }
 
@@ -301,10 +301,10 @@ double MidiPerform::getBeatFraction(void) {
 //
 // MidiPerform::getBeatLocation -- the integer count of the
 //   beats.
-//  
+//
 //
 
-int MidiPerform::getBeatLocation(void) { 
+int MidiPerform::getBeatLocation(void) {
    return performanceTimer.expired();
 }
 
@@ -339,7 +339,7 @@ int MidiPerform::getTempoMethod(void) {
 // MidiPerform::pause --
 //
 
-void MidiPerform::pause(void) { 
+void MidiPerform::pause(void) {
    pauseLocation = performanceTimer.getTime();
    playingQ = 0;
 }
@@ -351,7 +351,7 @@ void MidiPerform::pause(void) {
 // MidiPerform::play --
 //
 
-void MidiPerform::play(void) { 
+void MidiPerform::play(void) {
    playingQ = 1;
    performanceTimer.reset();
    beatTimer.reset();
@@ -365,12 +365,12 @@ void MidiPerform::play(void) {
 // MidiPerform::read --
 //
 
-void MidiPerform::read(char* aFile) { 
+void MidiPerform::read(char* aFile) {
    int status = midifile.read(aFile);
    if (status == 0) {
       cout << "Error: midifile " << aFile << " is bad." << endl;
    }
-   
+
    if (readIndex != NULL) {
       delete readIndex;
    }
@@ -391,7 +391,7 @@ void MidiPerform::read(char* aFile) {
 // MidiPerform::rewind --
 //
 
-void MidiPerform::rewind(void) { 
+void MidiPerform::rewind(void) {
    pauseLocation = 0.0;
 }
 
@@ -433,7 +433,7 @@ void MidiPerform::setMaxAmp(int aMax) {
 // MidiPerform::setBeatLocation --
 //
 
-void MidiPerform::setBeatLocation(double aLocation) { 
+void MidiPerform::setBeatLocation(double aLocation) {
    // xxx
 }
 
@@ -444,7 +444,7 @@ void MidiPerform::setBeatLocation(double aLocation) {
 // MidiPerform::setTempo --
 //
 
-void MidiPerform::setTempo(double aTempo) { 
+void MidiPerform::setTempo(double aTempo) {
    tempo = aTempo;
    performanceTimer.setTempo(tempo);
    beatTimer.setTempo(tempo);
@@ -457,7 +457,7 @@ void MidiPerform::setTempo(double aTempo) {
 // MidiPerform::setTempo --
 //
 
-void MidiPerform::setTempoMethod(int aMethod) { 
+void MidiPerform::setTempoMethod(int aMethod) {
    if (aMethod == TEMPO_METHOD_AUTOMATIC) {
       beatTimes.reset();
    }
@@ -471,7 +471,7 @@ void MidiPerform::setTempoMethod(int aMethod) {
 // MidiPerform::stop --
 //
 
-void MidiPerform::stop(void) { 
+void MidiPerform::stop(void) {
    pauseLocation = performanceTimer.getTime();
 }
 

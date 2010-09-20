@@ -11,6 +11,7 @@
 // Last Modified: Thu Sep 14 20:07:45 PDT 2006 (added SMPTE ASCII printing)
 // Last Modified: Tue Apr  7 09:23:48 PDT 2009 (added addMetaEvent)
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
+// Last Modified: Mon Jul 26 13:38:23 PDT 2010 (added timing in seconds)
 // Filename:      ...sig/src/sigInfo/MidiFile.cpp
 // Web Address:   http://sig.sapp.org/src/sigInfo/MidiFile.cpp
 // Syntax:        C++ 
@@ -31,20 +32,34 @@
 #endif
 
 
+///////////////////////////////////////////////////////////////////////////
+//
+// MidiFile Event Class:  A MidiFile class is basically a list of 
+//     MFEvent's.  A MidiFile Event contains two components: (1) The
+//     timestamp for the execution time of the event, and (2) the 
+//     MIDI data for the event.  The MIDI data is a list of bytes
+//     with a variable length depending on the MIDI message type,
+//     which is the first byte in the data variable (running status
+//     encoding of data is strictly forbidden in MFEvent).
+//     The time value is in MIDI ticks.  The tick value can be
+//     either in TIME_STATE_DELTA mode or TIME_STATE_ABSOLUTE mode, 
+//     depending on the setting in the MidiFile class which holds the 
+//     MFEvent.
+//
 
 //////////////////////////////
 //
-// _MFEvent::_MFEvent --
+// MFEvent::MFEvent -- Constructor classes
 //
 
-_MFEvent::_MFEvent(void) { 
+MFEvent::MFEvent(void) { 
    time = 0;
    track = 0;
    data.allowGrowth();
    data.setSize(0);
 }
 
-_MFEvent::_MFEvent(int command) { 
+MFEvent::MFEvent(int command) { 
    time = 0;
    track = 0;
    data.allowGrowth();
@@ -52,7 +67,7 @@ _MFEvent::_MFEvent(int command) {
    data[0] = (uchar)command;
 }
 
-_MFEvent::_MFEvent(int command, int param1) { 
+MFEvent::MFEvent(int command, int param1) { 
    time = 0;
    track = 0;
    data.allowGrowth();
@@ -61,7 +76,7 @@ _MFEvent::_MFEvent(int command, int param1) {
    data[1] = (uchar)param1;
 }
 
-_MFEvent::_MFEvent(int command, int param1, int param2) { 
+MFEvent::MFEvent(int command, int param1, int param2) { 
    time = 0;
    track = 0;
    data.allowGrowth();
@@ -71,7 +86,7 @@ _MFEvent::_MFEvent(int command, int param1, int param2) {
    data[2] = (uchar)param2;
 }
 
-_MFEvent::_MFEvent(int aTrack, int command, int param1, int param2) { 
+MFEvent::MFEvent(int aTrack, int command, int param1, int param2) { 
    time = 0;
    track = aTrack;
    data.allowGrowth();
@@ -81,7 +96,7 @@ _MFEvent::_MFEvent(int aTrack, int command, int param1, int param2) {
    data[2] = (uchar)param2;
 }
 
-_MFEvent::_MFEvent(int aTime, int aTrack, int command, int param1, int param2) {
+MFEvent::MFEvent(int aTime, int aTrack, int command, int param1, int param2) {
    time = aTime;
    track = aTrack;
    data.allowGrowth();
@@ -91,19 +106,343 @@ _MFEvent::_MFEvent(int aTime, int aTrack, int command, int param1, int param2) {
    data[2] = (uchar)param2;
 }
 
+MFEvent::MFEvent(int aTime, int aTrack, Array<uchar>& someData) {
+   time  = aTime;
+   track = aTrack;
+   data.setSize(someData.getSize());
+   memcpy(data.getBase(), someData.getBase(), sizeof(uchar) * data.getSize());
+}
+
+
+MFEvent::MFEvent(MFEvent& mfevent) {
+   time  = mfevent.time;
+   track = mfevent.track;
+   data.setSize(mfevent.data.getSize());
+   memcpy(data.getBase(), mfevent.data.getBase(), 
+      sizeof(uchar) * data.getSize());
+}
+
 
 
 //////////////////////////////
 //
-// _MFEvent::~MFEvent
+// MFEvent::~MFEvent -- MidiFile Event destructor
 //
 
-_MFEvent::~_MFEvent() { 
+MFEvent::~MFEvent() { 
    time = -1;
    track = -1;
    data.setSize(0);
 }
+ 
 
+
+//////////////////////////////
+//
+// MFEvent::operator= --
+//
+
+MFEvent& MFEvent::operator=(MFEvent& mfevent) {
+   if (this == &mfevent) {
+      return *this;
+   }
+   time  = mfevent.time;
+   track = mfevent.track;
+   data.setSize(mfevent.data.getSize());
+   memcpy(data.getBase(), mfevent.data.getBase(), 
+      sizeof(uchar) * data.getSize());
+   return *this;
+}
+
+
+
+//////////////////////////////////////////////////
+//
+// Convenience functions for parsing MFEvent contents.
+//
+
+
+
+//////////////////////////////
+//
+// MFEvent::isNoteOff -- returns true if the command byte is in the 0x80
+//     range or if the command byte is in the 0x90 range with a 0 velocity.
+//
+
+int MidiFile::isNoteOff(int track, int index) {
+   return getEvent(track, index).isNoteOff();
+}
+
+int MFEvent::isNoteOff(void) {
+   if (data.getSize() != 3) {
+      return 0;
+   }
+   if ((data[0] & 0xf0) == 0x80) {
+      return 1;
+   }
+   if (((data[0] & 0xf0) == 0x90) && (data[2] == 0)) {
+      return 1;
+   }
+
+   return 0;
+}
+
+
+
+//////////////////////////////
+//
+// MFEvent::getCommandNibble -- return the top 4 bits of the data[0]
+//    entry, or -1 if there is not data[0].
+//
+
+int MidiFile::getCommandNibble(int track, int index) {
+   return getEvent(track, index).getCommandNibble();
+}
+
+int MFEvent::getCommandNibble(void) {
+   if (data.getSize() < 1) {
+      return -1;
+   }
+   return data[0] & 0xf0;
+}
+
+
+
+//////////////////////////////
+//
+// MFEvent::getChannelNibble -- return the bottom 4 bites of the data[0]
+//      entry, or -1 if there is not data[0].  Should be refined to
+//      return -1 if the top nibble is 0xf0, since those commands are
+//      not channel specific.
+//
+
+int MidiFile::getChannelNibble(int track, int index) {
+   return getEvent(track, index).getChannelNibble();
+}
+
+int MFEvent::getChannelNibble(void) {
+   if (data.getSize() < 1) {
+      return -1;
+   }
+   return data[0] & 0x0f;
+}
+
+
+
+//////////////////////////////
+//
+// MFEvent::isNoteOn -- returns true if the command byte is in the 0x90
+//    range and the velocity is non-zero
+//
+
+int MidiFile::isNoteOn(int track, int index) {
+   return getEvent(track, index).isNoteOn();
+}
+
+int MFEvent::isNoteOn(void) {
+   if (data.getSize() != 3) {
+      return 0;
+   }
+   if ((data[0] & 0xf0) != 0x90) {
+      return 0;
+   }
+   if (data[2] == 0) {
+      return 0;
+   }
+   return 1;
+}
+
+
+
+//////////////////////////////
+//
+// MFEvent::isMeta -- returns true if message is a Meta message
+//      or false if not.
+//
+
+int MidiFile::isMeta(int track, int index) {
+   return getEvent(track, index).isMeta();
+}
+
+int MFEvent::isMeta(void) {
+   if (data[0] != 0xff) {
+      return 0;
+   }
+   if (data.getSize() < 3) {
+      // meta messages must have at least three bytes:
+      // 0: 0xff == meta message marker
+      // 1: meta message type
+      // 2: meta message data bytes to follow
+      return 0;
+   }
+
+   return 1;
+}
+
+
+
+//////////////////////////////
+//
+// MFEvent::isTempo -- returns true if emssage is a Meta message
+//      describing tempo (meta message 0x51).
+//
+
+int MidiFile::isTempo(int track, int index) {
+   return getEvent(track, index).isTempo();
+}
+
+int MFEvent::isTempo(void) {
+   if (!isMeta()) {
+      return 0;
+   }
+   if (data[1] != 0x51) {
+      return 0;
+   }
+   if (data.getSize() != 6) {
+      // Meta Tempo message can only be 6 bytes long.
+      return 0;
+   }
+
+   return 1;
+}
+
+
+
+//////////////////////////////
+//
+// MFEvent::getTempoMicro -- returns the number of microseconds per
+//      quarter note.  Returns -1 if the MIDI message is not a 
+//      tempo meta message.
+//
+
+int MidiFile::getTempoMicroseconds(int track, int index) {
+   return getEvent(track, index).getTempoMicroseconds();
+}
+
+int MFEvent::getTempoMicroseconds(void) {
+   return getTempoMicro();
+}
+
+int MidiFile::getTempoMicro(int track, int index) {
+   return getEvent(track, index).getTempoMicro();
+}
+
+int MFEvent::getTempoMicro(void) {
+   if (!isTempo()) {
+      return -1;
+   }
+
+   return (data[3] << 16) + (data[4] << 8) + data[5];
+}
+
+
+
+//////////////////////////////
+//
+// MFEvent::getTempoSeconds -- returns the number of seconds per
+//      quarter note.  Returns -1.0 if the MIDI message is not a 
+//      tempo meta message.
+//
+
+double MidiFile::getTempoSeconds(int track, int index) {
+   return getEvent(track, index).getTempoSeconds();
+}
+
+double MFEvent::getTempoSeconds(void) {
+   int micro = getTempoMicroseconds();
+   if (micro < 0) {
+      return -1.0;
+   }
+
+   return (double)micro / 1000000.0;
+}
+
+
+
+//////////////////////////////
+//
+// MFEvent::getTempoBPM -- return the tempo in terms of beats per minute.
+//
+
+double MidiFile::getTempoBPM(int track, int index) {
+   return getEvent(track, index).getTempoBPM();
+}
+
+double MFEvent::getTempoBPM(void) {
+   int micro = getTempoMicroseconds();
+   if (micro < 0) {
+      return -1.0;
+   }
+   return 60000000.0 / (double)micro;
+}
+
+
+
+//////////////////////////////
+//
+// MFEvent::getTempoTPS -- return the tempo in terms of ticks per seconds.
+//
+
+double MidiFile::getTempoTPS(int track, int index) {
+   return getEvent(track, index).getTempoTPS(getTicksPerQuarterNote());
+}
+
+double MFEvent::getTempoTPS(int tpq) {
+   int micro = getTempoMicroseconds();
+   if (micro < 0) {
+      return -1.0;
+   }
+   return 1000000.0 / (double)micro * tpq;
+}
+
+
+
+//////////////////////////////
+//
+// MFEvent::getTempoSPT -- return the tempo in terms of seconds per tick.
+//
+
+double MidiFile::getTempoSPT(int track, int index) {
+   return getEvent(track, index).getTempoSPT(getTicksPerQuarterNote());
+}
+
+double MFEvent::getTempoSPT(int tpq) {
+   int micro = getTempoMicroseconds();
+   if (micro < 0) {
+      return -1.0;
+   }
+   return (double)micro / 1000000.0 / tpq;
+}
+
+
+
+//////////////////////////////
+//
+// MFEvent::isTimbre --
+//
+
+int MidiFile::isTimbre(int track, int index) {
+   return getEvent(track, index).isTimbre();
+}
+
+int MFEvent::isTimbre(void) {
+   if ((data[0] & 0xf0) != 0xc0) {
+      return 0;
+   }
+   if (data.getSize() != 2) {
+      return 0;
+   }
+
+   return 1;
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////////////
+//
+// MidiFile Class:
+//
 
 
 //////////////////////////////
@@ -117,11 +456,13 @@ MidiFile::MidiFile(void) {
    theTrackState = TRACK_STATE_SPLIT;    // joined or split
    theTimeState = TIME_STATE_DELTA;      // absolute or delta
    events.setSize(1);
-   events[0] = new SigCollection<_MFEvent>;
+   events[0] = new SigCollection<MFEvent>;
    events[0]->setSize(0);
    events[0]->allowGrowth(1);
-   readFileName = new char[1];
+   readFileName.setSize(1);
    readFileName[0] = '\0';
+   timemap.setSize(0);
+   timemapvalid = 0;
 }
 
 
@@ -131,12 +472,14 @@ MidiFile::MidiFile(const char* aFile) {
    theTrackState = TRACK_STATE_SPLIT;    // joined or split
    theTimeState = TIME_STATE_DELTA;      // absolute or delta
    events.setSize(1);
-   events[0] = new SigCollection<_MFEvent>;
+   events[0] = new SigCollection<MFEvent>;
    events[0]->setSize(0);
    events[0]->allowGrowth(1);
-   readFileName = new char[1];
+   readFileName.setSize(1);
    readFileName[0] = '\0';
    read(aFile);
+   timemap.setSize(0);
+   timemapvalid = 0;
 }
 
 
@@ -147,10 +490,8 @@ MidiFile::MidiFile(const char* aFile) {
 //
 
 MidiFile::~MidiFile() { 
-   if (readFileName != NULL) {
-      delete [] readFileName;
-      readFileName = NULL;
-   }
+   readFileName.setSize(1);
+   readFileName[0] = '\0';
 
    erase();
 
@@ -159,6 +500,53 @@ MidiFile::~MidiFile() {
       events[0] = NULL;
    }
 
+   timemap.setSize(0);
+   timemapvalid = 0;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::setFilename -- sets the filename of the MIDI file.
+//      Currently removed any directory path.
+//
+
+void MidiFile::setFilename(const char* aname) {
+   const char* ptr = strrchr(aname, '/');
+   int len;
+   if (ptr != NULL) {
+     len = strlen(ptr+1);
+     readFileName.setSize(len+1);
+     strncpy(readFileName.getBase(), ptr+1, len);
+   } else {
+      len = strlen(aname);
+      readFileName.setSize(len+1);
+      strncpy(readFileName.getBase(), aname, len);
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::getFilename -- returns the name of the file read into the 
+//    structure (if the data was read from a file).
+//
+
+const char* MidiFile::getFilename(void) {
+   return readFileName.getBase();
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::getTrack --
+//
+
+int MidiFile::getTrack(int track, int index) {
+   return getEvent(track, index).track;
 }
 
 
@@ -167,7 +555,7 @@ MidiFile::~MidiFile() {
 //
 // MidiFile::absoluteTime -- convert the time data to
 //    absolute time, which means that the time field
-//    in the _MFEvent struct represents the exact tick
+//    in the MFEvent struct represents the exact tick
 //    time to play the event rather than the time since
 //    the last event to wait untill playing the current
 //    event.
@@ -204,13 +592,31 @@ void MidiFile::absoluteTime(void) {
 //
 
 int MidiFile::addEvent(int aTrack, int aTime, Array<uchar>& midiData) {
-   _MFEvent anEvent;
+   timemapvalid = 0;
+   MFEvent anEvent;
    anEvent.time = aTime;
    anEvent.track = aTrack;
    anEvent.data = midiData;
 
    events[aTrack]->append(anEvent);
    return events[aTrack]->getSize() - 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::addEvent --
+//
+
+int MidiFile::addEvent(MFEvent& mfevent) {
+   if (getTrackState() == TRACK_STATE_JOINED) {
+      events[0]->append(mfevent);
+      return events[0]->getSize()-1;
+   } else {
+      events[mfevent.track]->append(mfevent);
+      return events[mfevent.track]->getSize()-1;
+   }
 }
 
 
@@ -222,7 +628,7 @@ int MidiFile::addEvent(int aTrack, int aTime, Array<uchar>& midiData) {
 
 int MidiFile::addMetaEvent(int aTrack, int aTime, int aType,
       Array<uchar>& metaData) {
-
+   timemapvalid = 0;
    int i;
    int length = metaData.getSize();
    Array<uchar> fulldata;
@@ -320,6 +726,7 @@ int MidiFile::makeVLV(uchar *buffer, int number) {
 //
 
 int MidiFile::addPitchBend(int aTrack, int aTime, int aChannel, double amount) {
+   timemapvalid = 0;
    amount += 1.0;
    int value = int(amount * 8192 + 0.5);
 
@@ -360,7 +767,7 @@ int MidiFile::addPitchBend(int aTrack, int aTime, int aChannel, double amount) {
 int MidiFile::addTrack(void) { 
    int length = getNumTracks();
    events.setSize(length+1);
-   events[length] = new SigCollection<_MFEvent>;
+   events[length] = new SigCollection<MFEvent>;
    events[length]->setSize(10000);
    events[length]->setSize(0);
    events[length]->allowGrowth(1);
@@ -372,7 +779,7 @@ int MidiFile::addTrack(int count) {
    events.setSize(length+count);
    int i;
    for (i=0; i<count; i++) {
-      events[length + i] = new SigCollection<_MFEvent>;
+      events[length + i] = new SigCollection<MFEvent>;
       events[length + i]->setSize(10000);
       events[length + i]->setSize(0);
       events[length + i]->allowGrowth(1);
@@ -425,7 +832,7 @@ void MidiFile::deleteTrack(int aTrack) {
 //
 // MidiFile::deltaTime -- convert the time data to
 //     delta time, which means that the time field
-//     in the _MFEvent struct represents the time
+//     in the MFEvent struct represents the time
 //     since the last event was played. When a MIDI file
 //     is read from a file, this is the default setting.
 //
@@ -470,9 +877,11 @@ void MidiFile::erase(void) {
       events[i] = NULL;
    }
    events.setSize(1);
-   events[0] = new SigCollection<_MFEvent>;
+   events[0] = new SigCollection<MFEvent>;
    events[0]->setSize(0);
    events[0]->allowGrowth(1);
+   timemapvalid=0;
+   timemap.setSize(0);
 }
 
 
@@ -488,7 +897,7 @@ void MidiFile::clear(void) {
 //    specified track.
 //
 
-_MFEvent& MidiFile::getEvent(int aTrack, int anIndex) {
+MFEvent& MidiFile::getEvent(int aTrack, int anIndex) {
    return (*events[aTrack])[anIndex];
 }
 
@@ -551,8 +960,8 @@ void MidiFile::joinTracks(void) {
       return;
    }
 
-   SigCollection <_MFEvent>* joinedTrack;
-   joinedTrack = new SigCollection<_MFEvent>;
+   SigCollection <MFEvent>* joinedTrack;
+   joinedTrack = new SigCollection<MFEvent>;
    joinedTrack->setSize(200000);
    joinedTrack->setSize(0);
    int oldTimeState = getTimeState();
@@ -590,8 +999,8 @@ void MidiFile::joinTracks(void) {
 //
 
 void MidiFile::mergeTracks(int aTrack1, int aTrack2) { 
-   SigCollection <_MFEvent>* mergedTrack;
-   mergedTrack = new SigCollection<_MFEvent>;
+   SigCollection <MFEvent>* mergedTrack;
+   mergedTrack = new SigCollection<MFEvent>;
    mergedTrack->setSize(0);
    int oldTimeState = getTimeState();
    if (oldTimeState == TIME_STATE_DELTA) {
@@ -633,6 +1042,10 @@ void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
 //
 
 int MidiFile::read(const char* aFile) { 
+   timemapvalid = 0;
+   if (aFile != NULL) {
+      setFilename(aFile);
+   }
 
    #ifndef OLDCPP
       #ifdef VISUAL
@@ -725,7 +1138,7 @@ int MidiFile::read(const char* aFile) {
    }
    events.setSize(tracks);
    for (int z=0; z<tracks; z++) {
-      events[z] = new SigCollection<_MFEvent>;
+      events[z] = new SigCollection<MFEvent>;
       events[z]->setAllocSize(10000);
       events[z]->setSize(0);
       events[z]->allowGrowth(1);
@@ -762,7 +1175,7 @@ int MidiFile::read(const char* aFile) {
    //
 
    uchar runningCommand = 0;
-   _MFEvent event;
+   MFEvent event;
    int absticks;
    int barline;
    
@@ -773,7 +1186,8 @@ int MidiFile::read(const char* aFile) {
       inputfile.readBigEndian(chardata);
       if (chardata != 'M') {
          cout << "File: " << aFile << " has bad track info" << endl;
-         cout << "character 1 is: " << (int)chardata << endl;
+         cout << "character 1 is: " << (char)chardata 
+              << "(" << (int)chardata << "): expecting 'M'" << endl;
          inputfile.readBigEndian(chardata);
          if (inputfile.eof()) {
             cout << "End of file reached" << endl;
@@ -818,10 +1232,10 @@ int MidiFile::read(const char* aFile) {
       barline = 1;
       while (!inputfile.eof()) {
          longdata = extractVlvTime(inputfile);
-//cout << "ticks = " << longdata << endl;
+         //cout << "ticks = " << longdata << endl;
          absticks += longdata;
          extractMidiData(inputfile, event.data, runningCommand);
-//cout << "command = " << hex << (int)event.data[0] << dec << endl;
+         //cout << "command = " << hex << (int)event.data[0] << dec << endl;
          if (event.data[0] == 0xff && (event.data[1] == 1 || 
              event.data[1] == 2 || event.data[1] == 3 || event.data[1] == 4)) {
            // mididata.append('\0');
@@ -831,21 +1245,30 @@ int MidiFile::read(const char* aFile) {
            // }
            // cout.flush();
          } else if (event.data[0] == 0xff && event.data[1] == 0x2f) {
+            // end of track message
+	    // uncomment out the following three lines if you don't want
+	    // to see the end of track message (which is always required,
+	    // and added automatically when a MIDI is written.
+            event.time = absticks;
+            event.track = i;
+            events[i]->append(event);
+	    
             break;
          }
 
          if (event.data[0] != 0xff && event.data[0] != 0xf0) {
             event.time = absticks;
-            if ((event.data[0] & 0xf0) == 0x90) {
-               if (event.data[1] < 12) {
-                  event.data[0] = event.data[1];
-                  switch (event.data[0]) {
-                     case 2: event.data[2] = barline++;    // barline
-                             break; 
-                     case 0: break;                        // beat
-                  }
-               }
-            }
+	    // don't remember what the following code was for:
+            // if ((event.data[0] & 0xf0) == 0x90) {
+            //    if (event.data[1] < 12) {
+            //       event.data[0] = event.data[1];
+            //       switch (event.data[0]) {
+            //          case 2: event.data[2] = barline++;    // barline
+            //                  break; 
+            //          case 0: break;                        // beat
+            //       }
+            //    }
+            // }
             event.track = i;
             events[i]->append(event);
          } else {
@@ -900,9 +1323,9 @@ void MidiFile::setMillisecondDelta(void) {
 // MidiFile::sortTrack -- 
 //
 
-void MidiFile::sortTrack(SigCollection<_MFEvent>& trackData) { 
+void MidiFile::sortTrack(SigCollection<MFEvent>& trackData) { 
    qsort(trackData.getBase(), trackData.getSize(), 
-      sizeof(_MFEvent), eventcompare);
+      sizeof(MFEvent), eventcompare);
 }
 
 
@@ -945,11 +1368,11 @@ void MidiFile::splitTracks(void) {
       }
    }
 
-   SigCollection<_MFEvent>* olddata = events[0];
+   SigCollection<MFEvent>* olddata = events[0];
    events[0] = NULL;
    events.setSize(maxTrack);
    for (i=0; i<maxTrack; i++) {
-      events[i] = new SigCollection<_MFEvent>;
+      events[i] = new SigCollection<MFEvent>;
       events[i]->setSize(0);
       events[i]->allowGrowth();
    }
@@ -964,6 +1387,31 @@ void MidiFile::splitTracks(void) {
 
    if (oldTimeState == TIME_STATE_DELTA) {
       deltaTime();
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::getTrackCount --  Return the number of tracks in the
+//    MIDI file.  Returns the size of the events if not in joined state.
+//    If in joined state, reads track 0 to find the maximum track
+//    value from the original unjoined tracks.
+//
+
+int MidiFile::getTrackCountAsType1(void) {
+   if (getTrackState() == TRACK_STATE_JOINED) {
+      int output = 0;
+      int i;
+      for (i=0; i<events[0]->getSize(); i++) {
+         if (getEvent(0,i).track > output) {
+            output = getEvent(0,i).track;
+         }
+      }
+      return output+1;  // I think the track values are 0 offset...
+   } else {
+      return events.getSize();
    }
 }
 
@@ -1003,7 +1451,6 @@ int MidiFile::write(const char* aFile) {
    if (oldTimeState == TIME_STATE_ABSOLUTE) {
       deltaTime();
    }
-
    #ifndef OLDCPP
       #ifdef VISUAL
          FileIO outputfile(aFile, ios::out | ios::binary);
@@ -1075,7 +1522,7 @@ int MidiFile::write(const char* aFile) {
          }
       }
       size = trackdata.getSize();
-      if (!((trackdata[size-3] == 0xff) && (trackdata[size-2] == 0x2f))) {
+      if ((size < 3) || !((trackdata[size-3] == 0xff) && (trackdata[size-2] == 0x2f))) {
          trackdata.append(endoftrack[0]);
          trackdata.append(endoftrack[1]);
          trackdata.append(endoftrack[2]);
@@ -1113,15 +1560,253 @@ int MidiFile::write(const char* aFile) {
 
 
 
+//////////////////////////////
+//
+// MidiFile::getTimeInSeconds -- return the time in seconds for 
+//     the current message.
+//
+
+double MidiFile::getTimeInSeconds(int aTrack, int anIndex) {
+   return getTimeInSeconds(getEvent(aTrack, anIndex).time);
+}
+
+
+
+double MidiFile::getTimeInSeconds(int tickvalue) {
+   if (timemapvalid == 0) {
+      buildTimeMap();
+      if (timemapvalid == 0) {
+         return -1.0;    // something went wrong
+      }
+   }
+
+   _TickTime key;
+   key.tick    = tickvalue;
+   key.seconds = -1;
+
+   void* ptr = bsearch(&key, timemap.getBase(), timemap.getSize(), 
+         sizeof(_TickTime), ticksearch);
+
+   if (ptr == NULL) {
+      // The specific tick value was not found, so do a linear
+      // search for the two tick values which occur before and
+      // after the tick value, and do a linear interpolation of 
+      // the time in seconds values to figure out the final
+      // time in seconds.
+      // Since the code is not yet written, kill the program at this point:
+      cerr << "ERROR: tick value " << tickvalue << " was not found " << endl; 
+      exit(1);
+   } else {
+      return ((_TickTime*)ptr)->seconds;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::getAbsoluteTickTime -- return the tick value represented
+//    by the input time in seconds.  If there is not tick entry at
+//    the given time in seconds, then interpolate between two values.
+//
+
+int MidiFile::getAbsoluteTickTime(double starttime) {
+   if (timemapvalid == 0) {
+      buildTimeMap();
+      if (timemapvalid == 0) {
+         if (timemapvalid == 0) {
+            return -1.0;    // something went wrong
+         }
+      }
+   }
+
+   _TickTime key;
+   key.tick    = -1;
+   key.seconds = starttime;
+
+   void* ptr = bsearch(&key, timemap.getBase(), timemap.getSize(), 
+         sizeof(_TickTime), secondsearch);
+
+   if (ptr == NULL) {
+      // The specific seconds value was not found, so do a linear
+      // search for the two time values which occur before and
+      // after the given time value, and do a linear interpolation of 
+      // the time in tick values to figure out the final time in ticks.
+      return linearTickInterpolationAtSecond(starttime);
+   } else {
+      return ((_TickTime*)ptr)->tick;
+   }
+
+}
+
+
+
+//////////////////////////////
+//
+// doTimeInSecondsAnalysis --
+//
+
+void MidiFile::doTimeInSecondsAnalysis(void) {
+    buildTimeMap();
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 //
 // private functions
 //
-   
 
 //////////////////////////////
 //
-// MidiF::extractMidiData --
+// linearTickInterpolationAtSecond -- return the tick value at the given
+//    input time.  
+//
+
+int MidiFile::linearTickInterpolationAtSecond(double seconds) {
+   if (timemapvalid == 0) {
+      buildTimeMap();
+      if (timemapvalid == 0) {
+         return -1.0;    // something went wrong
+      }
+   }
+
+   int i;
+   double lasttime = timemap[timemap.getSize()-1].seconds;
+   // give an error value of -1 if time is out of range of data.
+   if (seconds < 0.0) {
+      return -1;
+   }
+   if (seconds > timemap[timemap.getSize()-1].seconds) {
+      return -1;
+   }
+
+   // Guess which side of the list is closest to target:
+   // Could do a more efficient algorithm since time values are sorted,
+   // but good enough for now...
+   int startindex = -1;
+   if (seconds < lasttime / 2) {
+      for (i=0; i<timemap.getSize(); i++) {
+         if (timemap[i].seconds > seconds) {
+            startindex = i-1;
+            break;
+         } else if (timemap[i].seconds == seconds) {
+            startindex = i;
+            break;
+         }
+      }
+   } else {
+      for (i=timemap.getSize()-1; i>0; i--) {
+         if (timemap[i].seconds < seconds) {
+            startindex = i+1;
+            break;
+         } else if (timemap[i].seconds == seconds) {
+            startindex = i;
+            break;
+         }
+      }
+   }
+
+   if (startindex < 0) {
+      return -1;
+   }
+   if (startindex >= timemap.getSize()-1) {
+      return -1;
+   }
+
+   double x1 = timemap[startindex].seconds;
+   double x2 = timemap[startindex+1].seconds;
+   double y1 = timemap[startindex].tick;
+   double y2 = timemap[startindex+1].tick;
+   double xi = seconds;
+
+   return (xi-x1) * ((y2-y1)/(x2-x1)) + y1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::buildTimeMap -- build an index of the absolute tick values
+//      found in a MIDI file, and their corresponding time values in
+//      seconds, taking into consideration tempo change messages.  If no
+//      tempo messages are given (or until they are given, then the
+//      tempo is set to 120 beats per minute).  If SMPTE time code is 
+//      used, then ticks are actually time values.  So don't build
+//      a time map for SMPTE ticks, and just calculate the time in
+//      seconds from the tick value (1000 ticks per second SMPTE 
+//      is the only mode tested (25 frames per second and 40 subframes
+//      per frame).
+//
+
+void MidiFile::buildTimeMap(void) {
+
+   // convert the MIDI file to absolute time representation
+   // in single track mode (and undo if the MIDI file was not
+   // in that state when this function was called.
+   //
+   int trackstate = getTrackState();
+   int timestate  = getTimeState();
+
+   absoluteTime();
+   joinTracks();
+
+   int allocsize = getNumEvents(0);
+   timemap.setSize(allocsize+10);
+   timemap.setSize(0);
+
+   _TickTime value;
+
+   int lasttick = 0;
+   int curtick;
+   int tickinit = 0;
+
+   int i;
+   int tpq = getTicksPerQuarterNote();
+   double defaultTempo = 120.0;
+   double secondsPerTick = 60.0 / (defaultTempo * tpq);
+
+   double lastsec = 0.0;
+   double cursec;
+
+   for (i=0; i<getNumEvents(0); i++) {
+      curtick = getEvent(0, i).time;
+      if ((curtick > lasttick) || !tickinit) {
+         tickinit = 1;
+
+         // calculate the current time in seconds:
+         cursec = lastsec + (curtick - lasttick) * secondsPerTick;
+
+         // store the new tick to second mapping
+         value.tick = curtick;
+         value.seconds = cursec;
+         timemap.append(value);
+         lasttick   = curtick;
+         lastsec    = cursec;
+      }
+
+      // update the tempo if needed:
+      if (getEvent(0,i).isTempo()) {
+         secondsPerTick = getEvent(0,i).getTempoSPT(getTicksPerQuarterNote());
+      }
+   }
+
+   // reset the states of the tracks or time values if necessary here:
+   if (timestate == TIME_STATE_DELTA) {
+      deltaTime();
+   }
+   if (trackstate == TRACK_STATE_SPLIT) {
+      splitTracks();
+   }
+
+   timemapvalid = 1;
+
+}
+
+
+//////////////////////////////
+//
+// MidiFile::extractMidiData --
 //
 
 void MidiFile::extractMidiData(FileIO& inputfile, Array<uchar>& array, 
@@ -1207,7 +1892,7 @@ void MidiFile::extractMidiData(FileIO& inputfile, Array<uchar>& array,
 
 //////////////////////////////
 //
-// MidiF::extractVlvTime -- 
+// MidiFile::extractVlvTime -- 
 //
 
 ulong MidiFile::extractVlvTime(FileIO& inputfile) {
@@ -1227,7 +1912,7 @@ ulong MidiFile::extractVlvTime(FileIO& inputfile) {
 
 //////////////////////////////
 //
-// MidiF::unpackVLV -- converts a VLV value to pure unsigned long value.
+// MidiFile::unpackVLV -- converts a VLV value to pure unsigned long value.
 // default values: a = b = c = d = e = 0;
 //
 
@@ -1280,7 +1965,8 @@ void MidiFile::writeVLValue(long aValue, Array<uchar>& outdata) {
 }
 
           
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////
 // 
 // external functions
 //
@@ -1292,8 +1978,8 @@ void MidiFile::writeVLValue(long aValue, Array<uchar>& outdata) {
 //
 
 int eventcompare(const void* a, const void* b) {
-   _MFEvent& aevent = *((_MFEvent*)a);
-   _MFEvent& bevent = *((_MFEvent*)b);
+   MFEvent& aevent = *((MFEvent*)a);
+   MFEvent& bevent = *((MFEvent*)b);
 
    if (aevent.time > bevent.time) {
       return 1;
@@ -1407,6 +2093,44 @@ ostream& operator<<(ostream& out, MidiFile& aMidiFile) {
    }
    out << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n";
    return out;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::ticksearch -- for finding a tick entry in the time map.
+//
+
+int MidiFile::ticksearch(const void* A, const void* B) {
+   _TickTime& a = *((_TickTime*)A);
+   _TickTime& b = *((_TickTime*)B);
+
+   if (a.tick < b.tick) {
+      return -1;
+   } else if (a.tick > b.tick) {
+      return 1;
+   }
+   return 0;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::secondsearch -- for finding a second entry in the time map.
+//
+
+int MidiFile::secondsearch(const void* A, const void* B) {
+   _TickTime& a = *((_TickTime*)A);
+   _TickTime& b = *((_TickTime*)B);
+
+   if (a.seconds < b.seconds) {
+      return -1;
+   } else if (a.seconds > b.seconds) {
+      return 1;
+   }
+   return 0;
 }
 
 

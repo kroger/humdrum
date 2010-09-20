@@ -10,6 +10,8 @@
 // Last Modified: Tue Feb  5 11:51:43 PST 2008 (read() set to const char*)
 // Last Modified: Tue Apr  7 09:23:48 PDT 2009 (added addMetaEvent)
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
+// Last Modified: Thu Jul 22 23:28:54 PDT 2010 (added tick to time mapping)
+// Last Modified: Thu Jul 22 23:28:54 PDT 2010 (changed _MFEvent to MFEvent)
 // Filename:      ...sig/include/sigInfo/MidiFile.h
 // Web Address:   http://sig.sapp.org/include/sigInfo/MidiFile.h
 // Syntax:        C++ 
@@ -36,19 +38,51 @@ typedef unsigned long  ulong;
 #define TRACK_STATE_SPLIT      0
 #define TRACK_STATE_JOINED     1
 
-
-class _MFEvent {
+class _TickTime {
    public:
-      _MFEvent (void);
-      _MFEvent (int command);
-      _MFEvent (int command, int param1);
-      _MFEvent (int command, int param1, int param2);
-      _MFEvent (int track, int command, int param1, int param2);
-      _MFEvent (int aTime, int aTrack, int command, int param1, int param2);
-     ~_MFEvent ();
-      int time;
-      int track;
+      int    tick;
+      double seconds;
+};
+
+
+class MFEvent {
+   public:
+                MFEvent    (void);
+
+                // constructors which create store values in .data
+                // with .time field left uninitialized:
+                MFEvent    (int command);
+                MFEvent    (int command, int param1);
+                MFEvent    (int command, int param1, int param2);
+                MFEvent    (int track, int command, int param1, int param2);
+
+                MFEvent    (int aTime, int aTrack, int command, int param1, 
+                            int param2);
+                MFEvent    (int aTime, int aTrack, Array<uchar>& someData);
+                MFEvent    (MFEvent& mfevent);
+     MFEvent&   operator=  (MFEvent& mfevent);
+
+               ~MFEvent    ();
+
+      int       time;
+      int       track;
       Array<uchar> data;
+
+      // Convenience functions for parsing MFEvent contents.
+
+      int       isMeta                    (void);
+      int       isTempo                   (void);
+      int       getTempoMicro             (void);
+      int       getTempoMicroseconds      (void);
+      double    getTempoSeconds           (void);
+      double    getTempoBPM               (void);
+      double    getTempoTPS               (int tpq);
+      double    getTempoSPT               (int tpq);
+      int       isNoteOff                 (void);
+      int       isNoteOn                  (void);
+      int       isTimbre                  (void);
+      int       getCommandNibble          (void);
+      int       getChannelNibble          (void);
 };
 
 
@@ -62,6 +96,7 @@ class MidiFile {
       void      absoluteTime              (void);
       int       addEvent                  (int aTrack, int aTime, 
                                              Array<uchar>& midiData);
+      int       addEvent                  (MFEvent& mfevent);
       int       addMetaEvent              (int aTrack, int aTime, int aType,
                                              Array<uchar>& metaData);
       int       addMetaEvent              (int aTrack, int aTime, int aType,
@@ -75,13 +110,16 @@ class MidiFile {
       void      deleteTrack               (int aTrack);
       void      erase                     (void);
       void      clear                     (void);
-      _MFEvent& getEvent                  (int aTrack, int anIndex);
+      MFEvent&  getEvent                  (int aTrack, int anIndex);
       int       getTimeState              (void);
       int       getTrackState             (void);
       int       getTicksPerQuarterNote    (void);
       int       getTrackCount             (void);
+      int       getTrackCountAsType1      (void);
       int       getNumTracks              (void);
       int       getNumEvents              (int aTrack);
+      int       getEventCount             (int aTrack) 
+                                             { return getNumEvents(aTrack); }
       void      joinTracks                (void);
       void      mergeTracks               (int aTrack1, int aTrack2);
       int       read                      (const char* aFile);
@@ -89,26 +127,57 @@ class MidiFile {
       void      setTicksPerQuarterNote    (int ticks);
       void      setMillisecondDelta       (void);
 
-      void      sortTrack                 (SigCollection<_MFEvent>& trackData);
+      void      doTimeInSecondsAnalysis   (void);
+      double    getTimeInSeconds          (int aTrack, int anIndex);
+      double    getTimeInSeconds          (int tickvalue);
+      int       getAbsoluteTickTime       (double starttime);
+
+      void      sortTrack                 (SigCollection<MFEvent>& trackData);
       void      sortTracks                (void);
       void      splitTracks               (void);
       int       write                     (const char* aFile);
+      void      setFilename               (const char* aname);
+      const char* getFilename             (void);
+
+      // access to convenience functions in MFEvent:
+      int       isMeta                    (int track, int index);
+      int       isTempo                   (int track, int index);
+      int       getTempoMicro             (int track, int index);
+      int       getTempoMicroseconds      (int track, int index);
+      double    getTempoSeconds           (int track, int index);
+      double    getTempoBPM               (int track, int index);
+      double    getTempoTPS               (int track, int index);
+      double    getTempoSPT               (int track, int index);
+      int       isNoteOff                 (int track, int index);
+      int       isNoteOn                  (int track, int index);
+      int       isTimbre                  (int track, int index);
+      int       getCommandNibble          (int track, int index);
+      int       getChannelNibble          (int track, int index);
+      int       getTrack                  (int track, int index);
+
 
    protected:
-      SigCollection<SigCollection<_MFEvent>*> events;  // midi file events
-      int                   ticksPerQuarterNote; // time base of file
-      int                   trackCount;          // # of tracks in file
-      int                   theTrackState;       // joined or split
-      int                   theTimeState;        // absolute or delta
-      char*                 readFileName;        // read file name
+      SigCollection<SigCollection<MFEvent>*> events;  // midi file events
+      int              ticksPerQuarterNote; // time base of file
+      int              trackCount;          // # of tracks in file
+      int              theTrackState;       // joined or split
+      int              theTimeState;        // absolute or delta
+      Array<char>      readFileName;        // read file name
+
+      int              timemapvalid;    
+      Array<_TickTime> timemap;
 
    private:
-      void      extractMidiData  (FileIO& inputfile, Array<uchar>& array, 
+      void       extractMidiData  (FileIO& inputfile, Array<uchar>& array, 
                                        uchar& runningCommand);
-      ulong     extractVlvTime   (FileIO& inputfile);
-      ulong     unpackVLV        (uchar a, uchar b, uchar c, uchar d, uchar e);
-      void      writeVLValue     (long aValue, Array<uchar>& data);
-      int       makeVLV          (uchar *buffer, int number);
+      ulong      extractVlvTime   (FileIO& inputfile);
+      ulong      unpackVLV        (uchar a, uchar b, uchar c, uchar d, uchar e);
+      void       writeVLValue     (long aValue, Array<uchar>& data);
+      int        makeVLV          (uchar *buffer, int number);
+      static int ticksearch       (const void* A, const void* B);
+      static int secondsearch     (const void* A, const void* B);
+      void       buildTimeMap     (void);
+      int        linearTickInterpolationAtSecond  (double seconds);
 };
 
 
