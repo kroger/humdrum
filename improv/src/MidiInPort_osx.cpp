@@ -13,6 +13,8 @@
 
 #if defined(OSXPC) || defined(OSXOLD)
 
+#include <Carbon/Carbon.h>          /* for GetMacOSStatusErrorString */
+
 using namespace std;
 #include "MidiInPort_osx.h"
 #include <stdlib.h>
@@ -674,7 +676,7 @@ void MidiInPort_osx::initialize(void) {
             &midiclient) != 0)) {
          cout << "Error trying to create MIDI Client structure: " 
               << status << "\n";
-         cout << GetMacOSStatusErrorString(status) << endl;
+         cout << ::GetMacOSStatusErrorString(status) << endl;
          exit(status);
       }
 

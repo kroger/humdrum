@@ -3,9 +3,10 @@
 // Creation Date: Sun May 13 14:15:43 PDT 2001
 // Last Modified: Sun May 13 14:15:46 PDT 2001
 // Last Modified: Sun Apr 24 12:48:19 PDT 2005
-// Last Modified: Thu May 28 22:30:54 PDT 2009 (added continuous analysis)
+// Last Modified: Thu May 28 22:30:54 PDT 2009 added continuous analysis
+// Last Modified: Mon Mar  7 14:58:02 PST 2011 added --name option
 // Filename:      ...sig/examples/all/keycordl.cpp
-// Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/keycorel.cpp
+// Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/keycor.cpp
 // Syntax:        C++; museinfo
 //
 // Description:   Key correlation measurements using the Krumhansl-Schmuckler
@@ -21,7 +22,7 @@
 void   checkOptions             (Options& opts, int argc, char* argv[]);
 void   example                  (void);
 void   printAnalysis            (int bestkey, Array<double>& scores,
-                                 Array<double>& durhist);
+                                 Array<double>& durhist, const char* filename);
 void   usage                    (const char* command);
 void   readWeights              (const char* filename);
 int    analyzeKeyRawCorrelation (double* scores, double* distribution, 
@@ -74,6 +75,7 @@ int          windowsize  = 32;   // used with --window option
 int          continuousQ = 0;    // used with -c option
 int          roundQ      = 1;    // used with -R option
 int          debugQ      = 0;    // used with --debug option
+int          nameQ       = 0;    // used with --name option
 
 double* majorKey;
 double* minorKey;
@@ -249,6 +251,7 @@ int main(int argc, char* argv[]) {
    Array<double> level;
    Array<double> distribution(12);
    Array<double> scores(24);
+   const char* filename = "";
   
    int bestkey = 0;
    int i, j;
@@ -258,8 +261,10 @@ int main(int argc, char* argv[]) {
       // if no command-line arguments read data file from standard input
       if (numinputs < 1) {
          infile.read(cin);
+         filename = "";
       } else {
          infile.read(options.getArg(i+1));
+         filename = options.getArg(i+1);
       }
 
       if (continuousQ) {
@@ -291,7 +296,7 @@ int main(int argc, char* argv[]) {
                pitch.getBase(), duration.getBase(), pitch.getSize(), rhythmQ,
                      majorKey, minorKey);
       }
-      printAnalysis(bestkey, scores, distribution);
+      printAnalysis(bestkey, scores, distribution, filename);
    }
 
    return 0;
@@ -767,7 +772,8 @@ void addToHistogramDouble(Array<Array<double> >& histogram, int pc,
 // printAnalysis -- 
 //
 
-void printAnalysis(int bestkey, Array<double>& scores, Array<double>& durhist) {
+void printAnalysis(int bestkey, Array<double>& scores, Array<double>& durhist,
+      const char* filename) {
    char buffer[64] = {0};
 
    if (mmaQ) {
@@ -789,12 +795,20 @@ void printAnalysis(int bestkey, Array<double>& scores, Array<double>& durhist) {
    } 
 
    if (bestkey < 12) {
-      cout << "The best key is: " 
-           << Convert::base12ToKern(buffer, bestkey+12*4)
+      if (nameQ) {
+         cout << filename << ":\t";
+      } else {
+         cout << "The best key is: ";
+      }
+      cout << Convert::base12ToKern(buffer, bestkey+12*4)
            << " Major" << "\n";
    } else {
-      cout << "The best key is: " 
-           << Convert::base12ToKern(buffer, bestkey+12*3)
+      if (nameQ) {
+         cout << filename << ":\t";
+      } else {
+         cout << "The best key is: ";
+      }
+      cout << Convert::base12ToKern(buffer, bestkey+12*3)
            << " Minor" << "\n";
    }
    int i;
@@ -838,6 +852,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("window=i:32",         "window size for continuous analysis");
    opts.define("c|continuous=b",      "continuous analysis");
    opts.define("R|no-round=b",        "don't round correlation values");
+   opts.define("name=b",              "print filenames");
 
    opts.define("debug=b",       "trace input parsing");   
    opts.define("author=b",      "author of the program");   
@@ -879,6 +894,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    stepsize    =  opts.getDouble("step");
    roundQ      = !opts.getBoolean("no-round");
    debugQ      =  opts.getBoolean("debug");
+   nameQ       =  opts.getBoolean("name");
 
    if (opts.getBoolean("Krumhansl")) {
       majorKey = majorKeyKrumhansl;
@@ -1244,4 +1260,4 @@ void equalizeData2(double* data, int asize, double summation) {
 }
 
 
-// md5sum: 8c58b5ee39cefe3dd13cefa968f29f82 keycor.cpp [20090615]
+// md5sum: 966c1172cec53998a7a80d06cddfb642 keycor.cpp [20110308]

@@ -868,6 +868,27 @@ int PixelColor::limit(int value, int min, int max) {
       value = max;
    }
    return value;
+} 
+
+
+///////////////////////////////////////////////////////////////////////////
+//
+// other functions
+//
+
+
+//////////////////////////////
+//
+// operator<< --
+//
+// for use with P3 ASCII pnm images: print red green blue triplet.
+//
+
+ostream& operator<<(ostream& out, PixelColor apixel) {
+   out << apixel.getRed() << ' ';
+   out << apixel.getGreen() << ' ';
+   out << apixel.getBlue();
+   return out;
 }
 
 

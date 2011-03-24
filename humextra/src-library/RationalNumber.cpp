@@ -519,6 +519,24 @@ RationalNumber RationalNumber::getInversion(void) const {
 }
 
 
+//////////////////////////////
+//
+// RationalNumber::invert -- create the reciprocal of the number.
+//    But don't invert if the value is zero.
+//
+
+void RationalNumber::invert(void) {
+   int top = getNumerator();
+   int bot = getDenominator();
+
+   if (top == 0) {
+      return;
+   }
+
+   setValue(bot, top);
+}
+
+
 
 //////////////////////////////
 //

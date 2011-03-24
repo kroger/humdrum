@@ -398,7 +398,7 @@ void MuseData::read(istream& input) {
       character = input.get();
       if (input.eof()) {
          // end of file found without a newline termination on last line.
-         if (dataline.getSize() > 0) {
+         if ((dataline.getSize() > 0) && (strlen(dataline.getBase()) > 0)) {
             MuseData::append(dataline);
             dataline.setSize(0);
             break;
@@ -648,6 +648,29 @@ int MuseData::getNextEventIndex(int startindex, RationalNumber target) {
       }
    }
    return output;
+}
+
+
+//////////////////////////////
+//
+// MuseData::last -- return the last record in the data.  Make sure
+// that isEmpty() is not true before calling this function.
+//
+
+MuseRecord& MuseData::last(void) {
+   return (*this)[getNumLines()-1];
+}
+
+
+
+//////////////////////////////
+//
+// MuseData::isEmpty -- return true if there are no MuseRecords in the 
+//    object; otherwise returns true;
+//
+
+int MuseData::isEmpty(void) {
+   return !data.getSize();
 }
 
 
@@ -1309,6 +1332,22 @@ void MuseData::selectMembership(const char* selectstring) {
 }
 
 
+
+///////////////////////////////
+//
+// MuseData::cleanLineEndings -- remove spaces at the end of lines
+//
+
+void MuseData::cleanLineEndings(void) {
+   int i;
+   for (i=0; i<this->getLineCount(); i++) {
+      (*this)[i].cleanLineEnding();
+   }
+
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 //
 // friendly functions
@@ -1324,7 +1363,7 @@ ostream& operator<<(ostream& out, MuseData& musedata) {
    int i;
    for (i=0; i<musedata.getLineCount(); i++) {
       if (musedata[i].getType() != E_muserec_deleted) {
-         out << musedata[i] << (char)0x0d << (char)0x0a;
+         out << musedata[i].getLine() << (char)0x0d << (char)0x0a;
       }
    }
    return out;

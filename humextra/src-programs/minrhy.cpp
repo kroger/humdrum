@@ -2,6 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sat Jun  9 14:48:41 PDT 2001
 // Last Modified: Sun Jun 20 13:35:41 PDT 2010
+// Last Modified: Wed Jan 26 18:14:20 PST 2011 (added --debug)
 // Filename:      ...museinfo/examples/all/minrhy.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/minrhy.cpp
 // Syntax:        C++; museinfo
@@ -9,6 +10,8 @@
 // Description:   calculates the minimum timebase which is the least common
 //                multiple of all rhythms in the file.
 //
+// Todo: some things to clean up in rhythmic representation due to conversions
+// from ints to RationalNumber class for rhythms/durations...
 
 #include "humdrum.h"
 
@@ -17,13 +20,16 @@ void      checkOptions         (Options& opts, int argc, char* argv[]);
 void      example              (void);
 void      usage                (const char* command);
 int       findlcm              (Array<int>& list);
+RationalNumber findlcmR        (Array<RationalNumber>& list);
 int       GCD                  (int a, int b);
-void      insertRhythm         (Array<int>& allrhythms, int value);
+void      insertRhythm         (Array<RationalNumber>& allrhythms, 
+                                 RationalNumber value);
 
 
 // global variables
 Options   options;             // database for command-line arguments
 int       listQ = 0;           // used with -l option
+int       debugQ = 0;          // used with --debug
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -33,12 +39,13 @@ int main(int argc, char** argv) {
    checkOptions(options, argc, argv);
 
    HumdrumFile hfile;
-   Array<int> timebase;
+   Array<RationalNumber> timebase;
+   RationalNumber zeroR(0, 1);
    timebase.setSize(argc-1);
-   timebase.setAll(0);
+   timebase.setAll(zeroR);
    timebase.allowGrowth(0);
-   Array<int> rhythms;
-   Array<int> allrhythms;
+   Array<RationalNumber> rhythms;
+   Array<RationalNumber> allrhythms;
    allrhythms.setSize(100);
    allrhythms.setSize(0);
    allrhythms.setGrowth(1000);
@@ -66,9 +73,9 @@ int main(int argc, char** argv) {
          }
 	 cout << "\n";
       } else {
-         cout << hfile.getMinTimeBase() << "\n";
+         cout << hfile.getMinTimeBaseR() << "\n";
       }
-      timebase[i-1] = hfile.getMinTimeBase();
+      timebase[i-1] = hfile.getMinTimeBaseR();
    }
 
    if (numinputs > 1) {
@@ -82,7 +89,7 @@ int main(int argc, char** argv) {
          }
 	 cout << "\n";
       } else {
-         cout << "all:\t" << findlcm(timebase) << endl;
+         cout << "all:\t" << findlcmR(timebase) << endl;
       }
    }
 
@@ -99,7 +106,7 @@ int main(int argc, char** argv) {
 // insertRhythm --
 //
 
-void insertRhythm(Array<int>& allrhythms, int value) {
+void insertRhythm(Array<RationalNumber>& allrhythms, RationalNumber value) {
    int i;
    for (i=0; i<allrhythms.getSize(); i++) {
       if (value == allrhythms[i]) {
@@ -128,6 +135,29 @@ int findlcm(Array<int>& rhythms) {
    return output;
 }
 
+
+
+//////////////////////////////
+//
+// findlcmR -- find the least common multiple between rhythms
+//     rational number version.
+//
+
+RationalNumber findlcmR(Array<RationalNumber>& rhythms) {
+   if (rhythms.getSize() == 0) {
+      return 0;
+   }
+   RationalNumber value = rhythms[0].getInversion();
+   // add the list of rhythms together and then return the denominator.
+   for (int i=1; i<rhythms.getSize(); i++) {
+      value += rhythms[i].getInversion();
+   }
+
+   RationalNumber output;
+   output = value.getDenominator();
+   return output;
+}
+
  
 
 //////////////////////////////
@@ -142,7 +172,11 @@ int GCD(int a, int b) {
    int z = a % b;
    a = b;
    b = z;
-   return GCD(a, b);
+   int output = GCD(a, b);
+   if (debugQ) {  
+      cout << "GCD of " << a << " and " << b << " is " << output << endl;
+   }
+   return output;
 }    
 
 
@@ -185,7 +219,8 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       exit(1);
    }
 
-   listQ = opts.getBoolean("list");
+   listQ  = opts.getBoolean("list");
+   debugQ = opts.getBoolean("debug");
 }
 
 
@@ -215,4 +250,4 @@ void usage(const char* command) {
 }
 
 
-// md5sum: 4ea5bed2925442c538d76e286e5de3db minrhy.cpp [20100623]
+// md5sum: ef614a3af3de953ff6087c63ca917bbd minrhy.cpp [20110206]

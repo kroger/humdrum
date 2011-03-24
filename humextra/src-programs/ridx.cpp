@@ -6,7 +6,7 @@
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/ridx.cpp
 // Syntax:        C++; museinfo
 //
-// Description:   Remove various compnents of Humdrum file data structures.
+// Description:   Remove various components of Humdrum file data structures.
 //
 
 #include "humdrum.h"
@@ -245,4 +245,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 717d97a2315d77abd50ab13943dd3f2f ridx.cpp [20091214]
+// md5sum: fcac835450194196f80e678193f2ad4a ridx.cpp [20101110]

@@ -4,7 +4,8 @@
 // Last Modified: Tue Jun 30 21:45:02 PDT 1998
 // Last Modified: Thu Jul  1 16:28:54 PDT 1999
 // Last Modified: Fri Jun  4 18:01:18 PDT 2010 (changed recordString to Array)
-// Last Modified: Thu Jun 10 00:11:08 PDT 2010 (added functions)
+// Last Modified: Thu Jun 10 00:11:08 PDT 2010 (added some functions)
+// Last Modified: Fri Jan 21 06:00:27 PST 2011 (added get/setColumns)
 // Filename:      ...humdrum++/src/MuseRecordBasic.cpp
 // Syntax:        C++
 // $Smake:        cc -g -c -I../include %f && rm %b.o
@@ -13,6 +14,23 @@
 #include "MuseRecordBasic.h"
 #include "Enum_muserec.h"
 #include <string.h>
+#include <ctype.h>
+#include <stdio.h>
+
+#ifndef OLDCPP
+   #include <sstream>
+   #define SSTREAM stringstream
+   #define CSTRING str().c_str()
+   using namespace std;
+#else
+   #ifdef VISUAL
+      #include <strstrea.h>
+   #else
+      #include <strstream.h>
+   #endif
+   #define SSTREAM strstream
+   #define CSTRING str()
+#endif
 
 
 //////////////////////////////
@@ -35,6 +53,7 @@ MuseRecordBasic::MuseRecordBasic(void) {
    b40pitch = -100;
    nexttiednote = -1;
    lasttiednote = -1;
+   roundBreve = 0;
 }
 
 
@@ -54,6 +73,7 @@ MuseRecordBasic::MuseRecordBasic(const char* aLine, int index) {
    b40pitch = -100;
    nexttiednote = -1;
    lasttiednote = -1;
+   roundBreve = 0;
 }
 
 
@@ -78,6 +98,20 @@ MuseRecordBasic::~MuseRecordBasic() {
    b40pitch = -100;
    nexttiednote = -1;
    lasttiednote = -1;
+   roundBreve = 0;
+}
+
+
+
+//////////////////////////////
+//
+// MuseRecordBasic::clear -- remove content of record.
+//
+
+void MuseRecordBasic::clear(void) {
+   recordString.setSize(1);
+   recordString[0] = '\0';
+   recordString.setSize(0);
 }
 
 
@@ -113,20 +147,90 @@ void MuseRecordBasic::extract(char* output, int start, int end) {
 char& MuseRecordBasic::getColumn(int columnNumber) {
    int realindex = columnNumber - 1;
    int length = recordString.getSize();
-   if (realindex < 0 || realindex >= 80) {
+   // originally the limiit for data columns was 80:
+   //if (realindex < 0 || realindex >= 80) {
+   //the new limit is somewhere above 900, but limit to 180
+   if (realindex < 0 || realindex >= 180) {
       cerr << "Error trying to access column: " << columnNumber  << endl;
+      cerr << "CURRENT DATA: ===============================" << endl;
+      cerr << (*this);
       exit(1);
-   } else if (realindex >= getLength()) {
-      recordString.setSize(realindex);
+   } else if (realindex >= recordString.getSize()) {
+      recordString.setSize(realindex+1);
       for (int i=length; i<=realindex; i++) {
          recordString[i] = ' ';
       }
+      // add a hidden null character after the real characters.
       recordString.setSize(recordString.getSize()+1);
       recordString[recordString.getSize()-1] = '\0';
       recordString.setSize(recordString.getSize()-1);
+      // can't automatically grow; otherwise, the null character
+      // will disappear...
+      recordString.setGrowth(0);
+      if ((int)strlen(recordString.getBase()) != recordString.getSize()) {
+         cerr << "Funny error in MuseRecordBasic::getColumn: null found" << endl;
+      }
    }
 
    return recordString[realindex];
+}
+
+
+
+//////////////////////////////
+//
+// MuseRecordBasic::getColumns --
+//
+
+void MuseRecordBasic::getColumns(Array<char>& data, int startcol, int endcol) {
+   int charcount = endcol - startcol + 1;
+   if (charcount <= 0) {
+      data.setSize(1);
+      data[0] = '\0';
+      return;
+   }
+   data.setSize(charcount + 1);
+   
+   int i;
+   int ii = 0;
+   for (i=endcol; i>=startcol; i--) {
+      data[ii++] = getColumn(i);
+   }
+   data[ii] = '\0';
+}
+
+
+
+//////////////////////////////
+//
+// MuseRecordBasic::setColumns --
+//
+
+void MuseRecordBasic::setColumns(Array<char>& data, int startcol, int endcol) {
+   int charcount = endcol - startcol + 1;
+   if (charcount <= 0) {
+      return;
+   }
+
+   int dsize = data.getSize();
+   if (!isprint(data[dsize-1])) {
+      // don't insert any null-termination of the string.
+      dsize--;
+   }
+   int i;
+   int ii = charcount-1;
+   for (i=endcol; i>=startcol; i--) {
+      if (ii < 0) {
+         cerr << "FUNNY error in MuseRecordBasic::setColumns" << endl;
+         exit(1);
+      }
+      if (dsize <= ii) {
+         getColumn(i) = ' ';
+      } else {
+         getColumn(i) = data[ii];
+      }
+      ii--;
+   }
 }
 
 
@@ -263,6 +367,20 @@ void MuseRecordBasic::setType(int aType) {
 
 //////////////////////////////
 //
+// MuseRecordBasic::setTypeGraceNote -- put a "g" in the first column.
+//    shift pitch information over if it exists?  Maybe later.
+//    Currently will destroy any pitch information.
+//
+
+void MuseRecordBasic::setTypeGraceNote(void) {
+   setType(E_muserec_note_grace);
+   (*this)[0] = 'g';
+}
+
+
+
+//////////////////////////////
+//
 // MuseRecordBasic::shrink -- removes trailing spaces in a MuseData record
 //
 
@@ -282,16 +400,139 @@ void MuseRecordBasic::shrink(void) {
 // MuseRecordBasic::insertString --
 //
 
-void MuseRecordBasic::insertString(int index, const char* string) {
+void MuseRecordBasic::insertString(int column, const char* string) {
    int len = strlen(string);
+   int index = column - 1;
    // make sure that record has text data up to the end of sring in
-   // final location:
-   (*this)[index+len] = ' ';
+   // final location by preallocating the end location of string:
+   (*this)[index+len-1] = ' ';
    int i;
    for (i=0; i<len; i++) {
       (*this)[i+index] = string[i];
    }
 }
+
+
+
+//////////////////////////////
+//
+// MuseRecordBasic::insertStringRight -- Insert string right-justified
+//    starting at given index.
+//
+
+void MuseRecordBasic::insertStringRight(int column, const char* string) {
+   int len = strlen(string);
+   int index = column - 1;
+   // make sure that record has text data up to the end of sring in
+   // final location by preallocating the end location of string:
+   (*this)[index] = ' ';
+   int i;
+   int ii;
+   for (i=0; i<len; i++) {
+      ii = index - i;
+      if (ii < 0) {
+         break;
+      }
+      (*this)[ii] = string[len-i-1];
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MuseRecordBasic::appendString -- add a string to the end of the current
+//     data in the record.
+//
+
+void MuseRecordBasic::appendString(const char* astring) {
+   insertString(getLength()+1, astring);
+}
+
+
+
+//////////////////////////////
+//
+// MuseRecord::appendInteger -- Insert an integer after the last character 
+//     in the current line.
+//
+
+void MuseRecordBasic::appendInteger(int value) {
+   char buffer[32] = {0};
+   sprintf(buffer, "%d", value);
+   insertString(getLength()+1, buffer);
+}
+
+
+
+//////////////////////////////
+//
+// MuseRecord::appendRational -- Insert a rational after the last character 
+//     in the current line.
+//
+
+void MuseRecordBasic::appendRational(RationalNumber& value) {
+   SSTREAM tout;
+   value.printTwoPart(tout);
+   tout << ends;
+   insertString(getLength()+1, tout.CSTRING);
+}
+
+
+
+//////////////////////////////
+//
+// MuseRecord::append -- append multiple objects in sequence
+// from left to right onto the record.  The format contains
+// characters with two possibilities at the moment:
+//    "i": integer value
+//    "s": string value
+//
+
+void MuseRecordBasic::append(const char* format, ...) {
+   va_list valist;
+   int     i;
+
+   va_start(valist, format);
+
+   union Format_t {
+      int   i;
+      char *s;
+      int  *r;  // array of two integers for rational number
+   } FormatData;
+
+   RationalNumber rn;
+
+   for (i=0; format[i] != '\0'; i++) {
+      switch (format[i]) {   // Type to expect.
+         case 'i':
+            FormatData.i = va_arg(valist, int);
+            appendInteger(FormatData.i);
+            break;
+
+         case 's':
+            FormatData.s = va_arg(valist, char *);
+            if (strlen(FormatData.s) > 0) {
+               appendString(FormatData.s);
+            }
+            break;
+
+         case 'r':
+             FormatData.r = va_arg(valist, int *);
+             rn.setValue(FormatData.r[0], FormatData.r[1]);
+             appendRational(rn);
+            break;
+
+         default:
+            // don't put any character other than "i", "r" or "s" 
+            // in the format string
+            break;
+      }
+   }
+
+   va_end(valist);
+}
+
 
 
 //////////////////////////////
@@ -504,6 +745,17 @@ void MuseRecordBasic::setNextTiedNoteLineIndex(int index) {
 
 //////////////////////////////
 //
+// MuseRecordBasic::setRoundedBreve -- set double whole notes rounded flag.
+//
+
+void MuseRecordBasic::setRoundedBreve(void) {
+   roundBreve = 1;
+}
+
+
+
+//////////////////////////////
+//
 // MuseRecordBasic::setMarkupPitch -- set the base-40 pitch information
 //   in the markup area.  Does not change the original pitch in
 //   the text line of the data.
@@ -526,6 +778,25 @@ int MuseRecordBasic::getMarkupPitch(void) {
    return b40pitch;
 }
 
+
+
+
+//////////////////////////////
+//
+// MuseRecordBasic::cleanLineEnding -- remove spaces at the end of the
+//    line;
+//
+
+void MuseRecordBasic::cleanLineEnding(void) {
+   int i = recordString.getSize()-1;
+   // don't remove first space on line.
+   while ((i > 0) && (recordString[i] == ' ')) {  
+      recordString[i] = '\0';
+      recordString.setSize(recordString.getSize() - 1);
+      i = recordString.getSize() - 1;
+   }
+
+}
 
 
 

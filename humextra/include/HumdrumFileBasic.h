@@ -5,6 +5,7 @@
 // Last Modified: Wed Nov 29 10:19:28 PST 2000
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
 // Last Modified: Mon Jun 22 15:03:44 PDT 2009 (added Humdrum/Http URIs)
+// Last Modified: Mon Feb 14 08:11:01 PST 2011 (added VTS functions)
 // Filename:      ...sig/include/sigInfo/HumdrumFileBasic.h
 // Web Address:   http://museinfo.sapp.org/include/sigInfo/HumdrumFileBasic.h
 // Syntax:        C++ 
@@ -81,6 +82,12 @@ class HumdrumFileBasic {
       int                    getSegmentCount  (void);
       int                    getSpineCount    (int index);
       int                    getType          (int index);
+      void                   makeVts          (Array<char>& vtsstring);
+      static void            makeVts          (Array<char>& vtsstring,
+                                               HumdrumFileBasic& infile);
+      void                   makeVtsData      (Array<char>& vtsstring);
+      static void            makeVtsData      (Array<char>& vtsstring,
+                                               HumdrumFileBasic& infile);
       HumdrumFileBasic&      operator=        (const HumdrumFileBasic& aFile);
       void                   read             (const char* filename);
       void                   read             (istream& inStream);

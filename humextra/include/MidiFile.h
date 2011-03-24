@@ -12,6 +12,7 @@
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
 // Last Modified: Thu Jul 22 23:28:54 PDT 2010 (added tick to time mapping)
 // Last Modified: Thu Jul 22 23:28:54 PDT 2010 (changed _MFEvent to MFEvent)
+// Last Modified: Tue Feb 22 13:26:40 PST 2011 (added write(ostream))
 // Filename:      ...sig/include/sigInfo/MidiFile.h
 // Web Address:   http://sig.sapp.org/include/sigInfo/MidiFile.h
 // Syntax:        C++ 
@@ -136,6 +137,7 @@ class MidiFile {
       void      sortTracks                (void);
       void      splitTracks               (void);
       int       write                     (const char* aFile);
+      int       write                     (ostream& out);
       void      setFilename               (const char* aname);
       const char* getFilename             (void);
 

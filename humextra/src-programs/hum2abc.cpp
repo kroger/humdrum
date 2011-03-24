@@ -12,6 +12,9 @@
 // Last Modified: Mon Aug 24 14:00:34 PDT 2009 (more work on 8ba treble clef)
 // Last Modified: Mon Sep 21 17:13:53 PDT 2009 (added --no-tempo option)
 // Last Modified: Mon Sep 21 17:29:50 PDT 2009 (accidental spelling by octave)
+// Last Modified: Sun Jan 16 09:56:09 PST 2011 (adj. off-by-1 in bar num update)
+// Last Modified: Sun Jan 16 11:25:19 PST 2011 (added marks and --no-marks)
+// Last Modified: Sun Jan 16 16:31:23 PST 2011 (added --no-slur option)
 // Filename:      ...sig/examples/all/hum2abc.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/hum2abc.cpp
 // Syntax:        C++; museinfo
@@ -76,7 +79,8 @@
 // * Format parameters for abcm2ps 5.4.4: 
 //     http://br.geocities.com/hfmlacerda/abc/format.html
 // * Creating new symbols in abcm2ps:
-//     br.geocities.com/hfmlacerda/abc/decomanual-en.pdf 
+//     http://br.geocities.com/hfmlacerda/abc/decomanual-en.pdf 
+//     http://hudsonlacerda.webs.com/abc/decomanual-en.pdf
 // * interesting webpage: http://www.ucolick.org/~sla/abcmusic/piano/piano.html
 // 
 // * http://www.formulus.com/hymns/abcm2ps.txt
@@ -111,6 +115,8 @@
    #define CSTRING str()
 #endif
 
+#include "PerlRegularExpression.h"
+#include "CheckSum.h"
 #include "humdrum.h"
 
 #define EMPTY '\0'
@@ -417,7 +423,6 @@ void      printVoiceClef       (ostream& out, VoiceMap voicemap,
 void      getRestInfo          (Array<int>& rests, 
                                 Array<Coordinate>& nogracelist, 
                                 HumdrumFile& infile);
-unsigned long string_cksum     (const char* buf, int length);
 void     printVeritas          (ostream& out, HumdrumFile& infile);
 void     prepareBibliographicData(Array<Array<char> >& markers, 
                                 Array<Array<char> >& contentses, 
@@ -438,6 +443,18 @@ void     printGraceRhythm      (ostream& out, const char* buffer,
 int     getGraceNoteGroupFlag  (Array<double>& notedurs, int index);
 void    checkForLineBreak      (ostream& out, HumdrumFile& infile, 
                                 int row, int col);
+void    getColorAssignment     (double& red, double& green, double& blue, 
+                                const char* line);
+void    checkMarks             (HumdrumFile& infile);
+int     getMarkState           (Array<char>& marks, HumdrumFile& infile);
+void    printMarks             (ostream& out, const char* buffer, 
+                                Array<char>& marks,
+                                Array<Array<double> > markcolors, 
+                                int notecount);
+void    printMarkCodes         (ostream& out, Array<char>& marks, 
+                                Array<Array<double> >& markcolors);
+void    printNoteHeadShape     (ostream& out, const char* buffer, int mindex);
+void    getNoteShape           (RationalNumber&, const char* buffer);
 
 // User interface variables:
 Options options;
@@ -472,9 +489,19 @@ const char* filemask = ".krn";    // used with --mask option
 int    nonaturalQ  = 0;           // used with --nn option
 int    linebreakQ  = 0;           // used with --linebreak option
 int    notempoQ    = 0;           // used with --no-tempo option
+int    slurQ       = 1;           // used with --no-slur option
+
+// mark data
+int    markQ       = 1;           // used with --no-mark option
+int    hasmarksQ   = 0;           // used with markQ
+Array<char> marks;                // marking characters in **kern data
+Array<Array<double> > markcolors; // color for markings in **kern data
+Array<Array<int> > usedMarks;     // keep track of which noteheads used.
+const int USEDSIZE  = 9;
+int    usedAnnotation = 0;        // keep track of whether annotation code
+                                  // needs to be added to header
 
 Array<char*> Header;
-
 
 // score variables
 int Ltop = 1;              // used for creating rhythm values
@@ -499,6 +526,7 @@ int main(int argc, char** argv) {
 
       for (i=0; i<filelist.getSize(); i++) {
          hfile.read(filelist[i].getBase());
+         checkMarks(hfile);
          checkOptions(options, argc, argv, i+1, hfile);
          convertHumdrumToAbc(cout, hfile, i+1, filelist[i].getBase());
          if (i < filelist.getSize() - 1) {
@@ -507,12 +535,14 @@ int main(int argc, char** argv) {
       }
 
    } else if (options.getArgumentCount() == 0) {
+      checkMarks(hfile);
       convertHumdrumToAbc(cout, hfile, 1, "");
    } else {
       for (i=1; i<=options.getArgumentCount(); i++) {
          // process the command-line options
          checkOptions(options, argc, argv, i, hfile);
          hfile.read(options.getArg(i));
+         checkMarks(hfile);
          convertHumdrumToAbc(cout, hfile, i, options.getArg(i));
          if (i < options.getArgumentCount()) {
             cout << "\n\n\n";
@@ -524,6 +554,154 @@ int main(int argc, char** argv) {
 }
 
 //////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////
+//
+// checMarks --
+//
+
+void checkMarks(HumdrumFile& infile) {
+   if (!markQ) {
+      marks.setSize(0);
+      markcolors.setSize(0);
+      hasmarksQ = 0;
+      return;
+   }
+
+   Array<char> mchar; // list of characters which are marks
+   marks.setSize(0);
+   markcolors.setSize(0);
+   int i;
+   char target;
+   double red   = 0; 
+   double green = 0;
+   double blue  = 0;
+   PerlRegularExpression pre;
+   for (i=0; i<infile.getNumLines(); i++) {
+      if (!infile[i].isBibliographic()) {
+         continue;
+      }
+      if (pre.search(infile[i][0], 
+            "!!!RDF\\*\\*kern\\s*:\\s*([^=])\\s*=\\s*match", "i")) {
+         target = pre.getSubmatch(1)[0];
+         marks.append(target);
+         // check for color assignment
+         getColorAssignment(red, green, blue, infile[i][0]);
+         markcolors.setSize(markcolors.getSize()+1);
+         markcolors.last().setSize(3);
+         markcolors.last()[0] = red;
+         markcolors.last()[1] = green;
+         markcolors.last()[2] = blue;
+      } else if (pre.search(infile[i][0], 
+            "!!!RDF\\*\\*kern\\s*:\\s*([^=])\\s*=\\s*mark", "i")) {
+         target = pre.getSubmatch(1)[0];
+         marks.append(target);
+         // check for color assignment
+         getColorAssignment(red, green, blue, infile[i][0]);
+         markcolors.setSize(markcolors.getSize()+1);
+         markcolors.last().setSize(3);
+         markcolors.last()[0] = red;
+         markcolors.last()[1] = green;
+         markcolors.last()[2] = blue;
+         
+      }
+   }
+
+   // if the markcount is greater than 1, then print %%postscript code
+   // in abc plus header.
+   if (marks.getSize() <= 0) {
+      hasmarksQ = 0;
+   } else {
+      hasmarksQ = getMarkState(marks, infile);
+   }
+
+   // keep track of what noteheads have been displayed in the score
+   // so that only the ones used will be printed in the header.
+   usedMarks.setSize(marks.getSize());
+   for (i=0; i<usedMarks.getSize(); i++) {
+      usedMarks[i].setSize(USEDSIZE);
+      usedMarks[i].setAll(0);
+   }
+
+}
+
+
+
+//////////////////////////////
+//
+// getMarkState -- return true if there are marks in the **kern data, otherwise
+//     false.
+
+int getMarkState(Array<char>& marks, HumdrumFile& infile) {
+   const char* str;
+   int i, j, k, m;
+   for (i=0; i<infile.getNumLines(); i++) {
+      if (!infile[i].isData()) {
+         continue;
+      }
+      for (j=0; j<infile[i].getFieldCount(); j++) {
+         if (infile[i].isExInterp(j, "**kern")) {
+            k=0;
+            str = infile[i][j];
+            while (str[k] != '\0') {
+               for (m=0; m<marks.getSize(); m++) {
+                  if (str[k] == marks[m]) {
+                     return 1;
+                  }
+               }
+               k++;
+            }
+         }
+      }
+   }
+   return 0;
+}
+
+
+
+//////////////////////////////
+//
+// getColorAssignment -- get a color indication on a !!!RDF**kern: ?=mark|match
+//    line.  The color assignment is a code such as:
+//         color="#ff00ff"
+//
+
+void getColorAssignment(double& red, double& green, double& blue, 
+      const char* line) {
+
+   // the default color if none found in string:
+   red = 1.0;
+   green = 0.2;
+   blue = 0.2;
+
+   PerlRegularExpression pre;
+   if (!pre.search(line, "color\\s*=\\s*\"([^\"]+)\"", "i")) {
+      return;
+   }
+   const char* colorstring = pre.getSubmatch(1);
+   PerlRegularExpression pre2;
+   if (!pre2.search(colorstring, "#?([\\da-f][\\da-f])([\\da-f][\\da-f])([\\da-f][\\da-f])", "i")) {
+      return;
+      // maybe handle color names or decimal colors here
+   }
+
+   red   = strtol(pre2.getSubmatch(1), NULL, 16);
+   green = strtol(pre2.getSubmatch(2), NULL, 16);
+   blue  = strtol(pre2.getSubmatch(3), NULL, 16);
+
+   red   = red   / 256.0;
+   green = green / 256.0;
+   blue  = blue  / 256.0;
+
+   red   = ((int)(red   * 100 + 0.5))/100.0;
+   green = ((int)(green * 100 + 0.5))/100.0;
+   blue  = ((int)(blue  * 100 + 0.5))/100.0;
+
+   if (red   > 1.0) { red   = 1.0; }
+   if (green > 1.0) { green = 1.0; }
+   if (blue  > 1.0) { blue  = 1.0; }
+}
 
 
 
@@ -610,8 +788,25 @@ void convertHumdrumToAbc(ostream& out, HumdrumFile& infile, int xval,
    createVoiceMap(Voicemap, infile);
    getMeasureInfo(measures, infile);
 
-   printHeader(out, infile, Header, measures, xval, filename);
-   printBody(out, infile, measures);
+   SSTREAM sheader;
+   SSTREAM smarks;
+   SSTREAM sbody;
+
+   printHeader(sheader, infile, Header, measures, xval, filename);
+   printBody(sbody, infile, measures);
+
+   // if (hasmarksQ) {
+      printMarkCodes(smarks, marks, markcolors);
+   // }
+
+   sheader << ends;
+   smarks << ends;
+   sbody << ends;
+
+   out << sheader.CSTRING;
+   out << smarks.CSTRING;
+   out << sbody.CSTRING;
+   out << flush;
 }
 
 
@@ -929,14 +1124,16 @@ void printMeasureLine(ostream& out, HumdrumFile& infile, int line,
    sscanf(token, "=%d", &measurenum);
 
    int mdiff = 0;
-   if (mindex > 0) {
-      mdiff = measureinfo[mindex].measurenum -measureinfo[mindex-1].measurenum;
+   if (mindex < measureinfo.getSize() - 1) {
+      mdiff = measureinfo[mindex+1].measurenum -measureinfo[mindex].measurenum;
    }
 
    out << " ";  // separate barline from notes by a space
 
-   if ((staffnumber == 0) && (measurenum >= 0) && ((mdiff > 1) || labelQ)) {
-      out << "[I:setbarnb " << measurenum << "]";
+   if ((staffnumber == 0) 
+         && ((mindex < measureinfo.getSize()-1) && (measureinfo[mindex+1].measurenum >= 0))
+         && ((mdiff > 1) || labelQ)) {
+      out << "[I:setbarnb " << measureinfo[mindex+1].measurenum << "]";
    }
 
    if (strchr(token, '-') != NULL) {
@@ -1114,10 +1311,10 @@ void printLayer(int layer, ostream& out, const VoiceMap& voiceinfo,
             }
 	    lastnotegraceQ = 0;
 	 } else {
+// cout << "GOT HERE LAST NOTE WAS A GRACE NOTE" << endl;
             notedurs[counter] = 0.0;
 	    lastnotegraceQ = 1;
          }
-
 
          if (currentbeat != infile[row].getAbsBeat()) {
 //cout << "% current beat = " << currentbeat << " score beat "
@@ -1178,7 +1375,7 @@ void printLayer(int layer, ostream& out, const VoiceMap& voiceinfo,
              gracestate = 1;
          }
 
-	 if (notedurs[counter] > 0) {
+	 if ((notedurs[counter] > 0) && (nogracei >= 0)) {
             printTupletInfo(out, tupletstuff[nogracei]);
             finaldur = nogracedurs[nogracei];
 	 } else {
@@ -1190,9 +1387,16 @@ void printLayer(int layer, ostream& out, const VoiceMap& voiceinfo,
          // plus articulations for note/chord.
 	 
          int groupflag = getGraceNoteGroupFlag(notedurs, counter);
-         printKernTokenAsAbc(out, infile, row, col, accident, 
-               finaldur, broken[nogracei], brokendurs[nogracei], Ltop,
-               Lbot, slursuppress, groupflag);
+
+         if (nogracei >= 0) {
+            printKernTokenAsAbc(out, infile, row, col, accident, 
+                  finaldur, broken[nogracei], brokendurs[nogracei], Ltop,
+                  Lbot, slursuppress, groupflag);
+         } else {
+            // print grace note
+            printKernTokenAsAbc(out, infile, row, col, accident, 
+                  finaldur, 0, 0, Ltop, Lbot, slursuppress, groupflag);
+         }
 
          if (notedurs[counter] >= 1) {
             beamstate = 0;   // fix any problems with beaming info
@@ -2255,7 +2459,7 @@ void adjustAccidentalStates2(Array<int>& accident, HumdrumFile& infile,
       base40 = Convert::kernToBase40(buffer);
       octave = base40 / 40;
       acci = Convert::base40ToAccidental(base40);
-      diatonic = Convert::base40ToDiatonic(base40);
+      diatonic = Convert::base40ToDiatonic(base40) % 7;
       accident[diatonic+7*octave] = acci;
    }
 }
@@ -2328,31 +2532,33 @@ void printKernTokenAsAbc(ostream& out, HumdrumFile& infile, int row, int col,
 
    const char* token = infile[row][col];
 
-   // phrase start, the ' marker after the
-   // dashed slur indicates that it should 
-   // be placed above the staff
-   // Warning: if a phrase and slur start on the
-   // same token, then the slur will also be
-   // dashed in abcm2ps (probably a bug).
-   if (strchr(token, '{') != NULL) {
-      out << ".('";
-   }
-
-   // slur start
-   const char* tptr;
-   if ((tptr = strchr(token, '(')) != NULL) {
-      if (notedur == 0.0) {
-         slursuppress++;
-      } else {
-         if ((tptr+1)[0] == 'x') {
-            // The slur mark is an editorial slur, so make it dashed
-            out << ".";
-         }
-         out << "(";
+   if (slurQ) {
+      // phrase start, the ' marker after the
+      // dashed slur indicates that it should 
+      // be placed above the staff
+      // Warning: if a phrase and slur start on the
+      // same token, then the slur will also be
+      // dashed in abcm2ps (probably a bug).
+      if (strchr(token, '{') != NULL) {
+         out << ".('";
       }
+
+      // slur start
+      const char* tptr;
+      if ((tptr = strchr(token, '(')) != NULL) {
+         if (notedur == 0.0) {
+            slursuppress++;
+         } else {
+            if ((tptr+1)[0] == 'x') {
+               // The slur mark is an editorial slur, so make it dashed
+               out << ".";
+            }
+            out << "(";
+         }
+      }
+      // multiple slurs and phrase markings cannot
+      // be elided, but can be nested in ABC.
    }
-   // multiple slurs and phrase markings cannot
-   // be elided, but can be nested in ABC.
 
    infile[row].getToken(buffer, col, 0);
    printArticulations(out, buffer);
@@ -2378,6 +2584,9 @@ void printKernTokenAsAbc(ostream& out, HumdrumFile& infile, int row, int col,
          base40ToAbcPitch(pitchbuffer, base40);
       }
       // print staccatos here (if not chord)
+      if (hasmarksQ) {
+         printMarks(out, buffer, marks, markcolors, count);
+      }
       printAccidental(out, base40, buffer, accident);
       out << pitchbuffer;
 
@@ -2417,17 +2626,19 @@ void printKernTokenAsAbc(ostream& out, HumdrumFile& infile, int row, int col,
    }
 
    // slur end
-   if (strchr(infile[row][col], ')') != NULL) {
-      if (slursuppress > 0) {
-         slursuppress--;
-      } else {
+   if (slurQ) {
+      if (strchr(infile[row][col], ')') != NULL) {
+         if (slursuppress > 0) {
+            slursuppress--;
+         } else {
+            out << ")";
+         }
+      }
+
+      // phrasing end
+      if (strchr(infile[row][col], '}') != NULL) {
          out << ")";
       }
-   }
-
-   // phrasing end
-   if (strchr(infile[row][col], '}') != NULL) {
-      out << ")";
    }
 
    if (alltie) {
@@ -2440,6 +2651,150 @@ void printKernTokenAsAbc(ostream& out, HumdrumFile& infile, int row, int col,
    }
 
 
+}
+
+
+
+//////////////////////////////
+//
+// printMarks -- print marks accoridng to the color and size .
+//    only the first mark found will be printed, since the mark
+//    colors the note head (this may change later). Rests cannot 
+//    be marked (the codes used are changes in note-head shape).
+//    
+//    Marked gracenotes which are halfnotes/wholenote etc probably don't work.
+//
+
+void printMarks(ostream& out, const char* buffer, Array<char>& marks,
+      Array<Array<double> > markcolors, int notecount) {
+
+   if (strchr(buffer, 'r') != NULL) {
+      // no rests allowed.
+      return;
+   }
+   if (strcmp(buffer, ".") == 0) {
+     // just in case: ignore null tokens
+     return;
+   }
+
+   SSTREAM firstmark;
+
+   // print the first mark found on the note as a colored notehead
+   // subsequence marks are circles on the note with increasing 
+   // diameter.
+   int i = 0;
+   double markdiameter = 6.0;
+   int m;
+   int markcount = 0;
+   RationalNumber rn;
+   while (buffer[i] != '\0') {
+      for (m=0; m<marks.getSize(); m++) {
+         if ((markcount == 0) && (buffer[i] == marks[m])) {
+            firstmark <<"!head-m" << m+1;
+            printNoteHeadShape(firstmark, buffer, m);
+            firstmark << "!";
+            markcount++;
+         } else if ((notecount == 1) && (buffer[i] == marks[m])) {
+            // single note with a secondary mark which will be printed
+            // as a circle around the note.
+            usedAnnotation = 1;
+            out << "\"@0,0:gsave cp ";
+            // Determine the notehead shape.  If rn > 2.0, then the notehead
+            // is a wholenote or larger, so add one to the horizontal offset
+            // so that the circle is centered on the note.
+            // add this text to code at this point:
+            //    exch 1 add exch 
+            getNoteShape(rn, buffer);
+            if (rn > 2) {
+               out << "exch 1 add exch ";
+            }
+            out << markcolors[m][0] << " ";
+            out << markcolors[m][1] << " ";
+            out << markcolors[m][2] << " ";
+            out << "setrgbcolor newpath ";
+            out << markdiameter; 
+            out << " 360 0 arcn stroke grestore\"";
+            markdiameter += 2.0;
+
+         } else if (buffer[i] == marks[m]) {
+            // mark a chord note
+         }
+      }
+      i++;
+   }
+
+   firstmark << ends;
+   out << firstmark.CSTRING;
+
+}
+
+
+//////////////////////////////
+//
+// printNoteHeadShape -- print the head of the note
+//     0: hd = solid head (quarter note and smaller durantion)
+//     1: Hd = half-note notehead
+//     2: HD = whole-note notehead
+//     3: HDD = rounded breve
+//     4: breve = square breve
+//     5: longa = longa
+//     6: pshhd = sharp note when clef is perc (percussion sharp head)
+//     7: pflhd = flat note when clef is perc (percussion flat head)
+//     8: ghd = black head for grace notes (ornaments)
+//
+
+void printNoteHeadShape(ostream& out, const char* buffer, int mindex) {
+   RationalNumber rn;
+
+   getNoteShape(rn, buffer);
+
+   if (rn == 0) {            // grace note
+      out << "ghd"; 
+      usedMarks[mindex][8] = 1; 
+   } else if (rn <= 1) {     // quarer note or smaller
+      out << "hd";  
+      usedMarks[mindex][0] = 1; 
+   } else if (rn <= 2) {       // half note
+      out << "Hd"; 
+      usedMarks[mindex][1] = 1; 
+   }   else if (rn <= 4) {   // whole note
+      out << "HD"; 
+      usedMarks[mindex][2] = 1; 
+   } else if (rn <= 8) {     // square breve (always not round)
+      out << "breve"; 
+      usedMarks[mindex][4] = 1; 
+   } else if (rn <= 16) {    // longa
+      out << "longa"; 
+      usedMarks[mindex][5] = 1; 
+   } else    {               // don't know what large rhythm is...
+      out << "hd"; 
+      usedMarks[mindex][0] = 1; 
+   }
+}
+
+
+
+//////////////////////////////
+//
+// getNoteShape -- return the rhythm of the note with no augmentation dots.
+//    Should do a secondary check on grace notes: If the grace note is a 
+//    whole note should be considered?
+//
+
+void getNoteShape(RationalNumber& rn, const char* buffer) {
+   int dotcount = 0;
+   int i = 0;
+   while (buffer[i] != '\0') {
+      if (buffer[i] == '.') {
+         dotcount++;
+      }
+      i++;
+   }
+   rn = Convert::kernToDurationR(buffer);
+   if (dotcount > 0) {
+      rn = rn * (int)(pow(2.0, dotcount));
+      rn = rn / (int)(pow(2.0, dotcount+1) - 1);
+   }
 }
 
 
@@ -2586,7 +2941,7 @@ void printArticulations(ostream& out, const char* string) {
    if (strchr(string, '^') != NULL)  {  // accent present 
       out << "!accent!";
    }
-   if (strchr(string, ';') != NULL)  {  // fermata present 
+   if ((strchr(string, ';') != NULL) && (strstr(string, ";y") == NULL))  {  // fermata present 
       out << "!fermata!";
    }
    if (strchr(string, 'o') != NULL)  {  // fermata present 
@@ -2671,7 +3026,7 @@ void printAccidental(ostream& out, int base40, const char* token,
    }
 
    int acci = Convert::base40ToAccidental(base40);
-   int diatonic = Convert::base40ToDiatonic(base40);
+   int diatonic = Convert::base40ToDiatonic(base40) % 7;
    if ((!cautionary) && (acci == accident[diatonic+7*octave])) {
       return;   // the accidental matches the current display, so don't print
    }
@@ -3841,6 +4196,144 @@ void printAbcExtendedInformationFields(ostream& out, HumdrumFile& infile) {
       out << "%%measurebox 1" << "\n";
    }
 
+    // print postscript code for marks if there are any.
+    //if (hasmarksQ) {
+    //   printMarkCodes(out, marks, markcolors);
+    // }
+
+}
+
+
+//////////////////////////////
+//
+// printMarkCodes -- print codes to use for marks
+//     0: hd = solid head (quarter note and smaller durantion)
+//     1: Hd = half-note notehead
+//     2: HD = whole-note notehead
+//     3: HDD = rounded breve
+//     4: breve = square breve
+//     5: longa = longa
+//     6: pshhd = sharp note when clef is perc (percussion sharp head)
+//     7: pflhd = flat note when clef is perc (percussion flat head)
+//     8: ghd = black head for grace notes (ornaments)
+
+void printMarkCodes(ostream& out, Array<char>& marks, 
+      Array<Array<double> >& markcolors) {
+
+   if (usedAnnotation) {
+      out << "%%postscript /cp {currentpoint}!\n";
+      out << "%%postscript /anshow { dup 0 get (:) 0 get ne\n";
+      out << "%%postscript    {/gchshow load cshow}\n";
+      out << "%%postscript    {dup length 1 sub 1 exch ";
+      out << "getinterval cvx exec}ifelse}!\n";
+   }
+
+   int i;
+   for (i=0; i<usedMarks.getSize(); i++) {
+
+      if (usedMarks[i][0]) {
+         out << "%%postscript /mark" << i+1 << "hd {gsave ";
+         out << markcolors[i][0] << " "; 
+         out << markcolors[i][1] << " "; 
+         out << markcolors[i][2] << " "; 
+         out << "setrgbcolor hd grestore}!\n";
+      }
+
+      if (usedMarks[i][1]) {
+         out << "%%postscript /mark" << i+1 << "Hd {gsave ";
+         out << markcolors[i][0] << " "; 
+         out << markcolors[i][1] << " "; 
+         out << markcolors[i][2] << " "; 
+         out << "setrgbcolor Hd grestore}!\n";
+      }
+
+      if (usedMarks[i][2]) {
+         out << "%%postscript /mark" << i+1 << "HD {gsave ";
+         out << markcolors[i][0] << " "; 
+         out << markcolors[i][1] << " "; 
+         out << markcolors[i][2] << " "; 
+         out << "setrgbcolor HD grestore}!\n";
+      }
+
+      if (usedMarks[i][3]) {
+         out << "%%postscript /mark" << i+1 << "HDD {gsave ";
+         out << markcolors[i][0] << " "; 
+         out << markcolors[i][1] << " "; 
+         out << markcolors[i][2] << " "; 
+         out << "setrgbcolor HDD grestore}!\n";
+      }
+
+      if (usedMarks[i][4]) {
+         out << "%%postscript /mark" << i+1 << "breve {gsave ";
+         out << markcolors[i][0] << " "; 
+         out << markcolors[i][1] << " "; 
+         out << markcolors[i][2] << " "; 
+         out << "setrgbcolor breve grestore}!\n";
+      }
+
+      if (usedMarks[i][5]) {
+         out << "%%postscript /mark" << i+1 << "longa {gsave ";
+         out << markcolors[i][0] << " "; 
+         out << markcolors[i][1] << " "; 
+         out << markcolors[i][2] << " "; 
+         out << "setrgbcolor longa grestore}!\n";
+      }
+
+      if (usedMarks[i][6]) {
+         out << "%%postscript /mark" << i+1 << "pshhd {gsave ";
+         out << markcolors[i][0] << " "; 
+         out << markcolors[i][1] << " "; 
+         out << markcolors[i][2] << " "; 
+         out << "setrgbcolor pshhd grestore}!\n";
+      }
+
+      if (usedMarks[i][7]) {
+         out << "%%postscript /mark" << i+1 << "pflhd {gsave ";
+         out << markcolors[i][0] << " "; 
+         out << markcolors[i][1] << " "; 
+         out << markcolors[i][2] << " "; 
+         out << "setrgbcolor pflhd grestore}!\n";
+      }
+
+      if (usedMarks[i][8]) {
+         out << "%%postscript /mark" << i+1 << "ghd {gsave ";
+         out << markcolors[i][0] << " "; 
+         out << markcolors[i][1] << " "; 
+         out << markcolors[i][2] << " "; 
+         out << "setrgbcolor ghd grestore}!\n";
+      }
+
+   }
+
+   for (i=0; i<usedMarks.getSize(); i++) {
+      if (usedMarks[i][0]) {
+         out << "%%deco head-m" << i+1 << "hd 0 mark" << i+1 << "hd 0 0 0 \n";
+      }
+      if (usedMarks[i][1]) {
+         out << "%%deco head-m" << i+1 << "Hd 0 mark" << i+1 << "Hd 0 0 0 \n";
+      }
+      if (usedMarks[i][2]) {
+         out << "%%deco head-m" << i+1 << "HD 0 mark" << i+1 << "HD 0 0 0 \n";
+      }
+      if (usedMarks[i][3]) {
+         out << "%%deco head-m" << i+1 << "HDD 0 mark" << i+1 << "HDD 0 0 0 \n";
+      }
+      if (usedMarks[i][4]) {
+         out << "%%deco head-m" << i+1 << "breve 0 mark" << i+1 << "breve 0 0 0 \n";
+      }
+      if (usedMarks[i][5]) {
+         out << "%%deco head-m" << i+1 << "longa 0 mark" << i+1 << "longa 0 0 0 \n";
+      }
+      if (usedMarks[i][6]) {
+         out << "%%deco head-m" << i+1 << "pshhd 0 mark" << i+1 << "pshhd 0 0 0 \n";
+      }
+      if (usedMarks[i][7]) {
+         out << "%%deco head-m" << i+1 << "pflhd 0 mark" << i+1 << "pflhd 0 0 0 \n";
+      }
+      if (usedMarks[i][8]) {
+         out << "%%deco head-m" << i+1 << "ghd 0 mark" << i+1 << "ghd 0 0 0 \n";
+      }
+   }
 
 }
 
@@ -3904,8 +4397,8 @@ void printVeritas(ostream& out, HumdrumFile& infile) {
    int lenall = strlen(alllines.CSTRING);
    int lendata = strlen(onlydata.CSTRING);
 
-   unsigned long crcall  = string_cksum(alllines.CSTRING, lenall);
-   unsigned long crcdata = string_cksum(onlydata.CSTRING, lendata);
+   unsigned long crcall  = CheckSum::crc32(alllines.CSTRING, lenall);
+   unsigned long crcdata = CheckSum::crc32(onlydata.CSTRING, lendata);
 
    if (veritas != 0) {
       if (veritas == crcall) {
@@ -5112,7 +5605,7 @@ char* base40ToAbcPitch(char* buffer, int base40) {
    }
 	  
    int octave = base40 / 40;
-   int diatonic = Convert::base40ToDiatonic(base40);
+   int diatonic = Convert::base40ToDiatonic(base40) % 7;
 
    // int accidental = Convert::base40ToAccidental(
    // the accidental will not be printed with this
@@ -5175,6 +5668,8 @@ void storeOptionSet(Options& opts) {
    opts.define("TT=s:",        "Title expansion");
    opts.define("no-grace=b",   "Suppress gracespace redefinition");
    opts.define("no-tempo=b",   "Suppress tempo marking at start of music");
+   opts.define("no-slur|no-slurs|noslur|noslurs|ns=b",   "Suppress displaying all slurs in music");
+   opts.define("no-mark|no-marks|nomark|nomarks=b",    "Suppress marks");
    opts.define("nn|no-auto-natural=b",   "Suppress automatic naturals");
    opts.define("linebreak=b",   "Break lines at !linebreak tokens");
 
@@ -5320,7 +5815,8 @@ void checkOptions(Options& opts, int argc, char* argv[], int fcount,
       storeHeaderRecord(Header, char('A'+i), opts.getString(optchar));
    }
 
-   debugQ = opts.getBoolean("debug");
+   debugQ =  opts.getBoolean("debug");
+   slurQ  = !opts.getBoolean("no-slur");
    linemeasure = opts.getInteger("measures-per-line");
    if (linemeasure < 0) {
       linemeasure = 1;
@@ -5341,11 +5837,12 @@ void checkOptions(Options& opts, int argc, char* argv[], int fcount,
       header = opts.getString("header");
    }
 
-   labelQ    = opts.getBoolean("label");
+   labelQ    =  opts.getBoolean("label");
    graceQ    = !opts.getBoolean("no-grace");
-   notempoQ  = opts.getBoolean("no-tempo");
+   notempoQ  =  opts.getBoolean("no-tempo");
+   markQ     = !opts.getBoolean("no-mark");
    veritasQ  = !opts.getBoolean("no-veritas");
-   boxQ      = opts.getBoolean("box");
+   boxQ      =  opts.getBoolean("box");
    if (strchr(opts.getString("barnums"), 'b') != NULL) {
       // the presence of a b after the measure number option
       // indicates that the user wants the bar numbers enclosed
@@ -5387,93 +5884,6 @@ void checkOptions(Options& opts, int argc, char* argv[], int fcount,
 }
 
 
-///////////////////////////////
-//
-// string_cksum -- returns the same as the command-line cksum program
-// (just the first number, not the size in bytes of the input string).
-//
-
-unsigned long string_cksum(const char* buf, int length) {
-   static long int const crctab[256] = {
-      0x00000000,
-      0x04c11db7, 0x09823b6e, 0x0d4326d9, 0x130476dc, 0x17c56b6b,
-      0x1a864db2, 0x1e475005, 0x2608edb8, 0x22c9f00f, 0x2f8ad6d6,
-      0x2b4bcb61, 0x350c9b64, 0x31cd86d3, 0x3c8ea00a, 0x384fbdbd,
-      0x4c11db70, 0x48d0c6c7, 0x4593e01e, 0x4152fda9, 0x5f15adac,
-      0x5bd4b01b, 0x569796c2, 0x52568b75, 0x6a1936c8, 0x6ed82b7f,
-      0x639b0da6, 0x675a1011, 0x791d4014, 0x7ddc5da3, 0x709f7b7a,
-      0x745e66cd, 0x9823b6e0, 0x9ce2ab57, 0x91a18d8e, 0x95609039,
-      0x8b27c03c, 0x8fe6dd8b, 0x82a5fb52, 0x8664e6e5, 0xbe2b5b58,
-      0xbaea46ef, 0xb7a96036, 0xb3687d81, 0xad2f2d84, 0xa9ee3033,
-      0xa4ad16ea, 0xa06c0b5d, 0xd4326d90, 0xd0f37027, 0xddb056fe,
-      0xd9714b49, 0xc7361b4c, 0xc3f706fb, 0xceb42022, 0xca753d95,
-      0xf23a8028, 0xf6fb9d9f, 0xfbb8bb46, 0xff79a6f1, 0xe13ef6f4,
-      0xe5ffeb43, 0xe8bccd9a, 0xec7dd02d, 0x34867077, 0x30476dc0,
-      0x3d044b19, 0x39c556ae, 0x278206ab, 0x23431b1c, 0x2e003dc5,
-      0x2ac12072, 0x128e9dcf, 0x164f8078, 0x1b0ca6a1, 0x1fcdbb16,
-      0x018aeb13, 0x054bf6a4, 0x0808d07d, 0x0cc9cdca, 0x7897ab07,
-      0x7c56b6b0, 0x71159069, 0x75d48dde, 0x6b93dddb, 0x6f52c06c,
-      0x6211e6b5, 0x66d0fb02, 0x5e9f46bf, 0x5a5e5b08, 0x571d7dd1,
-      0x53dc6066, 0x4d9b3063, 0x495a2dd4, 0x44190b0d, 0x40d816ba,
-      0xaca5c697, 0xa864db20, 0xa527fdf9, 0xa1e6e04e, 0xbfa1b04b,
-      0xbb60adfc, 0xb6238b25, 0xb2e29692, 0x8aad2b2f, 0x8e6c3698,
-      0x832f1041, 0x87ee0df6, 0x99a95df3, 0x9d684044, 0x902b669d,
-      0x94ea7b2a, 0xe0b41de7, 0xe4750050, 0xe9362689, 0xedf73b3e,
-      0xf3b06b3b, 0xf771768c, 0xfa325055, 0xfef34de2, 0xc6bcf05f,
-      0xc27dede8, 0xcf3ecb31, 0xcbffd686, 0xd5b88683, 0xd1799b34,
-      0xdc3abded, 0xd8fba05a, 0x690ce0ee, 0x6dcdfd59, 0x608edb80,
-      0x644fc637, 0x7a089632, 0x7ec98b85, 0x738aad5c, 0x774bb0eb,
-      0x4f040d56, 0x4bc510e1, 0x46863638, 0x42472b8f, 0x5c007b8a,
-      0x58c1663d, 0x558240e4, 0x51435d53, 0x251d3b9e, 0x21dc2629,
-      0x2c9f00f0, 0x285e1d47, 0x36194d42, 0x32d850f5, 0x3f9b762c,
-      0x3b5a6b9b, 0x0315d626, 0x07d4cb91, 0x0a97ed48, 0x0e56f0ff,
-      0x1011a0fa, 0x14d0bd4d, 0x19939b94, 0x1d528623, 0xf12f560e,
-      0xf5ee4bb9, 0xf8ad6d60, 0xfc6c70d7, 0xe22b20d2, 0xe6ea3d65,
-      0xeba91bbc, 0xef68060b, 0xd727bbb6, 0xd3e6a601, 0xdea580d8,
-      0xda649d6f, 0xc423cd6a, 0xc0e2d0dd, 0xcda1f604, 0xc960ebb3,
-      0xbd3e8d7e, 0xb9ff90c9, 0xb4bcb610, 0xb07daba7, 0xae3afba2,
-      0xaafbe615, 0xa7b8c0cc, 0xa379dd7b, 0x9b3660c6, 0x9ff77d71,
-      0x92b45ba8, 0x9675461f, 0x8832161a, 0x8cf30bad, 0x81b02d74,
-      0x857130c3, 0x5d8a9099, 0x594b8d2e, 0x5408abf7, 0x50c9b640,
-      0x4e8ee645, 0x4a4ffbf2, 0x470cdd2b, 0x43cdc09c, 0x7b827d21,
-      0x7f436096, 0x7200464f, 0x76c15bf8, 0x68860bfd, 0x6c47164a,
-      0x61043093, 0x65c52d24, 0x119b4be9, 0x155a565e, 0x18197087,
-      0x1cd86d30, 0x029f3d35, 0x065e2082, 0x0b1d065b, 0x0fdc1bec,
-      0x3793a651, 0x3352bbe6, 0x3e119d3f, 0x3ad08088, 0x2497d08d,
-      0x2056cd3a, 0x2d15ebe3, 0x29d4f654, 0xc5a92679, 0xc1683bce,
-      0xcc2b1d17, 0xc8ea00a0, 0xd6ad50a5, 0xd26c4d12, 0xdf2f6bcb,
-      0xdbee767c, 0xe3a1cbc1, 0xe760d676, 0xea23f0af, 0xeee2ed18,
-      0xf0a5bd1d, 0xf464a0aa, 0xf9278673, 0xfde69bc4, 0x89b8fd09,
-      0x8d79e0be, 0x803ac667, 0x84fbdbd0, 0x9abc8bd5, 0x9e7d9662,
-      0x933eb0bb, 0x97ffad0c, 0xafb010b1, 0xab710d06, 0xa6322bdf,
-      0xa2f33668, 0xbcb4666d, 0xb8757bda, 0xb5365d03, 0xb1f740b4
-   };
-
-   unsigned long crc = 0;
-   for (int i=0; i<length; i++) {
-      crc = (crc << 8) ^ crctab[((crc >> 24) ^ *buf++) & 0xFF];
-   }
-   for (; length; length >>= 8) {
-      crc = (crc << 8) ^ crctab[((crc >> 24) ^ length) & 0xFF];
-   }
-   crc = ~crc & 0xFFFFFFFF;
-   return crc;
-
-/*
-int main (void) {
-   char* mystring = "This is a test.\n";
-   int length = strlen(mystring);
-	   
-   long value = string_cksum(mystring, length);
-   printf("Checksum = %u\n", value);
-
-   exit(0);
-}
-*/
-
-}
-
-
 
 //////////////////////////////
 //
@@ -5499,5 +5909,4 @@ void usage(const char* command) {
 
 
 
-
-// md5sum: bfdac6de32e1f83df0996a4ebf6bae56 hum2abc.cpp [20100905]
+// md5sum: eaffd887c01537bd3f19781061fe2d57 hum2abc.cpp [20110318]

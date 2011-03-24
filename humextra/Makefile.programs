@@ -55,10 +55,17 @@
 #OSTYPE = OSXOLD
 ARCH = 
 
+# Set the environmental variable $MACOSX_DEPLOYMENT_TARGET to
+# "10.4" in Apple OS X to compile for OS X 10.4 and later (for example,
+# you can compile for OS X 10.4 computers even if you are using a 10.6
+# computer).
+ENV =
+
 # if OSTYPE is not defined, then this if statement will be run:
 ifeq ($(origin OSTYPE), undefined)
    ifeq ($(shell uname),Darwin)
       OSTYPE = OSXPC
+      ENV = MACOSX_DEPLOYMENT_TARGET=10.4
       # use the following to compile for 32-bit architecture on 64-bit comps:
       #ARCH = -m32 -arch i386
    else 
@@ -79,7 +86,9 @@ endif
 # Cygwin (and MinGW?) adds the string ".exe" to the end of compiled programs.
 # so select EXTEN = .exe when compiling in cygwin
 EXTEN     =
-# EXTEN   = .exe
+ifeq ($(shell uname),CYGWIN_NT-5.1)
+   EXTEN   = .exe
+endif
 
 
 ###########################################################################
@@ -136,7 +145,7 @@ LIBDIR    = lib
 LIBFILE   = humextra
 TARGDIR   = bin
 # LANG=C: Nuts to the GCC error beautification committee.
-COMPILER  = LANG=C g++ $(ARCH)
+COMPILER  = LANG=C $(ENV) g++ $(ARCH)
 
 # MinGW compiling setup (used to compile for Microsoft Windows but actual
 # compiling can be done in Linux). You have to install MinGW and these

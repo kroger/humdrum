@@ -40,6 +40,9 @@
 // Last Modified: Sat Sep  5 22:03:28 PDT 2009 (ArrayInt to Array<int>)
 // Last Modified: Mon Oct 12 15:49:27 PDT 2009 (fixed "*clef *v *v" type cases)
 // Last Modified: Sat May 22 10:52:36 PDT 2010 (added RationalNumber)
+// Last Modified: Thu Oct 28 21:22:51 PDT 2010 (some fixing of combine())
+// Last Modified: Sat Dec 25 13:07:09 PST 2010 (minrhythm fix with dots)
+// Last Modified: Wed Feb  2 17:51:57 PST 2011 (partial fix for breve beat)
 // Filename:      ...sig/src/sigInfo/HumdrumFile.cpp
 // Web Address:   http://sig.sapp.org/src/sigInfo/HumdrumFile.cpp
 // Syntax:        C++ 
@@ -52,6 +55,7 @@
 #include "HumdrumFile.h"
 #include "humdrumfileextras.h"
 #include "Convert.h"
+#include "PerlRegularExpression.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -92,6 +96,7 @@
 HumdrumFile::HumdrumFile(void) : HumdrumFileBasic() {
    rhythmcheck = 0;
    minrhythm = 0;
+   minrhythmR = 0;
    pickupdur = -1;
    localrhythms.setSize(0);
 }
@@ -101,6 +106,7 @@ HumdrumFile::HumdrumFile(const HumdrumFile& aHumdrumFile) :
    HumdrumFileBasic(aHumdrumFile) {
    rhythmcheck = 0;
    minrhythm = 0;
+   minrhythmR = 0;
    pickupdur = -1;
    localrhythms.setSize(0);
 }
@@ -109,6 +115,7 @@ HumdrumFile::HumdrumFile(const HumdrumFileBasic& aHumdrumFile) :
    HumdrumFileBasic(aHumdrumFile) {
    rhythmcheck = 0;
    minrhythm = 0;
+   minrhythmR = 0;
    pickupdur = -1;
    localrhythms.setSize(0);
 }
@@ -117,6 +124,7 @@ HumdrumFile::HumdrumFile(const HumdrumFileBasic& aHumdrumFile) :
 HumdrumFile::HumdrumFile(const char* filename) : HumdrumFileBasic(filename) {
    rhythmcheck = 0;
    minrhythm = 0;
+   minrhythmR = 0;
    pickupdur = -1;
    localrhythms.setSize(0);
 }
@@ -153,7 +161,19 @@ void HumdrumFile::analyzeRhythm(const char* base, int debug) {
 //
 
 int HumdrumFile::getMinTimeBase(void) {
-   return minrhythm;
+   // return minrhythm;
+   return minrhythmR.getNumerator() * minrhythmR.getDenominator();
+}
+
+
+
+//////////////////////////////
+//
+// getMinTimeBaseR -- RationalNumber version of getMinTimeBase().
+//
+
+RationalNumber HumdrumFile::getMinTimeBaseR(void) {
+   return minrhythmR;
 }
 
 
@@ -381,11 +401,17 @@ int HumdrumFile::assemble(HumdrumFile& output, int count, HumdrumFile* pieces) {
 //      file.
 
 
-void HumdrumFile::getRhythms(Array<int>& rhys) {
+void HumdrumFile::getRhythms(Array<RationalNumber>& rhys) {
    if (rhythmQ() == 0) {
       analyzeRhythm("4");
    }
-   rhys = this->localrhythms;
+   int i;
+   Array<RationalNumber>& rats = this->localrhythms;
+
+   rhys.setSize(rats.getSize());
+   for (i=0; i<rhys.getSize(); i++) {
+      rhys[i] = rats[i];
+   }
 }
 
 
@@ -448,7 +474,6 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
       HumdrumFile& B, int debug) {
    int a = 0;
    int b = 0;
-
    SSTREAM sout;
    int i;
    int foundStart = 0;   // boolean for finding start of data
@@ -459,20 +484,32 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
       }
 
       if (a >= A.getNumLines()) {
+         if (debug) {
+            sout << "!!CASE AAA" << "\n";
+         }
          sout << B[b].getLine() << "\n";
          b++;
          continue;
       } 
       if (b >= B.getNumLines()) {
+         if (debug) {
+            sout << "!!CASE BBB" << "\n";
+         }
          sout << A[a].getLine() << "\n";
          a++;
          continue;
       }
       if (A[a].getType() == E_humrec_empty) {
+         if (debug) {
+            sout << "!!CASE BBBa" << "\n";
+         }
          a++; 
          continue;
       }
       if (B[b].getType() == E_humrec_empty) {
+         if (debug) {
+            sout << "!!CASE BBBb" << "\n";
+         }
          b++; 
          continue;
       }
@@ -480,34 +517,41 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
          for (i=0; i<B.getNumLines(); i++) {
             if ((B[i].getType() == E_humrec_bibliography) &&
                 (strcmp(A[a][0], B[i][0]) == 0)) {
+               if (debug) {
+                  sout << "!!CASE BBBc" << "\n";
+               }
                a++;
                continue;
             }
          }
          // Bibliographic record was not found in B.
+         if (debug) {
+            sout << "!!CASE CCC" << "\n";
+         }
          sout << A[a].getLine() << "\n";
          a++;
          continue;
       } else if (A[a].getType() == E_humrec_global_comment) {
-         i = b;
-         RationalNumber basetime = B[b].getAbsBeatR();
-         i++;
-         while (B[i].getAbsBeatR() == basetime) {
-            if (strcmp(A[a][0], B[i][0]) == 0) {
-               a++;
-               continue;
-            }
-         }
-         // global comment was not found in B near A
          sout << A[a].getLine() << "\n";
+         if (B[b].isGlobalComment() && 
+             (strcmp(A[a].getLine(), B[b].getLine()) == 0) ) {
+            // ignore the global record if a duplicate
+            b++;
+         }
          a++;
          continue;
       }
       if (B[b].getType() == E_humrec_bibliography) {
+         if (debug) {
+            sout << "!!CASE EEE" << "\n";
+         }
          sout << B[b].getLine() << "\n";
          b++;
          continue;
       } else if (A[a].getType() == E_humrec_global_comment) {
+         if (debug) {
+            sout << "!!CASE FFF" << "\n";
+         }
          sout << B[b].getLine() << "\n";
          b++;
          continue;
@@ -515,6 +559,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
 
       if ((!foundStart) && (A[a].getType() == E_humrec_interpretation) &&
           (B[b].getType() != E_humrec_interpretation)) {
+         if (debug) {
+            sout << "!!CASE GGG" << "\n";
+         }
          sout << B[b] << "\n";
          b++;
          continue;
@@ -525,6 +572,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
          int kk;
 
          if (A[a].getAbsBeat() < B[b].getAbsBeat()) {
+            if (debug) {
+               sout << "!!CASE HHH" << "\n";
+            }
             sout << A[a];
             sout << "\t";
             for (kk=0; kk<B[b].getFieldCount(); kk++) {
@@ -552,6 +602,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
          int kk;
 
          if (B[b].getAbsBeat() < A[a].getAbsBeat()) {
+            if (debug) {
+               sout << "!!CASE III" << "\n";
+            }
             for (kk=0; kk<A[a].getFieldCount(); kk++) {
                // sout << ".jj";
                sout << ".";
@@ -566,6 +619,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
 
          }
 
+         if (debug) {
+            sout << "!!CASE JJJ" << "\n";
+         }
          sout << A[a] << "\t";
          for (kk=0; kk<B[b].getFieldCount(); kk++) {
             sout << "*";
@@ -581,6 +637,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
 
       if (B[b].getType() == E_humrec_data_interpretation &&
           A[a].getType() == E_humrec_data_measure) {
+         if (debug) {
+            sout << "!!CASE KKK" << "\n";
+         }
          int kk;
          for (kk=0; kk<A[a].getFieldCount(); kk++) {
             sout << "*\t";
@@ -606,27 +665,64 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
       if ((adur - bdur) < 0) {
          // data lines are supposed to occur at the same time
 
+         if (A[a].isData() && B[b].isData()) {
+            if (A[a].getAbsBeatR() < B[b].getAbsBeatR()) {
+               // print A and null tokens for B 
+               if (debug) {
+                  sout << "!!CASE KKKa" << "\n";
+               }
+               sout << A[a].getLine();
+               for (i=0; i<B[b].getFieldCount(); i++) {
+                  sout << "\t.";
+               }
+               sout << "\n";
+               a++;
+               continue;
+            }
+            if (A[a].getAbsBeatR() > B[b].getAbsBeatR()) {
+               // print null tokens for A and then B
+               if (debug) {
+                  sout << "!!CASE KKKb" << "\n";
+               }
+               for (i=0; i<A[a].getFieldCount(); i++) {
+                  sout << ".\t";
+               }
+               sout << B[b].getLine();
+               sout << "\n";
+               b++;
+               continue;
+            }
+         }
+
          // handle unequal measures
          if (B[b].getType() == E_humrec_data_measure &&
              A[a].getType() == E_humrec_data) {
-           for (i=0; i<A[a].getFieldCount(); i++) {
-              sout << "--\t";
-           }
-           sout << B[b].getLine() << "\n"; 
-           b++;
-           continue;
+            // print the data for A, and empty records for B
+            if (debug) {
+                sout << "!!CASE LLL" << "\n";
+            }
+            sout << A[a].getLine();
+            for (i=0; i<B[b].getFieldCount(); i++) {
+               sout << "\t.";
+            }
+            sout << "\n";
+            a++;
+            continue;
          } else if (A[a].getType() == E_humrec_data_measure &&
              B[b].getType() == E_humrec_data) {
-           sout << A[a].getLine() << "\t"; 
-           for (i=0; i<B[b].getFieldCount(); i++) {
-              sout << "--";
-              if (i<B[b].getFieldCount()-1) {
-                 sout << "\t";
-              }
-           }
-           sout << "\n";
-           a++;
-           continue;
+            if (debug) {
+                sout << "!!CASE MMM" << "\n";
+            }
+            sout << A[a].getLine() << "\t"; 
+            for (i=0; i<B[b].getFieldCount(); i++) {
+               sout << "--";
+               if (i<B[b].getFieldCount()-1) {
+                  sout << "\t";
+               }
+            }
+            sout << "\n";
+            a++;
+            continue;
          } 
 
          // if the lines of the two files happen at the same
@@ -639,89 +735,100 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
              (B[b].getType() == E_humrec_data) ) {
 
 /*
-             // handle grace notes by putting them first
-             int agrace = 0;
-             int bgrace = 0;
-             int z;
+            // handle grace notes by putting them first
+            int agrace = 0;
+            int bgrace = 0;
+            int z;
 
-             for (z=0; z<A[a].getFieldCount(); z++) {
-                if (strcmp("**kern", A[a].getExInterp(z)) == 0) {
-                   if ((strchr(A[a][z], 'q') != NULL) ||
-                       (strchr(A[a][z], 'Q') != NULL)) {
-                      agrace = 1;
-                   }
-                }
-             }
-             for (z=0; z<B[b].getFieldCount(); z++) {
-                if (strcmp("**kern", B[b].getExInterp(z)) == 0) {
-                   if ((strchr(B[b][z], 'q') != NULL) ||
-                       (strchr(B[b][z], 'Q') != NULL)) {
-                      bgrace = 1;
-                   }
-                }
-             }
-             
-             if (agrace == bgrace) {
-                // either both grace notes or neither has grace notes
-             } else if (agrace == 1) {
-                // A has grace note so display that line first
-                sout << A[a].getLine() << "\t";
-                int kk;
-                for (kk=0; kk<B[b].getFieldCount(); kk++) {
-                   sout << ".";
-                   if (kk<B[b].getFieldCount()-1) {
-                      sout << "\t";
-                   }
-                }
-                sout << "\n";
-                a++;
-                continue;
-             } else if (bgrace == 1) {
-                // B has grace note so display that line first
-                int kk;
-                for (kk=0; kk<A[a].getFieldCount(); kk++) {
-                   sout << ".\t";
-                }
-                sout << B[b].getLine();
-                sout << "\n";
-                b++;
-                continue;
-             }
+            for (z=0; z<A[a].getFieldCount(); z++) {
+               if (strcmp("**kern", A[a].getExInterp(z)) == 0) {
+                  if ((strchr(A[a][z], 'q') != NULL) ||
+                      (strchr(A[a][z], 'Q') != NULL)) {
+                     agrace = 1;
+                  }
+               }
+            }
+            for (z=0; z<B[b].getFieldCount(); z++) {
+               if (strcmp("**kern", B[b].getExInterp(z)) == 0) {
+                  if ((strchr(B[b][z], 'q') != NULL) ||
+                      (strchr(B[b][z], 'Q') != NULL)) {
+                     bgrace = 1;
+                  }
+               }
+            }
+            
+            if (agrace == bgrace) {
+               // either both grace notes or neither has grace notes
+            } else if (agrace == 1) {
+               // A has grace note so display that line first
+               sout << A[a].getLine() << "\t";
+               int kk;
+               for (kk=0; kk<B[b].getFieldCount(); kk++) {
+                  sout << ".";
+                  if (kk<B[b].getFieldCount()-1) {
+                     sout << "\t";
+                  }
+               }
+               sout << "\n";
+               a++;
+               continue;
+            } else if (bgrace == 1) {
+               // B has grace note so display that line first
+               int kk;
+               for (kk=0; kk<A[a].getFieldCount(); kk++) {
+                  sout << ".\t";
+               }
+               sout << B[b].getLine();
+               sout << "\n";
+               b++;
+               continue;
+            }
              
 */
 
-             // This section no longer works for grace notes since
-             // grace note lines can be give a duration
-             if ((A[a].getDuration() == 0.0) && (B[b].getDuration() > 0.0)) {
-                // A contains grace note but B does not
-                sout << A[a].getLine() << "\t";
-                int kk;
-                for (kk=0; kk<B[b].getFieldCount(); kk++) {
-                   sout << ".";
-                   if (kk<B[b].getFieldCount()-1) {
-                      sout << "\t";
-                   }
-                }
-                sout << "\n";
-                a++;
-                continue;
-             } else if ((B[b].getDuration() == 0.0) && (A[a].getDuration() > 0.0)) {
-                // B contains grace note but A does not
-                int kk;
-                for (kk=0; kk<A[a].getFieldCount(); kk++) {
-                   sout << ".\t";
-                }
-                sout << B[b].getLine();
-                sout << "\n";
-                b++;
-                continue;
-             }
-
-
+            // This section no longer works for grace notes since
+            // grace note lines can be give a duration
+            if ((A[a].getDuration() == 0.0) && (B[b].getDuration() > 0.0)) {
+               // A contains grace note but B does not
+               if (debug) {
+                   sout << "!!CASE MMM" << "\n";
+               }
+               sout << A[a].getLine() << "\t";
+               int kk;
+               for (kk=0; kk<B[b].getFieldCount(); kk++) {
+                  sout << ".";
+                  if (kk<B[b].getFieldCount()-1) {
+                     sout << "\t";
+                  }
+               }
+               sout << "\n";
+               a++;
+               continue;
+            } else if ((B[b].getDuration() == 0.0) && (A[a].getDuration() > 0.0)) {
+               // B contains grace note but A does not
+               int kk;
+               if (debug) {
+                   sout << "!!CASE NNN Adur=" << A[a].getDuration()
+                        << " Bdur=" << B[b].getDuration()
+                        << "\n";
+               }
+               for (kk=0; kk<A[a].getFieldCount(); kk++) {
+                  sout << ".\t";
+               }
+               sout << B[b].getLine();
+               sout << "\n";
+               b++;
+               continue;
+            }
          }
 
          if ((A[a].getType() != E_humrec_data_interpretation) &&
-             (B[b].getType() != E_humrec_data_interpretation)) {
+             (B[b].getType() != E_humrec_data_interpretation) &&
+              (A[a].getAbsBeatR() == B[b].getAbsBeatR()) 
+               ) {
+            if (debug) {
+               sout << "!!CASE NNN2" << "\n";
+            }
             sout << A[a].getLine() << "\t" << B[b].getLine() << "\n";
             a++;
             b++;
@@ -731,6 +838,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
          // sort the ordering of notes and interpretations
          if ((A[a].getType() == E_humrec_data_interpretation) &&
              (B[b].getType() == E_humrec_data)) {
+            if (debug) {
+               sout << "!!CASE OOO" << "\n";
+            }
             sout << A[a].getLine() << "\t";
             int kk;
             for (kk=0; kk<B[b].getFieldCount(); kk++) {
@@ -745,6 +855,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
          }
          if ((A[a].getType() == E_humrec_data) &&
              (B[b].getType() == E_humrec_data_interpretation)) {
+            if (debug) {
+               sout << "!!CASE PPP" << "\n";
+            }
             int kk;
             for (kk=0; kk<A[a].getFieldCount(); kk++) {
                sout << "*\t";
@@ -757,6 +870,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
          // sort the ordering of measure lines and interpretations
          if ((A[a].getType() == E_humrec_data_interpretation) &&
              (B[b].getType() == E_humrec_data_measure)) {
+            if (debug) {
+               sout << "!!CASE QQQ" << "\n";
+            }
             sout << A[a].getLine() << "\t";
             int kk;
             for (kk=0; kk<B[b].getFieldCount(); kk++) {
@@ -771,6 +887,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
          }
          if ((A[a].getType() == E_humrec_data_measure) &&
              (B[b].getType() == E_humrec_data_interpretation)) {
+            if (debug) {
+               sout << "!!CASE RRR" << "\n";
+            }
             int kk;
             for (kk=0; kk<A[a].getFieldCount(); kk++) {
                sout << "*\t";
@@ -785,6 +904,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
             if ((strcmp(A[a][0], "*-") == 0) && (strcmp(B[b][0], "*-") != 0)) {
                // if at a terminator in A but none in B, then postpone the
                // printing of A until later.
+               if (debug) {
+                  sout << "!!CASE SSS" << "\n";
+               }
                int kk;
                for (kk=0; kk<A[a].getFieldCount(); kk++) {
                   sout << "*";
@@ -803,6 +925,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
                // if at a terminator in B but none in A, then postpone the
                // printing of B until later.
                int kk;
+               if (debug) {
+                  sout << "!!CASE TTT" << "\n";
+               }
                sout << A[a];
                sout << "\t";
                for (kk=0; kk<B[b].getFieldCount(); kk++) {
@@ -820,6 +945,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
 	    // with spine manipulator interpretations
             if ((A[a].isTandem() && B[b].isSpineManipulator())) {
                int ii;
+               if (debug) {
+                  sout << "!!CASE UUU" << "\n";
+               }
                sout << A[a];
                for (ii=0; ii<B[b].getFieldCount(); ii++) {
                   sout << "\t*";
@@ -835,6 +963,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
                continue;
             } else if ((A[a].isSpineManipulator() && B[b].isTandem())) {
                int ii;
+               if (debug) {
+                  sout << "!!CASE VVV" << "\n";
+               }
                for (ii=0; ii<A[a].getFieldCount(); ii++) {
                   sout << "*\t";
                }
@@ -852,6 +983,7 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
             } 
          }
 
+sout << "!! YYYYYY\n";
          // make sure that both lines do not contain *v spine indicators
          // should also check for *^, but that can be done later ...
          int ahasv = 0;
@@ -869,6 +1001,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
 
          if ((ahasv != 0) && (bhasv != 0)) {
             // the two files have *v markers on the same line, so stagger them.
+            if (debug) {
+               sout << "!!CASE WWW" << "\n";
+            }
             sout << A[a].getLine() << "\t";
             for (i=0; i<B[b].getFieldCount(); i++) {
                sout << "*";
@@ -888,6 +1023,9 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
             continue;
          }
 
+         if (debug) {
+            sout << "!!CASE XXX xxx" << "\n";
+         }
          sout << A[a].getLine() << "\t" << B[b].getLine() << "\n";
          a++;
          b++;
@@ -900,18 +1038,24 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
 
          if (A[a].getType() == E_humrec_data_measure &&
              B[b].getType() == E_humrec_data) {
-           sout << A[a].getLine() << "\t"; 
-           for (i=0; i<B[b].getFieldCount(); i++) {
-              sout << "--c";
-              if (i<B[b].getFieldCount()-1) {
-                 sout << "\t";
-              }
-           }
-           sout << "\n";
-           a++;
-           continue;
+            if (debug) {
+               sout << "!!CASE YYY" << "\n";
+            }
+            sout << A[a].getLine() << "\t"; 
+            for (i=0; i<B[b].getFieldCount(); i++) {
+               sout << "--c";
+               if (i<B[b].getFieldCount()-1) {
+                  sout << "\t";
+               }
+            }
+            sout << "\n";
+            a++;
+            continue;
          } 
 
+         if (debug) {
+            sout << "!!CASE ZZZ" << "\n";
+         }
          sout << A[a].getLine();
          for (i=0; i<B[b].getFieldCount(); i++) {
             sout << "\t.";
@@ -925,57 +1069,211 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
 
          if (B[b].getType() == E_humrec_data_measure &&
              A[a].getType() == E_humrec_data) {
-           if (B[b].getAbsBeat() > A[a].getAbsBeat()) {
-              int kk;
-              sout<< A[a] << "\t";
-              for (kk=0; kk<B[b].getFieldCount(); kk++) {
-                 sout << ".y";
-                 if (kk < B[b].getFieldCount()-1) {
-                    sout << "\t";
-                 }
-              }
-              a++;
-              continue;
-           }
-           for (i=0; i<A[a].getFieldCount(); i++) {
-              sout << "--d\t";
-           }
-           sout << B[b].getLine() << "\n";
-           b++;
-           continue;
+            if (B[b].getAbsBeat() > A[a].getAbsBeat()) {
+               int kk;
+               if (debug) {
+                  sout << "!!CASE AAAA" << "\n";
+               }
+               sout<< A[a] << "\t";
+               for (kk=0; kk<B[b].getFieldCount(); kk++) {
+                  sout << ".y";
+                  if (kk < B[b].getFieldCount()-1) {
+                     sout << "\t";
+                  }
+               }
+               a++;
+               continue;
+            }
+
+            if (debug) {
+               sout << "!!CASE BBBB" << "\n";
+            }
+            for (i=0; i<A[a].getFieldCount(); i++) {
+               sout << "--d\t";
+            }
+            sout << B[b].getLine() << "\n";
+            b++;
+            continue;
          } 
 
          if (A[a].getType() == E_humrec_data_measure &&
              B[b].getType() == E_humrec_data) {
-           if (A[a].getAbsBeat() > B[b].getAbsBeat()) {
-              int kk;
-              for (kk=0; kk<A[a].getFieldCount(); kk++) {
-                 sout << "." << "\t";
-                 // sout << ".yy" << "\t";
-              }
-              //sout << B[b] << "iii\n";
-              sout << B[b] << "\n";
-              b++;
-              continue;
-           }
+            if (A[a].getAbsBeat() > B[b].getAbsBeat()) {
+               if (debug) {
+                  sout << "!!CASE BBBB" << "\n";
+               }
+               int kk;
+               for (kk=0; kk<A[a].getFieldCount(); kk++) {
+                  sout << "." << "\t";
+                  // sout << ".yy" << "\t";
+               }
+               //sout << B[b] << "iii\n";
+               sout << B[b] << "\n";
+               b++;
+               continue;
+            }
 
-           sout << A[a].getLine() << "\t";
-           for (i=0; i<B[b].getFieldCount(); i++) {
-              sout << "-b";
-              if (i<B[b].getFieldCount()-1) {
-                 sout << "\t";
-              }
-           }
-           sout << "\n";
-           a++;
-           continue;
+            // Handled by CASE FFFF/GGGG now:
+            // if (debug) {
+            //    sout << "!!CASE CCCC" << "\n";
+            // }
+            // sout << A[a].getLine() << "\t";
+            // for (i=0; i<B[b].getFieldCount(); i++) {
+            //    sout << "-b";
+            //    if (i<B[b].getFieldCount()-1) {
+            //       sout << "\t";
+            //    }
+            // }
+            // sout << "\n";
+            // a++;
+            // continue;
          } 
 
+         if (A[a].hasExclusiveQ() && B[b].hasExclusiveQ()) {
+            // don't know why this case is necessary...
+            if (debug) {
+               sout << "!!CASE DDDD" << "\n";
+            }
+            sout << A[a].getLine() << "\t" << B[b].getLine() << "\n";
+            a++;
+            b++;
+            continue;
+         }
+
+         if ((A[a].isMeasure() && B[b].isMeasure()) && 
+             (A[a].getAbsBeatR() == B[b].getAbsBeatR()) ) {
+            // don't know why this case is necessary...
+            // If both current lines have measure on them 
+            // and the absolute beat positions are equal, 
+            // then print both files' lines at same time.
+            if (debug) {
+               sout << "!!CASE DDDDa" << "\n";
+            }
+            sout << A[a].getLine() << "\t" << B[b].getLine() << "\n";
+            a++;
+            b++;
+            continue;
+         }
+
+         if (A[a].isInterpretation() && B[b].isInterpretation()) {
+            // don't know why this case is necessary...
+            // will have bugs if there are tandem interpretations,
+            // so check out more carefully...
+            if (debug) {
+               sout << "!!CASE EEEE" << "\n";
+            }
+            sout << A[a].getLine() << "\t" << B[b].getLine() << "\n";
+            a++;
+            b++;
+            continue;
+         }
+
+         if (A[a].isInterpretation() && B[b].isMeasure()) {
+            // Don't pass the barline in B until one is found in A.
+            if (debug) {
+               sout << "!!CASE FFFF" << "\n";
+            }
+            sout << A[a].getLine();
+            for (i=0; i<B[b].getFieldCount(); i++) {
+               sout << "\t*";
+            }
+            sout << "\n";
+            a++;
+            continue;
+         } else if (A[a].isMeasure() && B[b].isInterpretation()) {
+            // Don't pass the barline in A until one is found in B.
+            if (debug) {
+               sout << "!!CASE GGGG" << "\n";
+            }
+            for (i=0; i<A[a].getFieldCount(); i++) {
+               sout << "*\t";
+            }
+            sout << B[b].getLine();
+            sout << "\n";
+            b++;
+            continue;
+         }
+
+         if (A[a].isData() && B[b].isData()) {
+            if (A[a].getAbsBeatR() < B[b].getAbsBeatR()) {
+               // print A and null tokens for B 
+               if (debug) {
+                  sout << "!!CASE GGGGa" << "\n";
+               }
+               sout << A[a].getLine();
+               for (i=0; i<B[b].getFieldCount(); i++) {
+                  sout << "\t.";
+               }
+               sout << "\n";
+               a++;
+               continue;
+            }
+            if (A[a].getAbsBeatR() > B[b].getAbsBeatR()) {
+               // print null tokens for A and then B
+               if (debug) {
+                  sout << "!!CASE GGGGb" << "\n";
+               }
+               for (i=0; i<A[a].getFieldCount(); i++) {
+                  sout << ".\t";
+               }
+               sout << B[b].getLine();
+               sout << "\n";
+               b++;
+               continue;
+            }
+         }
+
+         if (A[a].isData() && B[b].isMeasure()) {
+            // Don't pass the barline in B until one is found in A.
+            if (debug) {
+               sout << "!!CASE FFFF2" << "\n";
+            }
+            sout << A[a].getLine();
+            for (i=0; i<B[b].getFieldCount(); i++) {
+               sout << "\t.";
+            }
+            sout << "\n";
+            a++;
+            continue;
+         } else if (A[a].isMeasure() && B[b].isData()) {
+            // Don't pass the barline in A until one is found in B.
+            if (debug) {
+               sout << "!!CASE GGGG2" << "\n";
+            }
+            for (i=0; i<A[a].getFieldCount(); i++) {
+               sout << ".\t";
+            }
+            sout << B[b].getLine();
+            sout << "\n";
+            b++;
+            continue;
+         }
+
+         if ((A[a].isData() && B[b].isData()) && 
+             (A[a].getAbsBeatR() == B[b].getAbsBeatR()) &&
+             (A[a].getDuration() != 0.0) &&
+             (B[b].getDuration() != 0.0) ) {
+            // Don't know why this case is necessary...
+            // If two lines contains notes which are not grace notes
+            // only, and they occur at the same time, then print together.
+            if (debug) {
+               sout << "!!CASE HHHH" << "\n";
+            }
+            sout << A[a].getLine() << "\t" << B[b].getLine() << "\n";
+            a++;
+            b++;
+            continue;
+         }
+
+         if (debug) {
+            sout << "!!CASE IIII" << "\n";
+         }
          for (i=0; i<A[a].getFieldCount(); i++) {
             sout << ".\t";
          }
          sout << B[b].getLine() << "\n";         
          b++;
+         continue;
       }
          
    }
@@ -985,9 +1283,8 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
       sout << ends;
       sout << "\n";
       cout << sout.CSTRING;
-   } else {
-      output.read(sout);
-   }
+   } 
+   output.read(sout);
 
    // cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << endl;
    // cout << output << endl;
@@ -1273,8 +1570,14 @@ int HumdrumFile::getNoteList(Array<int>& notes, int line, int flag) {
       }
 
       if (strcmp(score[line][i], ".") == 0 && expandQ) {
+         if (score[line].getDotLine(i) < 0) {
+            continue;
+         }
          HumdrumRecord& dotexpand = score[score[line].getDotLine(i)];
          int spine = score[line].getDotSpine(i);
+         if (spine < 0) {
+            continue;
+         }
          tokencount = dotexpand.getTokenCount(spine);
          for (j=0; j<tokencount; j++) {
             dotexpand.getToken(tokenbuffer, spine, j);
@@ -1469,6 +1772,9 @@ void HumdrumFile::getNoteArray(Array<double>& absbeat,
             // extract the held over note from a previous point in the score
             ii = score[i].getDotLine(j);
             jj = score[i].getDotSpine(j);
+            if (ii < 0 || jj < 0) {
+               continue;
+            }
          } else {
             ii = i;
             jj = j;
@@ -1622,6 +1928,9 @@ void HumdrumFile::getNoteArray2(Array<double>& absbeat,
             // extract the held over note from a previous point in the score
             ii = score[i].getDotLine(j);
             jj = score[i].getDotSpine(j);
+            if (ii < 0 || jj < 0) {
+               continue;
+            }
          } else {
             ii = i;
             jj = j;
@@ -1819,6 +2128,115 @@ RationalNumber HumdrumFile::getTiedDurationR(int linenum, int field,
 
 //////////////////////////////
 //
+// HumdrumFile::getTotalTiedDuration -- return the duration of a tied
+// group of notes, even if the the current note is not the first
+// note in the tied group (i.e., go fine the first note in the
+// group and then run the getTiedDurationR() function
+//
+
+RationalNumber HumdrumFile::getTotalTiedDurationR(int linenum, int field, 
+      int token) {
+   char buffer[128] = {0};
+   (*this)[linenum].getToken(buffer, field, token);
+
+   if ((strchr(buffer, '_') != NULL) || (strchr(buffer, ']') != NULL)) {
+      int tline;
+      int tcol;
+      int ttok;
+      getTiedStartLocation(linenum, field, token, tline, tcol, ttok);
+      if ((tline < 0) || (tcol < 0) || (ttok < 0)) {
+         return getTiedDurationR(linenum, field, token);
+      } else{
+         return getTiedDurationR(tline, tcol, ttok);
+      }
+   } else {
+      return getTiedDurationR(linenum, field, token);
+   }
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumFile::getTiedStartLocation --  Need to generalize to chords.
+//
+
+void HumdrumFile::getTiedStartLocation(int linenum, int field, int token, 
+      int& tline, int& tcol, int& ttok) {
+
+   RationalNumber startbeat = -1;
+   HumdrumFile& file = *this;
+   char buffer[128] = {0};
+   RationalNumber duration = 0;   // total duration of tied notes.
+   int done = 0;                  // true when end of tied note is found
+   int startpitch = 0;            // starting pitch of the tie
+   int matchpitch = 0;            // current matching pitch of the tie
+   
+   file[linenum].getToken(buffer, field, token);
+   if ((strchr(buffer, ']') != NULL) || (strchr(buffer, '_') != NULL)) {
+      duration = Convert::kernToDurationR(buffer);
+      // allow for enharmonic ties:
+      startpitch = Convert::kernToMidiNoteNumber(buffer);
+   } else {
+      // nothing to do, at start of tie group or no tie
+      tline = linenum; 
+      tcol = field;
+      ttok = token;
+      return;
+   }
+
+   // search back through the music for the starting point of the tie.
+   int m = field;
+   int ptrack = file[linenum].getPrimaryTrack(field);
+   int currentLine = linenum - 1;
+   while (!done && currentLine >= 0) {
+      if (file[currentLine].getType() != E_humrec_data) {
+         currentLine--;
+         continue;
+      }
+
+      for (m=0; m<file[currentLine].getFieldCount(); m++) {
+         if (ptrack != file[currentLine].getPrimaryTrack(m)) {
+            continue;
+         }
+
+         if (strchr(file[currentLine][m], '_') != NULL) {
+            matchpitch = Convert::kernToMidiNoteNumber(file[currentLine][m]);
+            if (startpitch == matchpitch) {
+               break;
+               // continue searching backwards in file
+            } else {
+               done = 1;
+            }
+            break;
+         } else if (strchr(file[currentLine][m], ']') != NULL) {
+            matchpitch = Convert::kernToMidiNoteNumber(file[currentLine][m]);
+            if (startpitch == matchpitch) {
+               break;
+               // continue searching backwards in file
+            } else {
+               done = 1;
+            }
+            break;
+         } else if (strchr(file[currentLine][m], '[') != NULL) {
+            tline = currentLine;
+            tcol = m;
+            ttok = 0;  // not bothering with chords yet...
+            return;
+         }
+      }
+      currentLine--;
+   }
+
+   tline = currentLine;
+   tcol = m;
+   ttok = 0;   // not bothering with chords yet...
+}
+
+
+
+//////////////////////////////
+//
 // HumdrumFile::getTiedStartBeat --
 //     default value: token = 0;
 //
@@ -1828,6 +2246,7 @@ double HumdrumFile::getTiedStartBeat(int linenum, int field, int token) {
    anum = getTiedStartBeatR(linenum, field, token);
    return anum.getFloat();
 }
+
 
 
 RationalNumber HumdrumFile::getTiedStartBeatR(int linenum, int field, 
@@ -1842,7 +2261,8 @@ RationalNumber HumdrumFile::getTiedStartBeatR(int linenum, int field,
    int matchpitch = 0;            // current matching pitch of the tie
    
    file[linenum].getToken(buffer, field, token);
-   if (strchr(buffer, '[') != NULL) {
+   // should be == NULL and not != NULL? [20110218]
+   if (strchr(buffer, '[') == NULL) {
       duration = Convert::kernToDurationR(buffer);
       // allow for enharmonic ties:
       startpitch = Convert::kernToMidiNoteNumber(buffer);
@@ -1993,16 +2413,23 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
    int datainit = 0;               // marker indicating when the data starts
 
    minrhythm = 0;                  // keeping track of the min timebase 
+   minrhythmR = 0;
    Array<int> rhythms;
+   Array<RationalNumber> rhythmsR;
+
    rhythms.setSize(32);
    rhythms.setSize(0);
    rhythms.allowGrowth(1);
+
+   rhythmsR.setSize(32);
+   rhythmsR.setSize(0);
+   rhythmsR.allowGrowth(1);
 
    HumdrumFile& infile = *this;
    RationalNumber summation(0,1);  // for summing measure duration
    RationalNumber duration;
    HumdrumRecord tempRecord;       // for *beat: interpretation
-   const char* slash;              // for metronome marking
+   // const char* slash;              // for metronome marking
    RationalNumber measureBeats(0,1);
    // for fixing meter locations:
 
@@ -2083,6 +2510,19 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
                initializeTracers(lastdurations, runningstatus, infile[i]);
             } else {
                // check for time signature
+               PerlRegularExpression pre;
+               if (pre.search(infile[i][0], "^\\*M(\\d+)/(\\d+)", "")) {
+                  int top = atoi(pre.getSubmatch(1));
+                  int bot = atoi(pre.getSubmatch(2));
+                  if (bot == 0) {
+                     bot = 1;
+                     top *= 2;
+                  }
+                  measureBeats = top;
+                  measureBeats /= bot;
+               }
+
+               /* 20110202
                slash = strchr(infile[i][0], '/');
                if ((infile[i][0][1] == 'M') && isdigit(infile[i][0][2]) &&
                      (slash != NULL)) {
@@ -2094,6 +2534,7 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
                      measureBeats /= atoi(&slash[1]);
                   }
                }
+               */
    
             }
             for (ii=0; ii<infile[i].getFieldCount(); ii++) {
@@ -2161,8 +2602,10 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
                infile[i].equalFieldsQ("**koto", ".")) {
             }
 
-            duration = (determineDurationR(infile[i], init,
-               lastdurations, runningstatus, rhythms, ignore) * timebase) / 4;
+//            duration = (determineDurationR(infile[i], init,
+//               lastdurations, runningstatus, rhythms, ignore) * timebase) / 4;
+            duration = (determineDurationR2(infile[i], init,
+               lastdurations, runningstatus, rhythmsR, ignore) * timebase) / 4;
 
             infile[i].setDurationR(duration);
             if (datainit && i+1 < infile.getNumLines()) {
@@ -2187,8 +2630,16 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
 
    fixIncompleteBarMeterR(meterbeats, timebaseC);
    // fixIrritatingPickupProblem();
+   rhythms.setSize(rhythmsR.getSize());
+   for (i=0; i<rhythms.getSize(); i++) {
+      rhythms[i] = rhythmsR[i].getNumerator() * rhythmsR[i].getDenominator();
+      rhythmsR[i] = rhythms[i];
+   } 
    minrhythm = findlcm(rhythms);
-   localrhythms = rhythms;
+   localrhythms.setSize(rhythmsR.getSize());
+   for (i=0; i<rhythmsR.getSize(); i++) {
+      localrhythms[i] = rhythmsR[i];
+   }
    spaceEmptyLines();
 
    // add offset of +1 if there are no barlines present in the file
@@ -2200,6 +2651,50 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
          infile[i].setBeatR(infile[i].getBeatR()+1);
       }
    }
+
+   // this will eventually replace minrhythm:
+   minrhythmR = getMinimumRationalRhythm(rhythmsR);
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumFile::getMinimumRationalRhythm -- Examine the minimum
+//    time difference between successive lines in a Humdrum file
+//    and then return the inversion of that duration.  If the 
+//    minimum duration is 0, then return -1 (or maybe 0 as currently).
+//
+
+RationalNumber HumdrumFile::getMinimumRationalRhythm(
+      Array<RationalNumber>& rhythms) {
+
+   // RationalNumber zeroR(0,1);
+   // RationalNumber maxval  = zeroR;  
+   // RationalNumber output  = zeroR;
+   int i;
+
+   // for (i=0; i<rhythms.getSize(); i++) {
+   //    if (maxval < rhythms[i].getNumerator()) {
+   //       maxval = rhythms[i].getNumerator();
+   //    }
+   // }
+
+   Array<int> singler;
+   singler.setSize(rhythms.getSize());
+   for (i=0; i<rhythms.getSize(); i++) {
+      singler[i] = rhythms[i].getNumerator() * rhythms[i].getDenominator();
+   }
+
+   int output = findlcm(singler);
+
+   // if (maxval == zeroR) {
+   //    return zeroR;
+   // } else {
+   //    return maxval;
+   // }
+   
+   return output;
 }
 
 
@@ -2223,6 +2718,11 @@ void HumdrumFile::fixIrritatingPickupProblem(void) {
          for (j=0; j<(*this)[bari].getFieldCount(); j++) {
             if (sscanf((*this)[bari][j], "*M%d/%d", &numerator, &denominator) 
                   == 2) {
+               if (denominator == 0) {
+                  // allow for breve beats 20110202
+                  numerator *=  2;
+                  denominator = 1;
+               }
                beatsperbar.setValue(numerator * 4, denominator);
                break;
             }
@@ -2670,9 +3170,18 @@ void HumdrumFile::adjustForSpinePaths(HumdrumRecord& aRecord,
          // do nothing: wait and see if a new kern spine is added.
          inindex++;
       } else if (strcmp("*x", aRecord[i]) == 0) {
-         newdurations.append(lastdurations[inindex+1]);
+         if (lastdurations.getSize() < inindex+1) {
+            // this code needed for cases when *x is swapping
+            // the order of a rhythmic and non-rhythmic spine.
+            // might need to be more fixing (only tested
+            // on two rhythmic spines.
+            newdurations.append(lastdurations[inindex+1]);
+         }
          newdurations.append(lastdurations[inindex]);
-         newstatus.append(runningstatus[inindex+1]);
+         if (runningstatus.getSize() < inindex+1) {
+            // like the previous comment
+            newstatus.append(runningstatus[inindex+1]);
+         }
          newstatus.append(runningstatus[inindex]);
          inindex+= 2;
          i++;
@@ -2727,6 +3236,191 @@ void HumdrumFile::adjustForSpinePaths(HumdrumRecord& aRecord,
       datastart = 0;
    }
 
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumFile::determineDurationR2 -- determines the duration of the **kern
+//	entries before a new **kern entry.  Also works on **koto spines.
+//
+//	This function will eventually replace determineDurationR
+//	It changes Array<int>& rhythms to
+//	           Array<RationalNumber>& rhythms.
+//
+
+RationalNumber HumdrumFile::determineDurationR2(HumdrumRecord& aRecord,
+      int& init, SigCollection<RationalNumber>& lastdurations, 
+      SigCollection<RationalNumber>& runningstatus,
+      Array<RationalNumber>& rhythms, Array<int>& ignore) {
+   int i;
+   // initialization:
+   if (init) {
+      init = 0;
+      int size = aRecord.getFieldCount("**kern");
+      size += aRecord.getFieldCount("**koto");
+      lastdurations.setSize(size);
+      runningstatus.setSize(size);
+      for (i=0; i<size; i++) {
+         lastdurations[i].zero();
+         runningstatus[i].zero();
+      }
+   }
+
+   // Step (1): if lastdurations == runningstatus, then zero running
+   // status.
+   RationalNumber zero(0,1);
+   for (i=0; i<runningstatus.getSize(); i++) {
+      if ((runningstatus[i] - lastdurations[i]) == zero) {
+         runningstatus[i].zero();
+      } else {
+      }
+   }
+ 
+   // Step (2): input new durations into the lastdurations array
+   int q;
+   int count = 0;
+   int stype = 0;
+   // static char rbuff[32] = {0};
+   for (i=0; i<aRecord.getFieldCount(); i++) {
+      if (ignore[aRecord.getPrimaryTrack(i)-1] != 0) {
+         stype = 0;
+      } else if (aRecord.getExInterpNum(i) == E_KERN_EXINT) {
+         stype = 1;
+      } else if (strcmp(aRecord.getExInterp(i), "**koto") == 0) {
+         stype = 2;
+      } else {
+         stype = 0;
+      }
+      if (stype) {
+         if (strcmp(aRecord[i], ".") != 0) {
+            switch (stype) {
+               case 1:
+                  lastdurations[count] = Convert::kernToDurationR(aRecord[i]);
+                  if (strchr(aRecord[i], 'P') != NULL) {
+                     // remove appogiatura durations for summations
+                     // lastdurations[count] = 0;
+                  } else if ((strchr(aRecord[i], 'q') != NULL) ||
+                             (strchr(aRecord[i], 'Q') != NULL)) {
+                     // remove gracenote durations from summations
+                     lastdurations[count] = 0;
+                  } 
+                  break;
+               case 2:
+                  lastdurations[count] = Convert::kotoToDurationR(aRecord[i]);
+                  if ((strchr(aRecord[i], 'q') != NULL) ||
+                      (strchr(aRecord[i], 'Q') != NULL)) {
+                     // remove gracenote durations from summations
+                     lastdurations[count] = 0;
+                  } 
+                  break;
+            }
+
+            if (lastdurations[count] != 0) {
+               // have a legitimate rhythm, store it in the rhythms array.
+               RationalNumber sss = lastdurations[count];
+               // Convert::durationRToKernRhythm(rbuff, sss);
+               RationalNumber rbase = sss.getInversion() * 4;
+               // int rbase  = atoi(rbuff);
+               // int length = strlen(rbuff);
+               int z;
+               // for (z=length-1; z>0; z--) {
+               //    if (rbuff[z] == '.') {
+               //       rbase = 2 * rbase;
+               //    }
+               // }
+               int done = 0;
+               RationalNumber value;
+               for (z=0; z<rhythms.getSize(); z++) {
+                  if (rbase == 0) {
+                     done = 1;
+                     break;
+                  }
+                  value = rhythms[z] / rbase;
+                  if (value.getDenominator() == 1) {
+                     // if the duration of rbase is an integer
+                     // multiple of a particular rhythm, then stop
+                     // processing, since the minimum rhythm calculation
+                     // will not need to know anything about rbase.
+                     done = 1;
+                     break;
+                  }
+               }
+               if (!done) {
+                  rhythms.append(rbase);
+               }
+
+            }
+
+            if (strstr(aRecord[i], "--") != NULL && runningstatus[count] != 0) {
+               cout << "Error in rhythm on line: " << aRecord.getLineNum()
+                    << endl;
+ 
+               cout << "Error on line: " << aRecord.getLineNum() 
+                    << ": problem with rhythm in spine " << i+1 << endl;
+ 
+               cout << "\n\t" << aRecord.getLine() << endl;
+               cout << "D";
+               for (q=0; q<lastdurations.getSize(); q++) {
+                  cout << "\t" << lastdurations[q]; 
+               }
+               cout << endl;
+               cout << "RT";
+               for (q=0; q<runningstatus.getSize(); q++) {
+                  cout << "\t" << runningstatus[q]; 
+               }
+               cout << endl;
+               exit(1);
+            }
+        } else {
+           // do nothing
+        }
+         count++;
+      }
+   }
+   if (count != runningstatus.getSize()) {
+      cerr << "Error: spine count has changed" << endl;
+   }
+
+   // Step (3): find minimum duration by subtracting last from running
+   RationalNumber min(99999999,1);
+   RationalNumber testval;
+
+   for (i=0; i<lastdurations.getSize(); i++) {
+      testval = lastdurations[i] - runningstatus[i];
+      if (testval.isNegative()) {   
+         cout << "Error on line: " << aRecord.getLineNum() 
+              << ": problem with rhythm in **kern spine " 
+              << i+1 << endl;
+         cout << "Line min duration is measured to be: " << testval << endl;
+  
+         cout << "Durations on this line: " << endl;
+         for (q=0; q<lastdurations.getSize(); q++) {
+            cout << "\t" << lastdurations[q]; 
+         }
+         cout << endl;
+         cout << "Running total of durations from previous rhythm: " << endl;
+         for (q=0; q<runningstatus.getSize(); q++) {
+            cout << "\t" << runningstatus[q]; 
+         }
+         cout << endl;
+         cout << "Line of data that failed:\n";
+         cout << aRecord << endl;
+  
+         exit(1);
+      }
+      if (testval < min) {
+         min = testval;
+      }
+   }
+
+   // Step (4): add the duration to the running values and to meter position
+   for (i=0; i<runningstatus.getSize(); i++) {
+      runningstatus[i] += min;
+   }
+
+   return min;
 }
 
 
@@ -3153,6 +3847,10 @@ void HumdrumFile::analyzeMeter(Array<double>& top, Array<double>& bottom,
                   (strchr(score[line][j], '/') != NULL)) {
                count = sscanf(score[line][j], "*M%d/%d", &testtop,
                      &testbottom);
+               if (goodbottom == 0.0) {
+                  // cannot handle 00 (long which is 1/4 rhythm)
+                  goodbottom = 0.5;
+               }
                if (count != 2) {
                   continue;
                } else {          
@@ -3469,6 +4167,415 @@ int HumdrumFile::analyzeKeyKS2(Array<double>& scores, int startindex,
    return ::analyzeKeyKS2(scores.getBase(), distribution.getBase(), 
       pitches.getBase(), durations.getBase(), pitches.getSize(),
             rhythmQ, majorprofile, minorprofile);
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumFile::getNormalForm --
+//
+
+void HumdrumFile::getNormalForm(Array<int>& norm, int line) {
+   Array<int> base12;
+   this->getBase12PitchList(base12, line);
+   Convert::base12ToNormalForm(norm, base12);
+}
+
+
+
+//////////////////////////////
+//
+// getBase12PitchList --  Returns a list of the MIDI note numbers
+//    for all pitches sounding in **kern spines on the given line.
+//    Both notes which are started on the current line and ones which
+//    are sustained from a previous line are included.
+//
+
+void HumdrumFile::getBase12PitchList(Array<int>& list, int line) {
+   HumdrumRecord& arecord = (*this)[line];
+   list.setSize(arecord.getFieldCount());
+   list.setSize(0);
+   int j, k;
+   int ii, jj;
+   int tcount;
+   char buffer[128] = {0};
+   int value;
+
+   for (j=0; j<arecord.getFieldCount(); j++) {
+      if (!arecord.isExInterp(j, "**kern")) {
+         continue;
+      }
+      ii = line;
+      jj = j;
+      if (strcmp(arecord[j], ".") == 0) {
+         ii = arecord.getDotLine(j);
+         jj = arecord.getDotSpine(j);
+         if (ii < 0 || jj < 0) {
+            continue;
+         }
+      }
+      if (strchr((*this)[ii][jj], 'r') != NULL) {
+         continue;
+      }
+      tcount = (*this)[ii].getTokenCount(jj);
+      for (k=0; k<tcount; k++) {
+         (*this)[ii].getToken(buffer, jj, k);
+         value = Convert::kernToMidiNoteNumber(buffer);
+         list.append(value);
+      }
+   }
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumFile::getIntervalVector --
+//
+
+void HumdrumFile::getIntervalVector(Array<int>& iv, int line) {
+   Array<int> base12;
+   this->getBase12PitchList(base12, line);
+   Convert::base12ToIntervalVector(iv, base12);
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumFile::getTnSetName --
+//
+
+const char* HumdrumFile::getTnSetName(int line) {
+   Array<int> base12;
+   this->getBase12PitchList(base12, line);
+   return Convert::base12ToTnSetName(base12);
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumFile::getTnNormalForm -- 0-transposed normal form.
+//
+
+void HumdrumFile::getTnNormalForm(Array<int>& tnorm, int line) {
+   Array<int> base12;
+   this->getBase12PitchList(base12, line);
+   Convert::base12ToTnNormalForm(tnorm, base12);
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumFile::getForteSetName --
+//
+
+const char* HumdrumFile::getForteSetName(int line) {
+   Array<int> iv;
+   Array<int> base12;
+   HumdrumRecord& arecord = (*this)[line];
+   base12.setSize(arecord.getFieldCount());
+   base12.setSize(0);
+   int j, k;
+   int ii, jj;
+   int tcount;
+   char buffer[128] = {0};
+   int value;
+   for (j=0; j<arecord.getFieldCount(); j++) {
+      if (!arecord.isExInterp(j, "**kern")) {
+         continue;
+      }
+      ii = line;
+      jj = j;
+      if (strcmp(arecord[j], ".") == 0) {
+         ii = arecord.getDotLine(j);
+         jj = arecord.getDotSpine(j);
+         if (ii < 0 || jj < 0) {
+            continue;
+         }
+      }
+      if (strchr((*this)[ii][jj], 'r') != NULL) {
+         continue;
+      }
+      tcount = (*this)[ii].getTokenCount(jj);
+      for (k=0; k<tcount; k++) {
+         (*this)[ii].getToken(buffer, jj, k);
+         value = Convert::kernToMidiNoteNumber(buffer);
+         base12.append(value);
+      }
+   }
+
+   if (base12.getSize() == 0) {
+      return "0-0";
+   } else if (base12.getSize() == 1) {
+      return "1-0";
+   }
+
+   Convert::base12ToIntervalVector(iv, base12);
+
+   switch (iv[0]) {
+      case 0:
+         if (iv[1]==0 && iv[2]==0 && iv[3]==0 && iv[4]==0 && iv[5]==0)	return "0-0";
+         if (iv[1]==0 && iv[2]==0 && iv[3]==0 && iv[4]==0 && iv[5]==0)	return "1-1";
+         if (iv[1]==0 && iv[2]==0 && iv[3]==0 && iv[4]==0 && iv[5]==1)	return "2-6";
+         if (iv[1]==0 && iv[2]==0 && iv[3]==0 && iv[4]==1 && iv[5]==0)	return "2-5";
+         if (iv[1]==0 && iv[2]==0 && iv[3]==1 && iv[4]==0 && iv[5]==0)	return "2-4";
+         if (iv[1]==0 && iv[2]==0 && iv[3]==3 && iv[4]==0 && iv[5]==0)	return "3-12";
+         if (iv[1]==0 && iv[2]==1 && iv[3]==0 && iv[4]==0 && iv[5]==0)	return "2-3";
+         if (iv[1]==0 && iv[2]==1 && iv[3]==1 && iv[4]==1 && iv[5]==0)	return "3-11";
+         if (iv[1]==0 && iv[2]==2 && iv[3]==0 && iv[4]==0 && iv[5]==1)	return "3-10";
+         if (iv[1]==0 && iv[2]==4 && iv[3]==0 && iv[4]==0 && iv[5]==2)	return "4-28";
+         if (iv[1]==1 && iv[2]==0 && iv[3]==0 && iv[4]==0 && iv[5]==0)	return "2-2";
+         if (iv[1]==1 && iv[2]==0 && iv[3]==0 && iv[4]==2 && iv[5]==0)	return "3-9";
+         if (iv[1]==1 && iv[2]==0 && iv[3]==1 && iv[4]==0 && iv[5]==1)	return "3-8";
+         if (iv[1]==1 && iv[2]==1 && iv[3]==0 && iv[4]==1 && iv[5]==0)	return "3-7";
+         if (iv[1]==1 && iv[2]==2 && iv[3]==1 && iv[4]==1 && iv[5]==1)	return "4-27";
+         if (iv[1]==1 && iv[2]==2 && iv[3]==1 && iv[4]==2 && iv[5]==0)	return "4-26";
+         if (iv[1]==2 && iv[2]==0 && iv[3]==1 && iv[4]==0 && iv[5]==0)	return "3-6";
+         if (iv[1]==2 && iv[2]==0 && iv[3]==2 && iv[4]==0 && iv[5]==2)	return "4-25";
+         if (iv[1]==2 && iv[2]==0 && iv[3]==3 && iv[4]==0 && iv[5]==1)	return "4-24";
+         if (iv[1]==2 && iv[2]==1 && iv[3]==0 && iv[4]==3 && iv[5]==0)	return "4-23";
+         if (iv[1]==2 && iv[2]==1 && iv[3]==1 && iv[4]==2 && iv[5]==0)	return "4-22";
+         if (iv[1]==3 && iv[2]==0 && iv[3]==2 && iv[4]==0 && iv[5]==1)	return "4-21";
+         if (iv[1]==3 && iv[2]==2 && iv[3]==1 && iv[4]==4 && iv[5]==0)	return "5-35";
+         if (iv[1]==3 && iv[2]==2 && iv[3]==2 && iv[4]==2 && iv[5]==1)	return "5-34";
+         if (iv[1]==4 && iv[2]==0 && iv[3]==4 && iv[4]==0 && iv[5]==2)	return "5-33";
+         if (iv[1]==6 && iv[2]==0 && iv[3]==6 && iv[4]==0 && iv[5]==3)	return "6-35";
+
+      case 1:
+
+          if (iv[1]==0 && iv[2]==0 && iv[3]==0 && iv[4]==0 && iv[5]==0)	return "2-1";
+          if (iv[1]==0 && iv[2]==0 && iv[3]==0 && iv[4]==1 && iv[5]==1)	return "3-5";
+          if (iv[1]==0 && iv[2]==0 && iv[3]==1 && iv[4]==1 && iv[5]==0)	return "3-4";
+          if (iv[1]==0 && iv[2]==1 && iv[3]==1 && iv[4]==0 && iv[5]==0)	return "3-3";
+          if (iv[1]==0 && iv[2]==1 && iv[3]==2 && iv[4]==2 && iv[5]==0)	return "4-20";
+          if (iv[1]==0 && iv[2]==1 && iv[3]==3 && iv[4]==1 && iv[5]==0)	return "4-19";
+          if (iv[1]==0 && iv[2]==2 && iv[3]==1 && iv[4]==1 && iv[5]==1)	return "4-18";
+          if (iv[1]==0 && iv[2]==2 && iv[3]==2 && iv[4]==1 && iv[5]==0)	return "4-17";
+          if (iv[1]==1 && iv[2]==0 && iv[3]==1 && iv[4]==2 && iv[5]==1)	return "4-16";
+          if (iv[1]==1 && iv[2]==1 && iv[3]==0 && iv[4]==0 && iv[5]==0)	return "3-2";
+          if (iv[1]==1 && iv[2]==1 && iv[3]==1 && iv[4]==1 && iv[5]==1)	return "4-Z15";
+          if (iv[1]==1 && iv[2]==1 && iv[3]==1 && iv[4]==1 && iv[5]==1)	return "4-Z29";
+          if (iv[1]==1 && iv[2]==1 && iv[3]==1 && iv[4]==2 && iv[5]==0)	return "4-14";
+          if (iv[1]==1 && iv[2]==2 && iv[3]==0 && iv[4]==1 && iv[5]==1)	return "4-13";
+          if (iv[1]==1 && iv[2]==2 && iv[3]==1 && iv[4]==0 && iv[5]==1)	return "4-12";
+          if (iv[1]==1 && iv[2]==3 && iv[3]==2 && iv[4]==2 && iv[5]==1)	return "5-32";
+          if (iv[1]==1 && iv[2]==4 && iv[3]==1 && iv[4]==1 && iv[5]==2)	return "5-31";
+          if (iv[1]==2 && iv[2]==1 && iv[3]==1 && iv[4]==1 && iv[5]==0)	return "4-11";
+          if (iv[1]==2 && iv[2]==1 && iv[3]==3 && iv[4]==2 && iv[5]==1)	return "5-30";
+          if (iv[1]==2 && iv[2]==2 && iv[3]==0 && iv[4]==1 && iv[5]==0)	return "4-10";
+          if (iv[1]==2 && iv[2]==2 && iv[3]==1 && iv[4]==3 && iv[5]==1)	return "5-29";
+          if (iv[1]==2 && iv[2]==2 && iv[3]==2 && iv[4]==1 && iv[5]==2)	return "5-28";
+          if (iv[1]==2 && iv[2]==2 && iv[3]==2 && iv[4]==3 && iv[5]==0)	return "5-27";
+          if (iv[1]==2 && iv[2]==2 && iv[3]==3 && iv[4]==1 && iv[5]==1)	return "5-26";
+          if (iv[1]==2 && iv[2]==3 && iv[3]==1 && iv[4]==2 && iv[5]==1)	return "5-25";
+          if (iv[1]==3 && iv[2]==1 && iv[3]==2 && iv[4]==2 && iv[5]==1)	return "5-24";
+          if (iv[1]==3 && iv[2]==2 && iv[3]==1 && iv[4]==3 && iv[5]==0)	return "5-23";
+          if (iv[1]==4 && iv[2]==2 && iv[3]==4 && iv[4]==2 && iv[5]==2)	return "6-34";
+          if (iv[1]==4 && iv[2]==3 && iv[3]==2 && iv[4]==4 && iv[5]==1)	return "6-33";
+          if (iv[1]==4 && iv[2]==3 && iv[3]==2 && iv[4]==5 && iv[5]==0)	return "6-32";
+
+      case 2:
+
+          if (iv[1]==0 && iv[2]==0 && iv[3]==0 && iv[4]==2 && iv[5]==2)	return "4-9";
+          if (iv[1]==0 && iv[2]==0 && iv[3]==1 && iv[4]==2 && iv[5]==1)	return "4-8";
+          if (iv[1]==0 && iv[2]==1 && iv[3]==2 && iv[4]==1 && iv[5]==0)	return "4-7";
+          if (iv[1]==0 && iv[2]==2 && iv[3]==3 && iv[4]==2 && iv[5]==1)	return "5-22";
+          if (iv[1]==0 && iv[2]==2 && iv[3]==4 && iv[4]==2 && iv[5]==0)	return "5-21";
+          if (iv[1]==1 && iv[2]==0 && iv[3]==0 && iv[4]==0 && iv[5]==0)	return "3-1";
+          if (iv[1]==1 && iv[2]==0 && iv[3]==0 && iv[4]==2 && iv[5]==1)	return "4-6";
+          if (iv[1]==1 && iv[2]==0 && iv[3]==1 && iv[4]==1 && iv[5]==1)	return "4-5";
+          if (iv[1]==1 && iv[2]==1 && iv[3]==1 && iv[4]==1 && iv[5]==0)	return "4-4";
+          if (iv[1]==1 && iv[2]==1 && iv[3]==2 && iv[4]==3 && iv[5]==1)	return "5-20";
+          if (iv[1]==1 && iv[2]==2 && iv[3]==1 && iv[4]==0 && iv[5]==0)	return "4-3";
+          if (iv[1]==1 && iv[2]==2 && iv[3]==1 && iv[4]==2 && iv[5]==2)	return "5-19";
+          if (iv[1]==1 && iv[2]==2 && iv[3]==2 && iv[4]==2 && iv[5]==1)	return "5-Z18";
+          if (iv[1]==1 && iv[2]==2 && iv[3]==2 && iv[4]==2 && iv[5]==1)	return "5-Z38";
+          if (iv[1]==1 && iv[2]==2 && iv[3]==3 && iv[4]==2 && iv[5]==0)	return "5-Z17";
+          if (iv[1]==1 && iv[2]==2 && iv[3]==3 && iv[4]==2 && iv[5]==0)	return "5-Z37";
+          if (iv[1]==1 && iv[2]==3 && iv[3]==2 && iv[4]==1 && iv[5]==1)	return "5-16";
+          if (iv[1]==2 && iv[2]==0 && iv[3]==2 && iv[4]==2 && iv[5]==2)	return "5-15";
+          if (iv[1]==2 && iv[2]==1 && iv[3]==1 && iv[4]==0 && iv[5]==0)	return "4-2";
+          if (iv[1]==2 && iv[2]==1 && iv[3]==1 && iv[4]==3 && iv[5]==1)	return "5-14";
+          if (iv[1]==2 && iv[2]==1 && iv[3]==3 && iv[4]==1 && iv[5]==1)	return "5-13";
+          if (iv[1]==2 && iv[2]==2 && iv[3]==1 && iv[4]==2 && iv[5]==1)	return "5-Z12";
+          if (iv[1]==2 && iv[2]==2 && iv[3]==1 && iv[4]==2 && iv[5]==1)	return "5-Z36";
+          if (iv[1]==2 && iv[2]==2 && iv[3]==2 && iv[4]==2 && iv[5]==0)	return "5-11";
+          if (iv[1]==2 && iv[2]==3 && iv[3]==1 && iv[4]==1 && iv[5]==1)	return "5-10";
+          if (iv[1]==2 && iv[2]==3 && iv[3]==4 && iv[4]==3 && iv[5]==1)	return "6-31";
+          if (iv[1]==2 && iv[2]==4 && iv[3]==2 && iv[4]==2 && iv[5]==3)	return "6-30";
+          if (iv[1]==2 && iv[2]==4 && iv[3]==2 && iv[4]==3 && iv[5]==2)	return "6-Z29";
+          if (iv[1]==2 && iv[2]==4 && iv[3]==2 && iv[4]==3 && iv[5]==2)	return "6-Z50";
+          if (iv[1]==2 && iv[2]==4 && iv[3]==3 && iv[4]==2 && iv[5]==2)	return "6-Z28";
+          if (iv[1]==2 && iv[2]==4 && iv[3]==3 && iv[4]==2 && iv[5]==2)	return "6-Z49";
+          if (iv[1]==2 && iv[2]==5 && iv[3]==2 && iv[4]==2 && iv[5]==2)	return "6-27";
+          if (iv[1]==3 && iv[2]==1 && iv[3]==2 && iv[4]==1 && iv[5]==1)	return "5-9";
+          if (iv[1]==3 && iv[2]==2 && iv[3]==2 && iv[4]==0 && iv[5]==1)	return "5-8";
+          if (iv[1]==3 && iv[2]==2 && iv[3]==3 && iv[4]==4 && iv[5]==1)	return "6-Z26";
+          if (iv[1]==3 && iv[2]==2 && iv[3]==3 && iv[4]==4 && iv[5]==1)	return "6-Z48";
+          if (iv[1]==3 && iv[2]==3 && iv[3]==2 && iv[4]==4 && iv[5]==1)	return "6-Z25";
+          if (iv[1]==3 && iv[2]==3 && iv[3]==2 && iv[4]==4 && iv[5]==1)	return "6-Z47";
+          if (iv[1]==3 && iv[2]==3 && iv[3]==3 && iv[4]==3 && iv[5]==1)	return "6-Z24";
+          if (iv[1]==3 && iv[2]==3 && iv[3]==3 && iv[4]==3 && iv[5]==1)	return "6-Z46";
+          if (iv[1]==3 && iv[2]==4 && iv[3]==2 && iv[4]==2 && iv[5]==2)	return "6-Z23";
+          if (iv[1]==3 && iv[2]==4 && iv[3]==2 && iv[4]==2 && iv[5]==2)	return "6-Z45";
+          if (iv[1]==4 && iv[2]==1 && iv[3]==4 && iv[4]==2 && iv[5]==2)	return "6-22";
+          if (iv[1]==4 && iv[2]==2 && iv[3]==4 && iv[4]==1 && iv[5]==2)	return "6-21";
+          if (iv[1]==5 && iv[2]==4 && iv[3]==3 && iv[4]==6 && iv[5]==1)	return "7-35";
+          if (iv[1]==5 && iv[2]==4 && iv[3]==4 && iv[4]==4 && iv[5]==2)	return "7-34";
+          if (iv[1]==6 && iv[2]==2 && iv[3]==6 && iv[4]==2 && iv[5]==3)	return "7-33";
+
+      case 3:
+
+          if (iv[1]==0 && iv[2]==3 && iv[3]==6 && iv[4]==3 && iv[5]==0)	return "6-20";
+          if (iv[1]==1 && iv[2]==0 && iv[3]==1 && iv[4]==3 && iv[5]==2)	return "5-7";
+          if (iv[1]==1 && iv[2]==1 && iv[3]==2 && iv[4]==2 && iv[5]==1)	return "5-6";
+          if (iv[1]==1 && iv[2]==3 && iv[3]==4 && iv[4]==3 && iv[5]==1)	return "6-Z19";
+          if (iv[1]==1 && iv[2]==3 && iv[3]==4 && iv[4]==3 && iv[5]==1)	return "6-Z44";
+          if (iv[1]==2 && iv[2]==1 && iv[3]==0 && iv[4]==0 && iv[5]==0)	return "4-1";
+          if (iv[1]==2 && iv[2]==1 && iv[3]==1 && iv[4]==2 && iv[5]==1)	return "5-5";
+          if (iv[1]==2 && iv[2]==2 && iv[3]==1 && iv[4]==1 && iv[5]==1)	return "5-4";
+          if (iv[1]==2 && iv[2]==2 && iv[3]==2 && iv[4]==1 && iv[5]==0)	return "5-3";
+          if (iv[1]==2 && iv[2]==2 && iv[3]==2 && iv[4]==4 && iv[5]==2)	return "6-18";
+          if (iv[1]==2 && iv[2]==2 && iv[3]==3 && iv[4]==3 && iv[5]==2)	return "6-Z17";
+          if (iv[1]==2 && iv[2]==2 && iv[3]==3 && iv[4]==3 && iv[5]==2)	return "6-Z43";
+          if (iv[1]==2 && iv[2]==2 && iv[3]==4 && iv[4]==3 && iv[5]==1)	return "6-16";
+          if (iv[1]==2 && iv[2]==3 && iv[3]==4 && iv[4]==2 && iv[5]==1)	return "6-15";
+          if (iv[1]==2 && iv[2]==3 && iv[3]==4 && iv[4]==3 && iv[5]==0)	return "6-14";
+          if (iv[1]==2 && iv[2]==4 && iv[3]==2 && iv[4]==2 && iv[5]==2)	return "6-Z13";
+          if (iv[1]==2 && iv[2]==4 && iv[3]==2 && iv[4]==2 && iv[5]==2)	return "6-Z42";
+          if (iv[1]==3 && iv[2]==2 && iv[3]==1 && iv[4]==1 && iv[5]==0)	return "5-2";
+          if (iv[1]==3 && iv[2]==2 && iv[3]==2 && iv[4]==3 && iv[5]==2)	return "6-Z12";
+          if (iv[1]==3 && iv[2]==2 && iv[3]==2 && iv[4]==3 && iv[5]==2)	return "6-Z41";
+          if (iv[1]==3 && iv[2]==3 && iv[3]==2 && iv[4]==3 && iv[5]==1)	return "6-Z11";
+          if (iv[1]==3 && iv[2]==3 && iv[3]==2 && iv[4]==3 && iv[5]==1)	return "6-Z40";
+          if (iv[1]==3 && iv[2]==3 && iv[3]==3 && iv[4]==2 && iv[5]==1)	return "6-Z10";
+          if (iv[1]==3 && iv[2]==3 && iv[3]==3 && iv[4]==2 && iv[5]==1)	return "6-Z39";
+          if (iv[1]==3 && iv[2]==5 && iv[3]==4 && iv[4]==4 && iv[5]==2)	return "7-32";
+          if (iv[1]==3 && iv[2]==6 && iv[3]==3 && iv[4]==3 && iv[5]==3)	return "7-31";
+          if (iv[1]==4 && iv[2]==2 && iv[3]==2 && iv[4]==3 && iv[5]==1)	return "6-9";
+          if (iv[1]==4 && iv[2]==3 && iv[3]==2 && iv[4]==3 && iv[5]==0)	return "6-8";
+          if (iv[1]==4 && iv[2]==3 && iv[3]==5 && iv[4]==4 && iv[5]==2)	return "7-30";
+          if (iv[1]==4 && iv[2]==4 && iv[3]==3 && iv[4]==5 && iv[5]==2)	return "7-29";
+          if (iv[1]==4 && iv[2]==4 && iv[3]==4 && iv[4]==3 && iv[5]==3)	return "7-28";
+          if (iv[1]==4 && iv[2]==4 && iv[3]==4 && iv[4]==5 && iv[5]==1)	return "7-27";
+          if (iv[1]==4 && iv[2]==4 && iv[3]==5 && iv[4]==3 && iv[5]==2)	return "7-26";
+          if (iv[1]==4 && iv[2]==5 && iv[3]==3 && iv[4]==4 && iv[5]==2)	return "7-25";
+          if (iv[1]==5 && iv[2]==3 && iv[3]==4 && iv[4]==4 && iv[5]==2)	return "7-24";
+          if (iv[1]==5 && iv[2]==4 && iv[3]==3 && iv[4]==5 && iv[5]==1)	return "7-23";
+
+      case 4:
+
+          if (iv[1]==2 && iv[2]==0 && iv[3]==2 && iv[4]==4 && iv[5]==3)	return "6-7";
+          if (iv[1]==2 && iv[2]==1 && iv[3]==2 && iv[4]==4 && iv[5]==2)	return "6-Z38";
+          if (iv[1]==2 && iv[2]==1 && iv[3]==2 && iv[4]==4 && iv[5]==2)	return "6-Z6";
+          if (iv[1]==2 && iv[2]==2 && iv[3]==2 && iv[4]==3 && iv[5]==2)	return "6-5";
+          if (iv[1]==2 && iv[2]==4 && iv[3]==5 && iv[4]==4 && iv[5]==2)	return "7-22";
+          if (iv[1]==2 && iv[2]==4 && iv[3]==6 && iv[4]==4 && iv[5]==1)	return "7-21";
+          if (iv[1]==3 && iv[2]==2 && iv[3]==1 && iv[4]==0 && iv[5]==0)	return "5-1";
+          if (iv[1]==3 && iv[2]==2 && iv[3]==3 && iv[4]==2 && iv[5]==1)	return "6-Z37";
+          if (iv[1]==3 && iv[2]==2 && iv[3]==3 && iv[4]==2 && iv[5]==1)	return "6-Z4";
+          if (iv[1]==3 && iv[2]==3 && iv[3]==2 && iv[4]==2 && iv[5]==1)	return "6-Z3";
+          if (iv[1]==3 && iv[2]==3 && iv[3]==2 && iv[4]==2 && iv[5]==1)	return "6-Z36";
+          if (iv[1]==3 && iv[2]==3 && iv[3]==4 && iv[4]==5 && iv[5]==2)	return "7-20";
+          if (iv[1]==3 && iv[2]==4 && iv[3]==3 && iv[4]==4 && iv[5]==3)	return "7-19";
+          if (iv[1]==3 && iv[2]==4 && iv[3]==4 && iv[4]==4 && iv[5]==2)	return "7-Z18";
+          if (iv[1]==3 && iv[2]==4 && iv[3]==4 && iv[4]==4 && iv[5]==2)	return "7-Z38";
+          if (iv[1]==3 && iv[2]==4 && iv[3]==5 && iv[4]==4 && iv[5]==1)	return "7-Z17";
+          if (iv[1]==3 && iv[2]==4 && iv[3]==5 && iv[4]==4 && iv[5]==1)	return "7-Z37";
+          if (iv[1]==3 && iv[2]==5 && iv[3]==4 && iv[4]==3 && iv[5]==2)	return "7-16";
+          if (iv[1]==4 && iv[2]==2 && iv[3]==4 && iv[4]==4 && iv[5]==3)	return "7-15";
+          if (iv[1]==4 && iv[2]==3 && iv[3]==2 && iv[4]==1 && iv[5]==1)	return "6-2";
+          if (iv[1]==4 && iv[2]==3 && iv[3]==3 && iv[4]==5 && iv[5]==2)	return "7-14";
+          if (iv[1]==4 && iv[2]==3 && iv[3]==5 && iv[4]==3 && iv[5]==2)	return "7-13";
+          if (iv[1]==4 && iv[2]==4 && iv[3]==3 && iv[4]==4 && iv[5]==2)	return "7-Z12";
+          if (iv[1]==4 && iv[2]==4 && iv[3]==3 && iv[4]==4 && iv[5]==2)	return "7-Z36";
+          if (iv[1]==4 && iv[2]==4 && iv[3]==4 && iv[4]==4 && iv[5]==1)	return "7-11";
+          if (iv[1]==4 && iv[2]==5 && iv[3]==3 && iv[4]==3 && iv[5]==2)	return "7-10";
+          if (iv[1]==4 && iv[2]==8 && iv[3]==4 && iv[4]==4 && iv[5]==4)	return "8-28";
+          if (iv[1]==5 && iv[2]==3 && iv[3]==4 && iv[4]==3 && iv[5]==2)	return "7-9";
+          if (iv[1]==5 && iv[2]==4 && iv[3]==4 && iv[4]==2 && iv[5]==2)	return "7-8";
+          if (iv[1]==5 && iv[2]==6 && iv[3]==5 && iv[4]==5 && iv[5]==3)	return "8-27";
+          if (iv[1]==5 && iv[2]==6 && iv[3]==5 && iv[4]==6 && iv[5]==2)	return "8-26";
+          if (iv[1]==6 && iv[2]==4 && iv[3]==6 && iv[4]==4 && iv[5]==4)	return "8-25";
+          if (iv[1]==6 && iv[2]==4 && iv[3]==7 && iv[4]==4 && iv[5]==3)	return "8-24";
+          if (iv[1]==6 && iv[2]==5 && iv[3]==4 && iv[4]==7 && iv[5]==2)	return "8-23";
+          if (iv[1]==6 && iv[2]==5 && iv[3]==5 && iv[4]==6 && iv[5]==2)	return "8-22";
+          if (iv[1]==7 && iv[2]==4 && iv[3]==6 && iv[4]==4 && iv[5]==3)	return "8-21";
+
+      case 5:
+
+          if (iv[1]==3 && iv[2]==2 && iv[3]==3 && iv[4]==5 && iv[5]==3)	return "7-7";
+          if (iv[1]==3 && iv[2]==3 && iv[3]==4 && iv[4]==4 && iv[5]==2)	return "7-6";
+          if (iv[1]==4 && iv[2]==3 && iv[3]==2 && iv[4]==1 && iv[5]==0)	return "6-1";
+          if (iv[1]==4 && iv[2]==3 && iv[3]==3 && iv[4]==4 && iv[5]==2)	return "7-5";
+          if (iv[1]==4 && iv[2]==4 && iv[3]==3 && iv[4]==3 && iv[5]==2)	return "7-4";
+          if (iv[1]==4 && iv[2]==4 && iv[3]==4 && iv[4]==3 && iv[5]==1)	return "7-3";
+          if (iv[1]==4 && iv[2]==5 && iv[3]==6 && iv[4]==6 && iv[5]==2)	return "8-20";
+          if (iv[1]==4 && iv[2]==5 && iv[3]==7 && iv[4]==5 && iv[5]==2)	return "8-19";
+          if (iv[1]==4 && iv[2]==6 && iv[3]==5 && iv[4]==5 && iv[5]==3)	return "8-18";
+          if (iv[1]==4 && iv[2]==6 && iv[3]==6 && iv[4]==5 && iv[5]==2)	return "8-17";
+          if (iv[1]==5 && iv[2]==4 && iv[3]==3 && iv[4]==3 && iv[5]==1)	return "7-2";
+          if (iv[1]==5 && iv[2]==4 && iv[3]==5 && iv[4]==6 && iv[5]==3)	return "8-16";
+          if (iv[1]==5 && iv[2]==5 && iv[3]==5 && iv[4]==5 && iv[5]==3)	return "8-Z15";
+          if (iv[1]==5 && iv[2]==5 && iv[3]==5 && iv[4]==5 && iv[5]==3)	return "8-Z29";
+          if (iv[1]==5 && iv[2]==5 && iv[3]==5 && iv[4]==6 && iv[5]==2)	return "8-14";
+          if (iv[1]==5 && iv[2]==6 && iv[3]==4 && iv[4]==5 && iv[5]==3)	return "8-13";
+          if (iv[1]==5 && iv[2]==6 && iv[3]==5 && iv[4]==4 && iv[5]==3)	return "8-12";
+          if (iv[1]==6 && iv[2]==5 && iv[3]==5 && iv[4]==5 && iv[5]==2)	return "8-11";
+          if (iv[1]==6 && iv[2]==6 && iv[3]==4 && iv[4]==5 && iv[5]==2)	return "8-10";
+
+      case 6:
+
+          if (iv[1]==4 && iv[2]==4 && iv[3]==4 && iv[4]==6 && iv[5]==4)	return "8-9";
+          if (iv[1]==4 && iv[2]==4 && iv[3]==5 && iv[4]==6 && iv[5]==3)	return "8-8";
+          if (iv[1]==4 && iv[2]==5 && iv[3]==6 && iv[4]==5 && iv[5]==2)	return "8-7";
+          if (iv[1]==5 && iv[2]==4 && iv[3]==3 && iv[4]==2 && iv[5]==1)	return "7-1";
+          if (iv[1]==5 && iv[2]==4 && iv[3]==4 && iv[4]==6 && iv[5]==3)	return "8-6";
+          if (iv[1]==5 && iv[2]==4 && iv[3]==5 && iv[4]==5 && iv[5]==3)	return "8-5";
+          if (iv[1]==5 && iv[2]==5 && iv[3]==5 && iv[4]==5 && iv[5]==2)	return "8-4";
+          if (iv[1]==5 && iv[2]==6 && iv[3]==5 && iv[4]==4 && iv[5]==2)	return "8-3";
+          if (iv[1]==6 && iv[2]==5 && iv[3]==5 && iv[4]==4 && iv[5]==2)	return "8-2";
+          if (iv[1]==6 && iv[2]==6 && iv[3]==9 && iv[4]==6 && iv[5]==3)	return "9-12";
+          if (iv[1]==6 && iv[2]==7 && iv[3]==7 && iv[4]==7 && iv[5]==3)	return "9-11";
+          if (iv[1]==6 && iv[2]==8 && iv[3]==6 && iv[4]==6 && iv[5]==4)	return "9-10";
+          if (iv[1]==7 && iv[2]==6 && iv[3]==6 && iv[4]==8 && iv[5]==3)	return "9-9";
+          if (iv[1]==7 && iv[2]==6 && iv[3]==7 && iv[4]==6 && iv[5]==4)	return "9-8";
+          if (iv[1]==7 && iv[2]==7 && iv[3]==6 && iv[4]==7 && iv[5]==3)	return "9-7";
+          if (iv[1]==8 && iv[2]==6 && iv[3]==7 && iv[4]==6 && iv[5]==3)	return "9-6";
+
+      case 7:
+
+          if (iv[1]==6 && iv[2]==5 && iv[3]==4 && iv[4]==4 && iv[5]==2)	return "8-1";
+          if (iv[1]==6 && iv[2]==6 && iv[3]==6 && iv[4]==7 && iv[5]==4)	return "9-5";
+          if (iv[1]==6 && iv[2]==6 && iv[3]==7 && iv[4]==7 && iv[5]==3)	return "9-4";
+          if (iv[1]==6 && iv[2]==7 && iv[3]==7 && iv[4]==6 && iv[5]==3)	return "9-3";
+          if (iv[1]==7 && iv[2]==7 && iv[3]==6 && iv[4]==6 && iv[5]==3)	return "9-2";
+
+      case 8:
+
+          if (iv[1]==7 && iv[2]==6 && iv[3]==6 && iv[4]==6 && iv[5]==3)	return "9-1";
+          if (iv[1]==8 && iv[2]==8 && iv[3]==8 && iv[4]==8 && iv[5]==9)	return "10-6";
+          if (iv[1]==8 && iv[2]==8 && iv[3]==8 && iv[4]==9 && iv[5]==8)	return "10-5";
+          if (iv[1]==8 && iv[2]==8 && iv[3]==9 && iv[4]==8 && iv[5]==8)	return "10-4";
+          if (iv[1]==8 && iv[2]==9 && iv[3]==8 && iv[4]==8 && iv[5]==8)	return "10-3";
+          if (iv[1]==9 && iv[2]==8 && iv[3]==8 && iv[4]==8 && iv[5]==8)	return "10-2";
+
+      case 9:
+          if (iv[1]==8 && iv[2]==8 && iv[3]==8 && iv[4]==8 && iv[5]==8)	return "10-1";
+
+      case 10:
+          if (iv[1]==10 && iv[2]==10 && iv[3]==10 && iv[4]==10 && iv[5]==10)	return "11-1";
+
+      case 12:
+          if (iv[1]==12 && iv[2]==12 && iv[3]==12 && iv[4]==12 && iv[5]==12)	return "12-1";
+
+   }
+
+   return "unknown";
 }
 
 

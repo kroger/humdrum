@@ -7,7 +7,7 @@
 // Last Modified: Thu Jun  4 10:24:13 EDT 2009 (added colorizing)
 // Last Modified: Fri Jun 12 18:25:00 PDT 2009 (added muting/hiding/marking)
 // Filename:      ...sig/doc/examples/all/hplay/hplay.cpp
-// Syntax:        C++
+// Syntax:        C++ 
 //
 // Description:   Play **kern entries in a Humdrum file through MIDI.
 //
@@ -76,14 +76,14 @@ int shortenamount = 30;   // used with the -s option
 
 void     checkOptions            (void);
 void     inputNewFile            (void);
-void     playdata                (HumdrumFile& data, int& linenum,
+void     playdata                (HumdrumFile& data, int& linenum, 
                                   SigTimer& timer);
 void     printInputLine          (HumdrumFile& infile, int line);
 void     processNotes            (HumdrumRecord& record);
 int      getMeasureLine          (HumdrumFile& data, int number);
-ostream& colormessage            (ostream& out, int messagetype, int mode,
+ostream& colormessage            (ostream& out, int messagetype, int mode, 
                                   int status);
-ostream& tabPrintLine            (ostream& out, HumdrumRecord& record,
+ostream& tabPrintLine            (ostream& out, HumdrumRecord& record, 
                                   int tabsize, int sMessage = COLOR_INVALID);
 int      getKernTrack            (int number, HumdrumFile& infile);
 int      goBackMeasures          (HumdrumFile& data, int startline, int target);
@@ -91,9 +91,9 @@ int      goForwardMeasures       (HumdrumFile& data, int startline, int target);
 void     printExclusiveInterpLine(int linenum, HumdrumFile& infile);
 int      getKernNoteOnlyLen      (char* buffer, const char* ptr);
 void     printMarkLocation       (HumdrumFile& infile, int line, int mindex);
-void     printMarkerInfo         (ostream& out, int mindex, int line,
+void     printMarkerInfo         (ostream& out, int mindex, int line, 
                                   HumdrumFile& infile, int style);
-void     printAllMarkers         (ostream& out, Array<int>& markers,
+void     printAllMarkers         (ostream& out, Array<int>& markers, 
                                   HumdrumFile& infile);
 
 
@@ -102,12 +102,12 @@ void     printAllMarkers         (ostream& out, Array<int>& markers,
 
 //////////////////////////////
 //
-// description -- This function is called with the user presses
+// description -- This function is called with the user presses 
 //      the letter 'D' on the computer keyboard.
 //
 
-void description(void) {
-   printboxtop();
+void description(void) { 
+   printboxtop();      
    psl(" HUMPLAY -- by Craig Stuart Sapp, 4 May 2000");
    psl(" _ = lower volume   + = raise volume   s = silence current notes");
    psl(" , = slow down      . = speed up       p = toggle MIDI output");
@@ -121,9 +121,9 @@ void description(void) {
 // initialization -- This function is called at the start of the program.
 //
 
-void initialization(void) {
+void initialization(void) { 
    checkOptions();
-   timer.setPeriod(500);
+   timer.setPeriod(500); 
    timer.reset();
    eventIdler.setPeriod(0);
    eventBuffer.setPollPeriod(10);
@@ -151,7 +151,7 @@ void initialization(void) {
 // finishup -- This function is called just before exiting the program.
 //
 
-void finishup(void) {
+void finishup(void) { 
    eventBuffer.off();
    colormessage(cout, COLOR_RESET, colormode, colorQ);
 }
@@ -165,7 +165,7 @@ void finishup(void) {
 //    line of the Humdrum file is ready to be played.
 //
 
-void mainloopalgorithms(void) {
+void mainloopalgorithms(void) { 
    eventBuffer.checkPoll();
    if (pauseQ) {
       return;
@@ -183,12 +183,12 @@ void mainloopalgorithms(void) {
 //////////////////////////////
 //
 // keyboardchar -- When the user presses a key on the computer keyboard,
-//    it is sent to this program.  Certain capital letter keys are
-//    used by the interface (such as "?", "M", "D", "X", "Y", "G"), and
+//    it is sent to this program.  Certain capital letter keys are 
+//    used by the interface (such as "?", "M", "D", "X", "Y", "G"), and 
 //    will not be sent to this function.
 //
 
-void keyboardchar(int key) {
+void keyboardchar(int key) { 
    static int lastkeytime = 0;
    static int number      = 0;
 
@@ -260,7 +260,7 @@ void keyboardchar(int key) {
                cout << "!! All spines are unmuted" << endl;
             }
          } else {
-            int tracknum = getKernTrack(number, data);
+            int tracknum = getKernTrack(number, data); 
             trackmute[tracknum] = !trackmute[tracknum];
             if (trackmute[tracknum]) {
                cout << "!! **kern spine " << number << " is muted" << endl;
@@ -274,7 +274,7 @@ void keyboardchar(int key) {
                               // of beam and stem display
          noteonlyQ = !noteonlyQ;
          if (noteonlyQ) {
-            cout << "!! Notes only: supressing beams and stems in **kern data"
+            cout << "!! Notes only: supressing beams and stems in **kern data" 
                  << endl;
          } else {
             cout << "!! Displaying *kern data unmodified" << endl;
@@ -302,7 +302,7 @@ void keyboardchar(int key) {
          if (echoTextQ) {
             cout << "!! FILE DISPLAY TURNED ON" << endl;
          } else {
-            cout << "!! FILE DISPLAY TURNED OFF" << endl;
+            cout << "!! FILE DISPLAY TURNED OFF" << endl; 
          }
          break;
       case 'r':               // return to a marker
@@ -361,15 +361,15 @@ void keyboardchar(int key) {
          }
          printMarkLocation(data, linenum == 0 ? 0 : linenum-1, markerindex);
          break;
-      case ',':    // slow down tempo
+      case ',':    // slow down tempo 
          tempoScale *= 0.97;
          cout << "!! TEMPO SET TO " << (int)(tempo * tempoScale) << endl;
          break;
       case '<':
-         tempoScale *= 0.93;
+         tempoScale *= 0.93; 
          cout << "!! TEMPO SET TO " << (int)(tempo * tempoScale) << endl;
          break;
-      case '.':    // speed up tempo
+      case '.':    // speed up tempo 
          tempoScale *= 1.03;
          cout << "!! TEMPO SET TO " << (int)(tempo * tempoScale) << endl;
          break;
@@ -377,7 +377,7 @@ void keyboardchar(int key) {
          tempoScale *= 1.07;
          cout << "!! TEMPO SET TO " << (int)(tempo * tempoScale) << endl;
          break;
-      case '=':
+      case '=': 
          {
             int newline = 0;
             if (number == 0) {
@@ -386,7 +386,7 @@ void keyboardchar(int key) {
                newline = getMeasureLine(data, number);
             }
             if (newline >= 0) {
-               cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+               cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" 
                     << " =" << number
                     << endl;
                linenum = newline;
@@ -395,20 +395,20 @@ void keyboardchar(int key) {
             }
          }
          break;
-      case '(':
+      case '(': 
          {
             int newline = goBackMeasures(data, linenum, number);
-            cout << "!! back " << number << " measure"
+            cout << "!! back " << number << " measure" 
 		 << (number==1? "":"s") << endl;
             linenum = newline;
             eventBuffer.off();
             timer.reset();
          }
          break;
-      case ')':
+      case ')': 
          {
             int newline = goForwardMeasures(data, linenum, number);
-            cout << "!! forward " << number << " measure"
+            cout << "!! forward " << number << " measure" 
                  << (number==1? "":"s") << endl;
             linenum = newline;
             eventBuffer.off();
@@ -475,12 +475,12 @@ void printAllMarkers(ostream& out, Array<int>& markers, HumdrumFile& infile) {
 //  style = 1 : print with text labels.
 //
 
-void printMarkerInfo(ostream& out, int mindex, int line, HumdrumFile& infile,
+void printMarkerInfo(ostream& out, int mindex, int line, HumdrumFile& infile, 
       int style) {
    double absbeat = infile.getAbsBeat(line);
    double measure = -10;
    double beat = infile[line].getBeat();
-
+ 
    int i;
    int counter = 0;
    for (i=line; i>=0; i--) {
@@ -499,8 +499,8 @@ void printMarkerInfo(ostream& out, int mindex, int line, HumdrumFile& infile,
    if (style == 0) {
       out << mindex << "\t" << line+1 << "\t" << absbeat;
       out << "\t" << measure << "\t" << beat;
-   } else {
-      out << "Mark:"         << mindex
+   } else { 
+      out << "Mark:"         << mindex 
            << "\tLine:"       << line+1
            << "\tAbsbeat:"    << absbeat;
       if (measure > -10) {
@@ -545,7 +545,7 @@ void printMarkLocation(HumdrumFile& infile, int line, int mindex) {
 void printExclusiveInterpLine(int linenum, HumdrumFile& infile) {
    int dataline = -1;
    int i;
-   for (i=0; i<data.getNumLines(); i++) {
+   for (i=0; i<data.getNumLines(); i++) { 
       if (infile[i].hasSpines()) {
          dataline = i;
          break;
@@ -585,7 +585,7 @@ void printExclusiveInterpLine(int linenum, HumdrumFile& infile) {
 
 int goBackMeasures(HumdrumFile& data, int startline, int target) {
    if (target < 0) {
-      target = 1;
+      target = 1; 
    }
    target++; // need to go back past the current measure barline as well.
    int i;
@@ -598,7 +598,7 @@ int goBackMeasures(HumdrumFile& data, int startline, int target) {
          }
       }
    }
-
+   
    return i;
 }
 
@@ -611,7 +611,7 @@ int goBackMeasures(HumdrumFile& data, int startline, int target) {
 
 int goForwardMeasures(HumdrumFile& data, int startline, int target) {
    if (target < 0) {
-      target = 1;
+      target = 1; 
    }
    if (startline > data.getNumLines()-1) {
       return data.getNumLines()-1;
@@ -626,7 +626,7 @@ int goForwardMeasures(HumdrumFile& data, int startline, int target) {
          }
       }
    }
-
+   
    return i;
 }
 
@@ -676,7 +676,7 @@ int getKernTrack(int number, HumdrumFile& infile) {
 
    // Give some high-numbered spine which is not likely
    // to be used (but is valid based on the size of trackmute).
-   return trackmute.getSize()-10;
+   return trackmute.getSize()-10;  
 }
 
 
@@ -734,7 +734,7 @@ void checkOptions(void) {
 
 void inputNewFile(void) {
    data.clear();
-   linenum = 0;
+   linenum = 0;    
 
    int count = options.getArgCount();
    if (fileNumber > count) {
@@ -755,8 +755,8 @@ void inputNewFile(void) {
 
 //////////////////////////////
 //
-// playdata -- play the next line of the humdrum file, update the
-//     line number and the time for the next events to be read
+// playdata -- play the next line of the humdrum file, update the 
+//     line number and the time for the next events to be read 
 //     from the file.
 //
 
@@ -765,7 +765,7 @@ void playdata(HumdrumFile& data, int& linenum, SigTimer& timer) {
    int type = data[linenum].getType();
 
    while (linenum < data.getNumLines() && duration == 0.0) {
-      duration = data[linenum].getDuration();
+      duration = data[linenum].getDuration();   
 
       if (type == E_humrec_data) {
          processNotes(data[linenum]);
@@ -893,7 +893,7 @@ ostream& tabPrintLine(ostream& out, HumdrumRecord& record, int tabsize, int sMes
             if (!trackmute[track]) {
                colormessage(cout, COLOR_INIT, colormode, colorQ);
             }
-
+   
             if (!suppressColor && trackmute[track]) {
                colormessage(cout, COLOR_INIT, colormode, colorQ);
             }
@@ -904,7 +904,7 @@ ostream& tabPrintLine(ostream& out, HumdrumRecord& record, int tabsize, int sMes
    int lastindex = 0;
    if (hideQ && (lastkern >= 0)) {
       track = record.getPrimaryTrack(lastkern);
-      lastindex = lastkern;
+      lastindex = lastkern; 
    } else {
       lastindex = record.getFieldCount()-1;
       track = record.getPrimaryTrack(lastindex);
@@ -917,7 +917,7 @@ ostream& tabPrintLine(ostream& out, HumdrumRecord& record, int tabsize, int sMes
    } else {
       len = strlen(ptr);
    }
-
+   
    if ((track > 0) && !suppressColor && trackmute[track]) {
       colormessage(cout, COLOR_MUTE, colormode, colorQ);
    }
@@ -978,7 +978,7 @@ void processNotes(HumdrumRecord& record) {
    int notecount = 0;
    char buffer[128] = {0};
    for (i=0; i<record.getFieldCount(); i++) {
-      if ((record.getPrimaryTrack(i) < trackmute.getSize())
+      if ((record.getPrimaryTrack(i) < trackmute.getSize()) 
             && trackmute[record.getPrimaryTrack(i)]) {
          continue;
       }
@@ -995,7 +995,7 @@ void processNotes(HumdrumRecord& record) {
             } else {
                duration = Convert::kernToDuration(buffer);
             }
-            pitch = Convert::kernToMidiNoteNumber(buffer);
+            pitch = Convert::kernToMidiNoteNumber(buffer); 
             // skip rests
             if (pitch < 0) {
                continue;
@@ -1010,12 +1010,9 @@ void processNotes(HumdrumRecord& record) {
                continue;
             }
 
-            accentQ = (long)strchr(buffer, '^');
-            sforzandoQ = (long)strchr(buffer, 'z');
-            staccatoQ = (long)strchr(buffer, '\'');
-            // accentQ = (int)strchr(buffer, '^');
-            // sforzandoQ = (int)strchr(buffer, 'z');
-            // staccatoQ = (int)strchr(buffer, '\'');
+            accentQ = (int)strchr(buffer, '^');
+            sforzandoQ = (int)strchr(buffer, 'z');
+            staccatoQ = (int)strchr(buffer, '\'');
             note.setChannel(0);
             note.setKey(pitch);
             note.setOnTime(t_time);
@@ -1037,7 +1034,7 @@ void processNotes(HumdrumRecord& record) {
             if (sforzandoQ) {
                note.setVelocity((int)(note.getVelocity() * 1.5));
             }
-
+ 
             note.activate();
             note.action(eventBuffer);
             eventBuffer.insert(note);
@@ -1098,11 +1095,11 @@ ostream& colormessage(ostream& out, int messagetype, int mode, int status) {
          case COLOR_BARLINE:       out << ANSI_YELLOW_TX;     break;
          case COLOR_CLEAR_SCREEN:  out << ANSI_CLEAR_SCREEN;  break;
          case COLOR_MUTE:          out << ANSI_BLUE_TX;       break;
-         case COLOR_OVERFILL:      out << ANSI_HI_BLUE_TX;    break;
-         case COLOR_INTERPRETATION:out << ANSI_HI_RED_TX;     break;
-         case COLOR_TANDEM:        out << ANSI_MAGENTA_TX;    break;
-         case COLOR_MARKS:         out << ANSI_CYAN_TX;       break;
-         case COLOR_COMMENT:       out << ANSI_GREEN_TX;      break;
+         case COLOR_OVERFILL:      out << ANSI_HI_BLUE_TX;    break; 
+         case COLOR_INTERPRETATION:out << ANSI_HI_RED_TX;     break; 
+         case COLOR_TANDEM:        out << ANSI_MAGENTA_TX;    break; 
+         case COLOR_MARKS:         out << ANSI_CYAN_TX;       break; 
+         case COLOR_COMMENT:       out << ANSI_GREEN_TX;      break; 
          default: return colormessage(out, COLOR_INIT, mode, status);
       }
 
@@ -1114,11 +1111,11 @@ ostream& colormessage(ostream& out, int messagetype, int mode, int status) {
          case COLOR_BARLINE:       out << ANSI_GRAY_BG;       break;
          case COLOR_CLEAR_SCREEN:  out << ANSI_CLEAR_SCREEN;  break;
          case COLOR_MUTE:          out << ANSI_YELLOW_TX;     break;
-         case COLOR_OVERFILL:      out << ANSI_HI_CYAN_TX;    break;
-         case COLOR_INTERPRETATION:out << ANSI_HI_RED_TX;     break;
-         case COLOR_TANDEM:        out << ANSI_MAGENTA_TX;    break;
-         case COLOR_MARKS:         out << ANSI_CYAN_TX;       break;
-         case COLOR_COMMENT:       out << ANSI_GREEN_TX;      break;
+         case COLOR_OVERFILL:      out << ANSI_HI_CYAN_TX;    break; 
+         case COLOR_INTERPRETATION:out << ANSI_HI_RED_TX;     break; 
+         case COLOR_TANDEM:        out << ANSI_MAGENTA_TX;    break; 
+         case COLOR_MARKS:         out << ANSI_CYAN_TX;       break; 
+         case COLOR_COMMENT:       out << ANSI_GREEN_TX;      break; 
          default: return colormessage(out, COLOR_INIT, mode, status);
       }
 

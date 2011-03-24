@@ -594,7 +594,6 @@ int PerlRegularExpression::sar(Array<char>& inout, const char* searchstring,
       return 0;
    }
 
-
    Array<char> temp_buffer;
    temp_buffer.setSize(inout.getSize());
    strcpy(temp_buffer.getBase(), inout.getBase());
@@ -709,8 +708,8 @@ void PerlRegularExpression::expandList(Array<char>& expandlist,
 //    search string was replaced.
 //
 
-int PerlRegularExpression::searchAndReplace(Array<char>& output, const char* input,
-      const char* searchstring, const char* replacestring) {
+int PerlRegularExpression::searchAndReplace(Array<char>& output, 
+      const char* input, const char* searchstring, const char* replacestring) {
    initializeSearch(searchstring);
    setReplaceString(replacestring);
 
@@ -728,6 +727,7 @@ int PerlRegularExpression::searchAndReplace(Array<char>& output, const char* inp
 int PerlRegularExpression::searchAndReplace(Array<char>& output, 
       const char* input) {
 
+   const char* ptr = input;
    if (valid == 0) {
       initializeSearch();
    }
@@ -735,41 +735,43 @@ int PerlRegularExpression::searchAndReplace(Array<char>& output,
    SSTREAM tempdata;
    int counter = 0;
    int i;
-   int len    = strlen(input);
+   int len    = strlen(ptr);
    int status;
    if (studyQ) {
-      status = pcre_exec(pre, pe, input, len, 0, 0, 
+      status = pcre_exec(pre, pe, ptr, len, 0, 0, 
             output_substrings.getBase(), output_substrings.getSize()/3);
    } else {
-      status = pcre_exec(pre, NULL, input, len, 0, 0, 
+      status = pcre_exec(pre, NULL, ptr, len, 0, 0, 
             output_substrings.getBase(), output_substrings.getSize()/3);
    }
    
    while (status >= 0) {
       counter++;
       for (i=0; i<output_substrings[0]; i++) {
-         tempdata << input[i];
+         tempdata << ptr[i];
       }
       tempdata << replace_string.getBase();
-      input += output_substrings[1];
+      ptr   += output_substrings[1];
       len   -= output_substrings[1];
-      // REG_NOTBOL = start of input is not Beginning Of Line
+      // REG_NOTBOL = start of ptr is not Beginning Of Line
       if (studyQ) {
-         status = pcre_exec(pre, pe, input, len, 0, PCRE_NOTBOL, 
+         status = pcre_exec(pre, pe, ptr, len, 0, PCRE_NOTBOL, 
             output_substrings.getBase(), output_substrings.getSize()/3);
       } else {
-         status = pcre_exec(pre, NULL, input, len, 0, PCRE_NOTBOL, 
+         status = pcre_exec(pre, NULL, ptr, len, 0, PCRE_NOTBOL, 
             output_substrings.getBase(), output_substrings.getSize()/3);
       }
       if (!globalQ) {
          break;
       }
-      if (input[0] == '\0') {
+      if (ptr[0] == '\0') {
          break;
       }
    }
 
-   tempdata << input;   // store the piece of input after last replace.
+   if (ptr[0] != '\0') {
+      tempdata << ptr;   // store the piece of input after last replace.
+   }
    tempdata << ends;
    len = strlen(tempdata.CSTRING);
    output.setSize(len+1);
@@ -858,12 +860,161 @@ int PerlRegularExpression::search(const char* input) {
    }
 
    if (status >= 0) {
-      // successful match, so return position of beginning of match
+      // successful match, so return position of beginning of first match
       // plus one.
       return output_substrings[0]+1;
    } else {
       return 0;
    }
+}
+
+
+
+//////////////////////////////
+//
+// PerlRegularExpression::getTokens -- returns an array of strings
+//     which are separated by the separator regular expression
+//     in the input string.
+// static function.
+//
+// Example getTokens(tokens, "\\s+", " a b   c   d e ")
+// will return an array with 5 elements: a b c d e.
+// Leading and trailing matched separators will not generate null
+// output tokens, like is done in PERL.
+//
+
+int PerlRegularExpression::getTokens(Array<Array<char> >& output, 
+      const char* separator, const char* input) {
+
+   output.setSize(0);
+   if (output.getGrowth() == 4) {
+      // if there are going to be more than 4 elements in the
+      // output array, and the person who called this function
+      // did not explictly set the growth size for the array,
+      // then set it automatically to 1000 (but don't allocate
+      // any more space to the array until it is needed).
+      output.setGrowth(1000);
+   }
+
+   PerlRegularExpression pre;
+   int flag;
+   pre.setAnchor();
+   const char* ptr = input;
+
+   // skip over any initial separator 
+   flag = pre.search(ptr, separator);
+   if (flag) {
+      ptr = ptr + pre.getSubmatchEnd(0);
+   }
+
+   Array<char> spat;
+   spat.setSize(strlen("(..*?)()") + strlen(separator) + 1);
+   strcpy(spat.getBase(), "(..*?)(");
+   strcat(spat.getBase(), separator);
+   strcat(spat.getBase(), ")");
+
+   int oindex;
+   int stepsize;
+   int i;
+   int strsize;
+   char* cptr;
+   // remember: anchor is still active
+   while (pre.search(ptr, spat.getBase())) {
+      oindex = output.getSize();
+      output.setSize(oindex+1);
+      strsize = pre.getSubmatchEnd(1) - pre.getSubmatchStart(1);
+      output[oindex].setSize(strsize + 1);
+      cptr = output[oindex].getBase();
+      for (i=0; i<strsize; i++) {
+         cptr[i] = ptr[i];
+      }
+      cptr[strsize] = '\0';
+      stepsize = pre.getSubmatchEnd(2);
+      if (stepsize > 0) {
+         ptr += stepsize;
+      }
+      if (stepsize <= 0) {
+         break;
+      }
+   }
+
+   if (ptr[0] != '\0') {
+      oindex = output.getSize();
+      output.setSize(oindex+1);
+      strsize = strlen(ptr);
+      output[oindex].setSize(strsize + 1);
+      strcpy(output[oindex].getBase(), ptr);
+   }
+
+   return output.getSize();
+}
+
+
+
+int PerlRegularExpression::getTokensWithEmpties(Array<Array<char> >& output, 
+      const char* separator, const char* input) {
+
+   output.setSize(0);
+   if (output.getGrowth() == 4) {
+      // if there are going to be more than 4 elements in the
+      // output array, and the person who called this function
+      // did not explictly set the growth size for the array,
+      // then set it automatically to 1000 (but don't allocate
+      // any more space to the array until it is needed).
+      output.setGrowth(1000);
+   }
+
+   PerlRegularExpression pre;
+   int flag;
+   pre.setAnchor();
+   const char* ptr = input;
+
+   // skip over any initial separator 
+   flag = pre.search(ptr, separator);
+   if (flag) {
+      ptr = ptr + pre.getSubmatchEnd(0);
+   }
+
+   Array<char> spat;
+   spat.setSize(strlen("(.*?)()") + strlen(separator) + 1);
+   strcpy(spat.getBase(), "(.*?)(");
+   strcat(spat.getBase(), separator);
+   strcat(spat.getBase(), ")");
+
+   int oindex;
+   int stepsize;
+   int i;
+   int strsize;
+   char* cptr;
+   // remember: anchor is still active
+   while (pre.search(ptr, spat.getBase())) {
+      oindex = output.getSize();
+      output.setSize(oindex+1);
+      strsize = pre.getSubmatchEnd(1) - pre.getSubmatchStart(1);
+      output[oindex].setSize(strsize + 1);
+      cptr = output[oindex].getBase();
+      for (i=0; i<strsize; i++) {
+         cptr[i] = ptr[i];
+      }
+      cptr[strsize] = '\0';
+      stepsize = pre.getSubmatchEnd(2);
+      if (stepsize > 0) {
+         ptr += stepsize;
+      }
+      if (stepsize <= 0) {
+         break;
+      }
+   }
+
+   if (ptr[0] != '\0') {
+      oindex = output.getSize();
+      output.setSize(oindex+1);
+      strsize = strlen(ptr);
+      output[oindex].setSize(strsize + 1);
+      strcpy(output[oindex].getBase(), ptr);
+   }
+
+   return output.getSize();
 }
 
 

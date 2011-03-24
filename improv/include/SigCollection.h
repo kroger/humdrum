@@ -34,7 +34,7 @@ class SigCollection {
       void      append            (type& element);
       void      appendcopy        (type element);
       void      append            (type* element);
-      type     *getBase           (void);
+      type     *getBase           (void) const;
       long      getAllocSize      (void) const;
       long      getSize           (void) const;
       type     *pointer           (void);
@@ -46,7 +46,7 @@ class SigCollection {
       type      operator[]        (int arrayIndex) const;
       void      grow              (long growamt = -1);
       type&     last              (void);
-      int       increase          (int addcount);
+      int       increase          (int addcount = 1);
 
 
    protected:

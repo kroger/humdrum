@@ -1,28 +1,31 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Oct 24 10:39:47 PDT 1999
-// Last Modified: Sat Nov 25 20:17:58 PST 2000 (added instrument selection)
-// Last Modified: Tue Feb 20 19:20:09 PST 2001 (add articulation interpretation)
-// Last Modified: Sat Aug 23 08:57:54 PDT 2003 (added *free/*strict control)
-// Last Modified: Wed Mar 24 19:56:04 PST 2004 (fixed initial *MM ignore)
-// Last Modified: Wed Apr  7 16:22:38 PDT 2004 (grace-note noteoff hack)
-// Last Modified: Tue Sep  7 03:31:49 PDT 2004 (added extra space at end)
-// Last Modified: Tue Sep  7 03:43:09 PDT 2004 (more grace-note noteoff fixing)
-// Last Modified: Tue Sep  7 20:58:38 PDT 2004 (initial dynamics processing)
-// Last Modified: Fri Sep 10 02:26:59 PDT 2004 (added padding option)
-// Last Modified: Fri Sep 10 19:46:53 PDT 2004 (added cresc. decresc. control)
-// Last Modified: Sun Sep 12 05:20:44 PDT 2004 (added human and metric volume)
-// Last Modified: Wed Mar 23 00:35:18 PST 2005 (added constant volume back)
-// Last Modified: Sat Dec 17 22:46:11 PST 2005 (added **time processing)
-// Last Modified: Sat Jun  3 10:35:29 PST 2005 (added **tempo processing)
-// Last Modified: Sun Jun  4 19:32:22 PDT 2006 (added PerfViz match files)
-// Last Modified: Tue Sep 12 19:36:08 PDT 2006 (added **idyn processing)
-// Last Modified: Sun Oct  1 21:04:35 PDT 2006 (continued work in **idyn)
-// Last Modified: Thu May  3 22:55:15 PDT 2007 (added *pan controls)
-// Last Modified: Thu Oct 30 12:42:35 PST 2008 (added --no-rest option)
-// Last Modified: Thu Nov 20 08:19:40 PST 2008 (added **Dcent interpretation)
-// Last Modified: Sun Nov 23 22:49:15 PST 2008 (added --temperament option)
-// Last Modified: Tue May 12 12:14:09 PDT 2009 (added rhythmic scaling factor)
+// Last Modified: Sat Nov 25 20:17:58 PST 2000 added instrument selection
+// Last Modified: Tue Feb 20 19:20:09 PST 2001 add articulation interpretation
+// Last Modified: Sat Aug 23 08:57:54 PDT 2003 added *free/*strict control
+// Last Modified: Wed Mar 24 19:56:04 PST 2004 fixed initial *MM ignore
+// Last Modified: Wed Apr  7 16:22:38 PDT 2004 grace-note noteoff hack
+// Last Modified: Tue Sep  7 03:31:49 PDT 2004 added extra space at end
+// Last Modified: Tue Sep  7 03:43:09 PDT 2004 more grace-note noteoff fixing
+// Last Modified: Tue Sep  7 20:58:38 PDT 2004 initial dynamics processing
+// Last Modified: Fri Sep 10 02:26:59 PDT 2004 added padding option
+// Last Modified: Fri Sep 10 19:46:53 PDT 2004 added cresc. decresc. control
+// Last Modified: Sun Sep 12 05:20:44 PDT 2004 added human and metric volume
+// Last Modified: Wed Mar 23 00:35:18 PST 2005 added constant volume back
+// Last Modified: Sat Dec 17 22:46:11 PST 2005 added **time processing
+// Last Modified: Sat Jun  3 10:35:29 PST 2005 added **tempo processing
+// Last Modified: Sun Jun  4 19:32:22 PDT 2006 added PerfViz match files
+// Last Modified: Tue Sep 12 19:36:08 PDT 2006 added **idyn processing
+// Last Modified: Sun Oct  1 21:04:35 PDT 2006 continued work in **idyn
+// Last Modified: Thu May  3 22:55:15 PDT 2007 added *pan controls
+// Last Modified: Thu Oct 30 12:42:35 PST 2008 added --no-rest option
+// Last Modified: Thu Nov 20 08:19:40 PST 2008 added **Dcent interpretation
+// Last Modified: Sun Nov 23 22:49:15 PST 2008 added --temperament option
+// Last Modified: Tue May 12 12:14:09 PDT 2009 added rhythmic scaling factor
+// Last Modified: Tue Feb 22 13:23:24 PST 2011 added --stdout
+// Last Modified: Fri Feb 25 13:00:02 PST 2011 added --met
+// Last Modified: Fri Feb 25 15:15:09 PST 2011 added --timbres and --autopan
 // Filename:      ...sig/examples/all/hum2mid.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/hum2mid.cpp
 // Syntax:        C++; museinfo
@@ -30,8 +33,15 @@
 // Description:   Converts Humdrum **kern data into MIDI data in a
 //                Standard MIDI File format.
 //
+// Todo:
+// 	* Check to make sure input files are not the same as the -o filename
+// 	* Allow multiple input / outputs
+// 	* Allow multiple inputs one output (already done?)
+//
 
 #include "museinfo.h"
+#include "PerlRegularExpression.h"
+#include "SigString.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -137,14 +147,22 @@ int     metricvolumeQ    =   5;    // used with --mv option
 int     sforzando        =  20;    // used with --sf option
 int     fixedvolumeQ     =   0;    // used with -v option
 int     timeQ            =   0;    // used with --time option
+int     autopanQ         =   0;    // used with --autopan option
 int     tempospineQ      =   0;    // used with --ts option
 int     perfvizQ         =   0;    // used with --pvm option
 int     idynQ            =   0;    // used with -d option
 double  idynoffset       =   0.0;  // used with -d option
 int     timeinsecQ       =   1;    // needs an option
 int     norestQ          =   0;    // used with --no-rest option
+int     stdoutQ          =   0;    // used with --stdout option
 int     starttick        =   0;    // used with --no-rest option
 int     bendQ            =   0;    // used with --bend option
+int     metQ             =   0;    // used with --met option
+int     timbresQ         =   0;    // used with --timbres option
+Array<SigString> TimbreName;       // used with --timbres option
+Array<int> TimbreValue;            // used with --timbres option
+Array<int> TimbreVolume;           // used with --timbres option
+Array<int> VolumeMapping;          // used with --timbres option
 double  bendamt          = 200;    // used with --bend option
 int     bendpcQ          =   0;    // used with --temperament
 double  bendbypc[12]     = {0};    // used with --temperament
@@ -167,7 +185,7 @@ void      storeMetaText     (MidiFile& mfile, int track, const char* string,
                                int tick, int metaType = 1);
 void      storeMidiData     (HumdrumFile& infile, MidiFile& outfile);
 void      storeInstrument   (int ontick, MidiFile& mfile, HumdrumFile& infile, 
-                             int i, int j, int pcQ);
+                             int line, int row, int pcQ);
 void      usage             (const char* command);
 void      storeFreeNote     (Array<Array<int> >& array,int ptrack,int midinote);
 void      getDynamics       (HumdrumFile& infile, Array<Array<char> >& dynamics,
@@ -199,6 +217,7 @@ int       getMillisecondDuration(HumdrumFile& infile, int row, int col,
 void      addTempoTrack      (HumdrumFile& infile, MidiFile& outfile);
 void      getBendByPcData    (double* bendbypc, const char* filename);
 void      insertBendData     (MidiFile& outfile, double* bendbypc);
+void      getKernTracks      (Array<int>& tracks, HumdrumFile& infile);
 
 // PerfViz related functions:
 void      writePerfVizMatchFile(const char* filename, SSTREAM& contents);
@@ -213,6 +232,9 @@ void     adjustEventTimes      (MidiFile& outfile, int starttick);
 void     checkForBend          (MidiFile& outfile, int notetick, int channel, 
                                 HumdrumFile& infile, int row, int col, 
                                 double scalefactor);
+void     storeTimbres          (Array<SigString>& name, Array<int>& value, 
+                                Array<int>& volumes, const char* string);
+void     autoPan               (MidiFile& outfile, HumdrumFile& infile);
 
 Array<int> tracknamed;      // for storing boolean if track is named
 Array<int> trackchannel;    // channel of each track
@@ -223,6 +245,7 @@ int tpq = TICKSPERQUARTERNOTE;
 //////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[]) {
+   VolumeMapping.setSize(0);
 
    // for humanizing processes 
    #ifndef VISUAL
@@ -348,7 +371,9 @@ int main(int argc, char* argv[]) {
       if (norestQ) {
          adjustEventTimes(outfile, starttick);
       }
-      if (outlocation == NULL) {
+      if (stdoutQ) {
+         outfile.write(cout);
+      } else if (outlocation == NULL) {
          cout << outfile;
       } else {
          outfile.write(outlocation);
@@ -500,13 +525,15 @@ void addTempoTrack(HumdrumFile& infile, MidiFile& outfile) {
 
 //////////////////////////////
 //
-// assignTracks -- give a track number for each spine in the input file
+// assignTracks -- give a track number for each **kern spine in the input file
 //    trying to place the same instruments into the same channels if
 //    there are not enough channels to go around.
 //
 
 void assignTracks(HumdrumFile& infile, Array<int>& trackchannel) {
    int i, j;
+
+
    Array<int> instruments;        // MIDI instruments indicated in track
    trackchannel.setSize(infile.getMaxTracks() + 1);
    instruments.setSize(trackchannel.getSize());
@@ -523,34 +550,59 @@ void assignTracks(HumdrumFile& infile, Array<int>& trackchannel) {
    int ptrack = 0;
    int instcount = 0;
 
+   VolumeMapping.setSize(infile.getMaxTracks()+1);
+   VolumeMapping.setAll(64);
    for (i=0; i<infile.getNumLines(); i++) {
       if (debugQ) {
          cout << "line " << i+1 << ":\t" << infile[i] << endl;
       }
 
-      if (infile[i].getType() != E_humrec_interpretation) {
+      if (infile[i].isData()) {
+         break;
+      }
+      if (!infile[i].isInterpretation()) {
          continue;
       }
 
       for (j=0; j<infile[i].getFieldCount(); j++) {
+         track = infile[i].getPrimaryTrack(j);
          if (strncmp(infile[i][j], "*I", 2) == 0) {
-            if (!forcedQ) {
+            if (timbresQ) {
+
+               PerlRegularExpression pre;
+               if (!pre.search(infile[i][j], "^\\*I\"\\s*(.*)\\s*", "")) {
+                  inst = -1;
+               } else {
+                  SigString targetname;
+                  targetname = pre.getSubmatch(1);
+                  int i;
+                  inst = -1;
+                  for (i=0; i<TimbreName.getSize(); i++) {
+                     if (TimbreName[i] == targetname) {
+                        inst = TimbreValue[i];
+                        VolumeMapping[track] = TimbreVolume[i];
+                        break;
+                     }
+                  }
+               }
+
+            } else if (!forcedQ) {
                inst = x.getGM(infile[i][j]);
             } else {
                inst = instrumentnumber;
             }
-         }
-
-         if (inst != -1) {
-            ptrack = infile[i].getPrimaryTrack(j);
-            if (instruments[ptrack] == -1) {
-               if (!forcedQ) {
-                  instruments[ptrack] = inst;
-               } else {
-                  instruments[ptrack] = instrumentnumber;
-               }
-               instcount++;
-            } 
+ 
+            if (inst != -1) {
+               ptrack = infile[i].getPrimaryTrack(j);
+               if (instruments[ptrack] == -1) {
+                  if (!forcedQ) {
+                     instruments[ptrack] = inst;
+                  } else {
+                     instruments[ptrack] = instrumentnumber;
+                  }
+                  instcount++;
+               } 
+            }
          }
       }
    }
@@ -610,13 +662,15 @@ void assignTracks(HumdrumFile& infile, Array<int>& trackchannel) {
 
    }
 
+   Array<int> kerntracks;
+   getKernTracks(kerntracks, infile);
 
    // don't conserve tracks if there is enough to go around
-   if (trackchannel.getSize() < 13) { 
-      for (i=1; i<trackchannel.getSize(); i++) {
-         trackchannel[i] = i-1;
-         if (i>9) {
-            trackchannel[i] = i;
+   if (kerntracks.getSize() < 13) { 
+      for (i=0; i<kerntracks.getSize(); i++) {
+         trackchannel[kerntracks[i]] = i;
+         if (i>9) {   // avoid general midi drum track channel
+            trackchannel[kerntracks[i]] = i+1;
          }
       }
    }
@@ -633,12 +687,55 @@ void assignTracks(HumdrumFile& infile, Array<int>& trackchannel) {
 double checkForTempo(HumdrumRecord& record) {
    int i;
    float tempo = 60.0;
-   for (i=0; i<record.getFieldCount(); i++) {
-      if (strncmp(record[i], "*MM", 3) == 0) {
-         sscanf(&(record[i][3]), "%f", &tempo);
-         // cout << "Found tempo marking: " << record[i] << endl;
-         return (double)tempo * tscaling;
+   if (!metQ) {
+
+      for (i=0; i<record.getFieldCount(); i++) {
+         if (strncmp(record[i], "*MM", 3) == 0) {
+            sscanf(&(record[i][3]), "%f", &tempo);
+            // cout << "Found tempo marking: " << record[i] << endl;
+            return (double)tempo * tscaling;
+         }
       }
+
+   } else {
+
+      // mensural tempo scalings
+      // O           = 58 bpm
+      // C|          = 72 bpm
+      // O|          = 76 bpm
+      // C|3, 3, 3/2 = 110 bpm
+      // C|2, Cr     = 220 bpm
+
+      for (i=0; i<record.getFieldCount(); i++) {
+         if (strcmp(record[i], "*met(O)") == 0) {
+            return (double)metQ * 1.0;
+         }
+         if (strcmp(record[i], "*met(C|)") == 0) {
+            return (double)metQ * 1.241793;
+         }
+         if (strcmp(record[i], "*met(O|)") == 0) {
+            return (double)metQ * 1.310448;
+         }
+         if (strcmp(record[i], "*met(C|3)") == 0) {
+            return (double)metQ * 1.8965517;
+         }
+         if (strcmp(record[i], "*met(3)") == 0) {
+            return (double)metQ * 1.8965517;
+         }
+         if (strcmp(record[i], "*met(3/2)") == 0) {
+            return (double)metQ * 1.8965517;
+         }
+         if (strcmp(record[i], "*met(C|2)") == 0) {
+            return (double)metQ * 3.791034;
+         }
+         if (strcmp(record[i], "*met(Cr)") == 0) {
+            return (double)metQ * 3.791034;
+         }
+         if (strncmp(record[i], "*met(", strlen("*met(")) == 0) {
+            return (double)metQ * 1.000000;
+         }
+      }
+
    }
 
    return -1.0;
@@ -652,36 +749,41 @@ double checkForTempo(HumdrumRecord& record) {
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
-   opts.define("C|nocomments=b",  "don't store comments as meta text");
-   opts.define("D|nodynamics=b",  "don't encode dynamics found in file");
-   opts.define("showdynamics=b",  "show the calculated dynamics by input line");
-   opts.define("n|note|comment=s", "store a comment line in the file");
-   opts.define("T|notext=b",      "don't non-musical data as meta text");
-   opts.define("o|output=s:midi.mid", "output midifile");
-   opts.define("0|O|type0|zero=b", "generate a type 0 MIDI file");
-   opts.define("plus=b",          "create a MIDIPlus compliant MIDI file");
-   opts.define("time=b",          "use timing from a **time spine");
-   opts.define("v|volume=i:64",   "default attack velocity");
-   opts.define("d|dyn|idyn=d:40.0",    "extract attack velocities from **idyn");
-   opts.define("t|tempo-scaling=d:1.0", "tempo scaling");
-   opts.define("ts|tempo-spine=b",  "use tempo markings from tempo spine");
-   opts.define("I|noinstrument=b", "don't store MIDI instrument programs");
-   opts.define("i|instruments=s", "specify MIDI conversions for instruments");
+   opts.define("C|nocomments=b",  "Do not store comments as meta text");
+   opts.define("D|nodynamics=b",  "Do not encode dynamics found in file");
+   opts.define("showdynamics=b",  "Show the calculated dynamics by input line");
+   opts.define("n|note|comment=s","Store a comment line in the file");
+   opts.define("T|notext=b",      "Do not non-musical data as meta text");
+   opts.define("o|output=s:midi.mid", "Output midifile");
+   opts.define("0|O|type0|zero=b","Generate a type 0 MIDI file");
+   opts.define("plus=b",          "Create a MIDIPlus compliant MIDI file");
+   opts.define("time=b",          "Use timing from a **time spine");
+   opts.define("v|volume=i:64",   "Default attack velocity");
+   opts.define("d|dyn|idyn=d:40.0","Extract attack velocities from **idyn");
+   opts.define("t|tempo-scaling=d:1.0", "Tempo scaling");
+   opts.define("ts|tempo|tempo-spine=b", "Use tempo markings from tempo spine");
+   opts.define("I|noinstrument=b", "Do not store MIDI instrument programs");
+   opts.define("i|instruments=s", "Specify MIDI conversions for instruments");
    opts.define("f|forceinstrument=i:0", "MIDI instrument for all tracks");
-   opts.define("c|channel=i:-1",   "channel to store for MIDI data");
-   opts.define("m|min=i:0",        "minimum tick duration of notes");
+   opts.define("c|channel=i:-1",   "Channel to store for MIDI data");
+   opts.define("m|min=i:0",        "Minimum tick duration of notes");
    opts.define("r|rhythmic-scaling=d:1.0", "Scale all score durations");
-   opts.define("s|shorten=i:0",    "shortening tick value for note durations");
-   opts.define("p|plain=b",        "play with articulation interpretation");
-   opts.define("P|nopad=b",        "do not pad ending with spacer note");
-   opts.define("hv|humanvolume=i:5", "apply a random adjustment to volumes");
-   opts.define("mv|metricvolume=i:3", "apply metric accentuation to volumes");
-   opts.define("fs|sforzando=i:20", "increase sforzandos by specified amount");
-   opts.define("no-rest=b",       "don't put rests at start of midi");
-   opts.define("pvm|perfviz=s:", "create a PerfViz match file for MIDI output");
-   opts.define("debug=b",        "debugging turned on");
+   opts.define("s|shorten=i:0",    "Shortening tick value for note durations");
+   opts.define("p|plain=b",        "Play with articulation interpretation");
+   opts.define("P|nopad=b",        "Do not pad ending with spacer note");
+   opts.define("met=d:232",        "Tempo control from metrical symbols");
+   opts.define("hv|humanvolume=i:5","Apply a random adjustment to volumes");
+   opts.define("mv|metricvolume=i:3","Apply metric accentuation to volumes");
+   opts.define("fs|sforzando=i:20","Increase sforzandos by specified amount");
+   opts.define("no-rest=b",      "Do not put rests at start of midi");
+   opts.define("pvm|perfviz=s:", "Create a PerfViz match file for MIDI output");
+   opts.define("debug=b",        "Debugging turned on");
+   opts.define("stdout=b",       "Print MIDI file to standard output");
+   opts.define("mark=b",         "Handle marked notes somehow");
    opts.define("bend=d:200.0",   "Turn on pitch-bend with given half-depth");
    opts.define("temperament=s:", "Turn on pitch-bend with given data file");
+   opts.define("timbres=s",      "Timbral assignments by instrument name");
+   opts.define("autopan=b",      "Pan tracks from left to right");
 
    opts.define("author=b",  "author of program"); 
    opts.define("version=b", "compilation info");
@@ -717,17 +819,15 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       storeCommentQ = 1;
    }
 
-   if (opts.getBoolean("notext")) {
-      storeTextQ = 0;
+   if (opts.getBoolean("met")) {
+      metQ = int(opts.getDouble("met")+0.5);
    } else {
-      storeTextQ = 1;
+      metQ = 0;
    }
 
-   if (opts.getBoolean("plus")) {
-      plusQ = 1;
-   } else {
-      plusQ = 0;
-   }
+   storeTextQ = opts.getBoolean("notext");
+   plusQ      = opts.getBoolean("plus");
+   plainQ     = opts.getBoolean("plain");
 
    if (opts.getBoolean("nodynamics")) {
       dynamicsQ = 0;
@@ -751,6 +851,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    } else if (tscaling > 1000.0) {
       tscaling = 1.0; 
    }
+   // tscaling = 1.0 / tscaling;
    instrumentQ = !opts.getBoolean("noinstrument");
 
    if (opts.getBoolean("channel")) {
@@ -789,6 +890,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       mine = 0;
    }
    debugQ        =  opts.getBoolean("debug");
+   stdoutQ       =  opts.getBoolean("stdout");
    shortenQ      =  opts.getBoolean("shorten");
    shortenamount =  opts.getInteger("shorten");
    padQ          = !opts.getBoolean("nopad");
@@ -802,6 +904,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    idynQ         =  opts.getBoolean("dyn");
    idynoffset    =  opts.getDouble("dyn");
    norestQ       =  opts.getBoolean("no-rest");
+   autopanQ      =  opts.getBoolean("autopan");
    bendQ         =  opts.getBoolean("bend");
    rhysc         = opts.getDouble("rhythmic-scaling");
    if (bendQ) {
@@ -816,6 +919,15 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       forcedQ = 1; // force a timber setting for all channels (piano default)
       getBendByPcData(bendbypc, opts.getString("temperament"));
       // for different method, see: http://www.xs4all.nl/~huygensf/scala
+   }
+
+   timbresQ = opts.getBoolean("timbres");
+   if (timbresQ) {
+      storeTimbres(TimbreName, TimbreValue, TimbreVolume, 
+            opts.getString("timbres"));
+   } else {
+      TimbreName.setSize(0);
+      TimbreValue.setSize(0);
    }
 }
 
@@ -1067,9 +1179,10 @@ void storeMidiData(HumdrumFile& infile, MidiFile& outfile) {
       getDynamics(infile, dynamics, defaultvolume);
    }
 
-/*
+   // store a default tempo marking if the tempo scaling option 
+   // was used.
    if (tscaling != 1.0) {
-      ttempo = (int)(60 * tscaling);
+      ttempo = (int)(100 * tscaling);
       if (ttempo > 0) {
          mididata.setSize(6);
          mididata[0] = 0xff;
@@ -1082,7 +1195,6 @@ void storeMidiData(HumdrumFile& infile, MidiFile& outfile) {
          outfile.addEvent(0, 0 + offset, mididata);
       }
    }
-*/
 
    if (options.getBoolean("comment")) {
       storeMetaText(outfile, 0, options.getString("comment"), 0);
@@ -1099,6 +1211,10 @@ void storeMidiData(HumdrumFile& infile, MidiFile& outfile) {
       mididata[4] = (uchar)((ttempo >> 8) & 0xff);
       mididata[5] = (uchar)(ttempo & 0xff);
       outfile.addEvent(0, 0, mididata);
+   }
+
+   if (autopanQ) {
+      autoPan(outfile, infile);
    }
 
    for (i=0; i<infile.getNumLines(); i++) {
@@ -1140,7 +1256,7 @@ void storeMidiData(HumdrumFile& infile, MidiFile& outfile) {
          tempo = (int)checkForTempo(infile[i]);
          if (tempo > 0 && !tempospineQ && !perfvizQ) {
             // cout << "The tempo read was " <<  tempo << endl;
-            ttempo = (int)(tempo * tscaling + 0.5);
+            ttempo = tempo;  // scaling already applied.
             mididata.setSize(6);
             mididata[0] = 0xff;
             mididata[1] = 0x51;
@@ -1162,6 +1278,7 @@ void storeMidiData(HumdrumFile& infile, MidiFile& outfile) {
             // outfile.addEvent(0, 10 + offset, mididata);
             tempo = -1;
          }
+
 
          for (j=0; j<infile[i].getFieldCount(); j++) {
             if (timeQ || perfvizQ) {
@@ -1190,7 +1307,7 @@ void storeMidiData(HumdrumFile& infile, MidiFile& outfile) {
                continue;
             } 
 
-            if (strncmp(infile[i][j], "*pan=", 5) == 0) {
+            if ((!autopanQ) && (strncmp(infile[i][j], "*pan=", 5) == 0)) {
                storePan(ontick + offset, outfile, infile, i, j);
                continue;
             } 
@@ -1341,6 +1458,9 @@ void storeMidiData(HumdrumFile& infile, MidiFile& outfile) {
                      }
                   }
                }
+               if (VolumeMapping.getSize() > 0) {
+                  volume = VolumeMapping[infile[i].getPrimaryTrack(j)];
+               }
                for (k=0; k<tokencount; k++) {
                   infile[i].getToken(buffer1, j, k); 
 
@@ -1377,10 +1497,18 @@ void storeMidiData(HumdrumFile& infile, MidiFile& outfile) {
                      continue;
                   }
 
-                  accentQ    = strchr(buffer1, '^')  == NULL ? 0 : 1;
-                  sforzandoQ = strchr(buffer1, 'z')  == NULL ? 0 : 1;
-                  staccatoQ  = strchr(buffer1, '\'') == NULL ? 0 : 1;
-
+                  if (!plainQ) {
+                     accentQ    = strchr(buffer1, '^')  == NULL ? 0 : 1;
+                     sforzandoQ = strchr(buffer1, 'z')  == NULL ? 0 : 1;
+                     staccatoQ  = strchr(buffer1, '\'') == NULL ? 0 : 1;
+                     // treat attacas/staccatissimos as staccatos
+                     staccatoQ |= strchr(buffer1, '`') == NULL ? 0 : 1;
+                     // treat pizzicatos as staccatos
+                     staccatoQ |= strchr(buffer1, '"') == NULL ? 0 : 1;
+                     // treat spiccatos as staccatos (maybe shorten later?)
+                     staccatoQ |= strchr(buffer1, 's') == NULL ? 0 : 1;
+                  }
+   
                   if (shortenQ) {
                      duration -= shortenamount;
                      if (duration < mine) {
@@ -1820,6 +1948,43 @@ void storePan(int ontime, MidiFile& outfile, HumdrumFile& infile,
    mididata[1] = 10;
    mididata[2] = mvalue;
    outfile.addEvent(track, ontime, mididata);
+}
+
+
+//////////////////////////////
+//
+// autoPan -- presuming multi-track MIDI file.
+//
+
+void autoPan(MidiFile& outfile, HumdrumFile& infile) {
+
+   Array<int> kerntracks;
+   getKernTracks(kerntracks, infile);
+
+   double value = 0.0;
+   int    mval  = 0;
+   // Array<int> trackchannel;    // channel of each track
+   
+   Array<uchar> mididata;
+   mididata.setSize(3);
+   
+   long ontime = 0;
+   int i;
+   int channel;
+   int track;
+   for (i=0; i<kerntracks.getSize(); i++) {
+      track = kerntracks[i];
+      channel = trackchannel[track];
+      value = 127.0 * i/(kerntracks.getSize()-1);
+      if (value < 0.0) { value = 0.0; }
+      if (value > 127.0) { value = 127.0; }
+      mval = (int)value;
+      
+      mididata[0] = 0xb0 | channel;
+      mididata[1] = 10;
+      mididata[2] = (char)mval;
+      outfile.addEvent(track, ontime, mididata);
+   }
 
 }
 
@@ -1831,31 +1996,61 @@ void storePan(int ontime, MidiFile& outfile, HumdrumFile& infile,
 //
 
 void storeInstrument(int ontick, MidiFile& mfile, HumdrumFile& infile, 
-      int i, int j, int pcQ) {
-   static HumdrumInstrument huminst;
-   int track = infile[i].getPrimaryTrack(j);
-   const char* trackname = huminst.getName(infile[i][j]);
-   int pc = huminst.getGM(infile[i][j]);
-   if (forcedQ) {
-      pc = instrumentnumber;
-   }
-   int channel = 0x0f & trackchannel[track];   
+      int line, int row, int pcQ) {
 
-   // store the program change if requested:
+   if (timbresQ && !forcedQ) {
+
+      PerlRegularExpression pre;
+      if (!pre.search(infile[line][row], "^\\*I\"\\s*(.*)\\s*", "")) {
+         return;
+      }
+      SigString targetname;
+      targetname = pre.getSubmatch(1);
+      int i;
+      int pc = -1;
+      for (i=0; i<TimbreName.getSize(); i++) {
+         if (TimbreName[i] == targetname) {
+            pc = TimbreValue[i];
+            break;
+         }
+      }
+      if (pc >= 0) {
+         int track = -1;
+         track = infile[line].getPrimaryTrack(row);
+         int channel = 0x0f & trackchannel[track];   
+
+         Array<uchar> mididata;
+         mididata.setSize(2);
+         mididata[0] = 0xc0 | channel;
+         mididata[1] = (uchar)pc;
+         mfile.addEvent(track, ontick + offset, mididata);
+      }
+
+   } else {
+      static HumdrumInstrument huminst;
+      int track = infile[line].getPrimaryTrack(row);
+      const char* trackname = huminst.getName(infile[line][row]);
+      int pc = huminst.getGM(infile[line][row]);
+      if (forcedQ) {
+         pc = instrumentnumber;
+      }
+      int channel = 0x0f & trackchannel[track];   
    
-   Array<uchar> mididata;
-   mididata.setSize(2);
-   mididata[0] = 0xc0 | channel;
-   mididata[1] = (uchar)pc;
-   if (pcQ && pc >= 0 && !forcedQ) {
-      mfile.addEvent(track, ontick + offset, mididata);
-   }
+      // store the program change if requested:
+      Array<uchar> mididata;
+      mididata.setSize(2);
+      mididata[0] = 0xc0 | channel;
+      mididata[1] = (uchar)pc;
+      if (pcQ && pc >= 0 && !forcedQ) {
+         mfile.addEvent(track, ontick + offset, mididata);
+      }
 
-   if (!tracknamed[track]) {
-      tracknamed[track] = 1;
-      storeMetaText(mfile, track, trackname, 0, 3);    // Track Name
+      if (!tracknamed[track]) {
+         tracknamed[track] = 1;
+         storeMetaText(mfile, track, trackname, 0, 3);    // Track Name
+      }
+      storeMetaText(mfile, track, trackname + offset, ontick, 4);  // Inst. Name
    }
-   storeMetaText(mfile, track, trackname + offset, ontick, 4);  // Inst. Name
 
 }
 
@@ -2683,7 +2878,7 @@ void writePerfVizMatchFile(const char* filename, SSTREAM& contents) {
 
 void printPerfVizKey(int key) {
    int octave = key / 40;
-   int diatonic = Convert::base40ToDiatonic(key);
+   int diatonic = Convert::base40ToDiatonic(key) % 7;
    int accidental = Convert::base40ToAccidental(key);
 
    if (PVIZ == NULL) {
@@ -2753,6 +2948,67 @@ void printPerfVizTempo(double approxtempo) {
 
 
 
+//////////////////////////////
+//
+// storeTimbres --
+//
+
+void storeTimbres(Array<SigString>& name, Array<int>& value, 
+      Array<int>& volumes, const char* string) {
+   PerlRegularExpression pre;
+   Array<Array<char> > tokens;
+   pre.getTokens(tokens, "\\s*;\\s*", string);
+   name.setSize(tokens.getSize());
+   value.setSize(tokens.getSize());
+   volumes.setSize(tokens.getSize());
+   name.setSize(0);
+   value.setSize(0);
+   volumes.setSize(0);
+
+   SigString tempstr;
+   int temp;
+   int i;
+   for (i=0; i<tokens.getSize(); i++) {
+
+      if (pre.search(tokens[i], "(.*)\\s*:\\s*(\\d+)", "")) {
+         temp = atoi(pre.getSubmatch(2));
+         value.append(temp);
+         tempstr = pre.getSubmatch(1);
+         name.append(tempstr);
+      } else if (pre.search(tokens[i], "(.*)\\s*:\\s*i?(\\d+),v(\\d+)", "")) {
+         temp = atoi(pre.getSubmatch(2));
+         value.append(temp);
+         temp = atoi(pre.getSubmatch(3));
+         volumes.append(temp);
+         tempstr = pre.getSubmatch(1);
+         name.append(tempstr);
+      }
+
+   }
+}
 
 
-// md5sum: f5547387884e8014cbc9dddf936c615f hum2mid.cpp [20100905]
+
+//////////////////////////////
+//
+// getKernTracks --  Return a list of the **kern primary tracks found
+//     in the Humdrum data.  Currently all tracks are independent parts.
+//     No grand staff parts are considered if the staves are separated 
+//     into two separate spines.
+//
+//
+
+void getKernTracks(Array<int>& tracks, HumdrumFile& infile) {
+   tracks.setSize(infile.getMaxTracks());
+   tracks.setSize(0);
+   int i;
+   for (i=1; i<=infile.getMaxTracks(); i++) {
+      if (strcmp(infile.getTrackExInterp(i), "**kern") == 0) {
+         tracks.append(i);
+      }
+   }
+}
+
+
+
+// md5sum: 25c0e5548157194f1a8517fda3b1b1d4 hum2mid.cpp [20110317]

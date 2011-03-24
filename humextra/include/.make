@@ -15,6 +15,7 @@ done
 ln -s $SRCBASE/sigBase/Array.cpp
 ln -s $SRCBASE/sigBase/RationalNumber.h
 ln -s $SRCBASE/sigBase/Array.h
+ln -s $SRCBASE/sigBase/SigString.h
 ln -s $SRCBASE/sigBase/PosixRegularExpression.h
 ln -s $SRCBASE/sigBase/PerlRegularExpression.h
 ln -s $SRCBASE/sigBase/SigCollection.cpp
@@ -28,6 +29,7 @@ ln -s $SRCBASE/sigBase/Options_private.h
 ln -s $SRCBASE/sigBase/PixelColor.h
 ln -s $SRCBASE/sigBase/PlotData.h
 ln -s $SRCBASE/sigBase/PlotFigure.h
+ln -s $SRCBASE/sigBase/CheckSum.h
 
 
 # classes borrowed from sigControl:

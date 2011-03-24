@@ -14,6 +14,10 @@
 
 #if defined(OSXPC) || defined(OSXOLD)
 
+// needed for GetMacOSStatusErrorString:
+#include "/System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/CarbonCore.framework/Versions/Current/Headers/Debugging.h"
+
+using namespace std;
 #include "MidiOutPort_osx.h"
 
 #include <stdlib.h>

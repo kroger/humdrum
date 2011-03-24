@@ -3,6 +3,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Fri May  9 22:30:32 PDT 1997
 // Last Modified: Sun Dec 14 03:29:39 GMT-0800 1997
+// Last Modified: Thu Feb 17 04:04:18 PST 2011 (updated for 64-bit archs)
 // Filename:      ...sig/maint/code/sigBase/FileIO.cpp
 // Web Address:   http://sig.sapp.org/src/sigBase/FileIO.cpp
 // Documentation: http://sig.sapp.org/doc/classes/FileIO
@@ -17,7 +18,8 @@
 //
 
 #include "sigConfiguration.h"
-
+#include "assert.h"
+#include "string.h"
 #include "FileIO.h"
 
 #ifndef OLDCPP
@@ -247,43 +249,43 @@ void FileIO::readLittleEndian(double& aNumber) {
 //
 
 void FileIO::readMachineEndian(char& aNumber) {
-   this->read(&aNumber, sizeof(aNumber));
+   this->read(&aNumber, 1);
 }
 
 void FileIO::readMachineEndian(uchar& aNumber) {
-   this->read((char*)(&aNumber), sizeof(aNumber));
+   this->read((char*)(&aNumber), 1);
 }
 
 void FileIO::readMachineEndian(short& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 2);
 }
 
 void FileIO::readMachineEndian(ushort& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 2);
 }
 
 void FileIO::readMachineEndian(long& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 4);
 }
 
 void FileIO::readMachineEndian(ulong& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 4);
 }
 
 void FileIO::readMachineEndian(int& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 4);
 }
 
 void FileIO::readMachineEndian(uint& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 4);
 }
 
 void FileIO::readMachineEndian(float& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 4);
 }
 
 void FileIO::readMachineEndian(double& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 8);
 }
 
 
@@ -295,52 +297,52 @@ void FileIO::readMachineEndian(double& aNumber) {
 //
 
 void FileIO::readNotMachineEndian(char& aNumber) {
-   this->read(&aNumber, sizeof(aNumber));
+   this->read(&aNumber, 1);
    aNumber = flipBytes(aNumber);
 }
 
 void FileIO::readNotMachineEndian(uchar& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 1);
    aNumber = flipBytes(aNumber);
 }
 
 void FileIO::readNotMachineEndian(short& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 2);
    aNumber = flipBytes(aNumber);
 }
 
 void FileIO::readNotMachineEndian(ushort& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 2);
    aNumber = flipBytes(aNumber);
 }
 
 void FileIO::readNotMachineEndian(long& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 4);
    aNumber = flipBytes(aNumber);
 }
 
 void FileIO::readNotMachineEndian(ulong& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 4);
    aNumber = flipBytes(aNumber);
 }
 
 void FileIO::readNotMachineEndian(int& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 4);
    aNumber = flipBytes(aNumber);
 }
 
 void FileIO::readNotMachineEndian(uint& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 4);
    aNumber = flipBytes(aNumber);
 }
 
 void FileIO::readNotMachineEndian(float& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 4);
    aNumber = flipBytes(aNumber);
 }
 
 void FileIO::readNotMachineEndian(double& aNumber) {
-   this->read((char*)&aNumber, sizeof(aNumber));
+   this->read((char*)&aNumber, 8);
    aNumber = flipBytes(aNumber);
 }
 
@@ -526,43 +528,43 @@ void FileIO::writeLittleEndian(double aNumber) {
 //
 
 void FileIO::writeMachineEndian(char aNumber) {
-   this->write(&aNumber, sizeof(aNumber));
+   this->write(&aNumber, 1);
 }
 
 void FileIO::writeMachineEndian(uchar aNumber) {
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 1);
 }
 
 void FileIO::writeMachineEndian(short aNumber) {
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 2);
 }
 
 void FileIO::writeMachineEndian(ushort aNumber) {
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 2);
 }
 
 void FileIO::writeMachineEndian(long aNumber) {
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 4);
 }
 
 void FileIO::writeMachineEndian(ulong aNumber) {
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 4);
 }
 
 void FileIO::writeMachineEndian(int aNumber) {
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 4);
 }
 
 void FileIO::writeMachineEndian(uint aNumber) {
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 4);
 }
 
 void FileIO::writeMachineEndian(float aNumber) {
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 4);
 }
 
 void FileIO::writeMachineEndian(double aNumber) {
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 8);
 }
 
 
@@ -574,52 +576,52 @@ void FileIO::writeMachineEndian(double aNumber) {
 
 void FileIO::writeNotMachineEndian(char aNumber) {
    // aNumber = flipBytes(aNumber);
-   this->write(&aNumber, sizeof(aNumber));
+   this->write(&aNumber, 1);
 }
 
 void FileIO::writeNotMachineEndian(uchar aNumber) {
    // aNumber = flipBytes(aNumber);
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 1);
 }
 
 void FileIO::writeNotMachineEndian(short aNumber) {
    aNumber = flipBytes(aNumber);
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 2);
 }
 
 void FileIO::writeNotMachineEndian(ushort aNumber) {
    aNumber = flipBytes(aNumber);
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 2);
 }
 
 void FileIO::writeNotMachineEndian(long aNumber) {
    aNumber = flipBytes(aNumber);
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 4);
 }
 
 void FileIO::writeNotMachineEndian(ulong aNumber) {
    aNumber = flipBytes(aNumber);
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 4);
 }
 
 void FileIO::writeNotMachineEndian(int aNumber) {
    aNumber = flipBytes(aNumber);
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 4);
 }
 
 void FileIO::writeNotMachineEndian(uint aNumber) {
    aNumber = flipBytes(aNumber);
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 4);
 }
 
 void FileIO::writeNotMachineEndian(float aNumber) {
    aNumber = flipBytes(aNumber);
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 4);
 }
 
 void FileIO::writeNotMachineEndian(double aNumber) {
    aNumber = flipBytes(aNumber);
-   this->write((char*)&aNumber, sizeof(aNumber));
+   this->write((char*)&aNumber, 8);
 }
 
 
@@ -645,103 +647,82 @@ uchar FileIO::flipBytes(uchar aNumber) {
 
 
 short FileIO::flipBytes(short aNumber) {
-   static uchar output[2];
-   static uchar* input;
-   input = (uchar*)(&aNumber);
-
-   output[0] = input[1];
-   output[1] = input[0];
-
-   return *((short*)(&output));
+   uchar input[2];
+   input[0] = (uchar)(0xff & aNumber);
+   input[1] = (uchar)(0xff & (aNumber >> 8));
+   return (input[0] << 8) | input[1];
 }
 
 
 ushort FileIO::flipBytes(ushort aNumber) {
-   static uchar output[2];
-   static uchar* input;
-   input = (uchar*)(&aNumber);
-
-   output[0] = input[1];
-   output[1] = input[0];
- 
-   return *((ushort*)(&output));
+   uchar input[2];
+   input[0] = (uchar)(0xff & aNumber);
+   input[1] = (uchar)(0xff & (aNumber >> 8));
+   return (input[0] << 8) | input[1];
 }
 
 
 long FileIO::flipBytes(long aNumber) {
-   static uchar output[4];
-   static uchar* input;
-   input = (uchar*)(&aNumber);
-
-   output[0] = input[3];
-   output[1] = input[2];
-   output[2] = input[1];
-   output[3] = input[0];
-
-   return *((long*)(&output));
+   uchar input[4];
+   input[0] = (uchar)(0xff & aNumber);
+   input[1] = (uchar)(0xff & (aNumber >> 8));
+   input[2] = (uchar)(0xff & (aNumber >> 16));
+   input[3] = (uchar)(0xff & (aNumber >> 24));
+   return (input[0] << 24) | (input[1] << 16) | (input[2] << 8) | input[3];
 }
 
 
 ulong FileIO::flipBytes(ulong aNumber) {
-   static uchar output[4];
-   static uchar* input;
-   input = (uchar*)(&aNumber);
-
-   output[0] = input[3];
-   output[1] = input[2];
-   output[2] = input[1];
-   output[3] = input[0];
-
-   return *((ulong*)(&output));
+   uchar input[4];
+   input[0] = (uchar)(0xff & aNumber);
+   input[1] = (uchar)(0xff & (aNumber >> 8));
+   input[2] = (uchar)(0xff & (aNumber >> 16));
+   input[3] = (uchar)(0xff & (aNumber >> 24));
+   return (input[0] << 24) | (input[1] << 16) | (input[2] << 8) | input[3];
 }
 
 
 int FileIO::flipBytes(int aNumber) {
-   static uchar output[sizeof(uint)];
-   static uchar* input;
-   input = (uchar*)(&aNumber);
-
-   for(uint i=0; i<sizeof(int); i++) {
-      output[i] = input[sizeof(int)-1-i];
-   }
-
-   return *((int*)(&output));
+   uchar input[4];
+   input[0] = (uchar)(0xff & aNumber);
+   input[1] = (uchar)(0xff & (aNumber >> 8));
+   input[2] = (uchar)(0xff & (aNumber >> 16));
+   input[3] = (uchar)(0xff & (aNumber >> 24));
+   return (input[0] << 24) | (input[1] << 16) | (input[2] << 8) | input[3];
 }
 
 
 uint FileIO::flipBytes(uint aNumber) {
-   static uchar output[sizeof(uint)];
-   static uchar* input;
-   input = (uchar*)(&aNumber);
-
-   for(uint i=0; i<sizeof(uint); i++) {
-      output[i] = input[sizeof(uint)-1-i];
-   }
-
-   return *((uint*)(&output));
+   uchar input[4];
+   input[0] = (uchar)(0xff & aNumber);
+   input[1] = (uchar)(0xff & (aNumber >> 8));
+   input[2] = (uchar)(0xff & (aNumber >> 16));
+   input[3] = (uchar)(0xff & (aNumber >> 24));
+   return (input[0] << 24) | (input[1] << 16) | (input[2] << 8) | input[3];
 }
-
  
    
 float FileIO::flipBytes(float aNumber) {
-   static uchar output[4];
-   static uchar* input;
-   input = (uchar*)(&aNumber);
-
+   assert(sizeof(float) >= 4);
+   uchar input[4];
+   uchar output[4];
+   memcpy(input, &aNumber, 4);
    output[0] = input[3];
    output[1] = input[2];
    output[2] = input[1];
    output[3] = input[0];
-
-   return *((float*)(&output));
+   double realoutput;
+   memcpy(&realoutput, output, 4);
+   return realoutput;
 }
 
 
-double FileIO::flipBytes(double aNumber) {
-   static uchar output[8];
-   static uchar* input;
-   input = (uchar*)(&aNumber);
 
+double FileIO::flipBytes(double aNumber) {
+   assert(sizeof(double) >= 8);
+   uchar input[8];
+   uchar output[8];
+   memcpy(input, &aNumber, 8);
    output[0] = input[7];
    output[1] = input[6];
    output[2] = input[5];
@@ -750,26 +731,11 @@ double FileIO::flipBytes(double aNumber) {
    output[5] = input[2];
    output[6] = input[1];
    output[7] = input[0];
-
-   return *((double*)(&output));
+   double realoutput;
+   memcpy(&realoutput, output, 8);
+   return realoutput;
 }
 
 
-
-/*   This is what I want to use
-template<class type>
-type FileIO::flipBytes(type aThing) {
-   uchar* input = (uchar*)(&aNumber);
-   uchar output[sizeof(aThing)];
-
-   for(int i=0; i<sizeof(aThing); i++) {
-      output[i] = input[sizeof(aThing) - 1 - i];
-   }
-
-   return *((type*)(&output));
-}
-*/
- 
-   
 
 // md5sum: 98791588b78006c4a17c290acb82d15e FileIO.cpp [20050403]

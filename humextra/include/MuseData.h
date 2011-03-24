@@ -58,6 +58,8 @@ class MuseData {
       MuseData&         operator=           (MuseData& input);
       int               getLineCount        (void);
       int               getNumLines         (void) { return getLineCount(); }
+      MuseRecord&       last                (void);
+      int               isEmpty             (void);
       int               append              (MuseRecord& arecord);
       int               append              (MuseData& musedata);
       int               append              (Array<char>& charstring);
@@ -108,6 +110,7 @@ class MuseData {
       RationalNumber    getTiedDurationR    (int eindex, int erecord);
 
       int               getType             (int eindex, int erecord);
+      void              cleanLineEndings    (void);
 
 
 

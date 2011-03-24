@@ -48,10 +48,17 @@
 #OSTYPE = OSXOLD
 ARCH =
 
+# Set the environmental variable $MACOSX_DEPLOYMENT_TARGET to
+# "10.4" in Apple OS X to compile for OS X 10.4 and later (for example,
+# you can compile for OS X 10.4 computers even if you are using a 10.6
+# computer).
+ENV =
+
 # if OSTYPE is not defined, then this if statement will be run:
 ifeq ($(origin OSTYPE), undefined)
    ifeq ($(shell uname),Darwin)
       OSTYPE = OSXPC
+      ENV = MACOSX_DEPLOYMENT_TARGET=10.4
       # use the following to compile for 32-bit architecture on 64-bit comps:
       #ARCH = -m32 -arch i386
    else 
@@ -81,7 +88,7 @@ INCDIR    = include
 LIBDIR    = lib
 LIBFILE   = libhumextra.a
 # LANG=C: Nuts to the GCC error beautification committee.
-COMPILER  = LANG=C g++ $(ARCH)
+COMPILER  = LANG=C $(ENV) g++ $(ARCH)
 AR        = ar
 RANLIB    = ranlib
 
@@ -173,7 +180,7 @@ makedirs:
 	-mkdir $(LIBDIR)
 
 external: 
-	(cd external; $(MAKE))
+	(cd external; $(ENV) $(MAKE))
 
 
 ###########################################################################

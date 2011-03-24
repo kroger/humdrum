@@ -1,8 +1,9 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Feb 24 03:30:03 PST 1999
-// Last Modified: Wed Jul 31 17:27:18 PDT 2002 (added getRow() and getColumn())
-// Last Modified: Wed Jul 31 17:27:18 PDT 2002 (added setRow() and setColumn())
+// Last Modified: Wed Jul 31 17:27:18 PDT 2002 added getRow() and getColumn()
+// Last Modified: Wed Jul 31 17:27:18 PDT 2002 added setRow() and setColumn()
+// Last Modified: Sun Feb 20 17:45:39 PST 2011 added setAll()
 // Filename:      /home/craig/sigNet/Matrix.h
 // Syntax:        C++ 
 // $Smake:        smake %b.cpp
@@ -27,6 +28,7 @@ class Matrix {
                     Matrix         (void);
                     Matrix         (const Matrix<type>& aMatrix);
                     Matrix         (int rowCount, int columnCount);
+                    Matrix         (int rowCount, int columnCount, type& thing);
                     Matrix         (int columnCount);
                     Matrix         (type* data, int rowCount, int columnCount);
                    ~Matrix         ();
@@ -49,6 +51,7 @@ class Matrix {
       void          setSize        (int row, int column);
       void          transpose      (void);
       void          zero           (void);
+      void          setAll         (type& thing);
 
 
    // static functions:

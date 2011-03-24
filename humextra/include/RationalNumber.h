@@ -1,7 +1,7 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed May 19 21:10:47 PDT 2010
-// Last Modified: Wed May 19 21:10:51 PDT 2010
+// Last Modified: Thu Jan 27 03:49:20 PST 2011 added invert()
 // Filename:      ...sig/maint/code/base/RationalNumber/RationalNumber.h
 // Web Address:   http://sig.sapp.org/src/sigBase/RationalNumber.h
 // Syntax:        C++ 
@@ -63,6 +63,7 @@ class RationalNumber {
       void            zero          (void) { _num = 0; _den = 1; }
       double          getFloat      (void) const { return getFloat(*this); }
       RationalNumber  getInversion  (void) const;
+      void            invert        (void);
       int             isNegative    (void) const;
       int             isPositive    (void) const;
       int             isZero        (void) const;

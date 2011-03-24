@@ -18,6 +18,7 @@
 #include "Enum_muserec.h"
 #include "RationalNumber.h"
 #include "Array.h"
+#include <stdarg.h>
 
 #ifndef OLDCPP
    #include <iostream>
@@ -33,14 +34,22 @@ class MuseRecordBasic {
                         MuseRecordBasic    (MuseRecordBasic& aRecord);
                        ~MuseRecordBasic    ();
   
+      void              clear              (void);
+      void              cleanLineEnding    (void);
       void              extract            (char* output, int start, int stop);
       char&             getColumn          (int index);
+      void              getColumns         (Array<char>& data, int startcol, 
+                                            int endcol);
+      void              setColumns         (Array<char>& data, int startcol, 
+                                            int endcol);
       int               getLength          (void) const;
       const char*       getLine            (void); 
       int               getLineIndex       (void) { return lineindex; }
       void              setLineIndex       (int index);
       int               getLineNumber      (void) { return lineindex+1; }
       int               getType            (void) const;
+      void              setTypeGraceNote   (void);
+
       MuseRecordBasic&  operator=          (MuseRecordBasic& aRecord);
       MuseRecordBasic&  operator=          (MuseRecordBasic* aRecord);
       MuseRecordBasic&  operator=          (char* aRecord);
@@ -48,8 +57,13 @@ class MuseRecordBasic {
       void              setLine            (const char* aString); 
       void              setType            (int aType);
       void              shrink             (void);
-      void              insertString       (int index, const char* string);
+      void              insertString       (int column, const char* string);
+      void              insertStringRight  (int column, const char* string);
       void              setString          (Array<char>& astring);
+      void              appendString       (const char* astring);
+      void              appendInteger      (int value);
+      void              appendRational     (RationalNumber& value);
+      void              append             (const char* format, ...);
 
       // mark-up accessor functions:
 
@@ -67,6 +81,7 @@ class MuseRecordBasic {
       void              setNoteDuration    (int topval, int botval = 1);
       double            getNoteDuration    (void);
       RationalNumber    getNoteDurationR   (void);
+      void              setRoundedBreve    (void);
 
       void              setMarkupPitch     (int aPitch);
       int               getMarkupPitch     (void);
@@ -83,7 +98,7 @@ class MuseRecordBasic {
       Array<char>       recordString;      // actual characters on line
 
       // mark-up data for the line:
-      int               lineindex;         // index into origina file
+      int               lineindex;         // index into original file
       int               type;              // category of MuseRecordBasic record
       RationalNumber    absbeat;           // dur in quarter notes from start
       RationalNumber    lineduration;      // duration of line 
@@ -94,6 +109,7 @@ class MuseRecordBasic {
                                            // this one (-1 if no tied note)
       int               lasttiednote;      // line number of previous note tied
                                            // to this one (-1 if no tied note)
+      int               roundBreve;
 
 };
    

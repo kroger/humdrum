@@ -12,6 +12,7 @@
 // Last Modified: Tue Apr  7 09:23:48 PDT 2009 (added addMetaEvent)
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
 // Last Modified: Mon Jul 26 13:38:23 PDT 2010 (added timing in seconds)
+// Last Modified: Tue Feb 22 13:26:40 PST 2011 (added write(ostream))
 // Filename:      ...sig/src/sigInfo/MidiFile.cpp
 // Web Address:   http://sig.sapp.org/src/sigInfo/MidiFile.cpp
 // Syntax:        C++ 
@@ -26,9 +27,11 @@
 
 #ifndef OLDCPP
    #include <iomanip>
+   #include <fstream>
    using namespace std;
 #else
    #include <iomanip.h>
+   #include <fstream.h>
 #endif
 
 
@@ -1447,21 +1450,17 @@ int MidiFile::getTrackState(void) {
 //
 
 int MidiFile::write(const char* aFile) { 
-   int oldTimeState = getTimeState();
-   if (oldTimeState == TIME_STATE_ABSOLUTE) {
-      deltaTime();
-   }
    #ifndef OLDCPP
       #ifdef VISUAL
-         FileIO outputfile(aFile, ios::out | ios::binary);
+         fstream outputfile(aFile, ios::out | ios::binary);
       #else
-         FileIO outputfile(aFile, ios::out);
+         fstream outputfile(aFile, ios::out);
       #endif 
    #else
       #ifdef VISUAL
-         FileIO outputfile(aFile, ios::out | ios::noreplace | ios::binary);
+         fstream outputfile(aFile, ios::out | ios::noreplace | ios::binary);
       #else
-         FileIO outputfile(aFile, ios::out | ios::noreplace);
+         fstream outputfile(aFile, ios::out | ios::noreplace);
       #endif 
    #endif 
 
@@ -1469,23 +1468,49 @@ int MidiFile::write(const char* aFile) {
       cout << "Error: could not write: " << aFile << endl;
       exit(1);
    }
+   int status = write(outputfile);
+   outputfile.close();
+   return status;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::write -- write a standard MIDI file to an output stream.
+//
+
+int MidiFile::write(ostream& outputfile) { 
+   int oldTimeState = getTimeState();
+   if (oldTimeState == TIME_STATE_ABSOLUTE) {
+      deltaTime();
+   }
 
    // write the header of the Standard MIDI File
    
    char ch;
    // 1. The characters "MThd"
    ch = 'M';
-   outputfile.writeBigEndian(ch);
+   // outputfile.writeBigEndian(ch);
+   outputfile << ch;
    ch = 'T';
-   outputfile.writeBigEndian(ch);
+   // outputfile.writeBigEndian(ch);
+   outputfile << ch;
    ch = 'h';
-   outputfile.writeBigEndian(ch);
+   // outputfile.writeBigEndian(ch);
+   outputfile << ch;
    ch = 'd';
-   outputfile.writeBigEndian(ch);
+   // outputfile.writeBigEndian(ch);
+   outputfile << ch;
 
-   // 2. write the size of the header (alwas a "6" stored in unsigned long
+   // 2. write the size of the header (always a "6" stored in unsigned long
+   //    (4 bytes).
    ulong longdata = 6;
-   outputfile.writeBigEndian(longdata);
+   // outputfile.writeBigEndian(longdata);
+   ch = (char)((longdata >> 24) & 0xff); outputfile << ch;
+   ch = (char)((longdata >> 16) & 0xff); outputfile << ch;
+   ch = (char)((longdata >>  8) & 0xff); outputfile << ch;
+   ch = (char)( longdata        & 0xff); outputfile << ch;
 
    // 3. MIDI file format, type 0, 1, or 2
    ushort shortdata;
@@ -1494,15 +1519,21 @@ int MidiFile::write(const char* aFile) {
    } else {
       shortdata = 1;
    }
-   outputfile.writeBigEndian(shortdata);
-      
+   // outputfile.writeBigEndian(shortdata);
+   ch = (char)((shortdata >>  8) & 0xff); outputfile << ch;
+   ch = (char)( shortdata        & 0xff); outputfile << ch;
+
    // 4. write out the number of tracks.
    shortdata = getNumTracks();
-   outputfile.writeBigEndian(shortdata);
+   // outputfile.writeBigEndian(shortdata);
+   ch = (char)((shortdata >>  8) & 0xff); outputfile << ch;
+   ch = (char)( shortdata        & 0xff); outputfile << ch;
 
    // 5. write out the number of ticks per quarternote. (avoiding SMTPE for now)
    shortdata = getTicksPerQuarterNote();
-   outputfile.writeBigEndian(shortdata);
+   // outputfile.writeBigEndian(shortdata);
+   ch = (char)((shortdata >>  8) & 0xff); outputfile << ch;
+   ch = (char)( shortdata        & 0xff); outputfile << ch;
 
    // now write each track.
    Array<uchar> trackdata;
@@ -1533,17 +1564,25 @@ int MidiFile::write(const char* aFile) {
    
       // first write the track ID marker "MTrk":
       ch = 'M';
-      outputfile.writeBigEndian(ch);
+      // outputfile.writeBigEndian(ch);
+      outputfile << ch;
       ch = 'T';
-      outputfile.writeBigEndian(ch);
+      // outputfile.writeBigEndian(ch);
+      outputfile << ch;
       ch = 'r';
-      outputfile.writeBigEndian(ch);
+      // outputfile.writeBigEndian(ch);
+      outputfile << ch;
       ch = 'k';
-      outputfile.writeBigEndian(ch);
+      // outputfile.writeBigEndian(ch);
+      outputfile << ch;
 
       // A. write the size of the MIDI data to follow:
       longdata = trackdata.getSize();
-      outputfile.writeBigEndian(longdata);
+      // outputfile.writeBigEndian(longdata);
+      ch = (char)((longdata >> 24) & 0xff); outputfile << ch;
+      ch = (char)((longdata >> 16) & 0xff); outputfile << ch;
+      ch = (char)((longdata >>  8) & 0xff); outputfile << ch;
+      ch = (char)( longdata        & 0xff); outputfile << ch;
 
       // B. write the actual data
       outputfile.write((char*)trackdata.getBase(), trackdata.getSize());
@@ -1553,7 +1592,7 @@ int MidiFile::write(const char* aFile) {
       absoluteTime();
    }
  
-   outputfile.close();
+   // outputfile.close();
 
    return 1;
 }

@@ -228,10 +228,9 @@ void MuseDataSet::analyzePartSegments(Array<int>& startindex,
    }
 
    // search backwards from "Group memberships:" until the end of the
-   // header, sucking any comment which occurs just before the start
+   // header, sucking any comments which occurs just before the start
    // of the header. (currently only multi-line comments, but also need
-   // to add single-line comments, although perhaps not, since Stage-1
-   // files have some single-line comments at the bottom of the files.)
+   // to add single-line comments)
    int value;
    int headerline;
    int ii;
@@ -242,7 +241,7 @@ void MuseDataSet::analyzePartSegments(Array<int>& startindex,
       found = 0;
       headerline = 11;
       for (j=i-1; j>=0; j--) {
-         if (j <= 0) {
+         if (j < 0) {
             break;
          }
          if ((types[j] == E_muserec_comment_line) || 
@@ -250,20 +249,29 @@ void MuseDataSet::analyzePartSegments(Array<int>& startindex,
             j--;
             continue;
          }
+         if (j < 0) {
+            break;
+         }
          headerline--;
+
 	 if (headerline == 0) {
-            value = j+2;
+            while ((j>= 0) && (lines[j][0] == '@')) {
+               j--;
+            }
+            value = j+1;
+            //value = j+2;
             found = 1;
             startindex.append(value);
             break;
          }
+
          if ((j >= 0) && (headerline == 0)) {
             value = j+1;
             found = 1;
             startindex.append(value);
             break;
          }
-         if (j<=0) {
+         if (j<0) {
             value = 0;
             found = 1;
             startindex.append(value);
@@ -295,6 +303,12 @@ void MuseDataSet::analyzePartSegments(Array<int>& startindex,
    for (i=0; i<startindex.getSize()-1; i++) {
       stopindex[i] = startindex[i+1]-1;
    }
+
+
+//for (i=0; i<lines.getSize(); i++) {
+//   cout << (char)types[i] << "\t" << lines[i] << endl;
+//}
+
 }
 
 
@@ -329,6 +343,21 @@ void MuseDataSet::deletePart(int index) {
    }
    part.setSize(part.getSize()-1);
 }
+
+
+
+//////////////////////////////
+//
+// MuseDataSet::cleanLineEndings -- remove spaces for ends of lines.
+//
+
+void MuseDataSet::cleanLineEndings(void) {
+   int i;
+   for (i=0; i<part.getSize(); i++) {
+      part[i]->cleanLineEndings();
+   }
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////////

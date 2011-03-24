@@ -74,6 +74,25 @@ Matrix<type>::Matrix (int rowCount, int columnCount) {
 
 
 template <class type>
+Matrix<type>::Matrix (int rowCount, int columnCount, type& thing) { 
+   if (rowCount < 1 || columnCount < 1) {
+      cout << "Error: invalid maxtrix dimensions: " << rowCount 
+           << ", " << columnCount << endl;
+      exit(1);
+   }
+   transposeQ = 0;
+   dim1 = rowCount;
+   dim2 = columnCount;
+   int aSize = dim1 * dim2;
+   storage = new type[aSize];
+   for (int i=0; i<aSize; i++) {
+      storage[i] = thing;
+   }
+}
+
+
+
+template <class type>
 Matrix<type>::Matrix (int columnCount) { 
    if (columnCount < 1) {
       cout << "Error: invalid maxtrix dimensions: " << columnCount << endl;
@@ -561,6 +580,24 @@ void Matrix<type>::transpose(Matrix& output, const Matrix& one) {
    cerr << "Matrix<type>::tranpose note implemented" << endl;
 }
 
+
+
+//////////////////////////////
+//
+// Matrix::setAll --
+//
+
+template<class type>
+void Matrix<type>::setAll(type& thing) {
+   int rows = getRowCount();
+   int cols = getColumnCount();
+   int i, j;
+   for (i=0; i<rows; i++) {
+      for (j=0; j<cols; j++) {
+         cell(i, j) = thing;
+      }
+   }
+}
 
 
 

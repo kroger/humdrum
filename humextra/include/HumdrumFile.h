@@ -147,8 +147,13 @@ class HumdrumFile : public HumdrumFileBasic {
                                                  int token = 0);
       RationalNumber         getTiedDurationR (int linenum, int field, 
                                                int token = 0);
+      RationalNumber         getTotalTiedDurationR(int linenum, int field, 
+                                               int token);
       double                 getTiedStartBeat (int linenum, int field,
                                                  int token = 0);
+      void                   getTiedStartLocation(int linenum, int field,
+                                                 int token, int& tline, 
+                                                 int& tcol, int& ttok);
       RationalNumber         getTiedStartBeatR(int linenum, int field,
                                                  int token = 0);
       double                 getTotalDuration (void);
@@ -161,12 +166,22 @@ class HumdrumFile : public HumdrumFileBasic {
       void                   analyzeRhythm    (const char* base = "", 
                                                  int debug = 0);
       int                    getMinTimeBase   (void);
+      RationalNumber         getMinTimeBaseR  (void);
       int                    rhythmQ          (void);
-      void                   getRhythms       (Array<int>& rhys);
+      void                   getRhythms       (Array<RationalNumber>& rhys);
 
       //
       // analyses that generate external data
       //
+      
+      // serialisms
+      void        getIntervalVector  (Array<int>& iv, int line);
+      const char* getForteSetName    (int line);
+      void        getNormalForm      (Array<int>& norm, int line);
+      void        getTnNormalForm    (Array<int>& tnorm, int line);
+      void        getBase12PitchList (Array<int>& list, int line);
+      const char* getTnSetName       (int line);
+
 
       void analyzeDataIndex(Array<int>& indices, int segment = -1);
 
@@ -198,10 +213,12 @@ class HumdrumFile : public HumdrumFileBasic {
    protected:
       int rhythmcheck;          // 1 = rhythm analysis has been done
       int minrhythm;            // the least common multiple of all rhythms
-      Array<int> localrhythms;  // used with rhythmanalysis
+      RationalNumber minrhythmR;  // the least common multiple of all rhythms
+      Array<RationalNumber> localrhythms;  // used with rhythmanalysis
       RationalNumber pickupdur; // duration of a pickup measure
 
    private:
+      RationalNumber getMinimumRationalRhythm(Array<RationalNumber>& rhythms);
       static int intcompare(const void* a, const void* b);
       void   convertKernStringToArray(Array<int>& array, const char* string);
 
@@ -220,6 +237,10 @@ class HumdrumFile : public HumdrumFileBasic {
                         int& init, SigCollection<RationalNumber>& lastdurations,
                          SigCollection<RationalNumber>& runningstatus,
                          Array<int>& rhythms, Array<int>& ignore);
+      RationalNumber determineDurationR2(HumdrumRecord& aRecord,
+                        int& init, SigCollection<RationalNumber>& lastdurations,
+                         SigCollection<RationalNumber>& runningstatus,
+                         Array<RationalNumber>& rhythms, Array<int>& ignore);
       void       adjustForSpinePaths(HumdrumRecord& aRecord, 
                          SigCollection<RationalNumber>& lastdurations, 
                          SigCollection<RationalNumber>& runningstatus, 

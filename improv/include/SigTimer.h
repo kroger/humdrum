@@ -31,12 +31,14 @@
 #ifdef VISUAL
    #include <wtypes.h>
    typedef LONGLONG int64bits;
-#elseifdef OSXOLD || OSXPC
-   typedef Uint64 int64bits;
-   // also see SigTimer.cpp for #define for OSXTIMER
 #else
-   typedef long long int int64bits;
-   #include <unistd.h>                 /* for millisleep function */
+   #ifdef OSXOLD || OSXPC
+      typedef Uint64 int64bits;
+      // also see SigTimer.cpp for #define for OSXTIMER
+   #else
+      typedef long long int int64bits;
+      #include <unistd.h>                 /* for millisleep function */
+   #endif
 #endif
 
 

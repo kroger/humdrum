@@ -31,6 +31,7 @@ class MuseDataSet {
       MuseData&         operator[]          (int index);
       int               getPartCount        (void);
       void              deletePart          (int index);
+      void              cleanLineEndings    (void);
 
    private:
       Array<MuseData*>  part;

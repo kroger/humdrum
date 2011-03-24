@@ -28,14 +28,15 @@ void   getRange                 (int& rangeL, int& rangeH,
 
 // global variables
 Options      options;            // database for command-line arguments
-int          durationQ  = 0;     // used with the -d option
-int          debugQ     = 0;     // used with the --debug option
-int          percentileQ= 0;     // used with the -p option
-int          addfractionQ = 0;   // used with the -f option
-double       percentile = 0.0;   // used with the -p option
-int          rangeQ     = 0;     // used with the -r option
-int          rangeL     = 0;     // used with the -r option
-int          rangeH     = 0;     // used with the -r option
+int          durationQ  = 0;     // used with -d option
+int          debugQ     = 0;     // used with --debug option
+int          percentileQ= 0;     // used with -p option
+int          addfractionQ = 0;   // used with -f option
+double       percentile = 0.0;   // used with -p option
+int          rangeQ     = 0;     // used with -r option
+int          rangeL     = 0;     // used with -r option
+int          rangeH     = 0;     // used with -r option
+int          printQ     = 0;     // used with --print option
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -194,6 +195,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("d|duration=b",      "weight pitches by duration");   
    opts.define("f|fraction=b",      "display histogram fractions");   
    opts.define("p|percentile=d:0.0","display the xth percentile pitch");   
+   opts.define("print=b",           "count printed notes rather than sounding");
 
    opts.define("debug=b",       "trace input parsing");   
    opts.define("author=b",      "author of the program");   
@@ -221,6 +223,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    }
 
    debugQ       = opts.getBoolean("debug");
+   printQ       = opts.getBoolean("print");
    durationQ    = opts.getBoolean("duration");
    percentileQ  = opts.getBoolean("percentile");
    rangeQ       = opts.getBoolean("range");
@@ -246,7 +249,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
 //
 
 void getRange(int& rangeL, int& rangeH, const char* rangestring) {
-   rangeL = 0; rangeH = 0;
+   rangeL = -1; rangeH = -1;
    if (rangestring == NULL) {
       return;
    }
@@ -273,6 +276,10 @@ void getRange(int& rangeL, int& rangeH, const char* rangestring) {
             rangeH = Convert::kernToMidiNoteNumber(ptr);
          }
       }
+   }
+
+   if (rangeH < 0) {
+      rangeH = rangeL;
    }
 
    if (rangeL <   0) { rangeL =   0; }
@@ -349,6 +356,16 @@ void generateAnalysis(HumdrumFile& infile, Array<double>& midibins) {
             if (strchr(buffer, 'r') != NULL) { // ignore rests
                continue;
             }
+            if (!printQ && !durationQ) {
+               // filter out middle and ending tie notes if counting
+               // by sounding pitch
+               if (strchr(buffer, '_') != NULL) {
+                  continue;
+               }
+               if (strchr(buffer, ']') != NULL) {
+                  continue;
+               }
+            }
             keynum = Convert::kernToMidiNoteNumber(buffer);
             if (keynum > 127) {
                cout << "ERROR: Funny pitch: " << keynum 
@@ -366,4 +383,4 @@ void generateAnalysis(HumdrumFile& infile, Array<double>& midibins) {
 
 
 
-// md5sum: 7c466010a853f0407670d0baa6f74bdb prange.cpp [20050403]
+// md5sum: e591f5492fe210cef04d4fd0e1536ff7 prange.cpp [20101222]

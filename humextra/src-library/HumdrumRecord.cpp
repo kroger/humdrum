@@ -19,6 +19,7 @@
 // Last Modified: Thu Jun 18 15:57:53 PDT 2009 (added hasSpines())
 // Last Modified: Mon Nov 23 14:30:35 PST 2009 (fixed equalDataQ())
 // Last Modified: Sat May 22 10:29:39 PDT 2010 (added RationalNumber)
+// Last Modified: Sun Dec 26 12:18:34 PST 2010 (added setToken)
 // Filename:      ...sig/src/sigInfo/HumdrumRecord.cpp
 // Webpage:       http://sig.sapp.org/src/sigInfo/HumdrumRecord.cpp
 // Syntax:        C++ 
@@ -29,6 +30,7 @@
 
 #include "Convert.h"
 #include "HumdrumRecord.h"
+#include "PerlRegularExpression.h"
 
 #include <stdio.h>
 #include <ctype.h>
@@ -437,6 +439,13 @@ char* HumdrumRecord::getBibValue(char* buffer, int maxsize) {
       return buffer;
    }
 
+   PerlRegularExpression pre;
+   if (pre.search(recordString, "^!!![^:]+:\\s*(.*)\\s*$", "")) {
+      strcpy(buffer, pre.getSubmatch(1));
+      return buffer;
+   }
+
+/*
    int length = strlen(recordString);
    int i;
    int j;
@@ -460,7 +469,7 @@ char* HumdrumRecord::getBibValue(char* buffer, int maxsize) {
       }
 
    }
-
+*/
    buffer[0] = '\0';
    return buffer;
 }
@@ -1474,6 +1483,21 @@ void HumdrumRecord::setExInterp(int index, const char* interpString) {
    interpretation[index] = Convert::exint.getValue(interpString);
 }
 
+
+
+//////////////////////////////
+//
+// HumdrumRecord::setToken --
+//
+
+void HumdrumRecord::setToken(int index, const char* aString) {
+   delete [] recordFields[index];
+   int len = strlen(aString);
+   recordFields[index] = new char[len+1];
+   strcpy(recordFields[index], aString);
+   modifiedQ = 1;
+}
+   
 
 
 //////////////////////////////
@@ -3631,6 +3655,7 @@ int HumdrumRecord::determineFieldCount(const char* aLine) const {
 
    return count;
 }
+
 
 
 //////////////////////////////

@@ -44,6 +44,15 @@ class MuseRecord : public MuseRecordBasic {
       int              getAccidental                (void);
       char*            getAccidental                (char* output);
       int              getBase40                    (void);
+      void             setPitch                     (int base40, int chordnote = 0);
+      void             setPitch                     (const char* pitchname);
+      void             setPitchAtIndex              (int index, 
+                                                     const char* pitchname);
+      void             setChordPitch                (const char* pitchname);
+      void             setGracePitch                (const char* pitchname);
+      void             setCuePitch                  (const char* pitchname);
+      void             setStemDown                  (void);
+      void             setStemUp                    (void);
 
       // columns 6 -- 9: duration field information
       char*            getTickDurationField         (char* output);
@@ -53,8 +62,40 @@ class MuseRecord : public MuseRecordBasic {
       int              getNoteTickDuration          (void);
       char*            getTie                       (char* output);
       int              getTie                       (void);
+      int              setTie                       (int hidden = 0);
       int              tieQ                         (void);
       int              getTicks                     (void);
+      void             setTicks                     (int value);
+      void             setBack                      (int value);
+      void             setDots                      (int value);
+      void             setNoteheadShape             (RationalNumber& duration);
+      void             setNoteheadShapeMensural     (RationalNumber& duration);
+      void             setNoteheadMaxima            (void);
+      void             setNoteheadLong              (void);
+      void             setNoteheadBreve             (void);
+      void             setNoteheadBreveSquare       (void);
+      void             setNoteheadBreveRound        (void);
+
+      void             setNoteheadWhole             (void);
+      void             setNoteheadHalf              (void);
+      void             setNoteheadQuarter           (void);
+      void             setNotehead8th               (void);
+      void             setNotehead16th              (void);
+      void             setNotehead32nd              (void);
+      void             setNotehead64th              (void);
+      void             setNotehead128th             (void);
+      void             setNotehead256th             (void);
+
+      void             setNoteheadBreveMensural     (void);
+      void             setNoteheadWholeMensural     (void);
+      void             setNoteheadHalfMensural      (void);
+      void             setNoteheadQuarterMensural   (void);
+      void             setNotehead8thMensural       (void);
+      void             setNotehead16thMensural      (void);
+      void             setNotehead32ndMensural      (void);
+      void             setNotehead64thMensural      (void);
+      void             setNotehead128thMensural     (void);
+      void             setNotehead256thMensural     (void);
 
       // columns 10 -- 12 ---> blank
 
@@ -143,6 +184,7 @@ class MuseRecord : public MuseRecordBasic {
       int              beam128Q                     (void);
       int              beam256Q                     (void);
       char*            getKernBeamStyle             (char* output);
+      void             setBeamInfo                  (Array<char>& strang);
 
       // columns 32 -- 43: additional notation
       char*            getAdditionalNotationsField  (char* output);
@@ -150,12 +192,17 @@ class MuseRecord : public MuseRecordBasic {
       int              getAddCount                  (void);
       char*            getAddItem                   (int elementIndex, 
                                                        char* output);
+      int              addAdditionalNotation        (char symbol);
+      int              addAdditionalNotation        (const char*  symbol);
       int              getAddItemLevel              (int elementIndex);
       char*            getEditorialLevels           (char* output);
       int              addEditorialLevelQ           (void);
       //  protected:   getAddElementIndex
       int              findField                    (const char* key);
+      int              findField                    (char key, int mincol, 
+                                                     int maxcol);
       // int              getNotationLevel
+      int              getSlurStartColumn           (void);
 
       // columns 44 -- 80: text underlay
       char*            getTextUnderlayField         (char* output);
@@ -217,6 +264,7 @@ class MuseRecord : public MuseRecordBasic {
       // columns 17 -- 80: measure flags
       int              measureFermataQ              (void);
       int              measureFlagQ                 (const char* key);
+      void             addMeasureFlag               (const char* strang);
 
       // general functions for measure records:
       char*            getKernMeasureStyle          (char* output);

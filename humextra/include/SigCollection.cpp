@@ -25,7 +25,7 @@
 
 //////////////////////////////
 //
-// SigCollection::SigCollection 
+// SigCollection::SigCollection --
 //
 
 template<class type>
@@ -81,7 +81,7 @@ SigCollection<type>::SigCollection(SigCollection<type>& aSigCollection) {
 
 //////////////////////////////
 //
-// SigCollection::~SigCollection
+// SigCollection::~SigCollection --
 //
 
 template<class type>
@@ -95,7 +95,7 @@ SigCollection<type>::~SigCollection() {
 
 //////////////////////////////
 //
-// SigCollection::allowGrowth
+// SigCollection::allowGrowth --
 //	default value: status = 1 
 //
 
@@ -112,7 +112,7 @@ void SigCollection<type>::allowGrowth(int status) {
 
 //////////////////////////////
 //
-// SigCollection::append 
+// SigCollection::append --
 //
 
 template<class type>
@@ -146,7 +146,7 @@ void SigCollection<type>::append(type *element) {
 
 //////////////////////////////
 //
-// SigCollection::grow 
+// SigCollection::grow --
 // 	default parameter: growamt = -1
 //
 
@@ -169,7 +169,7 @@ void SigCollection<type>::grow(long growamt) {
 
 //////////////////////////////
 //
-// SigCollection::pointer
+// SigCollection::pointer --
 //
 
 template<class type>
@@ -181,11 +181,11 @@ type* SigCollection<type>::pointer(void) {
 
 //////////////////////////////
 //
-// SigCollection::getBase
+// SigCollection::getBase --
 //
 
 template<class type>
-type* SigCollection<type>::getBase(void) {
+type* SigCollection<type>::getBase(void) const {
    return this->array;
 }
 
@@ -193,7 +193,7 @@ type* SigCollection<type>::getBase(void) {
 
 //////////////////////////////
 //
-// SigCollection::getAllocSize
+// SigCollection::getAllocSize --
 //
 
 template<class type>
@@ -229,7 +229,7 @@ type& SigCollection<type>::last(void) {
 
 //////////////////////////////
 //
-// SigCollection::setAllocSize
+// SigCollection::setAllocSize --
 //
 
 template<class type>
@@ -252,7 +252,7 @@ void SigCollection<type>::setAllocSize(long aSize) {
 
 //////////////////////////////
 //
-// SigCollection::setGrowth
+// SigCollection::setGrowth --
 //	default parameter: growth = -1
 //
 
@@ -267,7 +267,7 @@ void SigCollection<type>::setGrowth(long growth) {
 
 //////////////////////////////
 //
-// SigCollection::setSize
+// SigCollection::setSize --
 //
 
 template<class type>
@@ -289,7 +289,7 @@ void SigCollection<type>::setSize(long newSize) {
 
 //////////////////////////////
 //
-// SigCollection::operator[]
+// SigCollection::operator[] --
 //
 
 template<class type>
@@ -311,7 +311,7 @@ type& SigCollection<type>::operator[](int elementIndex) {
 
 //////////////////////////////
 //
-// SigCollection::operator[] const
+// SigCollection::operator[] const --
 //
 
 template<class type>
@@ -329,7 +329,7 @@ type SigCollection<type>::operator[](int elementIndex) const {
 
 //////////////////////////////
 //
-// shrinkTo
+// SigCollection::shrinkTo --
 //
 
 template<class type>
@@ -350,6 +350,21 @@ void SigCollection<type>::shrinkTo(long aSize) {
       size = allocSize;
    }
 }
+
+
+//////////////////////////////
+//
+// SigCollection::increase -- equivalent to setSize(getSize()+addcount)
+//
+
+template<class type>
+int SigCollection<type>::increase(int addcount) {
+   if (addcount > 0) {
+      this->setSize(this->getSize() + addcount);
+   }
+   return this->getSize();
+}
+
 
 
 #endif  /* _SIGCOLLECTION_CPP_INCLUDED */

@@ -14,6 +14,7 @@
 // Last Modified: Mon Jun 22 15:03:44 PDT 2009 (added Humdrum/Http URIs)
 // Last Modified: Wed Sep  2 21:48:23 PDT 2009 (fixed problem with *x again)
 // Last Modified: Wed May 12 22:29:42 PDT 2010 (added embedded PDF parsing)
+// Last Modified: Mon Feb 14 08:14:53 PST 2011 (added VTS functions)
 // Filename:      ...sig/src/sigInfo/HumdrumFileBasic.cpp
 // Web Address:   http://sig.sapp.org/src/sigInfo/HumdrumFileBasic.cpp
 // Syntax:        C++ 
@@ -26,6 +27,7 @@
 #include "Convert.h"
 #include "HumdrumFileBasic.h"
 #include "PDFFile.h"
+#include "CheckSum.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -204,16 +206,16 @@ void HumdrumFileBasic::clear(void) {
       if (records[i] != NULL) {
          // delete [] records[i];
          delete records[i];
+         records[i] = NULL;
       }
-      records[i] = NULL;
    }
    records.setSize(0);
    maxtracks = 0;
    for (i=0; i<trackexinterp.getSize(); i++) {
       if (trackexinterp[i] != NULL) {
          delete [] trackexinterp[i];
+         trackexinterp[i] = NULL;
       }
-      trackexinterp[i] = NULL;
    }
    trackexinterp.setSize(0);
    trackexinterp.allowGrowth(0);
@@ -351,7 +353,7 @@ int HumdrumFileBasic::getNumLines(void) {
 
 HumdrumRecord& HumdrumFileBasic::getRecord(int index) {
    if (index >= getNumLines()) {
-      cerr << "Error: maximum line index is: " << getNumLines() 
+      cerr << "Error: maximum line index is: " << getNumLines() - 1
            << ", but you asked for line index: " << index << endl;
       exit(1);
    }
@@ -596,7 +598,7 @@ HumdrumFileBasic HumdrumFileBasic::removeNullRecords(void) {
 
 HumdrumRecord& HumdrumFileBasic::operator[](int index) {
    if (index >= getNumLines()) {
-      cerr << "Error: maximum line index is: " << getNumLines() 
+      cerr << "Error: maximum line index is: " << getNumLines() - 1 
            << ", but you asked for line index: " << index << endl;
       exit(1);
    }
@@ -1768,6 +1770,72 @@ int HumdrumFileBasic::open_network_socket(const char *hostname,
 }
 
 #endif
+
+
+
+//////////////////////////////
+//
+// HumdrumFileBasic::makeVts -- create a !!!VTS: record for the 
+// given Humdrum data.  The function will ignore all reference records
+// which start with the string "!!!VTS" when calculating the VTS data.
+// The data is always assumbed to be encoded with Unix newlines (0x0a).
+//
+
+void HumdrumFileBasic::makeVts(Array<char>& vtsstring) {
+   HumdrumFileBasic::makeVts(vtsstring, (*this));
+}
+
+
+void HumdrumFileBasic::makeVts(Array<char>& vtsstring, 
+      HumdrumFileBasic& infile) {
+   int i;
+   SSTREAM tstream;
+   for (i=0; i<infile.getNumLines(); i++) {
+      if (strncmp(infile[i][0], "!!!VTS", 6) == 0) {
+         continue;
+      }
+      tstream << infile[i] << (char)0x0a;
+   }
+   tstream << ends;
+   int len = strlen(tstream.CSTRING);
+   unsigned long checksum = CheckSum::crc32(tstream.CSTRING, len);
+   char buffer[128] = {0};
+   sprintf(buffer, "!!!VTS: %lu", checksum);
+   vtsstring.setSize(strlen(buffer) + 1);
+   strcpy(vtsstring.getBase(), buffer);
+}
+
+
+//////////////////////////////
+//
+// HumdrumFileBasic::makeVtsData -- create a !!!VTS-data: record
+// for the Humdrum file.  Ignore any lines which are not data
+// when creating the result.  (not comments, barline, interpretations).
+//
+
+void HumdrumFileBasic::makeVtsData(Array<char>& vtsstring) {
+   HumdrumFileBasic::makeVtsData(vtsstring, (*this));
+}
+
+void HumdrumFileBasic::makeVtsData(Array<char>& vtsstring, 
+      HumdrumFileBasic& infile) {
+   int i;
+   SSTREAM tstream;
+   for (i=0; i<infile.getNumLines(); i++) {
+      if (!infile[i].isData()) {
+         continue;
+      }
+      tstream << infile[i] << (char)0x0a;
+   }
+   tstream << ends;
+   int len = strlen(tstream.CSTRING);
+   unsigned long checksum = CheckSum::crc32(tstream.CSTRING, len);
+   char buffer[128] = {0};
+   sprintf(buffer, "!!!VTS-data: %lu", checksum);
+   vtsstring.setSize(strlen(buffer) + 1);
+   strcpy(vtsstring.getBase(), buffer);
+}
+
 
 
 

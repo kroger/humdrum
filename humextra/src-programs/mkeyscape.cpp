@@ -1631,8 +1631,8 @@ void identifyKeyDouble(Array<HISTTYPE>& histogram) {
       }
    } else {
       for (i=0; i<12; i++) {
-         //keysum[i]    = 2 * pearsonCorrelation(12, aamajor.getBase(), h+i);
-         //keysum[i+12] = 2 * pearsonCorrelation(12, aaminor.getBase(), h+i);
+         keysum[i]    = 3 * pearsonCorrelation(12, aamajor.getBase(), h+i);
+         keysum[i+12] = 3 * pearsonCorrelation(12, aaminor.getBase(), h+i);
 
          //keysum[i]    += 2 * pearsonCorrelation(12, bbmajor.getBase(), h+i);
          //keysum[i+12] += 2 * pearsonCorrelation(12, bbminor.getBase(), h+i);
@@ -1640,14 +1640,14 @@ void identifyKeyDouble(Array<HISTTYPE>& histogram) {
          keysum[i]    += pearsonCorrelation(12, kpmajor.getBase(), h+i);
          keysum[i+12] += pearsonCorrelation(12, kpminor.getBase(), h+i);
 
-         keysum[i]    += pearsonCorrelation(12, ssmajor.getBase(), h+i);
-         keysum[i+12] += pearsonCorrelation(12, ssminor.getBase(), h+i);
+         keysum[i]    += 8 * pearsonCorrelation(12, ssmajor.getBase(), h+i);
+         keysum[i+12] += 8 * pearsonCorrelation(12, ssminor.getBase(), h+i);
 
          //keysum[i]    += pearsonCorrelation(12, kkmajor.getBase(), h+i);
          //keysum[i+12] += pearsonCorrelation(12, kkminor.getBase(), h+i);
 
-         keysum[i]    /= 2.0;
-         keysum[i+12] /= 2.0;
+         keysum[i]    /= 12.0;
+         keysum[i+12] /= 12.0;
       }
    }
          
@@ -2826,4 +2826,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: f1af4069666510dbf20b3b6a5df077f9 mkeyscape.cpp [20100602]
+// md5sum: 5459abb546c6533257f28d7652d33ce9 mkeyscape.cpp [20110308]

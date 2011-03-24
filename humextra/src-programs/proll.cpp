@@ -1,7 +1,9 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu Apr 11 11:43:12 PDT 2002
-// Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
+// Last Modified: Fri Jun 12 22:58:34 PDT 2009 renamed SigCollection class
+// Last Modified: Mon Feb 21 08:29:14 PST 2011 added --match
+// Last Modified: Sun Feb 27 15:09:29 PST 2011 added fixed vocal colors
 // Filename:      ...sig/examples/all/proll.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/proll.cpp
 // Syntax:        C++; museinfo
@@ -10,6 +12,7 @@
 //
 
 #include "humdrum.h"
+#include "PerlRegularExpression.h"
 
 #include <string.h>
 #include <ctype.h>
@@ -28,18 +31,23 @@ int    generatePicture          (HumdrumFile& infile, Array<PixelRow>& picture,
                                  int style);
 void   printPicture             (Array<PixelRow>& picturedata, 
                                  Array<PixelRow>& background, int rfactor, 
-                                 int cfactor, int minp, int maxp);
+                                 int cfactor, int minp, int maxp, 
+                                 HumdrumFile& infile);
 void   placeNote                (Array<PixelRow>& picture, int pitch, 
                                  double start, double duration, int min, 
-                                 PixelColor& color, double factor);
+                                 PixelColor& color, double factor, int match);
 PixelColor makeColor            (HumdrumFile& infile, int line, int spine, 
-                                 int style, Array<int>& rhylev);
+                                 int style, Array<int>& rhylev, int track);
+void   getMarkChars             (Array<char>& marks, HumdrumFile& infile);
+int    isMatch                  (Array<char>& marks, const char* buffer);
+const char* getInstrument       (HumdrumFile& infile, int spine);
 
 // global variables
 Options   options;                   // database for command-line arguments
 int       debugQ    = 0;             // used with --debug option
-int       maxwidth  = 1000;          // used with -w option
-int       maxheight = 300;           // used with -h option
+int       markQ     = 0;             // used with --mark option
+int       maxwidth  = 3000;          // used with -w option
+int       maxheight = 400;           // used with -h option
 int       rfactor   = 1;
 int       cfactor   = 1;
 int       gminpitch = 0;
@@ -58,13 +66,19 @@ int main(int argc, char* argv[]) {
    Array<PixelRow> picturedata;
    Array<PixelRow> background;
    HumdrumFile infile;
-   char* filenameIn  = options.getArg(1);
-   infile.read(filenameIn);
+
+   int numinputs = options.getArgCount();
+   if (numinputs > 0) {
+      char* filenameIn  = options.getArg(1);
+      infile.read(filenameIn);
+   } else {
+      infile.read(cin);
+   }
 
    int rfactor = generatePicture(infile, picturedata, style);
    generateBackground(infile, rfactor, picturedata, background);
    printPicture(picturedata, background, rfactor, cfactor, 
-         gminpitch, gmaxpitch);
+         gminpitch, gmaxpitch, infile);
 
    return 0;
 }
@@ -79,7 +93,9 @@ int main(int argc, char* argv[]) {
 //
 
 void printPicture(Array<PixelRow>& picturedata, Array<PixelRow>& background,
-      int rfactor, int cfactor, int minp, int maxp) {
+      int rfactor, int cfactor, int minp, int maxp, HumdrumFile& infile) {
+
+
    if (minp > 0) {
       minp--;
    }
@@ -130,6 +146,11 @@ void printPicture(Array<PixelRow>& picturedata, Array<PixelRow>& background,
 
 int generatePicture(HumdrumFile& infile, Array<PixelRow>& picture, int
       style) {
+
+   Array<char> marks;
+   getMarkChars(marks, infile);
+   PixelColor matchcolor(255,255,255);
+
    infile.analyzeRhythm("4");
    int min = infile.getMinTimeBase();
    double totaldur = infile.getTotalDuration();
@@ -187,7 +208,8 @@ int generatePicture(HumdrumFile& infile, Array<PixelRow>& picture, int
             }
             // duration = Convert::kernToDuration(infile[i][j]);
             duration = infile.getTiedDuration(i, j);
-            color = makeColor(infile, i, j, style, rhylev);
+            color = makeColor(infile, i, j, style, rhylev, 
+                  infile[i].getPrimaryTrack(j));
             for (k=0; k<infile[i].getTokenCount(j); k++) {
                infile[i].getToken(buffer, j, k);
                if (strchr(buffer, '_') != NULL) {
@@ -208,7 +230,13 @@ int generatePicture(HumdrumFile& infile, Array<PixelRow>& picture, int
                if (pitch > maxpitch) {
                   maxpitch = pitch;
                }
-               placeNote(picture, pitch, start, duration, min, color, factor);
+               if (isMatch(marks, buffer)) {
+                  placeNote(picture, pitch, start, duration, min, 
+                        color, factor, 1);
+               } else {
+                  placeNote(picture, pitch, start, duration, min, 
+                        color, factor, 0);
+               }
             }
          }
       }
@@ -221,15 +249,38 @@ int generatePicture(HumdrumFile& infile, Array<PixelRow>& picture, int
 }
 
 
+
+//////////////////////////////
+//
+// isMatch -- returns true if the string has a match character in it
+//
+
+int isMatch(Array<char>& marks, const char* buffer) {
+   int i;
+   for (i=0; i<marks.getSize(); i++) {
+      if (strchr(buffer, marks[i]) != NULL) {
+         return 1;
+      }
+   }
+   return 0;
+}
+
+
+
 //////////////////////////////
 //
 // makeColor --
 //
 
 PixelColor makeColor(HumdrumFile& infile, int line, int spine, int style,
-      Array<int>& rhylev) {
+      Array<int>& rhylev, int track) {
    PixelColor output;
    int trackCount;
+   PerlRegularExpression pre;
+   const char* instrument = "";
+
+   PixelColor purple     (225, 121, 255);
+   PixelColor yellowgreen(150, 200,   0);
 
    switch (toupper(style)) {
       case 'M':    // color by metric position
@@ -249,6 +300,26 @@ PixelColor makeColor(HumdrumFile& infile, int line, int spine, int style,
             output.setColor("silver");
          }
          break;
+
+      case 'V':    // color spines by voice
+         instrument = getInstrument(infile, track);
+         if (pre.search(instrument, "Bassus", "i")) {
+            output.setColor("red");
+         } else if (pre.search(instrument, "Contra", "i")) {
+            output.setColor("darkorange");
+         } else if (pre.search(instrument, "Tenor", "i")) {
+            output.setColor("blue");
+         } else if (pre.search(instrument, "Altus", "i")) {
+            output = purple;
+         } else if (pre.search(instrument, "Superius", "i")) {
+            output.setColor("limegreen");
+         } else if (pre.search(instrument, "Discantus", "i")) {
+            output = yellowgreen;
+         } else {
+            output.setColor("black");
+         }
+         break;
+         
       case 'H':    // color spines by hue
       default:
          trackCount = infile.getMaxTracks();
@@ -262,14 +333,45 @@ PixelColor makeColor(HumdrumFile& infile, int line, int spine, int style,
 
 //////////////////////////////
 //
+// getInstrument --
+//
+
+const char* getInstrument(HumdrumFile& infile, int track) {
+   int i, j;
+   for (i=0; i<infile.getNumLines(); i++) {
+      if (!infile[i].isInterpretation()) {
+         continue;
+      }
+      for (j=0; j<infile[i].getFieldCount(); j++) {
+         if (track != infile[i].getPrimaryTrack(j)) {
+            continue;
+         }
+         if (strncmp(infile[i][j], "*I\"", 3) == 0) {
+            return &infile[i][j][3];
+         }
+      }
+   }
+   return "";
+}
+
+
+
+//////////////////////////////
+//
 // placeNote -- draw a note in the picture area
 //
 
 void placeNote(Array<PixelRow>& picture, int pitch, double start, 
-      double duration, int min, PixelColor& color, double factor) {
+      double duration, int min, PixelColor& color, double factor, int match) {
    int startindex = (int)(start * min / 4.0 * factor);
    int endindex = (int)((start + duration) * min / 4.0 * factor) - 1;
 
+   PixelColor zcolor = color;
+   if (match) {
+      zcolor.Red   = (zcolor.Red   + 4*255)/5;
+      zcolor.Green = (zcolor.Green + 4*255)/5;
+      zcolor.Blue  = (zcolor.Blue  + 4*255)/5;
+   }
    PixelColor black(0,0,0);
    if (startindex-1 >= 0) {
       if (picture[pitch][startindex-1] == color) {
@@ -278,9 +380,23 @@ void placeNote(Array<PixelRow>& picture, int pitch, double start,
    }
    for (int i=startindex; i<=endindex; i++) {
       if (picture[pitch][i] == black) {
-         picture[pitch][i] = color;
+         picture[pitch][i] = zcolor;
       } else {
-         picture[pitch][i] = (color + picture[pitch][i])/2;
+         if (match) {
+            picture[pitch][i].Red   = (2*zcolor.Red 
+                  + picture[pitch][i].Red)/3;
+            picture[pitch][i].Green = (2*zcolor.Green 
+                  + picture[pitch][i].Green)/3;
+            picture[pitch][i].Blue  = (2*zcolor.Blue 
+                  + picture[pitch][i].Blue)/3;
+         } else {
+            picture[pitch][i].Red   = (color.Red 
+                  + picture[pitch][i].Red)/2;
+            picture[pitch][i].Green = (color.Green 
+                  + picture[pitch][i].Green)/2;
+            picture[pitch][i].Blue  = (color.Blue 
+                  + picture[pitch][i].Blue)/2;
+         }
       }
    }
 }
@@ -342,12 +458,13 @@ void generateBackground(HumdrumFile& infile, int rfactor,
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
-   opts.define("w|width=i:1000",      "maximum width allowable for image");   
-   opts.define("h|height=i:300",      "maximum height allowable for image");   
+   opts.define("w|width=i:3000",      "maximum width allowable for image");   
+   opts.define("h|height=i:400",      "maximum height allowable for image");   
    opts.define("M|no-measure=b",      "do not display measure lines on image");
    opts.define("K|no-keyboard=b",     "do not display keyboard in background");
    opts.define("k|keyboard=s:151515", "keyboard white keys color");
    opts.define("s|style=s:H",         "Coloring style");
+   opts.define("mark=b",              "Highlight marked/matched notes");
 
    opts.define("debug=b",          "trace input parsing");   
    opts.define("author=b",         "author of the program");   
@@ -376,6 +493,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
 
 
    debugQ    =  opts.getBoolean("debug");
+   markQ     =  opts.getBoolean("mark");
    maxwidth  =  opts.getInteger("width");
    maxheight =  opts.getInteger("height");
    measureQ  = !opts.getBoolean("no-measure");
@@ -411,4 +529,35 @@ void usage(const char* command) {
 }
 
 
-// md5sum: ec34b5adb12b5d603af59adeb56c9936 proll.cpp [20050403]
+
+//////////////////////////////
+//
+// getMarkChars --
+//
+
+void getMarkChars(Array<char>& marks, HumdrumFile& infile) {
+   PerlRegularExpression pre;
+   Array<char>& colorchar = marks;
+
+   colorchar.setSize(0);
+   char value;
+   int i;
+   for (i=0; i<infile.getNumLines(); i++) {
+      if (!infile[i].isBibliographic()) {
+         continue;
+      }
+      // !!!RDF**kern: N= mark color="#ff0000", root
+      if (pre.search(infile[i].getLine(), 
+            "^!!!RDF\\*\\*kern:\\s*([^\\s])\\s*=\\s*match", "i") ||
+          pre.search(infile[i].getLine(), 
+            "^!!!RDF\\*\\*kern:\\s*([^\\s])\\s*=\\s*mark", "i")
+         ) {
+         value = pre.getSubmatch(1)[0];
+         colorchar.append(value);
+      }
+   }
+}
+
+
+
+// md5sum: cce402fffa9cb4b75778d7b2041a93b8 proll.cpp [20110304]

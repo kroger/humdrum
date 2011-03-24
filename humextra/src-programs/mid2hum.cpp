@@ -2,6 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Fri Mar  5 22:49:55 PST 2004
 // Last Modified: Sat Mar  6 11:28:05 PST 2004
+// Last Modified: Thu Jan  6 03:41:05 PST 2011 (fixed array out-of-bounds err)
 // Filename:      ...sig/examples/all/mid2hum.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/mid2hum.cpp
 // Syntax:        C++; museinfo
@@ -238,7 +239,6 @@ void getMidiData(Array<Array<MidiInfo> >& mididata, MidiFile& midifile) {
       }
    }
 
-
 /*
    // test print the note information
    for (i=0; i<mididata.getSize(); i++) {
@@ -467,10 +467,12 @@ void printKernData(Array<Array<MidiInfo> >& mididata, MidiFile& midifile,
    int maxticks = 0;
    int testticks = 0;
    for (i=0; i<mididata.getSize(); i++) {
-      testticks = mididata[i][mididata[i].getSize()-1].starttick +
-          mididata[i][mididata[i].getSize()-1].tickdur;
-      if (testticks > maxticks) {
-         maxticks = testticks;
+      if (mididata[i].getSize() > 0) {
+         testticks = mididata[i][mididata[i].getSize()-1].starttick +
+             mididata[i][mididata[i].getSize()-1].tickdur;
+         if (testticks > maxticks) {
+            maxticks = testticks;
+         }
       }
    }
    for (i=0; i<mididata.getSize(); i++) {
@@ -581,7 +583,7 @@ void printKernData(Array<Array<MidiInfo> >& mididata, MidiFile& midifile,
          j--;
       }
       printRestCorrection(*buffstream, restcorrection[i], tpq);
-      (*buffstream) << "*-\n\n";
+      (*buffstream) << "*-\n";
       (*buffstream) << ends;
       if (serialQ) {
          // cout << (*buffstream).CSTRING;
@@ -925,4 +927,4 @@ Here are the options available with the mid2hum program:
                    the program.
 
 */
-// md5sum: badd49c0ff854c7d1cdcf6620e906a3c mid2hum.cpp [20050406]
+// md5sum: 1097f20f4f4a275ee67623e3a6daa98a mid2hum.cpp [20110107]

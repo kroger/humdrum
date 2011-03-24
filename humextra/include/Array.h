@@ -5,6 +5,7 @@
 // Last Modified: Wed Jul  7 11:44:50 PDT 1999 (added setAll() function)
 // Last Modified: Mon Jul 29 22:08:32 PDT 2002 (added operator==) 
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
+// Last Modified: Wed Sep  8 17:26:13 PDT 2010 (added operator<< for chars)
 // Filename:      ...sig/maint/code/base/Array/Array.h
 // Web Address:   http://sig.sapp.org/include/sigBase/Array.h
 // Documentation: http://sig.sapp.org/doc/classes/Array
@@ -22,6 +23,12 @@
 
 #include "SigCollection.h"
 
+#ifndef OLDCPP
+   #include <ostream>
+   using namespace std;
+#else
+   #include <ostream.h>
+#endif
 
 template<class type>
 class Array : public SigCollection<type> {
@@ -54,6 +61,10 @@ class Array : public SigCollection<type> {
       Array<type>    operator*         (type aNumber) const;
       Array<type>    operator/         (const Array<type>& aArray) const;
 };
+
+
+// special function for printing Array<char> values:
+ostream& operator<<(ostream& out, Array<char>& astring);
 
 
 #include "Array.cpp"   /* necessary for templates */

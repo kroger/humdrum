@@ -648,6 +648,11 @@ void getClockBoundary(int64bits& cycles, int64bits& millisec) {
 
 */
 
+#ifdef VISUAL
+   #include <time.h>
+   #include <sys/timeb.h>
+#endif
+
 void SigTimer::getClockBoundary(int64bits& cycles, int64bits& millisec) {
    time_t seconds;
    int    ms, startms;

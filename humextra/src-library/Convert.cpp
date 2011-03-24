@@ -16,6 +16,8 @@
 // Last Modified: Sun Jun 21 11:35:40 PDT 2009 (updated for GCC 4.3)
 // Last Modified: Wed Nov 18 16:40:33 PST 2009 (added base40/trans converts)
 // Last Modified: Sat May 22 11:05:59 PDT 2010 (added RationalNumber)
+// Last Modified: Sun Dec 26 04:54:46 PST 2010 (added kernClefToBaseline)
+// Last Modified: Sat Jan 22 17:13:36 PST 2011 (added kernToDurationNoDots)
 // Filename:      ...sig/src/sigInfo/Convert.cpp
 // Web Address:   http://sig.sapp.org/src/sigInfo/Convert.cpp
 // Syntax:        C++ 
@@ -276,6 +278,42 @@ char* Convert::durationToKernRhythm(char* output, double input, int timebase) {
 
 //////////////////////////////
 //
+// Convert::kernToDurationNoDots --
+//
+
+double Convert::kernToDurationNoDots(const char* aKernString) {
+    RationalNumber value = Convert::kernToDurationNoDotsR(aKernString);
+    return value.getFloat();
+}
+
+
+
+//////////////////////////////
+//
+// Convert::kernToDurationNoDots --
+//
+
+RationalNumber Convert::kernToDurationNoDotsR (const char* aKernString) {
+   int dotcount = 0;
+   int i = 0;
+   while ((aKernString[i] != '\0') && (aKernString[i] != ' ')) {
+      if (aKernString[i] == '.') {
+         dotcount++;
+      }
+      i++;
+   }
+   RationalNumber rn = Convert::kernToDurationR(aKernString);
+   if (dotcount > 0) {
+      rn = rn * (int)(pow(2.0, dotcount));
+      rn = rn / (int)(pow(2.0, dotcount+1) - 1);
+   }
+   return rn;
+}
+
+
+
+//////////////////////////////
+//
 // Convert::kernToDuration -- returns the kern rhythm's duration, using
 //	1.0 as the duration of a quarter note (rhythm=4).
 // if the kern token has a "q" then assume that it is a grace note
@@ -350,7 +388,7 @@ RationalNumber Convert::kernToDurationR(const char* aKernString) {
       index++;
    }
 
-   RationalNumber oduration;
+   RationalNumber oduration(0,1);
    if (strchr(aKernString, '0') != NULL && 
        strchr(aKernString, '1') == NULL && 
        strchr(aKernString, '2') == NULL && 
@@ -392,10 +430,23 @@ RationalNumber Convert::kernToDurationR(const char* aKernString) {
 
 //////////////////////////////
 //
-// Convert::kernToDiatonicPitch -- converts to lower case a-g, plus r for rest.
+// Convert::kernToDiatonicPitch -- 
 //
 
 int Convert::kernToDiatonicPitch(const char* buffer) {
+   return Convert::base40ToDiatonic(Convert::kernToBase40(buffer));
+}
+
+
+
+
+//////////////////////////////
+//
+// Convert::kernToDiatonicPitchClass -- converts to lower case a-g, 
+//      plus r for rest.
+//
+
+int Convert::kernToDiatonicPitchClass(const char* buffer) {
    int i = 0;
    int character;
    while (buffer[i] != '\0') {
@@ -1029,17 +1080,33 @@ int Convert::base40IntervalToLineOfFifths(int base40interval) {
 //////////////////////////////
 //
 // Convert::base40ToScoreVPos -- get the position of a note on a staff
-//     according to the given clef.
+//     according to the given clef.  The input clef is the SCORE
+//     clef number:
+//
+//     0 = treble
+//     1 = bass
+//     2 = alto
+//
+//     for other clefs, add/subtract according to the give default
+//     position for G, F, or C clefs.
+//
+//     The zero position is the space below the first ledger line
+//     on the staff.
 //
 
 int Convert::base40ToScoreVPos(int pitch, int clef) {
    int octave = pitch / 40;
    int diatonic = Convert::base40ToDiatonic(pitch);
+   // make sure diatonic is diatonic pitch class
+   diatonic = diatonic % 7;
    switch (clef) {
-      case 1:
+      case 1:                              // bass clef
          return (octave-2)*7+diatonic-1;
          break;
-      case 0:
+      case 2:                              // alto clef
+         return (octave-3)*7+diatonic;
+         break;
+      case 0:                              // treble clef
       default:
          return (octave-4)*7+diatonic+1;
          break;
@@ -1050,48 +1117,227 @@ int Convert::base40ToScoreVPos(int pitch, int clef) {
 
 //////////////////////////////
 //
-// base40ToDiatonic -- find the diatonic pitch class of the
+// base40ToDiatonic -- find the diatonic pitch of the
 //   given base 40 note.  0 = C, 1 = D, 2 = E, 3 = F.
+//   To get the diatonic pitch class, mod by 7: (% 7).
 //
 
 int Convert::base40ToDiatonic(int pitch) {
    int chroma = pitch % 40;
+   int octaveoffset = (pitch / 40) * 7;
    if (pitch < 0) { 
       return -1;   // rest;
    }
    switch (chroma) {
 //   case 38: case 39: case 0: case 1: case 2:
-//      return 0;
+//      return 0 + octaveoffset;
 //   case 4: case 5: case 6: case 7: case 8:
-//      return 1;
+//      return 1 + octaveoffset;
 //   case 10: case 11: case 12: case 13: case 14:
-//      return 2;
+//      return 2 + octaveoffset;
 //   case 15: case 16: case 17: case 18: case 19:
-//      return 3;
+//      return 3 + octaveoffset;
 //   case 21: case 22: case 23: case 24: case 25:
-//      return 4;
+//      return 4 + octaveoffset;
 //   case 27: case 28: case 29: case 30: case 31:
-//      return 5;
+//      return 5 + octaveoffset;
 //   case 33: case 34: case 35: case 36: case 37:
-//      return 6;
+//      return 6 + octaveoffset;
 
    case 0: case 1: case 2: case 3: case 4:
-     return 0;
+     return 0 + octaveoffset;
    case 6: case 7: case 8: case 9: case 10:
-     return 1;
+     return 1 + octaveoffset;
    case 12: case 13: case 14: case 15: case 16:
-     return 2;
+     return 2 + octaveoffset;
    case 17: case 18: case 19: case 20: case 21:
-     return 3;
+     return 3 + octaveoffset;
    case 23: case 24: case 25: case 26: case 27:
-     return 4;
+     return 4 + octaveoffset;
    case 29: case 30: case 31: case 32: case 33:
-     return 5;
+     return 5 + octaveoffset;
    case 35: case 36: case 37: case 38: case 39:
-     return 6;
+     return 6 + octaveoffset;
    }
 
    return -1;
+}
+
+
+
+//////////////////////////////
+//
+// Convert::kernClefToBaseline -- returns the diatonic pitch
+//    of the bottom line on the staff.
+//
+
+int Convert::kernClefToBaseline(const char* buffer) {
+   const char* cptr = "";
+   if (strncmp(buffer, "*clef", 5) == 0) {
+      cptr = &(buffer[5]);
+   } else if (strncmp(buffer, "clef", 4) == 0) {
+      cptr = &(buffer[4]);
+   } else {
+      cerr << "Error in Convert::kernClefToBaseline: " << buffer << endl;
+      exit(1);
+   }
+
+   if (strcmp(cptr, "G2") == 0) {               // treble clef
+      return Convert::kernToDiatonicPitch("e");
+   } else if (strcmp(cptr, "F4") == 0) {        // bass clef
+      return Convert::kernToDiatonicPitch("GG");
+   } else if (strcmp(cptr, "C3") == 0) {        // alto clef
+      return Convert::kernToDiatonicPitch("F");
+   } else if (strcmp(cptr, "C4") == 0) {        // tenor clef
+      return Convert::kernToDiatonicPitch("D"); 
+   } else if (strcmp(cptr, "Gv2") == 0) {       // vocal tenor clef
+      return Convert::kernToDiatonicPitch("E"); 
+
+   // rest of C clef possibilities:
+   } else if (strcmp(cptr, "C1") == 0) {        // soprano clef
+      return Convert::kernToDiatonicPitch("c"); 
+   } else if (strcmp(cptr, "C2") == 0) {        // mezzo-soprano clef
+      return Convert::kernToDiatonicPitch("A"); 
+   } else if (strcmp(cptr, "C5") == 0) {        // baritone clef
+      return Convert::kernToDiatonicPitch("BB"); 
+
+   // rest of G clef possibilities:
+   } else if (strcmp(cptr, "G1") == 0) {        // French-violin clef
+      return Convert::kernToDiatonicPitch("g"); 
+   } else if (strcmp(cptr, "G3") == 0) {      
+      return Convert::kernToDiatonicPitch("c"); 
+   } else if (strcmp(cptr, "G4") == 0) {      
+      return Convert::kernToDiatonicPitch("A"); 
+   } else if (strcmp(cptr, "G5") == 0) {      
+      return Convert::kernToDiatonicPitch("F"); 
+
+   // rest of F clef possibilities:
+   } else if (strcmp(cptr, "F1") == 0) {      
+      return Convert::kernToDiatonicPitch("F"); 
+   } else if (strcmp(cptr, "F2") == 0) {      
+      return Convert::kernToDiatonicPitch("D"); 
+   } else if (strcmp(cptr, "F3") == 0) {      
+      return Convert::kernToDiatonicPitch("BB"); 
+   } else if (strcmp(cptr, "F5") == 0) {      
+      return Convert::kernToDiatonicPitch("EE"); 
+
+   // rest of G clef down an octave possibilities:
+   } else if (strcmp(cptr, "Gv1") == 0) {      
+      return Convert::kernToDiatonicPitch("G"); 
+   } else if (strcmp(cptr, "Gv3") == 0) {      
+      return Convert::kernToDiatonicPitch("C"); 
+   } else if (strcmp(cptr, "Gv4") == 0) {      
+      return Convert::kernToDiatonicPitch("AA"); 
+   } else if (strcmp(cptr, "Gv5") == 0) {      
+      return Convert::kernToDiatonicPitch("FF"); 
+
+   // F clef down an octave possibilities:
+   } else if (strcmp(cptr, "Fv1") == 0) {      
+      return Convert::kernToDiatonicPitch("FF"); 
+   } else if (strcmp(cptr, "Fv2") == 0) {      
+      return Convert::kernToDiatonicPitch("DD"); 
+   } else if (strcmp(cptr, "Fv3") == 0) {      
+      return Convert::kernToDiatonicPitch("BBB"); 
+   } else if (strcmp(cptr, "Fv4") == 0) {      
+      return Convert::kernToDiatonicPitch("GGG"); 
+   } else if (strcmp(cptr, "Fv5") == 0) {      
+      return Convert::kernToDiatonicPitch("EEE"); 
+
+   // C clef down an octave possibilities:
+   } else if (strcmp(cptr, "Cv1") == 0) {     
+      return Convert::kernToDiatonicPitch("C"); 
+   } else if (strcmp(cptr, "Cv2") == 0) {    
+      return Convert::kernToDiatonicPitch("AA"); 
+   } else if (strcmp(cptr, "Cv3") == 0) {    
+      return Convert::kernToDiatonicPitch("FF"); 
+   } else if (strcmp(cptr, "Cv4") == 0) {    
+      return Convert::kernToDiatonicPitch("DD"); 
+   } else if (strcmp(cptr, "Cv5") == 0) {   
+      return Convert::kernToDiatonicPitch("BBB"); 
+
+   // G clef up an octave possibilities:
+   } else if (strcmp(cptr, "G^1") == 0) {      
+      return Convert::kernToDiatonicPitch("gg"); 
+   } else if (strcmp(cptr, "G^2") == 0) {      
+      return Convert::kernToDiatonicPitch("ee"); 
+   } else if (strcmp(cptr, "G^3") == 0) {      
+      return Convert::kernToDiatonicPitch("cc"); 
+   } else if (strcmp(cptr, "G^4") == 0) {      
+      return Convert::kernToDiatonicPitch("a"); 
+   } else if (strcmp(cptr, "G^5") == 0) {      
+      return Convert::kernToDiatonicPitch("f"); 
+
+   // F clef up an octave possibilities:
+   } else if (strcmp(cptr, "F^1") == 0) {      
+      return Convert::kernToDiatonicPitch("f"); 
+   } else if (strcmp(cptr, "F^2") == 0) {      
+      return Convert::kernToDiatonicPitch("d"); 
+   } else if (strcmp(cptr, "F^3") == 0) {      
+      return Convert::kernToDiatonicPitch("B"); 
+   } else if (strcmp(cptr, "F^4") == 0) {      
+      return Convert::kernToDiatonicPitch("G"); 
+   } else if (strcmp(cptr, "F^5") == 0) {      
+      return Convert::kernToDiatonicPitch("E"); 
+
+   // C clef up an octave possibilities:
+   } else if (strcmp(cptr, "C^1") == 0) {     
+      return Convert::kernToDiatonicPitch("cc"); 
+   } else if (strcmp(cptr, "C^2") == 0) {    
+      return Convert::kernToDiatonicPitch("a"); 
+   } else if (strcmp(cptr, "C^3") == 0) {    
+      return Convert::kernToDiatonicPitch("f"); 
+   } else if (strcmp(cptr, "C^4") == 0) {    
+      return Convert::kernToDiatonicPitch("d"); 
+   } else if (strcmp(cptr, "C^5") == 0) {   
+      return Convert::kernToDiatonicPitch("B"); 
+
+   // there are also two octave down (*clefGvv2) and two octaves up (*clefG^^2)
+   } else {
+      // but just use treble clef if don't know what the clef it by this point
+      return Convert::kernToDiatonicPitch("e"); 
+   }
+}
+
+
+
+//////////////////////////////
+//
+// Convert::base40ToMuse -- input is a base40 value which gets converted
+// to a diatonic pitch name in the MuseData style.
+//
+
+char*  Convert::base40ToMuse(int base40, char* buffer) {
+   buffer[0] = '\0';
+
+   char diatonic[2] = {0};
+   switch (Convert::base40ToDiatonic(base40) % 7) {
+      case 0:  diatonic[0] = 'C'; break;
+      case 1:  diatonic[0] = 'D'; break;
+      case 2:  diatonic[0] = 'E'; break;
+      case 3:  diatonic[0] = 'F'; break;
+      case 4:  diatonic[0] = 'G'; break;
+      case 5:  diatonic[0] = 'A'; break;
+      case 6:  diatonic[0] = 'B'; break;
+      default: diatonic[0] = 'X'; 
+   }
+
+   char octave[2] = {0};
+   octave[0]   = '0' + base40 / 40; 
+
+   char accidental[4] = {0};
+   int acc = Convert::base40ToAccidental(base40);
+   switch (acc) {
+      case -2:   strcpy(accidental, "ff"); break;
+      case -1:   strcpy(accidental, "f");  break;
+      case +1:   strcpy(accidental, "#");  break;
+      case +2:   strcpy(accidental, "##"); break;
+   }
+
+   strcpy(buffer, diatonic);
+   strcat(buffer, accidental);
+   strcat(buffer, octave);
+
+   return buffer;
 }
 
 
@@ -2215,6 +2461,599 @@ void Convert::rotatechord(SigCollection<int>& aChord) {
    }
    aChord[aChord.getSize()-1] = temp + 40;
 }
+
+
+
+//////////////////////////////
+//
+// Convert::base40ToIntervalVector -- convert a list of base 40 pitches into an
+//      interval vector.
+//
+
+void Convert::base40ToIntervalVector(Array<int>& iv, Array<int>& base40) {
+   iv.setSize(6);
+   iv.setAll(0);
+   if (base40.getSize() <= 1) {
+      return;
+   }
+   Array<int> base12;
+   base12.setSize(base40.getSize());
+   int i;
+   for (i=0; i<base12.getSize(); i++) {
+      base12[i] = Convert::base40ToMidiNoteNumber(base40[i]);
+   }
+   Convert::base12ToIntervalVector(iv, base12);
+}
+
+
+
+//////////////////////////////
+//
+// Convert::base12ToIntervalVector -- convert a list of MIDI note numbers
+//     into an interval vector.
+//
+
+void Convert::base12ToIntervalVector(Array<int>& iv, Array<int>& base12) {
+   iv.setSize(6);
+   iv.setAll(0);
+   if (base12.getSize() <= 1) {
+      return;
+   }
+
+   Array<int> pitchclass(12);
+   pitchclass.setAll(0);
+   int i, j;
+   for (i=0; i<base12.getSize(); i++) {
+      pitchclass[base12[i] % 12] = 1;
+   }
+   int value;
+   for (i=0; i<12; i++) {
+      for (j=i+1; j<12; j++) {
+         if (pitchclass[i] + pitchclass[j] < 2) {
+            continue;
+         }
+         value = j - i;
+         if (value > 6) {
+            // inversion of interval
+            value = 12 - value;
+         }
+         iv[value-1]++;
+      }
+   }
+}
+
+
+
+//////////////////////////////
+//
+// Convert::base12ToTnNormalForm --
+//
+
+void Convert::base12ToTnNormalForm(Array<int>& tnorm, Array<int>& base12) {
+   if (base12.getSize() == 0) {
+      tnorm.setSize(0);
+      return;
+   } else if (base12.getSize() == 0) {
+      tnorm.setSize(1);
+      tnorm[0] = 0;
+      return;
+   }
+   Convert::base12ToNormalForm(tnorm, base12);
+   int i;
+   int reference = tnorm[0];
+   for (i=0; i<tnorm.getSize(); i++) {
+      tnorm[i] = (tnorm[i] - reference + 144) % 12;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// Convert::base12ToTnSetName -- given an input of base12 pitches, return 
+// the Tn set name for that unsorted collection (which may contain repeats)
+//
+
+const char* Convert::base12ToTnSetName(Array<int>& base12) {
+   Array<int> tnorm;
+   Convert::base12ToTnNormalForm(tnorm, base12);
+   int pcount = tnorm.getSize();
+   Array<int>& x = tnorm;
+
+   switch (pcount) {
+      case 0:
+         return "0-1";
+
+      case 1:
+         return "1-1";
+
+      case 2:
+         if (x[1]==1)	return "2-1*";
+         if (x[1]==2)	return "2-2*";
+         if (x[1]==3)	return "2-3*";
+         if (x[1]==4)	return "2-4*";
+         if (x[1]==5)	return "2-5*";
+         if (x[1]==6)	return "2-6*S6";
+
+      case 3:
+         if (x[1]==1 && x[2]==2)	return "3-1*";
+         if (x[1]==1 && x[2]==3)	return "3-2A";
+         if (x[1]==2 && x[2]==3)	return "3-2B";
+         if (x[1]==1 && x[2]==4)	return "3-3A";
+         if (x[1]==3 && x[2]==4)	return "3-3B";
+         if (x[1]==1 && x[2]==5)	return "3-4A";
+         if (x[1]==4 && x[2]==5)	return "3-4B";
+         if (x[1]==1 && x[2]==6)	return "3-5A";
+         if (x[1]==5 && x[2]==6)	return "3-5B";
+         if (x[1]==2 && x[2]==4)	return "3-6*";
+         if (x[1]==2 && x[2]==5)	return "3-7A";
+         if (x[1]==3 && x[2]==5)	return "3-7B";
+         if (x[1]==2 && x[2]==6)	return "3-8A";
+         if (x[1]==4 && x[2]==6)	return "3-8B";
+         if (x[1]==2 && x[2]==7)	return "3-9*";
+         if (x[1]==3 && x[2]==6)	return "3-10*";
+         if (x[1]==3 && x[2]==7)	return "3-11A";
+         if (x[1]==4 && x[2]==7)	return "3-11B";
+         if (x[1]==4 && x[2]==8)	return "3-12*S4";
+
+      case 4:
+         if (x[1]==1 && x[2]==2 && x[3]==3)	return "4-1*";
+         if (x[1]==1 && x[2]==2 && x[3]==4)	return "4-2A";
+         if (x[1]==2 && x[2]==3 && x[3]==4)	return "4-2B";
+         if (x[1]==1 && x[2]==3 && x[3]==4)	return "4-3*";
+         if (x[1]==1 && x[2]==2 && x[3]==5)	return "4-4A";
+         if (x[1]==3 && x[2]==4 && x[3]==5)	return "4-4B";
+         if (x[1]==1 && x[2]==2 && x[3]==6)	return "4-5A";
+         if (x[1]==4 && x[2]==5 && x[3]==6)	return "4-5B";
+         if (x[1]==1 && x[2]==2 && x[3]==7)	return "4-6*";
+         if (x[1]==1 && x[2]==4 && x[3]==5)	return "4-7*";
+         if (x[1]==1 && x[2]==5 && x[3]==6)	return "4-8*";
+         if (x[1]==1 && x[2]==6 && x[3]==7)	return "4-9*S6";
+         if (x[1]==2 && x[2]==3 && x[3]==5)	return "4-10*";
+         if (x[1]==1 && x[2]==3 && x[3]==5)	return "4-11A";
+         if (x[1]==2 && x[2]==4 && x[3]==5)	return "4-11B";
+         if (x[1]==2 && x[2]==3 && x[3]==6)	return "4-12A<";
+         if (x[1]==3 && x[2]==4 && x[3]==6)	return "4-12B<";
+         if (x[1]==1 && x[2]==3 && x[3]==6)	return "4-13A";
+         if (x[1]==3 && x[2]==5 && x[3]==6)	return "4-13B";
+         if (x[1]==2 && x[2]==3 && x[3]==7)	return "4-14A<";
+         if (x[1]==4 && x[2]==5 && x[3]==7)	return "4-14B<";
+         if (x[1]==1 && x[2]==4 && x[3]==6)	return "4-Z15A..29";
+         if (x[1]==2 && x[2]==5 && x[3]==6)	return "4-Z15B..29";
+         if (x[1]==1 && x[2]==5 && x[3]==7)	return "4-16A";
+         if (x[1]==2 && x[2]==6 && x[3]==7)	return "4-16B";
+         if (x[1]==3 && x[2]==4 && x[3]==7)	return "4-17*";
+         if (x[1]==1 && x[2]==4 && x[3]==7)	return "4-18A";
+         if (x[1]==3 && x[2]==6 && x[3]==7)	return "4-18B";
+         if (x[1]==1 && x[2]==4 && x[3]==8)	return "4-19A";
+         if (x[1]==3 && x[2]==4 && x[3]==8)	return "4-19B";
+         if (x[1]==1 && x[2]==5 && x[3]==8)	return "4-20*";
+         if (x[1]==2 && x[2]==4 && x[3]==6)	return "4-21*";
+         if (x[1]==2 && x[2]==4 && x[3]==7)	return "4-22A";
+         if (x[1]==3 && x[2]==5 && x[3]==7)	return "4-22B";
+         if (x[1]==2 && x[2]==5 && x[3]==7)	return "4-23*";
+         if (x[1]==2 && x[2]==4 && x[3]==8)	return "4-24*";
+         if (x[1]==2 && x[2]==6 && x[3]==8)	return "4-25*S6";
+         if (x[1]==3 && x[2]==5 && x[3]==8)	return "4-26*";
+         if (x[1]==2 && x[2]==5 && x[3]==8)	return "4-27A";
+         if (x[1]==3 && x[2]==6 && x[3]==8)	return "4-27B";
+         if (x[1]==3 && x[2]==6 && x[3]==9)	return "4-28*S3";
+         if (x[1]==1 && x[2]==3 && x[3]==7)	return "4-Z29A..15";
+         if (x[1]==4 && x[2]==6 && x[3]==7)	return "4-Z29B..15";
+
+      case 5:
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4)	return "5-1*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5)	return "5-2A";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==5)	return "5-2B";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5)	return "5-3A";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==5)	return "5-3B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==6)	return "5-4A";
+         if (x[1]==3 && x[2]==4 && x[3]==5 && x[4]==6)	return "5-4B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==7)	return "5-5A";
+         if (x[1]==4 && x[2]==5 && x[3]==6 && x[4]==7)	return "5-5B";
+         if (x[1]==1 && x[2]==2 && x[3]==5 && x[4]==6)	return "5-6A";
+         if (x[1]==1 && x[2]==4 && x[3]==5 && x[4]==6)	return "5-6B";
+         if (x[1]==1 && x[2]==2 && x[3]==6 && x[4]==7)	return "5-7A";
+         if (x[1]==1 && x[2]==5 && x[3]==6 && x[4]==7)	return "5-7B";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==6)	return "5-8*";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==6)	return "5-9A";
+         if (x[1]==2 && x[2]==4 && x[3]==5 && x[4]==6)	return "5-9B";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==6)	return "5-10A";
+         if (x[1]==2 && x[2]==3 && x[3]==5 && x[4]==6)	return "5-10B";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==7)	return "5-11A";
+         if (x[1]==3 && x[2]==4 && x[3]==5 && x[4]==7)	return "5-11B";
+         if (x[1]==1 && x[2]==3 && x[3]==5 && x[4]==6)	return "5-Z12*..36";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==8)	return "5-13A";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==8)	return "5-13B";
+         if (x[1]==1 && x[2]==2 && x[3]==5 && x[4]==7)	return "5-14A";
+         if (x[1]==2 && x[2]==5 && x[3]==6 && x[4]==7)	return "5-14B";
+         if (x[1]==1 && x[2]==2 && x[3]==6 && x[4]==8)	return "5-15*";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==7)	return "5-16A";
+         if (x[1]==3 && x[2]==4 && x[3]==6 && x[4]==7)	return "5-16B";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==8)	return "5-Z17*..37";
+         if (x[1]==1 && x[2]==4 && x[3]==5 && x[4]==7)	return "5-Z18A<..38";
+         if (x[1]==2 && x[2]==3 && x[3]==6 && x[4]==7)	return "5-Z18B<..38";
+         if (x[1]==1 && x[2]==3 && x[3]==6 && x[4]==7)	return "5-19A";
+         if (x[1]==1 && x[2]==4 && x[3]==6 && x[4]==7)	return "5-19B";
+         if (x[1]==1 && x[2]==3 && x[3]==7 && x[4]==8)	return "5-20A";
+         if (x[1]==1 && x[2]==5 && x[3]==7 && x[4]==8)	return "5-20B";
+         if (x[1]==1 && x[2]==4 && x[3]==5 && x[4]==8)	return "5-21A";
+         if (x[1]==3 && x[2]==4 && x[3]==7 && x[4]==8)	return "5-21B";
+         if (x[1]==1 && x[2]==4 && x[3]==7 && x[4]==8)	return "5-22*";
+         if (x[1]==2 && x[2]==3 && x[3]==5 && x[4]==7)	return "5-23A";
+         if (x[1]==2 && x[2]==4 && x[3]==5 && x[4]==7)	return "5-23B";
+         if (x[1]==1 && x[2]==3 && x[3]==5 && x[4]==7)	return "5-24A";
+         if (x[1]==2 && x[2]==4 && x[3]==6 && x[4]==7)	return "5-24B";
+         if (x[1]==2 && x[2]==3 && x[3]==5 && x[4]==8)	return "5-25A";
+         if (x[1]==3 && x[2]==5 && x[3]==6 && x[4]==8)	return "5-25B";
+         if (x[1]==2 && x[2]==4 && x[3]==5 && x[4]==8)	return "5-26A<";
+         if (x[1]==3 && x[2]==4 && x[3]==6 && x[4]==8)	return "5-26B<";
+         if (x[1]==1 && x[2]==3 && x[3]==5 && x[4]==8)	return "5-27A";
+         if (x[1]==3 && x[2]==5 && x[3]==7 && x[4]==8)	return "5-27B";
+         if (x[1]==2 && x[2]==3 && x[3]==6 && x[4]==8)	return "5-28A<";
+         if (x[1]==2 && x[2]==5 && x[3]==6 && x[4]==8)	return "5-28B<";
+         if (x[1]==1 && x[2]==3 && x[3]==6 && x[4]==8)	return "5-29A";
+         if (x[1]==2 && x[2]==5 && x[3]==7 && x[4]==8)	return "5-29B";
+         if (x[1]==1 && x[2]==4 && x[3]==6 && x[4]==8)	return "5-30A";
+         if (x[1]==2 && x[2]==4 && x[3]==7 && x[4]==8)	return "5-30B";
+         if (x[1]==1 && x[2]==3 && x[3]==6 && x[4]==9)	return "5-31A";
+         if (x[1]==2 && x[2]==3 && x[3]==6 && x[4]==9)	return "5-31B";
+         if (x[1]==1 && x[2]==4 && x[3]==6 && x[4]==9)	return "5-32A";
+         if (x[1]==1 && x[2]==4 && x[3]==7 && x[4]==9)	return "5-32B";
+         if (x[1]==2 && x[2]==4 && x[3]==6 && x[4]==8)	return "5-33*";
+         if (x[1]==2 && x[2]==4 && x[3]==6 && x[4]==9)	return "5-34*";
+         if (x[1]==2 && x[2]==4 && x[3]==7 && x[4]==9)	return "5-35*";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==7)	return "5-Z36A..12";
+         if (x[1]==3 && x[2]==5 && x[3]==6 && x[4]==7)	return "5-Z36B..12";
+         if (x[1]==3 && x[2]==4 && x[3]==5 && x[4]==8)	return "5-Z37*..17";
+         if (x[1]==1 && x[2]==2 && x[3]==5 && x[4]==8)	return "5-Z38A..18";
+         if (x[1]==3 && x[2]==6 && x[3]==7 && x[4]==8)	return "5-Z38B..18";
+
+      case 6:
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5)	return "6-1*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==6)	return "6-2A";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6)	return "6-2BA";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==6)	return "6-Z3A..36B";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6)	return "6-Z3B..36";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==6)	return "6-Z4*..37";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==6 && x[5]==7)	return "6-5A";
+         if (x[1]==1 && x[2]==4 && x[3]==5 && x[4]==6 && x[5]==7)	return "6-5B";
+         if (x[1]==1 && x[2]==2 && x[3]==5 && x[4]==6 && x[5]==7)	return "6-Z6*..38";
+         if (x[1]==1 && x[2]==2 && x[3]==6 && x[4]==7 && x[5]==8)	return "6-7*S6";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==7)	return "6-8*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==7)	return "6-9A";
+         if (x[1]==2 && x[2]==4 && x[3]==5 && x[4]==6 && x[5]==7)	return "6-9B";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==7)	return "6-Z10..39";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==7)	return "6-Z10B..39B";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==7)	return "6-Z11..40B";
+         if (x[1]==2 && x[2]==3 && x[3]==5 && x[4]==6 && x[5]==7)	return "6-Z11B..40";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==6 && x[5]==7)	return "6-Z12..41B";
+         if (x[1]==1 && x[2]==3 && x[3]==5 && x[4]==6 && x[5]==7)	return "6-Z12B..41";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==7)	return "6-Z13*..42";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==8)	return "6-14..14";
+         if (x[1]==3 && x[2]==4 && x[3]==5 && x[4]==7 && x[5]==8)	return "6-14B..14B";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==8)	return "6-15A";
+         if (x[1]==3 && x[2]==4 && x[3]==6 && x[4]==7 && x[5]==8)	return "6-15B";
+         if (x[1]==1 && x[2]==4 && x[3]==5 && x[4]==6 && x[5]==8)	return "6-16A";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==7 && x[5]==8)	return "6-16B";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==7 && x[5]==8)	return "6-Z17..43B";
+         if (x[1]==1 && x[2]==4 && x[3]==6 && x[4]==7 && x[5]==8)	return "6-Z17B..43";
+         if (x[1]==1 && x[2]==2 && x[3]==5 && x[4]==7 && x[5]==8)	return "6-18A";
+         if (x[1]==1 && x[2]==3 && x[3]==6 && x[4]==7 && x[5]==8)	return "6-18B";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==7 && x[5]==8)	return "6-Z19..44B";
+         if (x[1]==1 && x[2]==4 && x[3]==5 && x[4]==7 && x[5]==8)	return "6-Z19B..44";
+         if (x[1]==1 && x[2]==4 && x[3]==5 && x[4]==8 && x[5]==9)	return "6-20*S4";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==8)	return "6-21A";
+         if (x[1]==2 && x[2]==4 && x[3]==5 && x[4]==6 && x[5]==8)	return "6-21B";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==6 && x[5]==8)	return "6-22A";
+         if (x[1]==2 && x[2]==4 && x[3]==6 && x[4]==7 && x[5]==8)	return "6-22B";
+         if (x[1]==2 && x[2]==3 && x[3]==5 && x[4]==6 && x[5]==8)	return "6-Z23*..45";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==8)	return "6-Z24..46B";
+         if (x[1]==2 && x[2]==4 && x[3]==5 && x[4]==7 && x[5]==8)	return "6-Z24B..46";
+         if (x[1]==1 && x[2]==3 && x[3]==5 && x[4]==6 && x[5]==8)	return "6-Z25..47B";
+         if (x[1]==2 && x[2]==3 && x[3]==5 && x[4]==7 && x[5]==8)	return "6-Z25B..47";
+         if (x[1]==1 && x[2]==3 && x[3]==5 && x[4]==7 && x[5]==8)	return "6-Z26*..48";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==9)	return "6-27A";
+         if (x[1]==2 && x[2]==3 && x[3]==5 && x[4]==6 && x[5]==9)	return "6-27B";
+         if (x[1]==1 && x[2]==3 && x[3]==5 && x[4]==6 && x[5]==9)	return "6-Z28*..49";
+         if (x[1]==1 && x[2]==3 && x[3]==6 && x[4]==8 && x[5]==9)	return "6-Z29*..50";
+         if (x[1]==1 && x[2]==3 && x[3]==6 && x[4]==7 && x[5]==9)	return "6-30AS6";
+         if (x[1]==2 && x[2]==3 && x[3]==6 && x[4]==8 && x[5]==9)	return "6-30BS6";
+         if (x[1]==1 && x[2]==3 && x[3]==5 && x[4]==8 && x[5]==9)	return "6-31A";
+         if (x[1]==1 && x[2]==4 && x[3]==6 && x[4]==8 && x[5]==9)	return "6-31B";
+         if (x[1]==2 && x[2]==4 && x[3]==5 && x[4]==7 && x[5]==9)	return "6-32*";
+         if (x[1]==2 && x[2]==3 && x[3]==5 && x[4]==7 && x[5]==9)	return "6-33A";
+         if (x[1]==2 && x[2]==4 && x[3]==6 && x[4]==7 && x[5]==9)	return "6-33B";
+         if (x[1]==1 && x[2]==3 && x[3]==5 && x[4]==7 && x[5]==9)	return "6-34A";
+         if (x[1]==2 && x[2]==4 && x[3]==6 && x[4]==8 && x[5]==9)	return "6-34B";
+         if (x[1]==2 && x[2]==4 && x[3]==6 && x[4]==8 && x[5]==10)	return "6-35*S2";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==7)	return "6-Z36..3B";
+         if (x[1]==3 && x[2]==4 && x[3]==5 && x[4]==6 && x[5]==7)	return "6-Z36B..3";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==8)	return "6-Z37*..4";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==7 && x[5]==8)	return "6-Z38*..6";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==8)	return "6-Z39..10";
+         if (x[1]==3 && x[2]==4 && x[3]==5 && x[4]==6 && x[5]==8)	return "6-Z39B..10B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==8)	return "6-Z40..11B";
+         if (x[1]==3 && x[2]==5 && x[3]==6 && x[4]==7 && x[5]==8)	return "6-Z40B..11";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==6 && x[5]==8)	return "6-Z41..12B";
+         if (x[1]==2 && x[2]==5 && x[3]==6 && x[4]==7 && x[5]==8)	return "6-Z41B..12";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==6 && x[5]==9)	return "6-Z42*..13";
+         if (x[1]==1 && x[2]==2 && x[3]==5 && x[4]==6 && x[5]==8)	return "6-Z43..17B";
+         if (x[1]==2 && x[2]==3 && x[3]==6 && x[4]==7 && x[5]==8)	return "6-Z43B..17";
+         if (x[1]==1 && x[2]==2 && x[3]==5 && x[4]==6 && x[5]==9)	return "6-Z44..19B";
+         if (x[1]==1 && x[2]==2 && x[3]==5 && x[4]==8 && x[5]==9)	return "6-Z44B..19";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==9)	return "6-Z45*..23";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==6 && x[5]==9)	return "6-Z46..24B";
+         if (x[1]==2 && x[2]==4 && x[3]==5 && x[4]==6 && x[5]==9)	return "6-Z46B..24";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==7 && x[5]==9)	return "6-Z47..25B";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==7 && x[5]==9)	return "6-Z47B..25";
+         if (x[1]==1 && x[2]==2 && x[3]==5 && x[4]==7 && x[5]==9)	return "6-Z48*..26";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==7 && x[5]==9)	return "6-Z49*..28";
+         if (x[1]==1 && x[2]==4 && x[3]==6 && x[4]==7 && x[5]==9)	return "6-Z50*..29";
+
+      case 7:
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==6)	return "7-1*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==7)	return "7-2A";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==7)	return "7-2B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==8)	return "7-3A";
+         if (x[1]==3 && x[2]==4 && x[3]==5 && x[4]==6 && x[5]==7 && x[6]==8)	return "7-3B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==6 && x[6]==7)	return "7-4A";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==7)	return "7-4B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==6 && x[6]==7)	return "7-5A";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==7)	return "7-5B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==7 && x[6]==8)	return "7-6A";
+         if (x[1]==1 && x[2]==4 && x[3]==5 && x[4]==6 && x[5]==7 && x[6]==8)	return "7-6B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==6 && x[5]==7 && x[6]==8)	return "7-7A";
+         if (x[1]==1 && x[2]==2 && x[3]==5 && x[4]==6 && x[5]==7 && x[6]==8)	return "7-7B";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==8)	return "7-8*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==6 && x[6]==8)	return "7-9A";
+         if (x[1]==2 && x[2]==4 && x[3]==5 && x[4]==6 && x[5]==7 && x[6]==8)	return "7-9B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==6 && x[6]==9)	return "7-10A";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==9)	return "7-10B";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==8)	return "7-11A";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==7 && x[6]==8)	return "7-11B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==7 && x[6]==9)	return "7-Z12*..36";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==8)	return "7-13A";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==7 && x[6]==8)	return "7-13B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==7 && x[6]==8)	return "7-14A";
+         if (x[1]==1 && x[2]==3 && x[3]==5 && x[4]==6 && x[5]==7 && x[6]==8)	return "7-14B";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==6 && x[5]==7 && x[6]==8)	return "7-15*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==6 && x[6]==9)	return "7-16A";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==9)	return "7-16B";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==9)	return "7-Z17*..37";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==8 && x[6]==9)	return "7-Z18A<..38";
+         if (x[1]==1 && x[2]==4 && x[3]==6 && x[4]==7 && x[5]==8 && x[6]==9)	return "7-Z18B<..38";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==6 && x[5]==7 && x[6]==9)	return "7-19A";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==6 && x[5]==8 && x[6]==9)	return "7-19B";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==7 && x[5]==8 && x[6]==9)	return "7-20A";
+         if (x[1]==1 && x[2]==2 && x[3]==5 && x[4]==7 && x[5]==8 && x[6]==9)	return "7-20B";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==8 && x[6]==9)	return "7-21A";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==8 && x[6]==9)	return "7-21B";
+         if (x[1]==1 && x[2]==2 && x[3]==5 && x[4]==6 && x[5]==8 && x[6]==9)	return "7-22*";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==7 && x[6]==9)	return "7-23A";
+         if (x[1]==2 && x[2]==4 && x[3]==5 && x[4]==6 && x[5]==7 && x[6]==9)	return "7-23B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==7 && x[6]==9)	return "7-24A";
+         if (x[1]==2 && x[2]==4 && x[3]==6 && x[4]==7 && x[5]==8 && x[6]==9)	return "7-24B";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==7 && x[6]==9)	return "7-25A";
+         if (x[1]==2 && x[2]==3 && x[3]==5 && x[4]==6 && x[5]==7 && x[6]==9)	return "7-25B";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==7 && x[6]==9)	return "7-26A<";
+         if (x[1]==2 && x[2]==4 && x[3]==5 && x[4]==6 && x[5]==8 && x[6]==9)	return "7-26B<";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==7 && x[6]==9)	return "7-27A";
+         if (x[1]==2 && x[2]==4 && x[3]==5 && x[4]==7 && x[5]==8 && x[6]==9)	return "7-27B";
+         if (x[1]==1 && x[2]==3 && x[3]==5 && x[4]==6 && x[5]==7 && x[6]==9)	return "7-28A<";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==8 && x[6]==9)	return "7-28B<";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==6 && x[5]==7 && x[6]==9)	return "7-29A";
+         if (x[1]==2 && x[2]==3 && x[3]==5 && x[4]==7 && x[5]==8 && x[6]==9)	return "7-29B";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==6 && x[5]==8 && x[6]==9)	return "7-30A";
+         if (x[1]==1 && x[2]==3 && x[3]==5 && x[4]==7 && x[5]==8 && x[6]==9)	return "7-30B";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==7 && x[6]==9)	return "7-31A";
+         if (x[1]==2 && x[2]==3 && x[3]==5 && x[4]==6 && x[5]==8 && x[6]==9)	return "7-31B";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==8 && x[6]==9)	return "7-32A";
+         if (x[1]==1 && x[2]==3 && x[3]==5 && x[4]==6 && x[5]==8 && x[6]==9)	return "7-32B";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==6 && x[5]==8 && x[6]==10)	return "7-33*";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==8 && x[6]==10)	return "7-34*";
+         if (x[1]==1 && x[2]==3 && x[3]==5 && x[4]==6 && x[5]==8 && x[6]==10)	return "7-35*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==6 && x[6]==8)	return "7-Z36A..12";
+         if (x[1]==2 && x[2]==3 && x[3]==5 && x[4]==6 && x[5]==7 && x[6]==8)	return "7-Z36B..12";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==7 && x[6]==8)	return "7-Z37*..17";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==7 && x[6]==8)	return "7-Z38A..18";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==7 && x[6]==8)	return "7-Z38B..18";
+
+      case 8:
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==6 && x[7]==7)	return "8-1*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==6 && x[7]==8)	return "8-2A";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==7 && x[7]==8)	return "8-2B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==6 && x[7]==9)	return "8-3*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==7 && x[7]==8)	return "8-4A";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==7 && x[7]==8)	return "8-4B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==6 && x[6]==7 && x[7]==8)	return "8-5A";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==7 && x[7]==8)	return "8-5B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==6 && x[6]==7 && x[7]==8)	return "8-6*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==8 && x[7]==9)	return "8-7*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==7 && x[6]==8 && x[7]==9)	return "8-8*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==6 && x[5]==7 && x[6]==8 && x[7]==9)	return "8-9*S6";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==7 && x[7]==9)	return "8-10*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==7 && x[7]==9)	return "8-11A";
+         if (x[1]==2 && x[2]==4 && x[3]==5 && x[4]==6 && x[5]==7 && x[6]==8 && x[7]==9)	return "8-11B";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==7 && x[7]==9)	return "8-12A<";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==8 && x[7]==9)	return "8-12B<";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==6 && x[6]==7 && x[7]==9)	return "8-13A";
+         if (x[1]==2 && x[2]==3 && x[3]==5 && x[4]==6 && x[5]==7 && x[6]==8 && x[7]==9)	return "8-13B";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==7 && x[7]==9)	return "8-14A<";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==7 && x[6]==8 && x[7]==9)	return "8-14B<";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==6 && x[6]==8 && x[7]==9)	return "8-Z15A..29";
+         if (x[1]==1 && x[2]==3 && x[3]==5 && x[4]==6 && x[5]==7 && x[6]==8 && x[7]==9)	return "8-Z15B..29";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==7 && x[6]==8 && x[7]==9)	return "8-16A";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==6 && x[5]==7 && x[6]==8 && x[7]==9)	return "8-16B";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==8 && x[7]==9)	return "8-17*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==6 && x[6]==8 && x[7]==9)	return "8-18A";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==7 && x[6]==8 && x[7]==9)	return "8-18B";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==8 && x[7]==9)	return "8-19A";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==7 && x[6]==8 && x[7]==9)	return "8-19B";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==7 && x[6]==8 && x[7]==9)	return "8-20*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==6 && x[6]==8 && x[7]==10)	return "8-21*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==6 && x[6]==8 && x[7]==10)	return "8-22A";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==7 && x[6]==9 && x[7]==10)	return "8-22B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==7 && x[6]==8 && x[7]==10)	return "8-23*";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==8 && x[7]==10)	return "8-24*";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==6 && x[5]==7 && x[6]==8 && x[7]==10)	return "8-25*S6";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==7 && x[6]==9 && x[7]==10)	return "8-26*";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==7 && x[6]==8 && x[7]==10)	return "8-27A";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==6 && x[5]==7 && x[6]==9 && x[7]==10)	return "8-27B";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==7 && x[6]==9 && x[7]==10)	return "8-28*S3";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==6 && x[6]==7 && x[7]==9)	return "8-Z29A..15";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==6 && x[5]==7 && x[6]==8 && x[7]==9)	return "8-Z29B..15";
+
+      case 9:
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==6 && x[7]==7 && x[8]==8)	return "9-1*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==6 && x[7]==7 && x[8]==9)	return "9-2A";
+         if (x[1]==2 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==7 && x[7]==8 && x[8]==9)	return "9-2B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==6 && x[7]==8 && x[8]==9)	return "9-3A";
+         if (x[1]==1 && x[2]==3 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==7 && x[7]==8 && x[8]==9)	return "9-3B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==7 && x[7]==8 && x[8]==9)	return "9-4A";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==7 && x[7]==8 && x[8]==9)	return "9-4B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==6 && x[6]==7 && x[7]==8 && x[8]==9)	return "9-5A";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==6 && x[6]==7 && x[7]==8 && x[8]==9)	return "9-5B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==6 && x[7]==8 && x[8]==10)	return "9-6*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==7 && x[7]==8 && x[8]==10)	return "9-7A";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==7 && x[7]==9 && x[8]==10)	return "9-7B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==6 && x[6]==7 && x[7]==8 && x[8]==10)	return "9-8A";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==6 && x[6]==8 && x[7]==9 && x[8]==10)	return "9-8B";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==6 && x[6]==7 && x[7]==8 && x[8]==10)	return "9-9*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==6 && x[6]==7 && x[7]==9 && x[8]==10)	return "9-10*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==6 && x[6]==7 && x[7]==9 && x[8]==10)	return "9-11A";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==5 && x[5]==6 && x[6]==8 && x[7]==9 && x[8]==10)	return "9-11B";
+         if (x[1]==1 && x[2]==2 && x[3]==4 && x[4]==5 && x[5]==6 && x[6]==8 && x[7]==9 && x[8]==10)	return "9-12*S4";
+
+      case 10:
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==6 && x[7]==7 && x[8]==8 && x[9]==9)	return "10-1*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==6 && x[7]==7 && x[8]==8 && x[9]==10)	return "10-2*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==6 && x[7]==7 && x[8]==9 && x[9]==10)	return "10-3*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==6 && x[7]==8 && x[8]==9 && x[9]==10)	return "10-4*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==7 && x[7]==8 && x[8]==9 && x[9]==10)	return "10-5*";
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==6 && x[6]==7 && x[7]==8 && x[8]==9 && x[9]==10)	return "10-6*S6";
+
+      case 11:
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==6 && x[7]==7 && x[8]==8 && x[9]==9 && x[10]==10)	return "11-1*";
+
+      case 12:
+         if (x[1]==1 && x[2]==2 && x[3]==3 && x[4]==4 && x[5]==5 && x[6]==6 && x[7]==7 && x[8]==8 && x[9]==9 && x[10]==10 && x[11]==11)	return "12-1*S1";
+   }
+
+   return "unknown";
+}
+
+
+
+//////////////////////////////
+//
+// Convert::base12ToNormalForm -- convert a list of MIDI note numbers
+//     into a normal form.
+//
+
+void Convert::base12ToNormalForm(Array<int>& nform, Array<int>& base12) {
+   int i;
+   if (base12.getSize() == 0) {
+      nform.setSize(0);
+      return;
+   } else if (base12.getSize() == 1) {
+      nform.setSize(1);
+      nform[0] = base12[0] % 12;
+      return;
+   }
+
+   // first sort pitch classes into normal form
+   Array<int> pcs(12);
+   pcs.setAll(0);
+   for (i=0; i<base12.getSize(); i++) {
+      pcs[base12[i]%12] = 1;
+   }
+   Array<int> values(12);
+   values.setSize(0);
+   for (i=0; i<pcs.getSize(); i++) {
+      if (pcs[i]) {
+         values.append(i);
+      }
+   }
+
+   // now find the best rotation
+   Array<int> bestanswer(12);
+   bestanswer.setSize(1);
+   bestanswer[0] = 0;
+   int test;
+   int min = values.last() - values[0];
+   int sizem1 = values.getSize() - 1;
+   int asize = sizem1 + 1;
+   for (i=1; i<values.getSize(); i++) {
+      test = ((values[(i+sizem1)%asize] - values[i])+144)%12;
+      if (test < min) {
+         bestanswer.setSize(0);
+         bestanswer.append(i);
+         min = test;
+      } else if (test == min) {
+         bestanswer.append(i);
+      }
+   }
+
+   int bestone;
+   if (bestanswer.getSize() == 1) {
+      bestone = bestanswer[0];
+   } else {
+      bestone = findBestNormalRotation(values, values.getSize()-1, bestanswer);
+   }
+
+   // store the final result
+   nform.setSize(values.getSize());
+   int thesize = values.getSize();
+   for (i=0; i<nform.getSize(); i++) {
+      nform[i] = values[(i+bestone)%thesize];
+   }
+}
+
+
+
+//////////////////////////////
+//
+// Convert::findBestNormalRotation -- used with base12ToNormalForm().
+//
+
+int Convert::findBestNormalRotation(Array<int>& input, int asize, 
+      Array<int>& choices) {
+   Array<int> newchoices(choices.getSize());
+   newchoices.setSize(0);
+
+   int test;
+   newchoices.setSize(1);
+   newchoices[0] = choices[0];
+   int sizem1 = asize - 1;
+   int thesize = input.getSize();
+   int min = (input[(choices[0]+sizem1)%thesize] - input[choices[0]] + 144)%12;
+
+   int i;
+   for (i=1; i<choices.getSize(); i++ ) {
+      test = (input[(choices[i]+sizem1)%thesize] - input[choices[i]] + 144)%12;
+      if (test < min) {
+         newchoices.setSize(0);
+         newchoices.append(choices[i]);
+         min = test;
+      } else if (test == min) {
+         newchoices.append(choices[i]);
+      }
+   }
+
+   if (newchoices.getSize() == 1) {
+      return newchoices[0];
+   }
+
+   if (asize <= 2) {
+      // Case which occurs only when there is tie due to
+      // rotataional symmetry, so just choose the first one 
+      return newchoices[0];
+   }
+
+   return Convert::findBestNormalRotation(input, asize-1, newchoices);
+}
+
 
 
 

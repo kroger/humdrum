@@ -2,13 +2,14 @@
 // Copyright 1998-2000 by Craig Stuart Sapp, All Rights Reserved.
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon May 18 13:52:59 PDT 1998
-// Last Modified: Fri May  5 13:13:32 PDT 2000 (added sub-spine access)
-// Last Modified: Fri Oct 13 12:12:15 PDT 2000 (added spine path tracing)
-// Last Modified: Fri Dec 10 00:03:59 PST 2004 (added isSpineManipulator)
-// Last Modified: Tue Apr 28 14:34:13 PDT 2009 (added isTandem)
-// Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
-// Last Modified: Sat Aug  8 23:50:10 PDT 2009 (added isExInterp)
-// Last Modified: Sat May 22 10:13:30 PDT 2010 (added RationalNumber)
+// Last Modified: Fri May  5 13:13:32 PDT 2000 added sub-spine access
+// Last Modified: Fri Oct 13 12:12:15 PDT 2000 added spine path tracing
+// Last Modified: Fri Dec 10 00:03:59 PST 2004 added isSpineManipulator
+// Last Modified: Tue Apr 28 14:34:13 PDT 2009 added isTandem
+// Last Modified: Fri Jun 12 22:58:34 PDT 2009 renamed SigCollection class
+// Last Modified: Sat Aug  8 23:50:10 PDT 2009 added isExInterp
+// Last Modified: Sat May 22 10:13:30 PDT 2010 added RationalNumber
+// Last Modified: Wed Mar 16 14:25:53 PDT 2011 added getIntervalVector
 // Filename:      ...sig/include/sigInfo/HumdrumRecord.h
 // Webpage:       http://sig.sapp.org/include/sigInfo/HumdrumRecord.h
 // Syntax:        C++ 
@@ -154,9 +155,11 @@ class HumdrumRecord {
       void              setExInterp        (int fieldIndex, 
                                               const char* interpretation);
       void              setLine            (const char* aString); 
+      void              setToken           (int index, const char* aString);
       void              setLineNum         (int aLine);
       void              setSpineID         (int index, const char* anID);
       void              setSpineWidth      (int aSize);
+
 
    protected:
       int                  lineno;         // line number of record in a file

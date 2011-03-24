@@ -11,6 +11,8 @@
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
 // Last Modified: Wed Nov 18 16:40:33 PST 2009 (added base40/trans converts)
 // Last Modified: Sat May 22 11:02:12 PDT 2010 (added RationalNumber)
+// Last Modified: Sun Dec 26 04:54:46 PST 2010 (added kernClefToBaseline)
+// Last Modified: Sat Jan 22 17:13:36 PST 2011 (added kernToDurationNoDots)
 // Filename:      ...sig/include/sigInfo/Convert.h
 // Web Address:   http://sig.sapp.org/include/sigInfo/Convert.h
 // Syntax:        C++ 
@@ -54,10 +56,14 @@ class Convert {
                                                   int timebase = 1);
       static double    kernToDuration            (const char* aKernString);
       static RationalNumber kernToDurationR      (const char* aKernString);
+      static double    kernToDurationNoDots      (const char* aKernString);
+      static RationalNumber kernToDurationNoDotsR (const char* aKernString);
       static double    kernTimeSignatureTop      (const char* aKernString);
       static double    kernTimeSignatureBottomToDuration   
                                                  (const char* aKernString);
       static int       kernToDiatonicPitch       (const char* buffer);
+      static int       kernToDiatonicPitchClass  (const char* buffer);
+      static int       kernClefToBaseline        (const char* buffer);
       static char*     musePitchToKernPitch      (char* kernOutput, const
                                                     char* museInput);
       static char*     museClefToKernClef        (char* kernOutput, 
@@ -91,6 +97,7 @@ class Convert {
       static SigCollection<int> keyToScaleDegrees (int aKey, int aMode);
       static int       museToBase40               (const char* pitchString);
       static int       base40ToScoreVPos          (int pitch, int clef);
+      static char*     base40ToMuse               (int base40, char* buffer);
       static int       base40ToDiatonic           (int pitch);
       static char*     base40ToIntervalAbbr       (char* output, 
                                                    int base40value);
@@ -114,7 +121,21 @@ class Convert {
       static double    kotoToDuration             (const char* aKotoString);
       static RationalNumber kotoToDurationR       (const char* aKotoString);
 
+   // convsions related to serial interval descriptions
+      static const char* base12ToTnSetName        (Array<int>& base12);
+      static void      base12ToTnNormalForm       (Array<int>& tnorm, 
+                                                   Array<int>& base12);
+      static void      base12ToNormalForm         (Array<int>& nform, 
+                                                   Array<int>& base12);
+      static void      base40ToIntervalVector     (Array<int>& iv,  
+                                                      Array<int>& base40);
+      static void      base12ToIntervalVector     (Array<int>& iv,  
+                                                      Array<int>& base12);
+
    protected:
+      // findBestNormalRotation used with bse12ToNormalForm
+      static int     findBestNormalRotation     (Array<int>& input, int asize, 
+                                                 Array<int>& choices);
 
       static int     calculateInversion         (int aType, int bassNote, 
                                                     int root);

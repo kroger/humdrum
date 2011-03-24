@@ -397,4 +397,4 @@ Array<type> Array<type>::operator/(const Array<type>& anArray) const {
 
 
 
-// md5sum: 22ff238f1ccb1e4cb517a1e9259227bb Array.cpp [20100511]
+// md5sum: 3ae3712797d55daae26363fb93ff2c84 Array.cpp [20110214]

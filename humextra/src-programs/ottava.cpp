@@ -2,8 +2,8 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Oct 25 20:55:49 PDT 2004
 // Last Modified: Mon Oct 25 20:55:53 PDT 2004
-// Filename:      ...sig/examples/all/8va.cpp
-// Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/8va.cpp
+// Filename:      ...sig/examples/all/ottava.cpp
+// Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/ottava.cpp
 // Syntax:        C++; museinfo
 //
 // Description:   Convert ottava sections between sounding and score forms.
@@ -406,4 +406,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 18278008198c03ca324a8b6aff558c04 ottava.cpp [20050403]
+// md5sum: c4481c6932f208dde76d06b4c1d8ae0e ottava.cpp [20110215]

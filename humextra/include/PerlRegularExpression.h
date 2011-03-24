@@ -48,6 +48,11 @@ class PerlRegularExpression {
       void tr                       (Array<char>& inout, 
 		                     const char* inputlist, 
 		                     const char* outputlist);
+      static int getTokens          (Array<Array<char> >& output, 
+                                     const char* separator, 
+                                     const char* input);
+      static int getTokensWithEmpties(Array<Array<char> >& output, 
+                                     const char* separator, const char* input);
 
       void initializeSearch         (void);
       void initializeSearch         (const char* searchstring);

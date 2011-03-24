@@ -2,7 +2,8 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu Apr 11 12:33:09 PDT 2002
 // Last Modified: Fri Apr 12 18:13:46 PDT 2002
-// Last Modified: Sat May 12 17:18:03 PDT 2007 (added invert)
+// Last Modified: Sat May 12 17:18:03 PDT 2007 added invert
+// Last Modified: Sun Feb 20 18:05:23 PST 2011 added ostream
 // Filename:      ...sig/maint/code/base/PixelColor/PixelColor.h
 // Web Address:   http://sig.sapp.org/include/sigBase/PixelColor.h
 // Documentation: http://sig.sapp.org/doc/classes/PixelColor
@@ -75,7 +76,7 @@ class PixelColor {
       void         writePpm6      (ostream& out);
       void         writePpm3      (ostream& out);
 
-   protected:
+   public:
       uchar   Red; 
       uchar   Green;
       uchar   Blue;
@@ -87,6 +88,9 @@ class PixelColor {
 };
 
 
+
+// for use with P3 ASCII pnm images: print red green blue triplet.
+ostream& operator<<(ostream& out, PixelColor apixel);
 
 #endif  /* _PIXELCOLOR_H_INCLUDED */
 

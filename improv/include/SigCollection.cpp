@@ -185,7 +185,7 @@ type* SigCollection<type>::pointer(void) {
 //
 
 template<class type>
-type* SigCollection<type>::getBase(void) {
+type* SigCollection<type>::getBase(void) const {
    return this->array;
 }
 

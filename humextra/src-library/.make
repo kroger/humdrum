@@ -22,6 +22,9 @@ ln -s $SRCBASE/sigBase/PixelColor.cpp
 ln -s $SRCBASE/sigBase/EnvelopeString.cpp
 ln -s $SRCBASE/sigBase/PlotData.cpp
 ln -s $SRCBASE/sigBase/PlotFigure.cpp
+ln -s $SRCBASE/sigBase/Array-typed.cpp
+ln -s $SRCBASE/sigBase/SigString.cpp
+ln -s $SRCBASE/sigBase/CheckSum.cpp
 
 
 # classes borrowed from sigControl:
