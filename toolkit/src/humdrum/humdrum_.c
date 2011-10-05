@@ -13,7 +13,7 @@
 #ifdef __MSDOS__
 #include <alloc.h>
 #else
-#include <malloc.h>
+#include <sys/malloc.h>
 #endif
 
 #include <stdlib.h>

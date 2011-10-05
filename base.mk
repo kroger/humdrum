@@ -11,6 +11,8 @@ SYSTEM = $(shell uname -s)
 
 ifeq ($(SYSTEM), Linux)
 	PROJ = $(NAME)
+else ifeq ($(SYSTEM), Darwin)
+	PROJ = $(NAME)
 else ifeq ($(findstring CYGWIN,$(SYSTEM)), CYGWIN)
 	PROJ = $(NAME).exe
 endif
