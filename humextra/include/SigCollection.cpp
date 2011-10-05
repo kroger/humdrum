@@ -218,11 +218,12 @@ long SigCollection<type>::getSize(void) const {
 //////////////////////////////
 //
 // SigCollection::last --
+//      default value: index = 0
 //
 
 template<class type>
-type& SigCollection<type>::last(void) {
-   return this->array[getSize()-1];
+type& SigCollection<type>::last(int index) {
+   return this->array[getSize()-1-abs(index)];
 }
 
 

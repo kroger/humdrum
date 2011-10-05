@@ -108,7 +108,7 @@ void setTempo(MidiFile& midifile, int index, double& tempo) {
    static int count = 0;
    count++;
 
-   _MFEvent& mididata = midifile.getEvent(0, index);
+   MFEvent& mididata = midifile.getEvent(0, index);
 
    int microseconds = 0;
    microseconds = microseconds | (mididata.data[3] << 16);
@@ -193,4 +193,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 13de7dccddff85c7a6e36d51e7dbbdcf midi2text.cpp [20050403]
+// md5sum: 6228e3df0855cfa017d06dd9a0c498e4 midi2text.cpp [20110711]

@@ -262,7 +262,7 @@ void processRecords(HumdrumFile& infile) {
                } else if (ivQ) {
                   cout << "**iv";
                } else if (infoQ) {
-                  cout << "**desc";
+                  cout << "**description";
                } else {
                   cout << "**tnt";
                }
@@ -764,7 +764,7 @@ const char* getDescription(const char* tntype) {
    }
    switch (cardinality) {
       case 0:
-         if (strcmp(tntype, "0-1") == 0)	return "Null set";
+         if (strcmp(tntype, "0-1") == 0)	return "Rest";
          break;
 
       case 1:
@@ -1046,4 +1046,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 5b1b664836a0c2818be4533648f0bd7e tntype.cpp [20110323]
+// md5sum: 81901c7ec2a38645891dc8ea30363c40 tntype.cpp [20110325]

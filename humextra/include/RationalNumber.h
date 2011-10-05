@@ -40,6 +40,7 @@ class RationalNumber {
       RationalNumber operator/=  (const RationalNumber &r);
 
       int            operator==  (const RationalNumber &r) const;
+      int            isEqualTo   (int top, int bot) const;
       int            operator!=  (const RationalNumber &r) const;
       int            operator>   (const RationalNumber &r) const;
       int            operator<   (const RationalNumber &r) const;

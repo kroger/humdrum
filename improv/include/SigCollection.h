@@ -45,7 +45,7 @@ class SigCollection {
       type&     operator[]        (int arrayIndex);
       type      operator[]        (int arrayIndex) const;
       void      grow              (long growamt = -1);
-      type&     last              (void);
+      type&     last              (int index = 0);
       int       increase          (int addcount = 1);
 
 

@@ -116,6 +116,26 @@ void MuseRecordBasic::clear(void) {
 
 
 
+/////////////////////////////
+//
+// MuseRecordBasic::isEmpty -- returns true if only spaces on line
+//
+
+int MuseRecordBasic::isEmpty(void) {
+   int i;
+   for (i=0; i<recordString.getSize(); i++) {
+      if (!isprint(recordString[i])) {
+         continue;
+      }
+      if (!isspace(recordString[i])) {
+         return 0;
+      }
+   }
+   return 1;
+}
+
+
+
 //////////////////////////////
 //
 // MuseRecordBasic::extract -- extracts the character columns from the

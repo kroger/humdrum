@@ -1,11 +1,12 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu May  6 17:15:41 PDT 2000
-// Last Modified: Thu Jun 29 00:11:48 PDT 2000 (updated to museinfo 1.1)
-// Last Modified: Thu Jun 29 00:11:48 PDT 2000 (added shorten options)
-// Last Modified: Wed May 27 16:19:29 EDT 2009 (added more keyboard commands)
-// Last Modified: Thu Jun  4 10:24:13 EDT 2009 (added colorizing)
-// Last Modified: Fri Jun 12 18:25:00 PDT 2009 (added muting/hiding/marking)
+// Last Modified: Thu Jun 29 00:11:48 PDT 2000 updated to museinfo 1.1
+// Last Modified: Thu Jun 29 00:11:48 PDT 2000 added shorten options
+// Last Modified: Wed May 27 16:19:29 EDT 2009 added more keyboard commands
+// Last Modified: Thu Jun  4 10:24:13 EDT 2009 added colorizing
+// Last Modified: Fri Jun 12 18:25:00 PDT 2009 added muting/hiding/marking
+// Last Modified: Thu Mar 24 04:22:03 PDT 2011 fixes for 64-bit compiling
 // Filename:      ...sig/doc/examples/all/hplay/hplay.cpp
 // Syntax:        C++ 
 //
@@ -1010,9 +1011,9 @@ void processNotes(HumdrumRecord& record) {
                continue;
             }
 
-            accentQ = (int)strchr(buffer, '^');
-            sforzandoQ = (int)strchr(buffer, 'z');
-            staccatoQ = (int)strchr(buffer, '\'');
+            accentQ    = strchr(buffer, '^')  == NULL? 0 : 1;
+            sforzandoQ = strchr(buffer, 'z')  == NULL? 0 : 1;
+            staccatoQ  = strchr(buffer, '\'') == NULL? 0 : 1;
             note.setChannel(0);
             note.setKey(pitch);
             note.setOnTime(t_time);

@@ -1,7 +1,7 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu Jun 11 17:28:22 PDT 2009
-// Last Modified: Thu Jun 11 17:28:26 PDT 2009
+// Last Modified: Thu Mar 24 03:11:39 PDT 2011 some fixes for 64-bit compiling
 // Filename:      ...sig/code/control/MidiInPort/linux/MidiInPort_osx.cpp
 // Web Address:   http://sig.sapp.org/src/sig/MidiInPort_osx.cpp
 // Syntax:        C++ 
@@ -757,7 +757,7 @@ void improvReadProc(const MIDIPacketList *packetList, void* readProcRefCon,
    if (zeroSigTime < 0) {
       zeroSigTime = MidiInPort_osx::midiTimer.getTime();
    }
-   int port = (int)(readProcRefCon);
+   size_t port = (size_t)(readProcRefCon);
    if (port >= 0 && port < MidiInPort_osx::numDevices) {
       if (MidiInPort_osx::pauseQ[port]) {
          return;

@@ -983,7 +983,6 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
             } 
          }
 
-sout << "!! YYYYYY\n";
          // make sure that both lines do not contain *v spine indicators
          // should also check for *^, but that can be done later ...
          int ahasv = 0;
@@ -2629,10 +2628,22 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
    }
 
    fixIncompleteBarMeterR(meterbeats, timebaseC);
-   // fixIrritatingPickupProblem();
+   fixIrritatingPickupProblem();
    rhythms.setSize(rhythmsR.getSize());
    for (i=0; i<rhythms.getSize(); i++) {
-      rhythms[i] = rhythmsR[i].getNumerator() * rhythmsR[i].getDenominator();
+      // cout << "XRHYTHM = " << rhythmsR[i] << endl;
+
+      if (ispoweroftwo(rhythmsR[i].getNumerator())) {
+         // since the numerator of the rhythmic value is a power of
+         // two, the denominator can be ignored since the numerator
+         // alone controls the minimum rhythmic unit with respect to
+         // the whole note.
+         rhythms[i] = rhythmsR[i].getNumerator();
+      } else {
+         // this will have to be thought about some more
+         rhythms[i] = rhythmsR[i].getNumerator() * rhythmsR[i].getDenominator();
+      }
+
       rhythmsR[i] = rhythms[i];
    } 
    minrhythm = findlcm(rhythms);
@@ -2654,6 +2665,19 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
 
    // this will eventually replace minrhythm:
    minrhythmR = getMinimumRationalRhythm(rhythmsR);
+}
+
+
+///////////////////////////////
+//
+// ispoweroftwo --
+//
+
+int HumdrumFile::ispoweroftwo(int value) {
+   if (value < 0) {
+      return 0;
+   }
+   return !(value & (value - 1));
 }
 
 
@@ -2683,6 +2707,7 @@ RationalNumber HumdrumFile::getMinimumRationalRhythm(
    Array<int> singler;
    singler.setSize(rhythms.getSize());
    for (i=0; i<rhythms.getSize(); i++) {
+      // cout << "YRHYTHM = " << rhythms[i] << endl;
       singler[i] = rhythms[i].getNumerator() * rhythms[i].getDenominator();
    }
 
@@ -2752,7 +2777,6 @@ void HumdrumFile::fixIrritatingPickupProblem(void) {
          return;
       }
    }
-
    int i;
    RationalNumber sum = 0;
    for (i=bari-1; i>=0; i--) {
@@ -2778,9 +2802,24 @@ void HumdrumFile::spaceEmptyLines(void) {
    index.setSize(0);
 
    int i;
+   int q;
+   int valid;
    for (i=0; i<getNumLines(); i++) {
       if (getType(i) == E_humrec_data) {
-         index.append(i);
+         // if the line has grace notes, ignore it.
+         valid = 1;
+         for (q=0; q<(*this)[i].getFieldCount(); q++) {
+            if (!(*this)[i].isExInterp(q, "**kern")) {
+               continue;
+            }
+            if (strchr((*this)[i][q], 'q') != NULL) {
+               valid = 0;
+               break;
+            }
+         }
+         if (valid != 0) {
+            index.append(i);
+         }
       } else if (getType(i) == E_humrec_data_measure) {
          // keep track of barlines so that the spacing does not occur 
          // across barlines
@@ -2803,9 +2842,13 @@ void HumdrumFile::spaceEmptyLines(void) {
          while ((j<index.getSize()) && ((*this)[index[j]].getDuration()==0)
                 && ((*this)[index[j]].getType() != E_humrec_data_measure)
                ) {
+
             count++;
             j++;
          }
+//         if (valid == 0) {
+//            continue;
+//         }
          // newduration = (*this)[index[i-1]].getDuration() / (count+1.0);
          newduration = (*this)[index[i-1]].getDurationR() / (count+1);
          basebeat = (*this)[index[i-1]].getBeatR();

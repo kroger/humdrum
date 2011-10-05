@@ -1,21 +1,22 @@
 // Creation Date: Mon Jan 26 08:53:14 PST 2004
-// Last Modified: Fri Apr  9 19:02:18 PDT 2004 (rhythmic feature extraction)
-// Last Modified: Mon Apr 12 14:05:52 PDT 2004 (adding more rhythm features)
-// Last Modified: Fri Apr 16 18:01:03 PDT 2004 (added directory processing)
-// Last Modified: Sun Aug  8 18:44:36 PDT 2004 (added more rhythm features)
-// Last Modified: Thu Oct 30 10:38:19 PST 2008 (closedir fix for OSX)
-// Last Modified: Wed Jul  1 16:11:07 PDT 2009 (added polyphonic extraction)
-// Last Modified: Mon Aug 30 13:57:51 PDT 2010 (3... rhythm disallowed in dur)
-// Last Modified: Mon Aug 30 13:57:51 PDT 2010 (-2147483648 rhythm --> X)
-// Last Modified: Wed Sep  1 13:37:32 PDT 2010 (added metric position)
-// Last Modified: Sun Sep 12 21:01:37 PDT 2010 (added bibliographic indexing)
-// Last Modified: Fri Nov 12 07:22:40 PST 2010 (added instrument name tag)
-// Last Modified: Sun Nov 21 16:15:48 PST 2010 (add rest boundary marker)
-// Last Modified: Sat Nov 27 17:23:58 PST 2010 (added -D and -d options)
-// Last Modified: Thu Jan 13 03:15:14 PST 2011 (renamed themebuilderx -> tindex)
-// Last Modified: Sun Jan 16 06:36:42 PST 2011 (chaned default behavior to -a)
-// Last Modified: Tue Jan 18 08:36:29 PST 2011 (added --verbose option)
-// Last Modified: Thu Feb 24 17:35:31 PST 2011 (added --file option)
+// Last Modified: Fri Apr  9 19:02:18 PDT 2004 rhythmic feature extraction
+// Last Modified: Mon Apr 12 14:05:52 PDT 2004 adding more rhythm features
+// Last Modified: Fri Apr 16 18:01:03 PDT 2004 added directory processing
+// Last Modified: Sun Aug  8 18:44:36 PDT 2004 added more rhythm features
+// Last Modified: Thu Oct 30 10:38:19 PST 2008 closedir fix for OSX
+// Last Modified: Wed Jul  1 16:11:07 PDT 2009 added polyphonic extraction
+// Last Modified: Mon Aug 30 13:57:51 PDT 2010 3... rhythm disallowed in dur
+// Last Modified: Mon Aug 30 13:57:51 PDT 2010 -2147483648 rhythm --> X
+// Last Modified: Wed Sep  1 13:37:32 PDT 2010 added metric position
+// Last Modified: Sun Sep 12 21:01:37 PDT 2010 added bibliographic indexing
+// Last Modified: Fri Nov 12 07:22:40 PST 2010 added instrument name tag
+// Last Modified: Sun Nov 21 16:15:48 PST 2010 add rest boundary marker
+// Last Modified: Sat Nov 27 17:23:58 PST 2010 added -D and -d options
+// Last Modified: Thu Jan 13 03:15:14 PST 2011 renamed themebuilderx -> tindex
+// Last Modified: Sun Jan 16 06:36:42 PST 2011 chaned default behavior to -a
+// Last Modified: Tue Jan 18 08:36:29 PST 2011 added --verbose option
+// Last Modified: Thu Feb 24 17:35:31 PST 2011 added --file option
+// Last Modified: Sat Apr  2 18:04:05 PDT 2011 added L=Long & B=Breve for durs.
 // Filename:      ...museinfo/examples/all/tindex.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/tindex.cpp
 // Syntax:        C++; museinfo
@@ -38,7 +39,7 @@
 // Added rhythmic markers:
 //  ~    = duration gross contour
 //  ^    = duration refined contour
-//  !    = duration (IOI)
+//  ;    = duration (IOI)
 //  &    = beat level
 //  @    = metric gross contour
 //  `    = metric refined contour
@@ -66,6 +67,7 @@
 #define R_METRIC_GROSS_CONTOUR_MARKER     '@'
 #define R_METRIC_REFINED_CONTOUR_MARKER   '`'
 
+#define RESTDUR -1000
 
 #include "humdrum.h"
 #include "PerlRegularExpression.h"
@@ -234,6 +236,7 @@ int       bibsort                (const void* a, const void* b);
 void      processBibRecords      (ostream& out, HumdrumFile &infile,
                                   const char* bibfilter);
 void      printInstrument        (HumdrumFile& infile, int track);
+char      identifyLongMarker     (HumdrumFile& infile);
 
 
 // User interface variables:
@@ -599,7 +602,7 @@ int getMaxLayer(HumdrumFile& infile, int track) {
 ///////////////////////////////
 //
 // printInstrument --  print the instrument name for the track
-//    which is stored in a *I: record before the first data line
+//    which is stored in a *I" record before the first data line
 //    int that track.
 //
 
@@ -617,7 +620,7 @@ void printInstrument(HumdrumFile& infile, int track) {
          if (track != infile[i].getPrimaryTrack(j)) {
             continue;
          }
-         if (pre.search(infile[i][j], "^\\*I:(.*)$", "")) {
+         if (pre.search(infile[i][j], "^\\*I\"(.*)$", "")) {
             Array<char> iname;
             iname.setSize(strlen(pre.getSubmatch(1)) + 1);
             strcpy(iname.getBase(), pre.getSubmatch());
@@ -892,7 +895,9 @@ void printRefinedContourRhythm(Array<double>& durations) {
 
 //////////////////////////////
 //
-// printDuration --
+// printDuration -- [2011/04/02] change code for Longa from 00 to L.
+//     and Breve from 0 to B so that grace notes do not interact with
+//     breve duration.
 //
 
 void printDuration(Array<double>& durations) {
@@ -909,7 +914,17 @@ void printDuration(Array<double>& durations) {
          temps << "R ";
          continue;
       }
-      Convert::durationToKernRhythm(buffer, durations[i]);
+
+      if (durations[i] == 16.0) {
+         strcpy(buffer, "L");
+      } else if (durations[i] == 8.0) {
+         strcpy(buffer, "B");
+      } else if (durations[i] == 12.0) {
+         strcpy(buffer, "B.");
+      } else {
+         Convert::durationToKernRhythm(buffer, durations[i]);
+      }
+
       if (durations[i] > 0 && (buffer[0] == 'q')) {
          count = (int)durations[i];
          for (j=0; j<count; j++) {
@@ -1669,6 +1684,7 @@ void extractMetricSequence(Array<double>& metriclevels,
 //
 // extractDurationSequence -- Disallow 3... rhythms from being stored
 //    (equivalent to dotted half tied to eighth note?)
+//    Translate special "l" markers for longs into Long durations.
 //
 
 void extractDurationSequence(Array<double>& durations, HumdrumFile& infile, 
@@ -1677,6 +1693,7 @@ void extractDurationSequence(Array<double>& durations, HumdrumFile& infile,
    durations.setSize(10000);
    durations.setSize(0);
    durations.allowGrowth();
+   char longchar = identifyLongMarker(infile);
    double dur = 0;
    int i, j;
    int pitch = 0;
@@ -1754,7 +1771,7 @@ void extractDurationSequence(Array<double>& durations, HumdrumFile& infile,
                      break;
                   }
                   pitch = -1;
-                  dur   = -1.0;
+                  dur   = RESTDUR;
                   durations.append(dur);
                   break;
                }
@@ -1764,6 +1781,9 @@ void extractDurationSequence(Array<double>& durations, HumdrumFile& infile,
                   break;
                }
                dur = infile.getTiedDuration(i, j);
+               if (longchar && (strchr(infile[i][j], longchar) != NULL)) {
+                  dur = 16.0;
+               }
                if ((!graceQ) && (dur <= 0.0)) {
                   // for some reason grace note was not filtered before, 
                   // so filter it now.
@@ -1851,7 +1871,7 @@ void extractPitchSequence(Array<int>& pitches, HumdrumFile& infile,
                   // insert segmentation marker into the data
                   // since this desired layer does not continue
                   // directly from the last occurance of the layer 
-                  if (pitches.last() >= 0) {
+                  if (pitches.getSize() > 0 && pitches.last() >= 0) {
                      // only append segmentation marker if a 
                      // segmentation marker is not present in the
                      // pitch sequence already.
@@ -1882,7 +1902,7 @@ void extractPitchSequence(Array<int>& pitches, HumdrumFile& infile,
                   break;
                }
                if (strchr(notebuf, 'r') != NULL) {
-                  if (pitches.last() < 0) {
+                  if (pitches.getSize() > 0 && pitches.last() < 0) {
                      // already stored one rest, so ignore this one
                      break;
                   }
@@ -2195,6 +2215,34 @@ void fillIstnDatabase(Array<ISTN>& istndatabase, const char* istnfile) {
 
 //////////////////////////////
 //
+// identifyLongMarker --
+//
+//
+
+char identifyLongMarker(HumdrumFile& infile) {
+   int i;
+   PerlRegularExpression pre;
+   int hasLongQ = 0;
+   int longchar = 0;
+   for (i=infile.getNumLines()-1; i>=0; i--) {
+      if (!infile[i].isBibliographic()) {
+         continue;
+      }       
+      if (pre.search(infile[i][0], 
+            "^!!!RDF\\*\\*kern\\s*:\\s*([^\\s=])\\s*=.*long", "i")) {
+         hasLongQ = 1;
+         longchar = pre.getSubmatch(1)[0];
+         break;
+      }
+   }
+
+   return longchar;
+}
+
+
+
+//////////////////////////////
+//
 // example --
 //
 
@@ -2216,4 +2264,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: c87700cf8ae68c8697e29dcf088c9869 tindex.cpp [20110120]
+// md5sum: 3c81794d5f4c1cfdb04fd0840ba5c659 tindex.cpp [20110830]

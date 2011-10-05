@@ -1,8 +1,11 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Feb  3 16:03:55 PST 2008
-// Last Modified: Sat May 30 22:54:41 PDT 2009 (added -b option)
-// Last Modified: Tue Jun  9 00:55:43 PDT 2009 (added fill & trim)
+// Last Modified: Sat May 30 22:54:41 PDT 2009 added -b option
+// Last Modified: Tue Jun  9 00:55:43 PDT 2009 added fill & trim
+// Last Modified: Thu Apr 14 15:41:23 PDT 2011 fixed occasionaol ob1 err with -n
+// Last Modified: Sun May  1 10:32:02 PDT 2011 secondary key display
+//
 // Filename:      ...sig/examples/all/mkeyscape.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/mkeyscape.cpp
 // Syntax:        C++; museinfo
@@ -135,6 +138,7 @@ int       outlineQ     = 1;     // used with --no-outline
 int       numberQ      = 0;     // used with -n option
 int       trimQ        = 0;     // used with --trim option
 int       averageQ     = 0;     // used with --average option
+int       secondQ      = 0;     // used with --second option
 
 Array<int> channelfilter;       // used with -x option
 Array<const char*> colorindex;  // used with -c option
@@ -1329,11 +1333,12 @@ void printPPM(Array<Array<Array<HISTTYPE> > >& histograms,
 
 ///////////////////////////////
 //
-// printNumbers -- print Barline numbers as lines underneath
+// printNumbers -- print Barline numbers as ticks underneath
 //    the plot.
 //
 
 void printNumbers(HumdrumFile& infile, int numberheight, int numberwidth) {
+
    int i, j;
    Array<Array<int> > xaxis;
    xaxis.setSize(numberheight-1);
@@ -1389,7 +1394,7 @@ void printNumbers(HumdrumFile& infile, int numberheight, int numberwidth) {
       }
 
       int color;
-      if ((position >= 0) && (size > 0)) {
+      if ((position >= 0) && (position < numberwidth) && (size > 0)) {
          for (j=0; j<size; j++) {
             if (style == 0) {
                color = 24;
@@ -1676,6 +1681,15 @@ void identifyKeyDouble(Array<HISTTYPE>& histogram) {
 
    histogram[12] = besti;
    histogram[13] = secondbesti;
+
+   // if second-best key being displayed, switch order of values:
+   if (secondQ) {
+      int temp;
+      temp = histogram[12];
+      histogram[12] = histogram[13];
+      histogram[13] = temp;
+   }
+
 }
 
 
@@ -2248,6 +2262,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("t|transpose=i:0",  "Transposition by half-steps");
    opts.define("rotate=s:",        "Rotate color map (external transpose)");
    opts.define("s|segments=i:300", "The height in pixel of the output plot");
+   opts.define("sec|second=b",     "Display the second-best key region");
    opts.define("r|raw=b",          "Display the analyzed keys");
    opts.define("c|colorfile=s",    "key to color mapping specification");
    opts.define("l|legend=b",       "print color legend beneath plot");
@@ -2299,6 +2314,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    blankQ    =  opts.getBoolean("blank");
    fillQ     =  opts.getBoolean("fill");
    averageQ  = !opts.getBoolean("average");
+   secondQ   =  opts.getBoolean("second");
 	    
    trimQ     =  opts.getBoolean("trim");
    segments  =  opts.getInteger("segments");
@@ -2826,4 +2842,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 5459abb546c6533257f28d7652d33ce9 mkeyscape.cpp [20110308]
+// md5sum: 89d21d48d1e0d82af44f1bea35bc162b mkeyscape.cpp [20110602]

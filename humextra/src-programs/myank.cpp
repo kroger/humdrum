@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Dec 26 17:03:54 PST 2010
 // Last Modified: Fri Jan 14 17:06:32 PST 2011 (added --mark and --mdsep)
-// Last Midified: Wed Feb  2 12:13:11 PST 2011 (added *met extraction)
+// Last Modified: Wed Feb  2 12:13:11 PST 2011 (added *met extraction)
 // Filename:      ...sig/examples/all/myank.cpp 
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/myank.cpp
 // Syntax:        C++; museinfo
@@ -1225,7 +1225,7 @@ void reconcileStartingPosition(HumdrumFile& infile, int index2) {
 
 //////////////////////////////
 //
-// printStarting --
+// printStarting -- print header information before start of data.
 //
 
 void printStarting(HumdrumFile& infile) {
@@ -2002,4 +2002,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 7c75a993f481f5807df9a2bfacfd2db7 myank.cpp [20110206]
+// md5sum: 2dced61a874f2bdd683a2c8bd9ac94b7 myank.cpp [20110830]

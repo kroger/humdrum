@@ -522,33 +522,34 @@ void MuseRecord::setNoteheadShape(RationalNumber& duration) {
    RationalNumber note128th(1,32);
    RationalNumber note256th(1,64);
 
-   if (duration >= 32) {                // maxima
+   if (duration > 16) {                // maxima
       setNoteheadMaxima();
-   } else if (duration >= 16) {         // long
+   } else if (duration > 8) {          // long
       setNoteheadLong();
-   } else if (duration >= 8) {          // breve
+   } else if (duration > 4) {          // breve
       if (roundBreve) {
          setNoteheadBreveRound();
       } else {
          setNoteheadBreve();
       }
-   } else if (duration >= 4) {          // whole note
+   } else if (duration > 2) {           // whole note
       setNoteheadWhole();
-   } else if (duration >= 2) {          // half note
+   } else if (duration > 1) {           // half note
       setNoteheadHalf();
-   } else if (duration >= 1) {          // quarter note
+   } else if (duration > note8th) {     // quarter note
       setNoteheadQuarter();
-   } else if (duration >= note8th) {    // eighth note
+   } else if (duration >= note16th) {   // eighth note
       setNotehead8th();
-   } else if (duration >= note16th) {   // 16th note
+   } else if (duration >= note32th) {   // 16th note
       setNotehead16th();
-   } else if (duration >= note32th) {   // 32nd note
+   } else if (duration >= note64th) {   // 32nd note
       setNotehead32nd();
-   } else if (duration >= note64th) {   // 64th note
+   } else if (duration >= note128th) {  // 64th note
       setNotehead64th();
-   } else if (duration >= note128th) {  // 128th note
+   } else if (duration >= note256th) {  // 128th note
       setNotehead128th();
    } else if (duration >= note256th) {  // 256th note
+      // not allowing tuplets on the 256th note level.
       setNotehead256th();
    } else {
       cerr << "Error in duration: " << duration << endl;
@@ -572,29 +573,30 @@ void MuseRecord::setNoteheadShapeMensural(RationalNumber& duration) {
    RationalNumber note128th(1,32);
    RationalNumber note256th(1,64);
 
-   if (duration >= 32) {                // maxima
+   if (duration > 16) {                 // maxima
       setNoteheadMaxima();
-   } else if (duration >= 16) {         // long
+   } else if (duration > 8) {           // long
       setNoteheadLong();
-   } else if (duration >= 8) {          // breve
+   } else if (duration > 4) {           // breve
       setNoteheadBreve();
-   } else if (duration >= 4) {          // whole note
+   } else if (duration > 2) {           // whole note
       setNoteheadWholeMensural();
-   } else if (duration >= 2) {          // half note
+   } else if (duration > 1) {           // half note
       setNoteheadHalfMensural();
-   } else if (duration >= 1) {          // quarter note
+   } else if (duration > note8th) {     // quarter note
       setNoteheadQuarterMensural();
-   } else if (duration >= note8th) {    // eighth note
+   } else if (duration > note16th) {    // eighth note
       setNotehead8thMensural();
-   } else if (duration >= note16th) {   // 16th note
+   } else if (duration > note32th) {    // 16th note
       setNotehead16thMensural();
-   } else if (duration >= note32th) {   // 32nd note
+   } else if (duration > note64th) {    // 32nd note
       setNotehead32ndMensural();
-   } else if (duration >= note64th) {   // 64th note
+   } else if (duration > note128th) {   // 64th note
       setNotehead64thMensural();
-   } else if (duration >= note128th) {  // 128th note
+   } else if (duration > note256th) {   // 128th note
       setNotehead128thMensural();
    } else if (duration >= note256th) {  // 256th note
+      // don't allow tuplets on 256th note level.
       setNotehead256thMensural();
    } else {
       cerr << "Error in duration: " << duration << endl;

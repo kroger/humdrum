@@ -3,20 +3,21 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Mar 10 07:49:40 PST 2004
 // Last Modified: Thu Mar 18 23:06:15 PST 2004
-// Last Modified: Mon Mar 22 12:49:08 PST 2004 (started to add voics processing)
-// Last Modified: Sun Apr  4 23:17:05 PDT 2004 (added _NoteState class)
-// Last Modified: Tue May  4 18:27:40 PDT 2004 (some more articulations)
-// Last Modified: Wed May  5 22:46:52 PDT 2004 (suppressed printing of first
-//                                              barline when pickup notes).
-// Last Modified: Sun May 16 14:25:56 PDT 2004 (process multi-staff parts)
-// Last Modified: Thu Jun 17 01:14:04 PDT 2004 (fixed rest alignment in voice 1)
-// Last Modified: Sun Jun 27 16:57:06 PDT 2004 (add lyric translation)
-// Last Modified: Mon Sep 13 02:45:45 PDT 2004 (added basic cresc processing)
-// Last Modified: Fri Jul 25 16:22:10 PDT 2008 (adjusted newlineQ case)
-// Last Modified: Mon Sep 21 15:02:14 PDT 2009 (fixed cut-time identification)
-// Last Modified: Mon Sep 21 15:50:43 PDT 2009 (differentiate q and Q graces)
-// Last Modified: Mon Sep 21 16:27:49 PDT 2009 (removed elided slur ident.)
-// Last Modified: Sat Jun 26 16:53:21 PDT 2010 (added syllabic middle parsing)
+// Last Modified: Mon Mar 22 12:49:08 PST 2004 started to add voics processing
+// Last Modified: Sun Apr  4 23:17:05 PDT 2004 added _NoteState class
+// Last Modified: Tue May  4 18:27:40 PDT 2004 some more articulations
+// Last Modified: Wed May  5 22:46:52 PDT 2004 suppressed printing of first
+//                                              barline when pickup notes
+// Last Modified: Sun May 16 14:25:56 PDT 2004 process multi-staff parts
+// Last Modified: Thu Jun 17 01:14:04 PDT 2004 fixed rest alignment in voice 1
+// Last Modified: Sun Jun 27 16:57:06 PDT 2004 add lyric translation
+// Last Modified: Mon Sep 13 02:45:45 PDT 2004 added basic cresc processing
+// Last Modified: Fri Jul 25 16:22:10 PDT 2008 adjusted newlineQ case
+// Last Modified: Mon Sep 21 15:02:14 PDT 2009 fixed cut-time identification
+// Last Modified: Mon Sep 21 15:50:43 PDT 2009 differentiate q and Q graces
+// Last Modified: Mon Sep 21 16:27:49 PDT 2009 removed elided slur ident.
+// Last Modified: Sat Jun 26 16:53:21 PDT 2010 added syllabic middle parsing
+// Last Modified: Sun Apr  3 08:24:08 PDT 2011 added ficta marks from parens
 //
 // Filename:      ...sig/include/sigInfo/MusicXmlFile.h
 // Web Address:   http://sig.sapp.org/include/sigInfo/MusicXmlFile.h
@@ -1639,6 +1640,7 @@ void MusicXmlFile::parseNote(CXMLObject* entry, int partnum, long& ticktime) {
    int duration = 0;
    int voice = 0;
    int pitch = 0;
+   int hasFicta = 0;
 
    int chord = 0;  // duration of the previous note found in the chord.
    int chordQ = 0;  // 1 if <chord> tag is present
@@ -1697,6 +1699,7 @@ void MusicXmlFile::parseNote(CXMLObject* entry, int partnum, long& ticktime) {
 
             pitch = parsePitch(element);
             // cout << "Base40 NOTE = " << pitch << endl;
+            hasFicta = parseFicta(element);
 
          } else if (element->GetName() == "lyric") {
 
@@ -1747,10 +1750,61 @@ void MusicXmlFile::parseNote(CXMLObject* entry, int partnum, long& ticktime) {
    }
    tempitem.voice     = voice;
    tempitem.pitch     = pitch;
+   tempitem.ficta     = hasFicta;   hasFicta = 0;
    tempitem.divisions = parsedivisions;
    partdata[partoffset[partnum]+staff].append(tempitem);
    
    ticktime += duration;
+}
+
+
+
+//////////////////////////////
+//
+// MusicXmlFile::parseFicta -- returns true if there is a ficta mark
+//    which is indicated in the MusicXML as an accidental in parentheses:
+//
+//      <note default-x="131">
+//        <pitch>
+//          <step>F</step>
+//          <alter>1</alter>
+//          <octave>4</octave>
+//        </pitch>
+//        <duration>16</duration>
+//        <voice>1</voice>
+//        <type>half</type>
+//        <accidental parentheses="yes">sharp</accidental>
+//
+
+int MusicXmlFile::parseFicta(CXMLObject* entry) {
+
+   CXMLObject* current;
+   CXMLElement* element;
+
+   int i;
+   while (entry != NULL) {
+      current = entry;
+
+      if (current->GetType() == xmlElement) {
+         element = (CXMLElement*)current;
+
+         if (element->GetName() == "accidental") {
+
+            for (i=0; i<element->GetAttributes().GetLength(); i++) {
+               if (element->GetAttributes().GetName(i) == "parentheses") {
+                  if (element->GetAttributes().GetValue(i) == "yes") {
+                     return 1;
+                  } 
+               }
+            }
+
+         }
+      }
+
+      entry = entry->GetNext();
+   }
+
+   return 0;
 }
 
 
@@ -3180,6 +3234,7 @@ int MusicXmlFile::printMeasureStyle(char* buffer, int staffno, int index) {
    int measureQ      = 0;   // true if barline is attached to a measure
    int iammeasure    = 0;
    int finalbar      = 0;
+   int thinthin      = 0;
    int ending        = 0;
    CXMLElement*        element;
    CXMLObject*         object;
@@ -3220,6 +3275,9 @@ int MusicXmlFile::printMeasureStyle(char* buffer, int staffno, int index) {
                         string = cdata->GetData();
                         if (strstr(string.c_str(), "light-heavy") != NULL) {
                            finalbar = 1;
+                        } else if (strstr(string.c_str(), "light-thin") 
+                              != NULL) {
+                           thinthin = 1;
                         }
                         break;
                      }
@@ -3260,6 +3318,9 @@ int MusicXmlFile::printMeasureStyle(char* buffer, int staffno, int index) {
                         string = cdata->GetData();
                         if (strstr(string.c_str(), "light-heavy") != NULL) {
                            finalbar = 1;
+                        } else if (strstr(string.c_str(), "light-light") 
+                              != NULL) {
+                           thinthin = 1;
                         }
                         break;
                      }
@@ -3317,6 +3378,10 @@ int MusicXmlFile::printMeasureStyle(char* buffer, int staffno, int index) {
 
    if (finalbar && ending) {
       strcat(buffer, "=");
+   }
+
+   if (thinthin) {
+      strcat(buffer, "||");
    }
 
    if (repeatforward && repeatback) {
@@ -3613,6 +3678,15 @@ void MusicXmlFile::getKernNoteProperties(_NoteState& ns, CXMLObject* object,
 
       // check for natural sign:
       if (element->GetName() == "accidental") {
+
+         for (i=0; i<element->GetAttributes().GetLength(); i++) {
+            if (element->GetAttributes().GetName(i) == "parentheses") {
+               if (element->GetAttributes().GetValue(i) == "yes") {
+                  ns.ficta = 1;
+               } 
+            }
+         }
+
          obj2 = element->Zoom();
          while (obj2 != NULL) {
             if (obj2->GetType() == xmlCharacterData) {
@@ -3938,6 +4012,11 @@ int MusicXmlFile::printKernNote(ostream& out, int staffno, int index,
    // print any explicit natural signs
    if (cs.natural) {
       out << "n";
+   }
+
+   // print any ficta marking
+   if (cs.ficta) {
+      out << "i";
    }
 
    // canonical item #10: glissando marker

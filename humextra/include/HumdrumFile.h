@@ -218,6 +218,7 @@ class HumdrumFile : public HumdrumFileBasic {
       RationalNumber pickupdur; // duration of a pickup measure
 
    private:
+      int            ispoweroftwo            (int value);
       RationalNumber getMinimumRationalRhythm(Array<RationalNumber>& rhythms);
       static int intcompare(const void* a, const void* b);
       void   convertKernStringToArray(Array<int>& array, const char* string);

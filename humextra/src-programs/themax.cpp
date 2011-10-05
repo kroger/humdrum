@@ -1,20 +1,21 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Oct 27 10:42:08 PST 2008
-// Last Modified: Fri Jun 26 11:23:35 PDT 2009 (converted from original version)
-// Last Modified: Thu Jul  2 15:59:04 PDT 2009 (intial PCRE implementation)
-// Last Modified: Wed Aug 25 15:55:23 PDT 2010 (made -t input case insensitive)
-// Last Modified: Thu Aug 26 14:32:01 PDT 2010 (add cleaning for pitch queries)
-// Last Modified: Wed Sep  1 15:43:34 PDT 2010 (added metric position)
-// Last Modified: Thu Sep  2 17:40:01 PDT 2010 (added feature linking)
-// Last Modified: Fri Sep  3 13:31:22 PDT 2010 (added --count feature)
-// Last Modified: Wed Sep  8 19:24:08 PDT 2010 (added --limit)
-// Last Modified: Mon Nov 22 09:24:00 PST 2010 (added -B)
-// Last Modified: Wed Nov 24 17:59:20 PST 2010 (fixed -p/--location interaction)
-// Last Modified: Sun Nov 28 13:03:28 PST 2010 (added -f option)
-// Last Modified: Tue Jan 11 19:32:58 PST 2011 (added --location2 option)
-// Last Modified: Mon Jan 17 04:12:01 PST 2011 (switched --loc and --loc2)
-// Last Midified: Tue Jan 18 08:16:26 PST 2011 (added --overlap option)
+// Last Modified: Fri Jun 26 11:23:35 PDT 2009 converted from original version
+// Last Modified: Thu Jul  2 15:59:04 PDT 2009 intial PCRE implementation
+// Last Modified: Wed Aug 25 15:55:23 PDT 2010 made -t input case insensitive
+// Last Modified: Thu Aug 26 14:32:01 PDT 2010 add cleaning for pitch queries
+// Last Modified: Wed Sep  1 15:43:34 PDT 2010 added metric position
+// Last Modified: Thu Sep  2 17:40:01 PDT 2010 added feature linking
+// Last Modified: Fri Sep  3 13:31:22 PDT 2010 added --count feature
+// Last Modified: Wed Sep  8 19:24:08 PDT 2010 added --limit
+// Last Modified: Mon Nov 22 09:24:00 PST 2010 added -B
+// Last Modified: Wed Nov 24 17:59:20 PST 2010 fixed -p/--location interaction
+// Last Modified: Sun Nov 28 13:03:28 PST 2010 added -f option
+// Last Modified: Tue Jan 11 19:32:58 PST 2011 added --location2 option
+// Last Modified: Mon Jan 17 04:12:01 PST 2011 switched --loc and --loc2
+// Last Midified: Tue Jan 18 08:16:26 PST 2011 added --overlap option
+// Last Midified: Sat Apr  2 18:01:12 PDT 2011 added L=long B=breve durations
 // Filename:      ...museinfo/examples/all/themax.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/themax.cpp
 // Syntax:        C++; museinfo
@@ -43,7 +44,7 @@
 // Added rhythmic markers:
 //  ~    = duration gross contour
 //  ^    = duration refined contour
-//  !    = duration (IOI)
+//  ;    = duration (IOI)
 //  &    = beat level
 //  @    = metric gross contour
 //  `    = metric refined contour
@@ -213,7 +214,7 @@ int         boundaryQ    = 1;       // used with -B option
 int         shortQ       = 0;       // used with --short option
 int         tonicQ       = 0;       // used with -t option
 int         diatonicQ    = 0;       // used with -D option
-// const char* tonicstring  = "";      // used with -t option
+// const char* tonicstring  = "";   // used with -t option
 Array<char> tonicstring;            // used with -t option
 int         meterQ       = 0;       // used with -T option
 const char* meterstring  = "";      // used with -T option
@@ -658,7 +659,6 @@ void removeBoundaryCharacters(string& line) {
 //
 
 int checkLink(string& line) {
-
    Array<int> target;
    target.setSize(0);
 
@@ -1602,6 +1602,7 @@ void getSeparatorLocationINT(Array<int>& positions, string& line,
 void getSeparatorLocationFET(Array<int>& positions, string& line, 
       Array<char>& feature, char searchanchor, Array<int>& checklocs, 
       char separator) {
+
    positions.setSize(0);
    PerlRegularExpression pre;
    Array<char> startmarker;
@@ -1611,7 +1612,10 @@ void getSeparatorLocationFET(Array<int>& positions, string& line,
    appendString(startmarker, ")");
    pre.search(line.c_str(), startmarker.getBase(), "");
    int startindex = pre.getSubmatchEnd(1);
-   int i;
+   int i, j;
+
+   Array<int> temppos(1000);
+   temppos.setGrowth(100000);
 
    // If checklocs is non-zero, then only check the feature
    // at the given locations; otherwise, check every position.
@@ -1654,9 +1658,16 @@ void getSeparatorLocationFET(Array<int>& positions, string& line,
       pokey.initializeSearchAndStudy(feature.getBase());
       const char* str = line.c_str();
       int location = 0;
+      int lastpos = 0;
       i = startindex;
       int targetindex = 0;
       int tsize = checklocs.getSize();
+
+      // currently rest separator is either nothing or a space
+      PerlRegularExpression rest;
+      rest.setAnchor();
+      rest.initializeSearchAndStudy("(R *)");
+
       while ((str[i] != '\0') && (str[i] != '\t') && (targetindex < tsize)) {
          // Increase the target location if it is smaller than 
          // the current search location.
@@ -1670,15 +1681,31 @@ void getSeparatorLocationFET(Array<int>& positions, string& line,
             location++;
             continue;
          }
-         if (location == checklocs[targetindex]) {
-            if (pokey.search(str+i)) {
-               positions.append(location);
-               targetindex++;
+         if (rest.search(str+i)) {
+            i += rest.getSubmatchEnd(1) - rest.getSubmatchStart(1);
+            continue;
+         }
+         if (pokey.search(str+i)) {
+            //for (j=lastpos; j<checklocs.getSize(); j++) {
+
+            for (j=0; j<checklocs.getSize(); j++) {
+               if (location == checklocs[j]) {
+                  positions.append(location);
+                  lastpos = j;
+                  break;
+               }
+               if (location < checklocs[j]) {
+                  // not in checklocs (provided that checklocs is sorted)
+                  break;
+               }
             }
          }
+         targetindex++;
+
          i++;
       }
    }
+
 
    if (verbose2Q) {
       cout << "ORIGINAL LINE: " << line << endl;
@@ -1951,7 +1978,9 @@ void appendToSearchString(Array<char>& ss, const char* string,
    //
    //
    if (!anchor) {
-      appendString(ss, "[^\\t]*?");
+// The ? causes problems when searching for P1 in -I option:
+//      appendString(ss, "[^\\t]*?");
+      appendString(ss, "[^\\t]*");
    }
    appendString(ss, string);
 
@@ -2435,10 +2464,10 @@ void cleanRduration(Array<char>& data) {
    PerlRegularExpression pre;
 
    // remove invalid characters
-   pre.sar(data, "[^?Rr0-9Dd,.{}()|*+\\sxX]", "", "g");
+   pre.sar(data, "[^LlBb?Rr0-9Dd,.{}()|*+\\sxX]", "", "g");
 
    // change dots into "d", and "x" into "X":
-   pre.tr(data, "r.Dx", "RddX");
+   pre.tr(data, "r.Dxlb", "RddXLB");
    
    // convert "X" into the equivalent of regular-expression dot:
    pre.sar(data, "X", " \\d+d* ", "g");
@@ -2648,7 +2677,7 @@ void cleanP12toneInterval(Array<char>& data) {
    }
 
    // change plus and minus into "p" and "m"
-   pre.tr(data, "PM+-r", "pmpmR");
+   pre.tr(data, "PM+\\-r", "pmpmR");
 
    // change any m0 to p0:
    pre.sar(data, "m0", "p0", "g");
@@ -2809,6 +2838,9 @@ void cleanPmusicalInterval(Array<char>& data) {
          "", "");
    }
 
+   // prevent perfect unison from being mixed with P15, etc.
+   pre.sar(data, "1(?!\\d)", "1(?!\\d)", "gi");
+
    data.setSize(0);
    int i;
    for (i=0; i<pieces.getSize(); i++) {
@@ -2888,7 +2920,7 @@ void prepareInterval(Array<char>& data) {
         // do not add an interval direction for P1
       } else {
          direction.setSize(0);
-         appendString(direction, "[Xx]");
+         appendString(direction, "[Xx]?");
       }
    }
 
@@ -2932,6 +2964,11 @@ void prepareInterval(Array<char>& data) {
       }
    }
 
+
+   if (pre.search(data, "(?<!\\d)1$")) {
+      appendString(data, "\\t*");
+   }
+   // ggg
 
 }
 
@@ -3282,4 +3319,4 @@ void processKernString(const char* astring) {
 }
 
 
-// md5sum: fe89d31c39ddd00904eb095e795debce themax.cpp [20110113]
+// md5sum: 441054a411f23117bda1fb567e7df1b0 themax.cpp [20110711]

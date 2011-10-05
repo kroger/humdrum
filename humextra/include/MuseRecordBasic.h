@@ -35,6 +35,7 @@ class MuseRecordBasic {
                        ~MuseRecordBasic    ();
   
       void              clear              (void);
+      int               isEmpty            (void);
       void              cleanLineEnding    (void);
       void              extract            (char* output, int start, int stop);
       char&             getColumn          (int index);

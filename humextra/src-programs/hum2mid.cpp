@@ -549,6 +549,7 @@ void assignTracks(HumdrumFile& infile, Array<int>& trackchannel) {
    int inst = -1;
    int ptrack = 0;
    int instcount = 0;
+   PerlRegularExpression pre2;
 
    VolumeMapping.setSize(infile.getMaxTracks()+1);
    VolumeMapping.setAll(64);
@@ -578,7 +579,9 @@ void assignTracks(HumdrumFile& infile, Array<int>& trackchannel) {
                   int i;
                   inst = -1;
                   for (i=0; i<TimbreName.getSize(); i++) {
-                     if (TimbreName[i] == targetname) {
+                     if (pre2.search(targetname.getBase(), 
+                           TimbreName[i].getBase(), "i")) {
+                     // if (TimbreName[i] == targetname) {
                         inst = TimbreValue[i];
                         VolumeMapping[track] = TimbreVolume[i];
                         break;
@@ -701,38 +704,59 @@ double checkForTempo(HumdrumRecord& record) {
 
       // mensural tempo scalings
       // O           = 58 bpm
+      // C           = 48 bpm
       // C|          = 72 bpm
+      // O2          = 75 bpm
+      // C2          = 75 bpm
       // O|          = 76 bpm
       // C|3, 3, 3/2 = 110 bpm
+      // O/3         = 110 bpm
       // C|2, Cr     = 220 bpm
 
-      for (i=0; i<record.getFieldCount(); i++) {
-         if (strcmp(record[i], "*met(O)") == 0) {
-            return (double)metQ * 1.0;
-         }
-         if (strcmp(record[i], "*met(C|)") == 0) {
-            return (double)metQ * 1.241793;
-         }
-         if (strcmp(record[i], "*met(O|)") == 0) {
-            return (double)metQ * 1.310448;
-         }
-         if (strcmp(record[i], "*met(C|3)") == 0) {
-            return (double)metQ * 1.8965517;
-         }
-         if (strcmp(record[i], "*met(3)") == 0) {
-            return (double)metQ * 1.8965517;
-         }
-         if (strcmp(record[i], "*met(3/2)") == 0) {
-            return (double)metQ * 1.8965517;
-         }
-         if (strcmp(record[i], "*met(C|2)") == 0) {
-            return (double)metQ * 3.791034;
-         }
-         if (strcmp(record[i], "*met(Cr)") == 0) {
-            return (double)metQ * 3.791034;
-         }
-         if (strncmp(record[i], "*met(", strlen("*met(")) == 0) {
-            return (double)metQ * 1.000000;
+      if (record.equalFieldsQ("**kern")) {
+         // only search for a tempo change if all parts
+         // are in the same mensural sign; otherwise, keep the
+         // old mensural sign and tempo unchanged
+         for (i=0; i<record.getFieldCount(); i++) {
+            if (strcmp(record[i], "*met(O)") == 0) {
+               return (double)metQ * 1.0;
+            }
+            if (strcmp(record[i], "*met(C|)") == 0) {
+               return (double)metQ * 1.241793;
+            }
+            if (strcmp(record[i], "*met(C)") == 0) {
+               return (double)metQ * 0.8;
+            }
+            if (strcmp(record[i], "*met(O|)") == 0) {
+               return (double)metQ * 1.310448;
+            }
+            if (strcmp(record[i], "*met(C|3)") == 0) {
+               return (double)metQ * 1.8965517;
+            }
+            if (strcmp(record[i], "*met(3)") == 0) {
+               return (double)metQ * 1.8965517;
+            }
+            if (strcmp(record[i], "*met(3/2)") == 0) {
+               return (double)metQ * 1.8965517;
+            }
+            if (strcmp(record[i], "*met(O/3)") == 0) {
+               return (double)metQ * 1.8965517;
+            }
+            if (strcmp(record[i], "*met(O2)") == 0) {
+               return (double)metQ * 1.25;
+            }
+            if (strcmp(record[i], "*met(C2)") == 0) {
+               return (double)metQ * 1.25;
+            }
+            if (strcmp(record[i], "*met(C|2)") == 0) {
+               return (double)metQ * 3.791034;
+            }
+            if (strcmp(record[i], "*met(Cr)") == 0) {
+               return (double)metQ * 3.791034;
+            }
+            if (strncmp(record[i], "*met(", strlen("*met(")) == 0) {
+               return (double)metQ * 1.000000;
+            }
          }
       }
 
@@ -1998,9 +2022,11 @@ void autoPan(MidiFile& outfile, HumdrumFile& infile) {
 void storeInstrument(int ontick, MidiFile& mfile, HumdrumFile& infile, 
       int line, int row, int pcQ) {
 
+   PerlRegularExpression pre;
+   PerlRegularExpression pre2;
+
    if (timbresQ && !forcedQ) {
 
-      PerlRegularExpression pre;
       if (!pre.search(infile[line][row], "^\\*I\"\\s*(.*)\\s*", "")) {
          return;
       }
@@ -2009,7 +2035,7 @@ void storeInstrument(int ontick, MidiFile& mfile, HumdrumFile& infile,
       int i;
       int pc = -1;
       for (i=0; i<TimbreName.getSize(); i++) {
-         if (TimbreName[i] == targetname) {
+         if (pre2.search(targetname.getBase(), TimbreName[i].getBase(), "i")) {
             pc = TimbreValue[i];
             break;
          }
@@ -2970,16 +2996,17 @@ void storeTimbres(Array<SigString>& name, Array<int>& value,
    int i;
    for (i=0; i<tokens.getSize(); i++) {
 
-      if (pre.search(tokens[i], "(.*)\\s*:\\s*(\\d+)", "")) {
-         temp = atoi(pre.getSubmatch(2));
-         value.append(temp);
-         tempstr = pre.getSubmatch(1);
-         name.append(tempstr);
-      } else if (pre.search(tokens[i], "(.*)\\s*:\\s*i?(\\d+),v(\\d+)", "")) {
+      if (pre.search(tokens[i], "(.*)\\s*:\\s*i?(\\d+),v(\\d+)", "")) {
          temp = atoi(pre.getSubmatch(2));
          value.append(temp);
          temp = atoi(pre.getSubmatch(3));
          volumes.append(temp);
+         tempstr = pre.getSubmatch(1);
+         name.append(tempstr);
+
+      } else if (pre.search(tokens[i], "(.*)\\s*:\\s*(\\d+)", "")) {
+         temp = atoi(pre.getSubmatch(2));
+         value.append(temp);
          tempstr = pre.getSubmatch(1);
          name.append(tempstr);
       }
@@ -3011,4 +3038,4 @@ void getKernTracks(Array<int>& tracks, HumdrumFile& infile) {
 
 
 
-// md5sum: 25c0e5548157194f1a8517fda3b1b1d4 hum2mid.cpp [20110317]
+// md5sum: 8abea024fc4567d987a703359eb3f365 hum2mid.cpp [20110830]

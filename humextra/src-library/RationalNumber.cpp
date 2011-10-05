@@ -292,6 +292,22 @@ int RationalNumber::operator ==(const RationalNumber &r) const {
 
 //////////////////////////////
 //
+// RationalNumber::isEqualTo -- dual integer version of operator==
+//
+
+int RationalNumber::isEqualTo(int top, int bot) const {
+   if (this->getNumerator() == top) {
+      if (this->getDenominator() == bot) {
+         return 1;
+      }
+   }
+   return 0;
+}
+
+
+
+//////////////////////////////
+//
 // RationalNumber::operator!= --
 //
 

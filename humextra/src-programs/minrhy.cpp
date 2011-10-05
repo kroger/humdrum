@@ -1,8 +1,9 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sat Jun  9 14:48:41 PDT 2001
-// Last Modified: Sun Jun 20 13:35:41 PDT 2010
-// Last Modified: Wed Jan 26 18:14:20 PST 2011 (added --debug)
+// Last Modified: Sun Jun 20 13:35:41 PDT 2010 added rational rhythms
+// Last Modified: Wed Jan 26 18:14:20 PST 2011 added --debug
+// Last Modified: Tue Apr 12 12:04:23 PDT 2011 fixed findlcm for rational rhys.
 // Filename:      ...museinfo/examples/all/minrhy.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/minrhy.cpp
 // Syntax:        C++; museinfo
@@ -20,11 +21,15 @@ void      checkOptions         (Options& opts, int argc, char* argv[]);
 void      example              (void);
 void      usage                (const char* command);
 int       findlcm              (Array<int>& list);
-RationalNumber findlcmR        (Array<RationalNumber>& list);
+int       findlcmR             (Array<RationalNumber>& list);
 int       GCD                  (int a, int b);
 void      insertRhythm         (Array<RationalNumber>& allrhythms, 
                                  RationalNumber value);
+void      sortArray            (Array<RationalNumber>& rhythms);
+int       ratcomp              (const void* a, const void* b);
 
+template<class type>
+void uniqArray(Array<type>& array);
 
 // global variables
 Options   options;             // database for command-line arguments
@@ -64,6 +69,8 @@ int main(int argc, char** argv) {
       }
       if (listQ) {
          hfile.getRhythms(rhythms);
+         sortArray(rhythms);
+         uniqArray(rhythms);
          for (j=0; j<rhythms.getSize(); j++) {
             cout << rhythms[j];
             if (j<rhythms.getSize()-1) {
@@ -93,6 +100,61 @@ int main(int argc, char** argv) {
       }
    }
 
+}
+
+
+
+//////////////////////////////
+//
+// sortRatArray --
+//
+
+void sortArray(Array<RationalNumber>& rhythms) {
+   qsort(rhythms.getBase(), rhythms.getSize(), sizeof(RationalNumber), ratcomp);
+}
+
+
+
+//////////////////////////////
+//
+// uniqArray -- filter out adjacent duplicate elements.
+//
+
+template<class type>
+void uniqArray(Array<type>& array) {
+   Array<type> newarray(array.getSize());
+   newarray.setSize(0);
+   if (array.getSize() <= 1) {
+      // nothing to do
+      return;
+   }
+   newarray.append(array[0]);
+   int i;
+   for (i=1; i<array.getSize(); i++) {
+      if (array[i] ==  array[i-1]) {
+         continue;
+      }
+      newarray.append(array[i]);
+   }
+
+   array = newarray;
+}
+
+
+
+//////////////////////////////
+//
+// ratcomp -- compare two rational numbers for ordering
+//
+
+int ratcomp(const void* a, const void* b) {
+   if (*((RationalNumber*)a) < *((RationalNumber*)b)) {
+      return -1;
+   } else if (*((RationalNumber*)a) > *((RationalNumber*)b)) {
+      return 1;
+   } else {
+      return 0;
+   }
 }
 
 
@@ -143,19 +205,18 @@ int findlcm(Array<int>& rhythms) {
 //     rational number version.
 //
 
-RationalNumber findlcmR(Array<RationalNumber>& rhythms) {
+int findlcmR(Array<RationalNumber>& rhythms) {
    if (rhythms.getSize() == 0) {
       return 0;
    }
-   RationalNumber value = rhythms[0].getInversion();
-   // add the list of rhythms together and then return the denominator.
-   for (int i=1; i<rhythms.getSize(); i++) {
-      value += rhythms[i].getInversion();
-   }
 
-   RationalNumber output;
-   output = value.getDenominator();
-   return output;
+   Array<int> plain;
+   plain.setSize(rhythms.getSize());
+   int i;
+   for (i=0; i<rhythms.getSize(); i++) {
+      plain[i] = rhythms[i].getNumerator() * rhythms[i].getDenominator();
+   }
+   return findlcm(plain);
 }
 
  
@@ -250,4 +311,4 @@ void usage(const char* command) {
 }
 
 
-// md5sum: ef614a3af3de953ff6087c63ca917bbd minrhy.cpp [20110206]
+// md5sum: 2e2081f3c9c269c9e012127aba61ec02 minrhy.cpp [20111004]

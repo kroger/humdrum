@@ -91,6 +91,7 @@ class Convert {
       static int       base40ToMidiNoteNumber     (int base40value);
       static int       base40ToAccidental         (int base40value);
       static int       base40IntervalToLineOfFifths(int base40interval);
+      static int       base40IntervalToDiatonic   (int base40interval);
       static int       kernToBase40               (const char* kernfield);
       static int       kernToBase40Class          (const char* kernfield);
       static int       kernNoteToBase40           (const char* name);

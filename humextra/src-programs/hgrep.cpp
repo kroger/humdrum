@@ -1,10 +1,11 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Apr 19 20:03:05 PDT 2009
-// Last Modified: Tue May  4 23:11:52 PDT 2009 (added -t, -c, -B, --sep options)
-// Last Modified: Tue May  5 09:54:01 PDT 2009 (added -p, -P, --and options)
-// Last Modified: Mon May 11 20:56:43 PDT 2009 (fix initial beat for comments)
-// Last Modified: Wed Apr 28 18:49:29 PDT 2010 (added -T and -D options)
+// Last Modified: Tue May  4 23:11:52 PDT 2009 added -t, -c, -B, --sep options
+// Last Modified: Tue May  5 09:54:01 PDT 2009 added -p, -P, --and options
+// Last Modified: Mon May 11 20:56:43 PDT 2009 fix initial beat for comments
+// Last Modified: Wed Apr 28 18:49:29 PDT 2010 added -T and -D options
+// Last Modified: Wed Sep 14 10:40:48 PDT 2011 added -F option
 // Filename:      ...sig/examples/all/hgrep.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/hgrep.cpp
 // Syntax:        C++; museinfo
@@ -71,6 +72,7 @@ int         beatQ           = 0;     // used with -b option
 int         measureQ        = 0;     // used with -m option
 int         quietQ          = 0;     // used with -q option
 int         exinterpQ       = 0;     // used with -x option
+int         formQ           = 0;     // used with -F option
 int         tokenizeQ       = 0;     // used with -T option
 int         datastopQ       = 0;     // used with -D option
 const char* exinterps       = "";    // used with -x option
@@ -160,6 +162,20 @@ void doSearch(const char* searchstring, HumdrumFile& infile,
       if (datastopQ && infile[i].isData()) {
          break;
       }
+      if (formQ && !infile[i].isData()) {
+         if (!invertQ) {
+            cout << infile[i] << endl;
+         } else {
+            if (strcmp(infile[i][0], "*-") == 0) {
+               // handled at marker xyga
+            } else if (strncmp(infile[i][0], "**", 2) == 0) {
+               // handled at marker xyga
+            } else {
+               cout << infile[i] << endl;
+            }
+        }
+      }
+
       if (infile[i].isEmpty()) { continue; }
       if (infile[i].isMeasure()) {
          sscanf(infile[i][0],"=%lf", &measure);
@@ -198,6 +214,7 @@ void doSearch(const char* searchstring, HumdrumFile& infile,
             } 
             printPreInfo(filename, infile, measure, i, column);
             if (!quietQ) {
+               // marker xyga
                cout << infile[i];
             }
             cout << endl;
@@ -484,6 +501,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("C|comment=b",       "search only comment records");
    opts.define("d|data=b",          "search only data records");
    opts.define("f|fraction|frac=b", "disp. pos. as fraction of total length");
+   opts.define("F|form=b",          "preserve Humdrum file formattting");
    opts.define("k|kern=b",          "search only **kern records");
    opts.define("p|primary=b",       "search only primary spines");
    opts.define("P|nonprimary=b",    "search only non-primary spines");
@@ -556,6 +574,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    nonprimaryQ   = opts.getBoolean("nonprimary");
    bibliographicQ= opts.getBoolean("bibliographic");
    spineQ        = opts.getBoolean("spine");
+   formQ         = opts.getBoolean("form");
    measureQ      = opts.getBoolean("measure");
    tokenizeQ     = opts.getBoolean("tokenize");
    datastopQ     = opts.getBoolean("data-stop");
@@ -667,4 +686,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: ee803e030b460328fb557ee62961a064 hgrep.cpp [20090511]
+// md5sum: 27df66509a3c37fff6fbc9de02f90239 hgrep.cpp [20110918]

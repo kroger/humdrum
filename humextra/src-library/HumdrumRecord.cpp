@@ -1666,42 +1666,21 @@ const char* HumdrumRecord::getBibliographicMeaning(Array<char>& output,
    if (len > 100) {
       return "ERROR: Bibliographic key is too long.";
    }
-   int i;
-   for (i=0; i<len-1; i++) {
-      if (code[i] == '@') {
-         if (code[i+1] == '@') {
-            atcount = 2;
-            strcpy(langbuf, code+i+2);
-            strncpy(keybuf, code, i-1);
-         } else {
-            atcount = 1;
-            strcpy(langbuf, code+i+1);
-            strncpy(keybuf, code, i-1);
-         }
-      }
-   }
-   if (strstr(code, "@@") != NULL) {
-      atcount = 2;
-   }
 
-   if (atcount == 0) {
-      strcpy(keybuf, code);
-   }
+   PerlRegularExpression pre;
+   pre.search(code, "([a-z]+)(\\d*)(@*)([a-z]*)", "i");
 
-   // check for numbers at end of code
+   strcpy(langbuf, pre.getSubmatch(4));
+   strcpy(keybuf, pre.getSubmatch(1));
+
+   atcount = strlen(pre.getSubmatch(3));
+
    int numberfound = 0;
    float number = 2357911.131719;
-   len = strlen(keybuf);
-   for (i=len-1; i>=0; i--) {
-      if (isdigit(keybuf[i]) || (keybuf[i] == '.')) {
-         numberfound = 1;
-      } else if (numberfound) {
-         number = strtol(keybuf+i+1, NULL, 10);
-         keybuf[i+1] = '\0';
-         break;
-      } else {
-         break;
-      }
+   if (strlen(pre.getSubmatch(2)) > 0) {
+      numberfound = 1;
+      number = strtol(pre.getSubmatch(2), NULL, 10);
+  
    }
 
    SSTREAM description;

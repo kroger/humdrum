@@ -35,6 +35,7 @@ Options        options;           // database for command-line arguments
 RationalNumber Sampledur;         // used with -t option
 int            timebaseQ = 0;     // used with -t option
 int            briefQ = 0;        // used with -b option
+int            csvQ   = 1;        // used with -C option
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -256,6 +257,9 @@ void printBrief(Array<int> positions, Array<int> mpositions,
       } else {
          cout << 0;
       }
+      if (csvQ && (i < mpositions.getSize()-1) && !mpositions[i+1]) {
+         cout << ", ";
+      }
    }
    cout << "\n";
 }
@@ -340,4 +344,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 1729cd60111d4a05ee768bbb1d45bc17 onset.cpp [20110323]
+// md5sum: fba4c547c330f2cc4e940fca35cc1790 onset.cpp [20110325]

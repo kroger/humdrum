@@ -76,11 +76,12 @@ class _MusicXmlItem {
       int    voice;
       int    type;
       int    pitch;
+      int    ficta;
       CSL::XML::CXMLObject* obj;
       CSL::XML::CXMLObject* chordhead;
 
       void clear(void)    { divisions = tickdur = ticktime = 0; 
-                            humline = ownerserial = lyricnum = 0;
+                            ficta = humline = ownerserial = lyricnum = 0;
                             chordhead = obj = NULL; 
                             measureno = serialnum = pitch = voice = type = 0; }
       _MusicXmlItem(void) { clear(); }
@@ -114,6 +115,7 @@ class _NoteState {  // used in MusicXmlFile::printKernNote()
    int hookright;
    // articulations:
    int staccato;
+   int ficta;
    int accent;
    int upbow;
    int downbow;
@@ -141,6 +143,7 @@ class _NoteState {  // used in MusicXmlFile::printKernNote()
       hookleft          = 0;
       hookright         = 0;
       gracenote         = 0;
+      ficta             = 0;
       staccato          = 0;
       upbow             = 0;
       downbow           = 0;
@@ -241,6 +244,7 @@ class MusicXmlFile {
       void      parseSound                (CSL::XML::CXMLObject* entry, 
                                            int partnum, long& ticktime);
       int       parsePitch                (CSL::XML::CXMLObject* entry);
+      int       parseFicta                (CSL::XML::CXMLObject* entry);
       void      parseAttributes           (CSL::XML::CXMLObject* entry, 
                                            int partnum, long& ticktime);
       void      sortStaff                 (int partnum);
