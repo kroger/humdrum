@@ -12,7 +12,13 @@
 
 #ifdef __MSDOS__
 #include <alloc.h>
-#else
+#endif
+
+#ifdef __linux__
+#include <malloc.h>
+#endif
+
+#ifdef  __APPLE__
 #include <sys/malloc.h>
 #endif
 
