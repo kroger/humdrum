@@ -3,8 +3,10 @@
 // Creation Date: Sun Feb  3 16:03:55 PST 2008
 // Last Modified: Sat May 30 22:54:41 PDT 2009 added -b option
 // Last Modified: Tue Jun  9 00:55:43 PDT 2009 added fill & trim
-// Last Modified: Thu Apr 14 15:41:23 PDT 2011 fixed occasionaol ob1 err with -n
+// Last Modified: Thu Apr 14 15:41:23 PDT 2011 fixed occasional ob1 err with -n
 // Last Modified: Sun May  1 10:32:02 PDT 2011 secondary key display
+// Last Modified: Wed Nov  9 17:34:49 PST 2011 fixed some irritating problems
+// Last Modified: Sun Oct 21 15:33:59 PDT 2012 added -k option
 //
 // Filename:      ...sig/examples/all/mkeyscape.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/mkeyscape.cpp
@@ -139,6 +141,7 @@ int       numberQ      = 0;     // used with -n option
 int       trimQ        = 0;     // used with --trim option
 int       averageQ     = 0;     // used with --average option
 int       secondQ      = 0;     // used with --second option
+int       keyQ         = 0;     // used with -k option
 
 Array<int> channelfilter;       // used with -x option
 Array<const char*> colorindex;  // used with -c option
@@ -216,8 +219,8 @@ int main(int argc, char** argv) {
 
 //fillWeightsWithSimpleValues(majorweights, minorweights);
 //fillWeightsWithKrumhanslKessler(majorweights, minorweights);
-fillWeightsWithKostkaPayne(majorweights, minorweights);
-//fillWeightsWithBellmanBudge(majorweights, minorweights);
+//fillWeightsWithKostkaPayne(majorweights, minorweights);
+fillWeightsWithBellmanBudge(majorweights, minorweights);
 //fillWeightsWithAardenEssen(majorweights, minorweights);
 
    colorindex.setSize(26);
@@ -1275,6 +1278,37 @@ void printColorMap(Array<const char*>& ci) {
 void printPPM(Array<Array<Array<HISTTYPE> > >& histograms,
       HumdrumFile& infile) {
 
+   if (keyQ) {
+      // print the top-level key and exit
+      switch (int(histograms[0][0][12])) {
+         case  0: cout << "C Major"  << endl;  break;
+         case  1: cout << "D- Major" << endl;  break;
+         case  2: cout << "D Major"  << endl;  break;
+         case  3: cout << "E- Major" << endl;  break;
+         case  4: cout << "E Major"  << endl;  break;
+         case  5: cout << "F Major"  << endl;  break;
+         case  6: cout << "F# Major" << endl;  break;
+         case  7: cout << "G Major"  << endl;  break;
+         case  8: cout << "A- Major" << endl;  break;
+         case  9: cout << "A Major"  << endl;  break;
+         case 10: cout << "B- Major" << endl;  break;
+         case 11: cout << "B Major"  << endl;  break;
+         case 12: cout << "C Minor"  << endl;  break;
+         case 13: cout << "C# Minor" << endl;  break;
+         case 14: cout << "D Minor"  << endl;  break;
+         case 15: cout << "E- Minor" << endl;  break;
+         case 16: cout << "E Minor"  << endl;  break;
+         case 17: cout << "F Minor"  << endl;  break;
+         case 18: cout << "F# Minor" << endl;  break;
+         case 19: cout << "G Minor"  << endl;  break;
+         case 20: cout << "A- Minor" << endl;  break;
+         case 21: cout << "A Minor"  << endl;  break;
+         case 22: cout << "B- Minor" << endl;  break;
+         case 23: cout << "B Minor"  << endl;  break;
+      }
+      return;
+   }
+
    // Pitch to Color translations
 
    int scapeheight = histograms.getSize();
@@ -1554,26 +1588,27 @@ void printLegend(int legendheight, int legendwidth) {
             legend[i][j] = 24;
          } else if (i > (blackend + startrow)/2) {  // major keys
             legend[i][j] = v;
-         } else {                          // minor keys
+         } else {                                   // minor keys
             legend[i][j] = v+12;
          }
 	 lastv = v;
       }
    }
 
-   Array<const char*> transcolor;
-   transcolor.setSize(26);
-   transcolor.setAll(0);
-   transcolor[24] = colorindex[24];
-   transcolor[25] = colorindex[25];
-   for (i=0; i<12; i++) {
-      transcolor[i] = colorindex[(i+transpose+rrotate) % 12];
-      transcolor[i+12] = colorindex[((i+transpose+rrotate) % 12)+12];
-   }
-
    for (i=0; i<legend.getSize(); i++) {
       for (j=0; j<legend[i].getSize(); j++) {
-         cout << ' ' << transcolor[legend[i][j]];
+         if (legend[i][j] == 24) {
+            cout << ' ' << colorindex[24];
+         } else if (legend[i][j] == 25) {
+            cout << ' ' << colorindex[25];
+         } else {
+            cout << ' ';
+            if (legend[i][j] < 12) {
+               cout << colorindex[(legend[i][j] + transpose + rrotate + 144) % 12];
+            } else {
+               cout << colorindex[(legend[i][j] + transpose + rrotate + 144) % 12+12];
+            }
+         }
       }
       cout << "\n";
    }
@@ -1636,6 +1671,10 @@ void identifyKeyDouble(Array<HISTTYPE>& histogram) {
       }
    } else {
       for (i=0; i<12; i++) {
+         keysum[i]    = pearsonCorrelation(12, majorweights.getBase(), h+i);
+         keysum[i+12] = pearsonCorrelation(12, minorweights.getBase(), h+i);
+
+/*
          keysum[i]    = 3 * pearsonCorrelation(12, aamajor.getBase(), h+i);
          keysum[i+12] = 3 * pearsonCorrelation(12, aaminor.getBase(), h+i);
 
@@ -1653,6 +1692,7 @@ void identifyKeyDouble(Array<HISTTYPE>& histogram) {
 
          keysum[i]    /= 12.0;
          keysum[i+12] /= 12.0;
+*/
       }
    }
          
@@ -2067,7 +2107,7 @@ double loadHistogramFromHumdrumFile(Array<Array<HISTTYPE> >& histograms,
 void addToHistogramDouble(Array<Array<double> >& histogram, int pc, 
       double start, double dur, double tdur, int segments) {
 
-   pc = (pc + transpose + 12) % 12;
+   pc = (pc + transpose + 144) % 12;
 
    double startseg = start / tdur * segments;
    double startfrac = startseg - (int)startseg;
@@ -2277,6 +2317,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("cor=i:4", "Print correlation values for key analysis");
    opts.define("w|weights=s", "arbitrary set of pitch weights");
    opts.define("W|printweights=b", "display weights which will be used");
+   opts.define("k|key=b", "display top-level key anaysis");
 
    opts.define("aa|aarden=b",        "load Aarden-Essen weights");
    opts.define("bb|bellman|budge=b", "load Bellman-Budge weights");
@@ -2315,6 +2356,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    fillQ     =  opts.getBoolean("fill");
    averageQ  = !opts.getBoolean("average");
    secondQ   =  opts.getBoolean("second");
+   keyQ      =  opts.getBoolean("key");
 	    
    trimQ     =  opts.getBoolean("trim");
    segments  =  opts.getInteger("segments");
@@ -2328,18 +2370,15 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       exit(1);
    } 
 
+   rrotate = 0;
    if (opts.getInteger("rotate")) {
       const char* strang = opts.getString("rotate");
       if (hasdigit(strang)) {
          rrotate = atol(strang);
-         if (rrotate < 0) {
-            rrotate += 1200;
-         }
-         rrotate = rrotate % 12;
       } else {
          rrotate = Convert::kernToMidiNoteNumber(strang) % 12;
       }
-      rrotate = 12 - rrotate;
+      rrotate = (rrotate + 1200) % 12;
       if (rrotate < 0) {
          cerr << "Error: funny value for rotation: " << strang << endl;
       }
@@ -2406,7 +2445,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
 int hasdigit(const char* strang) {
    int i=0;
    while (strang[i] != '\0') {
-      if (isdigit(strang[i])) {
+      if (isdigit(strang[i++])) {
          return 1;
       }
    }
@@ -2842,4 +2881,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 89d21d48d1e0d82af44f1bea35bc162b mkeyscape.cpp [20110602]
+// md5sum: d8c4f68a5d05606c86be8c29a54728f8 mkeyscape.cpp [20111105]

@@ -165,6 +165,7 @@ class HumdrumFile : public HumdrumFileBasic {
       // analyses that generate internal data
       void                   analyzeRhythm    (const char* base = "", 
                                                  int debug = 0);
+      void                   spaceEmptyLines  (void);
       int                    getMinTimeBase   (void);
       RationalNumber         getMinTimeBaseR  (void);
       int                    rhythmQ          (void);
@@ -257,7 +258,6 @@ class HumdrumFile : public HumdrumFileBasic {
 		         SigCollection<RationalNumber>& meterbeats, 
                          SigCollection<RationalNumber>& timebase);
       void       fixIrritatingPickupProblem(void);
-      void       spaceEmptyLines(void);
       void       initializeTracers(SigCollection<RationalNumber>& lastduration,
                          SigCollection<RationalNumber>& runningstatus, 
                          HumdrumRecord& currRecord);
@@ -270,8 +270,10 @@ class HumdrumFile : public HumdrumFileBasic {
                        HumdrumRecord& record, int newsize);
 
       // for use with assemble()
-      static int processLinesForCombine(HumdrumFile& output, HumdrumFile& A, 
+      static int      processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
                        HumdrumFile& B, int debug = 0);
+      static ostream& printConstantTokenFields(ostream& out, 
+                       HumdrumRecord& aRecord, const char* token);
                           
       // private function for analyzeCliche:
       int attemptMatch(Array<Array<int> >& allnotes, Array<int>& di, int

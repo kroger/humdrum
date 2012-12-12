@@ -74,9 +74,9 @@ void      addTrailerPrev      (Array<char>& trailerstring, int newprevoffset);
 int       linkToRootObject    (ostream& out, Array<int>& objectindex, 
                                Array<int>& offsetindex, int initialoffset, 
                                Array<char> trailerstring, int xrefoffset, 
-                               ifstream& file, int nextobject,
+                               istream& file, int nextobject,
                                PDFFile& pdffile);
-void      getObject           (ostream& out, ifstream& file, int offset);
+void      getObject           (ostream& out, istream& file, int offset);
 int       updateNamesObject   (ostream& out, Array<int>& objectindex, 
                                Array<int>& offsetindex, int initialoffset, 
                                ostream& file, int nextobject, int ndoffset);
@@ -104,10 +104,18 @@ int main(int argc, char** argv) {
    // process the command-line options
    checkOptions(options, argc, argv);
 
-   ifstream file(pdffilename, ios::in | ios::binary);
-   if (!file.is_open()) {
-      cerr << "ERROR: cannot open file: " << pdffilename << "\n";
-      exit(1);
+   istream *file;
+   ifstream filestream;
+   if (strcmp(pdffilename, "") == 0) {
+      // read standard input if no -p option given
+      file = &cin;
+   } else {
+      filestream.open(pdffilename, ios::in | ios::binary);
+      file = &filestream;
+      if (!filestream.is_open()) {
+         cerr << "ERROR: cannot open file: " << pdffilename << "\n";
+         exit(1);
+      }
    }
 
    int i;
@@ -115,7 +123,7 @@ int main(int argc, char** argv) {
    HumdrumFile infile;
    PDFFile     pdffile;
 
-   pdffile.process(file); // reads structural information from PDF file.
+   pdffile.process(*file); // reads structural information from PDF file.
                           // A pointer to ifstream file is stored in
 			  // pdffile, so don't close file while still
 			  // extracting data using pdffile.
@@ -180,7 +188,7 @@ int main(int argc, char** argv) {
       // because the document root does not know about it.
       SSTREAM rootlink;
       nextobject = linkToRootObject(rootlink, objectindex, offsetindex, 
-		         initialoffset, trailerstring, xrefoffset, file, 
+		         initialoffset, trailerstring, xrefoffset, *file, 
 			 nextobject, pdffile);
       cout << rootlink.str() << flush;
       initialoffset += rootlink.str().length();
@@ -337,7 +345,7 @@ int main(int argc, char** argv) {
 
 int linkToRootObject(ostream& out, Array<int>& objectindex, 
       Array<int>& offsetindex, int initialoffset, Array<char> trailerstring, 
-      int xrefoffset, ifstream& file, int nextobject, PDFFile& pdffile) { 
+      int xrefoffset, istream& file, int nextobject, PDFFile& pdffile) { 
 
    // when this function is called, only embedded files have been
    // added to the PDF.  There are two indirect objects for each
@@ -625,7 +633,7 @@ void addDictionaryEntry(Array<char>& objectstring, Array<char>& entry) {
 //    although it will usually work for them as well).
 //
 
-void getObject(ostream& out, ifstream& file, int offset) {
+void getObject(ostream& out, istream& file, int offset) {
    int level = 0;
    int endindex = 0;
    char endstate[128] = {0};
@@ -1123,8 +1131,10 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    if (opts.getBoolean("pdf")) {
       pdffilename = opts.getString("pdf");
    } else {
-      cerr << "Error: -p file.pdf option is required." << endl;
-      exit(1);
+      //// No -p option is now allowed.  It means that the PDF will be
+      //// coming into the program from standard input.
+      // cerr << "Error: -p file.pdf option is required." << endl;
+      // exit(1);
    }
 
    footerQ  = opts.getBoolean("append-only");
@@ -1166,4 +1176,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 643433025477d1880a3bbd87c9b3329d humpdf.cpp [20110215]
+// md5sum: 9202c66af90809a144c86dd132461f0b humpdf.cpp [20111105]

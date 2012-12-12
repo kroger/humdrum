@@ -1024,9 +1024,9 @@ void MidiOutput::initializeRPN(void) {
 //
 
 void MidiOutput::deinitializeRPN(void) {
-   if (rpn_msb_status != NULL) {
-      delete [] rpn_msb_status;
-      rpn_msb_status = NULL;
+   if (rpn_lsb_status != NULL) {    // bug fix by ntsplt [20120203]
+      delete [] rpn_lsb_status;
+      rpn_lsb_status = NULL;
    }
 
    if (rpn_msb_status != NULL) {

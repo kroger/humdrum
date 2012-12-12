@@ -26,6 +26,9 @@
 // Last Modified: Tue Feb 22 13:23:24 PST 2011 added --stdout
 // Last Modified: Fri Feb 25 13:00:02 PST 2011 added --met
 // Last Modified: Fri Feb 25 15:15:09 PST 2011 added --timbres and --autopan
+// Last Modified: Wed Oct 12 16:23:02 PDT 2011 fixed --temperament pc 0 prob.
+// Last Modified: Fri Aug  3 16:09:29 PDT 2012 added DEFAULT for --timbres
+// Last Modified: Tue Oct 16 21:02:56 PDT 2012 added getTitle/song title
 // Filename:      ...sig/examples/all/hum2mid.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/hum2mid.cpp
 // Syntax:        C++; museinfo
@@ -152,7 +155,7 @@ int     tempospineQ      =   0;    // used with --ts option
 int     perfvizQ         =   0;    // used with --pvm option
 int     idynQ            =   0;    // used with -d option
 double  idynoffset       =   0.0;  // used with -d option
-int     timeinsecQ       =   1;    // needs an option
+int     timeinsecQ       =   0;    // used with --time-in-seconds option
 int     norestQ          =   0;    // used with --no-rest option
 int     stdoutQ          =   0;    // used with --stdout option
 int     starttick        =   0;    // used with --no-rest option
@@ -218,6 +221,7 @@ void      addTempoTrack      (HumdrumFile& infile, MidiFile& outfile);
 void      getBendByPcData    (double* bendbypc, const char* filename);
 void      insertBendData     (MidiFile& outfile, double* bendbypc);
 void      getKernTracks      (Array<int>& tracks, HumdrumFile& infile);
+void      getTitle           (Array<char>& title, HumdrumFile& infile);
 
 // PerfViz related functions:
 void      writePerfVizMatchFile(const char* filename, SSTREAM& contents);
@@ -288,7 +292,7 @@ int main(int argc, char* argv[]) {
       }
 
       // analyze the input file according to command-line options
-      infile.analyzeRhythm("4");
+      infile.analyzeRhythm("4", debugQ);
 
       if (perfvizQ) {
          perfviz = new SSTREAM[1];
@@ -553,6 +557,9 @@ void assignTracks(HumdrumFile& infile, Array<int>& trackchannel) {
 
    VolumeMapping.setSize(infile.getMaxTracks()+1);
    VolumeMapping.setAll(64);
+   if (idynQ) {
+      VolumeMapping.setSize(0);
+   }
    for (i=0; i<infile.getNumLines(); i++) {
       if (debugQ) {
          cout << "line " << i+1 << ":\t" << infile[i] << endl;
@@ -578,15 +585,35 @@ void assignTracks(HumdrumFile& infile, Array<int>& trackchannel) {
                   targetname = pre.getSubmatch(1);
                   int i;
                   inst = -1;
+
                   for (i=0; i<TimbreName.getSize(); i++) {
                      if (pre2.search(targetname.getBase(), 
                            TimbreName[i].getBase(), "i")) {
                      // if (TimbreName[i] == targetname) {
                         inst = TimbreValue[i];
-                        VolumeMapping[track] = TimbreVolume[i];
+                        if (track < VolumeMapping.getSize()) {
+                           VolumeMapping[track] = TimbreVolume[i];
+                        }
                         break;
                      }
                   }
+
+                  if (inst == -1) {
+                     // search for default timbre setting if not otherwise
+                     // found.
+                     for (i=0; i<TimbreName.getSize(); i++) {
+                        if (pre2.search("DEFAULT", TimbreName[i].getBase(), 
+                              "i")) {
+                        // if (TimbreName[i] == targetname) {
+                           inst = TimbreValue[i];
+                           if (track < VolumeMapping.getSize()) {
+                              VolumeMapping[track] = TimbreVolume[i];
+                           }
+                           break;
+                        }
+                     }
+                  }
+
                }
 
             } else if (!forcedQ) {
@@ -688,9 +715,15 @@ void assignTracks(HumdrumFile& infile, Array<int>& trackchannel) {
 //
 
 double checkForTempo(HumdrumRecord& record) {
+   if (timeQ) {
+      // don't encode tempos if the --time option is set.
+      return -1.0;
+   }
    int i;
    float tempo = 60.0;
-   if (!metQ) {
+   PerlRegularExpression pre;
+
+   // if (!metQ) {
 
       for (i=0; i<record.getFieldCount(); i++) {
          if (strncmp(record[i], "*MM", 3) == 0) {
@@ -700,64 +733,67 @@ double checkForTempo(HumdrumRecord& record) {
          }
       }
 
-   } else {
+   // } else {
+   if (metQ) {
 
       // mensural tempo scalings
       // O           = 58 bpm
+      // O.          = 58 bpm
+      // C.          = 58 bpm
       // C           = 48 bpm
       // C|          = 72 bpm
       // O2          = 75 bpm
       // C2          = 75 bpm
       // O|          = 76 bpm
       // C|3, 3, 3/2 = 110 bpm
+      // C3          = 110 bpm
       // O/3         = 110 bpm
       // C|2, Cr     = 220 bpm
-
-      if (record.equalFieldsQ("**kern")) {
-         // only search for a tempo change if all parts
-         // are in the same mensural sign; otherwise, keep the
-         // old mensural sign and tempo unchanged
+      char mensuration[1024] = {0};
+      if (record.isGlobalComment() && pre.search(record[0], 
+            "^\\!+primary-mensuration:.*met\\((.*?)\\)\\s*$")) {
+         strcpy(mensuration, pre.getSubmatch(1));
+      } else if (record.isInterpretation() && record.equalFieldsQ("**kern")) {
          for (i=0; i<record.getFieldCount(); i++) {
-            if (strcmp(record[i], "*met(O)") == 0) {
-               return (double)metQ * 1.0;
+            if (record.isExInterp(i, "**kern")) {
+               if (pre.search(record[i], "met\\((.*?)\\)")) {
+                  strcpy(mensuration, pre.getSubmatch(1));
+               }
+               break;
             }
-            if (strcmp(record[i], "*met(C|)") == 0) {
-               return (double)metQ * 1.241793;
-            }
-            if (strcmp(record[i], "*met(C)") == 0) {
-               return (double)metQ * 0.8;
-            }
-            if (strcmp(record[i], "*met(O|)") == 0) {
-               return (double)metQ * 1.310448;
-            }
-            if (strcmp(record[i], "*met(C|3)") == 0) {
-               return (double)metQ * 1.8965517;
-            }
-            if (strcmp(record[i], "*met(3)") == 0) {
-               return (double)metQ * 1.8965517;
-            }
-            if (strcmp(record[i], "*met(3/2)") == 0) {
-               return (double)metQ * 1.8965517;
-            }
-            if (strcmp(record[i], "*met(O/3)") == 0) {
-               return (double)metQ * 1.8965517;
-            }
-            if (strcmp(record[i], "*met(O2)") == 0) {
-               return (double)metQ * 1.25;
-            }
-            if (strcmp(record[i], "*met(C2)") == 0) {
-               return (double)metQ * 1.25;
-            }
-            if (strcmp(record[i], "*met(C|2)") == 0) {
-               return (double)metQ * 3.791034;
-            }
-            if (strcmp(record[i], "*met(Cr)") == 0) {
-               return (double)metQ * 3.791034;
-            }
-            if (strncmp(record[i], "*met(", strlen("*met(")) == 0) {
-               return (double)metQ * 1.000000;
-            }
-         }
+         }    
+      }
+
+      if (strcmp(mensuration, "O") == 0) {
+         return (double)metQ * 1.0;
+      } else if (strcmp(mensuration, "C|") == 0) {
+         return (double)metQ * 1.241793;
+      } else if (strcmp(mensuration, "C.") == 0) {
+         return (double)metQ * 1.0;
+      } else if (strcmp(mensuration, "O.") == 0) {
+         return (double)metQ * 1.0;
+      } else if (strcmp(mensuration, "C") == 0) {
+         return (double)metQ * 0.8;
+      } else if (strcmp(mensuration, "O|") == 0) {
+         return (double)metQ * 1.310448;
+      } else if (strcmp(mensuration, "C|3") == 0) {
+         return (double)metQ * 1.8965517;
+      } else if (strcmp(mensuration, "C3") == 0) {
+         return (double)metQ * 1.8965517;
+      } else if (strcmp(mensuration, "3") == 0) {
+         return (double)metQ * 1.8965517;
+      } else if (strcmp(mensuration, "3/2") == 0) {
+         return (double)metQ * 1.8965517;
+      } else if (strcmp(mensuration, "O/3") == 0) {
+         return (double)metQ * 1.8965517;
+      } else if (strcmp(mensuration, "O2") == 0) {
+         return (double)metQ * 1.25;
+      } else if (strcmp(mensuration, "C2") == 0) {
+         return (double)metQ * 1.25;
+      } else if (strcmp(mensuration, "C|2") == 0) {
+         return (double)metQ * 3.791034;
+      } else if (strcmp(mensuration, "Cr") == 0) {
+         return (double)metQ * 3.791034;
       }
 
    }
@@ -782,6 +818,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("0|O|type0|zero=b","Generate a type 0 MIDI file");
    opts.define("plus=b",          "Create a MIDIPlus compliant MIDI file");
    opts.define("time=b",          "Use timing from a **time spine");
+   opts.define("sec|time-in-seconds=b", "Use timing from a **time spine");
    opts.define("v|volume=i:64",   "Default attack velocity");
    opts.define("d|dyn|idyn=d:40.0","Extract attack velocities from **idyn");
    opts.define("t|tempo-scaling=d:1.0", "Tempo scaling");
@@ -921,6 +958,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    humanvolumeQ  =  opts.getInteger("humanvolume");
    fixedvolumeQ  =  opts.getBoolean("volume");
    timeQ         =  opts.getBoolean("time");
+   timeinsecQ    =  opts.getBoolean("time-in-seconds");
    tempospineQ   =  opts.getBoolean("tempo-spine");
    perfvizQ      =  opts.getBoolean("perfviz");
    metricvolumeQ =  opts.getInteger("metricvolume");
@@ -999,9 +1037,9 @@ void getBendByPcData(double* bendbypc, const char* filename) {
 	       sscanf(td[i][j], "%lf", &dcent);
             }
          }
-         if (pc > 0 && pc < 12) {
-            bendbypc[pc] = dcent / bendamt;
-         }
+      }
+      if (pc >= 0 && pc < 12) {
+         bendbypc[pc] = dcent / bendamt;
       }
    }
 }
@@ -1133,7 +1171,7 @@ void getIdynDynamics(HumdrumFile& infile, Array<Array<char> >& dynamics,
             infile[i].getToken(buffer, j, k);
             if (sscanf(buffer, "%lf", &dyn)) {
                dyn += idynoffset;
-               dyn *= 2.0;
+               // dyn *= 2.0;
             }
             intdyn = int(dyn + 0.5);
             if (intdyn < 1) {
@@ -1149,12 +1187,14 @@ void getIdynDynamics(HumdrumFile& infile, Array<Array<char> >& dynamics,
    }
 
 
-   for (i=0; i<dynamics.getSize(); i++) {
-      cout << i << ":";
-      for (j=0; j<dynamics[i].getSize(); j++) {
-         cout << "\t" << (int)dynamics[i][j];
+   if (debugQ) {
+      for (i=0; i<dynamics.getSize(); i++) {
+         cout << i << ":";
+         for (j=0; j<dynamics[i].getSize(); j++) {
+            cout << "\t" << (int)dynamics[i][j];
+         }
+         cout << "\n";
       }
-      cout << "\n";
    }
 
 }
@@ -1241,9 +1281,19 @@ void storeMidiData(HumdrumFile& infile, MidiFile& outfile) {
       autoPan(outfile, infile);
    }
 
+   if (storeTextQ) {
+      // store the title
+      Array<char> title;
+      title.setSize(0);
+      getTitle(title, infile);
+      if (title.getSize() > 0) {
+         storeMetaText(outfile, 0, title.getBase(), 0, 3);
+      }
+   }
+
    for (i=0; i<infile.getNumLines(); i++) {
       if (debugQ) {
-         cout << "Line " << i+1 << ":\t" << infile[i] << endl;
+         cout << "Line " << i+1 << "::\t" << infile[i] << endl;
       }
 
       if (storeCommentQ && (infile[i].getType() == E_humrec_global_comment)) {
@@ -1269,13 +1319,14 @@ void storeMidiData(HumdrumFile& infile, MidiFile& outfile) {
          }
          if (strncmp(&(infile[i].getLine()[3]), "YEC", 3) == 0) {
             storeMetaText(outfile, 0, infile[i].getLine(), ontick+offset, 2);
-         } else if (strncmp(&(infile[i].getLine()[3]), "OTL", 3) == 0) {
-            storeMetaText(outfile, 0, infile[i].getLine(), ontick+offset, 3);
+         // store OTL as regular text, creating sequence name separately
+         //} else if (strncmp(&(infile[i].getLine()[3]), "OTL", 3) == 0) {
+         //   storeMetaText(outfile, 0, infile[i].getLine(), ontick+offset, 3);
          } else if (storeCommentQ) {
             storeMetaText(outfile, 0, infile[i].getLine(), ontick + offset);
          }
       } 
-      if (infile[i].getType() == E_humrec_interpretation) {
+      if (infile[i].isInterpretation() || infile[i].isGlobalComment()) {
 
          tempo = (int)checkForTempo(infile[i]);
          if (tempo > 0 && !tempospineQ && !perfvizQ) {
@@ -1411,6 +1462,9 @@ void storeMidiData(HumdrumFile& infile, MidiFile& outfile) {
          idyncounter = 0;
          for (j=0; j<infile[i].getFieldCount(); j++) {
             if (strcmp(infile[i][j], ".") == 0) {
+               continue;
+            }
+            if (!infile[i].isExInterp(j, "**kern")) {
                continue;
             }
 
@@ -1713,6 +1767,56 @@ void storeMidiData(HumdrumFile& infile, MidiFile& outfile) {
          outfile.addEvent(i, ontick+offset, mididata);
       }
    }
+}
+
+
+
+//////////////////////////////
+//
+// getTitle -- return the title of the work.  If OPR is present, then
+//    include that first, then OTL
+//
+
+void getTitle(Array<char>& title, HumdrumFile& infile) {
+   title.setSize(1000);
+   title.setSize(0);
+   int opr = -1;
+   int otl = -1;
+   int i;
+   for (i=0; i<infile.getNumLines(); i++) {
+      if (!infile[i].isBibliographic()) {
+         continue;
+      }
+      if ((opr < 0) && (strncmp(infile[i][0], "!!!OPR", 6) == 0)) {
+         opr = i;
+      }
+      if ((otl < 0) && (strncmp(infile[i][0], "!!!OTL", 6) == 0)) {
+         otl = i;
+      }
+   }
+
+   char bufferopr[512] = {0};
+   char bufferotl[512] = {0};
+   if (opr >= 0) {
+      infile[opr].getBibValue(bufferopr);
+   }
+   if (otl >= 0) {
+      infile[otl].getBibValue(bufferotl);
+   }
+   char buffer[1024] = {0};
+   strcat(buffer, bufferopr);
+   if (otl >= 0) {
+      if (opr >= 0) {
+         strcat(buffer, "  ");
+      }
+   }
+   strcat(buffer, bufferotl);
+   int len = strlen(buffer);
+   if (len == 0) {
+      return;
+   }
+   title.setSize(len+1);
+   strcpy(title.getBase(), buffer);
 }
 
 
@@ -2038,6 +2142,14 @@ void storeInstrument(int ontick, MidiFile& mfile, HumdrumFile& infile,
          if (pre2.search(targetname.getBase(), TimbreName[i].getBase(), "i")) {
             pc = TimbreValue[i];
             break;
+         }
+      }
+      if (pc < 0) {
+         for (i=0; i<TimbreName.getSize(); i++) {
+            if (pre2.search("DEFAULT", TimbreName[i].getBase(), "i")) {
+               pc = TimbreValue[i];
+               break;
+            }
          }
       }
       if (pc >= 0) {
@@ -3038,4 +3150,4 @@ void getKernTracks(Array<int>& tracks, HumdrumFile& infile) {
 
 
 
-// md5sum: 8abea024fc4567d987a703359eb3f365 hum2mid.cpp [20110830]
+// md5sum: e9a407df34d2637d3f9f4a991e694888 hum2mid.cpp [20121112]

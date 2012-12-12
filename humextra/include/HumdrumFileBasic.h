@@ -3,9 +3,11 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon May 18 13:42:11 PDT 1998
 // Last Modified: Wed Nov 29 10:19:28 PST 2000
-// Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
-// Last Modified: Mon Jun 22 15:03:44 PDT 2009 (added Humdrum/Http URIs)
-// Last Modified: Mon Feb 14 08:11:01 PST 2011 (added VTS functions)
+// Last Modified: Fri Jun 12 22:58:34 PDT 2009 renamed SigCollection class
+// Last Modified: Mon Jun 22 15:03:44 PDT 2009 added Humdrum/Http URIs
+// Last Modified: Mon Feb 14 08:11:01 PST 2011 added VTS functions
+// Last Modified: Tue Apr 24 16:54:50 PDT 2012 added readFromJrpURI()
+// Last Modified: Tue Dec 11 17:23:04 PST 2012 added fileName
 // Filename:      ...sig/include/sigInfo/HumdrumFileBasic.h
 // Web Address:   http://museinfo.sapp.org/include/sigInfo/HumdrumFileBasic.h
 // Syntax:        C++ 
@@ -74,13 +76,18 @@ class HumdrumFileBasic {
       void                   appendLine       (HumdrumRecord* aRecord);
       void                   setAllocation    (int allocation);
       void                   clear            (void);
+      void                   setFilename      (const char* filename);
+      const char*            getFilename      (void);
       HumdrumFileBasic       extract          (int aField);
       const char*            getDotValue      (int index, int spinei);
       const char*            getLine          (int index);
+      const char*            getBibValue      (char* buffer, const char* key);
       int                    getNumLines      (void);
       HumdrumRecord&         getRecord        (int index);
       int                    getSegmentCount  (void);
       int                    getSpineCount    (int index);
+      int                    getTracksByExInterp(Array<int>& tracks, 
+                                                  const char* exinterp);
       int                    getType          (int index);
       void                   makeVts          (Array<char>& vtsstring);
       static void            makeVts          (Array<char>& vtsstring,
@@ -103,6 +110,7 @@ class HumdrumFileBasic {
       const char*            getTrackExInterp (int track);
 
    protected:
+      Array<char>   fileName;            // storage for input file's name
       SigCollection<HumdrumRecord*>  records;
       int           maxtracks;           // max exclusive interpretation count
       Array<char*>  trackexinterp;
@@ -131,6 +139,7 @@ class HumdrumFileBasic {
       // automatic URI downloading of data in read()
       #ifdef USING_URI
          void     readFromHumdrumURI       (const char* humdrumaddress);
+         void     readFromJrpURI           (const char* jrpaddress);
          void     readFromHttpURI          (const char* webaddress);
          int      getChunk                 (int socket_id, SSTREAM& inputdata, 
                                             char* buffer, int bufsize);

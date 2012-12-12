@@ -313,6 +313,8 @@ PixelColor makeColor(HumdrumFile& infile, int line, int spine, int style,
             output = purple;
          } else if (pre.search(instrument, "Superius", "i")) {
             output.setColor("limegreen");
+         } else if (pre.search(instrument, "Cantus", "i")) {
+            output.setColor("limegreen");
          } else if (pre.search(instrument, "Discantus", "i")) {
             output = yellowgreen;
          } else {
@@ -560,4 +562,4 @@ void getMarkChars(Array<char>& marks, HumdrumFile& infile) {
 
 
 
-// md5sum: cce402fffa9cb4b75778d7b2041a93b8 proll.cpp [20110304]
+// md5sum: 3d3af5f512f6fef7c9c890dd52011719 proll.cpp [20120805]

@@ -39,21 +39,23 @@
 
 // MusicXmlItem allowed types:
 
-#define MXI_unknown    0
-#define MXI_print      1  /* printing suggestions */
-#define MXI_divisions  2
-#define MXI_measure    3
-#define MXI_barline    4
-#define MXI_clef       5
-#define MXI_key        6  /* key signatures  */
-#define MXI_timemet    7  /* metrical display for time signatures */
-#define MXI_time       8  /* time signatures */
-#define MXI_tempo      9  /* tempo markings  */
-#define MXI_forward   10
-#define MXI_backup    11
-#define MXI_note      12
-#define MXI_dynamic   13  /* dynamic marking */
-#define MXI_lyric     14  /* text underlay of notes */
+#define MXI_unknown     0
+#define MXI_print       1  /* printing suggestions */
+#define MXI_divisions   2
+#define MXI_measure     3
+#define MXI_barline     4
+#define MXI_clef        5
+#define MXI_key         6  /* key signatures  */
+#define MXI_timemet     7  /* metrical display for time signatures */
+#define MXI_time        8  /* time signatures */
+#define MXI_tempo       9  /* tempo markings  */
+#define MXI_forward    10
+#define MXI_backup     11
+#define MXI_instrument 12 /* instrument name */
+#define MXI_text       13  /* text to print in score */
+#define MXI_note       14  /* notes & rests */
+#define MXI_dynamic    15  /* dynamic marking */
+#define MXI_lyric      16  /* text underlay of notes */
 
 #define MAXLYRIC      32  /* maximum lyric number allowed */
 
@@ -115,6 +117,7 @@ class _NoteState {  // used in MusicXmlFile::printKernNote()
    int hookright;
    // articulations:
    int staccato;
+   int tenuto;
    int ficta;
    int accent;
    int upbow;
@@ -145,6 +148,7 @@ class _NoteState {  // used in MusicXmlFile::printKernNote()
       gracenote         = 0;
       ficta             = 0;
       staccato          = 0;
+      tenuto            = 0;
       upbow             = 0;
       downbow           = 0;
       accent            = 0;
@@ -155,6 +159,7 @@ class _NoteState {  // used in MusicXmlFile::printKernNote()
    void incorporate(_NoteState& ns) {
       if (stemdir == 0) { stemdir = ns.stemdir; }
       staccato         |= ns.staccato;
+      tenuto           |= ns.tenuto;
       staccatissimo    |= ns.staccatissimo;
       accent           |= ns.accent;
       fermata          |= ns.fermata;
@@ -219,6 +224,11 @@ class MusicXmlFile {
       void        addStaffData            (void);
       void        appendAllPartStaves     (int partnum, 
                                            _MusicXmlItem& tempitem);
+      void        getInstrumentName       (CSL::XML::CXMLObject* object, 
+                                           int partnum, 
+                                           CSL::XML::XMLString& idname);
+      char*       getCharacterData        (char* buffer, 
+                                           CSL::XML::CXMLObject* object);
 
       // parsing functions
       void      parse                     (void);
@@ -249,8 +259,13 @@ class MusicXmlFile {
                                            int partnum, long& ticktime);
       void      sortStaff                 (int partnum);
       void      parseDirectionType        (CSL::XML::CXMLObject* object, 
-                                           int partnum, long& ticktime);
+                                           int partnum, long& ticktime,
+                                           CSL::XML::CXMLElement* rootelement);
       void      printDynamic              (ostream& out, int staffno, 
+                                           int index);
+      void      printInstrument           (ostream& out, int staffno, 
+                                           int index);
+      void      printText                 (ostream& out, int staffno, 
                                            int index);
       int       printSystemBreak          (ostream& out, 
                                            CSL::XML::CXMLObject* object);
@@ -315,6 +330,9 @@ class MusicXmlFile {
       CSL::XML::CXMLObject* lastchordhead;
       Array<int> partdynamics;  // used to identify if a part contains dynamics
       int humline;              // used to print lyrics
+
+      CSL::XML::XMLString getAttributeValue(CSL::XML::CXMLObject* object, 
+                      const char* name);
 
       // Humdrum Conversion options:
       int humdrumStem;      // 0 = don't encode stems, 1 = encode stems

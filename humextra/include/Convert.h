@@ -63,6 +63,8 @@ class Convert {
                                                  (const char* aKernString);
       static int       kernToDiatonicPitch       (const char* buffer);
       static int       kernToDiatonicPitchClass  (const char* buffer);
+      static int       kernToDiatonicPitchClassNumeric(const char* buffer);
+      static int       kernToDiatonicAlteration  (const char* buffer);
       static int       kernClefToBaseline        (const char* buffer);
       static char*     musePitchToKernPitch      (char* kernOutput, const
                                                     char* museInput);
@@ -112,7 +114,10 @@ class Convert {
    // conversions dealing with MIDI base-12 system 
    
       static char*     base12ToKern               (char* output, int aPitch);
+      static char*     base12ToPitch              (char* output, int aPitch);
       static int       base12ToBase40             (int aPitch);
+      static int       base7ToBase12              (int aPitch, int alter = 0);
+      static int       base7ToBase40              (int aPitch, int alter = 0);
 
    // conversions from frequency in hertz to MIDI note number
       static int       freq2midi                  (double freq, 

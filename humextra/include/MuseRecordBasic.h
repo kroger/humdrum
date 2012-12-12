@@ -50,6 +50,7 @@ class MuseRecordBasic {
       int               getLineNumber      (void) { return lineindex+1; }
       int               getType            (void) const;
       void              setTypeGraceNote   (void);
+      void              setTypeGraceChordNote(void);
 
       MuseRecordBasic&  operator=          (MuseRecordBasic& aRecord);
       MuseRecordBasic&  operator=          (MuseRecordBasic* aRecord);

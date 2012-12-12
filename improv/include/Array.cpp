@@ -2,10 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Feb  5 19:42:53 PST 1997
 // Last Modified: Sun May 11 20:41:28 GMT-0800 1997
-// Last Modified: Wed Jul  7 11:44:50 PDT 1999 (added setAll() function)
-// Last Modified: Wed Mar 30 13:58:18 PST 2005 (Fixed for compiling in GCC 3.4)
-// Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
-// Last Modified: Wed Sep  8 17:26:13 PDT 2010 (added operator<< for chars)
+// Last Modified: Wed Jul  7 11:44:50 PDT 1999 Added setAll() function
+// Last Modified: Wed Mar 30 13:58:18 PST 2005 Fixed for compiling in GCC 3.4
+// Last Modified: Fri Jun 12 22:58:34 PDT 2009 Renamed SigCollection class
+// Last Modified: Wed Sep  8 17:26:13 PDT 2010 Added operator<< for chars
 // Filename:      ...sig/maint/code/base/Array/Array.cpp
 // Web Address:   http://sig.sapp.org/src/sigBase/Array.cpp
 // Syntax:        C++ 
@@ -23,6 +23,7 @@
 #include "Array.h"
 #include <iostream>
 #include <stdlib.h>
+#include <string.h>
 
 using namespace std;
 
@@ -72,6 +73,22 @@ template<class type>
 void Array<type>::setAll(type aValue) {
    for (int i=0; i<this->getSize(); i++) {
       this->array[i] = aValue;
+   }
+}
+
+//
+// Incremental version of setAll(): the first number is the starting
+// value in the array, and the second value is a successive incrment
+// value added to that for each element in the array until the end.
+//
+
+template<class type>
+void Array<type>::setAll(type aValue, type increment) {
+   if (this->getSize() > 0) {
+      this->array[0] = aValue;
+   }
+   for (int i=1; i<this->getSize(); i++) {
+      this->array[i] = this->array[i-1] + increment;
    }
 }
 
@@ -397,4 +414,4 @@ Array<type> Array<type>::operator/(const Array<type>& anArray) const {
 
 
 
-// md5sum: 3ae3712797d55daae26363fb93ff2c84 Array.cpp [20110214]
+// md5sum: f9167a143ce5d33d90e9c9a04025ac26 Array.cpp [20121211]

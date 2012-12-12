@@ -109,6 +109,7 @@ int main(int argc, char* argv[]) {
 
 #define INVALIDTIME -100000
 #define UNKNOWNTIME -1
+// #define UNKNOWNTIME 0
 
 void doLinearInterpolation(HumdrumFile& infile) {
    infile.analyzeRhythm("4");
@@ -142,7 +143,6 @@ void doLinearInterpolation(HumdrumFile& infile) {
 
    }
 
-
    int lasttimeindex = -1;
    for (i=0; i<timings.getSize(); i++) {
       if (timings[i] < 0) {
@@ -171,7 +171,11 @@ void doLinearInterpolation(HumdrumFile& infile) {
             if ((tfound == 0) && 
                 (strcmp(infile[i].getExInterp(j), "**time") == 0)) {
                tfound = 1;
-               cout << timings[i];
+               if (timings[i] < 0) { 
+                  cout << "0.0";
+               } else {
+                  cout << timings[i];
+               }
             } else {
                cout << infile[i][j];
             }
@@ -259,7 +263,6 @@ void interpolateTimings(Array<double>& timings, HumdrumFile& infile,
          if (roundQ) {
             timings[i] = (int)(timings[i] + 0.5);
          }
-         
       }
    }
 
@@ -569,6 +572,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    tempoQ  =  opts.getBoolean("tempo");
    changeQ = !opts.getBoolean("no-change");
    roundQ  = !opts.getBoolean("no-round");
+roundQ = 0;
    interpQ =  opts.getBoolean("interpolation");
    debugQ  =  opts.getBoolean("debug");
    offset  =  opts.getDouble("offset");
@@ -802,4 +806,4 @@ void usage(const char* command) {
 }
 
 
-// md5sum: 3ea6293bd3c02f333db35df11c4c8788 gettime.cpp [20060502]
+// md5sum: 0df1e26868efc5d45a7ef6dc63ddfec3 gettime.cpp [20120910]

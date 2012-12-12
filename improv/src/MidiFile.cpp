@@ -609,7 +609,7 @@ int MidiFile::addEvent(int aTrack, int aTime, Array<uchar>& midiData) {
 
 //////////////////////////////
 //
-// MidiFile::addEvent --
+// MidiFile::addEvent -- Some bug here when joinedTracks(), but track==1...
 //
 
 int MidiFile::addEvent(MFEvent& mfevent) {
@@ -913,6 +913,14 @@ MFEvent& MidiFile::getEvent(int aTrack, int anIndex) {
 //
 
 int MidiFile::getTicksPerQuarterNote(void) { 
+   if (ticksPerQuarterNote == 0xE728) {
+      // this is a special case which is the SMPTE time code
+      // setting for 25 frames a second with 40 subframes
+      // which means one tick per millisecond.  When SMPTE is 
+      // being used, there is no real concept of the quarter note,
+      // so presume 60 bpm as a simiplification here.
+      // return 1000;
+   } 
    return ticksPerQuarterNote;
 }
 
@@ -2072,7 +2080,8 @@ ostream& operator<<(ostream& out, MidiFile& aMidiFile) {
    } 
    out << "\n";
     
-   out << "Divisions per Quarter Note: " << dec << aMidiFile.getTicksPerQuarterNote() << "\n";
+   out << "Divisions per Quarter Note: " << dec 
+       << aMidiFile.getTicksPerQuarterNote() << "\n";
    for (i=0; i<aMidiFile.getNumTracks(); i++) {
       out << "\nTrack " << i 
           << "   +++++++++++++++++++++++++++++++++++++++++++++++++++\n\n";

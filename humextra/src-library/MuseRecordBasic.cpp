@@ -210,10 +210,11 @@ void MuseRecordBasic::getColumns(Array<char>& data, int startcol, int endcol) {
       return;
    }
    data.setSize(charcount + 1);
+   data.allowGrowth(0);
    
    int i;
    int ii = 0;
-   for (i=endcol; i>=startcol; i--) {
+   for (i=startcol; i<=endcol; i++) {
       data[ii++] = getColumn(i);
    }
    data[ii] = '\0';
@@ -227,30 +228,30 @@ void MuseRecordBasic::getColumns(Array<char>& data, int startcol, int endcol) {
 //
 
 void MuseRecordBasic::setColumns(Array<char>& data, int startcol, int endcol) {
-   int charcount = endcol - startcol + 1;
-   if (charcount <= 0) {
-      return;
+   if (startcol > endcol) {
+      int temp = startcol;
+      startcol = endcol;
+      endcol = temp;
    }
 
    int dsize = data.getSize();
-   if (!isprint(data[dsize-1])) {
+   if (data[dsize-1] == '\0') {
       // don't insert any null-termination of the string.
       dsize--;
    }
+
+   getColumn(endcol) = ' '; // allocate space if not already done
    int i;
-   int ii = charcount-1;
-   for (i=endcol; i>=startcol; i--) {
-      if (ii < 0) {
-         cerr << "FUNNY error in MuseRecordBasic::setColumns" << endl;
-         exit(1);
-      }
-      if (dsize <= ii) {
-         getColumn(i) = ' ';
-      } else {
+   int ii;
+   for (i=startcol; i<=endcol; i++) {
+      ii = i - startcol;
+      if (ii < dsize) {
          getColumn(i) = data[ii];
+      } else {
+         break;
       }
-      ii--;
    }
+
 }
 
 
@@ -395,6 +396,21 @@ void MuseRecordBasic::setType(int aType) {
 void MuseRecordBasic::setTypeGraceNote(void) {
    setType(E_muserec_note_grace);
    (*this)[0] = 'g';
+}
+
+
+
+//////////////////////////////
+//
+// MuseRecordBasic::setTypeGraceChordNote -- put a "g" in the first column,
+//    and a space in the second column.  Shift pitch information over if 
+//    it exists?  Maybe later.  Currently will destroy any pitch information.
+//
+
+void MuseRecordBasic::setTypeGraceChordNote(void) {
+   setType(E_muserec_note_grace_chord);
+   (*this)[0] = 'g';
+   (*this)[1] = ' ';
 }
 
 

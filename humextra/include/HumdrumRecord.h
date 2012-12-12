@@ -10,6 +10,8 @@
 // Last Modified: Sat Aug  8 23:50:10 PDT 2009 added isExInterp
 // Last Modified: Sat May 22 10:13:30 PDT 2010 added RationalNumber
 // Last Modified: Wed Mar 16 14:25:53 PDT 2011 added getIntervalVector
+// Last Modified: Tue Jun 26 09:51:28 PDT 2012 added interpretation type funcs.
+// Last Modified: Mon Dec 10 10:14:08 PST 2012 added Array<char> getToken
 // Filename:      ...sig/include/sigInfo/HumdrumRecord.h
 // Webpage:       http://sig.sapp.org/include/sigInfo/HumdrumRecord.h
 // Syntax:        C++ 
@@ -76,6 +78,8 @@ class HumdrumRecord {
       int               getFieldCount      (void) const;
       int               getFieldCount      (const char* exinterp) const;
       int               getFieldCount      (int exinterp) const;
+      int               getFieldsByExInterp(Array<int>& fields, const char* exinterp);
+      int               getTracksByExInterp(Array<int>& tracks, const char* exinterp);
       char*             getBibKey          (char* buffer, int maxsize = 0);
       char*             getBibValue        (char* buffer, int maxsize = 0);
       const char*       getBibLangIso639_2 (const char* string = NULL);
@@ -86,6 +90,7 @@ class HumdrumRecord {
       int               getLineNum         (void) const; 
       int               getPrimaryTrack    (int spineNumber);
       double            getTrack           (int spineNumber);
+      int               getTrackColumn     (int track);
       const char*       getSpineInfo       (int index) const;
       int               getSpinePrediction (void);
       int               getSpineWidth      (void);
@@ -98,21 +103,24 @@ class HumdrumRecord {
                                               int tokenIndex, 
                                               int buffersize = -1, 
                                               char separator = ' ');
+      char*             getToken           (Array<char>& buffer, 
+                                              int fieldIndex, 
+                                              int tokenIndex, 
+                                              int buffersize = -1, 
+                                              char separator = ' ');
       int               getType            (void) const;
 
       int               isData             (void) const;
       int               isEmpty            (void) const;
-      int               isInterpretation   (void) const;
       int               isGlobalComment    (void) const;
       int               isBibliographic    (void) const;
       int               isMeasure          (void) const;
       int               isLocalComment     (void) const;
       int               isComment          (void) const;
-      int               isTandem           (void) const;
-      int               isSpineManipulator (int index);
-      int               isSpineManipulator (void);
       int               isExInterp         (int index, const char* string);
       int               hasSpines          (void) const;
+      int               isSpineLine        (void) { return hasSpines(); }
+
 
       int               dataQ              (void) const;
       int               measureQ           (void) const;
@@ -124,12 +132,60 @@ class HumdrumRecord {
       int               hasExclusiveQ      (void) const;
       int               hasPathQ           (void) const;
 
+      // Interpretation record functions:
+      int               isInterpretation   (void) const;
+      int               isTandem           (void) const;
+      int               isSpineManipulator (int index);
+      int               isSpineManipulator (void);
+
+      int               isClef             (int index);
+      int               isOriginalClef     (int index);
+      int               isKey              (int index);
+      int               isKeySig           (int index);
+      int               isTempo            (int index);
+      int               isTimeSig          (int index);
+      int               isMetSig           (int index);
+      int               isTranspose        (int index);
+      int               isInstrumentType   (int index);
+      int               isInstrumentClass  (int index);
+      int               isInstrumentName   (int index);
+      int               isInstrumentAbbr   (int index);
+      int               isInstrumentNum    (int index);
+      int               isLabelExpansion   (int index);
+      int               isLabelVariant     (int index);
+      int               isLabelMarker      (int index);
+      int               isStaffNumber      (int index);
+      int               isSysStaffNumber   (int index);
+
+      int               isAllClef             (void);
+      int               isAllOriginalClef     (void);
+      int               isAllKey              (void);
+      int               isAllKeySig           (void);
+      int               isAllTempo            (void);
+      int               isAllTimeSig          (void);
+      int               isAllMetSig           (void);
+      int               isAllTranspose        (void);
+      int               isAllInstrumentType   (void);
+      int               isAllInstrumentClass  (void);
+      int               isAllInstrumentName   (void);
+      int               isAllInstrumentAbbr   (void);
+      int               isAllInstrumentNum    (void);
+      int               isAllLabelExpansion   (void);
+      int               isAllLabelVariant     (void);
+      int               isAllLabelMarker      (void);
+      int               isAllStaffNumber      (void);
+      int               isAllSysStaffNumber   (void);
+
+      int               isNull                (void);
+
       void              insertField        (int index, const char* aField,
                                               int anInterp = E_unknown,
                                               const char* spinetrace = "");
       void              insertField        (int index, const char* aField,
                                               const char* anInterp,
                                               const char* spinetrace = "");
+      void              setSize            (int asize);
+      void              setAllFields       (const char* astring);
       HumdrumRecord&    operator=          (const HumdrumRecord& aRecord);
       HumdrumRecord&    operator=          (const HumdrumRecord* aRecord);
       HumdrumRecord&    operator=          (const char* aRecord);
@@ -169,10 +225,10 @@ class HumdrumRecord {
       int                  modifiedQ;      // boolen for if need to make Rstring
       SigCollection<char*> recordFields;   // data for humdrum text record
       SigCollection<char*> spineids;       // spine tracing ids
-      SigCollection<int>   interpretation; // exclusive interpretation of data
+      Array<int>           interpretation; // exclusive interpretation of data
 
-      SigCollection<int>   dotline;        // for resolving meaning of "."'s
-      SigCollection<int>   dotspine;       // for resolving meaning of "."'s
+      Array<int>           dotline;        // for resolving meaning of "."'s
+      Array<int>           dotspine;       // for resolving meaning of "."'s
 
 
       // data storage for rhythmic analysis in relation to entire Humdrum File.
@@ -188,8 +244,8 @@ class HumdrumRecord {
       int               determineType      (const char* aLine) const;
       void              makeRecordString   (void);
       void              storeRecordFields  (void);
-
-
+      int               isParticularType   (const char* regexp,
+                                            const char* exinterp);
 };
    
 

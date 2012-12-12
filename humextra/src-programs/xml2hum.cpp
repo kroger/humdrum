@@ -36,6 +36,7 @@ int     textQ    = 1;       // used with -T option
 void      checkOptions      (Options& opts, int argc, char** argv);
 void      example           (void);
 void      usage             (const char* command);
+void      printTextString   (const char* string);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -95,7 +96,7 @@ int main(int argc, char* argv[]) {
                if (strlen(hfile[i][j]) == 0) {
                   cout << '.';
                } else {
-                  cout << hfile[i][j];
+                  printTextString(hfile[i][j]);
                }
                if (j<hfile[i].getFieldCount()-1) {
                   cout << '\t';
@@ -109,6 +110,57 @@ int main(int argc, char* argv[]) {
 
    return 0;
 }
+
+
+
+//////////////////////////////
+//
+// printTextString -- do some conversions from UTF-8.
+//
+
+void printTextString(const char* string) {
+   Array<char> newstring;
+   newstring.setSize(strlen(string)+1);
+   strcpy(newstring.getBase(), string);
+   //PerlRegularExpression pre;
+   //pre.sar(newstring, "\xc3\xa9", "&eacute;", "g");
+   //cout << string;
+   int i;
+   for (i=0; i<(int)strlen(string); i++) {
+      if (string[i] == '\xC3') {
+
+         if (string[i+1] == '\xA0') { cout << "&agrave;"; i+=1; continue; }
+         if (string[i+1] == '\xA1') { cout << "&aacute;"; i+=1; continue; }
+         if (string[i+1] == '\xA2') { cout << "&acirc;";  i+=1; continue; }
+         if (string[i+1] == '\xA3') { cout << "&atilde;"; i+=1; continue; }
+         if (string[i+1] == '\xA4') { cout << "&auml;";   i+=1; continue; }
+         if (string[i+1] == '\xA5') { cout << "&aring;";  i+=1; continue; }
+         if (string[i+1] == '\xA7') { cout << "&ccedil;"; i+=1; continue; }
+         if (string[i+1] == '\xA8') { cout << "&egrave;"; i+=1; continue; }
+         if (string[i+1] == '\xA9') { cout << "&eacute;"; i+=1; continue; }
+         if (string[i+1] == '\xAA') { cout << "&ecirc;";  i+=1; continue; }
+         if (string[i+1] == '\xAB') { cout << "&euml;";   i+=1; continue; }
+         if (string[i+1] == '\xAC') { cout << "&igrave;"; i+=1; continue; }
+         if (string[i+1] == '\xAD') { cout << "&iacute;"; i+=1; continue; }
+         if (string[i+1] == '\xAE') { cout << "&icirc;";  i+=1; continue; }
+         if (string[i+1] == '\xAF') { cout << "&iuml;";   i+=1; continue; }
+         if (string[i+1] == '\xB1') { cout << "&ntilde;"; i+=1; continue; }
+         if (string[i+1] == '\xB2') { cout << "&ograve;"; i+=1; continue; }
+         if (string[i+1] == '\xB3') { cout << "&oacute;"; i+=1; continue; }
+         if (string[i+1] == '\xB4') { cout << "&ocirc;";  i+=1; continue; }
+         if (string[i+1] == '\xB5') { cout << "&otilde;"; i+=1; continue; }
+         if (string[i+1] == '\xB6') { cout << "&ouml;";   i+=1; continue; }
+         if (string[i+1] == '\xB9') { cout << "&ugrave;"; i+=1; continue; }
+         if (string[i+1] == '\xBA') { cout << "&uacute;"; i+=1; continue; }
+         if (string[i+1] == '\xBB') { cout << "&ucirc;";  i+=1; continue; }
+         if (string[i+1] == '\xBB') { cout << "&uuml;";   i+=1; continue; }
+
+      }
+      cout << string[i];
+   }
+
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -201,4 +253,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: f890ed97b6d9d1f27575bf15b06de328 xml2hum.cpp [20100628]
+// md5sum: 355276b61985f1c5dc1f2d6a0268dc30 xml2hum.cpp [20111215]

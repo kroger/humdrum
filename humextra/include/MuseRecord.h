@@ -44,12 +44,13 @@ class MuseRecord : public MuseRecordBasic {
       int              getAccidental                (void);
       char*            getAccidental                (char* output);
       int              getBase40                    (void);
-      void             setPitch                     (int base40, int chordnote = 0);
+      void             setPitch                     (int base40, int chordnote = 0, int gracenote = 0);
       void             setPitch                     (const char* pitchname);
       void             setPitchAtIndex              (int index, 
                                                      const char* pitchname);
       void             setChordPitch                (const char* pitchname);
       void             setGracePitch                (const char* pitchname);
+      void             setGraceChordPitch           (const char* pitchname);
       void             setCuePitch                  (const char* pitchname);
       void             setStemDown                  (void);
       void             setStemUp                    (void);

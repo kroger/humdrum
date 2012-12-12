@@ -16,6 +16,8 @@
 // Last Modified: Mon Jan 17 04:12:01 PST 2011 switched --loc and --loc2
 // Last Midified: Tue Jan 18 08:16:26 PST 2011 added --overlap option
 // Last Midified: Sat Apr  2 18:01:12 PDT 2011 added L=long B=breve durations
+// Last Midified: Mon Nov  7 10:40:00 PST 2011 added + == # for pitch search
+// Last Midified: Mon Nov 12 17:09:30 PST 2012 added note offsets
 // Filename:      ...museinfo/examples/all/themax.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/themax.cpp
 // Syntax:        C++; museinfo
@@ -139,7 +141,7 @@ int       searchForMatches       (const char* filename, Array<char>& ss,
 int       searchForMatches       (istream& inputfile, Array<char>& ss, 
                                   PerlRegularExpression& re, int mcount);
 void      prepareInterval        (Array<char>& data);
-int       checkLink              (string& line);
+int       checkLink              (string& line, int offset);
 void      getSimpleLocationINT   (Array<int>& positions, string& line, 
                                   Array<char>& feature, char searchanchor,
                                   Array<int>& checklocs, int featurewidth = 1);
@@ -234,6 +236,8 @@ const char* kernstring   = "";      // used with -k option
 int         limitQ       = 0;       // used with --limit option
 int         limitval     = 0;       // used with --limit option
 Array<char> filetag;                // used with -f option
+int         TOTALCOUNT   = 0;       // used for --total option, hack for some problem where count is
+                                    //                          returning file count instead of match count.
 
 Array<char> tonicss; // tonic search string
 
@@ -519,7 +523,11 @@ int main(int argc, char** argv) {
    }
 
    if (totalQ) {
-      cout << totalcount << endl;
+      if (TOTALCOUNT > 0) {
+         cout << TOTALCOUNT << endl;
+      } else {
+         cout << totalcount << endl;
+      }
    }
 
    return 0;
@@ -558,7 +566,10 @@ int searchForMatches(istream& inputfile, Array<char>& ss,
       PerlRegularExpression& pre, int mcount) {
    PerlRegularExpression blanktest;
    PerlRegularExpression messagetest;
+   PerlRegularExpression noteoffsettest;
+   noteoffsettest.initializeSearchAndStudy("[^\\t]+;(\\d+)\\t");
    string line;
+   int offset = 1;
    int state;
    int i;
    int counter = 0;
@@ -578,10 +589,15 @@ int searchForMatches(istream& inputfile, Array<char>& ss,
          continue;
       }
       state = pre.search(line.c_str());
+      if (noteoffsettest.search(line.c_str())) {
+         offset = atoi(noteoffsettest.getSubmatch(1));
+      } else {
+         offset = 1;
+      }
       if (state && (!unlinkQ) && (!anchoredQ) && (featureCount > 1)) {
-         state = checkLink(line);
+         state = checkLink(line, offset);
       } else if (state && (countQ || locationQ || location2Q)) {
-         counter += checkLink(line);
+         counter += checkLink(line, offset);
          mcount++;
          continue;
       }
@@ -658,7 +674,7 @@ void removeBoundaryCharacters(string& line) {
 //    on the input line.
 //
 
-int checkLink(string& line) {
+int checkLink(string& line, int offset) {
    Array<int> target;
    target.setSize(0);
 
@@ -829,22 +845,33 @@ int checkLink(string& line) {
       removeOverlappedMatches(target, targetend);
    }
 
+   int offsettoggle = 0;
+   int coloncount = 0;
    if ((location2Q || locationQ || countQ) && (target.getSize() > 0)) {
       int i = 0;
       const char* ptr = line.c_str();
       while ((ptr[i] != '\0') && (ptr[i] != '\t')) {
-         cout << ptr[i];                  
+         if (ptr[i] == ':') {
+            coloncount++;
+         }
+         if ((coloncount >= 2) && (ptr[i] == ';')) {
+            offsettoggle = 1;
+         }
+         if (offsettoggle == 0) {
+            cout << ptr[i];                  
+         }
          i++;
       }
       if (countQ) {
          cout << '\t' << target.getSize();
+         TOTALCOUNT += target.getSize();
       } else {
          // locationQ
          cout << '\t';
          for (i=0; i<target.getSize(); i++)  {
-            cout << target[i] + 1;
+            cout << target[i] + offset;
             if (printendQ && (targetend[i] != target[i])) {
-               cout << "-" << targetend[i] + 1;
+               cout << "-" << targetend[i] + offset;
             }
             if (i < target.getSize() -1) {
                cout << " ";
@@ -1384,7 +1411,32 @@ void findIntersection(Array<int>& aa, Array<int>& bb) {
 //       *  * *  *  *  *  * *  * * * * *  * *  *  *  *  *  *  * *  *  *  *
 //    (checking for segmentation when a digits is preceded by a non-digit.)
 //
-//    Ignore "R *" markers when counting notes.
+//    Do NOT Ignore "R *" markers when counting notes.  Add one for each
+//    occurence of a rest.  Example test data to consider:
+//
+//    -m2     F       1
+//    -M2     E       4
+//    +M2     D       4
+//    -M3     E       1.
+//    +M2     C       2
+//    -M2     D       1
+//            C       1
+//    R       R       R   (measure 125 of Jos0802d -- bassus part)
+//            F       L
+//    R       R       R
+//    -m3     F       1
+//    -M2     D       2
+//    +P4     C       2
+//    -m2     F       2.
+//    -M3     E       4
+//            C       L
+//    R       R       R
+//    +M2     D       2.
+//    +m2     E       4
+//    +M2     F       2
+//    -P4     G       2
+//    +P4     D       2
+//    +M2     G       2.
 //
 
 void getMusicalIntervalLocation(Array<int>& positions, string& line, 
@@ -1429,9 +1481,13 @@ void getMusicalIntervalLocation(Array<int>& positions, string& line,
             // continue; // maybe this is needed?
          }
          if ((toupper(str[i]) == 'X') || 
-             ((str[i] == 'P') && (toupper(str[i-1]) != 'X'))) {
+             ((str[i] == 'P') && (i>=1) && (toupper(str[i-1]) != 'X'))) {
             location++;
          }
+         if ((i > 1) && (toupper(str[i]) == 'R') && (toupper(str[i-1]) == 'R')) {
+            location++;
+         }
+// cout << "I = " << i << "\t" << str[i] << str[i+1] << str[i+2] << str[i+3]  << " LOCATION = " << location << endl;
          if (gumby.search(str+i)) {
             positions.append(location);
          }
@@ -1603,14 +1659,21 @@ void getSeparatorLocationFET(Array<int>& positions, string& line,
       Array<char>& feature, char searchanchor, Array<int>& checklocs, 
       char separator) {
 
+   positions.setSize(checklocs.getSize());
    positions.setSize(0);
    PerlRegularExpression pre;
    Array<char> startmarker;
+   startmarker.setSize(256);
+   startmarker.setGrowth(10000);
    startmarker.setSize(0);
    appendString(startmarker, "(\\t");
    startmarker.append(searchanchor);
    appendString(startmarker, ")");
    pre.search(line.c_str(), startmarker.getBase(), "");
+
+   // startindex is the first character in the search feature with
+   // the full search index.  Matches will be counted from this 
+   // position.
    int startindex = pre.getSubmatchEnd(1);
    int i, j;
 
@@ -1700,7 +1763,8 @@ void getSeparatorLocationFET(Array<int>& positions, string& line,
                }
             }
          }
-         targetindex++;
+         // The following line was causing a bug [fixed 20120607]
+         // targetindex++;
 
          i++;
       }
@@ -2034,23 +2098,32 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("t|tonic=s:",         "search only given tonic");
    opts.define("T|meter=s:",         "search only given meters");
 
-   opts.define("i|pitch-12tone-interval=s:",   "12-tone interval");
-   opts.define("C|pitch-gross-contour=s:",     "pitch gross contour");
-   opts.define("c|pitch-refined-contour=s:",   "pitch refined contour");
-   opts.define("d|pitch-scale-degree=s:",      "pitch scale degree");
-   opts.define("I|pitch-musical-interval|interval=s:",  "musical interval");
-   opts.define("P|pitch-12tonepc=s:",          "12-tone pitch class");
-   opts.define("p|pitch-class|pitch=s:",       "pitch class");
-   opts.define("D|diatonic-pitch-class|diatonic=b:", "diatonic pitch class");
+   opts.define("i|12I|12i|pitch-12tone-interval=s:",   "12-tone interval");
+   opts.define("C|PGC|pgc|GC|gc|CON|con|pitch-gross-contour=s:", 
+                                     "pitch gross contour");
+   opts.define("c|PRC|prc|RC|rc|pitch-refined-contour=s:",   
+                                     "pitch refined contour");
+   opts.define("d|SD|sd|pitch-scale-degree=s:",      "pitch scale degree");
+   opts.define("I|MI|mi|DI|di|INT|int|pitch-musical-interval|interval=s:",  
+                                     "musical interval");
+   opts.define("P|12P|12p|pitch-12tonepc=s:",          "12-tone pitch class");
+   opts.define("p|PCH|pch|PC|pc|pitch-class|pitch=s:",       
+                                     "pitch class");
+   opts.define("D|DPC|dpc|diatonic-pitch-class|diatonic=s:", 
+                                     "diatonic pitch class");
 
-   opts.define("R|duration-gross-contour=s:",   "duration gross contour");
-   opts.define("r|duration-refined-contour=s:", "duration refined contour");
+   opts.define("R|DGC|dgc|duration-gross-contour=s:",   
+                                     "duration gross contour");
+   opts.define("r|DRC|drc|duration-refined-contour=s:", 
+                                     "duration refined contour");
    opts.define("u|duration=s:",                 "duration (IOI)");
    opts.define("b|beat-level=s:",               "beat level");
    opts.define("L|metric-level=s:",             "metric level");
    opts.define("l|metric-position=s:",          "metric position");
-   opts.define("e|metric-refined-contour=s:",   "metric refined contour");
-   opts.define("E|metric-gross-contour=s:",     "metric-gross contour");
+   opts.define("e|MRC|mrc|rrc|RRC|metric-refined-contour=s:",   
+                                      "metric refined contour");
+   opts.define("E|MGC|mgc|RGC|rgc|metric-gross-contour=s:",     
+                                      "metric-gross contour");
 
    //opts.define("i|pitch-twelvetone-interval=s:", "12-tone interval");
 
@@ -2162,6 +2235,9 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
 
    PpitchclassQ           =  opts.getBoolean("pitch-class");
    diatonicQ              =  opts.getBoolean("diatonic-pitch-class");
+   if (diatonicQ) {
+      PpitchclassQ = 1;
+   }
 
    P12toneinterval.setSize(strlen(opts.getString("pitch-12tone-interval"))+1);
    strcpy(P12toneinterval.getBase(), opts.getString("pitch-12tone-interval"));
@@ -2175,8 +2251,14 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    strcpy(Pmusicalinterval.getBase(), opts.getString("pitch-musical-interval"));
    P12tonepitchclass.setSize(strlen(opts.getString("pitch-12tonepc"))+1);
    strcpy(P12tonepitchclass.getBase(), opts.getString("pitch-12tonepc"));
-   Ppitchclass.setSize(strlen(opts.getString("pitch-class"))+1);
-   strcpy(Ppitchclass.getBase(), opts.getString("pitch-class"));
+
+   if (diatonicQ) {
+      Ppitchclass.setSize(strlen(opts.getString("diatonic-pitch-class"))+1);
+      strcpy(Ppitchclass.getBase(), opts.getString("diatonic-pitch-class"));
+   } else {
+      Ppitchclass.setSize(strlen(opts.getString("pitch-class"))+1);
+      strcpy(Ppitchclass.getBase(), opts.getString("pitch-class"));
+   }
 
    RgrosscontourQ         = opts.getBoolean("duration-gross-contour");
    RrefinedcontourQ       = opts.getBoolean("duration-refined-contour");
@@ -2382,8 +2464,8 @@ void cleanRmgc(Array<char>& data) {
    PerlRegularExpression pre;
 
    // remove invalid characters
-   pre.sar(data, "[^RrSsHhwW=<>0-9,.{}()+*-]", "", "g");
-   pre.tr(data, "rw=sh", "RWWSH");
+   pre.sar(data, "[^UuDdRrEeSsHhwW=<>0-9,.{}()+*-]", "", "g");
+   pre.tr(data, "udHhWw=Eesr", "UDUUDDSSSSR");
 }
 
 
@@ -2397,8 +2479,8 @@ void cleanRmrc(Array<char>& data) {
    PerlRegularExpression pre;
 
    // remove invalid characters
-   pre.sar(data, "[^RrSsLlWw=<>0-9,.{}()+*-]", "", "g");
-   pre.tr(data, "r=", "Rw");
+   pre.sar(data, "[^UuDdRrEeSsHhwW=<>0-9,.{}()+*-]", "", "g");
+   pre.tr(data, "HhWwEes=r", "UuDdSSSSR");
 }
 
 
@@ -2427,8 +2509,10 @@ void cleanRrefinedContour(Array<char>& data) {
    PerlRegularExpression pre;
 
    // remove invalid characters
-   pre.sar(data, "[^RrSsLl=<>0-9,.{}()+*-]", "", "g");
+   pre.sar(data, "[^\\]\\[RrSsLl=<>0-9,.{}()+*-]", "", "g");
    pre.tr(data, "rsl", "R<>");
+   pre.sar(data, "\\]", "\\]", "g");
+   pre.sar(data, "\\[", "\\[", "g");
    pre.sar(data, "S", "\\[", "g");
    pre.sar(data, "L", "\\]", "g");
 }
@@ -2984,6 +3068,8 @@ void prepareInterval(Array<char>& data) {
 void cleanPpitchClass(Array<char>& data) {
    PerlRegularExpression pre;
 
+   pre.sar(data,  "\\+", "#", "g");          // allow for + to mean sharp
+
    pre.sar(data,  "( |-)?is",    "#", "gi"); // replace German sharp
    pre.sar(data,  "( |-)?es",    "-", "gi"); // replace German flat
 
@@ -3008,13 +3094,14 @@ void cleanPpitchClass(Array<char>& data) {
    pre.sar(data, "\\s+",  " ",  "g"); 
 
    // adjust for aliases
-   pre.tr (data, "\n\txa-hsSrmM-",  "  XA-H##Rbbb");
+   pre.tr(data, "\n\txa-hsSrmM-",  "  XA-H##Rbbb");
+   pre.tr(data, "@",  "+");
 
    // expand double sharps
    pre.sar(data, "X",  "##",  "gi"); 
 
    // remove invalid chars
-   pre.sar(data, "[^A-HRb# H(){},.?+^*0-9]",  "",  "g"); 
+   pre.sar(data, "[^nA-HRb# H(){},.?+^*0-9]",  "",  "g"); 
 
    // make sure {} operator has valid syntax
    cleanUpRangeSyntaxNoOutsideDigitsOrComma(data);
@@ -3060,9 +3147,10 @@ void cleanPpitchClass(Array<char>& data) {
    // pitch names can contain any accidental (the search query
    // should not have any accidentals listed).
    if (diatonicQ) {
-      pre.sar(data, " ", "^ ", "g");
-      pre.sar(data, "(?<=[A-G])$", "^", "g");
+      pre.sar(data, "(?<=[A-G])(?![#nb-])", "^", "g");
    }
+   // remove natural sign (no longer needed after diatonic processing
+   pre.sar(data, "n", "", "g");
 
    // put a parenthesis at very beginning and very end of string
    pre.sar(data, "^",  "(?:");               
@@ -3319,4 +3407,4 @@ void processKernString(const char* astring) {
 }
 
 
-// md5sum: 441054a411f23117bda1fb567e7df1b0 themax.cpp [20110711]
+// md5sum: 878e8c189062674f1d1eafb13c6f33df themax.cpp [20121112]

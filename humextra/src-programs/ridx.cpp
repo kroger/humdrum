@@ -2,6 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Nov 23 05:24:14 PST 2009
 // Last Modified: Mon Nov 23 05:24:18 PST 2009
+// Last Modified: Thu Dec 22 11:50:31 PST 2011 (added -V and -k options)
 // Filename:      ...sig/examples/all/ridx.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/ridx.cpp
 // Syntax:        C++; museinfo
@@ -47,13 +48,17 @@ int       option_U = 0;   // used with -U and -u option
 int       option_M = 0;   // used with -M option
 int       option_C = 0;   // used with -C option
 int       option_c = 0;   // used with -c option
-
+int       option_k = 0;   // used with -k option
+int       option_V = 0;   // used with -V option
+ 
 //////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {
    // process the command-line options
    checkOptions(options, argc, argv);
    HumdrumFile infile;
+   infile.setAllocation(1123123);   // allow for very large inputs up to 
+                                    // million lines.
    int numinputs = options.getArgumentCount();
 
    for (int i=0; i<numinputs || i==0; i++) {
@@ -85,45 +90,85 @@ void processFile(HumdrumFile& infile) {
    int i;
    PerlRegularExpression pre;
 
+   int revQ = option_V;
+
    for (i=0; i<infile.getNumLines(); i++) {
 
       if (option_D && (infile[i].isMeasure() || infile[i].isData())) {
          // remove data lines if -D is specified
+         if (revQ) {
+            cout << infile[i] << "\n";
+         }
          continue;
       }
-      if (option_d && infile[i].isData() && infile[i].equalDataQ(".")) {
+      if (option_d) {
          // remove null data lines if -d is specified
-         continue;
+         if (option_k && infile[i].isData() && 
+               infile[i].equalFieldsQ("**kern", ".")) {
+            // remove if only all **kern spines are null.
+            if (revQ) {
+               cout << infile[i] << "\n";
+            }
+            continue;
+         } else if (!option_k && infile[i].isData() && 
+               infile[i].equalDataQ(".")) {
+            // remove null data lines if all spines are null.
+            if (revQ) {
+               cout << infile[i] << "\n";
+            }
+            continue;
+         }
       }
       if (option_G && (infile[i].isGlobalComment() || 
             infile[i].isBibliographic())) {
          // remove global comments if -G is specified
+         if (revQ) {
+            cout << infile[i] << "\n";
+         }
          continue;
       }
       if (option_g && pre.search(infile[i][0], "^!!+\\s*$", "")) {
          // remove empty global comments if -g is specified
+         if (revQ) {
+            cout << infile[i] << "\n";
+         }
          continue;
       }
       if (option_I && infile[i].isInterpretation()) {
          // remove all interpretation records
+         if (revQ) {
+            cout << infile[i] << "\n";
+         }
          continue;
       }
       if (option_i && infile[i].isInterpretation() && 
             infile[i].equalDataQ("*")) {
          // remove null interpretation records
+         if (revQ) {
+            cout << infile[i] << "\n";
+         }
          continue;
       }
       if (option_L && infile[i].isLocalComment()) {
          // remove all local comments
+         if (revQ) {
+            cout << infile[i] << "\n";
+         }
          continue;
       }
       if (option_l && infile[i].isLocalComment() && 
             infile[i].equalDataQ("!")) {
          // remove null local comments
+         if (revQ) {
+            cout << infile[i] << "\n";
+         }
          continue;
       }
       if (option_T && infile[i].isTandem()) {
          // remove tandem (non-manipulator) interpretations
+         if (revQ) {
+            cout << infile[i] << "\n";
+         }
          continue;
       }
       if (option_U) {
@@ -136,20 +181,31 @@ void processFile(HumdrumFile& infile) {
 
       if (option_M && infile[i].isMeasure()) {
          // remove all measure lines
+         if (revQ) {
+            cout << infile[i] << "\n";
+         }
          continue;
       }
       if (option_C && infile[i].isComment()) {
          // remove all comments (local & global)
+         if (revQ) {
+            cout << infile[i] << "\n";
+         }
          continue;
       }
       if (option_c && (infile[i].isLocalComment() || 
             infile[i].isGlobalComment())) {
          // remove all comments (local & global)
+         if (revQ) {
+            cout << infile[i] << "\n";
+         }
          continue;
       }
 
       // got past all test, so print the current line:
-      cout << infile[i] << "\n";
+      if (!revQ) {
+         cout << infile[i] << "\n";
+      }
    }
 
 }
@@ -173,6 +229,8 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("l|1=b",        "remove null local comments");
    opts.define("T=b",          "remove all tandem interpretations");
    opts.define("U|u=b",        "remove unnecessary (duplicate ex. interps.");
+   opts.define("k=b",          "for -d, only consider **kern spines.");
+   opts.define("V=b",          "negate filtering effect of program.");
 
    // additional options
    opts.define("M=b",          "remove measure lines");
@@ -217,6 +275,8 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    option_M = opts.getBoolean("M");
    option_C = opts.getBoolean("C");
    option_c = opts.getBoolean("c");
+   option_k = opts.getBoolean("k");
+   option_V = opts.getBoolean("V");
    
 }
 
@@ -245,4 +305,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: fcac835450194196f80e678193f2ad4a ridx.cpp [20101110]
+// md5sum: fa0b17b2b7bee282159c7cff84b67c36 ridx.cpp [20120404]

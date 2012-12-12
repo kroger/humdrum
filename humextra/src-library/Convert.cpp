@@ -18,6 +18,7 @@
 // Last Modified: Sat May 22 11:05:59 PDT 2010 (added RationalNumber)
 // Last Modified: Sun Dec 26 04:54:46 PST 2010 (added kernClefToBaseline)
 // Last Modified: Sat Jan 22 17:13:36 PST 2011 (added kernToDurationNoDots)
+// Last Modified: Thu Jan 26 18:10:29 PST 2012 (fixed kotoToDurationR)
 // Filename:      ...sig/src/sigInfo/Convert.cpp
 // Web Address:   http://sig.sapp.org/src/sigInfo/Convert.cpp
 // Syntax:        C++ 
@@ -85,9 +86,7 @@ int Convert::kernToMidiNoteNumber(const char* aKernString) {
       return -1;
    }
 
-   // plus one needed for octave value since middle C is 60 
-   // and 60 / 12 = 5 rather than 4.
-   int octave = base40 / 40 + 1;
+   int octave = base40 / 40;
    int pitch = 0;
    switch (base40 % 40) {
       case  0: pitch = -2;     break;   // C--
@@ -240,6 +239,18 @@ char* Convert::durationToKernRhythm(char* output, double input, int timebase) {
       return output;
    }
 
+   // special case for 9/8 full rests
+   if (fabs(input - (4.0 * 9.0 / 8.0)) < 0.0001) {
+      strcat(output, "8%9");
+      return output;
+   }
+
+   // special case for 9/2 full-measure rest
+   if (fabs(input - 18.0) < 0.0001) {
+      strcat(output, "2%9");
+      return output;
+   } 
+
    // handle special rounding cases primarily for SCORE which
    // only stores 4 digits for a duration
    if (input == 0.0833) {
@@ -276,7 +287,8 @@ char* Convert::durationToKernRhythm(char* output, double input, int timebase) {
                strcat(output, buffer);
                strcat(output, "...");
             } else {
-               strcpy(output, "q");
+               sprintf(output, "q%lf", input);
+               // strcpy(output, "q");
                // cerr << "Error: Convert::durationToKernRhythm choked on the "
                //      << "duration: " << input << endl; 
                // exit(1);
@@ -455,6 +467,32 @@ int Convert::kernToDiatonicPitch(const char* buffer) {
 
 //////////////////////////////
 //
+// Convert::kernToDiatonicAlteration --
+//
+
+int Convert::kernToDiatonicAlteration(const char* buffer) {
+   int i = 0;
+   int output = 0;
+   while (buffer[i] != '\0') {
+      if (buffer[i] == 'n') {
+         output = 0;
+      } else if (buffer[i] == '#') {
+         output++;
+      } else if (buffer[i] == '-') {
+         output--;
+      } else if (buffer[i] == ' ') {
+         // only check the first note in the input **kern token
+         break;
+      }
+      i++;
+   }
+   return output;
+}
+
+
+
+//////////////////////////////
+//
 // Convert::base40IntervalToDiatonic -- convert a base40 interval
 //    into a diatonic interval (excluding the chromatic alteration)
 //
@@ -567,6 +605,30 @@ int Convert::kernToDiatonicPitchClass(const char* buffer) {
 
 //////////////////////////////
 //
+// Convert::kernToDiatonicPitchClassNumeric -- converts to c=0 .. b=6.
+//      rest is something negative number.
+//
+
+int Convert::kernToDiatonicPitchClassNumeric(const char* buffer) {
+   int charval =  Convert::kernToDiatonicPitchClass(buffer);
+
+   switch (charval) {
+      case 'a': return  5;
+      case 'b': return  6;
+      case 'c': return  0;
+      case 'd': return  1;
+      case 'e': return  2;
+      case 'f': return  3;
+      case 'g': return  4;
+   }
+
+   return -1;
+}
+
+
+
+//////////////////////////////
+//
 // Convert::kernTimeSignatureBottom -- returns the rhythm value
 //	in the bottom part of a time signature
 //
@@ -649,6 +711,10 @@ int Convert::kernKeyToNumber(const char* aKernString) {
    int length = strlen(aKernString);
    int start = 0;
    int sign = 1;
+
+   if ((strlen(aKernString) == 0)  || (strstr(aKernString, "[]") != NULL)) {
+      return 0;
+   }
 
    for (i=0; i<length; i++) {
       if (start) {
@@ -1465,6 +1531,7 @@ char* Convert::base40ToKern(char* output, int aPitch) {
       case -1: repeat = 4; break;
       default:
          cerr << "Error: unknown octave value: " << octave << endl;
+         cerr << "for base-40 pitch: " << aPitch << endl;
          exit(1);
    }
    if (repeat == 0) {
@@ -2201,11 +2268,52 @@ int Convert::museToBase40(const char* pitchString) {
 
 //////////////////////////////
 //
+// Convert::base7ToBase12 -- convert diatonic pitch class with optional 
+//    chromatic alteration into Base-12 (MIDI note number).
+//
+
+int Convert::base7ToBase12(int aPitch, int alter) {
+   if (aPitch <= 0) {
+      return -1;
+   }
+
+   int octave = aPitch / 7;
+   int chroma = aPitch % 7;
+   int output = 0;
+   switch (chroma) {
+      case 0:  output =  0;  break;   // 0 = C -> 0
+      case 1:  output =  2;  break;   // 1 = D -> 2
+      case 2:  output =  4;  break;   // 2 = E -> 4
+      case 3:  output =  5;  break;   // 3 = F -> 5
+      case 4:  output =  7;  break;   // 4 = G -> 7
+      case 5:  output =  9;  break;   // 5 = A -> 9
+      case 6:  output = 11;  break;   // 6 = B -> 11
+      default: output = 0;
+   }
+   // need to add 1 to octave since C4 is MIDI note 60 which is 5 * 12:
+   return output + 12 * (octave+1) + alter;
+}
+
+
+
+//////////////////////////////
+//
+//  Convert::base7ToBase40 --
+//
+
+int Convert::base7ToBase40(int aPitch, int alter) {
+   return base12ToBase40(base7ToBase12(aPitch, alter));
+}
+
+
+
+//////////////////////////////
+//
 // Convert::base12ToBase40 -- assume fixed accidentals.
 //
 
 int Convert::base12ToBase40(int aPitch) {
-   int octave = aPitch / 12;
+   int octave = aPitch / 12 - 1;
    int chroma = aPitch % 12;
  
    int output = 0;
@@ -2282,6 +2390,7 @@ char* Convert::base12ToKern(char* output, int aPitch) {
       case -1: repeat = 4; break;
       default:
          cerr << "Error: unknown octave value: " << octave << endl;
+         cerr << "for base-12 pitch: " << aPitch << endl;
          exit(1);
    }
    if (repeat == 0) {
@@ -2300,6 +2409,48 @@ char* Convert::base12ToKern(char* output, int aPitch) {
 
    return output;
 }
+
+
+
+//////////////////////////////
+//
+// Convert::base12ToPitch -- Convert MIDI note numbers to **pitch format.
+//     This is a diatonic pitch class followed by an octave number.
+//     It might be nice to also add a reference key to minimize
+//     diatonic pitch errors (for example 61 in A-flat major is probably
+//     a D-flat, but in B-major it is probably a C-sharp.
+//
+
+char* Convert::base12ToPitch(char* output, int aPitch) {
+   int octave = aPitch / 12 - 1;  // possible bug fix or bug creation
+   if (octave > 12 || octave < -1) {
+      cerr << "Error: unreasonable octave value: " << octave << endl;
+      exit(1);
+   }
+   int chroma = aPitch % 12;
+
+   switch (chroma) {
+      case 0:  strcpy(output, "C");  break;
+      case 1:  strcpy(output, "C#"); break;
+      case 2:  strcpy(output, "D");  break;
+      case 3:  strcpy(output, "E-"); break;
+      case 4:  strcpy(output, "E");  break;
+      case 5:  strcpy(output, "F");  break;
+      case 6:  strcpy(output, "F#"); break;
+      case 7:  strcpy(output, "G");  break;
+      case 8:  strcpy(output, "G#"); break;
+      case 9:  strcpy(output, "A");  break;
+      case 10: strcpy(output, "B-"); break;
+      case 11: strcpy(output, "B");  break;
+   }
+   char buffer[12] = {0};
+   sprintf(buffer, "%d", octave);
+   strcat(output, buffer);
+
+   return output;
+}
+
+
 
 ///////////////////////////////////////////////////////////////////////////
 //
@@ -2345,7 +2496,6 @@ double Convert::kotoToDuration(const char* aKotoString) {
          break;   // only look at first note in a chord or arpeggio
       }
    }
-
    // now know everything to create a duration
 
    double duration = 1;
@@ -2400,11 +2550,12 @@ RationalNumber Convert::kotoToDurationR(const char* aKotoString) {
    
    RationalNumber baseduration = duration;
    for (i=0; i<dots; i++) {
-      duration += baseduration / ((int)pow(2.0, (double)-(i+1)));
+      duration += baseduration / (int)(pow(2.0, (double)(i+1)));
    }
 
    return duration;
 }
+
 
 
 

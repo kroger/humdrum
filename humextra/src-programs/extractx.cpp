@@ -83,6 +83,9 @@ void    printCotokenInfo        (int& start, HumdrumFile& infile, int line,
                                  int spine, Array<Array<char> >& cotokens, 
                                  Array<int>& spineindex, 
                                  Array<int>& subspineindex);
+void    fillFieldDataByGrep     (Array<int>& field, Array<int>& subfield, 
+                                 Array<int>& model, const char* grepString, 
+                                 HumdrumFile& infile, int state);
 
 // global variables
 Options      options;            // database for command-line arguments
@@ -114,6 +117,8 @@ const char* cointerp = "**kern";   // used with -c option
 int         comodel  = 0;          // used with -M option
 const char* subtokenseparator = " "; // used with a future option
 int         interpstate = 0;       // used -I or with -i
+int         grepQ       = 0;       // used with -g option
+const char* grepString  = "";      // used with -g option
 
 
 
@@ -152,6 +157,9 @@ int main(int argc, char* argv[]) {
          reverseSpines(field, subfield, model, infile, reverseInterp);
       } else if (fieldQ || excludeQ) {
          fillFieldData(field, subfield, model, fieldstring, infile);
+      } else if (grepQ) {
+         fillFieldDataByGrep(field, subfield, model, grepString, infile, 
+            interpstate);
       }
       
       if (debugQ && !traceQ) {
@@ -169,7 +177,7 @@ int main(int argc, char* argv[]) {
       }
 
       // analyze the input file according to command-line options
-      if (fieldQ) {
+      if (fieldQ || grepQ) {
          extractFields(infile, field, subfield, model);
       } else if (excludeQ) {
          excludeFields(infile, field, subfield, model);
@@ -185,6 +193,56 @@ int main(int argc, char* argv[]) {
 
 
 ///////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////
+//
+// fillFieldDataByGrep --
+//
+
+void fillFieldDataByGrep(Array<int>& field, Array<int>& subfield, 
+      Array<int>& model, const char* searchstring, HumdrumFile& infile, 
+      int state) {
+
+   field.setSize(infile.getMaxTracks()+1);
+   subfield.setSize(infile.getMaxTracks()+1);
+   model.setSize(infile.getMaxTracks()+1);
+   field.setSize(0);
+   subfield.setSize(0);
+   model.setSize(0);
+
+   Array<int> tracks;
+   tracks.setSize(infile.getMaxTracks()+1);
+   tracks.setAll(0);
+   PerlRegularExpression pre;
+   int track;
+
+   int i, j;
+   for (i=0; i<infile.getNumLines(); i++) {
+      if (!infile[i].isSpineLine()) {
+         continue;
+      }
+      for (j=0; j<infile[i].getFieldCount(); j++) {
+         if (pre.search(infile[i][j], searchstring, "")) {
+            track = infile[i].getPrimaryTrack(j);
+            tracks[track] = 1;
+         }
+      }
+   }
+
+   int zero = 0;
+   for (i=1; i<tracks.getSize(); i++) {
+      if (state != 0) {
+         tracks[i] = !tracks[i];
+      }
+      if (tracks[i]) {
+         field.append(i);
+         subfield.append(zero);
+         model.append(zero);
+      }
+   }
+}
+
 
 
 //////////////////////////////
@@ -249,6 +307,7 @@ void getInterpretationFields(Array<int>& field, Array<int>& subfield,
    model.setSize(tracks.getSize());
    model.setSize(0);
 
+
    int zero = 0;
    for (i=1; i<tracks.getSize(); i++) {
       if (state == 0) {
@@ -260,6 +319,7 @@ void getInterpretationFields(Array<int>& field, Array<int>& subfield,
          model.append(zero);
       }
    }
+
 }
 
 
@@ -1021,18 +1081,20 @@ void dealWithSecondarySubspine(Array<int>& field, Array<int>& subfield,
                if (pre.search(buffer, "{")) {
                   cout << "{";
                }
-               pre.sar(buffer, "[^}pPqQ0-9.;]", "", "g");
-               pre.search(buffer, "([0-9]+)", "");
-               cout << pre.getSubmatch(1);
-               pre.search(buffer, "(\\.*)", "");
-               cout << pre.getSubmatch(1);
-	       if (strstr(infile[i][j], "rr") != NULL) {
-                  cout << "rr";
-               } else {
-                  cout << "r";
+               // remove secondary chord notes:
+               pre.sar(buffer, " .*", "", "");
+               // remove unnecessary characters (such as stem direction):
+               pre.sar(buffer, "[^}pPqQA-Ga-g0-9.;%#n-]", "", "g");
+               // change pitch to rest:
+               pre.sar(buffer, "[A-Ga-g#n-]+", "r", "");
+               // add editorial marking unless -Y option is given:
+               if (strcmp(editorialInterpretation, "") != 0) {
+                  if (pre.search(buffer, "rr")) {
+                     pre.sar(buffer, "(?<=rr)", editorialInterpretation, "");
+                  } else {
+                     pre.sar(buffer, "(?<=r)", editorialInterpretation, "");
+                  }
                }
-               cout << editorialInterpretation;
-               pre.sar(buffer, "[0-9.]", "", "g");
                cout << buffer.getBase();
             }
          } else {
@@ -1800,11 +1862,12 @@ void extractInterpretations(HumdrumFile& infile, const char* interps) {
 void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("P|F|S|x|exclude=s:", "Remove listed spines from output");
    opts.define("i=s:", "Exclusive interpretation list to extract from input");
-   opts.define("I=s:", "Exclusive interpretation exclusin list");
+   opts.define("I=s:", "Exclusive interpretation exclusion list");
    opts.define("f|p|s|field|path|spine=s:", 
 		   "for extraction of particular spines");
    opts.define("C|count=b", "print a count of the number of spines in file");
    opts.define("c|cointerp=s:**kern", "Exclusive interpretation for cospines");
+   opts.define("g|grep=s:", "Extract spines which match a given regex.");
    opts.define("r|reverse=b", "reverse order of spines by **kern group");
    opts.define("R=s:**kern", "reverse order of spine by exinterp group");
    opts.define("t|trace=s:", "use a trace file to extract data");
@@ -1890,6 +1953,10 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    } else if (fieldQ) {
       fieldstring = opts.getString("f");
    }
+
+   grepQ = opts.getBoolean("grep");
+   grepString = opts.getString("grep");
+
 }
 
 
@@ -1922,4 +1989,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 8f6fcc6f926d12d34ff366f25c8f0bcf extractx.cpp [20100722]
+// md5sum: 07c88288c90a26c8102e6708e4b202d7 extractx.cpp [20121016]

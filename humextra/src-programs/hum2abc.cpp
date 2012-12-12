@@ -1,20 +1,22 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sat Oct 11 02:27:50 PDT 2008
-// Last Modified: Wed Oct 15 08:45:23 PDT 2008 (adding tuplet rhythm parsing)
-// Last Modified: Fri Oct 17 19:00:46 PDT 2008 (added layers, invisible, caut.)
-// Last Modified: Sun Oct 26 04:58:48 PST 2008 (added misc features)
-// Last Modified: Wed Dec  3 20:19:29 PST 2008 (end of data format fix)
-// Last Modified: Wed Jun 24 15:37:21 PDT 2009 (updated for GCC 4.4)
-// Last Modified: Mon Jul 20 16:32:01 PDT 2009 (added 8ba treble clef)
-// Last Modified: Mon Jul 20 16:32:01 PDT 2009 (added M:none time signature)
-// Last Modified: Wed Jul 22 13:03:44 PDT 2009 (added editorial slur dashing)
-// Last Modified: Mon Aug 24 14:00:34 PDT 2009 (more work on 8ba treble clef)
-// Last Modified: Mon Sep 21 17:13:53 PDT 2009 (added --no-tempo option)
-// Last Modified: Mon Sep 21 17:29:50 PDT 2009 (accidental spelling by octave)
-// Last Modified: Sun Jan 16 09:56:09 PST 2011 (adj. off-by-1 in bar num update)
-// Last Modified: Sun Jan 16 11:25:19 PST 2011 (added marks and --no-marks)
-// Last Modified: Sun Jan 16 16:31:23 PST 2011 (added --no-slur option)
+// Last Modified: Wed Oct 15 08:45:23 PDT 2008 adding tuplet rhythm parsing
+// Last Modified: Fri Oct 17 19:00:46 PDT 2008 added layers, invisible, caut.
+// Last Modified: Sun Oct 26 04:58:48 PST 2008 added misc features
+// Last Modified: Wed Dec  3 20:19:29 PST 2008 end of data format fix
+// Last Modified: Wed Jun 24 15:37:21 PDT 2009 updated for GCC 4.4
+// Last Modified: Mon Jul 20 16:32:01 PDT 2009 added 8ba treble clef
+// Last Modified: Mon Jul 20 16:32:01 PDT 2009 added M:none time signature
+// Last Modified: Wed Jul 22 13:03:44 PDT 2009 added editorial slur dashing
+// Last Modified: Mon Aug 24 14:00:34 PDT 2009 more work on 8ba treble clef
+// Last Modified: Mon Sep 21 17:13:53 PDT 2009 added --no-tempo option
+// Last Modified: Mon Sep 21 17:29:50 PDT 2009 accidental spelling by octave
+// Last Modified: Sun Jan 16 09:56:09 PST 2011 adj. off-by-1 in bar num update
+// Last Modified: Sun Jan 16 11:25:19 PST 2011 added marks and --no-marks
+// Last Modified: Sun Jan 16 16:31:23 PST 2011 added --no-slur option
+// Last Modified: Sat Oct  6 07:45:11 PDT 2012 added --cb and --db options
+// Last Modified: Sun Oct 21 13:26:51 PDT 2012 added --key for keysig modality
 // Filename:      ...sig/examples/all/hum2abc.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/hum2abc.cpp
 // Syntax:        C++; museinfo
@@ -191,8 +193,9 @@ class MeasureInfo {
       int endline;                // line number in the humdrum file which
                                   // ends the measure (may be a barline or not)
       int measurenum;             // an explicit number found for the barline
-      int newkey;                 
       int currkey;
+      int newkey;                 
+      const char* kernkey;        // for printing ABC modality with --key option
       int fullrest;               // -1 or 0 if not a full measure of rest
                                   // otherwise a count of the number of
                                   // full measures of rests including
@@ -220,6 +223,7 @@ void MeasureInfo::clear(void) {
    currkey    = -100;
    fullrest   = -100;
    ending     = -1;
+   kernkey    = NULL;
 }
    
 class TupletInfo {
@@ -342,6 +346,7 @@ int       getRhythm            (const char* buffer);
 void      printKeySignature    (ostream& out, HumdrumFile& infile);
 void      setAccidentals       (Array<int>& accident, int key);
 void      printAbcKeySignature (ostream& out, int keynum);
+void      printAbcKeySignature (ostream& out, const char* kernkey);
 void      printAccidental      (ostream& out, int base40, const char* token, 
                                 Array<int>& accident);
 void      adjustAccidentalStates(Array<int>& accident, int step, 
@@ -486,10 +491,13 @@ int    graceQ = 1;                // used with --no-grace option
 int    directoryQ = 0;            // used with --dir option
 const char* directoryname = ".";  // used with --dir option
 const char* filemask = ".krn";    // used with --mask option
-int    nonaturalQ  = 0;           // used with --nn option
-int    linebreakQ  = 0;           // used with --linebreak option
-int    notempoQ    = 0;           // used with --no-tempo option
-int    slurQ       = 1;           // used with --no-slur option
+int    nonaturalQ    = 0;         // used with --nn option
+int    linebreakQ    = 0;         // used with --linebreak option
+int    notempoQ      = 0;         // used with --no-tempo option
+int    slurQ         = 1;         // used with --no-slur option
+int    databarnumQ   = 0;         // used with --data-barnum option
+int    commentbarnumQ = 0;        // used with --comment-barnum option
+int    keyQ           = 0;        // used with --key option
 
 // mark data
 int    markQ       = 1;           // used with --no-mark option
@@ -868,6 +876,11 @@ void printMeasures(ostream& out, HumdrumFile& infile,
    int i, j;
    for (i=startmeasure; i<stopmeasure; i++) {
       for (j=0; j<voicemap.getSize(); j++) {
+         if (commentbarnumQ && (j==0)) {
+            if (measures[i].measurenum > 0) {
+               out << "%BAR: " << measures[i].measurenum << "\n";
+            }
+         }
          printSingleMeasure(staves[j], voicemap, j, voicemap.getSize(), 
                measures, i, infile, j);
       }
@@ -908,10 +921,18 @@ void printSingleMeasure(ostream& out, const Array<VoiceMap>& voiceinfo,
    int maxlayers = getMaxLayer(voiceinfo[vindex].primary, MI.startline,
       MI.endline, infile);
 
-   if (MI.newkey > -10) {
-      out << " [K:";
-      printAbcKeySignature(out, MI.newkey);
-      out << "] ";
+   if (keyQ) {
+      if (MI.kernkey != NULL) {
+         out << " [K:";
+         printAbcKeySignature(out, MI.kernkey);
+         out << "] ";
+      }
+   } else {
+      if (MI.newkey > -10) {
+         out << " [K:";
+         printAbcKeySignature(out, MI.newkey);
+         out << "] ";
+      }
    }
 
    Array<Coordinate> meterclef;
@@ -1130,8 +1151,13 @@ void printMeasureLine(ostream& out, HumdrumFile& infile, int line,
 
    out << " ";  // separate barline from notes by a space
 
-   if ((staffnumber == 0) 
-         && ((mindex < measureinfo.getSize()-1) && (measureinfo[mindex+1].measurenum >= 0))
+   if ((staffnumber == 0) && databarnumQ && (mindex < measureinfo.getSize()-1)) {
+      if (measureinfo[mindex+1].measurenum >= 0) {
+         out << "[I:setbarnb " << measureinfo[mindex+1].measurenum << "]";
+      }
+   } else if ((staffnumber == 0) 
+         && ((mindex < measureinfo.getSize()-1) && 
+             (measureinfo[mindex+1].measurenum >= 0))
          && ((mdiff > 1) || labelQ)) {
       out << "[I:setbarnb " << measureinfo[mindex+1].measurenum << "]";
    }
@@ -3534,6 +3560,7 @@ void getMeasureInfo(Array<MeasureInfo>& measures, HumdrumFile& infile) {
    int i;
    int lastmeasure = -1;
    double duration;
+   PerlRegularExpression pre;
 
    measures.setSize(infile.getNumLines());
    measures.setSize(0);
@@ -3599,6 +3626,9 @@ void getMeasureInfo(Array<MeasureInfo>& measures, HumdrumFile& infile) {
       } else if (infile[i].getType() == E_humrec_interpretation) {
          if (strncmp(infile[i][0], "*k[", 3) == 0) {
             currentKey = Convert::kernKeyToNumber(infile[i][0]);      
+         }
+         if (pre.search(infile[i][0], "^\\*[A-G-a-g][-#]?:")) {
+            mtemp.kernkey = infile[i][0];
          }
       }
    }
@@ -4506,6 +4536,7 @@ int findRecord(const char* key, Array<char>& value, HumdrumFile& infile,
 void printKeySignature(ostream& out, HumdrumFile& infile) {
    int i;
    int keynum;
+   PerlRegularExpression pre;
    for (i=0; i<infile.getNumLines(); i++) {
       if (infile[i].getType() == E_humrec_data) {
          break;
@@ -4513,15 +4544,22 @@ void printKeySignature(ostream& out, HumdrumFile& infile) {
       if (infile[i].getType() != E_humrec_interpretation) {
          continue;
       }
-      if (strncmp(infile[i][0], "*k[", 3) == 0) {
-         keynum = Convert::kernKeyToNumber(infile[i][0]);      
-         StartKey = keynum;
-         printAbcKeySignature(out, keynum);
-	 return;
+      if (keyQ) {
+         if (pre.search(infile[i][0], "^\\*[A-G][-#]?:", "i")) {
+            printAbcKeySignature(out, infile[i][0]);
+            return;
+         }
+      } else {
+         if (strncmp(infile[i][0], "*k[", 3) == 0) {
+            keynum = Convert::kernKeyToNumber(infile[i][0]);      
+            StartKey = keynum;
+            printAbcKeySignature(out, keynum);
+	    return;
+         }
       }
    }
 
-   // didn't find a keysignature, so use C major's key signature:
+   // didn't find a key-signature, so use C major's key signature:
    out << "C";
 }
 
@@ -4529,7 +4567,11 @@ void printKeySignature(ostream& out, HumdrumFile& infile) {
 
 //////////////////////////////
 //
-// printAbcKeySignature --
+// printAbcKeySignature -- print key signature from key signature
+//    Such as *k[f#] for G major or E minor.  Always will print 
+//    as a major key.  In other words, the key will be incorrect
+//    if the key is minor, but the printed key signature would
+//    be correct.
 //
 
 void printAbcKeySignature(ostream& out, int keynum) {
@@ -4550,6 +4592,55 @@ void printAbcKeySignature(ostream& out, int keynum) {
       case -6:  out << "Gb"; return;
       case -7:  out << "Cb"; return;
    }
+   return;
+}
+
+
+// print key signature from key field rather than key-signature field.
+
+void printAbcKeySignature(ostream& out, const char* kernkey) {
+   PerlRegularExpression pre;
+
+   Array<char> tonic;
+   tonic.setSize(1);
+   tonic[0] = '\0';
+   if (pre.search(kernkey, "^\\*([A-Ga-g][-#]*):")) {
+      tonic.setSize(strlen(pre.getSubmatch(1))+1);
+      strcpy(tonic.getBase(), pre.getSubmatch());
+   } else {
+      out << "C"; 
+      return;
+   }
+
+   tonic[0] = toupper(tonic[0]);   // upper case for tonic
+   pre.sar(tonic, "-", "b", "g");
+   out << tonic.getBase();
+   
+   // print modality: add three-leter mode. 
+   //  For major, mode is optional (but added here always).
+   //  For minor, "m" or "min" can be used.
+   //  For other modes, any unique combination and case
+   //  with optional space can be used.  But only use first three
+   //  letters in the style of major/minor modes:
+   //  Cmaj = C major (0 sharp/flats)
+   //  Cmin = C minor (3 flats)
+   //  Cdor = C dorian (2 flats)
+   //  Cphr = C phrygian (4 flats)
+   //  Clyd = C lydian (1 sharp)
+   //  Cmix = C mixolydian (1 flat)
+   //  Caeo = C aeolian (3 flats) essentially the same as Cmin
+   //  Cloc = C locrian (5 flats)
+
+   if      (pre.search(kernkey, "loc", "i"))  { out << "loc"; }
+   else if (pre.search(kernkey, "aeo", "i"))  { out << "aeo"; }
+   else if (pre.search(kernkey, "mix", "i"))  { out << "mix"; }
+   else if (pre.search(kernkey, "lyd", "i"))  { out << "lyd"; }
+   else if (pre.search(kernkey, "phr", "i"))  { out << "phr"; }
+   else if (pre.search(kernkey, "dor", "i"))  { out << "dor"; }
+   else if (pre.search(kernkey, "[a-g]", "")) { out << "min"; }
+   else if (pre.search(kernkey, "[A-G]", "")) { out << "maj"; }
+   else  { out << "?"; }
+   
 }
 
 
@@ -5672,6 +5763,9 @@ void storeOptionSet(Options& opts) {
    opts.define("no-mark|no-marks|nomark|nomarks=b",    "Suppress marks");
    opts.define("nn|no-auto-natural=b",   "Suppress automatic naturals");
    opts.define("linebreak=b",   "Break lines at !linebreak tokens");
+   opts.define("db|data-barnum=b",   "display all bar numbers in data");
+   opts.define("cb|comment-barnum=b",   "display all bar numbers as comments");
+   opts.define("k|key=b",   "use key designation as key signature");
 
    // abcm2ps parameter settings
    opts.define("box=b",           "Put boxes around measure numbers");
@@ -5837,12 +5931,16 @@ void checkOptions(Options& opts, int argc, char* argv[], int fcount,
       header = opts.getString("header");
    }
 
-   labelQ    =  opts.getBoolean("label");
-   graceQ    = !opts.getBoolean("no-grace");
-   notempoQ  =  opts.getBoolean("no-tempo");
-   markQ     = !opts.getBoolean("no-mark");
-   veritasQ  = !opts.getBoolean("no-veritas");
-   boxQ      =  opts.getBoolean("box");
+   labelQ     =  opts.getBoolean("label");
+   graceQ     = !opts.getBoolean("no-grace");
+   notempoQ   =  opts.getBoolean("no-tempo");
+   markQ      = !opts.getBoolean("no-mark");
+   veritasQ   = !opts.getBoolean("no-veritas");
+   boxQ       =  opts.getBoolean("box");
+   databarnumQ =  opts.getBoolean("data-barnum");
+   commentbarnumQ = opts.getBoolean("comment-barnum");
+   keyQ        = opts.getBoolean("key");
+
    if (strchr(opts.getString("barnums"), 'b') != NULL) {
       // the presence of a b after the measure number option
       // indicates that the user wants the bar numbers enclosed
@@ -5909,4 +6007,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: eaffd887c01537bd3f19781061fe2d57 hum2abc.cpp [20110318]
+// md5sum: 083b56acfe4eddeaae15aa1bab3dafb4 hum2abc.cpp [20121112]

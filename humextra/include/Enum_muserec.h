@@ -27,6 +27,7 @@
 #define E_muserec_note_chord         'C'
 #define E_muserec_note_cue           'c'
 #define E_muserec_note_grace         'g'
+#define E_muserec_note_grace_chord   'G'
 #define E_muserec_print_suggestion   'P'
 #define E_muserec_sound_directives   'S'
 #define E_muserec_end                '/'

@@ -44,6 +44,7 @@ void      printSingleBarNumber(const char* string, int measurenum);
 Options   options;            // database for command-line arguments
 int       removeQ  = 0;       // used with -r option
 int       startnum = 1;       // used with -s option
+int       allQ     = 0;       // used with -a option
 int       debugQ   = 0;       // used with --debug option
 
 
@@ -133,7 +134,7 @@ void printWithoutBarNumbers(HumdrumRecord& humrecord) {
 //
 
 void processFile(HumdrumFile& infile) {
-   infile.analyzeRhythm();
+   infile.analyzeRhythm("4");
 
    Array<int>    measureline;   // line number in the file where measure occur
    Array<double> measurebeats;  // duration of measure
@@ -155,6 +156,9 @@ void processFile(HumdrumFile& infile) {
    double value   = 1;
    double lastvalue = 1;
    for (i=0; i<infile.getNumLines(); i++) {
+      if (debugQ) {
+         cout << "LINE " << i+1 << "\t" << infile[i] << endl;
+      }
       if (infile[i].getType() == E_humrec_interpretation) {
          if ((strncmp(infile[i][0], "*M", 2) == 0) 
                && (strchr(infile[i][0], '/') != NULL)) {
@@ -170,7 +174,9 @@ void processFile(HumdrumFile& infile) {
       } else if (infile[i].getType() == E_humrec_data_measure) {
          measureline.append(i);
          lastvalue = infile[i].getBeat();
-         value = lastvalue * timebot;
+         // shouldn't use timebot (now analyzing rhythm by "4")
+         // value = lastvalue * timebot;
+         value = lastvalue;
          measurebeats.append(value);
          timesigbeats.append(timesigdur);
       }
@@ -255,7 +261,7 @@ void processFile(HumdrumFile& infile) {
    int offset = 0;
    int dataq = 0;
    for (i=0; i<infile.getNumLines(); i++) {
-      if (infile[i].getType() == E_humrec_data) {
+      if (infile[i].isData()) {
          dataq = 1;
          continue;
       }
@@ -265,6 +271,11 @@ void processFile(HumdrumFile& infile) {
          }
          break;
       }
+   }
+
+   if (allQ) {
+      control.setAll(1);
+      offset = 0;
    }
 
    // assign the measure numbers;
@@ -351,6 +362,7 @@ void printSingleBarNumber(const char* string, int measurenum) {
 void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("r|remove=b", "Remove barlines from the file");             
    opts.define("s|start=i:1", "starting barline number");             
+   opts.define("a|all=b",     "print numbers on all barlines");
 
    opts.define("debug=b");                // print debug info
    opts.define("author=b");               // author of program
@@ -380,6 +392,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    removeQ  = opts.getBoolean("remove");
    startnum = opts.getInteger("start");
    debugQ   = opts.getBoolean("debug");
+   allQ     = opts.getBoolean("all");
 
 }
   

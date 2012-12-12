@@ -3,23 +3,25 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon May 18 13:52:59 PDT 1998
 // Last Modified: Thu Jul  1 16:20:41 PDT 1999
-// Last Modified: Thu Apr 13 18:34:28 PDT 2000 (added generic interpretation)
-// Last Modified: Fri May  5 13:12:21 PDT 2000 (added sub-spine access)
-// Last Modified: Fri Oct 13 12:45:45 PDT 2000 (added spine tracing vars)
-// Last Modified: Wed May 16 18:20:55 PDT 2001 (added changeToken)
-// Last Modified: Sun Mar 24 12:10:00 PST 2002 (small changes for visual c++)
-// Last Modified: Wed Apr  3 08:13:29 PST 2002 (allow DOS newline input)
-// Last Modified: Mon May 17 12:46:36 PDT 2004 (added getSpinePrediction)
-// Last Modified: Wed Jun  2 15:50:13 PDT 2004 (setSpineWidth adjusts interp)
-// Last Modified: Tue Apr 21 10:02:00 PDT 2009 (fixed comment prob. in setLine)
-// Last Modified: Tue Apr 28 14:34:13 PDT 2009 (added isTandem)
-// Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
-// Last Modified: Mon Jun 15 15:55:22 PDT 2009 (fixed bug in getPrimaryTrack)
-// Last Modified: Thu Jun 18 15:29:49 PDT 2009 (modified getExInterp behavior)
-// Last Modified: Thu Jun 18 15:57:53 PDT 2009 (added hasSpines())
-// Last Modified: Mon Nov 23 14:30:35 PST 2009 (fixed equalDataQ())
-// Last Modified: Sat May 22 10:29:39 PDT 2010 (added RationalNumber)
-// Last Modified: Sun Dec 26 12:18:34 PST 2010 (added setToken)
+// Last Modified: Thu Apr 13 18:34:28 PDT 2000 added generic interpretation
+// Last Modified: Fri May  5 13:12:21 PDT 2000 added sub-spine access
+// Last Modified: Fri Oct 13 12:45:45 PDT 2000 added spine tracing vars
+// Last Modified: Wed May 16 18:20:55 PDT 2001 added changeToken
+// Last Modified: Sun Mar 24 12:10:00 PST 2002 small changes for visual c++
+// Last Modified: Wed Apr  3 08:13:29 PST 2002 allow DOS newline input
+// Last Modified: Mon May 17 12:46:36 PDT 2004 added getSpinePrediction
+// Last Modified: Wed Jun  2 15:50:13 PDT 2004 setSpineWidth adjusts interp
+// Last Modified: Tue Apr 21 10:02:00 PDT 2009 fixed comment prob. in setLine
+// Last Modified: Tue Apr 28 14:34:13 PDT 2009 added isTandem
+// Last Modified: Fri Jun 12 22:58:34 PDT 2009 renamed SigCollection class
+// Last Modified: Mon Jun 15 15:55:22 PDT 2009 fixed bug in getPrimaryTrack
+// Last Modified: Thu Jun 18 15:29:49 PDT 2009 modified getExInterp behavior
+// Last Modified: Thu Jun 18 15:57:53 PDT 2009 added hasSpines()
+// Last Modified: Mon Nov 23 14:30:35 PST 2009 fixed equalDataQ()
+// Last Modified: Sat May 22 10:29:39 PDT 2010 added RationalNumber
+// Last Modified: Sun Dec 26 12:18:34 PST 2010 added setToken
+// Last Modified: Mon Jul 30 16:10:45 PDT 2012 added setSize and setAllFields
+// Last Modified: Mon Dec 10 10:14:08 PST 2012 added Array<char> getToken
 // Filename:      ...sig/src/sigInfo/HumdrumRecord.cpp
 // Webpage:       http://sig.sapp.org/src/sigInfo/HumdrumRecord.cpp
 // Syntax:        C++ 
@@ -88,7 +90,10 @@ HumdrumRecord::HumdrumRecord(void) {
    spineids.setGrowth(132);
    spineids.setSize(0);
 
+   dotline.setSize(32);
+   dotline.setGrowth(132);
    dotline.setSize(0);
+
    dotspine.setSize(32);
    dotspine.setGrowth(132);
    dotspine.setSize(0);
@@ -638,6 +643,52 @@ int HumdrumRecord::getFieldCount(int exinterp) const {
 
 //////////////////////////////
 //
+// HumdrumRecord::getFieldsByExInterp --  Returns the number of fields on the line which
+//     belong to a particular exclusive interpretation.
+//
+
+int HumdrumRecord::getFieldsByExInterp(Array<int>& fields, const char* exinterp) {
+   HumdrumRecord& aRecord = *this;
+   fields.setSize(aRecord.getFieldCount());
+   fields.setSize(0);
+
+   int i;
+   for (i=0; i<aRecord.getFieldCount(); i++) {
+      if (aRecord.isExInterp(i, exinterp)) {
+         fields.append(i);
+      }
+   }
+   return fields.getSize();
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::getTracksByExInterp --  Returns the number of fields on the line which
+//     belong to a particular exclusive interpretation.
+//
+
+int HumdrumRecord::getTracksByExInterp(Array<int>& tracks, const char* exinterp) {
+   HumdrumRecord& aRecord = *this;
+   tracks.setSize(aRecord.getFieldCount());
+   tracks.setSize(0);
+
+   int i;
+   int track;
+   for (i=0; i<aRecord.getFieldCount(); i++) {
+      if (aRecord.isExInterp(i, exinterp)) {
+         track = aRecord.getPrimaryTrack(i);
+         tracks.append(track);
+      }
+   }
+   return tracks.getSize();
+}
+
+
+
+//////////////////////////////
+//
 // HumdrumRecord::getLine -- returns a pointer to data record
 //
 
@@ -728,6 +779,26 @@ double HumdrumRecord::getTrack(int spineNumber) {
    }
   
    return output;
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::getTrackColumn -- Search for the first column which contains
+//     the matches the given track.  Return -1 if no matching track found.
+//
+
+int HumdrumRecord::getTrackColumn(int track) {
+   int i;
+   int primarytrack;
+   for (i=0; i<getFieldCount(); i++) {
+      primarytrack = getPrimaryTrack(i);
+      if (primarytrack == track) {
+         return i;
+      }
+   }
+   return -1;
 }
 
 
@@ -901,6 +972,19 @@ char* HumdrumRecord::getToken(char* buffer, int fieldIndex, int tokenIndex,
 }
 
 
+char* HumdrumRecord::getToken(Array<char>& buffer, int fieldIndex, 
+      int tokenIndex, int buffersize, char separator) {
+   HumdrumRecord& arecord = *this;
+   int len = strlen(arecord[fieldIndex]) + 1 + 4;
+   buffer.setSize(len);
+   arecord.getToken(buffer.getBase(), fieldIndex, tokenIndex, 
+      len, separator);
+   len = strlen(buffer.getBase()) + 1;
+   buffer.setSize(len);
+   return buffer.getBase();
+}
+
+
 
 //////////////////////////////
 //
@@ -999,6 +1083,491 @@ int HumdrumRecord::isExInterp(int index, const char* string) {
    HumdrumRecord& aRecord = *this;
    return !strcmp(aRecord.getExInterp(index), string);
 }
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isOriginalClef -- returns true if a clef, but prefixed
+//     with "o" to indicate the clef in the original source.
+//
+
+#define REGEX_ISORIGINALCLEF "^\\*oclef[CFG]v?\\d+" 
+
+int HumdrumRecord::isOriginalClef(int index) {
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;
+   if (pre.search(aRecord[index], "^\\*oclef[CFG]v?\\d+")) {
+      return 1;
+   } 
+   if (strcmp("*oclefX", aRecord[index]) == 0) {
+      //percussion clef
+      return 1;
+   }
+   if (strcmp("*oclef-", aRecord[index]) == 0) {
+      //no clef (explicit)
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllOriginalClef(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISORIGINALCLEF, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isClef -- returns true if the given cell is a
+//    clef tandem interpretation record.
+//
+
+#define REGEX_ISCLEF "^\\*clef[CFG]v?\\d+" 
+
+int HumdrumRecord::isClef(int index) {
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;
+   if (pre.search(aRecord[index], REGEX_ISCLEF)) {
+      return 1;
+   } 
+   if (strcmp("*clefX", aRecord[index]) == 0) {
+      //percussion clef
+      return 1;
+   }
+   if (strcmp("*clef-", aRecord[index]) == 0) {
+      //no clef (explicit)
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllClef(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISCLEF, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isParticularType --  Only checks one type of 
+//    exclusive interpretation (presumably **kern data).
+//
+
+int HumdrumRecord::isParticularType(const char* regexp, const char* exinterp) {
+   int output = 1;
+   int j;
+   int count = 0;
+   PerlRegularExpression pre;
+   HumdrumRecord& aRecord = *this;
+   for (j=0; j<aRecord.getFieldCount(); j++) {
+      if (!aRecord.isExInterp(j, "**kern")) {
+         continue;
+      }
+      if ((strcmp(aRecord[j], "!") == 0)|| 
+          (strcmp(aRecord[j], "*") == 0) ) {
+         continue;
+      }
+      count++;
+      if (!pre.search(aRecord[j], regexp)) {
+         output = 0;
+         break;
+      }
+   }
+
+   if (output && (count == 0)) {
+      output = 0;
+   }
+
+   return output;
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isKey --
+//
+
+#define REGEX_ISKEY "^\\*[A-Ga-g][-#n]?:"
+
+int HumdrumRecord::isKey(int index) { 
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], REGEX_ISKEY)) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllKey(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISKEY, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isKeySig --
+//
+
+#define REGEX_ISKEYSIG "^\\*[kK]\\[[A-Ga-g#-]*\\]"
+
+int HumdrumRecord::isKeySig(int index) { 
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], REGEX_ISKEYSIG)) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllKeySig(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISKEYSIG, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isTempo --
+//
+
+#define REGEX_ISTEMPO "^\\*MM\\d+\\.?\\d*"
+
+int HumdrumRecord::isTempo(int index) { 
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], REGEX_ISTEMPO)) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllTempo(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISTEMPO, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isTimeSig --
+//
+
+#define REGEX_ISTIMESIG "^\\*M\\d+/\\d+"
+
+int HumdrumRecord::isTimeSig(int index) {
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], REGEX_ISTIMESIG)) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllTimeSig(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISTIMESIG, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isMetSig --
+//
+
+#define REGEX_ISMETSIG "^\\*met\\([^)]*\\)"
+
+int HumdrumRecord::isMetSig(int index) {
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], REGEX_ISMETSIG)) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllMetSig(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISMETSIG, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isTranspose --  Work on splitting up this into two cases.
+//
+
+#define REGEX_ISTRANSPOSE "^\\*ITr"
+
+int HumdrumRecord::isTranspose(int index) { 
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], REGEX_ISTRANSPOSE)) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllTranspose(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISTRANSPOSE, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isInstrumentType --
+//
+
+#define REGEX_ISINSTRUMENTTYPE "^\\*I[a-z]{2,5}"
+
+int HumdrumRecord::isInstrumentType(int index) { 
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], "^\\*I[a-z]{2,5}")) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllInstrumentType(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISINSTRUMENTTYPE, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isInstrumentClass --
+//
+
+#define REGEX_ISINSTRUMENTCLASS "^\\*IC[a-z]+"
+
+int HumdrumRecord::isInstrumentClass(int index) {
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], REGEX_ISINSTRUMENTCLASS)) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllInstrumentClass(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISINSTRUMENTCLASS, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isInstrumentName --
+//
+
+#define REGEX_ISINSTRUMENTNAME "^\\*I\""
+
+int HumdrumRecord::isInstrumentName(int index) {
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], REGEX_ISINSTRUMENTNAME)) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllInstrumentName(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISINSTRUMENTNAME, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isInstrumentAbbr --
+//
+
+#define REGEX_ISINSTRUMENTABBR "^\\*I\'"
+
+int HumdrumRecord::isInstrumentAbbr(int index) {
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], REGEX_ISINSTRUMENTNAME)) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllInstrumentAbbr(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISINSTRUMENTABBR, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isInstrumentNum --
+//
+
+#define REGEX_ISINSTRUMENTNUM "^\\*I#"
+
+int HumdrumRecord::isInstrumentNum(int index) { 
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], REGEX_ISINSTRUMENTNUM)) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllInstrumentNum(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISINSTRUMENTNUM, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isLabelExpansion --
+//
+
+#define REGEX_ISLABELEXPANSION "^\\*>\\[[^]]*\\]$"
+
+int HumdrumRecord::isLabelExpansion(int index) {
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], REGEX_ISLABELEXPANSION)) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllLabelExpansion(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISLABELEXPANSION, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isLabelVariant --
+//
+
+#define REGEX_ISLABELVARIANT "^\\*>[^[]+\\[[^]]*\\]$"
+
+int HumdrumRecord::isLabelVariant(int index) {
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], REGEX_ISLABELVARIANT)) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllLabelVariant(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISLABELVARIANT, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isLabelMarker --
+//
+
+#define REGEX_ISLABELMARKER "^\\*>[^[]+$"
+
+int HumdrumRecord::isLabelMarker(int index) { 
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], REGEX_ISLABELMARKER)) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllLabelMarker(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISLABELMARKER, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isStaffNumber --
+//
+
+#define REGEX_ISSTAFFNUMBER "^\\*staff\\d"
+
+int HumdrumRecord::isStaffNumber(int index) { 
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], REGEX_ISSTAFFNUMBER)) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllStaffNumber(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISSTAFFNUMBER, "**kern");
+}
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isSysStaffNumber -- Andreas's variant on staff numbering
+//     which is local to a particular system on a specific page.
+//
+
+#define REGEX_ISSYSSTAFFNUMBER "^\\*staff:\\d"
+
+int HumdrumRecord::isSysStaffNumber(int index) { 
+   HumdrumRecord& aRecord = *this;
+   PerlRegularExpression pre;   
+   if (pre.search(aRecord[index], REGEX_ISSYSSTAFFNUMBER)) {
+      return 1;
+   }
+   return 0;
+}
+
+int HumdrumRecord::isAllSysStaffNumber(void) {
+   return HumdrumRecord::isParticularType(REGEX_ISSYSSTAFFNUMBER, "**kern");
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::isNull -- true if all fields are ".", "!", or "*".
+//
+
+int HumdrumRecord::isNull(void) {
+   const char* target = "";
+   HumdrumRecord& aRecord = *this;
+   if (aRecord.isData()) {
+      target = ".";
+   } else if (aRecord.isLocalComment()) {
+      target = "!";
+   } else if (aRecord.isInterpretation()) {
+      target = "*";
+   }
+
+   if (strlen(target) == 0) {
+      // Global comments like "!!" with nothing after them
+      // might be good to call a NULL, but not for now.
+      return 0;
+   }
+  
+   int j;
+   for (j=0; j<aRecord.getFieldCount(); j++) {
+      if (strcmp(aRecord[j], target) != 0) {
+         return 0;
+      }
+   }
+
+   return 1;
+}
+
 
 
 //////////////////////////////
@@ -3633,6 +4202,72 @@ int HumdrumRecord::determineFieldCount(const char* aLine) const {
    }
 
    return count;
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::setSize -- change the number of fields in the record.
+//    Currently this function is destructive of any previous data, but
+//    will probably be changed to preserve any old data.
+//
+
+void HumdrumRecord::setSize(int asize) {
+
+   recordFields.allowGrowth(1);
+   recordFields.setSize(asize*4);   
+   recordFields.setGrowth(132);   
+   recordFields.setSize(asize);   
+
+   spineids.allowGrowth(1);
+   spineids.setSize(asize*4);
+   spineids.setGrowth(132);
+   spineids.setSize(asize);
+
+   interpretation.allowGrowth(1);
+   interpretation.setSize(asize*4);
+   interpretation.setGrowth(132);
+   interpretation.setSize(asize);
+
+   dotline.setSize(asize*4);
+   dotline.setGrowth(132);
+   dotline.setSize(asize);
+
+   dotspine.setSize(asize*4);
+   dotspine.setGrowth(132);
+   dotspine.setSize(asize);
+
+
+   char buffer[32] = {0};
+   int i;
+   int len;
+   for (i=0; i<recordFields.getSize(); i++) {
+      recordFields[i] = new char[2];
+      strcpy(recordFields[i], ".");
+      sprintf(buffer, "%d", i+1);
+      len = strlen(buffer);
+      spineids[i] = new char[len+1];
+      strcpy(spineids[i], buffer);
+   }
+  
+   dotline.setAll(-1);
+   dotspine.setAll(-1);
+   interpretation.setAll(-1); // or 0?
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumRecord::setAllFields -- Set all fields to the same string content.
+//
+
+void HumdrumRecord::setAllFields(const char* astring) {
+   int i;
+   for (i=0; i<getFieldCount(); i++) {
+      changeField(i, astring);
+   }
 }
 
 

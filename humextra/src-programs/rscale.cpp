@@ -49,6 +49,7 @@ void      handleBibliographic(HumdrumFile& infile, int row,
                               RationalNumber& num);
 void      getOriginalFactor  (HumdrumFile& infile, RationalNumber& factor);
 void      getAlternateFactor (HumdrumFile& infile, RationalNumber& factor);
+void      cleanUpBeams       (char* prebuffer, char* postbuffer, int level);
 
 // global variables
 Options   options;             // database for command-line arguments
@@ -59,6 +60,7 @@ int       FoundRef   = 0;      // used with !!!rscale: reference record
 int       originalQ  = 0;      // used with --original
 int       alternateQ = 0;      // used with --alternate
 int       longQ      = 0;      // used with -r option
+int       rebeamQ    = 0;      // used with -B option
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -399,6 +401,19 @@ void printSingleKernSubtoken(const char* buff, RationalNumber& factor) {
    PerlRegularExpression pre;
    RationalNumber value;
 
+   int level = 0;
+   if (factor == 2) {
+      level = 1;
+   } else if (factor == 4) {
+      level = 2;
+   }
+   if (!rebeamQ) {
+      level = 0;
+   }
+  
+   char prebuffer[1024] = {0};
+   char postbuffer[1024] = {0};
+
    if (pre.search(buff, "([^\\d]*)(\\d+)(%?)(\\d*)(.*)", "")) {
       int top = atoi(pre.getSubmatch(2));
       int bot;
@@ -426,16 +441,113 @@ void printSingleKernSubtoken(const char* buff, RationalNumber& factor) {
       value.setValue(top, bot);
       value /= factor;           // factor is duration so inverse
 
-      // print stuff before numeric part of rhythm
-      cout << pre.getSubmatch(1);
+      strcpy(prebuffer, pre.getSubmatch(1));
+      strcpy(postbuffer, pre.getSubmatch(5));
+
+      cleanUpBeams(prebuffer, postbuffer, level);
+
+      cout << prebuffer;
 
       printSpecialRational(value);
 
       // print stuff after numeric part of rhythm
-      cout << pre.getSubmatch(5);
+      cout << postbuffer;
+
    } else {
       cout << buff;
    }
+}
+
+
+
+//////////////////////////////
+//
+// cleanUpBeams -- remove k, K, L, J as needed from beam information.
+//
+
+void cleanUpBeams(char* prebuffer, char* postbuffer, int level) {
+   if (level < 1) {
+      return;
+   }
+
+   int kcount1 = 0;
+   int Kcount1 = 0;
+   int Lcount1 = 0;
+   int Jcount1 = 0;
+
+   int kcount2 = 0;
+   int Kcount2 = 0;
+   int Lcount2 = 0;
+   int Jcount2 = 0;
+
+   int len1 = strlen(prebuffer);
+   int len2 = strlen(postbuffer);
+
+   int i;
+
+   for (i=0; i<len1; i++) {
+      switch (prebuffer[i]) {
+         case 'k': kcount1++; break;
+         case 'K': Kcount1++; break;
+         case 'L': Lcount1++; break;
+         case 'J': Jcount1++; break;
+      }
+   }
+
+   for (i=0; i<len2; i++) {
+      switch (postbuffer[i]) {
+         case 'k': kcount2++; break;
+         case 'K': Kcount2++; break;
+         case 'L': Lcount2++; break;
+         case 'J': Jcount2++; break;
+      }
+   }
+
+   Array<char> prestring;
+   Array<char> poststring;
+
+   prestring.setSize(len1+1);
+   strcpy(prestring.getBase(), prebuffer);
+
+   poststring.setSize(len1+1);
+   strcpy(poststring.getBase(), postbuffer);
+
+   PerlRegularExpression pre;
+
+   if ((level == 1) && (Lcount1 > 0)) {
+      pre.sar(prestring, "L", "");
+      level--;
+   } else if ((level == 1) && (Jcount1 > 0)) {
+      pre.sar(prestring, "J", "");
+      level--;
+   } else if ((level == 1) && (Lcount2 > 0)) {
+      pre.sar(prestring, "L", "");
+      level--;
+   } else if ((level == 1) && (Jcount2 > 0)) {
+      pre.sar(prestring, "J", "");
+      level--;
+   } else if ((level == 2) && (Lcount1 > 1)) {
+      pre.sar(prestring, "L", "");
+      pre.sar(prestring, "L", "");
+      level -= 2;
+   } else if ((level == 2) && (Jcount1 > 1)) {
+      pre.sar(prestring, "J", "");
+      pre.sar(prestring, "J", "");
+      level -= 2;
+   } else if ((level == 2) && (Lcount2 > 1)) {
+      pre.sar(prestring, "L", "");
+      pre.sar(prestring, "L", "");
+      level -= 2;
+   } else if ((level == 2) && (Jcount2 > 1)) {
+      pre.sar(prestring, "J", "");
+      pre.sar(prestring, "J", "");
+      level -= 2;
+   }
+
+   // deal with k and K later...
+
+   strcpy(prebuffer, prestring.getBase());
+   strcpy(postbuffer, poststring.getBase());
 }
 
 
@@ -490,6 +602,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("o|original=b", "Revert to original rhythms");
    opts.define("a|alternate=b", "Change to alternate rhythm set");
    opts.define("r|long=b", "Do not use short form for breve,long,maxima");
+   opts.define("B|adjust-beams=b", "Adjust beaming for powers of 2 rscaling");
 
    opts.define("debug=b");              // determine bad input line num
    opts.define("author=b");             // author of program
@@ -545,6 +658,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    originalQ   =  opts.getBoolean("original");
    alternateQ  =  opts.getBoolean("alternate");
    longQ       =  opts.getBoolean("long");
+   rebeamQ     =  opts.getBoolean("adjust-beams");
 }
 
 
@@ -575,4 +689,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 4935a10d529f7ff8a83b1db087dc9bb6 rscale.cpp [20110318]
+// md5sum: 2257c7799a9606009bf8cd5663342c1b rscale.cpp [20120727]

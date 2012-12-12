@@ -63,6 +63,7 @@ int main(int argc, char* argv[]) {
       cout << "<style type=\"text/css\">\n";
       cout << "<!-- \n";
       cout << "a {text-decoration:none}\n";
+      cout << ".hi:hover {background:#d0d0ff}\n";
       cout << "//-->\n";
       cout << "</style>\n";
       cout << "</head><body>\n";
@@ -161,7 +162,7 @@ int getSubTracks(HumdrumFile& infile, int line, int track) {
 //
 
 void printFields(ostream& out, HumdrumFile& infile, int line) {
-   out << "<tr valign=baseline>";
+   out << "<tr class=\"hi\" valign=baseline>";
    int& i = line;
    int j;
    int track;
@@ -405,4 +406,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 8403cce8274b89cd722fc2b000026f1b humtable.cpp [20110406]
+// md5sum: e1c838725d9cdef3baa8f1da95da60ad humtable.cpp [20120727]

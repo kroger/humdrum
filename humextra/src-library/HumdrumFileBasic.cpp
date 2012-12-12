@@ -2,19 +2,21 @@
 // Copyright 1998-2004 by Craig Stuart Sapp, All Rights Reserved.
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon May 18 13:43:47 PDT 1998
-// Last Modified: Wed Nov 29 10:24:29 PST 2000 (split from HumdrumFile class)
-// Last Modified: Wed Mar 21 17:38:23 PST 2001 (added spine width feature)
-// Last Modified: Thu Nov 15 12:38:49 PST 2001 (added getTrackExInterp)
-// Last Modified: Sat May  8 12:57:53 PDT 2004 (fix complicated spine tracing)
-// Last Modified: Wed Jun  2 15:19:57 PDT 2004 (fix fix in spine trace ! lines)
-// Last Modified: Fri Apr 24 15:01:35 PDT 2009 (fixed contructor with char*)
-// Last Modified: Wed Apr 29 17:14:44 PDT 2009 (fixed *x bug in dot analysis)
-// Last Modified: Mon May  4 12:11:13 PDT 2009 (fixed new? bug in dot analysis)
-// Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
-// Last Modified: Mon Jun 22 15:03:44 PDT 2009 (added Humdrum/Http URIs)
-// Last Modified: Wed Sep  2 21:48:23 PDT 2009 (fixed problem with *x again)
-// Last Modified: Wed May 12 22:29:42 PDT 2010 (added embedded PDF parsing)
-// Last Modified: Mon Feb 14 08:14:53 PST 2011 (added VTS functions)
+// Last Modified: Wed Nov 29 10:24:29 PST 2000 split from HumdrumFile class
+// Last Modified: Wed Mar 21 17:38:23 PST 2001 added spine width feature
+// Last Modified: Thu Nov 15 12:38:49 PST 2001 added getTrackExInterp
+// Last Modified: Sat May  8 12:57:53 PDT 2004 fix complicated spine tracing
+// Last Modified: Wed Jun  2 15:19:57 PDT 2004 fix fix in spine trace ! lines
+// Last Modified: Fri Apr 24 15:01:35 PDT 2009 fixed contructor with char*
+// Last Modified: Wed Apr 29 17:14:44 PDT 2009 fixed *x bug in dot analysis
+// Last Modified: Mon May  4 12:11:13 PDT 2009 fixed new? bug in dot analysis
+// Last Modified: Fri Jun 12 22:58:34 PDT 2009 renamed SigCollection class
+// Last Modified: Mon Jun 22 15:03:44 PDT 2009 added Humdrum/Http URIs
+// Last Modified: Wed Sep  2 21:48:23 PDT 2009 fixed problem with *x again
+// Last Modified: Wed May 12 22:29:42 PDT 2010 added embedded PDF parsing
+// Last Modified: Mon Feb 14 08:14:53 PST 2011 added VTS functions
+// Last Modified: Tue Apr 24 16:37:34 PDT 2012 added jrp:// URI
+// Last Modified: Tue Dec 11 17:23:04 PST 2012 added fileName
 // Filename:      ...sig/src/sigInfo/HumdrumFileBasic.cpp
 // Web Address:   http://sig.sapp.org/src/sigInfo/HumdrumFileBasic.cpp
 // Syntax:        C++ 
@@ -58,6 +60,7 @@ HumdrumFileBasic::HumdrumFileBasic(void) {
    records.allowGrowth();          
    records.setAllocSize(100000);     // grow in increments of 100000 lines
    maxtracks = 0;
+   fileName.setSize(1); fileName[0] = '\0';
    trackexinterp.setSize(0);
    trackexinterp.allowGrowth(0);
 }
@@ -69,6 +72,7 @@ HumdrumFileBasic::HumdrumFileBasic(const HumdrumFileBasic& aHumdrumFileBasic) {
    records.allowGrowth();          
    records.setAllocSize(100000);     // grow in increments of 100000 lines
    maxtracks = 0;
+   fileName.setSize(1); fileName[0] = '\0';
    trackexinterp.setSize(0);
    trackexinterp.allowGrowth(0);
 
@@ -82,6 +86,7 @@ HumdrumFileBasic::HumdrumFileBasic(const char* filename) {
    records.allowGrowth();          
    records.setAllocSize(100000);     // grow in increments of 100000 lines
    maxtracks = 0;
+   fileName.setSize(1); fileName[0] = '\0';
    trackexinterp.setSize(0);
    trackexinterp.allowGrowth(0);
 
@@ -211,6 +216,7 @@ void HumdrumFileBasic::clear(void) {
    }
    records.setSize(0);
    maxtracks = 0;
+   fileName.setSize(1); fileName[0] = '\0';
    for (i=0; i<trackexinterp.getSize(); i++) {
       if (trackexinterp[i] != NULL) {
          delete [] trackexinterp[i];
@@ -219,6 +225,30 @@ void HumdrumFileBasic::clear(void) {
    }
    trackexinterp.setSize(0);
    trackexinterp.allowGrowth(0);
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumFileBasic::setFilename -- set the filename for the HumdrumFile
+//     (used by HumdrumStream class management).
+//
+
+void HumdrumFileBasic::setFilename(const char* filename) {
+   fileName = filename;
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumFileBasic::getFilename -- returns the filename of the HumdrumFile.
+//    Returns "" if no filename set (such as when reading from cin).
+//
+
+const char* HumdrumFileBasic::getFilename(void) {
+   return fileName.getBase();
 }
 
 
@@ -304,6 +334,31 @@ const char* HumdrumFileBasic::getTrackExInterp(int track) {
 }
 
 
+//////////////////////////////
+//
+// getTracksByExInterp -- return a list of track numbers which have the
+//     matching exclusive interpretation type.
+//
+
+int HumdrumFileBasic::getTracksByExInterp(Array<int>& tracks, 
+      const char* exinterp) {
+   int maxsize = getMaxTracks();
+   tracks.setSize(maxsize);
+   tracks.setSize(0);
+   int i;
+   for (i=0; i<trackexinterp.getSize(); i++) {
+      if (strcmp(trackexinterp[i], exinterp) == 0) {
+         tracks.append(i);
+         tracks.last()++;
+      } else if (strcmp(trackexinterp[i]+2, exinterp) == 0) {
+         tracks.append(i);
+         tracks.last()++;
+      }
+   }
+
+   return tracks.getSize();
+}
+
 
 //////////////////////////////
 //
@@ -330,6 +385,41 @@ const char* HumdrumFileBasic::getLine(int index) {
    }
   
    return records[index]->getLine();
+}
+
+
+
+//////////////////////////////
+//
+// HumdrumFileBasic::getBibValue -- add an optional parameter later which
+//    selects the nth occurance of the bibliographic key.
+//
+
+const char* HumdrumFileBasic::getBibValue(char* buffer, const char* key) {
+   int i;
+   buffer[0] = '\0';
+   HumdrumFileBasic& hfile = *this;
+
+   char newkey[1024] = {0};
+   if (strncmp(key, "!!!", 3) == 0) {
+      strcpy(newkey, key);
+   } else {
+      strcpy(newkey, "!!!");
+      strcat(newkey, key);
+   }
+
+   for (i=0; i<hfile.getNumLines(); i++) {
+      if (!hfile[i].isBibliographic()) {
+         continue;
+      }
+      if (strncmp(hfile[i][0], newkey, strlen(newkey)) != 0) {
+         continue;
+      }
+      hfile[i].getBibValue(buffer);
+      break;
+   }
+
+   return buffer;
 }
 
 
@@ -449,6 +539,10 @@ void HumdrumFileBasic::read(const char* filename) {
    if (strstr(filename, "://") != NULL) {
       if (strncmp(filename, "http://", strlen("http://")) == 0) {
          readFromHttpURI(filename);
+         return;
+      } 
+      if (strncmp(filename, "jrp://", strlen("jrp://")) == 0) {
+         readFromJrpURI(filename);
          return;
       } 
       if (strncmp(filename, "humdrum://", strlen("humdrum://")) == 0) {
@@ -1420,6 +1514,37 @@ void HumdrumFileBasic::readFromHumdrumURI(const char* humdrumaddress) {
       httprequest << location.getBase();
    }
    httprequest << "&format=kern";
+   httprequest << ends;
+
+   readFromHttpURI(httprequest.CSTRING);
+}
+
+
+
+//////////////////////////////
+//
+// readFromJrpURI -- Read a Humdrum file from a jrp:// web-style address
+// 
+// Example:
+// maps: 
+//    jrp://Jos2721-La_Bernardina
+// into:
+//    http://jrp.ccarh.org/cgi-bin/jrp?a=humdrum&f=Jos2721-La_Bernardina
+//
+
+void HumdrumFileBasic::readFromJrpURI(const char* jrpaddress) {
+   const char* ptr = jrpaddress;
+   // skip over the staring portion of the address:
+   if (strncmp(ptr, "jrp://", strlen("jrp://")) == 0) {
+      ptr += strlen("jrp://");
+   } else if (strncmp(ptr, "jrp:", strlen("jrp:")) == 0) {
+      ptr += strlen("jrp:");
+   }
+
+   SSTREAM httprequest;
+   httprequest << "http://" << "jrp.humdrum.org";
+   httprequest << "/cgi-bin/jrp?a=humdrum&f=";
+   httprequest << ptr;
    httprequest << ends;
 
    readFromHttpURI(httprequest.CSTRING);

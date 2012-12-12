@@ -32,7 +32,7 @@
    #include <wtypes.h>
    typedef LONGLONG int64bits;
 #else
-   #ifdef OSXOLD || OSXPC
+   #if defined(OSXOLD) || defined(OSXPC)
       typedef Uint64 int64bits;
       // also see SigTimer.cpp for #define for OSXTIMER
    #else
@@ -103,7 +103,7 @@ void millisleep(int milliseconds);
 void millisleep(float milliseconds);
 
    
-#endif  /* _SIGTIMER_H_INCLUDED */
+#endif  
 
 
 

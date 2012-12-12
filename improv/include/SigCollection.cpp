@@ -2,9 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Feb  5 19:42:53 PST 1997
 // Last Modified: Wed Apr 23 22:08:34 GMT-0800 1997
-// Last Modified: Fri Sep 14 15:50:52 PDT 2001 (added last() function)
-// Last Modified: Wed Mar 30 14:00:16 PST 2005 (Fixed for compiling in GCC 3.4)
-// Last Modified: Fri Jun 12 22:58:34 PDT 2009 (renamed SigCollection class)
+// Last Modified: Fri Sep 14 15:50:52 PDT 2001 added last() function
+// Last Modified: Wed Mar 30 14:00:16 PST 2005 Fixed for compiling in GCC 3.4
+// Last Modified: Fri Jun 12 22:58:34 PDT 2009 renamed SigCollection class
+// Last Modified: Fri Aug 10 09:17:03 PDT 2012 added reverse()
 // Filename:      ...sig/maint/code/base/SigCollection/SigCollection.cpp
 // Web Address:   http://sig.sapp.org/src/sigBase/SigCollection.cpp
 // Syntax:        C++ 
@@ -22,6 +23,8 @@
 #include <iostream>
 #include <stdlib.h>
 
+
+using namespace std;
 
 //////////////////////////////
 //
@@ -162,6 +165,7 @@ void SigCollection<type>::grow(long growamt) {
    for (int i=0; i<size; i++) {
       temp[i] = this->array[i];
    }
+   delete [] this->array;
    this->array = temp;
 }
 
@@ -353,6 +357,7 @@ void SigCollection<type>::shrinkTo(long aSize) {
 }
 
 
+
 //////////////////////////////
 //
 // SigCollection::increase -- equivalent to setSize(getSize()+addcount)
@@ -366,6 +371,26 @@ int SigCollection<type>::increase(int addcount) {
    return this->getSize();
 }
 
+
+
+//////////////////////////////
+//
+// SigCollection::reverse -- reverse the order of items in the list.
+//
+
+template<class type>
+void SigCollection<type>::reverse(void) {
+   int i;
+   type tempval;
+   int mirror;
+   int pivot = this->getSize() / 2;
+   for (i=0; i<pivot; i++) {
+      tempval = this->array[i];
+      mirror = this->getSize() - i - 1;
+      this->array[i] = this->array[mirror];
+      this->array[mirror] = tempval;
+   }
+}
 
 
 #endif  /* _SIGCOLLECTION_CPP_INCLUDED */

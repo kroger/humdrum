@@ -36,11 +36,17 @@ int main(int argc, char** argv) {
    
    hfile.analyzeRhythm("4", DEBUG);
 
-   cout << "absbeat\tdur\tbeat\t::\tdata\n";
+   int measure = 0;
+
+   cout << "absbeat\tdur\tbeat\tmeasure\t::\tdata\n";
    cout << ":::::::::::::::::::::::::::::::::::::::::::::::::::::\n";
    for (int i=0; i<hfile.getNumLines(); i++) {
+      if (hfile[i].isMeasure()) {
+         sscanf(hfile[i][0], "=%d", &measure);
+      }
       cout << hfile.getAbsBeat(i) << '\t'
            << hfile.getDuration(i) << '\t'
+           << measure << '\t'
            << hfile.getBeat(i) << "\t::\t"
            << hfile.getLine(i) << endl;
    }
@@ -50,4 +56,4 @@ int main(int argc, char** argv) {
 
 
 
-// md5sum: e85e2c07edf50cbd0282a11f206cf797 rcheck.cpp [20050403]
+// md5sum: 677ba3c8bf85ca49f1b618140d96c361 rcheck.cpp [20120404]

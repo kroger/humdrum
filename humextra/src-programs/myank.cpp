@@ -112,6 +112,7 @@ void      insertZerothMeasure  (Array<MeasureInfo>& measurelist,
 void      getMetStates         (Array<Array<Coord> >& metstates, 
                                 HumdrumFile& infile);
 Coord     getLocalMetInfo      (HumdrumFile& infile, int row, int track);
+int       atEndOfFile          (HumdrumFile& infile, int line);
 
 
 // User interface variables:
@@ -1355,6 +1356,7 @@ void getMeasureStartStop(Array<MeasureInfo>& measurelist, HumdrumFile& infile) {
    int dataend = -1;
    int barnum1 = -1;
    int barnum2 = -1;
+   PerlRegularExpression pre;
 
    insertZerothMeasure(measurelist, infile);
 
@@ -1368,6 +1370,10 @@ void getMeasureStartStop(Array<MeasureInfo>& measurelist, HumdrumFile& infile) {
       if (!infile[i].isMeasure()) {
          continue;
       }
+      //if (!pre.search(infile[i][0], "^=.*(\\d+)")) {
+      //   continue;
+      //}
+      //barnum1 = atoi(pre.getSubmatch(1));
       if (!sscanf(infile[i][0], "=%d", &barnum1)) {
          continue;
       }
@@ -1378,12 +1384,26 @@ void getMeasureStartStop(Array<MeasureInfo>& measurelist, HumdrumFile& infile) {
          if (!infile[ii].isMeasure()) {
             continue;
          }
-         if (sscanf(infile[ii][0], "=%d", &barnum2)) {
+         //if (pre.search(infile[ii][0], "^=.*(\\d+)")) {
+         //   barnum2 = atoi(pre.getSubmatch(1));
+         //   current.stop = ii;
+         //   lastend = ii;
+         //   i = ii - 1;
+         //   measurelist.append(current);
+         //   break;
+         //}
+         if (pre.search(infile[ii][0], "=[^\\d]*(\\d+)")) {
+         // if (sscanf(infile[ii][0], "=%d", &barnum2)) {
+            barnum2 = atoi(pre.getSubmatch(1));
             current.stop = ii;
             lastend = ii;
             i = ii - 1;
             measurelist.append(current);
             break;
+         } else {
+            if (atEndOfFile(infile, ii)) {
+               break;
+            }
          }
       }
    }
@@ -1419,6 +1439,24 @@ void getMeasureStartStop(Array<MeasureInfo>& measurelist, HumdrumFile& infile) {
       }
       measurelist.append(current);
    }
+}
+
+
+
+//////////////////////////////
+//
+// atEndOfFile --
+//
+
+int atEndOfFile(HumdrumFile& infile, int line) {
+   int i;
+   for (i=line+1; i<infile.getNumLines(); i++) {
+      if (infile[i].isData()) {
+         return 1;
+      }
+   }
+
+   return 0;
 }
 
 
@@ -1485,7 +1523,6 @@ void expandMeasureOutList(Array<MeasureInfo>& measureout,
       const char* optionstring) {
 
    PerlRegularExpression pre;
-
    // find the largest measure number in the score
    int maxmeasure = -1;
    int minmeasure = -1;
@@ -1543,6 +1580,7 @@ void expandMeasureOutList(Array<MeasureInfo>& measureout,
    for (i=0; i<measurein.getSize(); i++) {
       inmap[measurein[i].num] = i;
    }
+
 
    fillGlobalDefaults(infile, measurein, inmap);
 
@@ -1635,12 +1673,21 @@ void fillGlobalDefaults(HumdrumFile& infile, Array<MeasureInfo>& measurein,
          lastmeasure = currmeasure;
          currmeasure = atoi(pre.getSubmatch(1));
 
-         measurein[inmap[currmeasure]].sclef    = currclef;
-         measurein[inmap[currmeasure]].skeysig  = currkeysig;
-         measurein[inmap[currmeasure]].skey     = currkey;
-         measurein[inmap[currmeasure]].stimesig = currtimesig;
-         measurein[inmap[currmeasure]].smet     = metstates[i];
-         measurein[inmap[currmeasure]].stempo   = currtempo;
+         if (currmeasure < inmap.getSize()) {
+            // [20120818] Had to compensate for last measure being single
+            // and un-numbered.
+            if (inmap[currmeasure] < 0) {
+               // [20111008] Had to compensate for "==85" barline
+               datafound = 0;
+               break;
+            }
+            measurein[inmap[currmeasure]].sclef    = currclef;
+            measurein[inmap[currmeasure]].skeysig  = currkeysig;
+            measurein[inmap[currmeasure]].skey     = currkey;
+            measurein[inmap[currmeasure]].stimesig = currtimesig;
+            measurein[inmap[currmeasure]].smet     = metstates[i];
+            measurein[inmap[currmeasure]].stempo   = currtempo;
+         }
 
          datafound   = 0;
          continue;
@@ -1707,7 +1754,8 @@ void fillGlobalDefaults(HumdrumFile& infile, Array<MeasureInfo>& measurein,
    }
 
    // store state of global music values at end of music
-   if (currmeasure >= 0) {
+   if ((currmeasure >= 0) && (currmeasure < inmap.getSize()) 
+         && (inmap[currmeasure] >= 0)) {
       measurein[inmap[currmeasure]].eclef    = currclef;
       measurein[inmap[currmeasure]].ekeysig  = currkeysig;
       measurein[inmap[currmeasure]].ekey     = currkey;
@@ -2002,4 +2050,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 2dced61a874f2bdd683a2c8bd9ac94b7 myank.cpp [20110830]
+// md5sum: de4fd31fd0aa4cad61f30731f6cb1cdc myank.cpp [20111013]

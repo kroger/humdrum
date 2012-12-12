@@ -163,7 +163,8 @@ int main(int argc, char** argv) {
    if (options.getBoolean("rotation")) {
       // returns the base-12 pitch transposition for use in conjunction
       // with the mkeyscape --rotate option
-      cout << (12-Convert::base40ToMidiNoteNumber(transval+2)%12) << endl;
+      int value = 60 - Convert::base40ToMidiNoteNumber(162 - transval);
+      cout << value << endl;
       exit(0);
    }
 	    
@@ -409,7 +410,7 @@ int isKeyMarker(const char* string) {
 //
 
 void printTransposedToken(HumdrumFile& infile, int row, int col, int transval) {
-   if (strcmp("**kern", infile[col].getExInterp(col)) != 0) {
+   if (strcmp("**kern", infile[row].getExInterp(col)) != 0) {
       // don't know how to transpose this type of data, so leave it as is
       cout << infile[row][col]; 
       return;
@@ -904,6 +905,7 @@ void printNewKernString(const char* string, int transval) {
    if (ptr2 != NULL) {
       cout << ptr2;
    }
+
 }
 
 

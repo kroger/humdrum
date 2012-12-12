@@ -4,6 +4,9 @@
 // Last Modified: Tue Jun  5 13:48:29 PDT 2001
 // Last Modified: Fri Feb 25 00:09:19 PST 2005 (balanced <measure> markers)
 // Last Modified: Tue Dec 12 20:23:42 PST 2006 (handling > and < as text)
+// Last Modified: Tue Nov 22 07:08:10 PST 2011 (fixed grace noteshapes)
+// Last Modified: Tue Jun 26 15:13:50 PDT 2012 (added <time-modification> for tuplets)
+// Last Modified: Tue Jun 26 17:06:38 PDT 2012 (some bug fixes for multi-voice treatment)
 // Filename:      ...sig/examples/all/hum2xml.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/hum2xml.cpp
 // Syntax:        C++; museinfo
@@ -12,6 +15,8 @@
 //
 
 #include "humdrum.h"
+#include "PerlRegularExpression.h"
+#include "RationalNumber.h"
 
 #include <string.h>
 #include <ctype.h>
@@ -26,38 +31,51 @@
 // function declarations:
 void      checkOptions          (Options& opts, int argc, char** argv);
 void      example               (void);
-void      convertToMusicXML     (HumdrumFile& hfile);
-int       makePartList          (HumdrumFile& hfile);
-void      makePart              (HumdrumFile& hfile, int start, int spine,
+void      convertToMusicXML     (HumdrumFile& infile);
+int       makePartList          (HumdrumFile& infile);
+void      makePart              (HumdrumFile& infile, int start, int col,
                                  int count);
-void      generatePartInfo      (HumdrumFile& hfile, int start, int spine,
+void      generatePartInfo      (HumdrumFile& infile, int start, int col,
                                  int count);
-void      convertDataToMusicXML (HumdrumFile& hfile, int line, int trace);
-void      convertMeasureToXML   (HumdrumFile& hfile, int line, int spine);
-void      convertAttributeToXML (HumdrumFile& hfile, int line, int spine);
-void      convertNoteToXML      (HumdrumFile& hfile, int line, int spine);
+void      convertDataToMusicXML (HumdrumFile& infile, int line, int col, 
+                                 int voice);
+void      convertMeasureToXML   (HumdrumFile& infile, int line, int col, 
+                                 int voice);
+void      convertAttributeToXML (HumdrumFile& infile, int line, int col, 
+                                 int voice);
+void      convertNoteToXML      (HumdrumFile& infile, int line, int col, 
+                                 int voice);
 void      pline                 (int level, const char* string);
 void      usage                 (const char* command);
-double    convertNoteEntryToXML (HumdrumFile& hfile, int line, int spine,
-                                 const char* buffer, int chord, int vlevel);
+double    convertNoteEntryToXML (HumdrumFile& infile, int line, int col,
+                                 const char* buffer, int chord, int vlevel, 
+                                 int voice);
 void      checkMeasure          (void);
 void      printDurationType     (const char* durstring);
 void      printDots             (const char* durstring);
 void      adjustKey             (int keyinfo);
 void      checkAccidentals      (int diatonic, int alter, int chord);
 void      updateAccidentals     (void);
-void      printGlobalComments   (HumdrumFile& hfile, int direction);
-void      printGlobalComment    (HumdrumFile& hfile, int line);
-void      printBibliography     (HumdrumFile& hfile, int line);
-void      checkbackup           (void);
-void      processTextUnderlay   (HumdrumFile& hfile, int line, int spine);
-void      displayUnknownTextType(HumdrumFile& hfile, int line, int spine, 
+void      printGlobalComments   (HumdrumFile& infile, int direction);
+void      printGlobalComment    (HumdrumFile& infile, int line);
+void      printBibliography     (HumdrumFile& infile, int line);
+void      checkbackup           (int currenttick, int targettick);
+void      processTextUnderlay   (HumdrumFile& infile, int line, int col);
+void      displayUnknownTextType(HumdrumFile& infile, int line, int col, 
                                  int verse);
-void      displayLyrics         (HumdrumFile& hfile, int line, int spine, 
+void      displayLyrics         (HumdrumFile& infile, int line, int col, 
                                  int verse);
 void      displayHTMLText       (const char* buffer);
-void      processBeams          (HumdrumFile& hfile, int line, int spine, 
+void      processBeams          (HumdrumFile& infile, int line, int col, 
                                  const char* buffer, int vlevel);
+void      setLineTicks          (Array<int>& LineTick, HumdrumFile& infile, int divisions);
+void      getBarlines           (Array<int>& barlines, HumdrumFile& infile);
+void      convertMeasureToMusicXML(HumdrumFile& infile, int track, 
+                                 int startbar, int endbar);
+int       getMaxVoice           (HumdrumFile& infile, int track, 
+                                 int startline, int endline);
+void      convertVoice          (HumdrumFile& infile, int track, int startbar, 
+                                 int endbar, int voice);
 
 // User interface variables:
 Options   options;
@@ -79,10 +97,13 @@ int v1key[7] = {0};            // for explicit accidentals ABCDEFG
 int v1chord[7] = {0};          // for explicit accidentals ABCDEFG
 int v1prechordstates[7] = {0}; // for explicit accidentals ABCDEFG
 
-int direction = 0;              // for <backup> <forward> commands
+int AbsTick = 0;                // for <backup> <forward> commands
+Array<int> LineTick;            // for <backup> and <forward> commands
 int beamlevel[128] = {0};       // for beaming information
 int musicstart = 0;             // for suppressing bars before music starts
 // int attributes = 0;             // for suppressing multiple attributes entries
+
+Array<int> Barlines;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -94,25 +115,27 @@ int main(int argc, char** argv) {
    // figure out the number of input files to process
    int numinputs = options.getArgCount();
 
-   HumdrumFile hfile;
+   HumdrumFile infile;
    for (int i=0; i<numinputs || i==0; i++) {
-      hfile.clear();
+      infile.clear();
 
       // if no command-line arguments read data file from standard input
       if (numinputs < 1) {
-         hfile.read(cin);
+         infile.read(cin);
       } else {
-         hfile.read(options.getArg(i+1));
+         infile.read(options.getArg(i+1));
       }
 
-      hfile.analyzeRhythm();
-      divisions = hfile.getMinTimeBase();
+      infile.analyzeRhythm("4");
+      getBarlines(Barlines, infile);
+      divisions = infile.getMinTimeBase();
       if (divisions % 4 == 0) {
          divisions = divisions/4;
       } else {
          // don't know what this case may be
       }
-      convertToMusicXML(hfile);
+      setLineTicks(LineTick, infile, divisions);
+      convertToMusicXML(infile);
 
    }
 
@@ -120,6 +143,63 @@ int main(int argc, char** argv) {
 }
 
 //////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////
+//
+// getBarlines --
+//
+
+void getBarlines(Array<int>& barlines, HumdrumFile& infile) {
+   barlines.setSize(infile.getNumLines());
+   barlines.setSize(0);
+   int i;
+   int datafoundQ = 0;
+   int exinterpline = 0;
+   for (i=0; i<infile.getNumLines(); i++) {
+      if (infile[i].isData()) {
+         datafoundQ = 1;
+      }
+      if (strncmp(infile[i][0], "**", 2) == 0) {
+         exinterpline = i;
+         barlines.append(i);
+      }
+      if (!infile[i].isMeasure()) {
+         continue;
+      }
+      if (!datafoundQ) {
+         continue;
+      }
+      barlines.append(i);
+   }
+   i = infile.getNumLines() - 1;
+   barlines.append(i);
+}
+
+
+
+//////////////////////////////
+//
+// setLineTicks --
+//
+
+void setLineTicks(Array<int>& LineTick, HumdrumFile& infile, int divisions) {
+   LineTick.setSize(infile.getNumLines());
+   LineTick.allowGrowth(0);
+   RationalNumber rat;
+   int i;
+   for (i=0; i<infile.getNumLines(); i++) {
+      rat = infile[i].getAbsBeatR();
+      rat *= divisions;
+      if (rat.getDenominator() != 1) {
+         cerr << "Divisions error on line " << i+1 << ": " << infile[i] << endl;
+         cerr << "GetAbsBeat = " << rat << endl;
+         exit(1);
+      }
+      LineTick[i] = rat.getNumerator();
+   }
+}
+
 
 
 //////////////////////////////
@@ -191,52 +271,49 @@ void example(void) {
 // \"http://www.musicxml.org/dtds/partwise.dtd\" -->
 //
 
-void convertToMusicXML(HumdrumFile& hfile) {
-   pline(lev, "<?xml version=\"1.0\" standalone=\"no\"?>\n");
-   pline(lev, "<!DOCTYPE score-partwise PUBLIC \"-//Recordare//DTD MusicXML 0.6a Partwise//EN\" \"//C:/Program Files/Finale 2003/Component Files/partwise.dtd\">\n");
+void convertToMusicXML(HumdrumFile& infile) {
+   pline (lev, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+   pline (lev, "<!DOCTYPE score-partwise PUBLIC \"-//Recordare//DTD MusicXML 2.0 Partwise//EN\" \"http://www.musicxml.org/dtds/partwise.dtd\">\n");
 
-   printGlobalComments(hfile, 1);
-   pline(lev, "<score-partwise>\n");
+   // previous xml declaration:
+   // pline(lev, "<?xml version=\"1.0\" standalone=\"no\"?>\n");
+   // pline(lev, "<!DOCTYPE score-partwise PUBLIC \"-//Recordare//DTD MusicXML 0.6a Partwise//EN\" \"//C:/Program Files/Finale 2003/Component Files/partwise.dtd\">\n");
 
+   printGlobalComments(infile, 1);
+   // pline(lev, "<score-partwise version="2.0">\n");
+   pline(lev, "<score-partwise version=\"2.0\">\n");
 
-   int count = makePartList(hfile);
-   int start = 0;
-   while (start < hfile.getNumLines() && 
-         strncmp(hfile[start][0], "**", 2) != 0) {
-      start++;
-   }
+   Array<int> kerntracks;
+   infile.getTracksByExInterp(kerntracks, "**kern");
 
-   int i;
+   int count = makePartList(infile);
+
+   int start = 0;  // should be the start of exclusive interpretation line  
+                   // (but setting to zero).
    int gcount = 0;
+   int i;
    if (!reverseQ) {
-      for (i=hfile[start].getFieldCount()-1; i>=0; i--) {
-         if (strcmp(hfile[start].getExInterp(i), "**kern") != 0) {
-            continue;
-         }
-         gcount++;
-         makePart(hfile, start, i, gcount);
-         count--;
+      // print parts in reverse order because Humdrum scores are printed lowest 
+      // part first going towards highest, but MusicXML is from highest to lowest.
+      for (i=kerntracks.getSize()-1; i>=0 ;i--) {
+         makePart(infile, start, kerntracks[i], ++gcount);
       }
    } else {
-      // doing things in reverse order
-      for (i=0; i<hfile[start].getFieldCount(); i++) {
-         if (strcmp(hfile[start].getExInterp(i), "**kern") != 0) {
-            continue;
-         }
-         gcount++;
-         makePart(hfile, start, i, gcount);
-         count--;
+      // print reverse because Humdrum score is probably reversed 
+      for (i=0; i<kerntracks.getSize(); i++) {
+         makePart(infile, start, kerntracks[i], ++gcount);
       }
    }
 
    lev = 0;
 
    pline(lev, "</score-partwise>\n");
-   printGlobalComments(hfile, -1);
-   if (count != 0) {
-      cerr << "Error in generating parts: number of parts has changed" << endl;
+   printGlobalComments(infile, -1);
+   if (count != kerntracks.getSize()) {
+      cerr << "Error in generating parts: number of parts has changed: " << count << endl;
    }
 }
+
 
 
 //////////////////////////////
@@ -244,16 +321,16 @@ void convertToMusicXML(HumdrumFile& hfile) {
 // printGlobalComments
 //
 
-void printGlobalComments(HumdrumFile& hfile, int direction) {
+void printGlobalComments(HumdrumFile& infile, int direction) {
    int start = 0;
-   int stop = hfile.getNumLines();
+   int stop = infile.getNumLines();
    int i;
 
    if (direction == 1) {
       start = 0;
       i = 0;
-      while (i < hfile.getNumLines()) {
-         if (strncmp(hfile[i][0], "**", 2) == 0) {
+      while (i < infile.getNumLines()) {
+         if (strncmp(infile[i][0], "**", 2) == 0) {
             stop = i;
             break;
          }
@@ -261,10 +338,10 @@ void printGlobalComments(HumdrumFile& hfile, int direction) {
       }
       
    } else {
-      stop = hfile.getNumLines() - 1;
+      stop = infile.getNumLines() - 1;
       i = stop;
       while (i >= 0) {
-         if (strcmp(hfile[i][0], "*-") == 0) {
+         if (strcmp(infile[i][0], "*-") == 0) {
             start = i;
             break;
          }
@@ -273,12 +350,12 @@ void printGlobalComments(HumdrumFile& hfile, int direction) {
    }
 
    for (i=start; i<=stop; i++) {
-      switch (hfile[i].getType()) {
+      switch (infile[i].getType()) {
          case E_humrec_global_comment:
-            printGlobalComment(hfile, i);
+            printGlobalComment(infile, i);
             break;
          case E_humrec_bibliography:
-            printBibliography(hfile, i);
+            printBibliography(infile, i);
             break;
       }
 
@@ -292,9 +369,9 @@ void printGlobalComments(HumdrumFile& hfile, int direction) {
 // printGlobalComment --
 //
 
-void printGlobalComment(HumdrumFile& hfile, int line) {
+void printGlobalComment(HumdrumFile& infile, int line) {
    pline(lev, "<!-- GCOMMENT value=\"");
-   cout << &(hfile[line][0][2]) << "\" -->\n";
+   cout << &(infile[line][0][2]) << "\" -->\n";
 }
 
 
@@ -304,9 +381,9 @@ void printGlobalComment(HumdrumFile& hfile, int line) {
 // printBibliography --
 //
 
-void printBibliography(HumdrumFile& hfile, int line) {
+void printBibliography(HumdrumFile& infile, int line) {
    char buffer[1024] = {0};
-   strcpy(buffer, hfile[line][0]);
+   strcpy(buffer, infile[line][0]);
    int i = 0;
    while (buffer[i] != '\0') {
       if (buffer[i] == ':') {
@@ -322,29 +399,38 @@ void printBibliography(HumdrumFile& hfile, int line) {
    }
    if (i == 0) return;
 
+   // Handle stupid XML parsers which find "--" within a comment and choke:
+   Array<char> newvalue;
+   newvalue.setSize(strlen(&(buffer[i]))+1);
+   strcpy(newvalue.getBase(), &(buffer[i]));
+   PerlRegularExpression pre;
+   pre.sar(newvalue, "--", "&#45;&#45;", "g");
+
    pline(lev, "<!-- INFO key=\"");
-   cout << &(buffer[3]) << "\" value=\"" << &(buffer[i]) << "\" -->\n";
+   cout << &(buffer[3]) << "\" value=\"" << newvalue << "\" -->\n";
 
 }
 
 
 //////////////////////////////
 //
-// makePart --
+// makePart -- ggg
 //
 
-void makePart(HumdrumFile& hfile, int start, int spine, int count) {
+void makePart(HumdrumFile& infile, int start, int track, int count) {
+// spine == track ?
    cout << "\n";
    pline(lev, "<part id=\"P");
    cout << count << "\">\n";
    lev++;
    minit = 0;  
    musicstart = 0;
+   AbsTick = 0;
 
    checkMeasure();
    lev++;
    pline(lev, "<attributes>\n");
-//   attributes = 1;
+   //   attributes = 1;
    lev++;
    pline(lev, "<divisions>");
    cout << divisions << "</divisions>\n";
@@ -353,31 +439,30 @@ void makePart(HumdrumFile& hfile, int start, int spine, int count) {
    pline(lev, "</attributes>\n");  // att
    lev--;                          // att
 
-   int line = 0;
-   int trace = 0;
-   for (line = start+1; line < hfile.getNumLines(); line++) {
-      trace = 0;
-      if (strncmp(hfile[line][0], "!!", 2) == 0) {
-         continue;
-      }
-      if (hfile[line].getType() == E_humrec_empty) {
-         continue;
-      }
-      while (trace < hfile[line].getFieldCount() && 
-            spine+1 != hfile[line].getPrimaryTrack(trace)) {
-         trace++;
-      }
+   int i;
 
-      if (strcmp(hfile[line].getExInterp(trace), "**kern") != 0) {
+   for (i=0; i<Barlines.getSize()-1; i++) {
+      convertMeasureToMusicXML(infile, track, Barlines[i], Barlines[i+1]);
+   }
+
+/*
+   int i;
+   int j;
+   int testtrack;
+   for (i=start+1; i<infile.getNumLines(); i++) {
+      if (infile[i].isComment() || infile[i].isEmpty()) {
          continue;
       }
 
-      if (trace < hfile[line].getFieldCount()) {
-         convertDataToMusicXML(hfile, line, trace);
-      } else {
-         cout << "Error on line " << line+1 << ": Spine error\n";
+      for (j=0; j<infile[i].getFieldCount(); j++) {
+         testtrack = infile[i].getPrimaryTrack(j);
+         if (testtrack != track) {
+            continue;
+         }
+         convertDataToMusicXML(infile, i, j);
       }
    }
+*/
 
    if (measurestate == 1) {
       pline(lev, "</measure>\n");
@@ -391,14 +476,104 @@ void makePart(HumdrumFile& hfile, int start, int spine, int count) {
 
 //////////////////////////////
 //
+// convertMeasureToMusicXML --
+//
+
+void convertMeasureToMusicXML(HumdrumFile& infile, int track, int startbar,
+      int endbar) {
+
+   int maxVoice = getMaxVoice(infile, track, startbar, endbar);
+
+//cout << "<!-- Track = " << track << "\tstart = " 
+//      << startbar << "\tend = " << endbar 
+//      << "\tvoices = " << maxVoice
+//      << " -->" << endl;
+
+   int voice;
+   for (voice=1; voice<=maxVoice; voice++) {
+      convertVoice(infile, track, startbar, endbar, voice);
+   }
+}
+
+
+//////////////////////////////
+//
+// convertVoice --
+//
+
+void convertVoice(HumdrumFile& infile, int track, int startbar, int endbar, 
+      int voice) {
+
+   int i, j, t, v;
+
+   int start = startbar;
+   if (voice > 1) {
+      // don't print measure information for secondary voices
+      start++;
+   }
+   
+   for (i=start; i<endbar; i++) {
+      v = 0;
+      for (j=0; j<infile[i].getFieldCount(); j++) {
+         t = infile[i].getPrimaryTrack(j);
+         if (t != track) { 
+            continue;
+         }
+         v++;
+         if (v != voice) {
+            continue;
+         }
+         convertDataToMusicXML(infile, i, j, v);
+         break;
+      }
+   }
+}
+
+
+
+//////////////////////////////
+//
+// getMaxVoice -- return the maximum voice for the particular track
+//      within the given line range (excluding the endpoints).
+//
+
+int getMaxVoice(HumdrumFile& infile, int track, int startline, int endline) {
+   int i, j;
+   int t;
+   int maxv = 0;
+
+   int count;
+   for (i=startline+1; i<endline; i++) {
+      if (!infile[i].isData()) {
+         continue;
+      }
+      count = 0;
+      for (j=0; j<infile[i].getFieldCount(); j++) {
+         t = infile[i].getPrimaryTrack(j);
+         if (t == track) {
+            count++;
+         }
+      }
+      if (count > maxv) {
+         maxv = count;
+      }
+   }
+
+   return maxv;
+}
+
+
+
+//////////////////////////////
+//
 // convertDataToMusicXML --
 //
 
-void convertDataToMusicXML(HumdrumFile& hfile, int line, int trace) {
+void convertDataToMusicXML(HumdrumFile& infile, int line, int col, int voice) {
    if (debugQ) {
-      cout << "DATA = " << hfile[line][trace] << " \n";
+      cout << "<!-- PROCESSING  " << infile[line][col] << "-->\n";
    }
-   switch(hfile[line].getType()) {
+   switch(infile[line].getType()) {
       case E_humrec_none:
       case E_humrec_empty:
       case E_humrec_global_comment:
@@ -406,14 +581,14 @@ void convertDataToMusicXML(HumdrumFile& hfile, int line, int trace) {
       case E_humrec_data_comment:
          break;
       case E_humrec_data_kern_measure:
-         convertMeasureToXML(hfile, line, trace);
+         convertMeasureToXML(infile, line, col, voice);
          break;
       case E_humrec_interpretation:
-         convertAttributeToXML(hfile, line, trace);
+         convertAttributeToXML(infile, line, col, voice);
          break;
       case E_humrec_data:
          musicstart = 1;
-         convertNoteToXML(hfile, line, trace);
+         convertNoteToXML(infile, line, col, voice);
          break;
       default:
          break;
@@ -444,7 +619,7 @@ void updateAccidentals(void) {
 // convertMeasureToXML --
 //
 
-void convertMeasureToXML(HumdrumFile& hfile, int line, int spine) { 
+void convertMeasureToXML(HumdrumFile& infile, int line, int col, int voice) { 
    int measureno = -1;
 
    if (!musicstart) {
@@ -454,10 +629,10 @@ void convertMeasureToXML(HumdrumFile& hfile, int line, int spine) {
    updateAccidentals();
    const char *ptr;
 
-   if (strcmp(hfile[line][spine], "==") == 0
-       || strcmp(hfile[line+1][0], "*-") == 0) {
+   if (strcmp(infile[line][col], "==") == 0
+       || strcmp(infile[line+1][0], "*-") == 0) {
     
-      checkbackup();
+      checkbackup(AbsTick, LineTick[line]);
 
       lev++;
       pline(lev, "<barline>\n"); 
@@ -469,18 +644,18 @@ void convertMeasureToXML(HumdrumFile& hfile, int line, int spine) {
       pline(lev, "</measure>\n");
       measurestate = 0;
 
-   } else if ((ptr = strchr(hfile[line][spine], ':')) != NULL) {
+   } else if ((ptr = strchr(infile[line][col], ':')) != NULL) {
       if ((ptr+1)[0] == '|' || (ptr+1)[0] == '!') {
          lev++;
          pline(lev, "<barline>\n"); 
          lev++;
-         if (strstr(hfile[line][spine], ":|!") != NULL) {
+         if (strstr(infile[line][col], ":|!") != NULL) {
             pline(lev, "<bar-style>light-heavy</bar-style>\n");
-         } else if (strstr(hfile[line][spine], ":||") != NULL) {
+         } else if (strstr(infile[line][col], ":||") != NULL) {
             pline(lev, "<bar-style>light-light</bar-style>\n");
-         } else if (strstr(hfile[line][spine], ":!") != NULL) {
+         } else if (strstr(infile[line][col], ":!") != NULL) {
             pline(lev, "<bar-style>heavy</bar-style>\n");
-         } else if (strstr(hfile[line][spine], ":|") != NULL) {
+         } else if (strstr(infile[line][col], ":|") != NULL) {
             pline(lev, "<bar-style>light</bar-style>\n");
          }
          pline(lev, "<repeat direction=\"backward\"/>\n");
@@ -489,8 +664,8 @@ void convertMeasureToXML(HumdrumFile& hfile, int line, int spine) {
          lev--;
       }
 
-   } else if (strstr(hfile[line][spine], "||") != NULL) {
-      checkbackup();
+   } else if (strstr(infile[line][col], "||") != NULL) {
+      checkbackup(AbsTick, LineTick[line]);
 
       lev++;
       pline(lev, "<barline>\n"); 
@@ -503,11 +678,11 @@ void convertMeasureToXML(HumdrumFile& hfile, int line, int spine) {
    } 
 
 
-   if (strcmp(hfile[line+1][0], "*-") == 0) {
+   if (strcmp(infile[line+1][0], "*-") == 0) {
       return;
    }
 
-   checkbackup();
+   checkbackup(AbsTick, LineTick[line]);
 
    if (minit != 0) {
       if (measurestate != 0) {
@@ -517,12 +692,12 @@ void convertMeasureToXML(HumdrumFile& hfile, int line, int spine) {
    } 
    minit++;
 
-   if (sscanf(hfile[line][spine], "=%d", &measureno)) {
+   if (sscanf(infile[line][col], "=%d", &measureno)) {
       pline(lev, "<measure number=\"");
       cout << minit << "\">\n";
       measurestate = 1;
-   } else if (strncmp(hfile[line][spine], "=", 1) == 0) {
-      if (hfile.getTotalDuration() > hfile[line].getAbsBeat()) {
+   } else if (strncmp(infile[line][col], "=", 1) == 0) {
+      if (infile.getTotalDuration() > infile[line].getAbsBeat()) {
          // don't start a new measure if we are at the end of the music
          pline(lev, "<measure number=\"");
          cout << minit << "\">\n";
@@ -530,18 +705,18 @@ void convertMeasureToXML(HumdrumFile& hfile, int line, int spine) {
       }
    }
 
-   if ((ptr = strchr(hfile[line][spine], ':')) != NULL) {
+   if ((ptr = strchr(infile[line][col], ':')) != NULL) {
       if ((ptr-1)[0] == '|' || (ptr-1)[0] == '!') {
          lev++;
          pline(lev, "<barline>\n"); 
          lev++;
-         if (strstr(hfile[line][spine], ":|!") != NULL) {
+         if (strstr(infile[line][col], ":|!") != NULL) {
             pline(lev, "<bar-style>light-heavy</bar-style>\n");
-         } else if (strstr(hfile[line][spine], ":||") != NULL) {
+         } else if (strstr(infile[line][col], ":||") != NULL) {
             pline(lev, "<bar-style>light-light</bar-style>\n");
-         } else if (strstr(hfile[line][spine], ":!") != NULL) {
+         } else if (strstr(infile[line][col], ":!") != NULL) {
             pline(lev, "<bar-style>heavy</bar-style>\n");
-         } else if (strstr(hfile[line][spine], ":|") != NULL) {
+         } else if (strstr(infile[line][col], ":|") != NULL) {
             pline(lev, "<bar-style>light</bar-style>\n");
          }
          pline(lev, "<repeat direction=\"forward\"/>\n");
@@ -617,16 +792,16 @@ void adjustKey(int keyinfo) {
 // convertAttributeToXML --
 //
 
-void convertAttributeToXML(HumdrumFile& hfile, int line, int spine) {
-   int length = strlen(hfile[line][spine]);
+void convertAttributeToXML(HumdrumFile& infile, int line, int col, int voice) {
+   int length = strlen(infile[line][col]);
 
-   if (strncmp(hfile[line][spine], "*M", 2) == 0 &&
-         strchr(hfile[line][spine], '/') != NULL) {
+   if (strncmp(infile[line][col], "*M", 2) == 0 &&
+         strchr(infile[line][col], '/') != NULL) {
       // meter marking
       int top = 0;
       int bottom = 0;
 
-      int flag = sscanf(hfile[line][spine], "*M%d/%d", &top, &bottom);
+      int flag = sscanf(infile[line][col], "*M%d/%d", &top, &bottom);
       if (flag == 2) {
          checkMeasure();
          lev++;
@@ -649,12 +824,12 @@ void convertAttributeToXML(HumdrumFile& hfile, int line, int spine) {
          pline(lev, "</attributes>\n");  // att
          lev--;                          // att
       }
-   } else if (strncmp(hfile[line][spine], "*k[", 3) == 0 &&
-         hfile[line][spine][length-1] == ']') {
+   } else if (strncmp(infile[line][col], "*k[", 3) == 0 &&
+         infile[line][col][length-1] == ']') {
       // key signature
       int pitch = 0;
       if (length > 4) {
-         pitch = Convert::kernToBase40(&hfile[line][spine][length-3]);
+         pitch = Convert::kernToBase40(&infile[line][col][length-3]);
          pitch = pitch % 40;
       } else {
          pitch = E_muse_c;
@@ -697,7 +872,7 @@ void convertAttributeToXML(HumdrumFile& hfile, int line, int spine) {
       pline(lev, "</attributes>\n"); // att
       lev--;                         // att
 
-   } else if (strcmp(hfile[line][spine], "*clefF4") == 0) {
+   } else if (strcmp(infile[line][col], "*clefF4") == 0) {
       checkMeasure();
       lev++;
 //      if (!attributes) {
@@ -715,7 +890,7 @@ void convertAttributeToXML(HumdrumFile& hfile, int line, int spine) {
       pline(lev, "</attributes>\n");  // att
       lev--;                          // att
 
-   } else if (strcmp(hfile[line][spine], "*clefG2") == 0) {
+   } else if (strcmp(infile[line][col], "*clefG2") == 0) {
       checkMeasure();
       lev++;
 //      if (!attributes) {
@@ -743,11 +918,11 @@ void convertAttributeToXML(HumdrumFile& hfile, int line, int spine) {
 // convertNoteToXML --
 //
 
-void convertNoteToXML(HumdrumFile& hfile, int line, int spine) {
+void convertNoteToXML(HumdrumFile& infile, int line, int col, int voice) {
    static char buffer[128] = {0};
    int i;
 
-   if (strcmp(hfile[line].getExInterp(spine), "**kern") != 0) {
+   if (!infile[line].isExInterp(col, "**kern")) {
       return;
    }
 
@@ -761,32 +936,35 @@ void convertNoteToXML(HumdrumFile& hfile, int line, int spine) {
 
    lev++;
 
-   double cdur = 0;
-   int xdur = 0;
+   // double cdur = 0;
+   // int xdur = 0;
 
-   int tokencount = hfile[line].getTokenCount(spine);
+   int tokencount = infile[line].getTokenCount(col);
    for (i=0; i<tokencount; i++) {
-      hfile[line].getToken(buffer, spine, i);
-      cdur = convertNoteEntryToXML(hfile, line, spine, buffer, i, 0);
+      infile[line].getToken(buffer, col, i);
+      // cdur = convertNoteEntryToXML(infile, line, col, buffer, i, 0);
+      convertNoteEntryToXML(infile, line, col, buffer, i, 0, voice);
    }
 
-   if ((spine+1 < hfile[line].getFieldCount()) && 
-         (hfile[line].getPrimaryTrack(spine) == 
-         hfile[line].getPrimaryTrack(spine+1))) {
+/*
+   if ((col+1 < infile[line].getFieldCount()) && 
+         (infile[line].getPrimaryTrack(col) == 
+         infile[line].getPrimaryTrack(col+1))) {
 
       xdur = (int)(cdur * divisions);
-      direction = xdur;
+      // AbsTick += xdur;
 
-      tokencount = hfile[line].getTokenCount(spine+1);
+      tokencount = infile[line].getTokenCount(col+1);
       for (i=0; i<tokencount; i++) {
-         hfile[line].getToken(buffer, spine+1, i);
-         cdur = convertNoteEntryToXML(hfile, line, spine+1, buffer, i, 1);
+         infile[line].getToken(buffer, col+1, i);
+         cdur = convertNoteEntryToXML(infile, line, col+1, buffer, i, 1);
       }
 
       xdur = (int)(cdur * divisions) - 
-            (int)(divisions * hfile[line].getDuration());
-      direction += xdur;
+            (int)(divisions * infile[line].getDuration());
+      // AbsTick += xdur;
    }
+*/
 
    lev--;
 }
@@ -798,7 +976,9 @@ void convertNoteToXML(HumdrumFile& hfile, int line, int spine) {
 // checkbackup -- 
 //
 
-void checkbackup (void) {
+void checkbackup (int currenttick, int targettick) {
+
+   int direction = currenttick - targettick;
 
    if (direction > 0) {
       // backwards
@@ -818,8 +998,7 @@ void checkbackup (void) {
       pline(lev, "</forward>\n");
    }
 
-   direction = 0;
-
+   AbsTick = targettick;
 }
 
 
@@ -829,17 +1008,35 @@ void checkbackup (void) {
 // convertNoteEntryToXML --
 //
 
-double convertNoteEntryToXML(HumdrumFile& hfile, int line, int spine,
-      const char* buffer, int chord, int vlevel) {
- 
-   double output = 0;
+double convertNoteEntryToXML(HumdrumFile& infile, int line, int col,
+      const char* buffer, int chord, int vlevel, int voice) {
+
+   RationalNumber durationR = Convert::kernToDurationR(buffer);
+
    if (strcmp(buffer, ".") == 0) {
       // nothing to do
       return 0.0;
    }
+
+   if ((strstr(buffer, "yy") != NULL) && (strchr(buffer, 'r') != NULL)) {
+      if (!chord) {
+         checkbackup(AbsTick, LineTick[line]);
+      }
+      // invisible rest: generate a <forward> direction
+      RationalNumber rduration = durationR * divisions;
+      int tickdur = (int)rduration.getFloat();
+      AbsTick += tickdur;
+      pline(lev, "<forward>\n");
+      pline(lev+1, "<duration>");
+      cout << tickdur  << "</duration>\n";
+      pline(lev, "</forward>\n");
+      return durationR.getFloat();
+   }
+ 
+   double output = 0;
+
    int explicitz = 0;
    int altered = 0;
-   double duration = Convert::kernToDuration(buffer);
    int pitch = Convert::kernToBase40(buffer);
    char buff2[64] = {0};
    if (pitch > 0) {
@@ -880,8 +1077,10 @@ double convertNoteEntryToXML(HumdrumFile& hfile, int line, int spine,
 //      lev--;   // att
 //      attributes = 0;
 //   }
-   
-   checkbackup();
+
+   if (!chord) {
+      checkbackup(AbsTick, LineTick[line]);
+   }
 
    pline(lev, "<note>\n");
    lev++;
@@ -915,8 +1114,16 @@ double convertNoteEntryToXML(HumdrumFile& hfile, int line, int spine,
    }
    if (!grace) {
       pline(lev, "<duration>");
-      cout << duration*divisions << "</duration>\n";
-      output = duration;
+      RationalNumber ratnum;
+      ratnum = durationR * divisions;
+      int value = (int)ratnum.getFloat();
+      cout << value << "</duration>\n";
+      if (!chord) {
+         // don't keep track of chord notes, and presume first note of 
+         // chord has correct duration for entire chord.
+         AbsTick += value;
+      }
+      output = durationR.getFloat();
    } else {
       output = 0.0;
    }
@@ -942,16 +1149,21 @@ double convertNoteEntryToXML(HumdrumFile& hfile, int line, int spine,
          break;
    }
 
+   pline(lev, "<voice>");
+   cout << voice << "</voice>\n";
+   int vcase = voice;
+
+/*
    int vcase = 0;
-   if (strchr(hfile[line].getSpineInfo(spine), '(') == NULL) {
+   if (strchr(infile[line].getSpineInfo(col), '(') == NULL) {
       vcase = 0;
       pline(lev, "<voice>1</voice>\n");
       pline(lev, "<type>");
-   } else if (strchr(hfile[line].getSpineInfo(spine), 'a') != NULL) {
+   } else if (strchr(infile[line].getSpineInfo(col), 'a') != NULL) {
       vcase = 1;
       pline(lev, "<voice>1</voice>\n");
       pline(lev, "<type>");
-   } else if (strchr(hfile[line].getSpineInfo(spine), 'b') != NULL) {
+   } else if (strchr(infile[line].getSpineInfo(col), 'b') != NULL) {
       vcase = 2;
       pline(lev, "<voice>2</voice>\n");
       pline(lev, "<type>");
@@ -960,12 +1172,58 @@ double convertNoteEntryToXML(HumdrumFile& hfile, int line, int spine,
       pline(lev, "<voice>1</voice>\n");
       pline(lev, "<type>");
    }
+*/
+
+   pline(lev, "<type>");
 
    char durstring[32] = {0};
-   Convert::durationToKernRhythm(durstring, duration);
-   printDurationType(durstring);
+   PerlRegularExpression pre;
+   Array<char> newbuffer;
+   newbuffer.setSize(strlen(buffer)+1);
+   strcpy(newbuffer.getBase(), buffer);
+
+   Array<char> nodots;
+   nodots.setSize(strlen(newbuffer.getBase()) + 1);
+   strcpy(nodots.getBase(), newbuffer.getBase());
+   PerlRegularExpression removedots;
+   removedots.sar(nodots, "\\.", "", "g");
+
+   pre.sar(newbuffer, "q", "", "i");
+   if (grace) {
+      // if a grace note and no rhythm, set the visual duration to 8th
+      if (!pre.search(newbuffer, "\\d")) {
+         newbuffer.setSize(2);
+         strcpy(newbuffer.getBase(), "8");
+      }
+   }
+
+   // have to ignore augmentation dots on rhythm?
+   RationalNumber rat = Convert::kernToDurationR(nodots.getBase());
+   double newduration = rat.getFloat();
+   RationalNumber ratout = 1;
+
+   if (newduration > 0.0) {
+      double tempval =  log10(newduration)/log10(2);
+      if (tempval > 0.0) {
+         tempval = int(tempval);
+         ratout *= (int)pow(2.0,tempval);
+      } else {
+         tempval = -int(-tempval);
+         ratout /= (int)pow(2.0,-tempval);
+      }
+      newduration = pow(2.0,tempval);
+      Convert::durationToKernRhythm(durstring, newduration);
+      printDurationType(durstring);
+   } else {
+      printDurationType(nodots.getBase());
+   }
+
    cout << "</type>\n";
-   printDots(durstring);
+
+   // print number of augmentation dots in duration ///////////////////
+   // printDots(durstring);
+   printDots(newbuffer.getBase());
+
 
    /// WRITTEN ACCIDENTALS ////////////////////////////////////////////
 
@@ -978,7 +1236,21 @@ double convertNoteEntryToXML(HumdrumFile& hfile, int line, int spine,
          checkAccidentals(toupper(buff2[0]), altered, chord);
       }
    }
- 
+
+   // Time modification (tuplet indications) //////////////////////////
+   if (!grace) {  // don't do <time-modification> if a grace note
+      RationalNumber timemod = rat / ratout;
+      if (timemod.getDenominator() != 1) {
+         pline(lev, "<time-modification>\n");
+         pline(lev+1, "<actual-notes>");
+         cout << timemod.getDenominator() << "</actual-notes>\n";
+         pline(lev+1, "<normal-notes>");
+         cout << timemod.getNumerator() << "</normal-notes>\n";
+         pline(lev, "</time-modification>\n");
+      }
+   }
+    
+   // Stem direction
    if (strchr(buffer, '/') != NULL) {
       pline(lev, "<stem>up</stem>\n");
    } else if (strchr(buffer, '\\') != NULL) {
@@ -991,12 +1263,13 @@ double convertNoteEntryToXML(HumdrumFile& hfile, int line, int spine,
       }
    }
 
-   if (duration >= 1.0) {
+   if (durationR.getFloat() >= 1.0) {
       // kill rogue beam marks.
       beamlevel[vlevel] = 0;
    }
    if (!chord) {
-      processBeams(hfile, line, spine, buffer, vlevel);
+      // processBeams(infile, line, col, buffer, vlevel);
+      processBeams(infile, line, col, infile[line][col], vlevel);
    }
 
    /// WRITTEN TIES ///////////////////////////////////////////////////
@@ -1073,7 +1346,7 @@ double convertNoteEntryToXML(HumdrumFile& hfile, int line, int spine,
    /// LYRICS /////////////////////////////////////////////////////////
 
    if (!chord) {
-      processTextUnderlay(hfile, line, spine);
+      processTextUnderlay(infile, line, col);
    }
 
    lev--;
@@ -1088,7 +1361,7 @@ double convertNoteEntryToXML(HumdrumFile& hfile, int line, int spine,
 // processBeams --
 //
 
-void processBeams(HumdrumFile& hfile, int line, int spine, const char* buffer,
+void processBeams(HumdrumFile& infile, int line, int col, const char* buffer,
       int vlevel) {
 
    int backhook = 0;
@@ -1171,9 +1444,12 @@ void processBeams(HumdrumFile& hfile, int line, int spine, const char* buffer,
    
       // close old beams
       for (i=0; i<closebeam; i++) {
-         pline(lev, "<beam number=\"");
-         cout << beamlevel[vlevel] - closebeam + i + 1 << "\">end</beam>\n";
-         rcount++;
+         // some strange problem required this following if statement to preven end=0
+         if ((beamlevel[vlevel] - closebeam + i + 1) > 0) {
+            pline(lev, "<beam number=\"");
+            cout << beamlevel[vlevel] - closebeam + i + 1 << "\">end</beam>\n";
+            rcount++;
+         }
       }
       beamlevel[vlevel] -= closebeam;
 
@@ -1201,25 +1477,25 @@ void processBeams(HumdrumFile& hfile, int line, int spine, const char* buffer,
 // processTextUnderlay --
 //
 
-void processTextUnderlay(HumdrumFile& hfile, int line, int spine) {
-   int fields = hfile[line].getFieldCount();
-   if (spine >= fields-1) {
+void processTextUnderlay(HumdrumFile& infile, int line, int col) {
+   int fields = infile[line].getFieldCount();
+   if (col >= fields-1) {
       return;
    }
 
-   int tspine = spine+1;
+   int tcol = col+1;
    int verse = 1;
-   while (tspine < fields && 
-         strcmp(hfile[line].getExInterp(tspine), "**kern") != 0) {
-      if (strcmp(hfile[line][tspine], ".") == 0) {
+   while (tcol < fields && 
+         strcmp(infile[line].getExInterp(tcol), "**kern") != 0) {
+      if (strcmp(infile[line][tcol], ".") == 0) {
          // ignore null tokens
-      } else if (strcmp(hfile[line].getExInterp(tspine), "**text") == 0) {
-         displayLyrics(hfile, line, tspine, verse);
+      } else if (strcmp(infile[line].getExInterp(tcol), "**text") == 0) {
+         displayLyrics(infile, line, tcol, verse);
       } else {
-         displayUnknownTextType(hfile, line, tspine, verse);
+         displayUnknownTextType(infile, line, tcol, verse);
       }
 
-      tspine++;
+      tcol++;
       verse++;
    }
 
@@ -1232,8 +1508,8 @@ void processTextUnderlay(HumdrumFile& hfile, int line, int spine) {
 // displayLyrics --
 //
 
-void displayLyrics(HumdrumFile& hfile, int line, int spine, int verse) {
-   displayUnknownTextType(hfile, line, spine, verse);
+void displayLyrics(HumdrumFile& infile, int line, int col, int verse) {
+   displayUnknownTextType(infile, line, col, verse);
 }
 
 
@@ -1243,7 +1519,7 @@ void displayLyrics(HumdrumFile& hfile, int line, int spine, int verse) {
 // displayUnknownTextType --
 //
 
-void displayUnknownTextType(HumdrumFile& hfile, int line, int spine, 
+void displayUnknownTextType(HumdrumFile& infile, int line, int col, 
       int verse) {
 
    pline(lev, "<lyric number=\"");
@@ -1252,7 +1528,7 @@ void displayUnknownTextType(HumdrumFile& hfile, int line, int spine,
    pline(lev, "<syllabic>single</syllabic>\n");
    pline(lev, "<text>");
 
-   displayHTMLText(hfile[line][spine]);
+   displayHTMLText(infile[line][col]);
 
    cout << "</text>\n";
    lev--;
@@ -1455,7 +1731,7 @@ void printDurationType(const char* durstring) {
 // makePartList -- generate a list of the parts in the score
 //
 
-int makePartList(HumdrumFile& hfile) {
+int makePartList(HumdrumFile& infile) {
    lev++;
    pline(lev, "<part-list>\n");
    lev++;
@@ -1465,12 +1741,12 @@ int makePartList(HumdrumFile& hfile) {
    int i = 0;
    int count = 0;   // the number of **kern spines
    int j = 0;
-   while (i<hfile.getNumLines() && hfile[i].getType() != 
+   while (i<infile.getNumLines() && infile[i].getType() != 
          E_humrec_interpretation) {
       i++;
    }
-   if (hfile[i].getType() == E_humrec_interpretation) {
-      if (strncmp("**", hfile[i][0], 2) != 0) {
+   if (infile[i].getType() == E_humrec_interpretation) {
+      if (strncmp("**", infile[i][0], 2) != 0) {
          cout << "Error on line " << i + 1 << " of file: No start of data" 
               << endl;
       }
@@ -1480,21 +1756,21 @@ int makePartList(HumdrumFile& hfile) {
    }
 
    if (reverseQ) {
-      for (j=0; j<hfile[i].getFieldCount(); j++) {
-         if (strcmp(hfile[i].getExInterp(j), "**kern") != 0) {
+      for (j=0; j<infile[i].getFieldCount(); j++) {
+         if (strcmp(infile[i].getExInterp(j), "**kern") != 0) {
             continue;
          }
          count++;
-         generatePartInfo(hfile, i, j, count);
+         generatePartInfo(infile, i, j, count);
       }
    } else {
       // doing parts in reverse order
-      for (j=hfile[i].getFieldCount()-1; j>=0; j--) {
-         if (strcmp(hfile[i].getExInterp(j), "**kern") != 0) {
+      for (j=infile[i].getFieldCount()-1; j>=0; j--) {
+         if (strcmp(infile[i].getExInterp(j), "**kern") != 0) {
             continue;
          }
          count++;
-         generatePartInfo(hfile, i, j, count);
+         generatePartInfo(infile, i, j, count);
       }
    }
 
@@ -1511,7 +1787,7 @@ int makePartList(HumdrumFile& hfile) {
 // generatePart --
 //
 
-void generatePartInfo(HumdrumFile& hfile, int start, int spine, int count) {
+void generatePartInfo(HumdrumFile& infile, int start, int col, int count) {
    int i = start + 1;
    int j = 0;
    pline(lev, "<score-part id=\"P");
@@ -1519,12 +1795,12 @@ void generatePartInfo(HumdrumFile& hfile, int start, int spine, int count) {
    lev++;
 
    int done = 0;
-   while (!done && i < hfile.getNumLines()) {
-      if (hfile[i].getType() == E_humrec_interpretation) {
-         for (j=0; j<hfile[i].getFieldCount(); j++) {
-            if (hfile[i].getPrimaryTrack(j) == spine + 1) {
-               if (strncmp(hfile[i][j], "*I", 2) == 0 &&
-                   strncmp(hfile[i][j], "*IC", 3) != 0) {
+   while (!done && i < infile.getNumLines()) {
+      if (infile[i].getType() == E_humrec_interpretation) {
+         for (j=0; j<infile[i].getFieldCount(); j++) {
+            if (infile[i].getPrimaryTrack(j) == col + 1) {
+               if (strncmp(infile[i][j], "*I", 2) == 0 &&
+                   strncmp(infile[i][j], "*IC", 3) != 0) {
                   done = 1;
                   break;
                }
@@ -1538,10 +1814,10 @@ void generatePartInfo(HumdrumFile& hfile, int start, int spine, int count) {
 
    if (done == 1) {
       pline(lev, "<part-name>");
-      cout << &(hfile[i][j][2]) << "</part-name>\n";
+      cout << &(infile[i][j][2]) << "</part-name>\n";
    } else {
       pline(lev, "<part-name>XPart ");
-      cout << spine << "</part-name>\n";
+      cout << col << "</part-name>\n";
    }
  
    lev--;
@@ -1576,4 +1852,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 3a9e006239c1dcc076eb860c0df45210 hum2xml.cpp [20090501]
+// md5sum: 8e93554da88296920e7179282a173cfb hum2xml.cpp [20120727]

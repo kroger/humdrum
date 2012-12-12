@@ -2,7 +2,8 @@
 // Copyright 1998,2010 by Craig Stuart Sapp, All Rights Reserved.
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue Jun 30 22:41:24 PDT 1998
-// Last Modified: Sat Dec 25 11:50:24 PST 2010 (added more functions)
+// Last Modified: Sat Dec 25 11:50:24 PST 2010 added more functions
+// Last Modified: Wed Oct 12 23:06:08 PDT 2011 fixed prob in setNoteheadShape
 // Filename:      ...sig/src/sigInfo/MuseRecord.cpp
 // Web Address:   http://sig.sapp.org/src/sigInfo/MuseRecord.cpp
 // Syntax:        C++ 
@@ -285,9 +286,11 @@ void MuseRecord::setStemUp(void) {
 //
 // MuseRecord::setPitch -- input is a base40 value which gets converted
 // to a diatonic pitch name.
+//    Default value: chordnote = 0
+//    Default value: gracenote = 0
 //
 
-void MuseRecord::setPitch(int base40, int chordnote) {
+void MuseRecord::setPitch(int base40, int chordnote, int gracenote) {
    char diatonic[2] = {0};
    switch (Convert::base40ToDiatonic(base40) % 7) {
       case 0:  diatonic[0] = 'C'; break;
@@ -317,7 +320,11 @@ void MuseRecord::setPitch(int base40, int chordnote) {
    strcat(pitchname, octave);
 
    if (chordnote) {
-      setChordPitch(pitchname);
+      if (gracenote) {
+         setGraceChordPitch(pitchname);
+      } else {
+         setChordPitch(pitchname);
+      }
    } else {
       setPitch(pitchname);
    }
@@ -332,6 +339,12 @@ void MuseRecord::setChordPitch(const char* pitchname) {
 void MuseRecord::setGracePitch(const char* pitchname) {
    getColumn(1) = 'g';
    setPitchAtIndex(1, pitchname);
+}
+
+void MuseRecord::setGraceChordPitch(const char* pitchname) {
+   getColumn(1) = 'g';
+   getColumn(2) = ' ';
+   setPitchAtIndex(2, pitchname);
 }
 
 void MuseRecord::setCuePitch(const char* pitchname) {
@@ -538,17 +551,17 @@ void MuseRecord::setNoteheadShape(RationalNumber& duration) {
       setNoteheadHalf();
    } else if (duration > note8th) {     // quarter note
       setNoteheadQuarter();
-   } else if (duration >= note16th) {   // eighth note
+   } else if (duration > note16th) {   // eighth note
       setNotehead8th();
-   } else if (duration >= note32th) {   // 16th note
+   } else if (duration > note32th) {   // 16th note
       setNotehead16th();
-   } else if (duration >= note64th) {   // 32nd note
+   } else if (duration > note64th) {   // 32nd note
       setNotehead32nd();
-   } else if (duration >= note128th) {  // 64th note
+   } else if (duration > note128th) {  // 64th note
       setNotehead64th();
-   } else if (duration >= note256th) {  // 128th note
+   } else if (duration > note256th) {  // 128th note
       setNotehead128th();
-   } else if (duration >= note256th) {  // 256th note
+   } else if (duration == note256th) {  // 256th note
       // not allowing tuplets on the 256th note level.
       setNotehead256th();
    } else {
@@ -917,18 +930,38 @@ int MuseRecord::addAdditionalNotation(char symbol) {
    // then do add.
    int i;
    int blank = -1;
+   int nonempty = 0;  // true if a non-space character was found.
+
    for (i=43; i>=32; i--) {
       if (getColumn(i) == symbol) {
          return i;
-      } else if (getColumn(i) == ' ') {
+      } else if (!nonempty && (getColumn(i) == ' ')) {
          blank = i;
+      } else {
+         nonempty = i;
       }
    }
+
+   if (symbol == '-') {
+     // give preferential treatment to placing only ties in
+     // column 32
+     if (getColumn(32) == ' ') {
+        getColumn(32) = '-';
+        return 32;
+     }
+   }
+
    if (blank < 0) {
       cerr << "Error in MuseRecord::addAdditionalNotation: "
            << "no empty space for notation" << endl;
       exit(1);
    }
+
+   if ((blank <= 32) && (getColumn(33) == ' ')) {
+      // avoid putting non-tie items in column 32.
+      blank = 33;
+   }
+
    getColumn(blank) = symbol;
    return blank;
 }
@@ -944,6 +977,8 @@ int MuseRecord::addAdditionalNotation(const char* symbol) {
    int i, j;
    int blank = -1;
    int found = 0;
+   int nonempty = 0;  // true if a non-space character was found.
+
    for (i=43-len; i>=32; i--) {
       found = 1;
       for (j=0; j<len; j++) {
@@ -954,15 +989,33 @@ int MuseRecord::addAdditionalNotation(const char* symbol) {
       }
       if (found) {
          return i;
-      } else if (getColumn(i) == ' ') {
+      } else if (!nonempty && (getColumn(i) == ' ')) {
+// cout << "@COLUMN " << i << " is blank: " << getColumn(i) << endl;
          blank = i;
+         // should check that there are enough blank lines to the right
+         // as well...
+      } else if (getColumn(i) != ' ') {
+         nonempty = i;
       }
    }
+
    if (blank < 0) {
       cerr << "Error in MuseRecord::addAdditionalNotation2: "
            << "no empty space for notation" << endl;
       exit(1);
    }
+
+// cout << "@ GOT HERE symbol = " << symbol << " and blank = " << blank << endl;
+   if ((blank <= 32) && (getColumn(33) == ' ')) {
+      // avoid putting non-tie items in column 32.
+      blank = 33;
+      // not worrying about overwriting something to the right
+      // of column 33 since the empty spot was checked starting
+      // on the right and moving towards the left.
+   }
+// cout << "@COLUMN 33 = " << getColumn(33) << endl;
+// cout << "@ GOT HERE symbol = " << symbol << " and blank = " << blank << endl;
+
    for (j=0; j<len; j++) {
       getColumn(blank+j) = symbol[j];
    }
@@ -1233,6 +1286,8 @@ int MuseRecord::getGraphicNoteType(void) {
    }
 
    switch (recordInfo[0]) {
+      case 'M':                            // Maxima
+         output = -2;           break;
       case 'L':   case 'B':                // Longa
          output = -1;           break;
       case 'b':   case 'A':                // Breve
@@ -2723,7 +2778,8 @@ int MuseRecord::measureFlagQ(const char* key) {
 //    Flag region of the measure flag area (columns 17-80).  But only
 //    add the flag if it is not already present in the region.  If it is
 //    not present, then append it after the last non-space character
-//    in that region.
+//    in that region.  A space will be added between the last item
+//    and the newly added parameter.
 //
 
 void MuseRecord::addMeasureFlag(const char* strang) {
@@ -2742,7 +2798,8 @@ void MuseRecord::addMeasureFlag(const char* strang) {
    }
 
    pre.sar(flags, "\\s+$", "", "");
-   flags.setSize(flags.getSize() + strlen(strang));
+   flags.setSize(flags.getSize() + strlen(strang) + 1);
+   strcat(flags.getBase(), " ");
    strcat(flags.getBase(), strang);
    setColumns(flags, 17, 80);
 }

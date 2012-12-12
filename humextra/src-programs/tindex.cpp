@@ -17,6 +17,9 @@
 // Last Modified: Tue Jan 18 08:36:29 PST 2011 added --verbose option
 // Last Modified: Thu Feb 24 17:35:31 PST 2011 added --file option
 // Last Modified: Sat Apr  2 18:04:05 PDT 2011 added L=Long & B=Breve for durs.
+// Last Modified: Mon Apr  9 17:27:58 PDT 2012 NBC changes to features
+// Last Modified: Thu May 24 12:28:08 PDT 2012 added -u and -I options
+// Last Modified: Mon Nov 12 13:56:29 PST 2012 added !noff: processing
 // Filename:      ...museinfo/examples/all/tindex.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/tindex.cpp
 // Syntax:        C++; museinfo
@@ -237,6 +240,9 @@ void      processBibRecords      (ostream& out, HumdrumFile &infile,
                                   const char* bibfilter);
 void      printInstrument        (HumdrumFile& infile, int track);
 char      identifyLongMarker     (HumdrumFile& infile);
+void      printSpineNoteInfo(HumdrumFile& infile, int track, int subtrack);
+char*     getOriginalFileName    (char* buffer, HumdrumFile& infile, 
+                                  const char* filename);
 
 
 // User interface variables:
@@ -262,6 +268,7 @@ int         istnQ    = 0;      // used with --istn option
 int         bibQ     = 0;      // used with -b option
 int         fileQ    = 0;      // used with --file option
 const char* Filename = "";     // used with --file option
+char        FileBuffer[1024] = {0}; // used with !!original-filename:
 int         instrumentQ = 0;   // used with -i option
 int         dirprefixQ = 0;    // used with -d option
 Array<char> dirprefix;         // used with -d option
@@ -475,6 +482,8 @@ void createIndex(HumdrumFile& infile, const char* filename) {
    if (fileQ) {
       // used to spoof filename for standard input
       filename = Filename;
+   } else {
+      filename = getOriginalFileName(FileBuffer, infile, filename);
    }
 
    PerlRegularExpression pre;
@@ -509,7 +518,9 @@ void createIndex(HumdrumFile& infile, const char* filename) {
          if (instrumentQ) {
             printInstrument(infile, i);
          }
-         cout << ":" << i;
+         // cout << ":" << i;
+         cout << ":";
+         printSpineNoteInfo(infile, i, 1);
          if (strcmp("**kern", infile.getTrackExInterp(i)) == 0) {
             createIndexEnding(infile, i, 1);
             cout << "\n";
@@ -525,11 +536,18 @@ void createIndex(HumdrumFile& infile, const char* filename) {
          } else {
             cout << printname;
          }
+
+         // print voice label
          cout << ":";
          if (instrumentQ) {
             printInstrument(infile, i);
          }
-         cout << ":" << i;
+
+         // print spine, subspine and note offset values
+         // cout << ":" << i;
+         cout << ":";
+         printSpineNoteInfo(infile, i, 1);
+
          createIndexEnding(infile, i, 1);
          cout << "\n";
          int maxlayer = getMaxLayer(infile, i);
@@ -544,7 +562,10 @@ void createIndex(HumdrumFile& infile, const char* filename) {
             if (instrumentQ) {
                printInstrument(infile, i);
             }
-            cout << ":" << i << "." << j;
+            //cout << ":" << i << "." << j;
+            cout << ":";
+            printSpineNoteInfo(infile, i, j);
+
             createIndexEnding(infile, i, j);
             cout << "\n";
          }
@@ -565,6 +586,100 @@ void createIndex(HumdrumFile& infile, const char* filename) {
    } else {
       cerr << "Strange error: no extraction model" << endl;
       exit(1);
+   }
+}
+
+
+
+//////////////////////////////
+//
+// getOriginalFileName --
+//
+
+char* getOriginalFileName(char* buffer, HumdrumFile& infile, 
+      const char* filename) {
+   int i;
+   for (i=0; i<infile.getNumLines(); i++) {
+      if (!infile[i].isGlobalComment()) {
+         continue;
+      }
+      if (strncmp(infile[i][0], "!!original-filename:", 20) == 0) {
+         PerlRegularExpression pre;
+         pre.search(infile[i][0], "!!original-filename:\\s*(.*?)\\s*$");
+         strcpy(buffer, pre.getSubmatch(1));
+         return buffer;
+      }
+   }
+   strcpy(buffer, filename);
+   return buffer;
+}
+
+
+
+//////////////////////////////
+//
+// printSpineNoteInfo -- print the track, subtrack and note offset.
+//    Note offsets are for indexes of extractions of pieces which
+//    will need to be aligned to the original data later on.
+//       !noff:1.2;23
+//    before any data in a (sub)spine would indicate the revised data.
+//    In this case, track = 1, subtrack = 2, note offset = 23
+//    Or using default track/subtrack found in data:
+//       !noff:23
+//    Would mean for that track/subtrack, the note offset value is 23.
+//
+
+void printSpineNoteInfo(HumdrumFile& infile, int track, int subtrack) {
+   int i, j;
+   int t, st;
+
+   int newt = -1;
+   int newst = -1;
+   int newoffset = -1;
+   
+   PerlRegularExpression pre;
+   for (i=0; i<infile.getNumLines(); i++) {
+      if (infile[i].isData()) {
+         break;
+      }
+      if (!infile[i].isLocalComment()) {
+         continue;
+      }
+      st = 0;
+      for (j=0; j<infile[i].getFieldCount(); j++) {
+         t = infile[i].getPrimaryTrack(j);
+         if (t != track) {
+            continue;
+         }
+         st++;
+         if (st != subtrack) {
+            continue;
+         }
+         if (pre.search(infile[i][j], "^\\!noff:(\\d+)\\.?(\\d+)?;(\\d+)")) {
+            newt      = atoi(pre.getSubmatch(1));
+            newst     = atoi(pre.getSubmatch(2));
+            newoffset = atoi(pre.getSubmatch(3));
+         } else if (pre.search(infile[i][j], "^\\!noff:(\\d+)")) {
+            newoffset = atoi(pre.getSubmatch(1));
+         }
+      }
+   }
+
+   // print the track number
+   if (newt >= 0) {
+      cout << newt;
+   } else {
+      cout << track;
+   }
+
+   if (newst > 1) {
+      cout << newt;
+   } else if (subtrack > 1) {
+      cout << "." << subtrack;
+   }
+
+   if (newoffset > 0) {
+      cout << ';' << newoffset;
    }
 }
 
@@ -1055,15 +1170,15 @@ void printMetricRefinedContour(Array<double>& levels) {
       bivalue = (int)bvalue;
       zvalue = ivalue - bivalue;
       if (zvalue > 1) {
-         cout << "H";
+         cout << "U";
       } else if (zvalue == 1) {
-         cout << "h";
+         cout << "u";
       } else if (zvalue == 0) {
          cout << "S";
       } else if (zvalue == -1) {
-         cout << "w";
+         cout << "d";
       } else if (zvalue < -1) {
-         cout << "W";
+         cout << "D";
       } else {
          cout << "x";
       }
@@ -1101,9 +1216,9 @@ void printMetricGrossContour(Array<double>& levels) {
       bivalue = (int)bvalue;
       zvalue = ivalue - bivalue;
       if (zvalue > 0) {
-         cout << "H";
+         cout << "U";
       } else if (zvalue < 0) {
-         cout << "W";
+         cout << "D";
       } else {
          cout << "S";
       }
@@ -1974,7 +2089,8 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("E|no-extra=b",   "do not print extra information");
    opts.define("G|no-grace=b",   "do not print extra information");
    opts.define("r|rhythm=b",     "extract rhythm information"); 
-   opts.define("p|pitch=b",      "extract pitch information"); 
+   //opts.define("p|pitch=b",      "extract pitch information"); 
+   opts.define("pitch-only=b",    "extract pitch information"); 
    opts.define("P|not-pitch=b",  "do not extract pitch information"); 
    opts.define("a|all=b",        "extract all possible musical features");
    opts.define("H|humdrum=b",    "format output as a humdrum file");
@@ -1983,6 +2099,13 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("phrase=b",       "add R markers for phrase endings in input");
    opts.define("verbose=b",      "Display all control settings");
    opts.define("f|features=s",   "extract the list of features");
+
+   // parameter matching to themax:
+   opts.define("u|duration=b",  "duration (IOI)");
+   opts.define("I|MI|mi|DI|di|INT|int|pitch-musical-interval|interval=b",  
+                                     "musical interval");
+   opts.define("p|PCH|pch|PC|pc|pitch-class|pitch=b", "pitch class");
+
    opts.define("file=s",         "filename to use for standard input data");
    opts.define("t|istn|translate=s", "translation file which contains istn values");
    opts.define("l|limit=i:20",   "limit the number of extracted features");
@@ -2089,6 +2212,18 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       pitchQ = 0;    // no need to turn off, but just in case
       rhythmQ = 0;   // no need to turn off, but just in case
       extractFeatureSet(opts.getString("features"));
+   } else if (opts.getBoolean("duration")) {
+      pitchQ = 0;    // no need to turn off, but just in case
+      rhythmQ = 0;   // no need to turn off, but just in case
+      // do stuff later
+   } else if (opts.getBoolean("interval")) {
+      pitchQ = 0;    // no need to turn off, but just in case
+      rhythmQ = 0;   // no need to turn off, but just in case
+      // do stuff later
+   } else if (opts.getBoolean("pitch-class")) {
+      pitchQ = 0;    // no need to turn off, but just in case
+      rhythmQ = 0;   // no need to turn off, but just in case
+      // do stuff later
    } else {
       // set up the printing options.
       pstate[pGrossContour]           = pitchQ;
@@ -2107,8 +2242,23 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       pstate[pMetricGrossContour]     = rhythmQ;
       pstate[pMetricPosition]         = rhythmQ;
    }
-}
 
+   if (opts.getBoolean("duration")) {
+      pstate[pDuration] = 1;
+      rhythmQ = 1;
+   }
+
+   if (opts.getBoolean("interval")) {
+      pstate[pMusicalInterval] = 1;
+      pitchQ = 1;
+   }
+
+   if (opts.getBoolean("pitch-class")) {
+      pstate[pPitch] = 1;
+      pitchQ = 1;
+   }
+
+}
 
 
 //////////////////////////////
@@ -2167,7 +2317,7 @@ void extractFeatureSet(const char* features) {
       else if (strcmp(ptr, "MLV") == 0) { rhythmQ = 1; pstate[pMetricLevel]            = 1; }
       else if (strcmp(ptr, "MRC") == 0) { rhythmQ = 1; pstate[pMetricRefinedContour]   = 1; }
       else if (strcmp(ptr, "MGC") == 0) { rhythmQ = 1; pstate[pMetricGrossContour]     = 1; }
-      else if (strcmp(ptr, "MPS") == 0) { rhythmQ = 1; pstate[pMetricGrossContour]     = 1; }
+      else if (strcmp(ptr, "MPS") == 0) { rhythmQ = 1; pstate[pMetricPosition]         = 1; }
       else if (strcmp(ptr, "PCH") == 0) { pstate[pPitch]                  = 1; }
       else if (strcmp(ptr, "PC" ) == 0) { pstate[pPitch]                  = 1; }
       else if (strcmp(ptr, "DPC") == 0) { pstate[pPitch]                  = 1; }
@@ -2264,4 +2414,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: 3c81794d5f4c1cfdb04fd0840ba5c659 tindex.cpp [20110830]
+// md5sum: ce8d0989f31b866712089d9ed7bfd11f tindex.cpp [20120614]

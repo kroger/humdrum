@@ -5,6 +5,7 @@
 // Last Modified: Sun Apr 24 12:48:19 PDT 2005
 // Last Modified: Thu May 28 22:30:54 PDT 2009 added continuous analysis
 // Last Modified: Mon Mar  7 14:58:02 PST 2011 added --name option
+// Last Modified: Mon Sep 10 15:43:07 PDT 2012 added enharmonic key labeling
 // Filename:      ...sig/examples/all/keycordl.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/keycor.cpp
 // Syntax:        C++; museinfo
@@ -22,7 +23,8 @@
 void   checkOptions             (Options& opts, int argc, char* argv[]);
 void   example                  (void);
 void   printAnalysis            (int bestkey, Array<double>& scores,
-                                 Array<double>& durhist, const char* filename);
+                                 Array<double>& durhist, const char* filename,
+                                 Array<int>& b40hist);
 void   usage                    (const char* command);
 void   readWeights              (const char* filename);
 int    analyzeKeyRawCorrelation (double* scores, double* distribution, 
@@ -59,6 +61,8 @@ void   printHistogramTotals     (Array<Array<double> >& segments);
 double getConfidence            (Array<double>& cors, int best);
 void   getLocations             (Array<double>& measures, HumdrumFile& infile, 
                                  int segments);
+void   getBase40Histogram       (Array<int>& base40, HumdrumFile& infile);
+int    identifyBranchCut        (int base12, Array<int>& base40);
 
 // user interface variables
 Options      options;           // database for command-line arguments
@@ -252,6 +256,8 @@ int main(int argc, char* argv[]) {
    Array<double> distribution(12);
    Array<double> scores(24);
    const char* filename = "";
+
+   Array<int> b40hist;
   
    int bestkey = 0;
    int i, j;
@@ -296,7 +302,8 @@ int main(int argc, char* argv[]) {
                pitch.getBase(), duration.getBase(), pitch.getSize(), rhythmQ,
                      majorKey, minorKey);
       }
-      printAnalysis(bestkey, scores, distribution, filename);
+      getBase40Histogram(b40hist, infile);
+      printAnalysis(bestkey, scores, distribution, filename, b40hist);
    }
 
    return 0;
@@ -773,7 +780,7 @@ void addToHistogramDouble(Array<Array<double> >& histogram, int pc,
 //
 
 void printAnalysis(int bestkey, Array<double>& scores, Array<double>& durhist,
-      const char* filename) {
+      const char* filename, Array<int>& b40hist) {
    char buffer[64] = {0};
 
    if (mmaQ) {
@@ -794,13 +801,17 @@ void printAnalysis(int bestkey, Array<double>& scores, Array<double>& durhist,
       return;
    } 
 
+   int best40;
+
    if (bestkey < 12) {
       if (nameQ) {
          cout << filename << ":\t";
       } else {
          cout << "The best key is: ";
       }
-      cout << Convert::base12ToKern(buffer, bestkey+12*4)
+      best40 = identifyBranchCut(bestkey, b40hist);
+      // cout << Convert::base12ToKern(buffer, bestkey+12*4)
+      cout << Convert::base40ToKern(buffer, best40+40*3)
            << " Major" << "\n";
    } else {
       if (nameQ) {
@@ -808,7 +819,9 @@ void printAnalysis(int bestkey, Array<double>& scores, Array<double>& durhist,
       } else {
          cout << "The best key is: ";
       }
-      cout << Convert::base12ToKern(buffer, bestkey+12*3)
+      best40 = identifyBranchCut(bestkey, b40hist);
+      // cout << Convert::base12ToKern(buffer, bestkey+12*3)
+      cout << Convert::base40ToKern(buffer, best40+40*3)
            << " Minor" << "\n";
    }
    int i;
@@ -1260,4 +1273,111 @@ void equalizeData2(double* data, int asize, double summation) {
 }
 
 
-// md5sum: 966c1172cec53998a7a80d06cddfb642 keycor.cpp [20110308]
+
+//////////////////////////////
+//
+// getBase40Histogram -- Get the enharmonic pitch-class histogram for the
+//    music.  Counts note attacks only not weighted by durations, but 
+//    difference between duration weighting and not duration weighting 
+//    should be negligible.
+//
+
+void getBase40Histogram(Array<int>& base40, HumdrumFile& infile) {
+   base40.setSize(40);
+   base40.allowGrowth(0);
+   base40.setAll(0);
+   int tcount;
+   int i, j, k;
+   int b40;
+   char buffer[1024] = {0};
+   for (i=0; i<infile.getNumLines(); i++) {
+      if (!infile[i].isData()) {
+         continue;
+      }
+      for (j=0; j<infile[i].getFieldCount(); j++) {
+         if (!infile[i].isExInterp(j, "**kern")) {
+            continue;
+         }
+         if (strcmp(infile[i][j], ".") == 0) {
+            // ignore null records.
+            continue;
+         }
+         if (strchr(infile[i][j], 'r') != NULL) {
+            // ignore rests
+            continue;
+         }
+         tcount = infile[i].getTokenCount(j);
+         for (k=0; k<tcount; k++) {
+            infile[i].getToken(buffer, j, k);
+            if (strchr(buffer, ']') != NULL) {
+               continue;
+            }
+            if (strchr(buffer, '_') != NULL) {
+               continue;
+            }
+            b40 = Convert::kernToBase40(buffer);
+            if (b40 <0) {
+               continue;
+            }
+            base40[b40%40]++;
+         }
+      }
+   }
+}
+
+
+
+//////////////////////////////
+//
+// identifyBranchCut -- distinguish between G# major and A-flat minor 
+//     for example.  Currently only checking for enharmonic differences
+//     between black-key notes (i.e., cannot distinguish between 
+//     C major and B-sharp major, although the function could be
+//     generalized to do so).  Returns a base-40 pitch class which
+//     can represent diatonic pitches with up to 2 chromatic step 
+//     alterations.
+//
+
+int identifyBranchCut(int base12, Array<int>& base40) {
+   int tval       = Convert::base12ToBase40(base12+5*12);
+   int accidental = Convert::base40ToAccidental(tval);
+   int diatonic   = Convert::base40ToDiatonic(tval) % 7;
+
+   if (accidental == 0) {
+      return tval % 40;
+   }
+
+   int sdia, fdia;
+   
+   if (accidental == -1) {
+      sdia = (diatonic+6)%7;
+      fdia = diatonic;
+   } else if (accidental == +1) {
+      sdia = diatonic;
+      fdia = (diatonic+1)%7;
+   } else {
+      // something strange happened
+      return tval % 40;
+   }
+  
+   int sb40, fb40;
+   sb40 = (Convert::base7ToBase40(sdia+4*7) + 1)%40;
+   fb40 = (Convert::base7ToBase40(fdia+4*7) - 1)%40;
+
+   int sscore, fscore;
+   sscore = base40[sb40] + base40[(sb40+23)%40];
+   fscore = base40[fb40] + base40[(fb40+23)%40];
+
+   if (sscore > fscore) {
+      return sb40;
+   } else if (fscore > sscore) {
+      return fb40;
+   }
+
+   // some strange condition where scores are equivalent.
+   return tval%40;
+}
+
+
+
+// md5sum: 5c1f12dfa25f697ca76f2908c8e2942d keycor.cpp [20121016]

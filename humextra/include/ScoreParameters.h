@@ -15,30 +15,85 @@
 
 #include "Array.h"
 
-class ScoreParameters {
+#include <iostream>
+
+class ScoreNamedParameter {
    public:
-                          ScoreParameters    (void);
-                          ScoreParameters    (ScoreParameters& item);
-
-      void                clear            (void);
-      float               getValue         (int index);
-      float               getPValue        (int index);
-      void                setValue         (int index, float value);
-      void                setPValue        (int index, float value);
-      void                setAllocSize     (int aSize);
-      int                 getFixedSize     (void);
-      void                setFixedSize     (int value);
-      int                 getKeySize       (void);
-      ScoreParameters&    operator=        (ScoreParameters& anItem);
-      void                print            (void);
-      void                clearKeyParams     (void);
-
-   protected:
-      void                appendKeyParameter (const char* string);
+                    ScoreNamedParameter   (void);
+                    ScoreNamedParameter   (ScoreNamedParameter& aKeyParam);
+                   ~ScoreNamedParameter   ();
+      void         clear                  (void);
+      const char*  getName                (void);
+      double       getValue               (void);
+      void         setNameAndValue        (const char* aName, double aValue);
+      void         setName                (const char* aName);
+      void         setValue               (double aValue);
+      int          isValid                (void);
+      int          isInvalid              (void);
+      int          isNamed                (const char* aName);
+      ScoreNamedParameter& operator=      (ScoreNamedParameter& aKeyParam);
 
    private:
-      Array<float>        fixedParameters;
-      Array<Array<char> > keyParameters;
+      Array<char> name;    // name of the key parameter
+      double      value;   // value of the key parameter
+};
+
+
+
+class ScoreParameters {
+   public:
+                          ScoreParameters     (void);
+                          ScoreParameters     (ScoreParameters& item);
+                         ~ScoreParameters     ();
+
+      void                clear               (void);
+
+      const char*         getText             (void);
+      const char*         getTextData         (void);
+      void                setText             (const char* aString);
+      void                setTextData         (const char* aString);
+
+      double              getValue            (int index);
+      double              getValue            (const char* keyName);
+      int                 getValue            (int index, int digit);
+      double              getPValue           (int number);
+      double              getPValue           (const char* keyName);
+      int                 getPValue           (int number, int digit);
+
+      const char*         getKeyName          (int index);
+      double              getKeyValue         (int index);
+
+      void                setValue            (int index, double value);
+      void                setValue            (const char* keyName, 
+                                                 double keyValue);
+      void                setPValue           (int number, double value);
+      void                setPValue           (const char* keyName, 
+                                                 double keyValue);
+     
+      ScoreParameters&    operator=           (ScoreParameters& anItem);
+      void                setAllocSize        (int aSize);
+      int                 getFixedSize        (void);
+      void                setFixedSize        (int aSize);
+      int                 getKeySize          (void);
+      void                clearKeyParameters  (void);
+      int                 hasExtraParameters  (void);
+      int                 hasKeyParameters    (void);
+      int                 hasKey              (const char* aName);
+      int                 hasValue            (const char* aName);
+      void                shrink              (void);
+
+      ostream&            print               (ostream& out);
+      ostream&            printFixedParameters(ostream& out);
+      ostream&            printKeyParameters  (ostream& out);
+
+      static double       roundFractionDigits(double number, int digits);
+
+   protected:
+      Array<double>        fixedParameters;     // SCORE fixed parameter list
+      Array<char>          text;                // Used for text when P1=16
+      int                  textFont;            // for default font of text
+
+      Array<ScoreNamedParameter> keyParameters; // Extended SCORE key parameters
 
 };
 

@@ -513,6 +513,7 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
          b++; 
          continue;
       }
+
       if (A[a].getType() == E_humrec_bibliography) {
          for (i=0; i<B.getNumLines(); i++) {
             if ((B[i].getType() == E_humrec_bibliography) &&
@@ -525,9 +526,7 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
             }
          }
          // Bibliographic record was not found in B.
-         if (debug) {
-            sout << "!!CASE CCC" << "\n";
-         }
+         if (debug) { sout << "!!CASE CCC" << "\n"; }
          sout << A[a].getLine() << "\n";
          a++;
          continue;
@@ -540,7 +539,8 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
          }
          a++;
          continue;
-      }
+      } 
+
       if (B[b].getType() == E_humrec_bibliography) {
          if (debug) {
             sout << "!!CASE EEE" << "\n";
@@ -548,7 +548,7 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
          sout << B[b].getLine() << "\n";
          b++;
          continue;
-      } else if (A[a].getType() == E_humrec_global_comment) {
+      } else if (B[b].getType() == E_humrec_global_comment) {
          if (debug) {
             sout << "!!CASE FFF" << "\n";
          }
@@ -661,6 +661,90 @@ int HumdrumFile::processLinesForCombine(HumdrumFile& output, HumdrumFile& A,
       RationalNumber adur = A[a].getAbsBeatR();
       RationalNumber bdur = B[b].getAbsBeatR();
       // cout << "A BEAT = " << adur << "\tB BEAT = " << bdur << endl;
+ 
+      // handle local comments
+      if (A[a].getType() == E_humrec_data_comment) {
+         if (adur - bdur < 0) {
+            if (debug) { sout << "!!CASE: GFD1\n"; }
+            // A is earlier than B, print A and wait for B
+            sout << A[a] << "\t";
+            printConstantTokenFields(sout, B[b], "!");
+            sout << "\n";
+            a++;
+            continue;
+         } else if (adur - bdur > 0) {
+            if (debug) { sout << "!!CASE: GFD2\n"; }
+            // A is after B, print B and wait for A
+            if (B[b].isInterpretation()) {
+               printConstantTokenFields(sout, A[a], "*");
+            } else if (B[b].isLocalComment()) {
+               printConstantTokenFields(sout, A[a], "!");
+            } else {
+               printConstantTokenFields(sout, A[a], ".");
+            }
+            sout << "\t";
+            sout << B[b];
+            sout << "\n";
+            b++;
+            continue;
+         } else {
+            if (debug) { sout << "!!CASE: GFD3\n"; }
+            // A and B are both local comments so print both
+            if (B[b].getType() == E_humrec_data_comment) {
+               sout << A[a] << "\t" << B[b] << "\n";
+               a++; b++;
+            } else {
+               if (debug) { sout << "!!CASE: GFD4\n"; }
+               // B is not a local comment so print A wait for B
+               sout << A[a] << "\t";
+               printConstantTokenFields(sout, B[b], "!");
+               sout << "\n";
+               a++;
+            }
+            continue;
+         }
+      } else if (B[b].getType() == E_humrec_data_comment) {
+         if (adur - bdur < 0) {
+            if (debug) { sout << "!!CASE: GFE1\n"; }
+            // A is earlier than B so print A and wait for B
+            if (B[b].isInterpretation()) {
+               printConstantTokenFields(sout, A[a], "*");
+            } else if (B[b].isLocalComment()) {
+               printConstantTokenFields(sout, A[a], "!");
+            } else {
+               printConstantTokenFields(sout, A[a], ".");
+            }
+            sout << "\t";
+            sout << B[b];
+            sout << "\n";
+            b++;
+            continue;
+         } else if (adur - bdur > 0) {
+            if (debug) { sout << "!!CASE: GFE2\n"; }
+            // A is after B, print B and wait for A
+            printConstantTokenFields(sout, A[a], "!");
+            sout << "\t";
+            sout << B[b];
+            sout << "\n";
+            a++;
+            continue;
+         } else {
+            if (debug) { sout << "!!CASE: GFE3\n"; }
+            // A and B are both local comments so print both
+            if (A[a].getType() == E_humrec_data_comment) {
+               sout << A[a] << "\t" << B[b] << "\n";
+               a++; b++;
+            } else {
+               if (debug) { sout << "!!CASE: GFE4\n"; }
+               // A is not a local comment, print B; wait for A
+               printConstantTokenFields(sout, A[a], "!");
+               sout << "\t";
+               sout << B[b] << "\n";
+               b++;
+            }
+            continue;
+         }
+      }
 
       if ((adur - bdur) < 0) {
          // data lines are supposed to occur at the same time
@@ -2651,7 +2735,7 @@ void HumdrumFile::privateRhythmAnalysis(const char* base, int debug) {
    for (i=0; i<rhythmsR.getSize(); i++) {
       localrhythms[i] = rhythmsR[i];
    }
-   spaceEmptyLines();
+   // spaceEmptyLines();
 
    // add offset of +1 if there are no barlines present in the file
    if (measurecount == 0) {
@@ -4641,6 +4725,24 @@ int HumdrumFile::intcompare(const void* a, const void* b) {
    } else {
       return 0;
    }
+}
+
+
+//////////////////////////////
+//
+// HumdrumFile::printConstantTokenFields --
+//
+
+ostream& HumdrumFile::printConstantTokenFields(ostream& out, 
+      HumdrumRecord& aRecord, const char* token) {
+   int i;
+   for (i=0; i<aRecord.getFieldCount(); i++) {
+      out << token;
+      if (i < aRecord.getFieldCount() - 1) {
+         out << "\t";
+      }
+   }
+   return out;
 }
 
 

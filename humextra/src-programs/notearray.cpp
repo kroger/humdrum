@@ -4,6 +4,7 @@
 // Last Modified: Fri Sep  2 18:25:34 PDT 2011
 // Last Modified: Tue Sep 13 13:33:52 PDT 2011 added -k option
 // Last Modified: Thu Sep 15 01:36:49 PDT 2011 added -D option
+// Last Modified: Thu Oct 20 22:23:27 PDT 2011 fixed init bug
 // Filename:      ...sig/examples/all/notearray.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/notearray.cpp
 // Syntax:        C++; museinfo
@@ -501,8 +502,16 @@ void getLastAttackIndexes(Array<Array<int> >& lasts,
       states.setAll(offset);
    }
 
-   for (i=start+1; i<notes.getSize(); i++) {
+   for (i=0; i<notes.getSize(); i++) {
       lasts[i].setSize(notes[i].getSize());
+      if (i <= start) {
+         lasts[i].setAll(-1);
+         if (typeQ && (i==0)) {
+            lasts[i].setAll(TYPE_LAST);
+         }
+         continue;
+      }
+
       for (j=0; j<notes[i].getSize(); j++) {
          if (notes[i][j] > 0) {
             // a new note attack, store the note attack index in
@@ -551,6 +560,7 @@ void getNextAttackIndexes(Array<Array<int> >& nexts,
    int start = 0;
    nexts.setSize(notes.getSize());
    if (typeQ) {
+      nexts[0].setSize(notes[0].getSize());
       nexts[0].setAll(TYPE_NEXT);
       start = 1;
    }
@@ -1077,13 +1087,13 @@ void printExclusiveInterpretations(int basecount) {
    }
 
    if (base7Q) {
-      strcat(basename, prefix);
+      // strcat(basename, prefix);
       strcat(basename, "b7");
    } else if (base12Q) {
-      strcat(basename, prefix);
+      // strcat(basename, prefix);
       strcat(basename, "b12");
    } else {
-      strcat(basename, prefix);
+      // strcat(basename, prefix);
       strcat(basename, "b40");
    }
 
@@ -1415,4 +1425,4 @@ void usage(const char* command) {
 }
 
 
-// md5sum: b679f7145fcdcb18122fa71cf05e9578 notearray.cpp [20110918]
+// md5sum: cae22ba3e86ede60cf34a672bb901dbd notearray.cpp [20111105]
