@@ -33,7 +33,7 @@
    typedef LONGLONG int64bits;
 #else
    #if defined(OSXOLD) || defined(OSXPC)
-      typedef Uint64 int64bits;
+      typedef long long int int64bits;
       // also see SigTimer.cpp for #define for OSXTIMER
    #else
       typedef long long int int64bits;
@@ -41,6 +41,7 @@
    #endif
 #endif
 
+#include <stdint.h>
 
 class SigTimer {
    public:
