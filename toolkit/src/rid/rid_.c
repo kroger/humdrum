@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #ifdef __MSDOS__
@@ -45,7 +46,7 @@
 * The main function is used only to call other functions
 ****************************************************************************/
 
-void main (int argc, char *argv[])
+int main (int argc, char *argv[])
 	{
 	/* Initialize any global variables and data structures */
 	init_data();
