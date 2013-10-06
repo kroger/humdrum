@@ -144,7 +144,6 @@ void	help ( void )
 
 int	find_note ( char *p )
 {
-	int	i;
 	int	note;
 	int	done;
 	int	octave;
@@ -230,7 +229,6 @@ int	find_note ( char *p )
 
 int	find_duration	( char *p )
 {
-	char temp;
 	char *durtok;
 	int	duration;
 	int	dots;
@@ -421,7 +419,6 @@ void	add_note ( int spine, int note )
 
 void	tandem ( char *token )
 {
-	int	i;
 	int	tempo, num_matched;
 	float	low, high;
 
@@ -1236,7 +1233,7 @@ void	read_data (void)
   Program mainline.
 ***************************************/
 
-void	main 	(int argc, char *argv[])
+int	main 	(int argc, char *argv[])
 {
 	int	i,j;
 	int	done;

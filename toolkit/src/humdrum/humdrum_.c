@@ -1133,7 +1133,6 @@ interp_list *do_exchange(interp_list *current) {
 interp_list *do_join(interp_list *current) {
 
 	interp_list *pointer;	
-	char first_interp[NAME_LENGTH];
 
 	pointer = current->next_interp;
 
