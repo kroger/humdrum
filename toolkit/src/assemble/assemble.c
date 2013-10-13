@@ -662,7 +662,7 @@ void	read_data ( void )
   Program mainline.
 ***************************************/
 
-void	main 	(int argc, char *argv[])
+int	main 	(int argc, char *argv[])
 {
 	int	i;
 	int 	filenames;
