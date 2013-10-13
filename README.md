@@ -1,10 +1,12 @@
-This repository contains the "classical" humdrum toolkit and Craig Sapp's humextra tools. There are no binaries, I'll have to compile the code.
+This repository contains the "classical" humdrum toolkit.
+Craig Sapp's humextra tools are now available on his [own github repository](https://github.com/craigsapp/humextra).
+There are no binaries, I'll have to compile the code.
 
 ## Downloadig Humdrum
 
 To download the humdrum distribution go to the following page on the github repository:
 
-  http://github.com/genos/humdrum/
+  http://github.com/kroger/humdrum/
 
 and clique on the "download" button.
 
@@ -38,8 +40,8 @@ To compile, go to the humdrum directory and type the following commands:
 
 Put the following lines in your ~/.bashrc
 
-export PATH="/usr/local/humdrum/bin:$PATH"
-export AWK_VER=gawk
-export HUMDRUM=/usr/local/humdrum/
-export TMPDIR=/tmp
-export CON=/dev/tty
+    export PATH="/usr/local/humdrum/bin:$PATH"
+    export AWK_VER=gawk
+    export HUMDRUM=/usr/local/humdrum/
+    export TMPDIR=/tmp
+    export CON=/dev/tty
