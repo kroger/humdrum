@@ -76,12 +76,15 @@ BEGIN {
 	cont_tie_reg = "\\]|_"
 	indicators = "^(\\*\\+|\\*\\-|\\*\\^|\\*v|\\*x)$"
 	input_interps = "^(\\*\\*pitch|\\*\\*Tonh|\\*\\*solfg|\\*\\*kern)$"
-	key_reg = "^\\*(([ABCDEFGabcdefg](#?|-?))|(\\?)|(X)|(Cx)|(cx)|(Dx)):$"
-	pc_key_sig = "^\\*k\\[([abcdefg]((n)|(#)|(x+(#?))|(-)+))*\\]$"
-	ph_key_sig = "^\\*K\\[([ABCDEFG][1-9]((n)|(#)|(x+(#?))|(-)+))*\\]$"
+	# $ removed from following regex by Craig Sapp 20130407 so that
+	# modal key signatures can be handled properly.
+	#key_reg = "^\\*(([A-Ga-g](#?|-?))|(\\?)|(X)|(Cx)|(cx)|(Dx)):$"
+	key_reg = "^\\*(([A-Ga-g](#?|-?))|(\\?)|(X)|(Cx)|(cx)|(Dx)):"
+	pc_key_sig = "^\\*k\\[([a-g]((n)|(#)|(x+(#?))|(-)+))*\\]$"
+	ph_key_sig = "^\\*K\\[([A-G][1-9]((n)|(#)|(x+(#?))|(-)+))*\\]$"
 	kern_pitch = "a+|b+|c+|d+|e+|f+|g+|A+|B+|C+|D+|E+|F+|G+"
-	pitch_pitch = "[ABCDEFG]"
-	Tonh_pitch_reg = "Es|As|[ABCDEFGHS]"
+	pitch_pitch = "[A-G]"
+	Tonh_pitch_reg = "Es|As|[A-GHS]"
 	solfg_pitch_reg = "do|re|mi|fa|sol|la|si"
 	octave_class = "[0-9]"
 	#
@@ -212,7 +215,7 @@ BEGIN {
 	key["*F#:","F"] = "1/6"; key["*F#:","G"] = "2/8"; key["*F#:","A"] = "3/10";
 	key["*F#:","B"] = "4/11";
 
-	key["*f#:","C"] = "5/1"; key["*f#:","D"] = "6/2"; key["*f#:","E"] = "7/5";
+	key["*f#:","C"] = "5/1"; key["*f#:","D"] = "6/2; key["*f#:","E"] = "7/5";
 	key["*f#:","F"] = "1/6"; key["*f#:","G"] = "2/8"; key["*f#:","A"] = "3/9";
 	key["*f#:","B"] = "4/11";
 
@@ -399,7 +402,10 @@ function store_new_interps(      j,interp_line)
 			current_key[j] = ""
 			last_semits[j] = "x"
 			}
-		else if ($j ~ key_reg) current_key[j] = $j
+		else if ($j ~ key_reg) {
+			current_key[j] = $j
+			sub(/:.../, ":", current_key[j])
+			}
 		else if ($j ~ /^\*[kK]\[/)
 			{
 			if ($j !~ pc_key_sig && $j !~ ph_key_sig)
